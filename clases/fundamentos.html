@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fundamentos de Redes — CCNA Academy</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="page-body">
+
+<nav class="navbar" id="navbar">
+  <div class="nav-wrap">
+    <a href="../index.html" class="nav-logo">
+      <span class="logo-cisco">CISCO</span>
+      <span class="logo-text">Academy</span>
+    </a>
+    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    <div class="nav-menu" id="navMenu">
+      <div class="nav-group">
+        <span class="nav-label">Módulo 1</span>
+        <a href="fundamentos.html" class="nav-link active-page"><span class="nav-icon">🖧</span> Fundamentos</a>
+      </div>
+      <div class="nav-group">
+        <span class="nav-label">Módulo 2 — Switching</span>
+        <a href="vlan.html" class="nav-link"><span class="nav-icon">🏷️</span> VLANs</a>
+        <a href="stp.html"  class="nav-link"><span class="nav-icon">🌳</span> STP</a>
+        <a href="etherchannel.html" class="nav-link nav-coming"><span class="nav-icon">🔗</span> EtherChannel <span class="badge-soon">Próximo</span></a>
+      </div>
+      <div class="nav-group">
+        <span class="nav-label">Módulo 3 — Routing</span>
+        <a href="routing.html" class="nav-link nav-coming"><span class="nav-icon">🗺️</span> Routing Estático <span class="badge-soon">Próximo</span></a>
+        <a href="ospf.html"    class="nav-link nav-coming"><span class="nav-icon">⭕</span> OSPF <span class="badge-soon">Próximo</span></a>
+      </div>
+      <div class="nav-group">
+        <span class="nav-label">Módulo 4 — Seguridad</span>
+        <a href="acl.html" class="nav-link nav-coming"><span class="nav-icon">🔒</span> ACLs <span class="badge-soon">Próximo</span></a>
+        <a href="nat.html" class="nav-link nav-coming"><span class="nav-icon">🔄</span> NAT/PAT <span class="badge-soon">Próximo</span></a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="wrap">
+    <div class="page-breadcrumb">
+      <a href="../index.html">Inicio</a><span>/</span>
+      <span>Módulo 1</span><span>/</span>
+      <span>Fundamentos de Redes</span>
+    </div>
+    <h1 class="page-title">Fundamentos de Redes</h1>
+    <div class="page-subtitle">Modelos OSI · TCP/IP · Protocolos · Topologías · Direccionamiento</div>
+    <div class="page-nav-pills">
+      <button class="pill active" onclick="showSection('osi',this)">📐 Modelo OSI</button>
+      <button class="pill" onclick="showSection('tcpip',this)">🌐 TCP/IP</button>
+      <button class="pill" onclick="showSection('protocolos',this)">📡 Protocolos</button>
+      <button class="pill" onclick="showSection('config',this)">⌨️ Comandos</button>
+      <button class="pill" onclick="showSection('quiz',this)">🎯 Quiz</button>
+    </div>
+  </div>
+</div>
+
+<div class="page-content">
+  <div class="wrap">
+
+    <!-- OSI -->
+    <div id="section-osi" class="content-section">
+      <div class="content-card fade-up">
+        <h2>📐 El Modelo OSI — 7 Capas</h2>
+        <div class="def-box">
+          El <span class="hl">Modelo OSI (Open Systems Interconnection)</span> es un marco de referencia que divide las funciones de red en <span class="hlg">7 capas independientes</span>. Cada capa tiene una función específica y se comunica solo con las capas adyacentes. Fue creado por la ISO en 1984 y es la base conceptual para entender cualquier protocolo de red.
+        </div>
+        <table class="data-table">
+          <thead><tr><th>#</th><th>Capa</th><th>Función</th><th>Protocolos / Dispositivos</th><th>PDU</th></tr></thead>
+          <tbody>
+            <tr><td style="color:#f87171;font-weight:700;">7</td><td><span class="badge b-red">Aplicación</span></td><td>Interfaz con el usuario final. Servicios de red a aplicaciones.</td><td>HTTP, HTTPS, FTP, DNS, DHCP, SMTP, SSH, Telnet</td><td>Datos</td></tr>
+            <tr><td style="color:#fb923c;font-weight:700;">6</td><td><span class="badge b-amber">Presentación</span></td><td>Formato, cifrado/descifrado, compresión de datos.</td><td>SSL/TLS, JPEG, MPEG, ASCII, UTF-8</td><td>Datos</td></tr>
+            <tr><td style="color:#fcd34d;font-weight:700;">5</td><td><span class="badge b-amber">Sesión</span></td><td>Establece, gestiona y cierra sesiones entre aplicaciones.</td><td>NetBIOS, RPC, SQL</td><td>Datos</td></tr>
+            <tr><td style="color:#34d399;font-weight:700;">4</td><td><span class="badge b-green">Transporte</span></td><td>Transporte extremo a extremo, control de flujo, corrección de errores.</td><td>TCP, UDP. Segmentos</td><td>Segmento</td></tr>
+            <tr><td style="color:#38bdf8;font-weight:700;">3</td><td><span class="badge b-blue">Red</span></td><td>Direccionamiento lógico (IP), routing entre redes.</td><td>IPv4, IPv6, ICMP, OSPF, EIGRP. Routers.</td><td>Paquete</td></tr>
+            <tr><td style="color:#818cf8;font-weight:700;">2</td><td><span class="badge" style="background:rgba(139,92,246,0.15);border:1px solid #8b5cf6;color:#c4b5fd;">Enlace de Datos</span></td><td>Direccionamiento físico (MAC), detección de errores, frame switching.</td><td>Ethernet, 802.11 Wi-Fi, VLANs. Switches.</td><td>Trama</td></tr>
+            <tr><td style="color:#94a3b8;font-weight:700;">1</td><td><span class="badge" style="background:rgba(100,116,139,0.15);border:1px solid #475569;color:#94a3b8;">Física</span></td><td>Transmisión de bits por el medio físico. Voltajes, señales, cables.</td><td>Cables UTP/STP, fibra óptica, Wi-Fi, Hubs, Repetidores.</td><td>Bit</td></tr>
+          </tbody>
+        </table>
+        <div class="info-box exam">
+          <div class="info-icon">🎯</div>
+          <div><strong>Mnemotecnia CCNA:</strong> <strong style="color:var(--blue-b);">"All People Seem To Need Data Processing"</strong> (Aplicación, Presentación, Sesión, Transporte, Red, Datos, Física) — de capa 7 a 1. O al revés: <strong style="color:var(--green);">"Please Do Not Throw Sausage Pizza Away"</strong></div>
+        </div>
+      </div>
+
+      <div class="content-card fade-up fade-up-d1">
+        <h2>🔄 Encapsulación y Desencapsulación</h2>
+        <div class="def-box">
+          Cuando un dato viaja de una PC hacia la red, cada capa del modelo OSI <span class="hl">agrega su propio encabezado (header)</span> — esto se llama <span class="hlg">encapsulación</span>. En el destino, el proceso inverso elimina los headers capa por capa — esto es la <span class="hlg">desencapsulación</span>.
+        </div>
+        <div class="info-box tip">
+          <div class="info-icon">✅</div>
+          <div>Dato → Segmento (Capa 4 agrega puerto TCP/UDP) → Paquete (Capa 3 agrega IP origen/destino) → Trama (Capa 2 agrega MAC origen/destino) → Bits (Capa 1 convierte a señal eléctrica/óptica)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TCP/IP -->
+    <div id="section-tcpip" class="content-section" style="display:none;">
+      <div class="content-card fade-up">
+        <h2>🌐 Modelo TCP/IP — 4 Capas</h2>
+        <div class="def-box">
+          El <span class="hl">Modelo TCP/IP</span> (también llamado DoD o Internet Model) es el modelo práctico que usa Internet. Tiene <span class="hlg">4 capas</span> y es el que realmente implementan los sistemas operativos y dispositivos de red.
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Capa TCP/IP</th><th>Equivalente OSI</th><th>Protocolos clave</th></tr></thead>
+          <tbody>
+            <tr><td><span class="badge b-red">Aplicación</span></td><td>Capas 5, 6, 7 OSI</td><td>HTTP, FTP, DNS, DHCP, SSH, Telnet, SNMP, NTP</td></tr>
+            <tr><td><span class="badge b-green">Transporte</span></td><td>Capa 4 OSI</td><td>TCP (confiable, orientado a conexión) · UDP (no confiable, rápido)</td></tr>
+            <tr><td><span class="badge b-blue">Internet</span></td><td>Capa 3 OSI</td><td>IPv4, IPv6, ICMP, ARP (debate: algunos lo ubican en capa 2)</td></tr>
+            <tr><td><span class="badge b-amber">Acceso a Red</span></td><td>Capas 1 y 2 OSI</td><td>Ethernet, 802.11 Wi-Fi, PPP, Frame Relay</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="content-card fade-up fade-up-d1">
+        <h2>⚖️ TCP vs UDP</h2>
+        <table class="data-table">
+          <thead><tr><th>Característica</th><th>TCP</th><th>UDP</th></tr></thead>
+          <tbody>
+            <tr><td>Orientado a conexión</td><td style="color:var(--green);">✓ Sí (3-way handshake)</td><td style="color:var(--red-bright);">✗ No</td></tr>
+            <tr><td>Confiabilidad</td><td style="color:var(--green);">✓ ACKs, retransmisión</td><td style="color:var(--red-bright);">✗ Best-effort</td></tr>
+            <tr><td>Control de flujo</td><td style="color:var(--green);">✓ Ventana deslizante</td><td style="color:var(--red-bright);">✗ No</td></tr>
+            <tr><td>Velocidad</td><td style="color:var(--amber);">Más lento</td><td style="color:var(--green);">Más rápido</td></tr>
+            <tr><td>Uso típico</td><td>HTTP, FTP, SSH, SMTP</td><td>DNS, DHCP, VoIP, video streaming, TFTP</td></tr>
+            <tr><td>Puerto conocido ej.</td><td>HTTP:80, HTTPS:443, SSH:22</td><td>DNS:53, DHCP:67/68, TFTP:69</td></tr>
+          </tbody>
+        </table>
+        <div class="info-box exam">
+          <div class="info-icon">🎯</div>
+          <div><strong>CCNA Examen:</strong> TCP usa el <strong>3-Way Handshake</strong>: SYN → SYN-ACK → ACK. DNS usa UDP puerto 53 para consultas normales y TCP para transferencias de zona (>512 bytes). DHCP usa UDP puertos 67 (servidor) y 68 (cliente).</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROTOCOLOS -->
+    <div id="section-protocolos" class="content-section" style="display:none;">
+      <div class="content-card fade-up">
+        <h2>📡 Puertos y Protocolos Esenciales CCNA</h2>
+        <table class="data-table">
+          <thead><tr><th>Protocolo</th><th>Puerto</th><th>Transport</th><th>Función</th></tr></thead>
+          <tbody>
+            <tr><td><span class="badge b-blue">FTP</span></td><td>20/21</td><td>TCP</td><td>Transferencia de archivos (datos:20, control:21)</td></tr>
+            <tr><td><span class="badge b-blue">SSH</span></td><td>22</td><td>TCP</td><td>Acceso remoto seguro (reemplaza Telnet)</td></tr>
+            <tr><td><span class="badge b-red">Telnet</span></td><td>23</td><td>TCP</td><td>Acceso remoto no seguro (texto plano) ⚠️</td></tr>
+            <tr><td><span class="badge b-blue">SMTP</span></td><td>25</td><td>TCP</td><td>Envío de correo electrónico</td></tr>
+            <tr><td><span class="badge b-green">DNS</span></td><td>53</td><td>UDP/TCP</td><td>Resolución de nombres a IP</td></tr>
+            <tr><td><span class="badge b-green">DHCP</span></td><td>67/68</td><td>UDP</td><td>Asignación automática de IPs</td></tr>
+            <tr><td><span class="badge b-green">TFTP</span></td><td>69</td><td>UDP</td><td>Transferencia simple de archivos (IOS upgrades)</td></tr>
+            <tr><td><span class="badge b-blue">HTTP</span></td><td>80</td><td>TCP</td><td>Web sin cifrar</td></tr>
+            <tr><td><span class="badge b-green">SNMP</span></td><td>161/162</td><td>UDP</td><td>Gestión y monitoreo de red</td></tr>
+            <tr><td><span class="badge b-blue">HTTPS</span></td><td>443</td><td>TCP</td><td>Web cifrada con TLS/SSL</td></tr>
+            <tr><td><span class="badge b-amber">Syslog</span></td><td>514</td><td>UDP</td><td>Registro de eventos del sistema</td></tr>
+            <tr><td><span class="badge b-amber">NTP</span></td><td>123</td><td>UDP</td><td>Sincronización de tiempo de red</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- COMANDOS -->
+    <div id="section-config" class="content-section" style="display:none;">
+      <div class="content-card fade-up">
+        <h2>⌨️ Comandos IOS Fundamentales</h2>
+        <div class="cmd-block">
+          <span class="cmd-label">MODOS IOS</span>
+          <span class="cl"><span class="cp">Router></span>           <span class="cc">! Modo Usuario (solo lectura)</span></span>
+          <span class="cl"><span class="cp">Router></span> <span class="ck">enable</span></span>
+          <span class="cl"><span class="cp">Router#</span>           <span class="cc">! Modo Privilegiado (EXEC)</span></span>
+          <span class="cl"><span class="cp">Router#</span> <span class="ck">configure terminal</span></span>
+          <span class="cl"><span class="cp">Router(config)#</span>   <span class="cc">! Modo Configuración Global</span></span>
+          <span class="cl"><span class="cp">Router(config)#</span> <span class="ck">interface</span> <span class="cv">GigabitEthernet0/0</span></span>
+          <span class="cl"><span class="cp">Router(config-if)#</span> <span class="cc">! Modo Configuración de Interfaz</span></span>
+          <span class="cl"><span class="cp">Router(config-if)#</span> <span class="ck">exit</span>  <span class="cc">! o Ctrl+Z para volver al modo privilegiado</span></span>
+        </div>
+        <div class="cmd-block">
+          <span class="cmd-label">COMANDOS ESENCIALES</span>
+          <span class="cl"><span class="cp">Router#</span> <span class="ck">show running-config</span>        <span class="cc">! Ver configuración activa en RAM</span></span>
+          <span class="cl"><span class="cp">Router#</span> <span class="ck">show startup-config</span>        <span class="cc">! Ver configuración guardada en NVRAM</span></span>
+          <span class="cl"><span class="cp">Router#</span> <span class="ck">copy running-config startup-config</span> <span class="cc">! Guardar (write memory)</span></span>
+          <span class="cl"><span class="cp">Router#</span> <span class="ck">show ip interface brief</span>    <span class="cc">! Estado de todas las interfaces</span></span>
+          <span class="cl"><span class="cp">Router#</span> <span class="ck">show interfaces</span>            <span class="cc">! Detalle de interfaces</span></span>
+          <span class="cl"><span class="cp">Router#</span> <span class="ck">show version</span>              <span class="cc">! Versión IOS, hardware, uptime</span></span>
+          <span class="cl"><span class="cp">Router#</span> <span class="ck">show cdp neighbors</span>         <span class="cc">! Ver vecinos Cisco directamente conectados</span></span>
+          <span class="cl"><span class="cp">Router#</span> <span class="ck">ping</span> <span class="cv">192.168.1.1</span>          <span class="cc">! Prueba de conectividad</span></span>
+          <span class="cl"><span class="cp">Router#</span> <span class="ck">traceroute</span> <span class="cv">8.8.8.8</span>       <span class="cc">! Trazar ruta hacia destino</span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUIZ -->
+    <div id="section-quiz" class="content-section" style="display:none;">
+      <div class="content-card">
+        <h2>🎯 Quiz — Fundamentos CCNA</h2>
+        <div class="info-box exam"><div class="info-icon">📋</div><div>Preguntas estilo examen oficial Cisco CCNA 200-301.</div></div>
+
+        <div class="q-box" id="q1">
+          <div class="q-num">PREGUNTA 01 / 05</div>
+          <div class="q-text">¿En qué capa del modelo OSI opera un switch de Capa 2?</div>
+          <div class="q-opts">
+            <div class="q-opt" onclick="CcnaQuiz.answer(1,'A','wrong','La capa física (capa 1) opera con bits y señales eléctricas. Los hubs y repetidores trabajan en esta capa.')"><div class="q-letter">A</div>Capa 1 — Física</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(1,'B','correct','¡Correcto! Los switches de capa 2 operan en la capa de Enlace de Datos (capa 2). Toman decisiones de forwarding basadas en direcciones MAC, no en IPs.')"><div class="q-letter">B</div>Capa 2 — Enlace de Datos</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(1,'C','wrong','La capa de Red (capa 3) es donde operan los routers y los switches multilayer. Usan direcciones IP para el routing.')"><div class="q-letter">C</div>Capa 3 — Red</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(1,'D','wrong','La capa de Transporte (capa 4) es donde opera TCP y UDP. No es donde trabajan los switches.')"><div class="q-letter">D</div>Capa 4 — Transporte</div>
+          </div>
+          <div class="q-feedback" id="fb1"></div>
+        </div>
+
+        <div class="q-box" id="q2">
+          <div class="q-num">PREGUNTA 02 / 05</div>
+          <div class="q-text">¿Cuál protocolo de la capa de transporte garantiza la entrega de datos mediante acuses de recibo (ACKs) y retransmisión?</div>
+          <div class="q-opts">
+            <div class="q-opt" onclick="CcnaQuiz.answer(2,'A','correct','¡Correcto! TCP (Transmission Control Protocol) es orientado a conexión y garantiza la entrega mediante el 3-way handshake, numeración de secuencia, ACKs y retransmisión de paquetes perdidos.')"><div class="q-letter">A</div>TCP</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(2,'B','wrong','UDP (User Datagram Protocol) es no orientado a conexión y no garantiza la entrega. Es más rápido pero no confiable. Usado para VoIP, DNS, streaming.')"><div class="q-letter">B</div>UDP</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(2,'C','wrong','ICMP (Internet Control Message Protocol) opera en capa 3 y se usa para diagnóstico (ping, traceroute), no para transmisión de datos garantizada.')"><div class="q-letter">C</div>ICMP</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(2,'D','wrong','ARP (Address Resolution Protocol) resuelve IPs a MACs y opera entre capas 2 y 3. No tiene función de garantía de entrega de datos.')"><div class="q-letter">D</div>ARP</div>
+          </div>
+          <div class="q-feedback" id="fb2"></div>
+        </div>
+
+        <div class="q-box" id="q3">
+          <div class="q-num">PREGUNTA 03 / 05</div>
+          <div class="q-text">¿Qué puerto y protocolo de transporte usa DHCP para el servidor?</div>
+          <div class="q-opts">
+            <div class="q-opt" onclick="CcnaQuiz.answer(3,'A','wrong','Puerto 80 TCP es HTTP (web). DHCP no usa TCP ni el puerto 80.')"><div class="q-letter">A</div>TCP Puerto 80</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(3,'B','wrong','UDP 53 es DNS, no DHCP. DNS usa UDP 53 para consultas (y TCP 53 para transferencias de zona).')"><div class="q-letter">B</div>UDP Puerto 53</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(3,'C','correct','¡Correcto! DHCP usa UDP. El servidor DHCP escucha en el puerto 67 y el cliente en el puerto 68. Usa UDP porque en el momento del descubrimiento el cliente aún no tiene IP y no puede establecer conexión TCP.')"><div class="q-letter">C</div>UDP Puerto 67 (servidor) / 68 (cliente)</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(3,'D','wrong','TCP 22 es SSH (Secure Shell), el protocolo de acceso remoto seguro que reemplaza a Telnet.')"><div class="q-letter">D</div>TCP Puerto 22</div>
+          </div>
+          <div class="q-feedback" id="fb3"></div>
+        </div>
+
+        <div class="q-box" id="q4">
+          <div class="q-num">PREGUNTA 04 / 05</div>
+          <div class="q-text">¿Cuál es el comando para guardar la configuración activa en la NVRAM de un dispositivo Cisco?</div>
+          <div class="q-opts">
+            <div class="q-opt" onclick="CcnaQuiz.answer(4,'A','wrong','show running-config muestra la configuración en RAM pero no la guarda. Es solo lectura.')"><div class="q-letter">A</div>show running-config</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(4,'B','correct','¡Correcto! copy running-config startup-config (o el atajo write memory / wr) copia la config de la RAM (running) hacia la NVRAM (startup). Si haces reload sin este comando, pierdes todos los cambios.')"><div class="q-letter">B</div>copy running-config startup-config</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(4,'C','wrong','copy startup-config running-config hace lo contrario: carga la config guardada hacia la RAM activa, sobreescribiendo cambios no guardados.')"><div class="q-letter">C</div>copy startup-config running-config</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(4,'D','wrong','write erase (o erase startup-config) borra la NVRAM. Es el opuesto de guardar — deja el dispositivo sin configuración para el próximo reinicio.')"><div class="q-letter">D</div>write erase</div>
+          </div>
+          <div class="q-feedback" id="fb4"></div>
+        </div>
+
+        <div class="q-box" id="q5">
+          <div class="q-num">PREGUNTA 05 / 05</div>
+          <div class="q-text">¿Qué hace el comando "show cdp neighbors" en un switch Cisco?</div>
+          <div class="q-opts">
+            <div class="q-opt" onclick="CcnaQuiz.answer(5,'A','wrong','show ip route muestra la tabla de routing. CDP no tiene relación con el routing.')"><div class="q-letter">A</div>Muestra la tabla de routing del switch</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(5,'B','wrong','show vlan brief muestra las VLANs configuradas. CDP no descubre VLANs.')"><div class="q-letter">B</div>Muestra todas las VLANs configuradas</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(5,'C','correct','¡Correcto! CDP (Cisco Discovery Protocol) es un protocolo propietario de Cisco que opera en capa 2. Permite descubrir automáticamente los dispositivos Cisco directamente conectados, mostrando: nombre del vecino, modelo, puerto local/remoto, versión IOS y dirección IP de management.')"><div class="q-letter">C</div>Muestra los dispositivos Cisco directamente conectados (vecinos)</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(5,'D','wrong','show mac address-table muestra la tabla CAM del switch con las MACs aprendidas. CDP muestra vecinos, no MACs.')"><div class="q-letter">D</div>Muestra la tabla de direcciones MAC del switch</div>
+          </div>
+          <div class="q-feedback" id="fb5"></div>
+        </div>
+
+        <div id="scoreBox" style="display:none;" class="content-card">
+          <h2>🏆 Resultado</h2>
+          <div style="text-align:center;padding:20px;">
+            <div id="scoreTxt" style="font-family:var(--font-head);font-size:2.5rem;font-weight:900;margin-bottom:8px;"></div>
+            <div id="scoreMsg" style="color:var(--gray);"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo"><span class="logo-cisco">CISCO</span><span class="logo-text">Academy</span></div>
+        <p>Ruta completa de aprendizaje hacia las certificaciones Cisco CCNA, CCNP y CCIE.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Siguiente clase</h4>
+        <a href="vlan.html">→ VLANs</a>
+        <a href="stp.html">→ STP</a>
+      </div>
+    </div>
+    <div class="footer-bottom"><span>Basado en el currículo oficial de Cisco Networking Academy</span></div>
+  </div>
+</footer>
+
+<script src="../assets/main.js"></script>
+<script>
+  CcnaQuiz.init(5);
+  function showSection(id, btn) {
+    document.querySelectorAll('.content-section').forEach(s => s.style.display='none');
+    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+    document.getElementById('section-'+id).style.display='block';
+    btn.classList.add('active');
+    window.scrollTo({top:200, behavior:'smooth'});
+  }
+</script>
+</body>
+</html>

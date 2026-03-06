@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STP — Spanning Tree Protocol — CCNA Academy</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="page-body">
+
+<nav class="navbar" id="navbar">
+  <div class="nav-wrap">
+    <a href="../index.html" class="nav-logo">
+      <span class="logo-cisco">CISCO</span><span class="logo-text">Academy</span>
+    </a>
+    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    <div class="nav-menu" id="navMenu">
+      <div class="nav-group">
+        <span class="nav-label">Módulo 1</span>
+        <a href="fundamentos.html" class="nav-link"><span class="nav-icon">🖧</span> Fundamentos</a>
+      </div>
+      <div class="nav-group">
+        <span class="nav-label">Módulo 2 — Switching</span>
+        <a href="vlan.html" class="nav-link"><span class="nav-icon">🏷️</span> VLANs</a>
+        <a href="stp.html"  class="nav-link active-page"><span class="nav-icon">🌳</span> STP</a>
+        <a href="etherchannel.html" class="nav-link nav-coming"><span class="nav-icon">🔗</span> EtherChannel <span class="badge-soon">Próximo</span></a>
+      </div>
+      <div class="nav-group">
+        <span class="nav-label">Módulo 3 — Routing</span>
+        <a href="routing.html" class="nav-link nav-coming"><span class="nav-icon">🗺️</span> Routing Estático <span class="badge-soon">Próximo</span></a>
+        <a href="ospf.html"    class="nav-link nav-coming"><span class="nav-icon">⭕</span> OSPF <span class="badge-soon">Próximo</span></a>
+      </div>
+      <div class="nav-group">
+        <span class="nav-label">Módulo 4 — Seguridad</span>
+        <a href="acl.html" class="nav-link nav-coming"><span class="nav-icon">🔒</span> ACLs <span class="badge-soon">Próximo</span></a>
+        <a href="nat.html" class="nav-link nav-coming"><span class="nav-icon">🔄</span> NAT/PAT <span class="badge-soon">Próximo</span></a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="wrap">
+    <div class="page-breadcrumb">
+      <a href="../index.html">Inicio</a><span>/</span>
+      <span>Módulo 2 — Switching</span><span>/</span>
+      <span>STP</span>
+    </div>
+    <h1 class="page-title">Spanning Tree Protocol</h1>
+    <div class="page-subtitle">STP 802.1D · RSTP 802.1w · PVST+ · Rapid PVST+ · Prevención de Bucles L2</div>
+    <div class="page-nav-pills">
+      <button class="pill active" onclick="showSection('problema',this)">⚠️ El Problema</button>
+      <button class="pill" onclick="showSection('fundamentos',this)">📐 Fundamentos</button>
+      <button class="pill" onclick="showSection('eleccion',this)">🗳️ Root Bridge</button>
+      <button class="pill" onclick="showSection('estados',this)">🚦 Port States</button>
+      <button class="pill" onclick="showSection('variantes',this)">⚡ RSTP</button>
+      <button class="pill" onclick="showSection('config',this)">⌨️ Config</button>
+      <button class="pill" onclick="showSection('quiz',this)">🎯 Quiz</button>
+    </div>
+  </div>
+</div>
+
+<div class="page-content">
+  <div class="wrap">
+
+    <!-- PROBLEMA -->
+    <div id="section-problema" class="content-section">
+      <div class="content-card fade-up">
+        <h2>⚠️ ¿Por Qué Necesitamos STP?</h2>
+        <div class="def-box">
+          En redes con <span class="hl">redundancia física</span> (múltiples cables entre switches), sin ningún protocolo de control se forman <span class="hlr">bucles de Capa 2</span>. Un bucle L2 destruye la red en segundos. <span class="hlg">STP (IEEE 802.1D)</span> resuelve esto bloqueando selectivamente algunos puertos, creando una topología libre de bucles.
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Problema sin STP</th><th>Causa</th><th>Efecto</th></tr></thead>
+          <tbody>
+            <tr><td><span class="badge b-red">Broadcast Storm</span></td><td>Frame broadcast en loop infinito, se duplica en cada switch</td><td>CPU al 100%, red inaccesible en segundos</td></tr>
+            <tr><td><span class="badge b-red">MAC Table Instability</span></td><td>Mismo MAC llega por diferentes puertos alternadamente</td><td>Decisiones de forwarding incorrectas</td></tr>
+            <tr><td><span class="badge b-red">Frame Duplicado</span></td><td>Un dispositivo recibe múltiples copias del mismo frame</td><td>Protocolos de capa superior se confunden</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- FUNDAMENTOS -->
+    <div id="section-fundamentos" class="content-section" style="display:none;">
+      <div class="content-card fade-up">
+        <h2>📋 BPDU y Bridge ID</h2>
+        <div class="def-box">
+          Los <span class="hl">BPDUs (Bridge Protocol Data Units)</span> son mensajes que intercambian los switches para elegir el Root Bridge. Se envían cada <span class="hlg">2 segundos (Hello Time)</span> hacia la dirección multicast <span class="hl">01:80:C2:00:00:00</span>.
+        </div>
+        <div class="def-box">
+          El <span class="hl">Bridge ID (BID)</span> tiene 8 bytes: <span class="hlg">Bridge Priority (2 bytes, default 32768)</span> + <span class="hlg">MAC Address (6 bytes)</span>. El switch con el <span class="hlr">BID más bajo gana</span> la elección del Root Bridge.
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Timer STP</th><th>Valor Default</th><th>Descripción</th></tr></thead>
+          <tbody>
+            <tr><td><span class="badge b-blue">Hello Time</span></td><td>2 segundos</td><td>Intervalo entre BPDUs del Root Bridge</td></tr>
+            <tr><td><span class="badge b-amber">Forward Delay</span></td><td>15 segundos</td><td>Tiempo en cada estado Listening y Learning</td></tr>
+            <tr><td><span class="badge b-red">Max Age</span></td><td>20 segundos</td><td>Tiempo sin recibir BPDU antes de reconfigurar</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ELECCIÓN -->
+    <div id="section-eleccion" class="content-section" style="display:none;">
+      <div class="content-card fade-up">
+        <h2>🗳️ Los 4 Pasos de la Elección STP</h2>
+        <ol style="list-style:none;padding:0;">
+          <li style="display:flex;gap:14px;margin-bottom:18px;align-items:flex-start;">
+            <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--blue),#005588);display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:0.85rem;flex-shrink:0;box-shadow:0 0 12px rgba(0,188,235,0.3);color:#fff;">01</div>
+            <div><strong style="color:var(--blue-b);">Elegir el ROOT BRIDGE</strong><br><span style="color:var(--gray);font-size:0.88rem;">Switch con el BID más bajo. 1°) menor Priority → 2°) menor MAC. Todos sus puertos son Designated (Forwarding).</span></div>
+          </li>
+          <li style="display:flex;gap:14px;margin-bottom:18px;align-items:flex-start;">
+            <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--blue),#005588);display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:0.85rem;flex-shrink:0;box-shadow:0 0 12px rgba(0,188,235,0.3);color:#fff;">02</div>
+            <div><strong style="color:var(--blue-b);">Elegir el ROOT PORT en cada switch no-Root</strong><br><span style="color:var(--gray);font-size:0.88rem;">UN solo Root Port por switch: el de menor costo acumulado hacia el Root Bridge. Siempre en Forwarding.</span></div>
+          </li>
+          <li style="display:flex;gap:14px;margin-bottom:18px;align-items:flex-start;">
+            <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--blue),#005588);display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:0.85rem;flex-shrink:0;box-shadow:0 0 12px rgba(0,188,235,0.3);color:#fff;">03</div>
+            <div><strong style="color:var(--blue-b);">Elegir DESIGNATED PORTS en cada segmento</strong><br><span style="color:var(--gray);font-size:0.88rem;">UN Designated Port por segmento (enlace): el de menor costo hacia el Root Bridge. En Forwarding.</span></div>
+          </li>
+          <li style="display:flex;gap:14px;margin-bottom:18px;align-items:flex-start;">
+            <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--blue),#005588);display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:0.85rem;flex-shrink:0;box-shadow:0 0 12px rgba(0,188,235,0.3);color:#fff;">04</div>
+            <div><strong style="color:var(--blue-b);">Puertos restantes → ALTERNATE/BLOCKED</strong><br><span style="color:var(--gray);font-size:0.88rem;">Descarta frames de datos. Solo escucha BPDUs. Listo para activarse si falla el enlace principal.</span></div>
+          </li>
+        </ol>
+        <div class="info-box exam">
+          <div class="info-icon">🎯</div>
+          <div><strong>Port Costs:</strong> 10 Mbps=100 · FastEthernet=<strong>19</strong> · GigabitEthernet=<strong>4</strong> · 10 Gbps=2. Mayor velocidad = menor costo = camino preferido.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ESTADOS -->
+    <div id="section-estados" class="content-section" style="display:none;">
+      <div class="content-card fade-up">
+        <h2>🚦 Estados de Puerto STP 802.1D</h2>
+        <table class="data-table">
+          <thead><tr><th>Estado</th><th>Aprende MACs</th><th>Reenvía datos</th><th>Procesa BPDUs</th><th>Duración</th></tr></thead>
+          <tbody>
+            <tr><td><span class="badge" style="background:rgba(100,116,139,0.15);border:1px solid #475569;color:#94a3b8;">Blocking</span></td><td style="color:var(--red-bright);">✗ No</td><td style="color:var(--red-bright);">✗ No</td><td style="color:var(--green);">✓ Sí</td><td>Max Age = 20s</td></tr>
+            <tr><td><span class="badge b-amber">Listening</span></td><td style="color:var(--red-bright);">✗ No</td><td style="color:var(--red-bright);">✗ No</td><td style="color:var(--green);">✓ Sí</td><td>Forward Delay = 15s</td></tr>
+            <tr><td><span class="badge b-blue">Learning</span></td><td style="color:var(--green);">✓ Sí</td><td style="color:var(--red-bright);">✗ No</td><td style="color:var(--green);">✓ Sí</td><td>Forward Delay = 15s</td></tr>
+            <tr><td><span class="badge b-green">Forwarding</span></td><td style="color:var(--green);">✓ Sí</td><td style="color:var(--green);">✓ Sí</td><td style="color:var(--green);">✓ Sí</td><td>Permanente</td></tr>
+            <tr><td><span class="badge b-red">Disabled</span></td><td style="color:var(--red-bright);">✗ No</td><td style="color:var(--red-bright);">✗ No</td><td style="color:var(--red-bright);">✗ No</td><td>Manual (shutdown)</td></tr>
+          </tbody>
+        </table>
+        <div class="info-box warn">
+          <div class="info-icon">⏱️</div>
+          <div><strong>El gran problema:</strong> STP 802.1D tarda <strong>30–50 segundos</strong> para converger (Listening 15s + Learning 15s). RSTP lo reduce a 1–2 segundos.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VARIANTES -->
+    <div id="section-variantes" class="content-section" style="display:none;">
+      <div class="content-card fade-up">
+        <h2>⚡ Comparación: STP vs RSTP vs Rapid PVST+</h2>
+        <table class="data-table">
+          <thead><tr><th>Variante</th><th>Estándar</th><th>Convergencia</th><th>Instancias</th><th>Default Cisco</th></tr></thead>
+          <tbody>
+            <tr><td><span class="badge b-red">STP 802.1D</span></td><td>IEEE</td><td style="color:var(--red-bright);">30–50 seg</td><td>1 global</td><td>No</td></tr>
+            <tr><td><span class="badge b-amber">PVST+</span></td><td>Cisco</td><td style="color:var(--amber);">30–50 seg</td><td>1 por VLAN</td><td>No</td></tr>
+            <tr><td><span class="badge b-green">RSTP 802.1w</span></td><td>IEEE</td><td style="color:var(--green);">1–2 seg ✅</td><td>1 global</td><td>No</td></tr>
+            <tr><td><span class="badge b-blue">Rapid PVST+</span></td><td>Cisco</td><td style="color:var(--green);">1–2 seg ✅</td><td>1 por VLAN</td><td style="color:var(--green);">✅ SÍ</td></tr>
+            <tr><td><span class="badge" style="background:rgba(139,92,246,0.15);border:1px solid #8b5cf6;color:#c4b5fd;">MSTP 802.1s</span></td><td>IEEE</td><td style="color:var(--green);">1–2 seg ✅</td><td>Grupos de VLANs</td><td>No</td></tr>
+          </tbody>
+        </table>
+        <div class="info-box exam">
+          <div class="info-icon">🎯</div>
+          <div><strong>CCNA Examen:</strong> El default en switches Cisco modernos (2960, 3750) es <strong>Rapid PVST+</strong>. RSTP reduce los 5 estados a 3: <strong>Discarding, Learning, Forwarding</strong>. Agrega nuevos roles: <strong>Alternate Port</strong> (backup del RP) y <strong>Backup Port</strong>.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONFIG -->
+    <div id="section-config" class="content-section" style="display:none;">
+      <div class="content-card fade-up">
+        <h2>⌨️ Configuración STP en Cisco IOS</h2>
+        <div class="cmd-block">
+          <span class="cmd-label">ROOT BRIDGE</span>
+          <span class="cl"><span class="cp">Switch(config)#</span> <span class="ck">spanning-tree mode</span> <span class="cv">rapid-pvst</span>  <span class="cc">! Default moderno Cisco</span></span>
+          <span class="cl"><span class="cp">Switch(config)#</span> <span class="ck">spanning-tree vlan</span> <span class="cv">10</span> <span class="ck">priority</span> <span class="cv">0</span>      <span class="cc">! Root Bridge absoluto</span></span>
+          <span class="cl"><span class="cp">Switch(config)#</span> <span class="ck">spanning-tree vlan</span> <span class="cv">10</span> <span class="ck">root primary</span>   <span class="cc">! Macro - Root primario</span></span>
+          <span class="cl"><span class="cp">Switch(config)#</span> <span class="ck">spanning-tree vlan</span> <span class="cv">10</span> <span class="ck">root secondary</span> <span class="cc">! Macro - Root backup</span></span>
+        </div>
+        <div class="cmd-block">
+          <span class="cmd-label">PORTFAST + SEGURIDAD</span>
+          <span class="cl"><span class="cp">Switch(config-if)#</span> <span class="ck">spanning-tree portfast</span>           <span class="cc">! Solo en puertos de PCs</span></span>
+          <span class="cl"><span class="cp">Switch(config-if)#</span> <span class="ck">spanning-tree bpduguard enable</span>  <span class="cc">! Deshabilita si recibe BPDU</span></span>
+          <span class="cl"><span class="cp">Switch(config-if)#</span> <span class="ck">spanning-tree guard root</span>         <span class="cc">! Evita robo de Root Bridge</span></span>
+          <span class="cl"><span class="cp">Switch(config)#</span>    <span class="ck">spanning-tree portfast default</span>   <span class="cc">! PortFast global en access</span></span>
+        </div>
+        <div class="cmd-block">
+          <span class="cmd-label">VERIFICACIÓN</span>
+          <span class="cl"><span class="cp">Switch#</span> <span class="ck">show spanning-tree</span></span>
+          <span class="cl"><span class="cp">Switch#</span> <span class="ck">show spanning-tree vlan</span> <span class="cv">10</span></span>
+          <span class="cl"><span class="cp">Switch#</span> <span class="ck">show spanning-tree summary</span></span>
+          <span class="cl"><span class="cp">Switch#</span> <span class="ck">show spanning-tree active</span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUIZ -->
+    <div id="section-quiz" class="content-section" style="display:none;">
+      <div class="content-card">
+        <h2>🎯 Quiz — STP CCNA</h2>
+        <div class="info-box exam"><div class="info-icon">📋</div><div>Preguntas estilo examen oficial Cisco CCNA 200-301.</div></div>
+
+        <div class="q-box" id="q1">
+          <div class="q-num">PREGUNTA 01 / 04</div>
+          <div class="q-text">Tres switches: SW-A Priority 32769 MAC aa:aa, SW-B Priority 32769 MAC bb:bb, SW-C Priority 4097 MAC cc:cc. ¿Cuál es el Root Bridge?</div>
+          <div class="q-opts">
+            <div class="q-opt" onclick="CcnaQuiz.answer(1,'A','wrong','SW-A tiene Priority 32769 igual a SW-B, pero SW-C tiene 4097 que es mucho menor.')"><div class="q-letter">A</div>SW-A — MAC más baja</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(1,'B','wrong','SW-B tiene Priority 32769. SW-C con 4097 tiene menor Priority y gana.')"><div class="q-letter">B</div>SW-B — Mayor número de puertos</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(1,'C','correct','¡Correcto! SW-C tiene Priority 4097 (menor que 32769 de los demás). En STP menor Priority = Root Bridge. La MAC no importa cuando hay diferencia de Priority.')"><div class="q-letter">C</div>SW-C — Priority 4097 es la más baja</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(1,'D','wrong','El Root Bridge se elige por BID (Priority + MAC), no por cantidad de switches conectados.')"><div class="q-letter">D</div>El que tenga más switches conectados</div>
+          </div>
+          <div class="q-feedback" id="fb1"></div>
+        </div>
+
+        <div class="q-box" id="q2">
+          <div class="q-num">PREGUNTA 02 / 04</div>
+          <div class="q-text">¿Cuánto tiempo tarda STP 802.1D clásico en converger cuando falla un enlace?</div>
+          <div class="q-opts">
+            <div class="q-opt" onclick="CcnaQuiz.answer(2,'A','wrong','1-2 segundos es la convergencia de RSTP/Rapid PVST+, no de STP clásico.')"><div class="q-letter">A</div>1–2 segundos</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(2,'B','wrong','5 segundos es el Hello Time × 2 para detectar fallo, pero la convergencia total es mayor.')"><div class="q-letter">B</div>5 segundos</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(2,'C','correct','¡Correcto! STP 802.1D: detección (hasta 20s Max Age) + Listening 15s + Learning 15s = hasta 50 segundos. El mínimo con reconexión es ~30 segundos.')"><div class="q-letter">C</div>30–50 segundos</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(2,'D','wrong','5 minutos es excesivo. STP clásico tarda 30-50 segundos.')"><div class="q-letter">D</div>5 minutos</div>
+          </div>
+          <div class="q-feedback" id="fb2"></div>
+        </div>
+
+        <div class="q-box" id="q3">
+          <div class="q-num">PREGUNTA 03 / 04</div>
+          <div class="q-text">¿En qué estado STP el switch aprende MACs pero NO reenvía frames de datos?</div>
+          <div class="q-opts">
+            <div class="q-opt" onclick="CcnaQuiz.answer(3,'A','wrong','Blocking: NO aprende MACs y NO reenvía datos. Solo escucha BPDUs.')"><div class="q-letter">A</div>Blocking</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(3,'B','wrong','Listening: procesa BPDUs y participa en elección STP, pero tampoco aprende MACs ni reenvía.')"><div class="q-letter">B</div>Listening</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(3,'C','correct','¡Correcto! Learning: aprende MACs y llena la tabla MAC, pero NO reenvía frames de datos. Dura 15 segundos (Forward Delay).')"><div class="q-letter">C</div>Learning</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(3,'D','wrong','Forwarding: ya hace todo — aprende MACs Y reenvía datos. Es el estado operativo final.')"><div class="q-letter">D</div>Forwarding</div>
+          </div>
+          <div class="q-feedback" id="fb3"></div>
+        </div>
+
+        <div class="q-box" id="q4">
+          <div class="q-num">PREGUNTA 04 / 04</div>
+          <div class="q-text">¿Cuál es el modo STP predeterminado en switches Cisco Catalyst modernos?</div>
+          <div class="q-opts">
+            <div class="q-opt" onclick="CcnaQuiz.answer(4,'A','wrong','STP 802.1D (pvst) fue el original pero los Cisco modernos usan Rapid PVST+ por defecto.')"><div class="q-letter">A</div>STP clásico 802.1D</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(4,'B','wrong','MSTP es soportado pero NO es el default. Requiere configuración manual con spanning-tree mode mst.')"><div class="q-letter">B</div>MSTP 802.1s</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(4,'C','correct','¡Correcto! Rapid PVST+ es el default en Cisco Catalyst. Combina RSTP (1-2s convergencia) con instancias por VLAN. Verificar con: show spanning-tree summary.')"><div class="q-letter">C</div>Rapid PVST+</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(4,'D','wrong','RSTP puro (802.1w) usa una sola instancia para toda la red. Cisco implementa Rapid PVST+ que agrega instancias por VLAN.')"><div class="q-letter">D</div>RSTP puro 802.1w</div>
+          </div>
+          <div class="q-feedback" id="fb4"></div>
+        </div>
+
+        <div id="scoreBox" style="display:none;" class="content-card">
+          <h2>🏆 Resultado</h2>
+          <div style="text-align:center;padding:20px;">
+            <div id="scoreTxt" style="font-family:var(--font-head);font-size:2.5rem;font-weight:900;margin-bottom:8px;"></div>
+            <div id="scoreMsg" style="color:var(--gray);"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo"><span class="logo-cisco">CISCO</span><span class="logo-text">Academy</span></div>
+        <p>Ruta completa de aprendizaje hacia las certificaciones Cisco CCNA, CCNP y CCIE.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Siguiente clase</h4>
+        <a href="etherchannel.html">→ EtherChannel (Próximamente)</a>
+      </div>
+    </div>
+    <div class="footer-bottom"><span>Basado en el currículo oficial de Cisco Networking Academy</span></div>
+  </div>
+</footer>
+
+<script src="../assets/main.js"></script>
+<script>
+  CcnaQuiz.init(4);
+  function showSection(id, btn) {
+    document.querySelectorAll('.content-section').forEach(s => s.style.display='none');
+    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+    document.getElementById('section-'+id).style.display='block';
+    btn.classList.add('active');
+    window.scrollTo({top:200, behavior:'smooth'});
+  }
+</script>
+</body>
+</html>

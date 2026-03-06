@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VLANs — CCNA Academy</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="page-body">
+
+<nav class="navbar" id="navbar">
+  <div class="nav-wrap">
+    <a href="../index.html" class="nav-logo">
+      <span class="logo-cisco">CISCO</span><span class="logo-text">Academy</span>
+    </a>
+    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    <div class="nav-menu" id="navMenu">
+      <div class="nav-group">
+        <span class="nav-label">Módulo 1</span>
+        <a href="fundamentos.html" class="nav-link"><span class="nav-icon">🖧</span> Fundamentos</a>
+      </div>
+      <div class="nav-group">
+        <span class="nav-label">Módulo 2 — Switching</span>
+        <a href="vlan.html" class="nav-link active-page"><span class="nav-icon">🏷️</span> VLANs</a>
+        <a href="stp.html"  class="nav-link"><span class="nav-icon">🌳</span> STP</a>
+        <a href="etherchannel.html" class="nav-link nav-coming"><span class="nav-icon">🔗</span> EtherChannel <span class="badge-soon">Próximo</span></a>
+      </div>
+      <div class="nav-group">
+        <span class="nav-label">Módulo 3 — Routing</span>
+        <a href="routing.html" class="nav-link nav-coming"><span class="nav-icon">🗺️</span> Routing Estático <span class="badge-soon">Próximo</span></a>
+        <a href="ospf.html"    class="nav-link nav-coming"><span class="nav-icon">⭕</span> OSPF <span class="badge-soon">Próximo</span></a>
+      </div>
+      <div class="nav-group">
+        <span class="nav-label">Módulo 4 — Seguridad</span>
+        <a href="acl.html" class="nav-link nav-coming"><span class="nav-icon">🔒</span> ACLs <span class="badge-soon">Próximo</span></a>
+        <a href="nat.html" class="nav-link nav-coming"><span class="nav-icon">🔄</span> NAT/PAT <span class="badge-soon">Próximo</span></a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="wrap">
+    <div class="page-breadcrumb">
+      <a href="../index.html">Inicio</a><span>/</span>
+      <span>Módulo 2 — Switching</span><span>/</span>
+      <span>VLANs</span>
+    </div>
+    <h1 class="page-title">VLANs</h1>
+    <div class="page-subtitle">Virtual LAN · Segmentación Lógica · Trunking 802.1Q · Inter-VLAN Routing</div>
+    <div class="page-nav-pills">
+      <button class="pill active" onclick="showSection('conceptos',this)">📘 Conceptos</button>
+      <button class="pill" onclick="showSection('tipos',this)">🏷️ Tipos</button>
+      <button class="pill" onclick="showSection('trunk',this)">🔗 Trunking</button>
+      <button class="pill" onclick="showSection('config',this)">⌨️ Configuración</button>
+      <button class="pill" onclick="showSection('intervlan',this)">🔀 Inter-VLAN</button>
+      <button class="pill" onclick="showSection('quiz',this)">🎯 Quiz</button>
+    </div>
+  </div>
+</div>
+
+<div class="page-content">
+  <div class="wrap">
+
+    <!-- CONCEPTOS -->
+    <div id="section-conceptos" class="content-section">
+      <div class="content-card fade-up">
+        <h2>💡 ¿Qué es una VLAN?</h2>
+        <div class="def-box">
+          Una <span class="hl">VLAN (Virtual Local Area Network)</span> es una red lógica creada dentro de uno o varios switches físicos que permite agrupar dispositivos en <span class="hlg">dominios de broadcast separados</span>, independientemente de su ubicación física en la red.
+        </div>
+        <div class="info-box exam">
+          <div class="info-icon">🎯</div>
+          <div><strong>Regla fundamental:</strong> Los dispositivos en diferentes VLANs <strong>NO pueden comunicarse entre sí directamente</strong>. Necesitan un dispositivo de Capa 3 (router o switch multilayer). Las VLANs operan en la <strong>Capa 2 del modelo OSI</strong>.</div>
+        </div>
+      </div>
+      <div class="content-card fade-up fade-up-d1">
+        <h2>✅ Beneficios de las VLANs</h2>
+        <table class="data-table">
+          <thead><tr><th>Beneficio</th><th>Descripción</th></tr></thead>
+          <tbody>
+            <tr><td><span class="badge b-blue">Seguridad</span></td><td>Aísla departamentos sensibles. Un ataque en VLAN Ventas no llega a VLAN Contabilidad.</td></tr>
+            <tr><td><span class="badge b-green">Rendimiento</span></td><td>Reduce el dominio de broadcast. Menos tráfico innecesario para todos los dispositivos.</td></tr>
+            <tr><td><span class="badge b-amber">Flexibilidad</span></td><td>Reorganiza la red lógicamente sin mover cables físicos.</td></tr>
+            <tr><td><span class="badge b-blue">Ahorro</span></td><td>Un switch físico actúa como múltiples switches lógicos.</td></tr>
+          </tbody>
+        </table>
+        <div class="info-box exam">
+          <div class="info-icon">🎯</div>
+          <div><strong>Rangos CCNA:</strong> Normal: <strong>1–1005</strong> · Extendido: <strong>1006–4094</strong> · Reservadas: <strong>1002–1005</strong> (Token Ring/FDDI, no usar) · Default: <strong>VLAN 1</strong> (no eliminar, no usar para datos)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TIPOS -->
+    <div id="section-tipos" class="content-section" style="display:none;">
+      <div class="content-card fade-up">
+        <h2>🏷️ Tipos de VLANs</h2>
+        <table class="data-table">
+          <thead><tr><th>Tipo</th><th>Descripción</th><th>Recomendación</th></tr></thead>
+          <tbody>
+            <tr><td><span class="badge b-amber">Default (VLAN 1)</span></td><td>Todos los puertos la usan por defecto. No se puede borrar.</td><td style="color:var(--red-bright);">❌ Nunca usar para datos de usuario</td></tr>
+            <tr><td><span class="badge b-blue">Data VLAN</span></td><td>Transporta tráfico de usuarios finales. Ej: VLAN 10=Ventas, VLAN 20=TI</td><td style="color:var(--green);">✅ Configurar para cada departamento</td></tr>
+            <tr><td><span class="badge b-green">Native VLAN</span></td><td>Tráfico sin etiquetar 802.1Q en trunk. Default VLAN 1.</td><td style="color:var(--amber);">⚠️ Cambiar a VLAN sin uso (ej: 99)</td></tr>
+            <tr><td><span class="badge b-amber">Management VLAN</span></td><td>Acceso SSH/Telnet al switch. Asignada a la SVI.</td><td style="color:var(--green);">✅ Usar VLAN dedicada (ej: 99)</td></tr>
+            <tr><td><span class="badge" style="background:rgba(139,92,246,0.15);border:1px solid #8b5cf6;color:#c4b5fd;">Voice VLAN</span></td><td>Separa tráfico VoIP del de datos. QoS automático.</td><td style="color:var(--green);">✅ Siempre separar VoIP</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TRUNKING -->
+    <div id="section-trunk" class="content-section" style="display:none;">
+      <div class="content-card fade-up">
+        <h2>🔗 Trunk Links — IEEE 802.1Q</h2>
+        <div class="def-box">
+          Un <span class="hl">trunk</span> es un enlace que transporta <span class="hlg">múltiples VLANs simultáneamente</span>. Usa el estándar <span class="hl">IEEE 802.1Q</span> que inserta una etiqueta de <strong>4 bytes</strong> en la trama Ethernet con el VLAN ID (12 bits → valores 1–4094).
+        </div>
+        <div class="info-box exam">
+          <div class="info-icon">🎯</div>
+          <div><strong>Native VLAN:</strong> El tráfico de la Native VLAN viaja <strong>SIN etiqueta</strong> en el trunk. Debe coincidir en ambos extremos o causará un Native VLAN mismatch (error CDP y posible VLAN hopping).</div>
+        </div>
+        <div class="info-box warn">
+          <div class="info-icon">⚠️</div>
+          <div><strong>DTP (Dynamic Trunking Protocol):</strong> Protocolo Cisco propietario que negocia trunks automáticamente. Por seguridad, desactívalo con <code style="color:var(--blue-b);">switchport nonegotiate</code> en puertos de acceso y trunks hacia no-Cisco.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONFIG -->
+    <div id="section-config" class="content-section" style="display:none;">
+      <div class="content-card fade-up">
+        <h2>⌨️ Configuración Completa de VLANs</h2>
+        <div class="cmd-block">
+          <span class="cmd-label">CREAR VLANs</span>
+          <span class="cl"><span class="cp">Switch(config)#</span> <span class="ck">vlan</span> <span class="cv">10</span></span>
+          <span class="cl"><span class="cp">Switch(config-vlan)#</span> <span class="ck">name</span> <span class="cv">VENTAS</span></span>
+          <span class="cl"><span class="cp">Switch(config-vlan)#</span> <span class="ck">exit</span></span>
+          <span class="cl"><span class="cp">Switch(config)#</span> <span class="ck">vlan</span> <span class="cv">20</span></span>
+          <span class="cl"><span class="cp">Switch(config-vlan)#</span> <span class="ck">name</span> <span class="cv">TECNOLOGIA</span></span>
+        </div>
+        <div class="cmd-block">
+          <span class="cmd-label">PUERTOS ACCESS</span>
+          <span class="cl"><span class="cp">Switch(config)#</span> <span class="ck">interface</span> <span class="cv">fastEthernet 0/1</span></span>
+          <span class="cl"><span class="cp">Switch(config-if)#</span> <span class="ck">switchport mode</span> <span class="cv">access</span></span>
+          <span class="cl"><span class="cp">Switch(config-if)#</span> <span class="ck">switchport access vlan</span> <span class="cv">10</span></span>
+          <span class="cl"><span class="cp">Switch(config-if)#</span> <span class="ck">no shutdown</span></span>
+        </div>
+        <div class="cmd-block">
+          <span class="cmd-label">PUERTO TRUNK</span>
+          <span class="cl"><span class="cp">Switch(config)#</span> <span class="ck">interface</span> <span class="cv">gigabitEthernet 0/1</span></span>
+          <span class="cl"><span class="cp">Switch(config-if)#</span> <span class="ck">switchport mode</span> <span class="cv">trunk</span></span>
+          <span class="cl"><span class="cp">Switch(config-if)#</span> <span class="ck">switchport trunk native vlan</span> <span class="cv">99</span></span>
+          <span class="cl"><span class="cp">Switch(config-if)#</span> <span class="ck">switchport trunk allowed vlan</span> <span class="cv">10,20,30,99</span></span>
+          <span class="cl"><span class="cp">Switch(config-if)#</span> <span class="ck">switchport nonegotiate</span></span>
+        </div>
+        <div class="cmd-block">
+          <span class="cmd-label">VERIFICACIÓN</span>
+          <span class="cl"><span class="cp">Switch#</span> <span class="ck">show vlan brief</span></span>
+          <span class="cl"><span class="cp">Switch#</span> <span class="ck">show interfaces trunk</span></span>
+          <span class="cl"><span class="cp">Switch#</span> <span class="ck">show interfaces fa0/1 switchport</span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- INTER-VLAN -->
+    <div id="section-intervlan" class="content-section" style="display:none;">
+      <div class="content-card fade-up">
+        <h2>🔀 Inter-VLAN Routing</h2>
+        <div class="def-box">
+          Para que dos VLANs se comuniquen necesitas un dispositivo de <span class="hl">Capa 3</span>. Los métodos son: <span class="hlg">Router-on-a-Stick (ROAS)</span> usando subinterfaces en un router, o un <span class="hlg">Switch Multilayer (L3)</span> con SVIs y <code>ip routing</code>.
+        </div>
+        <div class="cmd-block">
+          <span class="cmd-label">ROUTER-ON-A-STICK</span>
+          <span class="cl"><span class="cp">Router(config)#</span> <span class="ck">interface</span> <span class="cv">GigabitEthernet0/0.10</span></span>
+          <span class="cl"><span class="cp">Router(config-subif)#</span> <span class="ck">encapsulation dot1Q</span> <span class="cv">10</span></span>
+          <span class="cl"><span class="cp">Router(config-subif)#</span> <span class="ck">ip address</span> <span class="cv">192.168.10.1 255.255.255.0</span></span>
+        </div>
+        <div class="cmd-block">
+          <span class="cmd-label">SWITCH MULTILAYER (L3)</span>
+          <span class="cl"><span class="cp">MLS(config)#</span> <span class="ck">ip routing</span></span>
+          <span class="cl"><span class="cp">MLS(config)#</span> <span class="ck">interface vlan</span> <span class="cv">10</span></span>
+          <span class="cl"><span class="cp">MLS(config-if)#</span> <span class="ck">ip address</span> <span class="cv">192.168.10.1 255.255.255.0</span></span>
+          <span class="cl"><span class="cp">MLS(config-if)#</span> <span class="ck">no shutdown</span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUIZ -->
+    <div id="section-quiz" class="content-section" style="display:none;">
+      <div class="content-card">
+        <h2>🎯 Quiz — VLANs CCNA</h2>
+        <div class="info-box exam"><div class="info-icon">📋</div><div>Preguntas estilo examen oficial Cisco CCNA 200-301.</div></div>
+
+        <div class="q-box" id="q1">
+          <div class="q-num">PREGUNTA 01 / 04</div>
+          <div class="q-text">¿Cuál es el rango de IDs de VLAN en el rango normal que se puede usar en redes Ethernet?</div>
+          <div class="q-opts">
+            <div class="q-opt" onclick="CcnaQuiz.answer(1,'A','wrong','La VLAN 0 es reservada. El rango normal va del 1 al 1005.')"><div class="q-letter">A</div>0 – 1005</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(1,'B','correct','¡Correcto! El rango normal es 1-1005. Las VLANs 1002-1005 están reservadas para Token Ring y FDDI.')"><div class="q-letter">B</div>1 – 1005</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(1,'C','wrong','1-4094 es el rango total incluyendo el rango extendido (1006-4094).')"><div class="q-letter">C</div>1 – 4094</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(1,'D','wrong','1006-4094 es el rango EXTENDIDO, no el normal.')"><div class="q-letter">D</div>1006 – 4094</div>
+          </div>
+          <div class="q-feedback" id="fb1"></div>
+        </div>
+
+        <div class="q-box" id="q2">
+          <div class="q-num">PREGUNTA 02 / 04</div>
+          <div class="q-text">¿Qué ocurre con el tráfico de la Native VLAN en un enlace trunk 802.1Q?</div>
+          <div class="q-opts">
+            <div class="q-opt" onclick="CcnaQuiz.answer(2,'A','correct','¡Correcto! El tráfico de la Native VLAN se envía SIN etiqueta 802.1Q. Por eso debe coincidir en ambos extremos del trunk.')"><div class="q-letter">A</div>Se envía sin etiqueta 802.1Q</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(2,'B','wrong','La Native VLAN no recibe ID 0. Simplemente viaja sin etiquetar.')"><div class="q-letter">B</div>Se etiqueta con ID 0</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(2,'C','wrong','La Native VLAN SÍ puede cruzar el trunk, es su característica.')"><div class="q-letter">C</div>Se bloquea y no puede cruzar el trunk</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(2,'D','wrong','La Native VLAN simplemente viaja sin etiqueta 802.1Q, no con prioridad especial.')"><div class="q-letter">D</div>Se etiqueta con prioridad máxima</div>
+          </div>
+          <div class="q-feedback" id="fb2"></div>
+        </div>
+
+        <div class="q-box" id="q3">
+          <div class="q-num">PREGUNTA 03 / 04</div>
+          <div class="q-text">¿Cuál comando verifica qué VLANs están permitidas en un enlace trunk?</div>
+          <div class="q-opts">
+            <div class="q-opt" onclick="CcnaQuiz.answer(3,'A','wrong','show vlan brief muestra VLANs y puertos de acceso, NO información de trunks.')"><div class="q-letter">A</div>show vlan brief</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(3,'B','correct','¡Correcto! show interfaces trunk muestra los puertos trunk, encapsulación, native VLAN y VLANs permitidas/activas.')"><div class="q-letter">B</div>show interfaces trunk</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(3,'C','wrong','show ip interface brief muestra el estado de interfaces IP pero no información de trunking.')"><div class="q-letter">C</div>show ip interface brief</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(3,'D','wrong','show mac address-table muestra la tabla CAM, no información de trunks ni VLANs.')"><div class="q-letter">D</div>show mac address-table</div>
+          </div>
+          <div class="q-feedback" id="fb3"></div>
+        </div>
+
+        <div class="q-box" id="q4">
+          <div class="q-num">PREGUNTA 04 / 04</div>
+          <div class="q-text">En Router-on-a-Stick, ¿qué comando es OBLIGATORIO en la subinterfaz del router?</div>
+          <div class="q-opts">
+            <div class="q-opt" onclick="CcnaQuiz.answer(4,'A','wrong','ip routing se usa en switches multilayer para habilitar L3, no en routers.')"><div class="q-letter">A</div>ip routing</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(4,'B','wrong','switchport trunk encapsulation es comando del switch, no del router.')"><div class="q-letter">B</div>switchport trunk encapsulation dot1q</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(4,'C','correct','¡Correcto! encapsulation dot1Q [vlan-id] es obligatorio en cada subinterfaz del router. Le indica qué etiqueta de VLAN procesar.')"><div class="q-letter">C</div>encapsulation dot1Q [vlan-id]</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(4,'D','wrong','no switchport convierte un puerto de switch L3 en routed port, no aplica en routers.')"><div class="q-letter">D</div>no switchport</div>
+          </div>
+          <div class="q-feedback" id="fb4"></div>
+        </div>
+
+        <div id="scoreBox" style="display:none;" class="content-card">
+          <h2>🏆 Resultado</h2>
+          <div style="text-align:center;padding:20px;">
+            <div id="scoreTxt" style="font-family:var(--font-head);font-size:2.5rem;font-weight:900;margin-bottom:8px;"></div>
+            <div id="scoreMsg" style="color:var(--gray);"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo"><span class="logo-cisco">CISCO</span><span class="logo-text">Academy</span></div>
+        <p>Ruta completa de aprendizaje hacia las certificaciones Cisco CCNA, CCNP y CCIE.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Siguiente clase</h4>
+        <a href="stp.html">→ STP — Spanning Tree Protocol</a>
+      </div>
+    </div>
+    <div class="footer-bottom"><span>Basado en el currículo oficial de Cisco Networking Academy</span></div>
+  </div>
+</footer>
+
+<script src="../assets/main.js"></script>
+<script>
+  CcnaQuiz.init(4);
+  function showSection(id, btn) {
+    document.querySelectorAll('.content-section').forEach(s => s.style.display='none');
+    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+    document.getElementById('section-'+id).style.display='block';
+    btn.classList.add('active');
+    window.scrollTo({top:200, behavior:'smooth'});
+  }
+</script>
+</body>
+</html>
