@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Switches Cisco — CCNA Academy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&family=Inconsolata:wght@400;700;900&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:      #030a06;
+  --bg2:     #071410;
+  --bg3:     #0b1f18;
+  --green:   #00ff88;
+  --green2:  #00c863;
+  --green3:  rgba(0,255,136,0.08);
+  --teal:    #00e5cc;
+  --gold:    #fbbf24;
+  --red:     #ff4757;
+  --white:   #e8f5ee;
+  --gray:    #4d7a62;
+  --border:  rgba(0,255,136,0.15);
+  --card:    rgba(7,20,16,0.9);
+  --mono:    'Inconsolata', monospace;
+  --sans:    'Space Grotesk', sans-serif;
+  --display: 'Syne', sans-serif;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--white);font-family:var(--sans);font-size:16px;line-height:1.65;overflow-x:hidden;}
+a{color:inherit;text-decoration:none;}
+
+/* ── NAVBAR PORTAL ── */
+.portal-nav{
+  position:fixed;top:0;left:0;right:0;z-index:3000;
+  background:rgba(3,10,6,0.97);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(20px);
+  height:54px;display:flex;align-items:center;
+}
+.portal-nav-inner{
+  max-width:1200px;margin:0 auto;padding:0 20px;
+  display:flex;align-items:center;gap:4px;width:100%;overflow-x:auto;
+}
+.pn-logo{
+  display:flex;align-items:center;gap:8px;
+  flex-shrink:0;margin-right:18px;
+}
+.pn-cisco{
+  font-family:var(--mono);font-weight:900;font-size:0.85rem;
+  letter-spacing:3px;
+  background:linear-gradient(135deg,#00ff88,#00e5cc);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  border:1px solid rgba(0,255,136,0.3);padding:3px 9px;border-radius:4px;
+}
+.pn-txt{font-family:var(--mono);font-size:0.6rem;color:var(--gray);letter-spacing:2px;}
+.pn-link{
+  display:flex;align-items:center;gap:5px;
+  padding:5px 10px;border-radius:6px;
+  font-size:0.77rem;font-weight:600;color:var(--gray);
+  white-space:nowrap;transition:all 0.2s;
+}
+.pn-link:hover{background:var(--green3);color:var(--green);}
+.pn-link.current{
+  background:rgba(0,255,136,0.12);
+  border:1px solid rgba(0,255,136,0.35);
+  color:var(--white);
+}
+.pn-disabled{
+  display:flex;align-items:center;gap:5px;
+  padding:5px 10px;border-radius:6px;
+  font-size:0.77rem;font-weight:600;color:#1a3328;
+  white-space:nowrap;cursor:not-allowed;
+}
+.pn-soon{
+  font-size:0.58rem;background:rgba(251,191,36,0.1);
+  color:var(--gold);border:1px solid rgba(251,191,36,0.25);
+  padding:1px 5px;border-radius:8px;
+}
+.nav-spacer{height:54px;}
+
+/* ── HERO ── */
+.hero{
+  min-height:100vh;display:flex;align-items:center;
+  position:relative;overflow:hidden;
+}
+.hero-bg{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 60% 70% at 80% 50%, rgba(0,255,136,0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 10% 20%, rgba(0,229,204,0.04) 0%, transparent 50%);
+}
+.hero-dots{
+  position:absolute;inset:0;
+  background-image:radial-gradient(rgba(0,255,136,0.12) 1px, transparent 1px);
+  background-size:32px 32px;
+}
+.hero-inner{
+  position:relative;z-index:1;
+  max-width:1200px;margin:0 auto;padding:80px 24px 60px;
+  display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;
+}
+.hero-tag{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.25);
+  color:var(--green2);border-radius:20px;padding:5px 14px;
+  font-size:0.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  margin-bottom:18px;
+}
+.tag-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:blink 1.5s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.2;}}
+.hero h1{
+  font-family:var(--display);font-size:clamp(2.4rem,5vw,4rem);
+  font-weight:800;line-height:1.0;margin-bottom:16px;color:var(--white);
+}
+.hero h1 em{
+  font-style:normal;
+  background:linear-gradient(135deg,var(--green) 0%,var(--teal) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  display:block;
+}
+.hero-desc{color:var(--gray);font-size:1rem;max-width:460px;margin-bottom:28px;line-height:1.75;}
+.hero-desc strong{color:var(--green);}
+.hero-pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:32px;}
+.h-pill{
+  padding:6px 14px;border-radius:20px;font-size:0.75rem;font-weight:700;
+  background:var(--green3);border:1px solid var(--border);color:var(--green2);
+  font-family:var(--mono);letter-spacing:0.5px;
+}
+.hero-visual{position:relative;display:flex;justify-content:center;align-items:center;}
+#switchCanvas{max-width:100%;border-radius:12px;}
+
+/* ── NAV TABS ── */
+.tabs-wrap{
+  position:sticky;top:54px;z-index:100;
+  background:rgba(3,10,6,0.95);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);padding:0;
+}
+.tabs{
+  max-width:1200px;margin:0 auto;padding:0 24px;
+  display:flex;overflow-x:auto;gap:0;
+}
+.tab-btn{
+  padding:14px 20px;background:none;border:none;
+  font-family:var(--sans);font-size:0.82rem;font-weight:600;
+  color:var(--gray);cursor:pointer;white-space:nowrap;
+  border-bottom:2px solid transparent;transition:all 0.2s;
+  position:relative;
+}
+.tab-btn:hover{color:var(--white);}
+.tab-btn.on{color:var(--green);border-bottom-color:var(--green);}
+
+/* ── CONTENT ── */
+.content{max-width:1200px;margin:0 auto;padding:48px 24px 80px;}
+.section{display:none;}
+.section.on{display:block;}
+
+/* ── CARDS ── */
+.card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:12px;padding:28px;margin-bottom:22px;
+  position:relative;overflow:hidden;
+}
+.card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--green),var(--teal),var(--green));
+}
+.card-title{
+  font-family:var(--display);font-size:1.05rem;font-weight:800;
+  color:var(--green);margin-bottom:18px;display:flex;align-items:center;gap:10px;
+  letter-spacing:0.5px;
+}
+.card p{color:var(--gray);line-height:1.75;margin-bottom:14px;}
+.card p:last-child{margin-bottom:0;}
+
+.def{
+  background:linear-gradient(135deg,rgba(0,255,136,0.06),rgba(0,229,204,0.04));
+  border:1px solid rgba(0,255,136,0.2);border-left:4px solid var(--green);
+  border-radius:8px;padding:18px 20px;margin:14px 0;
+  font-size:0.97rem;line-height:1.8;color:var(--white);
+}
+.hl {color:var(--green);font-weight:700;}
+.ht {color:var(--teal);font-weight:700;}
+.hg {color:var(--gold);font-weight:700;}
+.hr {color:var(--red);font-weight:700;}
+
+.note{display:flex;gap:12px;padding:13px 17px;border-radius:8px;margin:12px 0;font-size:0.89rem;line-height:1.6;}
+.note.tip {background:rgba(0,255,136,0.06);border:1px solid rgba(0,255,136,0.2);}
+.note.warn{background:rgba(255,71,87,0.06);border:1px solid rgba(255,71,87,0.2);}
+.note.exam{background:rgba(0,229,204,0.06);border:1px solid rgba(0,229,204,0.2);}
+.note.gold{background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.2);}
+.ni{font-size:1.1rem;flex-shrink:0;margin-top:1px;}
+
+/* ── TABLE ── */
+.tbl{width:100%;border-collapse:collapse;margin:14px 0;font-size:0.86rem;}
+.tbl th{
+  background:rgba(0,255,136,0.08);color:var(--green);
+  font-family:var(--mono);font-size:0.67rem;letter-spacing:1.5px;text-transform:uppercase;
+  padding:11px 14px;text-align:left;border-bottom:2px solid rgba(0,255,136,0.2);
+}
+.tbl td{padding:10px 14px;border-bottom:1px solid rgba(0,255,136,0.07);vertical-align:top;color:var(--gray);}
+.tbl td strong{color:var(--white);}
+.tbl tr:hover td{background:rgba(0,255,136,0.03);}
+
+/* ── CODE ── */
+.cmd{
+  background:#010a04;border:1px solid rgba(0,255,136,0.15);
+  border-radius:8px;padding:18px 20px;margin:14px 0;
+  font-family:var(--mono);font-size:0.83rem;overflow-x:auto;position:relative;
+}
+.cmd-tag{
+  position:absolute;top:8px;right:10px;
+  font-size:0.6rem;background:rgba(0,255,136,0.07);
+  color:var(--green2);padding:2px 8px;border-radius:4px;
+  font-family:var(--sans);letter-spacing:1px;text-transform:uppercase;
+}
+.cl{display:block;padding:1.5px 0;}
+.cp{color:var(--green);}
+.ck{color:#fcd34d;}
+.cv{color:#fb923c;}
+.cc{color:#1e4d35;font-style:italic;}
+.co{color:var(--teal);}
+
+/* ── BADGE ── */
+.b{display:inline-block;padding:2px 9px;border-radius:20px;font-size:0.67rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin:1px;}
+.bg{background:rgba(0,255,136,0.1);border:1px solid rgba(0,255,136,0.3);color:var(--green2);}
+.bt{background:rgba(0,229,204,0.1);border:1px solid rgba(0,229,204,0.3);color:var(--teal);}
+.br{background:rgba(255,71,87,0.1);border:1px solid rgba(255,71,87,0.3);color:var(--red);}
+.bo{background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.3);color:var(--gold);}
+
+/* ── SWITCH DIAGRAM ── */
+.sw-diagram{
+  background:#010a04;border:1px solid var(--border);
+  border-radius:12px;padding:24px;margin:16px 0;
+  font-family:var(--mono);font-size:0.78rem;
+}
+.sw-body{
+  background:linear-gradient(135deg,#0d2b1a,#0a1f14);
+  border:2px solid var(--green2);border-radius:8px;
+  padding:16px 20px;margin-bottom:16px;position:relative;
+  box-shadow:0 0 20px rgba(0,255,136,0.1);
+}
+.sw-label{
+  font-family:var(--display);font-weight:800;font-size:0.85rem;
+  color:var(--green);letter-spacing:2px;margin-bottom:12px;
+}
+.sw-ports{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;}
+.port{
+  width:28px;height:20px;border-radius:3px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.6rem;font-weight:700;transition:all 0.3s;
+  cursor:default;
+}
+.port-up  {background:rgba(0,255,136,0.2);border:1px solid var(--green);color:var(--green);}
+.port-down{background:rgba(255,71,87,0.15);border:1px solid var(--red);color:var(--red);}
+.port-trunk{background:rgba(0,229,204,0.2);border:1px solid var(--teal);color:var(--teal);}
+.port-access{background:rgba(251,191,36,0.15);border:1px solid var(--gold);color:var(--gold);}
+.sw-legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:10px;font-size:0.72rem;}
+.leg-item{display:flex;align-items:center;gap:6px;color:var(--gray);}
+.leg-dot{width:12px;height:8px;border-radius:2px;}
+
+/* ── MAC TABLE ANIMATION ── */
+.mac-table-anim{
+  background:#010a04;border:1px solid var(--border);
+  border-radius:10px;padding:20px;margin:16px 0;overflow:hidden;
+}
+.mac-hdr{
+  display:grid;grid-template-columns:1fr 1fr 1fr 1fr;
+  gap:8px;padding:8px 12px;
+  background:rgba(0,255,136,0.06);border-radius:6px;margin-bottom:8px;
+  font-family:var(--mono);font-size:0.67rem;color:var(--green);
+  letter-spacing:1px;text-transform:uppercase;
+}
+.mac-row{
+  display:grid;grid-template-columns:1fr 1fr 1fr 1fr;
+  gap:8px;padding:7px 12px;border-radius:4px;
+  font-family:var(--mono);font-size:0.73rem;color:var(--gray);
+  border-bottom:1px solid rgba(0,255,136,0.05);
+  transition:all 0.4s;
+}
+.mac-row.new{
+  background:rgba(0,255,136,0.08);
+  color:var(--white);
+  animation:rowIn 0.5s ease;
+}
+@keyframes rowIn{from{opacity:0;transform:translateX(-10px);}to{opacity:1;transform:translateX(0);}}
+
+/* ── PORT STATES GRID ── */
+.states-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin:16px 0;}
+.state-card{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:10px;padding:16px;text-align:center;
+}
+.state-icon{font-size:2rem;margin-bottom:8px;}
+.state-name{font-family:var(--display);font-size:0.85rem;font-weight:800;margin-bottom:4px;}
+.state-desc{font-size:0.75rem;color:var(--gray);line-height:1.5;}
+
+/* ── PROCESS STEPS ── */
+.steps{display:flex;flex-direction:column;gap:0;}
+.step{display:flex;gap:16px;position:relative;padding-bottom:20px;}
+.step:last-child{padding-bottom:0;}
+.step:not(:last-child)::before{
+  content:'';position:absolute;left:16px;top:36px;bottom:0;
+  width:2px;background:linear-gradient(180deg,var(--green),transparent);
+}
+.step-num{
+  width:34px;height:34px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,var(--green),var(--teal));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:0.8rem;font-weight:900;
+  color:#000;box-shadow:0 0 12px rgba(0,255,136,0.3);
+}
+.step-body{padding-top:5px;}
+.step-title{font-weight:700;color:var(--white);margin-bottom:4px;}
+.step-desc{font-size:0.87rem;color:var(--gray);line-height:1.6;}
+
+/* ── QUIZ ── */
+.q-box{
+  background:rgba(1,10,4,0.8);border:1px solid var(--border);
+  border-radius:12px;padding:22px;margin-bottom:18px;
+}
+.q-num{font-family:var(--mono);color:var(--gold);font-size:0.68rem;margin-bottom:8px;letter-spacing:1px;}
+.q-text{font-size:1rem;font-weight:600;line-height:1.55;margin-bottom:16px;color:var(--white);}
+.q-opts{display:grid;gap:8px;}
+.q-opt{
+  display:flex;align-items:center;gap:12px;
+  padding:11px 16px;border:1px solid var(--border);
+  background:rgba(0,255,136,0.02);border-radius:8px;
+  cursor:pointer;font-size:0.9rem;color:var(--gray);
+  transition:all 0.2s;
+}
+.q-opt:hover{background:var(--green3);border-color:rgba(0,255,136,0.3);color:var(--white);}
+.q-opt.correct{background:rgba(0,255,136,0.1);border-color:var(--green);color:var(--green);}
+.q-opt.wrong  {background:rgba(255,71,87,0.08);border-color:var(--red);color:var(--red);}
+.q-let{
+  width:26px;height:26px;border-radius:50%;flex-shrink:0;
+  background:rgba(0,255,136,0.08);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:0.68rem;font-weight:700;
+}
+.q-fb{display:none;margin-top:12px;padding:12px 16px;border-radius:8px;font-size:0.86rem;line-height:1.55;}
+.q-fb.show{display:block;}
+.q-fb.ok {background:rgba(0,255,136,0.07);border:1px solid rgba(0,255,136,0.3);color:#86efac;}
+.q-fb.bad{background:rgba(255,71,87,0.07);border:1px solid rgba(255,71,87,0.3);color:#fca5a5;}
+
+#scoreBox{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:12px;padding:32px;text-align:center;margin-top:20px;display:none;
+}
+#scoreBox::before{content:'';display:block;height:2px;background:linear-gradient(90deg,var(--green),var(--teal));margin-bottom:24px;border-radius:2px;}
+#scoreTxt{font-family:var(--display);font-size:3rem;font-weight:800;display:block;margin-bottom:10px;}
+#scoreMsg{color:var(--gray);font-size:0.95rem;}
+
+/* ── FOOTER ── */
+.site-footer{
+  background:var(--bg2);border-top:1px solid var(--border);
+  padding:40px 24px 20px;
+}
+.footer-in{
+  max-width:1200px;margin:0 auto;
+  display:grid;grid-template-columns:2fr 1fr 1fr;gap:40px;margin-bottom:24px;
+}
+.footer-brand p{color:var(--gray);font-size:0.84rem;line-height:1.7;max-width:260px;margin-top:10px;}
+.footer-links h4{font-family:var(--mono);font-size:0.65rem;color:var(--green2);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;}
+.footer-links{display:flex;flex-direction:column;gap:8px;}
+.footer-links a{color:var(--gray);font-size:0.84rem;transition:color 0.2s;}
+.footer-links a:hover{color:var(--green);}
+.footer-bot{max-width:1200px;margin:0 auto;border-top:1px solid var(--border);padding-top:16px;text-align:center;color:var(--gray);font-size:0.75rem;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:800px){
+  .hero-inner{grid-template-columns:1fr;gap:30px;}
+  .hero-visual{order:-1;}
+  .footer-in{grid-template-columns:1fr;}
+}
+@media(max-width:500px){
+  .hero h1{font-size:2rem;}
+  .states-grid{grid-template-columns:1fr 1fr;}
+}
+
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--green2);border-radius:2px;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+.fu{animation:fadeUp 0.5s ease forwards;}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     NAVBAR PORTAL
+══════════════════════════════════════════ -->
+<nav class="portal-nav">
+  <div class="portal-nav-inner">
+    <a href="../index.html" class="pn-logo">
+      <span class="pn-cisco">CISCO</span>
+      <span class="pn-txt">Academy</span>
+    </a>
+    <a href="fundamentos.html" class="pn-link">🖧 Fundamentos</a>
+    <a href="vlan.html"        class="pn-link">🏷️ VLANs</a>
+    <a href="stp.html"         class="pn-link">🌳 STP</a>
+    <a href="switch.html"      class="pn-link current">🔀 Switches</a>
+    <span class="pn-disabled">🔗 EtherChannel <span class="pn-soon">Próximo</span></span>
+    <span class="pn-disabled">🗺️ Routing <span class="pn-soon">Próximo</span></span>
+    <span class="pn-disabled">⭕ OSPF <span class="pn-soon">Próximo</span></span>
+    <span class="pn-disabled">🔒 ACLs <span class="pn-soon">Próximo</span></span>
+  </div>
+</nav>
+<div class="nav-spacer"></div>
+
+<!-- ══════════════════════════════════════════
+     HERO
+══════════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-dots"></div>
+  <div class="hero-inner">
+    <div class="hero-content">
+      <div class="hero-tag"><span class="tag-dot"></span>CCNA 200-301 · Módulo 2 · Capa 2</div>
+      <h1>Switches<br><em>Cisco IOS</em></h1>
+      <p class="hero-desc">
+        Aprende cómo funcionan los switches, la <strong>tabla CAM</strong>, 
+        el proceso de <strong>forwarding de tramas</strong>, seguridad de puertos 
+        y toda la configuración IOS necesaria para el examen CCNA.
+      </p>
+      <div class="hero-pills">
+        <span class="h-pill">Tabla CAM / MAC</span>
+        <span class="h-pill">Port Security</span>
+        <span class="h-pill">CDP / LLDP</span>
+        <span class="h-pill">Half/Full Duplex</span>
+        <span class="h-pill">SVI Management</span>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <canvas id="switchCanvas" width="400" height="340"></canvas>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     TABS
+══════════════════════════════════════════ -->
+<div class="tabs-wrap">
+  <div class="tabs">
+    <button class="tab-btn on"  onclick="showTab('fundamentos',this)">📘 Fundamentos</button>
+    <button class="tab-btn"     onclick="showTab('cam',this)">🗂️ Tabla CAM</button>
+    <button class="tab-btn"     onclick="showTab('puertos',this)">🔌 Puertos</button>
+    <button class="tab-btn"     onclick="showTab('seguridad',this)">🔒 Port Security</button>
+    <button class="tab-btn"     onclick="showTab('config',this)">⌨️ Configuración</button>
+    <button class="tab-btn"     onclick="showTab('cdp',this)">📡 CDP / LLDP</button>
+    <button class="tab-btn"     onclick="showTab('quiz',this)">🎯 Quiz CCNA</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     CONTENIDO
+══════════════════════════════════════════ -->
+<div class="content">
+
+<!-- ─────────────────────────── FUNDAMENTOS ──────────────────────────── -->
+<div id="s-fundamentos" class="section on">
+
+  <div class="card fu">
+    <div class="card-title">💡 ¿Qué es un Switch?</div>
+    <div class="def">
+      Un <span class="hl">Switch</span> es un dispositivo de red de <span class="ht">Capa 2 (Enlace de Datos)</span> del modelo OSI que conecta múltiples dispositivos en una red local. A diferencia de un Hub, el switch toma <span class="hl">decisiones inteligentes</span> de reenvío basadas en <span class="hg">direcciones MAC</span>, enviando las tramas únicamente al puerto de destino correcto — no a todos los puertos.
+    </div>
+    <div class="note exam">
+      <div class="ni">🎯</div>
+      <div><strong style="color:var(--teal);">CCNA Clave:</strong> Un switch opera en <strong>Capa 2</strong> usando MACs. Un router opera en <strong>Capa 3</strong> usando IPs. Un switch multilayer (L3) puede hacer ambas cosas con el comando <code style="color:var(--green);">ip routing</code>.</div>
+    </div>
+  </div>
+
+  <div class="card fu">
+    <div class="card-title">🏗️ Hub vs Switch — La Evolución</div>
+    <table class="tbl">
+      <thead><tr><th>Característica</th><th>Hub (Capa 1)</th><th>Switch (Capa 2)</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Inteligencia</strong></td><td>Ninguna — repite todo</td><td>Aprende MACs, decide destino</td></tr>
+        <tr><td><strong>Dominio de colisión</strong></td><td style="color:var(--red);">1 compartido (todos)</td><td style="color:var(--green);">1 por puerto ✅</td></tr>
+        <tr><td><strong>Dominio de broadcast</strong></td><td>1 (todos)</td><td>1 (todos, a menos de VLANs)</td></tr>
+        <tr><td><strong>Ancho de banda</strong></td><td style="color:var(--red);">Compartido ❌</td><td style="color:var(--green);">Dedicado por puerto ✅</td></tr>
+        <tr><td><strong>Half/Full Duplex</strong></td><td>Solo Half Duplex</td><td>Full Duplex soportado</td></tr>
+        <tr><td><strong>Uso hoy</strong></td><td style="color:var(--red);">Obsoleto</td><td style="color:var(--green);">Estándar en redes LAN</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card fu">
+    <div class="card-title">🔌 Tipos de Switches Cisco</div>
+    <table class="tbl">
+      <thead><tr><th>Modelo</th><th>Tipo</th><th>Uso Típico</th><th>CCNA</th></tr></thead>
+      <tbody>
+        <tr><td><span class="b bg">Catalyst 2960</span></td><td>L2 Acceso</td><td>Conectar usuarios finales. Solo Capa 2.</td><td style="color:var(--green);">✅ Más usado en labs</td></tr>
+        <tr><td><span class="b bt">Catalyst 3750/3850</span></td><td>L3 Distribución</td><td>Inter-VLAN routing, ip routing habilitado.</td><td style="color:var(--gold);">⭐ Multilayer</td></tr>
+        <tr><td><span class="b bo">Catalyst 9200/9300</span></td><td>L3 Moderno</td><td>Switches de nueva generación con SD-Access.</td><td>Referencia</td></tr>
+        <tr><td><span class="b br">Nexus 9000</span></td><td>Data Center</td><td>Switches para centros de datos, NX-OS.</td><td>CCNP/CCIE</td></tr>
+      </tbody>
+    </table>
+    <div class="note gold">
+      <div class="ni">💡</div>
+      <div>En Packet Tracer usarás principalmente <strong>Catalyst 2960</strong> (L2) y <strong>3560/3750</strong> (L3). Conocer sus diferencias es fundamental para el CCNA.</div>
+    </div>
+  </div>
+
+  <!-- Switch visual diagram -->
+  <div class="card fu">
+    <div class="card-title">🔍 Anatomía de un Switch Cisco 2960</div>
+    <div class="sw-diagram">
+      <div class="sw-body">
+        <div class="sw-label">CISCO Catalyst 2960 — 24 Ports</div>
+        <div class="sw-ports" id="portGrid"></div>
+        <div style="font-size:0.7rem;color:var(--gray);margin-top:8px;">Haz click en un puerto para ver su estado</div>
+      </div>
+      <div class="sw-legend">
+        <div class="leg-item"><div class="leg-dot" style="background:rgba(0,255,136,0.2);border:1px solid var(--green);"></div>Puerto UP (conectado)</div>
+        <div class="leg-item"><div class="leg-dot" style="background:rgba(255,71,87,0.15);border:1px solid var(--red);"></div>Puerto DOWN</div>
+        <div class="leg-item"><div class="leg-dot" style="background:rgba(0,229,204,0.2);border:1px solid var(--teal);"></div>Puerto TRUNK</div>
+        <div class="leg-item"><div class="leg-dot" style="background:rgba(251,191,36,0.15);border:1px solid var(--gold);"></div>Puerto ACCESS</div>
+      </div>
+      <div id="portInfo" style="margin-top:14px;padding:12px;background:rgba(0,255,136,0.04);border:1px solid var(--border);border-radius:6px;font-size:0.8rem;color:var(--gray);display:none;"></div>
+    </div>
+  </div>
+
+</div><!-- /fundamentos -->
+
+<!-- ─────────────────────────── TABLA CAM ──────────────────────────── -->
+<div id="s-cam" class="section">
+
+  <div class="card fu">
+    <div class="card-title">🗂️ La Tabla CAM — El Cerebro del Switch</div>
+    <div class="def">
+      La <span class="hl">Tabla CAM (Content Addressable Memory)</span>, también llamada <span class="ht">Tabla MAC</span>, es la base de datos del switch donde almacena las <span class="hg">direcciones MAC</span> aprendidas, el <span class="hl">puerto</span> por donde las aprendió y el <span class="hl">ID de VLAN</span>. Con esta información toma decisiones de forwarding en microsegundos.
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Llega una trama — Switch revisa MAC origen</div>
+          <div class="step-desc">El switch lee la MAC de origen de la trama. Si no está en la tabla CAM, la <strong style="color:var(--green);">aprende</strong> y la asocia al puerto de entrada + VLAN. Esto se llama <em>MAC Address Learning</em>.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Busca la MAC destino en la tabla</div>
+          <div class="step-desc">El switch busca la <strong>MAC de destino</strong> en su tabla CAM. Si la encuentra → <span class="hl">Forwarding</span> directo al puerto. Si NO la encuentra → <span class="hr">Unknown Unicast Flood</span> (envía por todos los puertos menos el de entrada).</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">¿MAC destino es Broadcast o Multicast?</div>
+          <div class="step-desc">Si la MAC destino es <strong>FF:FF:FF:FF:FF:FF</strong> (broadcast) → se envía por <strong>todos los puertos</strong> de la misma VLAN. El broadcast no cruza dominios de broadcast (VLANs o routers).</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">Aging — Limpieza automática</div>
+          <div class="step-desc">Las entradas en la tabla CAM tienen un <span class="hg">timer de 300 segundos (5 minutos)</span> por defecto. Si no se recibe tráfico de esa MAC en ese tiempo, la entrada se elimina automáticamente para mantener la tabla actualizada.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="note exam">
+      <div class="ni">🎯</div>
+      <div><strong style="color:var(--teal);">CCNA Examen:</strong> El proceso se llama <strong>Store-and-Forward</strong> en switches modernos: el switch recibe la trama completa, verifica el FCS (checksum), y luego decide el forwarding. Otros métodos: <strong>Cut-Through</strong> (reenvía apenas lee el destino, sin verificar errores) y <strong>Fragment-Free</strong> (espera 64 bytes).</div>
+    </div>
+  </div>
+
+  <div class="card fu">
+    <div class="card-title">🎬 Simulación — Tabla CAM en Tiempo Real</div>
+    <p style="color:var(--gray);font-size:0.88rem;margin-bottom:14px;">Observa cómo el switch aprende MACs cuando llegan tramas de diferentes dispositivos:</p>
+    <div class="mac-table-anim">
+      <div class="mac-hdr">
+        <span>MAC Address</span>
+        <span>Puerto</span>
+        <span>VLAN</span>
+        <span>Aging (seg)</span>
+      </div>
+      <div id="camRows"></div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;">
+      <button onclick="camDemo()" style="padding:9px 20px;background:rgba(0,255,136,0.1);border:1px solid rgba(0,255,136,0.3);color:var(--green);border-radius:7px;cursor:pointer;font-family:var(--sans);font-size:0.84rem;font-weight:600;">▶ Simular tráfico</button>
+      <button onclick="clearCam()" style="padding:9px 20px;background:rgba(255,71,87,0.08);border:1px solid rgba(255,71,87,0.2);color:var(--red);border-radius:7px;cursor:pointer;font-family:var(--sans);font-size:0.84rem;font-weight:600;">🗑 Limpiar tabla</button>
+    </div>
+
+    <div class="cmd" style="margin-top:18px;">
+      <span class="cmd-tag">VERIFICACIÓN</span>
+      <span class="cl"><span class="cp">Switch#</span> <span class="ck">show mac address-table</span>          <span class="cc">! Ver toda la tabla CAM</span></span>
+      <span class="cl"><span class="cp">Switch#</span> <span class="ck">show mac address-table dynamic</span>    <span class="cc">! Solo entradas aprendidas dinámicamente</span></span>
+      <span class="cl"><span class="cp">Switch#</span> <span class="ck">show mac address-table vlan</span> <span class="cv">10</span>    <span class="cc">! Filtrar por VLAN</span></span>
+      <span class="cl"><span class="cp">Switch#</span> <span class="ck">clear mac address-table dynamic</span>   <span class="cc">! Limpiar tabla CAM (cuidado en producción)</span></span>
+      <span class="cl"><span class="cp">Switch(config)#</span> <span class="ck">mac address-table aging-time</span> <span class="cv">600</span> <span class="cc">! Cambiar aging a 600 seg</span></span>
+    </div>
+  </div>
+
+</div><!-- /cam -->
+
+<!-- ─────────────────────────── PUERTOS ──────────────────────────── -->
+<div id="s-puertos" class="section">
+
+  <div class="card fu">
+    <div class="card-title">🔌 Half Duplex vs Full Duplex</div>
+    <div class="def">
+      <span class="hl">Half Duplex:</span> El dispositivo puede <em>enviar O recibir</em>, pero no ambos simultáneamente. Usa <span class="hr">CSMA/CD</span> para detectar colisiones. Solo en conexiones a Hubs o dispositivos muy antiguos.<br><br>
+      <span class="ht">Full Duplex:</span> El dispositivo puede <em>enviar Y recibir simultáneamente</em>. <span class="hg">No hay colisiones</span>. Duplica el throughput efectivo. Estándar en todas las conexiones modernas switch-switch y switch-PC.
+    </div>
+    <table class="tbl">
+      <thead><tr><th>Velocidad</th><th>Half Duplex</th><th>Full Duplex</th></tr></thead>
+      <tbody>
+        <tr><td>FastEthernet (100 Mbps)</td><td>100 Mbps compartido</td><td style="color:var(--green);">200 Mbps efectivos ✅</td></tr>
+        <tr><td>GigabitEthernet (1 Gbps)</td><td>Raro / no recomendado</td><td style="color:var(--green);">2 Gbps efectivos ✅</td></tr>
+        <tr><td>10GigabitEthernet</td><td>No soportado</td><td style="color:var(--green);">20 Gbps efectivos ✅</td></tr>
+      </tbody>
+    </table>
+    <div class="note warn">
+      <div class="ni">⚠️</div>
+      <div><strong>Duplex Mismatch:</strong> Si un extremo está en Full y el otro en Half, habrá colisiones y rendimiento degradado. Síntoma: muchos <em>late collisions</em> en <code style="color:var(--green);">show interfaces</code>. Solución: configurar manualmente ambos extremos o dejar autonegociación en ambos.</div>
+    </div>
+  </div>
+
+  <div class="card fu">
+    <div class="card-title">⚙️ Autonegociación de Velocidad y Dúplex</div>
+    <div class="cmd">
+      <span class="cmd-tag">CONFIGURACIÓN</span>
+      <span class="cl"><span class="cp">Switch(config)#</span> <span class="ck">interface</span> <span class="cv">fastEthernet 0/1</span></span>
+      <span class="cl"><span class="cp">Switch(config-if)#</span> <span class="ck">duplex</span> <span class="cv">full</span>         <span class="cc">! full | half | auto</span></span>
+      <span class="cl"><span class="cp">Switch(config-if)#</span> <span class="ck">speed</span> <span class="cv">100</span>           <span class="cc">! 10 | 100 | 1000 | auto</span></span>
+      <span class="cl"><span class="cp">Switch(config-if)#</span> <span class="ck">no shutdown</span></span>
+      <span class="cl"> </span>
+      <span class="cl"><span class="cc">! Verificar velocidad/dúplex negociados:</span></span>
+      <span class="cl"><span class="cp">Switch#</span> <span class="ck">show interfaces</span> <span class="cv">fa0/1</span></span>
+      <span class="cl"><span class="cc">! Busca la línea: "Full-duplex, 100Mb/s"</span></span>
+    </div>
+    <div class="note tip">
+      <div class="ni">✅</div>
+      <div><strong>Best Practice:</strong> En enlaces switch-switch o switch-router de producción, configura <strong>velocidad y dúplex manualmente</strong> en ambos extremos (no dejes autonegociación). En puertos de acceso a PCs, autonegociación está bien.</div>
+    </div>
+  </div>
+
+  <div class="card fu">
+    <div class="card-title">🔁 Interfaces de Switch — Estados</div>
+    <div class="states-grid">
+      <div class="state-card">
+        <div class="state-icon">🟢</div>
+        <div class="state-name" style="color:var(--green);">Up / Up</div>
+        <div class="state-desc">Línea activa y protocolo activo. Puerto funcionando correctamente.</div>
+      </div>
+      <div class="state-card">
+        <div class="state-icon">🔴</div>
+        <div class="state-name" style="color:var(--red);">Down / Down</div>
+        <div class="state-desc">Sin cable conectado o dispositivo apagado. Sin señal física.</div>
+      </div>
+      <div class="state-card">
+        <div class="state-icon">🟡</div>
+        <div class="state-name" style="color:var(--gold);">Up / Down</div>
+        <div class="state-desc">Señal física OK pero problema de protocolo. Raro en Ethernet.</div>
+      </div>
+      <div class="state-card">
+        <div class="state-icon">🟠</div>
+        <div class="state-name" style="color:#f97316;">Err-disabled</div>
+        <div class="state-desc">Puerto deshabilitado por violación de seguridad (BPDU Guard, Port Security).</div>
+      </div>
+      <div class="state-card">
+        <div class="state-icon">⚫</div>
+        <div class="state-name" style="color:var(--gray);">Administratively Down</div>
+        <div class="state-desc">Puerto deshabilitado manualmente con el comando <code>shutdown</code>.</div>
+      </div>
+    </div>
+    <div class="cmd" style="margin-top:16px;">
+      <span class="cmd-tag">VERIFICACIÓN</span>
+      <span class="cl"><span class="cp">Switch#</span> <span class="ck">show interfaces</span> <span class="cv">fa0/1</span>           <span class="cc">! Detalle completo de la interfaz</span></span>
+      <span class="cl"><span class="cp">Switch#</span> <span class="ck">show ip interface brief</span>            <span class="cc">! Resumen de todas las interfaces</span></span>
+      <span class="cl"><span class="cp">Switch#</span> <span class="ck">show interfaces status</span>             <span class="cc">! Estado, VLAN, duplex, velocidad</span></span>
+      <span class="cl"><span class="cp">Switch#</span> <span class="ck">show interfaces counters errors</span>    <span class="cc">! Contadores de errores</span></span>
+    </div>
+  </div>
+
+</div><!-- /puertos -->
+
+<!-- ─────────────────────────── PORT SECURITY ──────────────────────────── -->
+<div id="s-seguridad" class="section">
+
+  <div class="card fu">
+    <div class="card-title">🔒 Port Security — Seguridad en Puertos de Acceso</div>
+    <div class="def">
+      <span class="hl">Port Security</span> es una función de seguridad de Capa 2 que permite <span class="hg">limitar qué MACs pueden acceder</span> a un puerto de switch. Si se conecta un dispositivo no autorizado, el switch puede <span class="ht">restringir, apagar o descartar</span> el tráfico automáticamente.
+    </div>
+    <div class="note exam">
+      <div class="ni">🎯</div>
+      <div><strong style="color:var(--teal);">CCNA Examen:</strong> Port Security solo funciona en <strong>puertos de acceso (access)</strong>, NO en puertos trunk. Debes hacer <code style="color:var(--green);">switchport mode access</code> antes de habilitarlo.</div>
+    </div>
+  </div>
+
+  <div class="card fu">
+    <div class="card-title">⚖️ Modos de Violación</div>
+    <table class="tbl">
+      <thead><tr><th>Modo</th><th>Acción al violar</th><th>Envía Syslog</th><th>Incrementa contador</th><th>Puerto sigue activo</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="b bg">Protect</span></td>
+          <td>Descarta tramas de MACs no autorizadas</td>
+          <td style="color:var(--red);">✗ No</td>
+          <td style="color:var(--red);">✗ No</td>
+          <td style="color:var(--green);">✓ Sí</td>
+        </tr>
+        <tr>
+          <td><span class="b bo">Restrict</span></td>
+          <td>Descarta tramas + notifica al administrador</td>
+          <td style="color:var(--green);">✓ Sí</td>
+          <td style="color:var(--green);">✓ Sí</td>
+          <td style="color:var(--green);">✓ Sí</td>
+        </tr>
+        <tr>
+          <td><span class="b br">Shutdown</span></td>
+          <td>Pone el puerto en <strong>err-disabled</strong></td>
+          <td style="color:var(--green);">✓ Sí</td>
+          <td style="color:var(--green);">✓ Sí</td>
+          <td style="color:var(--red);">✗ No — err-disabled</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="note warn">
+      <div class="ni">⚠️</div>
+      <div>El modo <strong>Shutdown es el default</strong> en Cisco IOS. Si no especificas el modo, se usará Shutdown. Para recuperar un puerto en err-disabled: <code style="color:var(--green);">shutdown</code> seguido de <code style="color:var(--green);">no shutdown</code>.</div>
+    </div>
+  </div>
+
+  <div class="card fu">
+    <div class="card-title">⌨️ Configuración Completa de Port Security</div>
+    <div class="cmd">
+      <span class="cmd-tag">PORT SECURITY</span>
+      <span class="cl"><span class="cp">Switch(config)#</span> <span class="ck">interface</span> <span class="cv">fastEthernet 0/1</span></span>
+      <span class="cl"><span class="cp">Switch(config-if)#</span> <span class="ck">switchport mode</span> <span class="cv">access</span>           <span class="cc">! OBLIGATORIO primero</span></span>
+      <span class="cl"><span class="cp">Switch(config-if)#</span> <span class="ck">switchport port-security</span>                  <span class="cc">! Habilitar Port Security</span></span>
+      <span class="cl"><span class="cp">Switch(config-if)#</span> <span class="ck">switchport port-security maximum</span> <span class="cv">2</span>         <span class="cc">! Máx 2 MACs permitidas</span></span>
+      <span class="cl"><span class="cp">Switch(config-if)#</span> <span class="ck">switchport port-security violation</span> <span class="cv">restrict</span>  <span class="cc">! Modo violación</span></span>
+      <span class="cl"> </span>
+      <span class="cl"><span class="cc">! Opción A — MAC estática (manual):</span></span>
+      <span class="cl"><span class="cp">Switch(config-if)#</span> <span class="ck">switchport port-security mac-address</span> <span class="cv">aaaa.bbbb.cccc</span></span>
+      <span class="cl"> </span>
+      <span class="cl"><span class="cc">! Opción B — MAC sticky (aprende y guarda automáticamente):</span></span>
+      <span class="cl"><span class="cp">Switch(config-if)#</span> <span class="ck">switchport port-security mac-address</span> <span class="cv">sticky</span></span>
+    </div>
+    <div class="cmd">
+      <span class="cmd-tag">VERIFICACIÓN</span>
+      <span class="cl"><span class="cp">Switch#</span> <span class="ck">show port-security</span>                       <span class="cc">! Resumen de todos los puertos</span></span>
+      <span class="cl"><span class="cp">Switch#</span> <span class="ck">show port-security interface</span> <span class="cv">fa0/1</span>       <span class="cc">! Detalle de un puerto</span></span>
+      <span class="cl"><span class="cp">Switch#</span> <span class="ck">show port-security address</span>               <span class="cc">! MACs seguras configuradas</span></span>
+      <span class="cl"> </span>
+      <span class="cl"><span class="cc">! Recuperar puerto en err-disabled:</span></span>
+      <span class="cl"><span class="cp">Switch(config-if)#</span> <span class="ck">shutdown</span></span>
+      <span class="cl"><span class="cp">Switch(config-if)#</span> <span class="ck">no shutdown</span></span>
+    </div>
+    <div class="note tip">
+      <div class="ni">✅</div>
+      <div><strong>MAC Sticky:</strong> Es la opción más práctica. El switch aprende la primera MAC que se conecta y la "pega" como MAC segura automáticamente. Si haces <code style="color:var(--green);">copy run start</code>, esa MAC queda guardada permanentemente.</div>
+    </div>
+  </div>
+
+</div><!-- /seguridad -->
+
+<!-- ─────────────────────────── CONFIG BÁSICA ──────────────────────────── -->
+<div id="s-config" class="section">
+
+  <div class="card fu">
+    <div class="card-title">⌨️ Configuración Inicial del Switch</div>
+    <div class="cmd">
+      <span class="cmd-tag">CONFIGURACIÓN BÁSICA</span>
+      <span class="cl"><span class="cp">Switch></span> <span class="ck">enable</span></span>
+      <span class="cl"><span class="cp">Switch#</span> <span class="ck">configure terminal</span></span>
+      <span class="cl"> </span>
+      <span class="cl"><span class="cc">! 1. Nombre del switch:</span></span>
+      <span class="cl"><span class="cp">Switch(config)#</span> <span class="ck">hostname</span> <span class="cv">SW-CORE-01</span></span>
+      <span class="cl"> </span>
+      <span class="cl"><span class="cc">! 2. Contraseña modo privilegiado (OBLIGATORIO):</span></span>
+      <span class="cl"><span class="cp">SW-CORE-01(config)#</span> <span class="ck">enable secret</span> <span class="cv">Cisco123!</span>       <span class="cc">! Cifrada (MD5)</span></span>
+      <span class="cl"> </span>
+      <span class="cl"><span class="cc">! 3. Contraseña consola:</span></span>
+      <span class="cl"><span class="cp">SW-CORE-01(config)#</span> <span class="ck">line console</span> <span class="cv">0</span></span>
+      <span class="cl"><span class="cp">SW-CORE-01(config-line)#</span> <span class="ck">password</span> <span class="cv">ConPass1</span></span>
+      <span class="cl"><span class="cp">SW-CORE-01(config-line)#</span> <span class="ck">login</span></span>
+      <span class="cl"><span class="cp">SW-CORE-01(config-line)#</span> <span class="ck">exit</span></span>
+      <span class="cl"> </span>
+      <span class="cl"><span class="cc">! 4. SSH (acceso remoto seguro):</span></span>
+      <span class="cl"><span class="cp">SW-CORE-01(config)#</span> <span class="ck">ip domain-name</span> <span class="cv">cisco.local</span></span>
+      <span class="cl"><span class="cp">SW-CORE-01(config)#</span> <span class="ck">crypto key generate rsa modulus</span> <span class="cv">2048</span></span>
+      <span class="cl"><span class="cp">SW-CORE-01(config)#</span> <span class="ck">ip ssh version</span> <span class="cv">2</span></span>
+      <span class="cl"><span class="cp">SW-CORE-01(config)#</span> <span class="ck">username</span> <span class="cv">admin</span> <span class="ck">secret</span> <span class="cv">Admin123!</span></span>
+      <span class="cl"><span class="cp">SW-CORE-01(config)#</span> <span class="ck">line vty</span> <span class="cv">0 15</span></span>
+      <span class="cl"><span class="cp">SW-CORE-01(config-line)#</span> <span class="ck">transport input</span> <span class="cv">ssh</span></span>
+      <span class="cl"><span class="cp">SW-CORE-01(config-line)#</span> <span class="ck">login local</span></span>
+    </div>
+  </div>
+
+  <div class="card fu">
+    <div class="card-title">🌐 SVI — Switch Virtual Interface (Management)</div>
+    <div class="def">
+      Una <span class="hl">SVI (Switch Virtual Interface)</span> es una interfaz lógica asociada a una VLAN que permite asignarle una dirección IP al switch para <span class="hg">administración remota</span> vía SSH/Telnet. La VLAN de management es generalmente la <span class="ht">VLAN 99</span> (nunca usar VLAN 1 por seguridad).
+    </div>
+    <div class="cmd">
+      <span class="cmd-tag">SVI MANAGEMENT</span>
+      <span class="cl"><span class="cp">SW-CORE-01(config)#</span> <span class="ck">vlan</span> <span class="cv">99</span></span>
+      <span class="cl"><span class="cp">SW-CORE-01(config-vlan)#</span> <span class="ck">name</span> <span class="cv">MANAGEMENT</span></span>
+      <span class="cl"><span class="cp">SW-CORE-01(config-vlan)#</span> <span class="ck">exit</span></span>
+      <span class="cl"> </span>
+      <span class="cl"><span class="cp">SW-CORE-01(config)#</span> <span class="ck">interface vlan</span> <span class="cv">99</span></span>
+      <span class="cl"><span class="cp">SW-CORE-01(config-if)#</span> <span class="ck">ip address</span> <span class="cv">192.168.99.10 255.255.255.0</span></span>
+      <span class="cl"><span class="cp">SW-CORE-01(config-if)#</span> <span class="ck">no shutdown</span></span>
+      <span class="cl"><span class="cp">SW-CORE-01(config-if)#</span> <span class="ck">exit</span></span>
+      <span class="cl"> </span>
+      <span class="cl"><span class="cc">! Default gateway para que el switch alcance otras redes:</span></span>
+      <span class="cl"><span class="cp">SW-CORE-01(config)#</span> <span class="ck">ip default-gateway</span> <span class="cv">192.168.99.1</span></span>
+      <span class="cl"> </span>
+      <span class="cl"><span class="cc">! Guardar configuración:</span></span>
+      <span class="cl"><span class="cp">SW-CORE-01#</span> <span class="ck">copy running-config startup-config</span></span>
+    </div>
+  </div>
+
+</div><!-- /config -->
+
+<!-- ─────────────────────────── CDP / LLDP ──────────────────────────── -->
+<div id="s-cdp" class="section">
+
+  <div class="card fu">
+    <div class="card-title">📡 CDP — Cisco Discovery Protocol</div>
+    <div class="def">
+      <span class="hl">CDP (Cisco Discovery Protocol)</span> es un protocolo propietario de Cisco que opera en <span class="ht">Capa 2</span> y permite descubrir automáticamente los <span class="hg">dispositivos Cisco directamente conectados</span>. Envía anuncios cada <strong>60 segundos</strong> hacia la dirección multicast <code>01:00:0C:CC:CC:CC</code>. Esencial para troubleshooting y documentación de red.
+    </div>
+    <div class="note warn">
+      <div class="ni">⚠️</div>
+      <div><strong>Seguridad:</strong> CDP revela información sensible del dispositivo (modelo, versión IOS, IPs). <strong>Desactívalo en puertos que dan a Internet o a usuarios no confiables</strong> con <code style="color:var(--green);">no cdp enable</code> en la interfaz.</div>
+    </div>
+    <div class="cmd">
+      <span class="cmd-tag">CDP COMANDOS</span>
+      <span class="cl"><span class="cp">Switch#</span> <span class="ck">show cdp neighbors</span>             <span class="cc">! Ver vecinos: nombre, interfaz, modelo</span></span>
+      <span class="cl"><span class="cp">Switch#</span> <span class="ck">show cdp neighbors detail</span>      <span class="cc">! Ver IPs, versión IOS, capacidades</span></span>
+      <span class="cl"><span class="cp">Switch#</span> <span class="ck">show cdp interface</span>             <span class="cc">! Ver interfaces donde CDP está activo</span></span>
+      <span class="cl"> </span>
+      <span class="cl"><span class="cc">! Deshabilitar CDP globalmente:</span></span>
+      <span class="cl"><span class="cp">Switch(config)#</span> <span class="ck">no cdp run</span></span>
+      <span class="cl"> </span>
+      <span class="cl"><span class="cc">! Deshabilitar CDP en un puerto específico:</span></span>
+      <span class="cl"><span class="cp">Switch(config-if)#</span> <span class="ck">no cdp enable</span></span>
+    </div>
+  </div>
+
+  <div class="card fu">
+    <div class="card-title">🌐 LLDP — Link Layer Discovery Protocol</div>
+    <div class="def">
+      <span class="hl">LLDP (IEEE 802.1AB)</span> es el estándar abierto equivalente a CDP. Funciona con dispositivos de <span class="hg">cualquier fabricante</span> (Cisco, Juniper, HP, etc.). Por defecto está <span class="hr">deshabilitado</span> en Cisco IOS — debes activarlo manualmente.
+    </div>
+    <table class="tbl">
+      <thead><tr><th>Característica</th><th>CDP</th><th>LLDP</th></tr></thead>
+      <tbody>
+        <tr><td>Estándar</td><td>Propietario Cisco</td><td>IEEE 802.1AB (abierto)</td></tr>
+        <tr><td>Compatibilidad</td><td>Solo Cisco</td><td>Multi-vendor ✅</td></tr>
+        <tr><td>Default en Cisco</td><td style="color:var(--green);">Habilitado</td><td style="color:var(--red);">Deshabilitado</td></tr>
+        <tr><td>Timer hello</td><td>60 segundos</td><td>30 segundos</td></tr>
+        <tr><td>Holdtime</td><td>180 segundos</td><td>120 segundos</td></tr>
+      </tbody>
+    </table>
+    <div class="cmd">
+      <span class="cmd-tag">LLDP COMANDOS</span>
+      <span class="cl"><span class="cp">Switch(config)#</span> <span class="ck">lldp run</span>                   <span class="cc">! Habilitar LLDP globalmente</span></span>
+      <span class="cl"><span class="cp">Switch#</span> <span class="ck">show lldp neighbors</span>            <span class="cc">! Ver vecinos LLDP</span></span>
+      <span class="cl"><span class="cp">Switch#</span> <span class="ck">show lldp neighbors detail</span>     <span class="cc">! Detalle completo</span></span>
+    </div>
+  </div>
+
+</div><!-- /cdp -->
+
+<!-- ─────────────────────────── QUIZ ──────────────────────────── -->
+<div id="s-quiz" class="section">
+  <div class="card">
+    <div class="card-title">🎯 Quiz — Switches Cisco (Estilo Examen CCNA)</div>
+    <div class="note exam"><div class="ni">📋</div><div>8 preguntas estilo examen oficial Cisco CCNA 200-301. Selecciona la respuesta correcta en cada pregunta.</div></div>
+
+    <div class="q-box" id="q1">
+      <div class="q-num">PREGUNTA 01 / 08</div>
+      <div class="q-text">¿Cuál es el proceso que realiza un switch cuando recibe una trama con una MAC de destino que NO está en su tabla CAM?</div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="ans(1,'A','wrong','Dropping (descartar) ocurre cuando la MAC está en la tabla pero el tráfico es de una VLAN incorrecta, no cuando no se conoce el destino.')"><div class="q-let">A</div>Dropping — Descarta la trama</div>
+        <div class="q-opt" onclick="ans(1,'B','correct','¡Correcto! Unknown Unicast Flooding: cuando el switch no conoce la MAC de destino, envía la trama por TODOS los puertos activos de la VLAN, excepto el puerto de entrada. Así garantiza que la trama llegue al destino.')"><div class="q-let">B</div>Unknown Unicast Flooding — Envía por todos los puertos excepto el de entrada</div>
+        <div class="q-opt" onclick="ans(1,'C','wrong','ARP Request es un proceso de Capa 3 para resolver IPs a MACs. El switch opera en Capa 2 y no hace ARPs para tomar decisiones de forwarding.')"><div class="q-let">C</div>Envía un ARP Request para encontrar el destino</div>
+        <div class="q-opt" onclick="ans(1,'D','wrong','Reenviar solo al router sería incorrecto. El switch no sabe que no conoce la MAC hasta consultarla, y la solución es flooding, no reenviar al gateway.')"><div class="q-let">D</div>Reenvía la trama al router por defecto</div>
+      </div>
+      <div class="q-fb" id="fb1"></div>
+    </div>
+
+    <div class="q-box" id="q2">
+      <div class="q-num">PREGUNTA 02 / 08</div>
+      <div class="q-text">¿Cuál es el tiempo de aging (envejecimiento) predeterminado de las entradas en la tabla CAM de un switch Cisco?</div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="ans(2,'A','wrong','60 segundos es el intervalo de hello de CDP, no el aging de la tabla MAC.')"><div class="q-let">A</div>60 segundos</div>
+        <div class="q-opt" onclick="ans(2,'B','wrong','120 segundos es el holdtime de LLDP, no el aging de MAC.')"><div class="q-let">B</div>120 segundos</div>
+        <div class="q-opt" onclick="ans(2,'C','correct','¡Correcto! El aging time predeterminado es 300 segundos (5 minutos). Si un dispositivo no envía tráfico por 5 minutos, su entrada se elimina de la tabla CAM. Puedes cambiarlo con: mac address-table aging-time [segundos].')"><div class="q-let">C</div>300 segundos (5 minutos)</div>
+        <div class="q-opt" onclick="ans(2,'D','wrong','600 segundos puede configurarse manualmente pero no es el valor default de Cisco IOS.')"><div class="q-let">D</div>600 segundos</div>
+      </div>
+      <div class="q-fb" id="fb2"></div>
+    </div>
+
+    <div class="q-box" id="q3">
+      <div class="q-num">PREGUNTA 03 / 08</div>
+      <div class="q-text">Un administrador configura Port Security en modo "restrict". ¿Qué ocurre cuando se conecta un dispositivo no autorizado?</div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="ans(3,'A','wrong','El modo que apaga el puerto (err-disabled) es Shutdown, no Restrict. Shutdown es el modo predeterminado.')"><div class="q-let">A</div>El puerto se apaga inmediatamente (err-disabled)</div>
+        <div class="q-opt" onclick="ans(3,'B','wrong','El modo Protect descarta silenciosamente sin generar logs ni incrementar contadores. Restrict sí genera logs.')"><div class="q-let">B</div>Descarta las tramas silenciosamente sin generar logs</div>
+        <div class="q-opt" onclick="ans(3,'C','correct','¡Correcto! El modo Restrict: descarta las tramas de MACs no autorizadas, incrementa el contador de violaciones, envía mensaje Syslog, pero el puerto PERMANECE ACTIVO. Es el modo más informativo sin interrumpir el servicio.')"><div class="q-let">C</div>Descarta tramas, incrementa contador y envía Syslog. El puerto sigue activo</div>
+        <div class="q-opt" onclick="ans(3,'D','wrong','Port Security no envía traps SNMP automáticamente en modo Restrict. Envía Syslog. Los traps SNMP requieren configuración adicional.')"><div class="q-let">D</div>El puerto envía un SNMP trap y acepta la conexión temporalmente</div>
+      </div>
+      <div class="q-fb" id="fb3"></div>
+    </div>
+
+    <div class="q-box" id="q4">
+      <div class="q-num">PREGUNTA 04 / 08</div>
+      <div class="q-text">¿Qué comando muestra el estado de velocidad y duplex de TODAS las interfaces de un switch en formato resumido?</div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="ans(4,'A','wrong','show interfaces muestra detalle completo de UNA interfaz. Para ver todas en resumen necesitas otro comando.')"><div class="q-let">A</div>show interfaces</div>
+        <div class="q-opt" onclick="ans(4,'B','wrong','show ip interface brief muestra estado Up/Down e IPs, pero NO muestra velocidad ni duplex.')"><div class="q-let">B</div>show ip interface brief</div>
+        <div class="q-opt" onclick="ans(4,'C','correct','¡Correcto! show interfaces status muestra en una sola tabla: nombre del puerto, estado (connected/notconnect), VLAN, duplex, speed y tipo de media. Es el comando más útil para ver el estado de todos los puertos a la vez.')"><div class="q-let">C</div>show interfaces status</div>
+        <div class="q-opt" onclick="ans(4,'D','wrong','show version muestra información del sistema como versión IOS, RAM, flash y uptime, no el estado de interfaces.')"><div class="q-let">D</div>show version</div>
+      </div>
+      <div class="q-fb" id="fb4"></div>
+    </div>
+
+    <div class="q-box" id="q5">
+      <div class="q-num">PREGUNTA 05 / 08</div>
+      <div class="q-text">¿Cuál es la diferencia principal entre "enable password" y "enable secret" en Cisco IOS?</div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="ans(5,'A','wrong','Ambos protegen el modo privilegiado. La diferencia está en el cifrado, no en qué modo protegen.')"><div class="q-let">A</div>enable password protege el modo usuario; enable secret protege el modo privilegiado</div>
+        <div class="q-opt" onclick="ans(5,'B','correct','¡Correcto! enable password se guarda en texto plano en la configuración (visible con show run). enable secret usa cifrado MD5 y siempre tiene prioridad sobre enable password. Siempre usar enable secret en producción.')"><div class="q-let">B</div>enable secret usa cifrado MD5; enable password se guarda en texto plano</div>
+        <div class="q-opt" onclick="ans(5,'C','wrong','enable secret siempre tiene MAYOR prioridad que enable password. Si ambos están configurados, IOS usa enable secret.')"><div class="q-let">C</div>enable password tiene mayor prioridad que enable secret</div>
+        <div class="q-opt" onclick="ans(5,'D','wrong','enable secret usa cifrado MD5 (type 5). Para SHA-256 se usa: enable algorithm-type sha256 secret. Ambos protegen el mismo modo.')"><div class="q-let">D</div>Son idénticos pero enable secret usa SHA-256</div>
+      </div>
+      <div class="q-fb" id="fb5"></div>
+    </div>
+
+    <div class="q-box" id="q6">
+      <div class="q-num">PREGUNTA 06 / 08</div>
+      <div class="q-text">¿Qué ventaja tiene configurar MAC Sticky (switchport port-security mac-address sticky) comparado con una MAC estática?</div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="ans(6,'A','wrong','MAC Sticky no permite múltiples dispositivos — sigue respetando el límite máximo configurado. La ventaja no es esa.')"><div class="q-let">A</div>Permite conectar múltiples dispositivos sin límite</div>
+        <div class="q-opt" onclick="ans(6,'B','wrong','MAC Sticky no es más segura que una MAC estática. De hecho, la MAC estática es más segura porque no aprende automáticamente.')"><div class="q-let">B</div>Es más segura porque no aprende automáticamente</div>
+        <div class="q-opt" onclick="ans(6,'C','correct','¡Correcto! Con MAC Sticky, el switch aprende automáticamente la primera MAC que se conecta y la registra como MAC segura en la running-config. No necesitas conocer la MAC previamente. Si haces "copy run start", queda permanente aunque reinicies el switch.')"><div class="q-let">C</div>El switch aprende automáticamente la MAC y la guarda en running-config sin necesidad de configurarla manualmente</div>
+        <div class="q-opt" onclick="ans(6,'D','wrong','MAC Sticky no cifra el tráfico. Port Security es control de acceso Layer 2, no cifrado.')"><div class="q-let">D</div>Cifra el tráfico del dispositivo conectado</div>
+      </div>
+      <div class="q-fb" id="fb6"></div>
+    </div>
+
+    <div class="q-box" id="q7">
+      <div class="q-num">PREGUNTA 07 / 08</div>
+      <div class="q-text">¿Cuál es el propósito de configurar una SVI (Switch Virtual Interface) en un switch de capa 2?</div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="ans(7,'A','wrong','El routing entre VLANs en un switch L2 requiere un router externo (Router-on-a-Stick). La SVI en L2 solo sirve para management, no para routing entre VLANs.')"><div class="q-let">A</div>Hacer routing entre VLANs sin necesidad de un router externo</div>
+        <div class="q-opt" onclick="ans(7,'B','correct','¡Correcto! En un switch de Capa 2, la SVI (interface vlan X) se usa para asignar una dirección IP de management. Esta IP permite acceder al switch remotamente vía SSH o Telnet. También necesitas configurar el ip default-gateway para llegar a otras redes.')"><div class="q-let">B</div>Asignar una IP de management para acceso remoto SSH/Telnet al switch</div>
+        <div class="q-opt" onclick="ans(7,'C','wrong','Las SVI no tienen relación con Port Security. Son conceptos independientes.')"><div class="q-let">C</div>Habilitar Port Security en todos los puertos de una VLAN</div>
+        <div class="q-opt" onclick="ans(7,'D','wrong','Los trunks entre switches se configuran directamente en las interfaces físicas con switchport mode trunk, no con SVIs.')"><div class="q-let">D</div>Crear automáticamente trunks entre switches</div>
+      </div>
+      <div class="q-fb" id="fb7"></div>
+    </div>
+
+    <div class="q-box" id="q8">
+      <div class="q-num">PREGUNTA 08 / 08</div>
+      <div class="q-text">¿Qué diferencia hay entre CDP y LLDP?</div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="ans(8,'A','wrong','Es al revés: CDP es propietario de Cisco y está habilitado por default. LLDP es el estándar IEEE y está deshabilitado por default en Cisco IOS.')"><div class="q-let">A</div>CDP es el estándar IEEE, LLDP es propietario de Cisco</div>
+        <div class="q-opt" onclick="ans(8,'B','wrong','Ambos operan en Capa 2. No es una diferencia de capas.')"><div class="q-let">B</div>CDP opera en Capa 3, LLDP opera en Capa 2</div>
+        <div class="q-opt" onclick="ans(8,'C','wrong','CDP está habilitado por defecto. LLDP está deshabilitado y requiere "lldp run" para activarlo.')"><div class="q-let">C</div>LLDP está habilitado por defecto en Cisco; CDP requiere activación manual</div>
+        <div class="q-opt" onclick="ans(8,'D','correct','¡Correcto! CDP es propietario de Cisco (activo por defecto), compatible solo con dispositivos Cisco. LLDP es el estándar abierto IEEE 802.1AB (deshabilitado por defecto en Cisco), compatible con cualquier fabricante. Para redes multi-vendor, LLDP es la solución.')"><div class="q-let">D</div>CDP es propietario Cisco (activo por defecto); LLDP es estándar IEEE multi-vendor (deshabilitado por defecto)</div>
+      </div>
+      <div class="q-fb" id="fb8"></div>
+    </div>
+
+    <div id="scoreBox">
+      <div id="scoreTxt"></div>
+      <div id="scoreMsg"></div>
+    </div>
+  </div>
+</div><!-- /quiz -->
+
+</div><!-- /content -->
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-in">
+    <div class="footer-brand">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span class="pn-cisco">CISCO</span>
+        <span class="pn-txt">Academy</span>
+      </div>
+      <p>Ruta completa de aprendizaje hacia las certificaciones Cisco CCNA, CCNP y CCIE.</p>
+    </div>
+    <div class="footer-links">
+      <h4>Clases Activas</h4>
+      <a href="fundamentos.html">Fundamentos de Redes</a>
+      <a href="vlan.html">VLANs</a>
+      <a href="stp.html">STP</a>
+      <a href="switch.html">Switches Cisco</a>
+    </div>
+    <div class="footer-links">
+      <h4>Próximas Clases</h4>
+      <a href="#">EtherChannel</a>
+      <a href="#">Routing Estático</a>
+      <a href="#">OSPF</a>
+      <a href="#">ACLs</a>
+    </div>
+  </div>
+  <div class="footer-bot">Basado en el currículo oficial de Cisco Networking Academy | CCNA 200-301</div>
+</footer>
+
+<script>
+// ── TABS ──
+function showTab(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('on'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('on'));
+  document.getElementById('s-' + id).classList.add('on');
+  btn.classList.add('on');
+  window.scrollTo({top: document.querySelector('.tabs-wrap').offsetTop - 10, behavior: 'smooth'});
+}
+
+// ── SWITCH CANVAS ANIMATION ──
+(function(){
+  const canvas = document.getElementById('switchCanvas');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+
+  // Switch body
+  const sw = {x: W/2, y: H/2 - 20, w: 220, h: 60};
+  const ports = 8;
+  const devices = [
+    {x:60,  y:50,  label:'PC-1', color:'#00ff88'},
+    {x:160, y:50,  label:'PC-2', color:'#00ff88'},
+    {x:260, y:50,  label:'PC-3', color:'#00ff88'},
+    {x:340, y:50,  label:'SRV',  color:'#fbbf24'},
+    {x:60,  y:290, label:'PC-4', color:'#00ff88'},
+    {x:160, y:290, label:'PC-5', color:'#00ff88'},
+    {x:260, y:290, label:'WIFI', color:'#8b5cf6'},
+    {x:340, y:290, label:'ROUT', color:'#00e5cc'},
+  ];
+  const swPorts = [
+    {x: sw.x - 84, y: sw.y}, {x: sw.x - 60, y: sw.y},
+    {x: sw.x - 36, y: sw.y}, {x: sw.x - 12, y: sw.y},
+    {x: sw.x + 12, y: sw.y}, {x: sw.x + 36, y: sw.y},
+    {x: sw.x + 60, y: sw.y}, {x: sw.x + 84, y: sw.y},
+  ];
+
+  const packets = [];
+  let frame = 0;
+
+  function spawnPacket() {
+    const i = Math.floor(Math.random() * devices.length);
+    const dev = devices[i];
+    const sp = swPorts[i];
+    const toSwitch = Math.random() > 0.3;
+    const j = Math.floor(Math.random() * devices.length);
+    if(i === j) return;
+    packets.push({
+      x: toSwitch ? dev.x : sp.x,
+      y: toSwitch ? dev.y : sp.y,
+      tx: toSwitch ? sp.x : devices[j].x,
+      ty: toSwitch ? sp.y : devices[j].y,
+      color: dev.color,
+      progress: 0,
+      speed: 0.02 + Math.random() * 0.02
+    });
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+
+    // Links
+    devices.forEach((d, i) => {
+      ctx.beginPath();
+      ctx.moveTo(d.x, d.y);
+      ctx.lineTo(swPorts[i].x, swPorts[i].y);
+      ctx.strokeStyle = 'rgba(0,255,136,0.15)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    });
+
+    // Switch body
+    const grad = ctx.createLinearGradient(sw.x - sw.w/2, sw.y, sw.x + sw.w/2, sw.y + sw.h);
+    grad.addColorStop(0, '#0d2b1a');
+    grad.addColorStop(1, '#0a1f12');
+    ctx.fillStyle = grad;
+    ctx.strokeStyle = '#00ff88';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.roundRect(sw.x - sw.w/2, sw.y, sw.w, sw.h, 8);
+    ctx.fill(); ctx.stroke();
+
+    // Port LEDs on switch
+    swPorts.forEach((p, i) => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y + 14, 4, 0, Math.PI*2);
+      ctx.fillStyle = i === 7 ? '#00e5cc' : '#00ff88';
+      ctx.shadowBlur = 6; ctx.shadowColor = ctx.fillStyle;
+      ctx.fill(); ctx.shadowBlur = 0;
+    });
+
+    // Switch label
+    ctx.font = 'bold 11px Inconsolata';
+    ctx.fillStyle = '#00ff88';
+    ctx.textAlign = 'center';
+    ctx.fillText('CISCO Catalyst 2960', sw.x, sw.y + 42);
+
+    // Devices
+    devices.forEach(d => {
+      ctx.beginPath();
+      ctx.arc(d.x, d.y, 14, 0, Math.PI*2);
+      ctx.fillStyle = '#0b1f18';
+      ctx.strokeStyle = d.color;
+      ctx.lineWidth = 1.5;
+      ctx.fill(); ctx.stroke();
+      ctx.font = 'bold 7px Inconsolata';
+      ctx.fillStyle = d.color;
+      ctx.textAlign = 'center';
+      ctx.fillText(d.label, d.x, d.y + 3);
+    });
+
+    // Packets
+    for(let i = packets.length - 1; i >= 0; i--) {
+      const p = packets[i];
+      p.progress += p.speed;
+      if(p.progress >= 1){ packets.splice(i,1); continue; }
+      const x = p.x + (p.tx - p.x) * p.progress;
+      const y = p.y + (p.ty - p.y) * p.progress;
+      ctx.beginPath();
+      ctx.arc(x, y, 4, 0, Math.PI*2);
+      ctx.fillStyle = p.color;
+      ctx.shadowBlur = 10; ctx.shadowColor = p.color;
+      ctx.fill(); ctx.shadowBlur = 0;
+    }
+
+    frame++;
+    if(frame % 15 === 0 && packets.length < 15) spawnPacket();
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ── PORT GRID ──
+(function(){
+  const grid = document.getElementById('portGrid');
+  if(!grid) return;
+  const portData = [
+    {id:'Fa0/1',state:'up',type:'access',vlan:10},
+    {id:'Fa0/2',state:'up',type:'access',vlan:10},
+    {id:'Fa0/3',state:'up',type:'access',vlan:20},
+    {id:'Fa0/4',state:'down',type:'access',vlan:1},
+    {id:'Fa0/5',state:'down',type:'access',vlan:1},
+    {id:'Fa0/6',state:'up',type:'access',vlan:30},
+    {id:'Fa0/7',state:'up',type:'access',vlan:30},
+    {id:'Fa0/8',state:'down',type:'access',vlan:1},
+    {id:'Fa0/9',state:'up',type:'access',vlan:20},
+    {id:'Fa0/10',state:'down',type:'access',vlan:1},
+    {id:'Fa0/11',state:'up',type:'access',vlan:10},
+    {id:'Fa0/12',state:'down',type:'access',vlan:1},
+    {id:'Fa0/13',state:'up',type:'access',vlan:20},
+    {id:'Fa0/14',state:'down',type:'access',vlan:1},
+    {id:'Fa0/15',state:'up',type:'access',vlan:30},
+    {id:'Fa0/16',state:'down',type:'access',vlan:1},
+    {id:'Fa0/17',state:'up',type:'access',vlan:10},
+    {id:'Fa0/18',state:'down',type:'access',vlan:1},
+    {id:'Fa0/19',state:'up',type:'access',vlan:20},
+    {id:'Fa0/20',state:'down',type:'access',vlan:1},
+    {id:'Fa0/21',state:'up',type:'access',vlan:10},
+    {id:'Fa0/22',state:'down',type:'access',vlan:1},
+    {id:'Gi0/1',state:'up',type:'trunk',vlan:'ALL'},
+    {id:'Gi0/2',state:'up',type:'trunk',vlan:'ALL'},
+  ];
+
+  portData.forEach(p => {
+    const el = document.createElement('div');
+    el.className = `port port-${p.state === 'up' ? (p.type === 'trunk' ? 'trunk' : 'access') : 'down'}`;
+    el.textContent = p.id.replace('FastEthernet','').replace('Fa','').replace('Gi','G');
+    el.title = p.id;
+    el.style.cursor = 'pointer';
+    el.addEventListener('click', () => {
+      const info = document.getElementById('portInfo');
+      info.style.display = 'block';
+      info.innerHTML = `<strong style="color:var(--green);">${p.id}</strong> &nbsp;|&nbsp; 
+        Estado: <strong style="color:${p.state==='up'?'var(--green)':'var(--red)'}">${p.state.toUpperCase()}</strong> &nbsp;|&nbsp;
+        Tipo: <strong style="color:var(--teal)">${p.type}</strong> &nbsp;|&nbsp;
+        VLAN: <strong style="color:var(--gold)">${p.vlan}</strong>`;
+    });
+    grid.appendChild(el);
+  });
+})();
+
+// ── CAM TABLE DEMO ──
+const camEntries = [
+  {mac:'0050.56aa.1234', port:'Fa0/1', vlan:'10', age:300},
+  {mac:'0050.56bb.5678', port:'Fa0/3', vlan:'20', age:280},
+  {mac:'0050.56cc.9abc', port:'Fa0/6', vlan:'30', age:245},
+  {mac:'0050.56dd.def0', port:'Fa0/9', vlan:'20', age:190},
+  {mac:'0050.56ee.1111', port:'Fa0/11', vlan:'10', age:150},
+  {mac:'0050.56ff.2222', port:'Gi0/1', vlan:'ALL', age:299},
+];
+let camShown = 0;
+function camDemo() {
+  if(camShown >= camEntries.length) return;
+  const e = camEntries[camShown++];
+  const row = document.createElement('div');
+  row.className = 'mac-row new';
+  row.innerHTML = `<span>${e.mac}</span><span>${e.port}</span><span>${e.vlan}</span><span>${e.age}</span>`;
+  document.getElementById('camRows').appendChild(row);
+  setTimeout(() => row.classList.remove('new'), 600);
+  if(camShown < camEntries.length) setTimeout(camDemo, 800);
+}
+function clearCam() {
+  document.getElementById('camRows').innerHTML = '';
+  camShown = 0;
+}
+
+// ── QUIZ ──
+let answers = {}, score = 0, total = 8;
+function ans(q, letter, result, explanation) {
+  if(answers[q]) return;
+  answers[q] = true;
+  document.querySelectorAll(`#q${q} .q-opt`).forEach(opt => {
+    opt.style.pointerEvents = 'none';
+    const l = opt.querySelector('.q-let');
+    if(l && l.textContent === letter) opt.classList.add(result === 'correct' ? 'correct' : 'wrong');
+    if(result === 'wrong' && opt.getAttribute('onclick') && opt.getAttribute('onclick').includes("'correct'"))
+      opt.classList.add('correct');
+  });
+  const fb = document.getElementById('fb' + q);
+  if(fb) {
+    fb.textContent = (result === 'correct' ? '✅ ' : '❌ ') + explanation;
+    fb.className = `q-fb show ${result === 'correct' ? 'ok' : 'bad'}`;
+  }
+  if(result === 'correct') score++;
+  if(Object.keys(answers).length === total) setTimeout(showScore, 400);
+}
+function showScore() {
+  const box = document.getElementById('scoreBox');
+  box.style.display = 'block';
+  const pct = Math.round(score / total * 100);
+  const txt = document.getElementById('scoreTxt');
+  const msg = document.getElementById('scoreMsg');
+  txt.textContent = `${score} / ${total} — ${pct}%`;
+  if(pct >= 87) { txt.style.color = 'var(--green)'; msg.textContent = '🏆 ¡Excelente! Dominas los conceptos de Switches Cisco. Listo para el examen.'; }
+  else if(pct >= 62) { txt.style.color = 'var(--gold)'; msg.textContent = '📚 Buen progreso. Repasa Port Security y la tabla CAM antes de continuar.'; }
+  else { txt.style.color = 'var(--red)'; msg.textContent = '💪 Repasa el material completo. ¡Con práctica en Packet Tracer lo dominarás!'; }
+  box.scrollIntoView({ behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
