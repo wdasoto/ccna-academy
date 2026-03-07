@@ -1,6 +1,6 @@
 # 🌐 CCNA Academy — Portal de Aprendizaje Cisco
 
-Portal web profesional para el estudio de certificaciones **CCNA · CCNP · CCIE**.  
+Portal web  para el estudio de certificaciones **CCNA · CCNP · CCIE**.  
 Clases interactivas con diagramas, configuraciones IOS y quizzes tipo examen real.
 
 ## 🚀 Publicar en GitHub Pages (paso a paso)
