@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Routers Cisco — CCNA Academy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Share+Tech+Mono&family=Barlow:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0c14;--bg2:#0e1120;--bg3:#141828;
+  --blue:#3b82f6;--blue2:#60a5fa;--cyan:#06b6d4;
+  --orange:#f97316;--green:#22c55e;--red:#ef4444;--gold:#eab308;
+  --white:#f0f4ff;--gray:#64748b;
+  --border:rgba(59,130,246,0.18);--card:rgba(14,17,32,0.95);
+  --mono:'Share Tech Mono',monospace;
+  --sans:'Barlow',sans-serif;
+  --display:'Rajdhani',sans-serif;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--white);font-family:var(--sans);font-size:16px;line-height:1.65;overflow-x:hidden;}
+a{color:inherit;text-decoration:none;}
+
+/* ── NAVBAR ── */
+.portal-nav{
+  position:fixed;top:0;left:0;right:0;z-index:3000;
+  background:rgba(10,12,20,0.97);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(20px);height:54px;
+  display:flex;align-items:center;
+}
+.portal-nav-inner{
+  max-width:1200px;margin:0 auto;padding:0 20px;
+  display:flex;align-items:center;gap:4px;width:100%;overflow-x:auto;
+}
+.pn-logo{display:flex;align-items:center;gap:8px;flex-shrink:0;margin-right:18px;}
+.pn-cisco{
+  font-family:var(--mono);font-weight:900;font-size:0.85rem;letter-spacing:3px;
+  background:linear-gradient(135deg,#3b82f6,#06b6d4);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  border:1px solid rgba(59,130,246,0.3);padding:3px 9px;border-radius:4px;
+}
+.pn-txt{font-family:var(--mono);font-size:0.6rem;color:var(--gray);letter-spacing:2px;}
+.pn-link{
+  display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:6px;
+  font-size:0.77rem;font-weight:600;color:var(--gray);white-space:nowrap;transition:all 0.2s;
+}
+.pn-link:hover{background:rgba(59,130,246,0.1);color:var(--blue2);}
+.pn-link.current{background:rgba(59,130,246,0.12);border:1px solid rgba(59,130,246,0.35);color:var(--white);}
+.pn-disabled{
+  display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:6px;
+  font-size:0.77rem;font-weight:600;color:#1e293b;white-space:nowrap;cursor:not-allowed;
+}
+.pn-soon{font-size:0.58rem;background:rgba(234,179,8,0.1);color:var(--gold);border:1px solid rgba(234,179,8,0.25);padding:1px 5px;border-radius:8px;}
+.nav-spacer{height:54px;}
+
+/* ── HERO ── */
+.hero{min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden;}
+.hero-grid{
+  position:absolute;inset:0;
+  background-image:linear-gradient(rgba(59,130,246,0.06) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(59,130,246,0.06) 1px,transparent 1px);
+  background-size:48px 48px;
+}
+.hero-glow{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse 50% 60% at 75% 50%,rgba(59,130,246,0.08) 0%,transparent 60%),
+    radial-gradient(ellipse 30% 40% at 10% 30%,rgba(6,182,212,0.05) 0%,transparent 50%);
+}
+.hero-inner{
+  position:relative;z-index:1;max-width:1200px;margin:0 auto;
+  padding:80px 24px 60px;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;
+}
+.hero-tag{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.25);
+  color:var(--blue2);border-radius:20px;padding:5px 14px;
+  font-size:0.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:18px;
+}
+.tag-pulse{width:7px;height:7px;border-radius:50%;background:var(--blue);animation:pulse 1.5s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.4;transform:scale(0.8);}}
+.hero h1{font-family:var(--display);font-size:clamp(2.4rem,5vw,4.2rem);font-weight:700;line-height:1.0;margin-bottom:16px;}
+.hero h1 em{font-style:normal;background:linear-gradient(135deg,var(--blue) 0%,var(--cyan) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;display:block;}
+.hero-desc{color:var(--gray);font-size:1rem;max-width:460px;margin-bottom:28px;line-height:1.75;}
+.hero-desc strong{color:var(--blue2);}
+.hero-pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:32px;}
+.h-pill{padding:6px 14px;border-radius:20px;font-size:0.75rem;font-weight:700;background:rgba(59,130,246,0.08);border:1px solid var(--border);color:var(--blue2);font-family:var(--mono);}
+.hero-visual{display:flex;justify-content:center;align-items:center;}
+
+/* ── TABS ── */
+.tabs-wrap{position:sticky;top:54px;z-index:100;background:rgba(10,12,20,0.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);}
+.tabs{max-width:1200px;margin:0 auto;padding:0 24px;display:flex;overflow-x:auto;gap:0;}
+.tab-btn{padding:14px 20px;background:none;border:none;font-family:var(--sans);font-size:0.82rem;font-weight:600;color:var(--gray);cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:all 0.2s;}
+.tab-btn:hover{color:var(--white);}
+.tab-btn.on{color:var(--blue);border-bottom-color:var(--blue);}
+
+/* ── CONTENT ── */
+.content{max-width:1200px;margin:0 auto;padding:48px 24px 80px;}
+.section{display:none;}
+.section.on{display:block;}
+
+/* ── CARDS ── */
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:28px;margin-bottom:22px;position:relative;overflow:hidden;}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--blue),var(--cyan),var(--blue));}
+.card-title{font-family:var(--display);font-size:1.1rem;font-weight:700;color:var(--blue2);margin-bottom:18px;display:flex;align-items:center;gap:10px;letter-spacing:0.5px;}
+.card p{color:var(--gray);line-height:1.75;margin-bottom:14px;}
+.card p:last-child{margin-bottom:0;}
+
+.def{background:linear-gradient(135deg,rgba(59,130,246,0.06),rgba(6,182,212,0.04));border:1px solid rgba(59,130,246,0.2);border-left:4px solid var(--blue);border-radius:8px;padding:18px 20px;margin:14px 0;font-size:0.97rem;line-height:1.8;color:var(--white);}
+.hl{color:var(--blue2);font-weight:700;}
+.ht{color:var(--cyan);font-weight:700;}
+.hg{color:var(--green);font-weight:700;}
+.ho{color:var(--orange);font-weight:700;}
+.hr{color:var(--red);font-weight:700;}
+.hx{color:var(--gold);font-weight:700;}
+
+.note{display:flex;gap:12px;padding:13px 17px;border-radius:8px;margin:12px 0;font-size:0.89rem;line-height:1.6;}
+.note.tip{background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.2);}
+.note.warn{background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.2);}
+.note.exam{background:rgba(6,182,212,0.06);border:1px solid rgba(6,182,212,0.2);}
+.note.gold{background:rgba(234,179,8,0.06);border:1px solid rgba(234,179,8,0.2);}
+.ni{font-size:1.1rem;flex-shrink:0;margin-top:1px;}
+
+.tbl{width:100%;border-collapse:collapse;margin:14px 0;font-size:0.86rem;}
+.tbl th{background:rgba(59,130,246,0.08);color:var(--blue2);font-family:var(--mono);font-size:0.67rem;letter-spacing:1.5px;text-transform:uppercase;padding:11px 14px;text-align:left;border-bottom:2px solid rgba(59,130,246,0.2);}
+.tbl td{padding:10px 14px;border-bottom:1px solid rgba(59,130,246,0.07);vertical-align:top;color:var(--gray);}
+.tbl td strong{color:var(--white);}
+.tbl tr:hover td{background:rgba(59,130,246,0.03);}
+
+.cmd{background:#060810;border:1px solid rgba(59,130,246,0.15);border-radius:8px;padding:18px 20px;margin:14px 0;font-family:var(--mono);font-size:0.83rem;overflow-x:auto;position:relative;}
+.cmd-tag{position:absolute;top:8px;right:10px;font-size:0.6rem;background:rgba(59,130,246,0.07);color:var(--blue2);padding:2px 8px;border-radius:4px;font-family:var(--sans);letter-spacing:1px;text-transform:uppercase;}
+.cl{display:block;padding:1.5px 0;}
+.cp{color:var(--blue2);}
+.ck{color:#fbbf24;}
+.cv{color:#fb923c;}
+.cc{color:#1e3a5f;font-style:italic;}
+.co{color:var(--cyan);}
+
+.b{display:inline-block;padding:2px 9px;border-radius:20px;font-size:0.67rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin:1px;}
+.bb{background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.3);color:var(--blue2);}
+.bc{background:rgba(6,182,212,0.1);border:1px solid rgba(6,182,212,0.3);color:var(--cyan);}
+.bg{background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);color:var(--green);}
+.bo{background:rgba(249,115,22,0.1);border:1px solid rgba(249,115,22,0.3);color:var(--orange);}
+.br{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:var(--red);}
+
+/* ── TOPOLOGY DIAGRAM ── */
+.topo{background:#060810;border:1px solid var(--border);border-radius:12px;padding:20px;margin:16px 0;}
+
+/* ── STEPS ── */
+.steps{display:flex;flex-direction:column;gap:0;}
+.step{display:flex;gap:16px;position:relative;padding-bottom:20px;}
+.step:last-child{padding-bottom:0;}
+.step:not(:last-child)::before{content:'';position:absolute;left:16px;top:36px;bottom:0;width:2px;background:linear-gradient(180deg,var(--blue),transparent);}
+.step-num{width:34px;height:34px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--blue),var(--cyan));display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:0.8rem;font-weight:900;color:#000;box-shadow:0 0 12px rgba(59,130,246,0.3);}
+.step-body{padding-top:5px;}
+.step-title{font-weight:700;color:var(--white);margin-bottom:4px;}
+.step-desc{font-size:0.87rem;color:var(--gray);line-height:1.6;}
+
+/* ── ROUTING TABLE ── */
+.rtable{background:#060810;border:1px solid var(--border);border-radius:10px;padding:20px;margin:16px 0;}
+.rt-hdr{display:grid;grid-template-columns:0.5fr 1fr 1fr 1fr 0.5fr;gap:8px;padding:8px 12px;background:rgba(59,130,246,0.06);border-radius:6px;margin-bottom:8px;font-family:var(--mono);font-size:0.67rem;color:var(--blue2);letter-spacing:1px;text-transform:uppercase;}
+.rt-row{display:grid;grid-template-columns:0.5fr 1fr 1fr 1fr 0.5fr;gap:8px;padding:7px 12px;border-radius:4px;font-family:var(--mono);font-size:0.72rem;color:var(--gray);border-bottom:1px solid rgba(59,130,246,0.05);transition:all 0.3s;}
+.rt-row:hover{background:rgba(59,130,246,0.04);}
+.rt-c{color:var(--green);}
+.rt-s{color:var(--orange);}
+.rt-o{color:var(--cyan);}
+.rt-r{color:var(--blue2);}
+
+/* ── GRID ── */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0;}
+.feat-card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:20px;text-align:center;}
+.feat-icon{font-size:2.2rem;margin-bottom:10px;}
+.feat-title{font-family:var(--display);font-size:0.95rem;font-weight:700;margin-bottom:6px;color:var(--white);}
+.feat-desc{font-size:0.8rem;color:var(--gray);line-height:1.5;}
+
+/* ── QUIZ ── */
+.q-box{background:rgba(6,8,16,0.8);border:1px solid var(--border);border-radius:12px;padding:22px;margin-bottom:18px;}
+.q-num{font-family:var(--mono);color:var(--gold);font-size:0.68rem;margin-bottom:8px;letter-spacing:1px;}
+.q-text{font-size:1rem;font-weight:600;line-height:1.55;margin-bottom:16px;color:var(--white);}
+.q-opts{display:grid;gap:8px;}
+.q-opt{display:flex;align-items:center;gap:12px;padding:11px 16px;border:1px solid var(--border);background:rgba(59,130,246,0.02);border-radius:8px;cursor:pointer;font-size:0.9rem;color:var(--gray);transition:all 0.2s;}
+.q-opt:hover{background:rgba(59,130,246,0.08);border-color:rgba(59,130,246,0.3);color:var(--white);}
+.q-opt.correct{background:rgba(34,197,94,0.1);border-color:var(--green);color:var(--green);}
+.q-opt.wrong{background:rgba(239,68,68,0.08);border-color:var(--red);color:var(--red);}
+.q-let{width:26px;height:26px;border-radius:50%;flex-shrink:0;background:rgba(59,130,246,0.08);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:0.68rem;font-weight:700;}
+.q-fb{display:none;margin-top:12px;padding:12px 16px;border-radius:8px;font-size:0.86rem;line-height:1.55;}
+.q-fb.show{display:block;}
+.q-fb.ok{background:rgba(34,197,94,0.07);border:1px solid rgba(34,197,94,0.3);color:#86efac;}
+.q-fb.bad{background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.3);color:#fca5a5;}
+#scoreBox{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:32px;text-align:center;margin-top:20px;display:none;}
+#scoreBox::before{content:'';display:block;height:2px;background:linear-gradient(90deg,var(--blue),var(--cyan));margin-bottom:24px;border-radius:2px;}
+#scoreTxt{font-family:var(--display);font-size:3rem;font-weight:700;display:block;margin-bottom:10px;}
+#scoreMsg{color:var(--gray);font-size:0.95rem;}
+
+/* ── FOOTER ── */
+.site-footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px 24px 20px;}
+.footer-in{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr;gap:40px;margin-bottom:24px;}
+.footer-brand p{color:var(--gray);font-size:0.84rem;line-height:1.7;max-width:260px;margin-top:10px;}
+.footer-links h4{font-family:var(--mono);font-size:0.65rem;color:var(--blue2);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;}
+.footer-links{display:flex;flex-direction:column;gap:8px;}
+.footer-links a{color:var(--gray);font-size:0.84rem;transition:color 0.2s;}
+.footer-links a:hover{color:var(--blue2);}
+.footer-bot{max-width:1200px;margin:0 auto;border-top:1px solid var(--border);padding-top:16px;text-align:center;color:var(--gray);font-size:0.75rem;}
+
+@media(max-width:800px){.hero-inner,.two-col,.footer-in{grid-template-columns:1fr;}.hero-visual{order:-1;}}
+::-webkit-scrollbar{width:4px;height:4px;}::-webkit-scrollbar-track{background:var(--bg);}::-webkit-scrollbar-thumb{background:var(--blue);border-radius:2px;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+.fu{animation:fadeUp 0.5s ease forwards;}
+</style>
+</head>
+<body>
+
+<!-- ── NAVBAR PORTAL (Orden: Portal > SW > VLAN > STP > Router) ── -->
+<nav class="portal-nav">
+  <div class="portal-nav-inner">
+    <a href="../index.html" class="pn-logo">
+      <span class="pn-cisco">CISCO</span>
+      <span class="pn-txt">Academy</span>
+    </a>
+    <a href="switches-cisco.html" class="pn-link">🔀 Switches</a>
+    <a href="vlan.html"           class="pn-link">🏷️ VLANs</a>
+    <a href="stp.html"            class="pn-link">🌳 STP</a>
+    <a href="router.html"         class="pn-link current">🌐 Router</a>
+    <span class="pn-disabled">🔗 EtherChannel <span class="pn-soon">Próximo</span></span>
+    <span class="pn-disabled">⭕ OSPF <span class="pn-soon">Próximo</span></span>
+    <span class="pn-disabled">🔒 ACLs <span class="pn-soon">Próximo</span></span>
+    <span class="pn-disabled">🌍 NAT <span class="pn-soon">Próximo</span></span>
+  </div>
+</nav>
+<div class="nav-spacer"></div>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-tag"><span class="tag-pulse"></span>CCNA 200-301 · Módulo 3 · Capa 3</div>
+      <h1>Routers<br><em>Cisco IOS</em></h1>
+      <p class="hero-desc">Domina cómo funcionan los routers, la <strong>tabla de enrutamiento</strong>, el proceso de <strong>forwarding de paquetes</strong>, routing estático y los fundamentos de protocolos dinámicos para el examen CCNA.</p>
+      <div class="hero-pills">
+        <span class="h-pill">Tabla de Routing</span>
+        <span class="h-pill">Routing Estático</span>
+        <span class="h-pill">Ruta Default</span>
+        <span class="h-pill">CEF / Process</span>
+        <span class="h-pill">AD & Métrica</span>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <canvas id="routerCanvas" width="400" height="340"></canvas>
+    </div>
+  </div>
+</section>
+
+<!-- ── TABS ── -->
+<div class="tabs-wrap">
+  <div class="tabs">
+    <button class="tab-btn on"  onclick="showTab('fundamentos',this)">📘 Fundamentos</button>
+    <button class="tab-btn"     onclick="showTab('tabla',this)">🗺️ Tabla Routing</button>
+    <button class="tab-btn"     onclick="showTab('estatico',this)">📍 Routing Estático</button>
+    <button class="tab-btn"     onclick="showTab('dinamico',this)">⚡ Routing Dinámico</button>
+    <button class="tab-btn"     onclick="showTab('config',this)">⌨️ Configuración</button>
+    <button class="tab-btn"     onclick="showTab('troubleshoot',this)">🔧 Troubleshooting</button>
+    <button class="tab-btn"     onclick="showTab('quiz',this)">🎯 Quiz CCNA</button>
+  </div>
+</div>
+
+<!-- ── CONTENIDO ── -->
+<div class="content">
+
+<!-- ═══════════ FUNDAMENTOS ═══════════ -->
+<div id="s-fundamentos" class="section on">
+
+  <div class="card fu">
+    <div class="card-title">🌐 ¿Qué es un Router?</div>
+    <div class="def">
+      Un <span class="hl">Router</span> es un dispositivo de red de <span class="ht">Capa 3 (Red)</span> del modelo OSI que interconecta redes diferentes y toma decisiones de <span class="hg">forwarding de paquetes</span> basándose en <span class="hl">direcciones IP</span>. Es el dispositivo que permite la comunicación entre redes distintas — sin router, solo hay comunicación dentro de la misma red.
+    </div>
+    <div class="note exam">
+      <div class="ni">🎯</div>
+      <div><strong style="color:var(--cyan);">CCNA Clave:</strong> Switch = Capa 2 (MACs). Router = Capa 3 (IPs). Un router <strong>decapsula la trama Ethernet</strong>, lee la IP destino, consulta su tabla de routing y <strong>reencapsula</strong> en una nueva trama con las MACs correctas para el siguiente salto.</div>
+    </div>
+  </div>
+
+  <div class="card fu">
+    <div class="card-title">⚖️ Switch vs Router — Diferencias Clave</div>
+    <table class="tbl">
+      <thead><tr><th>Característica</th><th>Switch (L2)</th><th>Router (L3)</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Capa OSI</strong></td><td>Capa 2 — Enlace</td><td style="color:var(--blue2)">Capa 3 — Red</td></tr>
+        <tr><td><strong>Dirección usada</strong></td><td>MAC Address</td><td style="color:var(--blue2)">Dirección IP</td></tr>
+        <tr><td><strong>Tabla</strong></td><td>Tabla CAM / MAC</td><td style="color:var(--blue2)">Tabla de Routing</td></tr>
+        <tr><td><strong>Dominio de broadcast</strong></td><td style="color:var(--red)">No lo divide ❌</td><td style="color:var(--green)">Sí lo divide ✅</td></tr>
+        <tr><td><strong>Conecta</strong></td><td>Dispositivos en la misma red</td><td style="color:var(--blue2)">Redes diferentes</td></tr>
+        <tr><td><strong>Encapsulación</strong></td><td>No modifica la trama</td><td style="color:var(--blue2)">Reencapsula en cada salto</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card fu">
+    <div class="card-title">🏗️ Tipos de Routers Cisco</div>
+    <table class="tbl">
+      <thead><tr><th>Serie</th><th>Uso</th><th>Características</th></tr></thead>
+      <tbody>
+        <tr><td><span class="b bb">ISR 800/900</span></td><td>SOHO / Sucursales pequeñas</td><td>Integran switch, WiFi, firewall. Router más común en labs CCNA.</td></tr>
+        <tr><td><span class="b bc">ISR 1100/4000</span></td><td>Empresas medianas</td><td>Módulos intercambiables, alta disponibilidad.</td></tr>
+        <tr><td><span class="b bo">ASR 1000/9000</span></td><td>Proveedores de servicio</td><td>Alta velocidad, MPLS, BGP. Carriers.</td></tr>
+        <tr><td><span class="b bg">CSR 1000v</span></td><td>Cloud / Virtual</td><td>Router virtual para AWS, Azure, GCP.</td></tr>
+      </tbody>
+    </table>
+    <div class="note gold">
+      <div class="ni">💡</div>
+      <div>En <strong>Packet Tracer</strong> usarás principalmente el <strong>Router 1941</strong> y <strong>2911</strong>. En GNS3/EVE-NG se usa IOS con imagen real. Para el CCNA todos los comandos son los mismos.</div>
+    </div>
+  </div>
+
+  <div class="card fu">
+    <div class="card-title">🔄 Proceso de Forwarding de Paquetes</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Recibe la trama — Verifica MAC destino</div>
+          <div class="step-desc">El router recibe la trama Ethernet. Verifica que la <strong>MAC destino</strong> sea la suya (la de su interfaz). Si no coincide, descarta la trama.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Desencapsula — Lee el paquete IP</div>
+          <div class="step-desc">Remueve el header Ethernet (Capa 2) y accede al paquete IP (Capa 3). Lee la <strong>IP destino</strong> del paquete.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Consulta la Tabla de Routing</div>
+          <div class="step-desc">Busca la <strong>coincidencia más larga (Longest Match)</strong> en su tabla de routing. Si no hay coincidencia → descarta el paquete y envía ICMP "Destination Unreachable".</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">Decrementa TTL — Verifica validez</div>
+          <div class="step-desc">Resta 1 al campo <strong>TTL (Time To Live)</strong> del paquete IP. Si TTL llega a 0, descarta el paquete y envía ICMP "Time Exceeded" al origen.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <div class="step-title">Reencapsula — Envía por la interfaz de salida</div>
+          <div class="step-desc">Crea una <strong>nueva trama Ethernet</strong> con su MAC como origen y la MAC del siguiente salto (next-hop) como destino. Envía el paquete por la interfaz correcta.</div>
+        </div>
+      </div>
+    </div>
+    <div class="note exam">
+      <div class="ni">🎯</div>
+      <div><strong style="color:var(--cyan);">CCNA Examen:</strong> El router <strong>cambia las MACs en cada salto</strong> pero la <strong>IP origen e IP destino NO cambian</strong> a lo largo del camino (excepto con NAT). Esto es fundamental — pregunta común en el examen.</div>
+    </div>
+  </div>
+
+</div><!-- /fundamentos -->
+
+<!-- ═══════════ TABLA ROUTING ═══════════ -->
+<div id="s-tabla" class="section">
+
+  <div class="card fu">
+    <div class="card-title">🗺️ La Tabla de Routing — El Cerebro del Router</div>
+    <div class="def">
+      La <span class="hl">Tabla de Routing</span> (también llamada <span class="ht">RIB - Routing Information Base</span>) es la base de datos del router donde almacena todas las <span class="hg">rutas conocidas</span> hacia las redes destino. Cada entrada contiene: red destino, máscara, protocolo origen, métrica, next-hop e interfaz de salida.
+    </div>
+
+    <div class="rtable">
+      <div class="rt-hdr">
+        <span>Código</span>
+        <span>Red Destino</span>
+        <span>Next-Hop / Interfaz</span>
+        <span>Métrica</span>
+        <span>AD</span>
+      </div>
+      <div class="rt-row"><span class="rt-c">C</span><span>192.168.1.0/24</span><span>GigabitEthernet0/0</span><span>0</span><span>0</span></div>
+      <div class="rt-row"><span class="rt-c">L</span><span>192.168.1.1/32</span><span>GigabitEthernet0/0</span><span>0</span><span>0</span></div>
+      <div class="rt-row"><span class="rt-c">C</span><span>192.168.2.0/24</span><span>GigabitEthernet0/1</span><span>0</span><span>0</span></div>
+      <div class="rt-row"><span class="rt-s">S</span><span>10.0.0.0/8</span><span>192.168.1.254</span><span>1</span><span>1</span></div>
+      <div class="rt-row"><span class="rt-o">O</span><span>172.16.0.0/16</span><span>192.168.2.254</span><span>110</span><span>110</span></div>
+      <div class="rt-row"><span class="rt-s">S*</span><span>0.0.0.0/0</span><span>203.0.113.1</span><span>1</span><span>1</span></div>
+    </div>
+
+    <table class="tbl" style="margin-top:16px;">
+      <thead><tr><th>Código</th><th>Significado</th><th>AD (Admin Distance)</th></tr></thead>
+      <tbody>
+        <tr><td><strong style="color:var(--green);">C</strong></td><td>Connected — Red directamente conectada</td><td style="color:var(--green);">0</td></tr>
+        <tr><td><strong style="color:var(--green);">L</strong></td><td>Local — IP exacta de la interfaz del router</td><td style="color:var(--green);">0</td></tr>
+        <tr><td><strong style="color:var(--orange);">S</strong></td><td>Static — Ruta configurada manualmente</td><td style="color:var(--orange);">1</td></tr>
+        <tr><td><strong style="color:var(--cyan);">O</strong></td><td>OSPF — Open Shortest Path First</td><td style="color:var(--cyan);">110</td></tr>
+        <tr><td><strong style="color:var(--blue2);">D</strong></td><td>EIGRP — Enhanced IGRP</td><td style="color:var(--blue2);">90</td></tr>
+        <tr><td><strong style="color:var(--gold);">R</strong></td><td>RIP — Routing Information Protocol</td><td style="color:var(--gold);">120</td></tr>
+        <tr><td><strong style="color:var(--orange);">S*</strong></td><td>Default Route — Ruta de último recurso</td><td style="color:var(--orange);">1</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card fu">
+    <div class="card-title">📏 Administrative Distance (AD) — Confiabilidad de Fuentes</div>
+    <div class="def">
+      La <span class="hl">Administrative Distance (AD)</span> es un valor del <span class="hg">0 al 255</span> que indica la <span class="ht">confiabilidad de la fuente de la ruta</span>. Cuando el router aprende la misma red por múltiples protocolos, instala en la tabla de routing la ruta con <span class="hl">menor AD</span>. Una AD de 255 significa "no confiable — nunca usar".
+    </div>
+    <div class="note exam">
+      <div class="ni">🎯</div>
+      <div><strong style="color:var(--cyan);">CCNA Examen — Memoriza estos valores:</strong> Connected=0, Static=1, EIGRP=90, OSPF=110, RIP=120, External EIGRP=170, Unknown=255. Si hay dos rutas a la misma red, gana la de <strong>menor AD</strong>.</div>
+    </div>
+    <div class="cmd">
+      <span class="cmd-tag">VERIFICACIÓN</span>
+      <span class="cl"><span class="cp">Router#</span> <span class="ck">show ip route</span>                    <span class="cc">! Ver tabla de routing completa</span></span>
+      <span class="cl"><span class="cp">Router#</span> <span class="ck">show ip route</span> <span class="cv">192.168.1.0</span>        <span class="cc">! Ver ruta específica</span></span>
+      <span class="cl"><span class="cp">Router#</span> <span class="ck">show ip route summary</span>             <span class="cc">! Resumen de rutas por protocolo</span></span>
+      <span class="cl"><span class="cp">Router#</span> <span class="ck">show ip route connected</span>           <span class="cc">! Solo rutas directamente conectadas</span></span>
+      <span class="cl"><span class="cp">Router#</span> <span class="ck">show ip route static</span>              <span class="cc">! Solo rutas estáticas</span></span>
+    </div>
+  </div>
+
+</div><!-- /tabla -->
+
+<!-- ═══════════ ROUTING ESTÁTICO ═══════════ -->
+<div id="s-estatico" class="section">
+
+  <div class="card fu">
+    <div class="card-title">📍 Routing Estático</div>
+    <div class="def">
+      Una <span class="hl">ruta estática</span> es una ruta configurada <span class="hg">manualmente</span> por el administrador. No cambia automáticamente cuando la topología cambia. Es simple, predecible y tiene la <span class="ht">menor AD (1)</span> después de las rutas conectadas. Ideal para redes pequeñas o para definir la ruta por defecto.
+    </div>
+
+    <div class="two-col">
+      <div class="feat-card">
+        <div class="feat-icon">✅</div>
+        <div class="feat-title" style="color:var(--green);">Ventajas</div>
+        <div class="feat-desc">Simple de configurar. No consume ancho de banda ni CPU. Predecible y seguro. AD=1 (alta prioridad). Ideal para redes pequeñas o stub.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">❌</div>
+        <div class="feat-title" style="color:var(--red);">Desventajas</div>
+        <div class="feat-desc">No se adapta a cambios de topología. Administración manual compleja en redes grandes. No escala bien. Requiere conocimiento completo de la red.</div>
+      </div>
+    </div>
+
+    <div class="cmd">
+      <span class="cmd-tag">ROUTING ESTÁTICO</span>
+      <span class="cl"><span class="cc">! Sintaxis básica:</span></span>
+      <span class="cl"><span class="cp">Router(config)#</span> <span class="ck">ip route</span> <span class="cv">[red-destino] [máscara] [next-hop | interfaz]</span></span>
+      <span class="cl"> </span>
+      <span class="cl"><span class="cc">! Ejemplo 1 — Via next-hop IP (recomendado en WAN):</span></span>
+      <span class="cl"><span class="cp">Router(config)#</span> <span class="ck">ip route</span> <span class="cv">192.168.3.0 255.255.255.0 10.0.0.2</span></span>
+      <span class="cl"> </span>
+      <span class="cl"><span class="cc">! Ejemplo 2 — Via interfaz de salida (recomendado en LAN):</span></span>
+      <span class="cl"><span class="cp">Router(config)#</span> <span class="ck">ip route</span> <span class="cv">192.168.3.0 255.255.255.0 GigabitEthernet0/1</span></span>
+      <span class="cl"> </span>
+      <span class="cl"><span class="cc">! Ejemplo 3 — Via next-hop + interfaz (más específico):</span></span>
+      <span class="cl"><span class="cp">Router(config)#</span> <span class="ck">ip route</span> <span class="cv">192.168.3.0 255.255.255.0 GigabitEthernet0/1 10.0.0.2</span></span>
+      <span class="cl"> </span>
+      <span class="cl"><span class="cc">! Ruta Default — hacia Internet (0.0.0.0/0):</span></span>
+      <span class="cl"><span class="cp">Router(config)#</span> <span class="ck">ip route</span> <span class="cv">0.0.0.0 0.0.0.0 203.0.113.1</span>   <span class="cc">! IP del ISP</span></span>
+      <span class="cl"> </span>
+      <span class="cl"><span class="cc">! Ruta flotante (AD mayor = respaldo):</span></span>
+      <span class="cl"><span class="cp">Router(config)#</span> <span class="ck">ip route</span> <span class="cv">192.168.3.0 255.255.255.0 10.0.0.5 5</span>  <span class="cc">! AD=5</span></span>
+    </div>
+    <div class="note tip">
+      <div class="ni">✅</div>
+      <div><strong>Ruta Flotante:</strong> Es una ruta estática con AD mayor que la ruta principal. Solo se activa si la ruta principal falla. Por ejemplo: ruta primaria AD=1, ruta flotante AD=5. Mientras la primaria esté activa, la flotante no aparece en la tabla.</div>
+    </div>
+    <div class="note warn">
+      <div class="ni">⚠️</div>
+      <div><strong>Ruta Recursiva:</strong> Cuando el next-hop es una IP (no una interfaz), el router hace una segunda búsqueda en la tabla para resolver esa IP. Esto se llama <em>recursive lookup</em>. Para evitarlo, especifica la interfaz O usa next-hop + interfaz juntos.</div>
+    </div>
+  </div>
+
+</div><!-- /estatico -->
+
+<!-- ═══════════ ROUTING DINÁMICO ═══════════ -->
+<div id="s-dinamico" class="section">
+
+  <div class="card fu">
+    <div class="card-title">⚡ Routing Dinámico — Visión General</div>
+    <div class="def">
+      Los <span class="hl">protocolos de routing dinámico</span> permiten a los routers <span class="hg">aprender automáticamente</span> las rutas de la red y <span class="ht">adaptarse a cambios</span> de topología sin intervención manual. Intercambian información de routing entre routers vecinos usando mensajes propios de cada protocolo.
+    </div>
+    <table class="tbl">
+      <thead><tr><th>Protocolo</th><th>Tipo</th><th>AD</th><th>Métrica</th><th>Uso</th></tr></thead>
+      <tbody>
+        <tr><td><span class="b bo">RIP v2</span></td><td>Distance Vector</td><td>120</td><td>Hop Count (máx 15)</td><td>Redes muy pequeñas. Casi obsoleto.</td></tr>
+        <tr><td><span class="b bb">EIGRP</span></td><td>Advanced D.V. (Cisco)</td><td>90</td><td>Bandwidth + Delay</td><td>Redes Cisco medianas/grandes.</td></tr>
+        <tr><td><span class="b bc">OSPF</span></td><td>Link State</td><td>110</td><td>Cost (basado en BW)</td><td>Estándar abierto. El más importante en CCNA.</td></tr>
+        <tr><td><span class="b br">BGP</span></td><td>Path Vector</td><td>20/200</td><td>Atributos de ruta</td><td>Internet. Entre ISPs y empresas grandes.</td></tr>
+      </tbody>
+    </table>
+    <div class="note exam">
+      <div class="ni">🎯</div>
+      <div><strong style="color:var(--cyan);">CCNA Enfoque:</strong> El examen CCNA 200-301 se enfoca principalmente en <strong>OSPF de área única (Single Area OSPF)</strong>. RIP y EIGRP son conceptuales. BGP es de nivel CCNP/CCIE.</div>
+    </div>
+  </div>
+
+  <div class="card fu">
+    <div class="card-title">🔗 Distance Vector vs Link State</div>
+    <table class="tbl">
+      <thead><tr><th>Característica</th><th>Distance Vector (RIP/EIGRP)</th><th>Link State (OSPF)</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Información compartida</strong></td><td>Solo tabla de routing</td><td style="color:var(--blue2)">Mapa completo de la topología</td></tr>
+        <tr><td><strong>Vecinos</strong></td><td>Solo vecinos directos</td><td style="color:var(--blue2)">Toda la topología del área</td></tr>
+        <tr><td><strong>Convergencia</strong></td><td style="color:var(--red)">Lenta</td><td style="color:var(--green)">Rápida ✅</td></tr>
+        <tr><td><strong>Algoritmo</strong></td><td>Bellman-Ford</td><td style="color:var(--blue2)">Dijkstra (SPF)</td></tr>
+        <tr><td><strong>Escalabilidad</strong></td><td style="color:var(--red)">Limitada</td><td style="color:var(--green)">Alta ✅</td></tr>
+        <tr><td><strong>Base de datos</strong></td><td>Routing Table</td><td style="color:var(--blue2)">LSDB (Link State Database)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div><!-- /dinamico -->
+
+<!-- ═══════════ CONFIGURACIÓN ═══════════ -->
+<div id="s-config" class="section">
+
+  <div class="card fu">
+    <div class="card-title">⌨️ Configuración Inicial del Router</div>
+    <div class="cmd">
+      <span class="cmd-tag">SETUP BÁSICO</span>
+      <span class="cl"><span class="cp">Router></span> <span class="ck">enable</span></span>
+      <span class="cl"><span class="cp">Router#</span> <span class="ck">configure terminal</span></span>
+      <span class="cl"><span class="cp">Router(config)#</span> <span class="ck">hostname</span> <span class="cv">R1-CORE</span></span>
+      <span class="cl"><span class="cp">R1-CORE(config)#</span> <span class="ck">enable secret</span> <span class="cv">Cisco123!</span></span>
+      <span class="cl"><span class="cp">R1-CORE(config)#</span> <span class="ck">no ip domain-lookup</span>              <span class="cc">! Evita DNS lookup en typos</span></span>
+      <span class="cl"><span class="cp">R1-CORE(config)#</span> <span class="ck">service password-encryption</span>      <span class="cc">! Cifrar contraseñas en config</span></span>
+      <span class="cl"><span class="cp">R1-CORE(config)#</span> <span class="ck">banner motd</span> <span class="cv">#ACCESO SOLO PERSONAL AUTORIZADO#</span></span>
+    </div>
+  </div>
+
+  <div class="card fu">
+    <div class="card-title">🔌 Configurar Interfaces del Router</div>
+    <div class="cmd">
+      <span class="cmd-tag">INTERFACES</span>
+      <span class="cl"><span class="cc">! Interfaz LAN (hacia la red interna):</span></span>
+      <span class="cl"><span class="cp">R1-CORE(config)#</span> <span class="ck">interface</span> <span class="cv">GigabitEthernet0/0</span></span>
+      <span class="cl"><span class="cp">R1-CORE(config-if)#</span> <span class="ck">description</span> <span class="cv">Enlace a LAN Oficina</span></span>
+      <span class="cl"><span class="cp">R1-CORE(config-if)#</span> <span class="ck">ip address</span> <span class="cv">192.168.1.1 255.255.255.0</span></span>
+      <span class="cl"><span class="cp">R1-CORE(config-if)#</span> <span class="ck">no shutdown</span></span>
+      <span class="cl"><span class="cp">R1-CORE(config-if)#</span> <span class="ck">exit</span></span>
+      <span class="cl"> </span>
+      <span class="cl"><span class="cc">! Interfaz WAN (hacia el ISP / otra red):</span></span>
+      <span class="cl"><span class="cp">R1-CORE(config)#</span> <span class="ck">interface</span> <span class="cv">GigabitEthernet0/1</span></span>
+      <span class="cl"><span class="cp">R1-CORE(config-if)#</span> <span class="ck">description</span> <span class="cv">Enlace WAN a ISP</span></span>
+      <span class="cl"><span class="cp">R1-CORE(config-if)#</span> <span class="ck">ip address</span> <span class="cv">203.0.113.2 255.255.255.252</span>  <span class="cc">! /30 en WAN</span></span>
+      <span class="cl"><span class="cp">R1-CORE(config-if)#</span> <span class="ck">no shutdown</span></span>
+      <span class="cl"><span class="cp">R1-CORE(config-if)#</span> <span class="ck">exit</span></span>
+      <span class="cl"> </span>
+      <span class="cl"><span class="cc">! Subinterfaces para Router-on-a-Stick (Inter-VLAN Routing):</span></span>
+      <span class="cl"><span class="cp">R1-CORE(config)#</span> <span class="ck">interface</span> <span class="cv">GigabitEthernet0/0.10</span></span>
+      <span class="cl"><span class="cp">R1-CORE(config-subif)#</span> <span class="ck">encapsulation dot1Q</span> <span class="cv">10</span></span>
+      <span class="cl"><span class="cp">R1-CORE(config-subif)#</span> <span class="ck">ip address</span> <span class="cv">192.168.10.1 255.255.255.0</span></span>
+      <span class="cl"><span class="cp">R1-CORE(config-subif)#</span> <span class="ck">exit</span></span>
+    </div>
+    <div class="note tip">
+      <div class="ni">✅</div>
+      <div><strong>Router-on-a-Stick:</strong> Técnica para hacer Inter-VLAN Routing con un solo enlace físico entre el router y el switch. Se crean subinterfaces (Gi0/0.10, Gi0/0.20) con encapsulación 802.1Q. El switch debe configurar ese puerto como <strong>trunk</strong>.</div>
+    </div>
+  </div>
+
+  <div class="card fu">
+    <div class="card-title">🔐 Acceso SSH al Router</div>
+    <div class="cmd">
+      <span class="cmd-tag">SSH SEGURO</span>
+      <span class="cl"><span class="cp">R1-CORE(config)#</span> <span class="ck">ip domain-name</span> <span class="cv">empresa.local</span></span>
+      <span class="cl"><span class="cp">R1-CORE(config)#</span> <span class="ck">crypto key generate rsa modulus</span> <span class="cv">2048</span></span>
+      <span class="cl"><span class="cp">R1-CORE(config)#</span> <span class="ck">ip ssh version</span> <span class="cv">2</span></span>
+      <span class="cl"><span class="cp">R1-CORE(config)#</span> <span class="ck">username</span> <span class="cv">admin</span> <span class="ck">privilege</span> <span class="cv">15</span> <span class="ck">secret</span> <span class="cv">Admin123!</span></span>
+      <span class="cl"><span class="cp">R1-CORE(config)#</span> <span class="ck">line vty</span> <span class="cv">0 4</span></span>
+      <span class="cl"><span class="cp">R1-CORE(config-line)#</span> <span class="ck">transport input</span> <span class="cv">ssh</span></span>
+      <span class="cl"><span class="cp">R1-CORE(config-line)#</span> <span class="ck">login local</span></span>
+      <span class="cl"><span class="cp">R1-CORE(config-line)#</span> <span class="ck">exec-timeout</span> <span class="cv">5 0</span>                  <span class="cc">! Timeout 5 min</span></span>
+      <span class="cl"> </span>
+      <span class="cl"><span class="cc">! Guardar configuración:</span></span>
+      <span class="cl"><span class="cp">R1-CORE#</span> <span class="ck">copy running-config startup-config</span></span>
+    </div>
+  </div>
+
+</div><!-- /config -->
+
+<!-- ═══════════ TROUBLESHOOTING ═══════════ -->
+<div id="s-troubleshoot" class="section">
+
+  <div class="card fu">
+    <div class="card-title">🔧 Comandos de Verificación y Troubleshooting</div>
+    <div class="cmd">
+      <span class="cmd-tag">VERIFICACIÓN ESENCIAL</span>
+      <span class="cl"><span class="cp">Router#</span> <span class="ck">show ip interface brief</span>            <span class="cc">! Estado de todas las interfaces</span></span>
+      <span class="cl"><span class="cp">Router#</span> <span class="ck">show interfaces</span> <span class="cv">Gi0/0</span>             <span class="cc">! Detalle: errores, duplex, BW</span></span>
+      <span class="cl"><span class="cp">Router#</span> <span class="ck">show ip route</span>                     <span class="cc">! Tabla de routing completa</span></span>
+      <span class="cl"><span class="cp">Router#</span> <span class="ck">show running-config</span>               <span class="cc">! Configuración activa</span></span>
+      <span class="cl"><span class="cp">Router#</span> <span class="ck">show version</span>                     <span class="cc">! IOS, RAM, Flash, uptime</span></span>
+      <span class="cl"> </span>
+      <span class="cl"><span class="cc">! Probar conectividad:</span></span>
+      <span class="cl"><span class="cp">Router#</span> <span class="ck">ping</span> <span class="cv">192.168.1.100</span>              <span class="cc">! Ping básico</span></span>
+      <span class="cl"><span class="cp">Router#</span> <span class="ck">ping</span> <span class="cv">192.168.1.100</span> <span class="ck">source</span> <span class="cv">Gi0/1</span> <span class="cc">! Ping desde interfaz específica</span></span>
+      <span class="cl"><span class="cp">Router#</span> <span class="ck">traceroute</span> <span class="cv">8.8.8.8</span>             <span class="cc">! Trazar ruta hop a hop</span></span>
+      <span class="cl"> </span>
+      <span class="cl"><span class="cc">! Debug (¡cuidado en producción!):</span></span>
+      <span class="cl"><span class="cp">Router#</span> <span class="ck">debug ip routing</span>                 <span class="cc">! Ver cambios en tabla de routing</span></span>
+      <span class="cl"><span class="cp">Router#</span> <span class="ck">undebug all</span>                      <span class="cc">! SIEMPRE desactivar debug después</span></span>
+    </div>
+
+    <div class="note warn">
+      <div class="ni">⚠️</div>
+      <div><strong>Debug en Producción:</strong> Nunca uses <code style="color:var(--blue2)">debug ip packet</code> en un router de producción con tráfico real — puede colapsar la CPU al 100%. Siempre usa <code style="color:var(--blue2)">undebug all</code> al terminar.</div>
+    </div>
+  </div>
+
+  <div class="card fu">
+    <div class="card-title">🔍 Metodología de Troubleshooting — Capa por Capa</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Capa 1 — ¿Hay señal física?</div>
+          <div class="step-desc"><code style="color:var(--blue2)">show interfaces Gi0/0</code> → Busca "line protocol is up". Si dice "down/down" → cable desconectado o puerto apagado. Verifica con <code style="color:var(--blue2)">no shutdown</code>.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Capa 3 — ¿Está la IP configurada correctamente?</div>
+          <div class="step-desc"><code style="color:var(--blue2)">show ip interface brief</code> → Verifica IP, máscara correcta y estado "up/up". Haz ping a la IP del gateway desde el router.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Tabla de Routing — ¿Existe la ruta?</div>
+          <div class="step-desc"><code style="color:var(--blue2)">show ip route</code> → Verifica que existe ruta hacia el destino. Si no hay ruta → configura ruta estática o verifica el protocolo de routing.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">Conectividad end-to-end</div>
+          <div class="step-desc"><code style="color:var(--blue2)">ping</code> y <code style="color:var(--blue2)">traceroute</code> para verificar la ruta completa. Si el ping llega hasta cierto hop y falla, el problema está en ese router o en el router siguiente.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /troubleshoot -->
+
+<!-- ═══════════ QUIZ ═══════════ -->
+<div id="s-quiz" class="section">
+  <div class="card">
+    <div class="card-title">🎯 Quiz — Routers Cisco (Estilo Examen CCNA)</div>
+    <div class="note exam"><div class="ni">📋</div><div>8 preguntas estilo examen oficial Cisco CCNA 200-301.</div></div>
+
+    <div class="q-box" id="q1">
+      <div class="q-num">PREGUNTA 01 / 08</div>
+      <div class="q-text">Un router recibe un paquete con destino 192.168.5.100. Su tabla de routing tiene: 192.168.5.0/24 via 10.0.0.1 y 0.0.0.0/0 via 203.0.113.1. ¿Cuál ruta usa?</div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="ans(1,'A','correct','¡Correcto! El router usa el principio de Longest Prefix Match: elige la ruta con la máscara más larga (más específica) que coincida con el destino. 192.168.5.0/24 tiene una máscara /24, que es más específica que /0 (la default route), por lo tanto se usa esa ruta via 10.0.0.1.')"><div class="q-let">A</div>192.168.5.0/24 via 10.0.0.1 — Coincidencia más específica (/24 > /0)</div>
+        <div class="q-opt" onclick="ans(1,'B','wrong','La ruta default 0.0.0.0/0 se usa solo cuando NO hay ninguna otra ruta más específica. Como existe 192.168.5.0/24 que coincide con el destino, esa tiene prioridad.')"><div class="q-let">B</div>0.0.0.0/0 via 203.0.113.1 — La ruta default siempre tiene prioridad</div>
+        <div class="q-opt" onclick="ans(1,'C','wrong','El router no usa ambas rutas simultáneamente para un mismo paquete. El load balancing requiere configuración específica y rutas de igual costo.')"><div class="q-let">C</div>Usa ambas rutas en load balancing</div>
+        <div class="q-opt" onclick="ans(1,'D','wrong','El router no descarta el paquete — tiene rutas disponibles. Solo descarta si no hay ninguna ruta que coincida y no hay ruta default.')"><div class="q-let">D</div>Descarta el paquete — ambigüedad en la tabla</div>
+      </div>
+      <div class="q-fb" id="fb1"></div>
+    </div>
+
+    <div class="q-box" id="q2">
+      <div class="q-num">PREGUNTA 02 / 08</div>
+      <div class="q-text">¿Qué campo del paquete IP modifica el router en CADA salto durante el forwarding?</div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="ans(2,'A','wrong','La IP de origen NO cambia durante el forwarding (excepto con NAT). Se mantiene igual desde el origen hasta el destino.')"><div class="q-let">A</div>La dirección IP de origen</div>
+        <div class="q-opt" onclick="ans(2,'B','wrong','La dirección IP de destino NO cambia durante el forwarding (excepto con NAT/PAT). El router no modifica el destino.')"><div class="q-let">B</div>La dirección IP de destino</div>
+        <div class="q-opt" onclick="ans(2,'C','correct','¡Correcto! El TTL (Time To Live) se decrementa en 1 en cada router (cada salto/hop). Cuando llega a 0, el router descarta el paquete y envía un ICMP "Time Exceeded" al origen. Esto previene bucles infinitos de paquetes.')"><div class="q-let">C</div>El TTL (Time To Live) — se decrementa en 1 en cada salto</div>
+        <div class="q-opt" onclick="ans(2,'D','wrong','El puerto de destino TCP/UDP está en Capa 4 y el router (L3) no lo modifica durante el forwarding normal.')"><div class="q-let">D</div>El puerto de destino TCP/UDP</div>
+      </div>
+      <div class="q-fb" id="fb2"></div>
+    </div>
+
+    <div class="q-box" id="q3">
+      <div class="q-num">PREGUNTA 03 / 08</div>
+      <div class="q-text">¿Cuál es la Administrative Distance (AD) de una ruta aprendida por OSPF?</div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="ans(3,'A','wrong','AD=1 corresponde a rutas estáticas (configuradas manualmente), no a OSPF.')"><div class="q-let">A</div>1</div>
+        <div class="q-opt" onclick="ans(3,'B','wrong','AD=90 corresponde a EIGRP (protocolo propietario de Cisco), no a OSPF.')"><div class="q-let">B</div>90</div>
+        <div class="q-opt" onclick="ans(3,'C','correct','¡Correcto! OSPF tiene una Administrative Distance de 110. Memoriza: Connected=0, Static=1, EIGRP=90, OSPF=110, RIP=120. Menor AD = más confiable = se prefiere en la tabla de routing.')"><div class="q-let">C</div>110</div>
+        <div class="q-opt" onclick="ans(3,'D','wrong','AD=120 corresponde a RIP (Routing Information Protocol), el protocolo de routing más antiguo.')"><div class="q-let">D</div>120</div>
+      </div>
+      <div class="q-fb" id="fb3"></div>
+    </div>
+
+    <div class="q-box" id="q4">
+      <div class="q-num">PREGUNTA 04 / 08</div>
+      <div class="q-text">Un administrador configura: ip route 0.0.0.0 0.0.0.0 203.0.113.1 ¿Qué tipo de ruta es esta?</div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="ans(4,'A','wrong','Una ruta host tiene máscara /32 (255.255.255.255) para una IP específica. 0.0.0.0/0 no es una ruta host.')"><div class="q-let">A</div>Ruta host para la IP 203.0.113.1</div>
+        <div class="q-opt" onclick="ans(4,'B','wrong','Una ruta de red tiene una máscara específica (ej: /24, /16). 0.0.0.0/0 con máscara 0.0.0.0 coincide con CUALQUIER destino, no con una red específica.')"><div class="q-let">B</div>Ruta de red estándar Clase A</div>
+        <div class="q-opt" onclick="ans(4,'C','correct','¡Correcto! 0.0.0.0/0 es la ruta default (ruta de último recurso). Coincide con CUALQUIER destino. Se usa cuando el router no tiene una ruta más específica en su tabla. Aparece como S* en "show ip route". Esencial para conectividad a Internet.')"><div class="q-let">C</div>Ruta default (default route) — ruta de último recurso</div>
+        <div class="q-opt" onclick="ans(4,'D','wrong','Una ruta flotante es una ruta de respaldo con AD mayor que la primaria. 0.0.0.0/0 es la ruta default, no necesariamente flotante (aunque puede serlo).')"><div class="q-let">D</div>Ruta flotante de respaldo</div>
+      </div>
+      <div class="q-fb" id="fb4"></div>
+    </div>
+
+    <div class="q-box" id="q5">
+      <div class="q-num">PREGUNTA 05 / 08</div>
+      <div class="q-text">¿Qué hace el router cuando recibe un paquete y el TTL llega a 0?</div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="ans(5,'A','wrong','El router no reenvía el paquete con TTL=0. Eso causaría bucles infinitos.')"><div class="q-let">A</div>Reenvía el paquete al siguiente salto normalmente</div>
+        <div class="q-opt" onclick="ans(5,'B','correct','¡Correcto! Cuando el TTL llega a 0, el router descarta el paquete y envía un mensaje ICMP Type 11 "Time Exceeded" de vuelta al origen. Este mecanismo es el que usa el comando traceroute/tracert para mapear la ruta hop-by-hop.')"><div class="q-let">B</div>Descarta el paquete y envía ICMP "Time Exceeded" al origen</div>
+        <div class="q-opt" onclick="ans(5,'C','wrong','El router no reinicia el TTL. Eso también causaría bucles.')"><div class="q-let">C</div>Reinicia el TTL a 255 y continúa el forwarding</div>
+        <div class="q-opt" onclick="ans(5,'D','wrong','El router no envía el paquete de vuelta al origen — lo descarta y notifica con ICMP.')"><div class="q-let">D</div>Envía el paquete de vuelta al origen por la misma ruta</div>
+      </div>
+      <div class="q-fb" id="fb5"></div>
+    </div>
+
+    <div class="q-box" id="q6">
+      <div class="q-num">PREGUNTA 06 / 08</div>
+      <div class="q-text">¿Cuál es el propósito de una "ruta flotante" (floating static route)?</div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="ans(6,'A','wrong','Las rutas flotantes no aumentan la velocidad. Se usan para redundancia.')"><div class="q-let">A</div>Aumentar la velocidad de forwarding del router</div>
+        <div class="q-opt" onclick="ans(6,'B','wrong','Las rutas flotantes son rutas estáticas, no dinámicas.')"><div class="q-let">B</div>Reemplazar permanentemente el routing dinámico</div>
+        <div class="q-opt" onclick="ans(6,'C','correct','¡Correcto! Una ruta flotante es una ruta estática con AD mayor que la ruta principal. Permanece "flotando" (invisible en la tabla) mientras la ruta primaria esté activa. Si la ruta primaria falla y desaparece de la tabla, la ruta flotante aparece automáticamente como respaldo.')"><div class="q-let">C</div>Servir como ruta de respaldo que se activa solo si la ruta principal falla</div>
+        <div class="q-opt" onclick="ans(6,'D','wrong','Las rutas flotantes no hacen load balancing. Para load balancing se necesitan rutas de igual costo (Equal Cost Load Balancing).')"><div class="q-let">D</div>Hacer load balancing entre dos ISPs simultáneamente</div>
+      </div>
+      <div class="q-fb" id="fb6"></div>
+    </div>
+
+    <div class="q-box" id="q7">
+      <div class="q-num">PREGUNTA 07 / 08</div>
+      <div class="q-text">¿Qué comando muestra el estado de TODAS las interfaces del router con sus IPs en formato resumido?</div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="ans(7,'A','wrong','show ip route muestra la tabla de routing (rutas), no el estado de las interfaces.')"><div class="q-let">A</div>show ip route</div>
+        <div class="q-opt" onclick="ans(7,'B','correct','¡Correcto! show ip interface brief muestra en formato tabla: nombre de interfaz, IP asignada, método de asignación, estado (Status) y protocolo (Protocol). Es el comando más usado para diagnóstico rápido de interfaces. Busca "up/up" para interfaces activas.')"><div class="q-let">B</div>show ip interface brief</div>
+        <div class="q-opt" onclick="ans(7,'C','wrong','show interfaces (sin brief) muestra información detallada de UNA interfaz incluyendo contadores de errores, pero no es el formato resumido de todas las interfaces.')"><div class="q-let">C</div>show interfaces</div>
+        <div class="q-opt" onclick="ans(7,'D','wrong','show running-config muestra la configuración completa del router, no específicamente el estado de las interfaces en formato tabla.')"><div class="q-let">D</div>show running-config</div>
+      </div>
+      <div class="q-fb" id="fb7"></div>
+    </div>
+
+    <div class="q-box" id="q8">
+      <div class="q-num">PREGUNTA 08 / 08</div>
+      <div class="q-text">En la técnica Router-on-a-Stick para Inter-VLAN Routing, ¿cómo debe configurarse el puerto del switch conectado al router?</div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="ans(8,'A','wrong','Un puerto access solo puede pertenecer a una VLAN. Router-on-a-Stick necesita transportar tráfico de múltiples VLANs en un solo enlace, lo que requiere trunking.')"><div class="q-let">A</div>Como puerto access en VLAN 1</div>
+        <div class="q-opt" onclick="ans(8,'B','correct','¡Correcto! En Router-on-a-Stick, el puerto del switch conectado al router debe configurarse como TRUNK para poder transportar tráfico etiquetado (802.1Q) de múltiples VLANs. El router crea subinterfaces (Gi0/0.10, Gi0/0.20) con encapsulación dot1Q para cada VLAN.')"><div class="q-let">B</div>Como puerto trunk (802.1Q) para transportar múltiples VLANs</div>
+        <div class="q-opt" onclick="ans(8,'C','wrong','EtherChannel agrupa múltiples interfaces físicas en un canal lógico para mayor ancho de banda/redundancia. No tiene relación con Router-on-a-Stick.')"><div class="q-let">C</div>Como EtherChannel con LACP</div>
+        <div class="q-opt" onclick="ans(8,'D','wrong','El modo routed port (no switchport) se usa en switches L3, no para la conexión al router en Router-on-a-Stick.')"><div class="q-let">D</div>Como routed port con ip routing habilitado</div>
+      </div>
+      <div class="q-fb" id="fb8"></div>
+    </div>
+
+    <div id="scoreBox">
+      <div id="scoreTxt"></div>
+      <div id="scoreMsg"></div>
+    </div>
+  </div>
+</div><!-- /quiz -->
+
+</div><!-- /content -->
+
+<footer class="site-footer">
+  <div class="footer-in">
+    <div class="footer-brand">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span class="pn-cisco">CISCO</span>
+        <span class="pn-txt">Academy</span>
+      </div>
+      <p>Ruta completa de aprendizaje hacia las certificaciones Cisco CCNA, CCNP y CCIE.</p>
+    </div>
+    <div class="footer-links">
+      <h4>Módulo Switching</h4>
+      <a href="switches-cisco.html">Switches Cisco</a>
+      <a href="vlan.html">VLANs</a>
+      <a href="stp.html">STP</a>
+    </div>
+    <div class="footer-links">
+      <h4>Módulo Routing</h4>
+      <a href="router.html">Routers Cisco</a>
+      <a href="#">OSPF (Próximo)</a>
+      <a href="#">ACLs (Próximo)</a>
+    </div>
+  </div>
+  <div class="footer-bot">Basado en el currículo oficial de Cisco Networking Academy | CCNA 200-301</div>
+</footer>
+
+<script>
+// TABS
+function showTab(id,btn){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('on'));
+  document.getElementById('s-'+id).classList.add('on');
+  btn.classList.add('on');
+  window.scrollTo({top:document.querySelector('.tabs-wrap').offsetTop-10,behavior:'smooth'});
+}
+
+// ROUTER CANVAS
+(function(){
+  const c=document.getElementById('routerCanvas');
+  if(!c)return;
+  const ctx=c.getContext('2d');
+  const W=c.width,H=c.height;
+  const routers=[
+    {x:200,y:170,label:'R1',color:'#3b82f6'},
+    {x:80, y:80, label:'R2',color:'#06b6d4'},
+    {x:320,y:80, label:'R3',color:'#06b6d4'},
+    {x:80, y:260,label:'R4',color:'#06b6d4'},
+    {x:320,y:260,label:'R5',color:'#06b6d4'},
+  ];
+  const nets=[
+    {x:200,y:50, label:'Internet',color:'#22c55e'},
+    {x:50, y:170,label:'LAN-A',color:'#f97316'},
+    {x:350,y:170,label:'LAN-B',color:'#f97316'},
+  ];
+  const links=[
+    [routers[0],routers[1]],[routers[0],routers[2]],
+    [routers[0],routers[3]],[routers[0],routers[4]],
+    [routers[1],routers[2]],[routers[3],routers[4]],
+    [routers[0],nets[0]],[routers[3],nets[1]],[routers[4],nets[2]],
+  ];
+  const pkts=[];
+  let frame=0;
+
+  function spawnPkt(){
+    const l=links[Math.floor(Math.random()*links.length)];
+    const rev=Math.random()>0.5;
+    pkts.push({ax:rev?l[1].x:l[0].x,ay:rev?l[1].y:l[0].y,bx:rev?l[0].x:l[1].x,by:rev?l[0].y:l[1].y,t:0,speed:0.02+Math.random()*0.02,color:(rev?l[1]:l[0]).color||'#3b82f6'});
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    links.forEach(([a,b])=>{
+      ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);
+      ctx.strokeStyle='rgba(59,130,246,0.2)';ctx.lineWidth=1.5;ctx.stroke();
+    });
+    nets.forEach(n=>{
+      ctx.beginPath();ctx.arc(n.x,n.y,14,0,Math.PI*2);
+      ctx.fillStyle='#0a0c14';ctx.strokeStyle=n.color;ctx.lineWidth=2;ctx.fill();ctx.stroke();
+      ctx.font='bold 7px Share Tech Mono';ctx.fillStyle=n.color;ctx.textAlign='center';
+      ctx.fillText(n.label,n.x,n.y+3);
+    });
+    routers.forEach(r=>{
+      ctx.fillStyle='#0e1120';ctx.strokeStyle=r.color;ctx.lineWidth=2;
+      ctx.beginPath();
+      const s=18;
+      ctx.moveTo(r.x,r.y-s);ctx.lineTo(r.x+s,r.y);ctx.lineTo(r.x,r.y+s);ctx.lineTo(r.x-s,r.y);ctx.closePath();
+      ctx.fill();ctx.stroke();
+      ctx.shadowBlur=8;ctx.shadowColor=r.color;ctx.fill();ctx.shadowBlur=0;
+      ctx.font='bold 9px Share Tech Mono';ctx.fillStyle=r.color;ctx.textAlign='center';
+      ctx.fillText(r.label,r.x,r.y+3);
+    });
+    for(let i=pkts.length-1;i>=0;i--){
+      const p=pkts[i];p.t+=p.speed;
+      if(p.t>=1){pkts.splice(i,1);continue;}
+      const x=p.ax+(p.bx-p.ax)*p.t,y=p.ay+(p.by-p.ay)*p.t;
+      ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);
+      ctx.fillStyle=p.color;ctx.shadowBlur=10;ctx.shadowColor=p.color;ctx.fill();ctx.shadowBlur=0;
+    }
+    frame++;
+    if(frame%12===0&&pkts.length<20)spawnPkt();
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// QUIZ
+let answers={},score=0,total=8;
+function ans(q,letter,result,explanation){
+  if(answers[q])return;
+  answers[q]=true;
+  document.querySelectorAll('#q'+q+' .q-opt').forEach(opt=>{
+    opt.style.pointerEvents='none';
+    const l=opt.querySelector('.q-let');
+    if(l&&l.textContent===letter)opt.classList.add(result==='correct'?'correct':'wrong');
+    if(result==='wrong'&&opt.getAttribute('onclick')&&opt.getAttribute('onclick').includes("'correct'"))opt.classList.add('correct');
+  });
+  const fb=document.getElementById('fb'+q);
+  if(fb){fb.textContent=(result==='correct'?'✅ ':'❌ ')+explanation;fb.className='q-fb show '+(result==='correct'?'ok':'bad');}
+  if(result==='correct')score++;
+  if(Object.keys(answers).length===total)setTimeout(showScore,400);
+}
+function showScore(){
+  const box=document.getElementById('scoreBox');box.style.display='block';
+  const pct=Math.round(score/total*100);
+  const txt=document.getElementById('scoreTxt'),msg=document.getElementById('scoreMsg');
+  txt.textContent=score+' / '+total+' — '+pct+'%';
+  if(pct>=87){txt.style.color='var(--green)';msg.textContent='🏆 ¡Excelente! Dominas los conceptos de Routing. Listo para OSPF.';}
+  else if(pct>=62){txt.style.color='var(--gold)';msg.textContent='📚 Buen progreso. Repasa la tabla de routing y routing estático.';}
+  else{txt.style.color='var(--red)';msg.textContent='💪 Repasa el material. ¡Practica en Packet Tracer con rutas estáticas!';}
+  box.scrollIntoView({behavior:'smooth'});
+}
+</script>
+</body>
+</html>
