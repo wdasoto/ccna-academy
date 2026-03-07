@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CCNA Academy — Curso Completo de Redes Cisco</title>
+<meta name="description" content="Curso completo para certificaciones CCNA, CCNP y CCIE. Clases interactivas, laboratorios prácticos y quiz tipo examen real.">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <div class="nav-wrap">
+    <a href="index.html" class="nav-logo">
+      <span class="logo-cisco">CISCO</span>
+      <span class="logo-text">Academy</span>
+    </a>
+
+    <button class="hamburger" id="hamburger" aria-label="Menú">
+      <span></span><span></span><span></span>
+    </button>
+
+    <div class="nav-menu" id="navMenu">
+      <div class="nav-group">
+        <span class="nav-label">Módulo 1</span>
+        <a href="clases/fundamentos.html" class="nav-link">
+          <span class="nav-icon">🖧</span> Fundamentos de Redes
+        </a>
+      </div>
+      <div class="nav-group">
+        <span class="nav-label">Módulo 2 — Switching</span>
+        <a href="clases/vlan.html" class="nav-link">
+          <span class="nav-icon">🏷️</span> VLANs
+        </a>
+        <a href="clases/stp.html" class="nav-link">
+          <span class="nav-icon">🌳</span> STP
+        </a>
+        <a href="clases/switches-cisco.html" class="nav-link">
+          <span class="nav-icon">🔀</span> Switches
+        </a>
+        <a href="clases/etherchannel.html" class="nav-link nav-coming">
+          <span class="nav-icon">🔗</span> EtherChannel
+          <span class="badge-soon">Próximo</span>
+        </a>
+      </div>
+      <div class="nav-group">
+        <span class="nav-label">Módulo 3 — Routing</span>
+        <a href="clases/routing.html" class="nav-link nav-coming">
+          <span class="nav-icon">🗺️</span> Routing Estático
+          <span class="badge-soon">Próximo</span>
+        </a>
+        <a href="clases/ospf.html" class="nav-link nav-coming">
+          <span class="nav-icon">⭕</span> OSPF
+          <span class="badge-soon">Próximo</span>
+        </a>
+      </div>
+      <div class="nav-group">
+        <span class="nav-label">Módulo 4 — Seguridad</span>
+        <a href="clases/acl.html" class="nav-link nav-coming">
+          <span class="nav-icon">🔒</span> ACLs
+          <span class="badge-soon">Próximo</span>
+        </a>
+        <a href="clases/nat.html" class="nav-link nav-coming">
+          <span class="nav-icon">🔄</span> NAT/PAT
+          <span class="badge-soon">Próximo</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="wrap">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        Ruta de certificación activa
+      </div>
+      <h1 class="hero-title">
+        Domina las<br>
+        <span class="title-accent">Redes Cisco</span>
+      </h1>
+      <p class="hero-desc">
+        Curso profesional completo hacia las certificaciones 
+        <strong>CCNA · CCNP · CCIE</strong>. 
+        Clases interactivas, laboratorios en Packet Tracer y quizzes tipo examen real.
+      </p>
+      <div class="hero-cta">
+        <a href="clases/fundamentos.html" class="btn-primary">
+          Comenzar desde cero →
+        </a>
+        <a href="#modulos" class="btn-ghost">Ver temario completo</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="stat-num" id="countLessons">2</span>
+          <span class="stat-lbl">Clases activas</span>
+        </div>
+        <div class="stat-div"></div>
+        <div class="stat">
+          <span class="stat-num">8+</span>
+          <span class="stat-lbl">En desarrollo</span>
+        </div>
+        <div class="stat-div"></div>
+        <div class="stat">
+          <span class="stat-num">3</span>
+          <span class="stat-lbl">Certificaciones</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <canvas id="networkCanvas" width="420" height="380"></canvas>
+    </div>
+  </div>
+</section>
+
+<!-- CERT PATH -->
+<section class="cert-path">
+  <div class="wrap">
+    <div class="cert-track">
+      <div class="cert-item active">
+        <div class="cert-icon">🎓</div>
+        <div class="cert-name">CCNA</div>
+        <div class="cert-sub">200-301</div>
+      </div>
+      <div class="cert-arrow">→</div>
+      <div class="cert-item">
+        <div class="cert-icon">🏆</div>
+        <div class="cert-name">CCNP</div>
+        <div class="cert-sub">Enterprise</div>
+      </div>
+      <div class="cert-arrow">→</div>
+      <div class="cert-item">
+        <div class="cert-icon">⭐</div>
+        <div class="cert-name">CCIE</div>
+        <div class="cert-sub">Expert</div>
+      </div>
+      <div class="cert-arrow">→</div>
+      <div class="cert-item">
+        <div class="cert-icon">🛡️</div>
+        <div class="cert-name">CCST</div>
+        <div class="cert-sub">Security</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MÓDULOS -->
+<section class="modulos" id="modulos">
+  <div class="wrap">
+    <div class="section-header">
+      <h2 class="section-title">Temario Completo</h2>
+      <p class="section-sub">Navega por módulos o sigue la ruta recomendada de aprendizaje</p>
+    </div>
+
+    <!-- MÓDULO 1 -->
+    <div class="module-block">
+      <div class="module-header">
+        <div class="module-num">01</div>
+        <div>
+          <div class="module-name">Fundamentos de Redes</div>
+          <div class="module-sub">Modelos OSI/TCP-IP · Protocolos · Direccionamiento</div>
+        </div>
+        <div class="module-progress">
+          <div class="prog-bar"><div class="prog-fill" style="width:100%"></div></div>
+          <span class="prog-txt">1/1 clases</span>
+        </div>
+      </div>
+      <div class="lessons-grid">
+        <a href="clases/fundamentos.html" class="lesson-card active">
+          <div class="lc-icon">🖧</div>
+          <div class="lc-body">
+            <div class="lc-title">Fundamentos de Redes</div>
+            <div class="lc-desc">Modelos OSI y TCP/IP, tipos de redes, topologías, protocolos esenciales y el modelo de capas.</div>
+            <div class="lc-tags">
+              <span class="tag">OSI</span>
+              <span class="tag">TCP/IP</span>
+              <span class="tag">Protocolos</span>
+            </div>
+          </div>
+          <div class="lc-status ready">✓ Disponible</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- MÓDULO 2 -->
+    <div class="module-block">
+      <div class="module-header">
+        <div class="module-num">02</div>
+        <div>
+          <div class="module-name">Switching — Capa 2</div>
+          <div class="module-sub">VLANs · STP · Switches · EtherChannel · Port Security</div>
+        </div>
+        <div class="module-progress">
+          <div class="prog-bar"><div class="prog-fill" style="width:75%"></div></div>
+          <span class="prog-txt">3/4 clases</span>
+        </div>
+      </div>
+      <div class="lessons-grid">
+        <a href="clases/vlan.html" class="lesson-card active">
+          <div class="lc-icon">🏷️</div>
+          <div class="lc-body">
+            <div class="lc-title">VLANs</div>
+            <div class="lc-desc">Segmentación lógica de redes, trunking 802.1Q, DTP, inter-VLAN routing y Voice VLAN.</div>
+            <div class="lc-tags">
+              <span class="tag">802.1Q</span>
+              <span class="tag">Trunking</span>
+              <span class="tag">DTP</span>
+            </div>
+          </div>
+          <div class="lc-status ready">✓ Disponible</div>
+        </a>
+        <a href="clases/stp.html" class="lesson-card active">
+          <div class="lc-icon">🌳</div>
+          <div class="lc-body">
+            <div class="lc-title">STP — Spanning Tree Protocol</div>
+            <div class="lc-desc">Prevención de bucles L2, Root Bridge, Port States, RSTP, Rapid PVST+ y PortFast.</div>
+            <div class="lc-tags">
+              <span class="tag">802.1D</span>
+              <span class="tag">RSTP</span>
+              <span class="tag">PVST+</span>
+            </div>
+          </div>
+          <div class="lc-status ready">✓ Disponible</div>
+        </a>
+        <a href="clases/switches-cisco.html" class="lesson-card active">
+          <div class="lc-icon">🔀</div>
+          <div class="lc-body">
+            <div class="lc-title">Switches Cisco</div>
+            <div class="lc-desc">Tabla CAM, Half/Full Duplex, Port Security, SVI Management, CDP/LLDP y configuración IOS.</div>
+            <div class="lc-tags">
+              <span class="tag">Tabla CAM</span>
+              <span class="tag">Port Security</span>
+              <span class="tag">CDP</span>
+            </div>
+          </div>
+          <div class="lc-status ready">✓ Disponible</div>
+        </a>
+        <a href="clases/etherchannel.html" class="lesson-card coming">
+          <div class="lc-icon">🔗</div>
+          <div class="lc-body">
+            <div class="lc-title">EtherChannel</div>
+            <div class="lc-desc">Agregación de enlaces, LACP (802.3ad), PAgP, Port-Channel y Load Balancing.</div>
+            <div class="lc-tags">
+              <span class="tag">LACP</span>
+              <span class="tag">PAgP</span>
+              <span class="tag">LAG</span>
+            </div>
+          </div>
+          <div class="lc-status soon">⏳ Próximamente</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- MÓDULO 3 -->
+    <div class="module-block">
+      <div class="module-header">
+        <div class="module-num">03</div>
+        <div>
+          <div class="module-name">Routing — Capa 3</div>
+          <div class="module-sub">Routing Estático · RIP · OSPF · EIGRP · BGP</div>
+        </div>
+        <div class="module-progress">
+          <div class="prog-bar"><div class="prog-fill" style="width:0%"></div></div>
+          <span class="prog-txt">En desarrollo</span>
+        </div>
+      </div>
+      <div class="lessons-grid">
+        <div class="lesson-card coming">
+          <div class="lc-icon">🗺️</div>
+          <div class="lc-body">
+            <div class="lc-title">Routing Estático</div>
+            <div class="lc-desc">Tablas de routing, rutas estáticas, rutas flotantes, rutas por defecto y troubleshooting.</div>
+            <div class="lc-tags"><span class="tag">ip route</span><span class="tag">IPv4/IPv6</span></div>
+          </div>
+          <div class="lc-status soon">⏳ Próximamente</div>
+        </div>
+        <div class="lesson-card coming">
+          <div class="lc-icon">⭕</div>
+          <div class="lc-body">
+            <div class="lc-title">OSPF</div>
+            <div class="lc-desc">Open Shortest Path First, áreas, DR/BDR, LSAs, OSPFv2 y OSPFv3 para IPv6.</div>
+            <div class="lc-tags"><span class="tag">OSPFv2</span><span class="tag">Areas</span><span class="tag">DR/BDR</span></div>
+          </div>
+          <div class="lc-status soon">⏳ Próximamente</div>
+        </div>
+        <div class="lesson-card coming">
+          <div class="lc-icon">🔀</div>
+          <div class="lc-body">
+            <div class="lc-title">EIGRP</div>
+            <div class="lc-desc">Enhanced IGRP, DUAL algorithm, Feasible Successor, Named Mode EIGRP.</div>
+            <div class="lc-tags"><span class="tag">DUAL</span><span class="tag">Cisco</span></div>
+          </div>
+          <div class="lc-status soon">⏳ Próximamente</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MÓDULO 4 -->
+    <div class="module-block">
+      <div class="module-header">
+        <div class="module-num">04</div>
+        <div>
+          <div class="module-name">Seguridad de Red</div>
+          <div class="module-sub">ACLs · NAT · Port Security · VPN · Firewall</div>
+        </div>
+        <div class="module-progress">
+          <div class="prog-bar"><div class="prog-fill" style="width:0%"></div></div>
+          <span class="prog-txt">En desarrollo</span>
+        </div>
+      </div>
+      <div class="lessons-grid">
+        <div class="lesson-card coming">
+          <div class="lc-icon">🔒</div>
+          <div class="lc-body">
+            <div class="lc-title">ACLs — Listas de Control de Acceso</div>
+            <div class="lc-desc">ACL estándar, extendida, nombrada, IPv6 ACL y mejores prácticas de seguridad.</div>
+            <div class="lc-tags"><span class="tag">Standard</span><span class="tag">Extended</span></div>
+          </div>
+          <div class="lc-status soon">⏳ Próximamente</div>
+        </div>
+        <div class="lesson-card coming">
+          <div class="lc-icon">🔄</div>
+          <div class="lc-body">
+            <div class="lc-title">NAT y PAT</div>
+            <div class="lc-desc">Network Address Translation, PAT (Overload), NAT estático, dinámico y verificación.</div>
+            <div class="lc-tags"><span class="tag">NAT</span><span class="tag">PAT</span><span class="tag">IPv4</span></div>
+          </div>
+          <div class="lc-status soon">⏳ Próximamente</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MÓDULO 5 -->
+    <div class="module-block">
+      <div class="module-header">
+        <div class="module-num">05</div>
+        <div>
+          <div class="module-name">WAN y Servicios</div>
+          <div class="module-sub">DHCP · DNS · NTP · SNMP · Syslog · QoS</div>
+        </div>
+        <div class="module-progress">
+          <div class="prog-bar"><div class="prog-fill" style="width:0%"></div></div>
+          <span class="prog-txt">En desarrollo</span>
+        </div>
+      </div>
+      <div class="lessons-grid">
+        <div class="lesson-card coming">
+          <div class="lc-icon">🌐</div>
+          <div class="lc-body">
+            <div class="lc-title">DHCP</div>
+            <div class="lc-desc">Configuración servidor DHCP en Cisco IOS, DHCP Relay, exclusiones y pools.</div>
+            <div class="lc-tags"><span class="tag">DHCP</span><span class="tag">ip helper</span></div>
+          </div>
+          <div class="lc-status soon">⏳ Próximamente</div>
+        </div>
+        <div class="lesson-card coming">
+          <div class="lc-icon">📊</div>
+          <div class="lc-body">
+            <div class="lc-title">QoS — Calidad de Servicio</div>
+            <div class="lc-desc">Clasificación, marcado, colas, policing, shaping y MQC (Modular QoS CLI).</div>
+            <div class="lc-tags"><span class="tag">DSCP</span><span class="tag">CoS</span><span class="tag">MQC</span></div>
+          </div>
+          <div class="lc-status soon">⏳ Próximamente</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CÓMO AGREGAR CLASES -->
+<section class="add-lesson-guide">
+  <div class="wrap">
+    <div class="guide-card">
+      <div class="guide-icon">➕</div>
+      <div class="guide-body">
+        <h3>¿Cómo agregar una nueva clase?</h3>
+        <p>Para agregar una nueva clase al portal, sigue estos pasos:</p>
+        <ol>
+          <li>Crea el archivo HTML de la clase en la carpeta <code>clases/</code> (ej: <code>clases/ospf.html</code>)</li>
+          <li>Copia la plantilla <code>clases/_plantilla.html</code> como punto de partida</li>
+          <li>En <code>index.html</code>, cambia el <code>class="lesson-card coming"</code> a <code>class="lesson-card active"</code> y agrega el enlace <code>href</code></li>
+          <li>Actualiza el contador de progreso del módulo correspondiente</li>
+          <li>Haz commit y push a GitHub — GitHub Pages actualiza automáticamente</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <span class="logo-cisco">CISCO</span>
+          <span class="logo-text">Academy</span>
+        </div>
+        <p>Ruta completa de aprendizaje hacia las certificaciones Cisco CCNA, CCNP y CCIE.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Módulos activos</h4>
+        <a href="clases/fundamentos.html">Fundamentos de Redes</a>
+        <a href="clases/vlan.html">VLANs</a>
+        <a href="clases/stp.html">STP</a>
+      </div>
+      <div class="footer-links">
+        <h4>Certificaciones</h4>
+        <a href="#">CCNA 200-301</a>
+        <a href="#">CCNP Enterprise</a>
+        <a href="#">CCST Security</a>
+        <a href="#">CCIE Expert</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>Basado en el currículo oficial de Cisco Networking Academy</span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/main.js"></script>
+</body>
+</html>
