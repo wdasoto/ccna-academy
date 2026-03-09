@@ -4,10 +4,755 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CCNA - Clase Magistral: VLANs</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;600;700&display=swap');
 
-  <link rel="stylesheet" href="../assets/style.css">
+  :root {
+    --cisco-blue: #00bceb;
+    --cisco-dark: #0a1628;
+    --cisco-mid: #0d2240;
+    --cisco-accent: #00e5ff;
+    --cisco-green: #00ff88;
+    --cisco-orange: #ff6b35;
+    --cisco-yellow: #ffd700;
+    --cisco-red: #ff3366;
+    --text-primary: #e8f4fd;
+    --text-secondary: #8ab4d0;
+    --card-bg: rgba(13, 34, 64, 0.85);
+    --border-glow: rgba(0, 188, 235, 0.4);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--cisco-dark);
+    color: var(--text-primary);
+    font-family: 'Exo 2', sans-serif;
+    overflow-x: hidden;
+    background-image: 
+      radial-gradient(ellipse at 20% 50%, rgba(0,188,235,0.05) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, rgba(0,229,255,0.04) 0%, transparent 40%),
+      linear-gradient(180deg, #0a1628 0%, #050d1a 100%);
+  }
+
+  /* Grid animado de fondo */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: 
+      linear-gradient(rgba(0,188,235,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,188,235,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 1; }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, rgba(10,22,40,0.98) 0%, rgba(0,60,100,0.9) 100%);
+    border-bottom: 2px solid var(--cisco-blue);
+    padding: 20px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 30px rgba(0,188,235,0.2);
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .logo-area {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .cisco-badge {
+    background: linear-gradient(135deg, var(--cisco-blue), var(--cisco-accent));
+    color: #000;
+    font-family: 'Orbitron', monospace;
+    font-weight: 900;
+    font-size: 1.1rem;
+    padding: 8px 16px;
+    border-radius: 4px;
+    letter-spacing: 2px;
+  }
+
+  .course-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.7rem;
+    color: var(--cisco-blue);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  .lesson-badge {
+    background: rgba(0,188,235,0.1);
+    border: 1px solid var(--border-glow);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    color: var(--cisco-accent);
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  /* HERO */
+  .hero {
+    padding: 60px 0 40px;
+    text-align: center;
+    position: relative;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 200px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--cisco-blue), transparent);
+  }
+
+  .hero h1 {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 900;
+    background: linear-gradient(135deg, #fff 0%, var(--cisco-blue) 50%, var(--cisco-accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 16px;
+    line-height: 1.1;
+    animation: titleGlow 3s ease-in-out infinite alternate;
+  }
+
+  @keyframes titleGlow {
+    from { filter: drop-shadow(0 0 8px rgba(0,188,235,0.3)); }
+    to { filter: drop-shadow(0 0 20px rgba(0,188,235,0.7)); }
+  }
+
+  .hero-sub {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 30px;
+  }
+
+  .objective-bar {
+    display: inline-flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+    background: rgba(0,188,235,0.05);
+    border: 1px solid var(--border-glow);
+    border-radius: 12px;
+    padding: 16px 30px;
+  }
+
+  .obj-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    color: var(--cisco-accent);
+  }
+
+  .obj-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--cisco-green);
+    box-shadow: 0 0 8px var(--cisco-green);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  /* NAVEGACIÓN DE SECCIONES */
+  .nav-tabs {
+    display: flex;
+    gap: 4px;
+    margin: 40px 0 30px;
+    background: rgba(13,34,64,0.8);
+    border: 1px solid var(--border-glow);
+    border-radius: 12px;
+    padding: 6px;
+    overflow-x: auto;
+    flex-wrap: wrap;
+  }
+
+  .tab-btn {
+    flex: 1;
+    min-width: 120px;
+    padding: 10px 16px;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-family: 'Exo 2', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    white-space: nowrap;
+  }
+
+  .tab-btn:hover { background: rgba(0,188,235,0.1); color: var(--cisco-blue); }
+  .tab-btn.active {
+    background: linear-gradient(135deg, rgba(0,188,235,0.3), rgba(0,100,160,0.4));
+    color: #fff;
+    border: 1px solid var(--cisco-blue);
+    box-shadow: 0 0 15px rgba(0,188,235,0.2);
+  }
+
+  /* SECTIONS */
+  .section { display: none; animation: fadeIn 0.4s ease; }
+  .section.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* CARDS */
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-glow);
+    border-radius: 16px;
+    padding: 30px;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--cisco-blue), var(--cisco-accent), var(--cisco-green));
+  }
+
+  .card-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.1rem;
+    color: var(--cisco-blue);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .card-icon {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, rgba(0,188,235,0.3), rgba(0,100,160,0.4));
+    border: 1px solid var(--cisco-blue);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+  }
+
+  /* DEFINICION HERO */
+  .definition-box {
+    background: linear-gradient(135deg, rgba(0,188,235,0.08), rgba(0,60,100,0.15));
+    border: 1px solid var(--cisco-blue);
+    border-left: 4px solid var(--cisco-blue);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin: 20px 0;
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--text-primary);
+  }
+
+  .highlight { color: var(--cisco-accent); font-weight: 700; }
+  .highlight-green { color: var(--cisco-green); font-weight: 700; }
+  .highlight-orange { color: var(--cisco-orange); font-weight: 700; }
+  .highlight-yellow { color: var(--cisco-yellow); font-weight: 700; }
+
+  /* DIAGRAMA VISUAL DE RED */
+  .network-diagram {
+    background: rgba(5,13,26,0.9);
+    border: 1px solid var(--border-glow);
+    border-radius: 12px;
+    padding: 30px;
+    margin: 20px 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .diagram-title {
+    text-align: center;
+    font-family: 'Share Tech Mono', monospace;
+    color: var(--cisco-blue);
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+  }
+
+  /* SVG Diagrams */
+  svg { max-width: 100%; height: auto; }
+
+  /* TABLA DE TIPOS */
+  .vlan-types-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin: 20px 0;
+  }
+
+  .vlan-type-card {
+    background: rgba(5,13,26,0.8);
+    border: 1px solid var(--border-glow);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s;
+    cursor: default;
+  }
+
+  .vlan-type-card:hover {
+    border-color: var(--cisco-blue);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0,188,235,0.2);
+  }
+
+  .vlan-type-num {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.8rem;
+    font-weight: 900;
+    margin-bottom: 8px;
+  }
+
+  .vlan-type-name {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--cisco-accent);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .vlan-type-desc {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  /* COMANDOS */
+  .cmd-block {
+    background: #020a14;
+    border: 1px solid rgba(0,255,136,0.3);
+    border-radius: 8px;
+    padding: 20px;
+    margin: 16px 0;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.9rem;
+    position: relative;
+    overflow-x: auto;
+  }
+
+  .cmd-prompt { color: var(--cisco-green); }
+  .cmd-text { color: #e8e8e8; }
+  .cmd-comment { color: #666; font-style: italic; }
+  .cmd-keyword { color: var(--cisco-yellow); }
+  .cmd-value { color: var(--cisco-orange); }
+  .cmd-line { display: block; padding: 2px 0; }
+
+  .cmd-label {
+    position: absolute;
+    top: 8px; right: 12px;
+    font-size: 0.65rem;
+    color: var(--cisco-green);
+    background: rgba(0,255,136,0.1);
+    padding: 3px 8px;
+    border-radius: 4px;
+    letter-spacing: 1px;
+    font-family: 'Exo 2', sans-serif;
+    text-transform: uppercase;
+  }
+
+  .cmd-section-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.75rem;
+    color: var(--cisco-yellow);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin: 24px 0 10px;
+    padding-left: 10px;
+    border-left: 3px solid var(--cisco-yellow);
+  }
+
+  /* INFO BOXES */
+  .info-box {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 16px 20px;
+    border-radius: 10px;
+    margin: 16px 0;
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  .info-box.tip { background: rgba(0,255,136,0.08); border: 1px solid rgba(0,255,136,0.3); }
+  .info-box.warning { background: rgba(255,107,53,0.08); border: 1px solid rgba(255,107,53,0.3); }
+  .info-box.important { background: rgba(0,188,235,0.08); border: 1px solid rgba(0,188,235,0.3); }
+  .info-box.exam { background: rgba(255,215,0,0.08); border: 1px solid rgba(255,215,0,0.4); }
+
+  .info-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 2px; }
+
+  /* TABLAS */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 0.88rem;
+  }
+
+  .data-table th {
+    background: rgba(0,188,235,0.15);
+    color: var(--cisco-blue);
+    font-family: 'Orbitron', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 1px;
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 2px solid var(--cisco-blue);
+    text-transform: uppercase;
+  }
+
+  .data-table td {
+    padding: 11px 16px;
+    border-bottom: 1px solid rgba(0,188,235,0.1);
+    color: var(--text-primary);
+    vertical-align: top;
+  }
+
+  .data-table tr:hover td { background: rgba(0,188,235,0.04); }
+
+  /* STEP BY STEP */
+  .steps {
+    counter-reset: step-counter;
+    list-style: none;
+  }
+
+  .step-item {
+    counter-increment: step-counter;
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+    align-items: flex-start;
+  }
+
+  .step-num {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--cisco-blue), #005588);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Orbitron', monospace;
+    font-weight: 700;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+    box-shadow: 0 0 12px rgba(0,188,235,0.3);
+  }
+
+  .step-num::before { content: counter(step-counter, decimal-leading-zero); }
+
+  .step-content { flex: 1; padding-top: 6px; }
+  .step-title { font-weight: 700; color: var(--cisco-accent); margin-bottom: 6px; }
+  .step-desc { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; }
+
+  /* QUIZ */
+  .quiz-container { margin: 20px 0; }
+
+  .quiz-q {
+    background: rgba(5,13,26,0.9);
+    border: 1px solid var(--border-glow);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+
+  .quiz-question {
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 16px;
+    color: var(--text-primary);
+    line-height: 1.5;
+  }
+
+  .quiz-q-num {
+    font-family: 'Share Tech Mono', monospace;
+    color: var(--cisco-yellow);
+    font-size: 0.75rem;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+  }
+
+  .quiz-options { display: grid; gap: 8px; }
+
+  .quiz-opt {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: rgba(0,188,235,0.04);
+    border: 1px solid rgba(0,188,235,0.15);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.9rem;
+  }
+
+  .quiz-opt:hover { background: rgba(0,188,235,0.1); border-color: var(--cisco-blue); }
+  .quiz-opt.correct { background: rgba(0,255,136,0.15); border-color: var(--cisco-green); color: var(--cisco-green); }
+  .quiz-opt.wrong { background: rgba(255,51,102,0.1); border-color: var(--cisco-red); color: var(--cisco-red); }
+  .quiz-opt.selected { border-color: var(--cisco-yellow); }
+
+  .quiz-opt-letter {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: rgba(0,188,235,0.15);
+    border: 1px solid rgba(0,188,235,0.3);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Orbitron', monospace;
+    font-size: 0.7rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .quiz-feedback {
+    display: none;
+    margin-top: 14px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    line-height: 1.5;
+  }
+
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.correct-fb { background: rgba(0,255,136,0.1); border: 1px solid var(--cisco-green); color: var(--cisco-green); }
+  .quiz-feedback.wrong-fb { background: rgba(255,51,102,0.08); border: 1px solid var(--cisco-red); color: #ff8fa0; }
+
+  /* PROGRESS */
+  .progress-bar-wrap {
+    height: 6px;
+    background: rgba(0,188,235,0.1);
+    border-radius: 3px;
+    margin: 20px 0;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--cisco-blue), var(--cisco-green));
+    border-radius: 3px;
+    transition: width 0.5s ease;
+    box-shadow: 0 0 10px rgba(0,229,255,0.5);
+  }
+
+  /* SCENARIO BOX */
+  .scenario {
+    background: linear-gradient(135deg, rgba(255,107,53,0.06), rgba(255,51,102,0.04));
+    border: 1px solid rgba(255,107,53,0.3);
+    border-radius: 12px;
+    padding: 24px;
+    margin: 20px 0;
+  }
+
+  .scenario-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.8rem;
+    color: var(--cisco-orange);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  /* BADGE / CHIPS */
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin: 2px;
+  }
+
+  .badge-blue { background: rgba(0,188,235,0.2); border: 1px solid var(--cisco-blue); color: var(--cisco-blue); }
+  .badge-green { background: rgba(0,255,136,0.15); border: 1px solid var(--cisco-green); color: var(--cisco-green); }
+  .badge-orange { background: rgba(255,107,53,0.15); border: 1px solid var(--cisco-orange); color: var(--cisco-orange); }
+  .badge-yellow { background: rgba(255,215,0,0.15); border: 1px solid var(--cisco-yellow); color: var(--cisco-yellow); }
+
+  /* RESUMEN FINAL */
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
+    margin: 20px 0;
+  }
+
+  .summary-item {
+    background: rgba(5,13,26,0.8);
+    border: 1px solid var(--border-glow);
+    border-radius: 12px;
+    padding: 20px;
+  }
+
+  .summary-item h4 {
+    color: var(--cisco-blue);
+    font-size: 0.85rem;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .summary-item ul {
+    list-style: none;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+  }
+
+  .summary-item ul li {
+    padding: 4px 0;
+    padding-left: 16px;
+    position: relative;
+  }
+
+  .summary-item ul li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: var(--cisco-blue);
+  }
+
+  /* FOOTER */
+  footer {
+    background: rgba(10,22,40,0.95);
+    border-top: 1px solid var(--border-glow);
+    padding: 30px 0;
+    margin-top: 60px;
+    text-align: center;
+  }
+
+  .footer-text { color: var(--text-secondary); font-size: 0.8rem; line-height: 1.8; }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--cisco-dark); }
+  ::-webkit-scrollbar-thumb { background: var(--cisco-blue); border-radius: 3px; }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    .hero h1 { font-size: 1.8rem; }
+    .card { padding: 20px; }
+    .cmd-block { font-size: 0.78rem; }
+  }
+
+/* ═══════════════════════════════════════
+   NAVBAR UNIFICADO — sobreescribe estilos previos
+═══════════════════════════════════════ */
+.navbar {
+  position: fixed !important; top: 0; left: 0; right: 0; z-index: 9000;
+  background: rgba(6,12,24,0.97) !important;
+  border-bottom: 1px solid rgba(0,188,235,0.18) !important;
+  backdrop-filter: blur(16px);
+  height: 64px;
+}
+.nav-wrap {
+  max-width: 1160px; margin: 0 auto; padding: 0 24px;
+  display: flex; align-items: center; gap: 4px;
+  height: 64px; position: relative;
+}
+.nav-logo {
+  display: flex; align-items: center; gap: 8px;
+  text-decoration: none; flex-shrink: 0; margin-right: 12px;
+}
+.nav-logo .logo-cisco {
+  font-family: 'Orbitron', monospace; font-weight: 900; font-size: 0.9rem;
+  letter-spacing: 2px;
+  background: linear-gradient(135deg,#00bceb,#38d9ff);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  border: 1px solid rgba(0,188,235,0.3); padding: 3px 10px; border-radius: 4px;
+}
+.nav-logo .logo-text {
+  font-family: 'Orbitron', monospace; font-size: 0.65rem;
+  color: #6b8aa8; letter-spacing: 2px;
+}
+.hamburger {
+  display: none; flex-direction: column; gap: 5px;
+  background: none; border: none; cursor: pointer; padding: 6px;
+}
+.hamburger span {
+  display: block; width: 22px; height: 2px;
+  background: #00bceb; border-radius: 2px; transition: all 0.3s;
+}
+.nav-menu {
+  display: flex; align-items: center; gap: 2px; flex: 1;
+}
+.nav-group {
+  display: flex; align-items: center; gap: 1px;
+  border-right: 1px solid rgba(255,255,255,0.06);
+  padding-right: 6px; margin-right: 2px;
+}
+.nav-group:last-child { border-right: none; }
+.nav-label { display: none; }
+.nav-link {
+  display: flex; align-items: center; gap: 5px;
+  padding: 5px 9px; border-radius: 6px;
+  font-size: 0.76rem; font-weight: 600;
+  color: #6b8aa8; text-decoration: none;
+  white-space: nowrap; transition: all 0.2s;
+}
+.nav-link:hover { background: rgba(0,188,235,0.1); color: #38d9ff; }
+.nav-link.active-page {
+  background: rgba(0,188,235,0.15);
+  border: 1px solid rgba(0,188,235,0.4); color: #fff;
+}
+.nav-link.nav-coming { color: #2a4060; cursor: default; pointer-events: none; opacity: 0.5; }
+.nav-icon { font-size: 0.85rem; }
+.badge-soon {
+  font-size: 0.58rem; background: rgba(234,179,8,0.12);
+  color: #eab308; border: 1px solid rgba(234,179,8,0.3);
+  padding: 1px 5px; border-radius: 8px;
+}
+@media (max-width: 768px) {
+  .hamburger { display: flex !important; }
+  .nav-menu {
+    display: none; flex-direction: column; align-items: flex-start;
+    position: absolute; top: 64px; left: 0; right: 0;
+    background: rgba(6,12,24,0.99);
+    border-bottom: 1px solid rgba(0,188,235,0.18);
+    padding: 12px 16px; gap: 6px;
+  }
+  .nav-menu.open { display: flex; }
+  .nav-group { flex-direction: column; align-items: flex-start; border-right: none; width: 100%; }
+  .nav-label { display: block; font-size: 0.6rem; color: #3a5070; letter-spacing: 1px; text-transform: uppercase; padding: 6px 0 2px; }
+}
+
+</style>
 </head>
-<body class="page-body">
+<body>
 
 <!-- NAVBAR PORTAL -->
 <nav class="navbar" id="navbar">
@@ -43,9 +788,10 @@
         <a href="acl.html" class="nav-link nav-coming"><span class="nav-icon">🔒</span> ACLs <span class="badge-soon">Próximo</span></a>
         <a href="nat.html" class="nav-link nav-coming"><span class="nav-icon">🔄</span> NAT/PAT <span class="badge-soon">Próximo</span></a>
       </div>
-      </div>
+    </div>
   </div>
-</nav><!-- Spacer para el navbar fijo -->
+</nav>
+<div style="height:64px;"></div><!-- Spacer para el navbar fijo -->
 
 <div class="container">
 
@@ -1112,5 +1858,16 @@
   }
 </script>
 
+<script>
+  (function(){
+    var h = document.getElementById('hamburger');
+    var m = document.getElementById('navMenu');
+    if(h && m) h.addEventListener('click', function(){ m.classList.toggle('open'); h.classList.toggle('open'); });
+    window.addEventListener('scroll', function(){
+      var n = document.getElementById('navbar');
+      if(n) n.classList.toggle('scrolled', window.scrollY > 20);
+    });
+  })();
+</script>
 </body>
 </html>
