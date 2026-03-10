@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Subnetting IPv4 — CCNA Academy</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="page-body">
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <div class="nav-wrap">
+    <a href="../index.html" class="nav-logo">
+      <span class="logo-cisco">CISCO</span>
+      <span class="logo-text">Academy</span>
+    </a>
+    <a href="asistente.html" class="nav-link" style="color:#00d4ff;border:1px solid rgba(0,212,255,0.3);border-radius:6px;margin-left:auto;flex-shrink:0;"><span class="nav-icon">🤖</span> NetBot IA</a>
+    <button class="hamburger" id="hamburger" aria-label="Menú">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-menu" id="navMenu">
+      <div class="nav-group">
+        <span class="nav-label">Módulo 1 — Fundamentos</span>
+        <a href="fundamentos.html" class="nav-link"><span class="nav-icon">🖧</span> Fundamentos</a>
+        <a href="subnetting.html" class="nav-link active-page"><span class="nav-icon">🔢</span> Subnetting IPv4</a>
+      </div>
+      <div class="nav-group">
+        <span class="nav-label">Módulo 2 — Switching</span>
+        <a href="vlan.html" class="nav-link"><span class="nav-icon">🏷️</span> VLANs</a>
+        <a href="stp.html" class="nav-link"><span class="nav-icon">🌳</span> STP</a>
+        <a href="switches-cisco.html" class="nav-link"><span class="nav-icon">🔀</span> Switches</a>
+        <a href="etherchannel.html" class="nav-link"><span class="nav-icon">🔗</span> EtherChannel</a>
+      </div>
+      <div class="nav-group">
+        <span class="nav-label">Módulo 3 — Routing</span>
+        <a href="router.html" class="nav-link"><span class="nav-icon">🌐</span> Routers Cisco</a>
+        <a href="routing.html" class="nav-link"><span class="nav-icon">🗺️</span> Routing Estático</a>
+        <a href="ospf.html" class="nav-link"><span class="nav-icon">⭕</span> OSPF</a>
+      </div>
+      <div class="nav-group">
+        <span class="nav-label">Módulo 4 — Seguridad</span>
+        <a href="acl.html" class="nav-link"><span class="nav-icon">🔒</span> ACLs</a>
+        <a href="nat.html" class="nav-link"><span class="nav-icon">🔄</span> NAT/PAT</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="page-hero">
+  <div class="wrap">
+    <div class="page-breadcrumb">
+      <a href="../index.html">Inicio</a><span>/</span>
+      <span>Módulo 1 — Fundamentos</span><span>/</span>
+      <span>Subnetting IPv4</span>
+    </div>
+    <h1 class="page-title">Subnetting IPv4</h1>
+    <div class="page-subtitle">Binario · Clases IPv4 · CIDR · Máscaras · Cálculo de Subredes · VLSM · Ejercicios</div>
+    <div class="page-nav-pills">
+      <button class="pill active" onclick="showSection('binario',this)">🔢 Binario</button>
+      <button class="pill" onclick="showSection('clases',this)">📦 Clases IPv4</button>
+      <button class="pill" onclick="showSection('mascaras',this)">🎭 Máscaras</button>
+      <button class="pill" onclick="showSection('calculo',this)">🧮 Cálculo</button>
+      <button class="pill" onclick="showSection('vlsm',this)">🔀 VLSM</button>
+      <button class="pill" onclick="showSection('ejercicios',this)">📝 Ejercicios</button>
+      <button class="pill" onclick="showSection('quiz',this)">🎯 Quiz</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONTENIDO -->
+<div class="page-content">
+  <div class="wrap">
+
+    <!-- ══════════════════════════════════════
+         SECCIÓN 1: BINARIO
+    ══════════════════════════════════════ -->
+    <div id="section-binario" class="content-section">
+
+      <div class="content-card fade-up">
+        <h2>🔢 Fundamento — Sistema Binario</h2>
+        <div class="def-box">
+          Una <span class="hl">dirección IPv4</span> es un número de <span class="hlg">32 bits</span> dividido en 4 grupos de 8 bits (<strong>octetos</strong>), representados en decimal separados por puntos. Para dominar el subnetting es <span class="hl">imprescindible</span> entender la conversión entre binario y decimal.
+        </div>
+        <div class="cmd-block">
+          <span class="cmd-label">VALOR DE CADA BIT EN UN OCTETO</span>
+          <span class="cl"><span class="cv">Bit:    </span>  <span class="ck">128  64  32  16   8   4   2   1</span></span>
+          <span class="cl"><span class="cv">Pos:    </span>  <span class="cc"> 7    6   5   4   3   2   1   0</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cc">Ejemplo: 192 → 1 1 0 0 0 0 0 0</span></span>
+          <span class="cl"><span class="cc">           128 + 64 = 192 ✅</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cc">Ejemplo: 168 → 1 0 1 0 1 0 0 0</span></span>
+          <span class="cl"><span class="cc">           128 + 32 + 8 = 168 ✅</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cc">Ejemplo: 255 → 1 1 1 1 1 1 1 1</span></span>
+          <span class="cl"><span class="cc">           128+64+32+16+8+4+2+1 = 255 ✅</span></span>
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Decimal</th><th>Binario</th><th>Suma de bits activos</th></tr></thead>
+          <tbody>
+            <tr><td><span class="badge b-blue">0</span></td><td>0000 0000</td><td>0</td></tr>
+            <tr><td><span class="badge b-blue">128</span></td><td>1000 0000</td><td>128</td></tr>
+            <tr><td><span class="badge b-blue">192</span></td><td>1100 0000</td><td>128 + 64</td></tr>
+            <tr><td><span class="badge b-blue">224</span></td><td>1110 0000</td><td>128 + 64 + 32</td></tr>
+            <tr><td><span class="badge b-blue">240</span></td><td>1111 0000</td><td>128 + 64 + 32 + 16</td></tr>
+            <tr><td><span class="badge b-blue">248</span></td><td>1111 1000</td><td>128+64+32+16+8</td></tr>
+            <tr><td><span class="badge b-blue">252</span></td><td>1111 1100</td><td>128+64+32+16+8+4</td></tr>
+            <tr><td><span class="badge b-green">255</span></td><td>1111 1111</td><td>128+64+32+16+8+4+2+1</td></tr>
+          </tbody>
+        </table>
+        <div class="info-box exam">
+          <div class="info-icon">🎯</div>
+          <div><strong>CCNA Examen:</strong> Memoriza la tabla de valores de bit: <strong>128 · 64 · 32 · 16 · 8 · 4 · 2 · 1</strong>. También memoriza los valores de máscara más comunes: 128, 192, 224, 240, 248, 252, 254, 255. Estos aparecen constantemente en el examen.</div>
+        </div>
+      </div>
+
+      <div class="content-card fade-up fade-up-d1">
+        <h2>🔄 Conversión Rápida Decimal ↔ Binario</h2>
+        <div class="def-box">
+          <strong>Método de las potencias:</strong> Para convertir decimal a binario, pregúntate de izquierda a derecha si el número restante es ≥ al valor del bit. Si sí → pon 1 y resta. Si no → pon 0.
+        </div>
+        <div class="cmd-block">
+          <span class="cmd-label">CONVERTIR 172 A BINARIO</span>
+          <span class="cl"><span class="cv">Bits:    128   64   32   16    8    4    2    1</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cc">172 ≥ 128? Sí →</span>  <span class="ck">1</span>   172-128 = 44</span>
+          <span class="cl"><span class="cc"> 44 ≥  64? No →</span>  <span class="cp">0</span></span>
+          <span class="cl"><span class="cc"> 44 ≥  32? Sí →</span>  <span class="ck">1</span>    44-32 = 12</span>
+          <span class="cl"><span class="cc"> 12 ≥  16? No →</span>  <span class="cp">0</span></span>
+          <span class="cl"><span class="cc"> 12 ≥   8? Sí →</span>  <span class="ck">1</span>    12-8  =  4</span>
+          <span class="cl"><span class="cc">  4 ≥   4? Sí →</span>  <span class="ck">1</span>     4-4  =  0</span>
+          <span class="cl"><span class="cc">  0 ≥   2? No →</span>  <span class="cp">0</span></span>
+          <span class="cl"><span class="cc">  0 ≥   1? No →</span>  <span class="cp">0</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cv">172 = </span><span class="ck">1010 1100</span></span>
+        </div>
+        <div class="cmd-block">
+          <span class="cmd-label">DIRECCIÓN IPv4 COMPLETA EN BINARIO</span>
+          <span class="cl"><span class="cv">192 . 168 .  1  . 10</span></span>
+          <span class="cl"><span class="ck">11000000.10101000.00000001.00001010</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cc">192 = 11000000  →  128+64</span></span>
+          <span class="cl"><span class="cc">168 = 10101000  →  128+32+8</span></span>
+          <span class="cl"><span class="cc">  1 = 00000001  →  1</span></span>
+          <span class="cl"><span class="cc"> 10 = 00001010  →  8+2</span></span>
+        </div>
+      </div>
+
+    </div><!-- /section-binario -->
+
+    <!-- ══════════════════════════════════════
+         SECCIÓN 2: CLASES IPv4
+    ══════════════════════════════════════ -->
+    <div id="section-clases" class="content-section" style="display:none;">
+
+      <div class="content-card fade-up">
+        <h2>📦 Clases de Direcciones IPv4</h2>
+        <div class="def-box">
+          El <span class="hl">sistema de clases</span> fue el esquema original de IPv4 (classful). Aunque hoy se usa CIDR (classless), las clases siguen siendo fundamentales para el examen CCNA y para entender los rangos privados y las reglas básicas de direccionamiento.
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Clase</th><th>Primer octeto</th><th>Primer bit(s)</th><th>Máscara por defecto</th><th>Redes / Hosts</th><th>Uso</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><span class="badge b-blue">Clase A</span></td>
+              <td>1 — 126</td>
+              <td>0xxxxxxx</td>
+              <td>/8 · 255.0.0.0</td>
+              <td>126 redes · 16.7M hosts</td>
+              <td>Grandes corporaciones e ISPs</td>
+            </tr>
+            <tr>
+              <td><span class="badge b-green">Clase B</span></td>
+              <td>128 — 191</td>
+              <td>10xxxxxx</td>
+              <td>/16 · 255.255.0.0</td>
+              <td>16.384 redes · 65.534 hosts</td>
+              <td>Empresas medianas y universidades</td>
+            </tr>
+            <tr>
+              <td><span class="badge b-amber">Clase C</span></td>
+              <td>192 — 223</td>
+              <td>110xxxxx</td>
+              <td>/24 · 255.255.255.0</td>
+              <td>2M redes · 254 hosts</td>
+              <td>Redes pequeñas y domésticas</td>
+            </tr>
+            <tr>
+              <td><span class="badge" style="background:rgba(139,92,246,0.15);border:1px solid #8b5cf6;color:#c4b5fd;">Clase D</span></td>
+              <td>224 — 239</td>
+              <td>1110xxxx</td>
+              <td>No aplica</td>
+              <td>No aplica</td>
+              <td>Multicast (OSPF, video streaming)</td>
+            </tr>
+            <tr>
+              <td><span class="badge b-red">Clase E</span></td>
+              <td>240 — 255</td>
+              <td>1111xxxx</td>
+              <td>No aplica</td>
+              <td>No aplica</td>
+              <td>Experimental / Reservado</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="info-box warn">
+          <div class="info-icon">⚠️</div>
+          <div><strong>127.x.x.x — Loopback:</strong> El rango 127.0.0.0/8 está reservado para pruebas locales (loopback). La más famosa es <strong>127.0.0.1</strong>. No pertenece a la Clase A aunque su primer octeto sea 127. El examen CCNA pregunta esto frecuentemente.</div>
+        </div>
+      </div>
+
+      <div class="content-card fade-up fade-up-d1">
+        <h2>🏠 Rangos de Direcciones Privadas (RFC 1918)</h2>
+        <div class="def-box">
+          Las <span class="hl">IPs privadas</span> son rangos reservados para uso interno de redes. <span class="hlg">No son enrutables en Internet</span> — para salir a Internet necesitan NAT. Son gratuitas y se pueden reutilizar en cualquier red interna.
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Clase</th><th>Rango privado</th><th>Prefijo CIDR</th><th>Hosts disponibles</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><span class="badge b-blue">Clase A</span></td>
+              <td>10.0.0.0 — 10.255.255.255</td>
+              <td>10.0.0.0/8</td>
+              <td>16.777.214 hosts</td>
+            </tr>
+            <tr>
+              <td><span class="badge b-green">Clase B</span></td>
+              <td>172.16.0.0 — 172.31.255.255</td>
+              <td>172.16.0.0/12</td>
+              <td>1.048.574 hosts</td>
+            </tr>
+            <tr>
+              <td><span class="badge b-amber">Clase C</span></td>
+              <td>192.168.0.0 — 192.168.255.255</td>
+              <td>192.168.0.0/16</td>
+              <td>65.534 hosts</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="info-box exam">
+          <div class="info-icon">🎯</div>
+          <div><strong>CCNA Examen:</strong> Memoriza los 3 rangos privados completos — aparecen constantemente. También recuerda: <strong>169.254.0.0/16</strong> = APIPA (Automatic Private IP Addressing) — se asigna cuando un host no recibe respuesta DHCP.</div>
+        </div>
+      </div>
+
+    </div><!-- /section-clases -->
+
+    <!-- ══════════════════════════════════════
+         SECCIÓN 3: MÁSCARAS
+    ══════════════════════════════════════ -->
+    <div id="section-mascaras" class="content-section" style="display:none;">
+
+      <div class="content-card fade-up">
+        <h2>🎭 Máscaras de Subred — Notación y Tipos</h2>
+        <div class="def-box">
+          La <span class="hl">máscara de subred</span> indica qué parte de una IP es la <span class="hlg">porción de red</span> (bits en 1) y qué parte es la <span class="hlg">porción de host</span> (bits en 0). Se puede expresar en dos formas equivalentes: <span class="hl">notación decimal</span> (255.255.255.0) o <span class="hl">notación CIDR</span> (/24).
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Prefijo CIDR</th><th>Máscara decimal</th><th>Bits host</th><th>Hosts útiles</th><th>Subredes de /24</th></tr></thead>
+          <tbody>
+            <tr><td><span class="badge b-blue">/8</span></td><td>255.0.0.0</td><td>24</td><td>16.777.214</td><td>—</td></tr>
+            <tr><td><span class="badge b-blue">/16</span></td><td>255.255.0.0</td><td>16</td><td>65.534</td><td>—</td></tr>
+            <tr><td><span class="badge b-green">/24</span></td><td>255.255.255.0</td><td>8</td><td>254</td><td>1</td></tr>
+            <tr><td><span class="badge b-green">/25</span></td><td>255.255.255.128</td><td>7</td><td>126</td><td>2</td></tr>
+            <tr><td><span class="badge b-green">/26</span></td><td>255.255.255.192</td><td>6</td><td>62</td><td>4</td></tr>
+            <tr><td><span class="badge b-amber">/27</span></td><td>255.255.255.224</td><td>5</td><td>30</td><td>8</td></tr>
+            <tr><td><span class="badge b-amber">/28</span></td><td>255.255.255.240</td><td>4</td><td>14</td><td>16</td></tr>
+            <tr><td><span class="badge b-amber">/29</span></td><td>255.255.255.248</td><td>3</td><td>6</td><td>32</td></tr>
+            <tr><td><span class="badge b-red">/30</span></td><td>255.255.255.252</td><td>2</td><td>2</td><td>64</td></tr>
+            <tr><td><span class="badge b-red">/31</span></td><td>255.255.255.254</td><td>1</td><td>0 (enlaces P2P)</td><td>128</td></tr>
+            <tr><td><span class="badge b-red">/32</span></td><td>255.255.255.255</td><td>0</td><td>1 (host único)</td><td>256</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="content-card fade-up fade-up-d1">
+        <h2>📐 Fórmulas Fundamentales</h2>
+        <div class="def-box">
+          Tres fórmulas que debes dominar completamente para el examen CCNA:
+        </div>
+        <div class="cmd-block">
+          <span class="cmd-label">FÓRMULAS CLAVE DE SUBNETTING</span>
+          <span class="cl"><span class="cv">Número de subredes:</span>  <span class="ck">2^s</span>   <span class="cc">(s = bits prestados a la red)</span></span>
+          <span class="cl"><span class="cv">Hosts útiles/subred:</span>  <span class="ck">2^h - 2</span> <span class="cc">(h = bits de host restantes)</span></span>
+          <span class="cl"><span class="cv">Wildcard mask:</span>         <span class="ck">255.255.255.255 - máscara</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cc">El -2 excluye:</span></span>
+          <span class="cl"><span class="cc">  → Dirección de red     (todos los bits host en 0)</span></span>
+          <span class="cl"><span class="cc">  → Dirección broadcast  (todos los bits host en 1)</span></span>
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Bits host (h)</th><th>2^h total</th><th>2^h - 2 útiles</th><th>Prefijo resultante</th></tr></thead>
+          <tbody>
+            <tr><td>2</td><td>4</td><td><span class="badge b-red">2</span></td><td>/30</td></tr>
+            <tr><td>3</td><td>8</td><td><span class="badge b-amber">6</span></td><td>/29</td></tr>
+            <tr><td>4</td><td>16</td><td><span class="badge b-amber">14</span></td><td>/28</td></tr>
+            <tr><td>5</td><td>32</td><td><span class="badge b-amber">30</span></td><td>/27</td></tr>
+            <tr><td>6</td><td>64</td><td><span class="badge b-green">62</span></td><td>/26</td></tr>
+            <tr><td>7</td><td>128</td><td><span class="badge b-green">126</span></td><td>/25</td></tr>
+            <tr><td>8</td><td>256</td><td><span class="badge b-green">254</span></td><td>/24</td></tr>
+          </tbody>
+        </table>
+        <div class="info-box tip">
+          <div class="info-icon">✅</div>
+          <div><strong>Tip de velocidad:</strong> Para /30 → 2 hosts. /29 → 6. /28 → 14. /27 → 30. /26 → 62. /25 → 126. /24 → 254. Cada prefijo que sube duplica los hosts. Memoriza estos valores y resolverás el 80% del subnetting en segundos.</div>
+        </div>
+      </div>
+
+      <div class="content-card fade-up fade-up-d2">
+        <h2>🔑 AND Lógico — Cómo el router halla la red</h2>
+        <div class="def-box">
+          El router usa la operación <span class="hl">AND lógico</span> entre la IP y la máscara para obtener la <span class="hlg">dirección de red</span>. Es la operación fundamental del subnetting. Regla: 1 AND 1 = 1 · cualquier AND con 0 = 0.
+        </div>
+        <div class="cmd-block">
+          <span class="cmd-label">AND LÓGICO — ENCONTRAR DIRECCIÓN DE RED</span>
+          <span class="cl"><span class="cv">IP:      192.168.1.130</span>  →  <span class="ck">11000000.10101000.00000001.10000010</span></span>
+          <span class="cl"><span class="cv">Máscara: 255.255.255.192</span>  →  <span class="ck">11111111.11111111.11111111.11000000</span></span>
+          <span class="cl"><span class="cc">AND:                              ────────────────────────────────────</span></span>
+          <span class="cl"><span class="cp">Red:     192.168.1.128</span>  →  <span class="ck">11000000.10101000.00000001.10000000</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cc">Conclusión: 192.168.1.130 pertenece a la red 192.168.1.128/26</span></span>
+        </div>
+      </div>
+
+    </div><!-- /section-mascaras -->
+
+    <!-- ══════════════════════════════════════
+         SECCIÓN 4: CÁLCULO
+    ══════════════════════════════════════ -->
+    <div id="section-calculo" class="content-section" style="display:none;">
+
+      <div class="content-card fade-up">
+        <h2>🧮 Método de Cálculo Rápido — Magic Number</h2>
+        <div class="def-box">
+          El <span class="hl">Magic Number</span> (número mágico) es la técnica más rápida para subnetting sin hacer cálculos binarios completos. Se calcula como <span class="hlg">256 − octeto interesante de la máscara</span>. El resultado es el <strong>incremento de bloque</strong> — el tamaño de cada subred.
+        </div>
+        <div class="cmd-block">
+          <span class="cmd-label">MÉTODO MAGIC NUMBER</span>
+          <span class="cl"><span class="cv">Fórmula: Magic Number = 256 − [octeto interesante de la máscara]</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cc">Máscara /26 = 255.255.255.192</span></span>
+          <span class="cl"><span class="cc">Octeto interesante = 192  →  Magic Number = 256 - 192 = </span><span class="ck">64</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cc">Subredes de la red 192.168.1.0/26:</span></span>
+          <span class="cl"><span class="cp">192.168.1.0</span>   — <span class="cv">192.168.1.63</span>   <span class="cc">(red .0, broadcast .63)</span></span>
+          <span class="cl"><span class="cp">192.168.1.64</span>  — <span class="cv">192.168.1.127</span>  <span class="cc">(red .64, broadcast .127)</span></span>
+          <span class="cl"><span class="cp">192.168.1.128</span> — <span class="cv">192.168.1.191</span>  <span class="cc">(red .128, broadcast .191)</span></span>
+          <span class="cl"><span class="cp">192.168.1.192</span> — <span class="cv">192.168.1.255</span>  <span class="cc">(red .192, broadcast .255)</span></span>
+        </div>
+        <div class="info-box tip">
+          <div class="info-icon">✅</div>
+          <div><strong>Pasos del Magic Number:</strong> 1) Calcular 256 − máscara = bloque. 2) Listar bloques: 0, bloque, 2×bloque, 3×bloque... 3) Para cada bloque: Red = inicio, Broadcast = siguiente inicio − 1, Hosts útiles = Red+1 hasta Broadcast−1.</div>
+        </div>
+      </div>
+
+      <div class="content-card fade-up fade-up-d1">
+        <h2>📋 Ejercicio Completo — Analizar una Red</h2>
+        <div class="def-box">
+          <strong>Problema:</strong> Dada la dirección <span class="hl">172.16.45.14/20</span>, determinar: dirección de red, broadcast, primera IP útil, última IP útil, número de hosts y número de subredes posibles.
+        </div>
+        <div class="cmd-block">
+          <span class="cmd-label">RESOLUCIÓN PASO A PASO — 172.16.45.14/20</span>
+          <span class="cl"><span class="cv">Paso 1: Identificar la máscara</span></span>
+          <span class="cl"><span class="cc">  /20 = 255.255.240.0  →  octeto interesante = tercer octeto (240)</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cv">Paso 2: Magic Number</span></span>
+          <span class="cl"><span class="cc">  256 - 240 = </span><span class="ck">16</span>  <span class="cc">(incremento de bloque)</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cv">Paso 3: Bloques en el tercer octeto</span></span>
+          <span class="cl"><span class="cc">  172.16.</span><span class="ck">0</span><span class="cc">.0 ... 172.16.</span><span class="ck">15</span><span class="cc">.255</span></span>
+          <span class="cl"><span class="cc">  172.16.</span><span class="ck">16</span><span class="cc">.0 ... 172.16.</span><span class="ck">31</span><span class="cc">.255</span></span>
+          <span class="cl"><span class="cc">  172.16.</span><span class="ck">32</span><span class="cc">.0 ... 172.16.</span><span class="ck">47</span><span class="cc">.255   ← </span><span class="cv">45 está aquí</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cv">Paso 4: Resultados</span></span>
+          <span class="cl"><span class="cp">  Dirección de red:     172.16.32.0</span></span>
+          <span class="cl"><span class="cp">  Primera IP útil:      172.16.32.1</span></span>
+          <span class="cl"><span class="cp">  Última IP útil:       172.16.47.254</span></span>
+          <span class="cl"><span class="cp">  Broadcast:            172.16.47.255</span></span>
+          <span class="cl"><span class="cp">  Hosts útiles:         2^12 - 2 = 4.094 hosts</span></span>
+          <span class="cl"><span class="cp">  Subredes posibles:    2^4 = 16 subredes en 172.16.0.0/16</span></span>
+        </div>
+      </div>
+
+      <div class="content-card fade-up fade-up-d2">
+        <h2>📊 Tabla de Referencia Rápida /24 a /30</h2>
+        <table class="data-table">
+          <thead><tr><th>Prefijo</th><th>Máscara</th><th>Magic #</th><th>Subredes de /24</th><th>Hosts útiles</th><th>Bloque</th></tr></thead>
+          <tbody>
+            <tr><td><span class="badge b-blue">/24</span></td><td>255.255.255.0</td><td>256</td><td>1</td><td><span class="badge b-green">254</span></td><td>256</td></tr>
+            <tr><td><span class="badge b-green">/25</span></td><td>255.255.255.128</td><td>128</td><td>2</td><td><span class="badge b-green">126</span></td><td>128</td></tr>
+            <tr><td><span class="badge b-green">/26</span></td><td>255.255.255.192</td><td>64</td><td>4</td><td><span class="badge b-green">62</span></td><td>64</td></tr>
+            <tr><td><span class="badge b-amber">/27</span></td><td>255.255.255.224</td><td>32</td><td>8</td><td><span class="badge b-amber">30</span></td><td>32</td></tr>
+            <tr><td><span class="badge b-amber">/28</span></td><td>255.255.255.240</td><td>16</td><td>16</td><td><span class="badge b-amber">14</span></td><td>16</td></tr>
+            <tr><td><span class="badge b-amber">/29</span></td><td>255.255.255.248</td><td>8</td><td>32</td><td><span class="badge b-amber">6</span></td><td>8</td></tr>
+            <tr><td><span class="badge b-red">/30</span></td><td>255.255.255.252</td><td>4</td><td>64</td><td><span class="badge b-red">2</span></td><td>4</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div><!-- /section-calculo -->
+
+    <!-- ══════════════════════════════════════
+         SECCIÓN 5: VLSM
+    ══════════════════════════════════════ -->
+    <div id="section-vlsm" class="content-section" style="display:none;">
+
+      <div class="content-card fade-up">
+        <h2>🔀 VLSM — Variable Length Subnet Masking</h2>
+        <div class="def-box">
+          <span class="hl">VLSM</span> permite usar <span class="hlg">máscaras de diferente longitud</span> en distintas subredes dentro del mismo espacio de direcciones. Es el subnetting moderno y eficiente — evita el desperdicio de IPs asignando a cada segmento exactamente el tamaño que necesita.
+        </div>
+        <div class="info-box tip">
+          <div class="info-icon">✅</div>
+          <div><strong>Regla de oro VLSM:</strong> Siempre empieza asignando la subred más grande primero, luego la siguiente más grande, y así sucesivamente. Esto maximiza el uso eficiente del espacio de direcciones.</div>
+        </div>
+        <div class="info-box exam">
+          <div class="info-icon">🎯</div>
+          <div><strong>CCNA Examen:</strong> VLSM es obligatorio para CCNA. Los protocolos que soportan VLSM: <strong>RIPv2, OSPF, EIGRP, IS-IS</strong>. El que NO soporta VLSM es <strong>RIPv1</strong> (classful, no envía máscara en las actualizaciones).</div>
+        </div>
+      </div>
+
+      <div class="content-card fade-up fade-up-d1">
+        <h2>🏗️ Ejercicio VLSM — Diseño Completo</h2>
+        <div class="def-box">
+          <strong>Requerimiento:</strong> Red disponible <span class="hl">192.168.10.0/24</span>. Diseñar subredes para:
+          <br>• Departamento A: <strong>100 hosts</strong>
+          <br>• Departamento B: <strong>50 hosts</strong>
+          <br>• Departamento C: <strong>25 hosts</strong>
+          <br>• Enlace WAN R1-R2: <strong>2 hosts</strong>
+          <br>• Enlace WAN R2-R3: <strong>2 hosts</strong>
+        </div>
+        <div class="cmd-block">
+          <span class="cmd-label">PASO 1 — ORDENAR DE MAYOR A MENOR</span>
+          <span class="cl"><span class="cv">1. Depto A: 100 hosts  → necesita /25 (126 hosts) → bloque 128</span></span>
+          <span class="cl"><span class="cv">2. Depto B:  50 hosts  → necesita /26 (62 hosts)  → bloque 64</span></span>
+          <span class="cl"><span class="cv">3. Depto C:  25 hosts  → necesita /27 (30 hosts)  → bloque 32</span></span>
+          <span class="cl"><span class="cv">4. WAN 1:    2 hosts   → necesita /30 (2 hosts)   → bloque 4</span></span>
+          <span class="cl"><span class="cv">5. WAN 2:    2 hosts   → necesita /30 (2 hosts)   → bloque 4</span></span>
+        </div>
+        <div class="cmd-block">
+          <span class="cmd-label">PASO 2 — ASIGNAR SUBREDES EN ORDEN</span>
+          <span class="cl"><span class="cc">Subred 1 — Depto A /25:</span></span>
+          <span class="cl"><span class="cp">  Red:       192.168.10.0/25</span></span>
+          <span class="cl"><span class="cp">  Hosts:     192.168.10.1 → 192.168.10.126</span></span>
+          <span class="cl"><span class="cp">  Broadcast: 192.168.10.127</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cc">Subred 2 — Depto B /26:</span></span>
+          <span class="cl"><span class="ck">  Red:       192.168.10.128/26</span></span>
+          <span class="cl"><span class="ck">  Hosts:     192.168.10.129 → 192.168.10.190</span></span>
+          <span class="cl"><span class="ck">  Broadcast: 192.168.10.191</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cc">Subred 3 — Depto C /27:</span></span>
+          <span class="cl"><span class="cv">  Red:       192.168.10.192/27</span></span>
+          <span class="cl"><span class="cv">  Hosts:     192.168.10.193 → 192.168.10.222</span></span>
+          <span class="cl"><span class="cv">  Broadcast: 192.168.10.223</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cc">Subred 4 — WAN R1-R2 /30:</span></span>
+          <span class="cl" style="color:#8b5cf6;">  Red:       192.168.10.224/30</span>
+          <span class="cl" style="color:#8b5cf6;">  Hosts:     192.168.10.225 → 192.168.10.226</span>
+          <span class="cl" style="color:#8b5cf6;">  Broadcast: 192.168.10.227</span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cc">Subred 5 — WAN R2-R3 /30:</span></span>
+          <span class="cl" style="color:#f59e0b;">  Red:       192.168.10.228/30</span>
+          <span class="cl" style="color:#f59e0b;">  Hosts:     192.168.10.229 → 192.168.10.230</span>
+          <span class="cl" style="color:#f59e0b;">  Broadcast: 192.168.10.231</span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cc">Rango no usado: 192.168.10.232 → 192.168.10.255 (24 IPs libres)</span></span>
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Segmento</th><th>Red</th><th>Prefijo</th><th>Hosts req.</th><th>Hosts disp.</th></tr></thead>
+          <tbody>
+            <tr><td>Departamento A</td><td>192.168.10.0</td><td><span class="badge b-green">/25</span></td><td>100</td><td>126 ✅</td></tr>
+            <tr><td>Departamento B</td><td>192.168.10.128</td><td><span class="badge b-green">/26</span></td><td>50</td><td>62 ✅</td></tr>
+            <tr><td>Departamento C</td><td>192.168.10.192</td><td><span class="badge b-amber">/27</span></td><td>25</td><td>30 ✅</td></tr>
+            <tr><td>WAN R1-R2</td><td>192.168.10.224</td><td><span class="badge b-red">/30</span></td><td>2</td><td>2 ✅</td></tr>
+            <tr><td>WAN R2-R3</td><td>192.168.10.228</td><td><span class="badge b-red">/30</span></td><td>2</td><td>2 ✅</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div><!-- /section-vlsm -->
+
+    <!-- ══════════════════════════════════════
+         SECCIÓN 6: EJERCICIOS
+    ══════════════════════════════════════ -->
+    <div id="section-ejercicios" class="content-section" style="display:none;">
+
+      <div class="content-card fade-up">
+        <h2>📝 Ejercicios Resueltos — Nivel CCNA</h2>
+
+        <div class="def-box">
+          <strong style="color:var(--blue-b);">Ejercicio 1:</strong> Dada la IP <span class="hl">10.1.200.35/21</span>, determina todos los parámetros de la subred.
+        </div>
+        <div class="cmd-block">
+          <span class="cmd-label">RESOLUCIÓN EJERCICIO 1 — 10.1.200.35/21</span>
+          <span class="cl"><span class="cv">/21 → 255.255.248.0  →  octeto interesante: tercer octeto (248)</span></span>
+          <span class="cl"><span class="cv">Magic Number: 256 - 248 = 8</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cc">Bloques en tercer octeto: 0, 8, 16 ... 192, 200, 208 ...</span></span>
+          <span class="cl"><span class="cc">200 es inicio de bloque → siguiente bloque = 208</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cp">Dirección de red:   10.1.200.0/21</span></span>
+          <span class="cl"><span class="cp">Primera IP útil:    10.1.200.1</span></span>
+          <span class="cl"><span class="cp">Última IP útil:     10.1.207.254</span></span>
+          <span class="cl"><span class="cp">Broadcast:          10.1.207.255</span></span>
+          <span class="cl"><span class="cp">Hosts útiles:       2^11 - 2 = 2.046 hosts</span></span>
+        </div>
+
+        <div class="def-box" style="margin-top:20px;">
+          <strong style="color:var(--blue-b);">Ejercicio 2:</strong> Necesitas una subred para <span class="hl">exactamente 60 hosts</span>. ¿Qué prefijo usas y cuál es la máscara?
+        </div>
+        <div class="cmd-block">
+          <span class="cmd-label">RESOLUCIÓN EJERCICIO 2 — 60 HOSTS</span>
+          <span class="cl"><span class="cv">¿Qué prefijo da ≥ 60 hosts útiles?</span></span>
+          <span class="cl"><span class="cc">/27 → 2^5 - 2 = 30  ← NO alcanza</span></span>
+          <span class="cl"><span class="ck">/26 → 2^6 - 2 = 62  ← ✅ primer prefijo que alcanza 60</span></span>
+          <span class="cl"><span class="cc">/25 → 2^7 - 2 = 126 ← desperdicia mucho</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cp">Respuesta: /26 = 255.255.255.192</span></span>
+        </div>
+
+        <div class="def-box" style="margin-top:20px;">
+          <strong style="color:var(--blue-b);">Ejercicio 3:</strong> ¿A qué subred /27 pertenece el host <span class="hl">192.168.5.200</span>?
+        </div>
+        <div class="cmd-block">
+          <span class="cmd-label">RESOLUCIÓN EJERCICIO 3 — SUBRED /27</span>
+          <span class="cl"><span class="cv">/27 → 255.255.255.224  →  Magic Number: 256 - 224 = 32</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cc">Bloques: 0, 32, 64, 96, 128, 160, 192, 224 ...</span></span>
+          <span class="cl"><span class="cc">200 está entre 192 y 224 → pertenece al bloque que empieza en 192</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cp">Subred:     192.168.5.192/27</span></span>
+          <span class="cl"><span class="cp">Broadcast:  192.168.5.223</span></span>
+          <span class="cl"><span class="cp">Hosts:      192.168.5.193 → 192.168.5.222  (30 hosts)</span></span>
+          <span class="cl"><span class="cp">¿.200 es válido? Sí ✅ (está entre .193 y .222)</span></span>
+        </div>
+
+        <div class="def-box" style="margin-top:20px;">
+          <strong style="color:var(--blue-b);">Ejercicio 4:</strong> Divide la red <span class="hl">172.20.0.0/16</span> en subredes de al menos <span class="hl">500 hosts</span> cada una. ¿Cuántas subredes obtienes?
+        </div>
+        <div class="cmd-block">
+          <span class="cmd-label">RESOLUCIÓN EJERCICIO 4 — 500 HOSTS</span>
+          <span class="cl"><span class="cv">¿Qué prefijo da ≥ 500 hosts?</span></span>
+          <span class="cl"><span class="cc">/23 → 2^9  - 2 = 510  ← ✅ primer prefijo que alcanza 500</span></span>
+          <span class="cl"><span class="cc">/24 → 2^8  - 2 = 254  ← NO alcanza</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cv">¿Cuántas subredes /23 caben en un /16?</span></span>
+          <span class="cl"><span class="cc">Bits prestados = 23 - 16 = 7 bits</span></span>
+          <span class="cl"><span class="cp">Subredes: 2^7 = 128 subredes /23</span></span>
+          <span class="cl"><span class="cp">Hosts útiles: 510 por subred</span></span>
+        </div>
+      </div>
+
+    </div><!-- /section-ejercicios -->
+
+    <!-- ══════════════════════════════════════
+         SECCIÓN 7: QUIZ
+    ══════════════════════════════════════ -->
+    <div id="section-quiz" class="content-section" style="display:none;">
+
+      <div class="content-card">
+        <h2>🎯 Quiz — Subnetting IPv4 (Estilo Examen CCNA 200-301)</h2>
+        <div class="info-box exam">
+          <div class="info-icon">📋</div>
+          <div>El subnetting es el tema más evaluado del examen CCNA. Domina la velocidad de cálculo — el examen es contrarreloj.</div>
+        </div>
+
+        <!-- Q1 -->
+        <div class="q-box" id="q1">
+          <div class="q-num">PREGUNTA 01 / 08</div>
+          <div class="q-text">¿Cuántos hosts útiles puede tener una subred con máscara <strong>/26</strong>?</div>
+          <div class="q-opts">
+            <div class="q-opt" onclick="CcnaQuiz.answer(1,'A','wrong','Incorrecto. 64 es el tamaño total del bloque (2^6 = 64), pero no todos son utilizables. Hay que restar 2 direcciones: la dirección de red (.0) y la de broadcast (.63).')"><div class="q-letter">A</div>64</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(1,'B','correct','¡Correcto! /26 deja 6 bits para hosts. 2^6 = 64 direcciones totales. 64 - 2 = 62 hosts útiles. Los 2 que se restan son la dirección de red y la dirección de broadcast. Esta es una de las combinaciones más preguntadas en CCNA.')"><div class="q-letter">B</div>62</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(1,'C','wrong','Incorrecto. 30 corresponde a /27 (2^5 - 2 = 30), no a /26. Con /27 quedan 5 bits de host, con /26 quedan 6 bits de host — el doble de capacidad.')"><div class="q-letter">C</div>30</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(1,'D','wrong','Incorrecto. 126 corresponde a /25 (2^7 - 2 = 126). Con /25 quedan 7 bits de host. Recuerda: /26 → 62, /25 → 126, /24 → 254.')"><div class="q-letter">D</div>126</div>
+          </div>
+          <div class="q-feedback" id="fb1"></div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="q-box" id="q2">
+          <div class="q-num">PREGUNTA 02 / 08</div>
+          <div class="q-text">El host <strong>192.168.1.100/27</strong>, ¿cuál es su dirección de broadcast?</div>
+          <div class="q-opts">
+            <div class="q-opt" onclick="CcnaQuiz.answer(2,'A','wrong','Incorrecto. 192.168.1.255 sería el broadcast de la red /24 completa (255.255.255.0), no de la subred /27. Con /27 la red está dividida en bloques de 32.')"><div class="q-letter">A</div>192.168.1.255</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(2,'B','wrong','Incorrecto. 192.168.1.127 es el broadcast de la subred /27 que va de .96 a .127, no la que contiene .100. Hay que identificar primero a qué bloque pertenece .100.')"><div class="q-letter">B</div>192.168.1.127</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(2,'C','correct','¡Correcto! /27 tiene Magic Number 256-224=32. Bloques: 0, 32, 64, 96, 128... El host .100 está en el bloque que empieza en .96. El siguiente bloque comienza en .128, así que el broadcast es .128-1 = .127. Espera, .100 está entre 96 y 127. El broadcast es 192.168.1.127. ¡Correcto!')"><div class="q-letter">C</div>192.168.1.127</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(2,'D','wrong','Incorrecto. 192.168.1.128 es la dirección de red del siguiente bloque /27, no el broadcast del bloque actual. El broadcast siempre es una dirección antes del inicio del siguiente bloque.')"><div class="q-letter">D</div>192.168.1.128</div>
+          </div>
+          <div class="q-feedback" id="fb2"></div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="q-box" id="q3">
+          <div class="q-num">PREGUNTA 03 / 08</div>
+          <div class="q-text">¿Qué rango de direcciones corresponde a las <strong>IPs privadas de Clase B</strong> según RFC 1918?</div>
+          <div class="q-opts">
+            <div class="q-opt" onclick="CcnaQuiz.answer(3,'A','wrong','Incorrecto. 10.0.0.0/8 es el rango privado de Clase A, no de Clase B. El rango Clase A privado va de 10.0.0.0 a 10.255.255.255.')"><div class="q-letter">A</div>10.0.0.0 — 10.255.255.255</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(3,'B','correct','¡Correcto! El rango privado de Clase B es 172.16.0.0 a 172.31.255.255 (/12). Nota que NO es todo el rango 172.x.x.x — solo desde 172.16 hasta 172.31. Este detalle aparece en el examen CCNA.')"><div class="q-letter">B</div>172.16.0.0 — 172.31.255.255</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(3,'C','wrong','Incorrecto. 192.168.0.0/16 es el rango privado de Clase C. Va de 192.168.0.0 a 192.168.255.255 y es el más usado en redes domésticas y pequeñas empresas.')"><div class="q-letter">C</div>192.168.0.0 — 192.168.255.255</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(3,'D','wrong','Incorrecto. 172.0.0.0 a 172.255.255.255 no es el rango privado Clase B correcto. El rango privado Clase B específico es 172.16.0.0 a 172.31.255.255, no todo el espacio 172.x.x.x.')"><div class="q-letter">D</div>172.0.0.0 — 172.255.255.255</div>
+          </div>
+          <div class="q-feedback" id="fb3"></div>
+        </div>
+
+        <!-- Q4 -->
+        <div class="q-box" id="q4">
+          <div class="q-num">PREGUNTA 04 / 08</div>
+          <div class="q-text">¿Cuántas subredes de tamaño /28 se pueden crear a partir de una red <strong>/24</strong>?</div>
+          <div class="q-opts">
+            <div class="q-opt" onclick="CcnaQuiz.answer(4,'A','wrong','Incorrecto. 8 sería el resultado para /27 dentro de /24 (3 bits prestados → 2^3 = 8). Para /28 se prestan 4 bits (28-24=4), lo que da más subredes.')"><div class="q-letter">A</div>8</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(4,'B','wrong','Incorrecto. 32 sería el resultado para /29 dentro de /24 (5 bits prestados → 2^5 = 32). Para /28 son 4 bits prestados (28-24=4).')"><div class="q-letter">B</div>32</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(4,'C','correct','¡Correcto! Para dividir /24 en subredes /28, se prestan 4 bits (28-24=4). Número de subredes = 2^4 = 16. Cada subred /28 tiene un bloque de 16 IPs (Magic Number: 256-240=16) y 14 hosts útiles.')"><div class="q-letter">C</div>16</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(4,'D','wrong','Incorrecto. 64 sería el resultado para /30 dentro de /24 (6 bits prestados → 2^6 = 64). Para /28 son solo 4 bits prestados.')"><div class="q-letter">D</div>64</div>
+          </div>
+          <div class="q-feedback" id="fb4"></div>
+        </div>
+
+        <!-- Q5 -->
+        <div class="q-box" id="q5">
+          <div class="q-num">PREGUNTA 05 / 08</div>
+          <div class="q-text">¿Qué prefijo CIDR es el más eficiente para un enlace <strong>punto a punto</strong> entre dos routers?</div>
+          <div class="q-opts">
+            <div class="q-opt" onclick="CcnaQuiz.answer(5,'A','wrong','Incorrecto. /24 proporciona 254 hosts útiles, lo cual es un desperdicio enorme para un enlace P2P que solo necesita 2 IPs. Desperdiciarías 252 direcciones IP.')"><div class="q-letter">A</div>/24</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(5,'B','wrong','Incorrecto. /29 proporciona 6 hosts útiles, lo cual es más eficiente que /24 pero sigue desperdiciando 4 IPs para un enlace que solo necesita 2.')"><div class="q-letter">B</div>/29</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(5,'C','correct','¡Correcto! /30 es el prefijo estándar para enlaces punto a punto entre routers. Proporciona exactamente 2 hosts útiles (2^2-2=2): una IP para cada extremo del enlace. Es el más eficiente sin desperdiciar direcciones.')"><div class="q-letter">C</div>/30</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(5,'D','wrong','Incorrecto. /32 identifica un único host específico (sin hosts útiles para red). Se usa para rutas de host específicas o loopbacks, no para enlaces entre routers. /31 también se puede usar en P2P en IOS moderno, pero /30 es el estándar CCNA.')"><div class="q-letter">D</div>/32</div>
+          </div>
+          <div class="q-feedback" id="fb5"></div>
+        </div>
+
+        <!-- Q6 -->
+        <div class="q-box" id="q6">
+          <div class="q-num">PREGUNTA 06 / 08</div>
+          <div class="q-text">¿Cuál de estas direcciones IP <strong>NO</strong> es una dirección privada según RFC 1918?</div>
+          <div class="q-opts">
+            <div class="q-opt" onclick="CcnaQuiz.answer(6,'A','wrong','Incorrecto. 10.254.100.1 SÍ es privada — pertenece al rango 10.0.0.0/8 (Clase A privada). Todo el espacio 10.x.x.x es privado.')"><div class="q-letter">A</div>10.254.100.1</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(6,'B','wrong','Incorrecto. 172.20.50.1 SÍ es privada — pertenece al rango 172.16.0.0/12 (Clase B privada, desde 172.16.x.x hasta 172.31.x.x). 172.20 está dentro de ese rango.')"><div class="q-letter">B</div>172.20.50.1</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(6,'C','wrong','Incorrecto. 192.168.100.5 SÍ es privada — pertenece al rango 192.168.0.0/16 (Clase C privada). Todo el espacio 192.168.x.x es privado.')"><div class="q-letter">C</div>192.168.100.5</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(6,'D','correct','¡Correcto! 172.32.10.1 NO es privada. El rango privado Clase B termina en 172.31.255.255. La dirección 172.32.x.x ya está fuera del rango privado y es una dirección pública enrutable en Internet. Este es un error clásico en el examen CCNA.')"><div class="q-letter">D</div>172.32.10.1</div>
+          </div>
+          <div class="q-feedback" id="fb6"></div>
+        </div>
+
+        <!-- Q7 -->
+        <div class="q-box" id="q7">
+          <div class="q-num">PREGUNTA 07 / 08</div>
+          <div class="q-text">Una empresa necesita <strong>5 subredes</strong> con al menos <strong>25 hosts</strong> cada una, usando el menor espacio posible de una red /24. ¿Qué prefijo usar para las subredes?</div>
+          <div class="q-opts">
+            <div class="q-opt" onclick="CcnaQuiz.answer(7,'A','wrong','Incorrecto. /29 solo proporciona 6 hosts útiles (2^3-2=6), lo que es insuficiente para el requerimiento de al menos 25 hosts por subred.')"><div class="q-letter">A</div>/29 — 6 hosts por subred</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(7,'B','wrong','Incorrecto. /28 proporciona 14 hosts útiles (2^4-2=14), lo que tampoco alcanza para el requerimiento de 25 hosts por subred.')"><div class="q-letter">B</div>/28 — 14 hosts por subred</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(7,'C','correct','¡Correcto! /27 proporciona 30 hosts útiles (2^5-2=30), cumpliendo el requerimiento mínimo de 25. Además, de una red /24 se obtienen 8 subredes /27 (2^3=8), suficientes para las 5 requeridas. /27 es el prefijo más eficiente que satisface ambas condiciones.')"><div class="q-letter">C</div>/27 — 30 hosts por subred</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(7,'D','wrong','Incorrecto. /26 proporciona 62 hosts útiles y sí cumple el requerimiento, pero desperdicia más IPs que /27. El enunciado pide el menor espacio posible. Con /26 solo se obtienen 4 subredes de /24, pero sí alcanzarían para 5 si se agregan más bloques — sin embargo /27 es más eficiente.')"><div class="q-letter">D</div>/26 — 62 hosts por subred</div>
+          </div>
+          <div class="q-feedback" id="fb7"></div>
+        </div>
+
+        <!-- Q8 -->
+        <div class="q-box" id="q8">
+          <div class="q-num">PREGUNTA 08 / 08</div>
+          <div class="q-text">¿Cuál de estas afirmaciones sobre <strong>VLSM</strong> es correcta?</div>
+          <div class="q-opts">
+            <div class="q-opt" onclick="CcnaQuiz.answer(8,'A','wrong','Incorrecto. VLSM no fue introducido con IPv6. VLSM existe desde los años 90 con IPv4 y es parte del estándar CIDR. IPv6 tiene su propio sistema de prefijos pero VLSM es un concepto de IPv4.')"><div class="q-letter">A</div>VLSM solo funciona con IPv6</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(8,'B','wrong','Incorrecto. Es exactamente al revés. RIPv1 NO soporta VLSM porque es un protocolo classful que no incluye la máscara en sus actualizaciones. Los protocolos que SÍ soportan VLSM son RIPv2, OSPF, EIGRP e IS-IS.')"><div class="q-letter">B</div>RIPv1 soporta VLSM pero OSPF no</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(8,'C','wrong','Incorrecto. En VLSM se usa una máscara diferente para cada subred según sus necesidades. De hecho, VLSM significa Variable Length Subnet Masking — la longitud de la máscara varía entre subredes.')"><div class="q-letter">C</div>VLSM obliga a usar la misma máscara en todas las subredes</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(8,'D','correct','¡Correcto! VLSM permite asignar máscaras de diferente longitud a distintas subredes, optimizando el uso del espacio de direcciones. Permite asignar /30 para enlaces WAN (2 hosts) y /25 para LANs grandes (126 hosts) dentro del mismo bloque de direcciones. Los protocolos que lo soportan son RIPv2, OSPF, EIGRP e IS-IS.')"><div class="q-letter">D</div>VLSM permite usar máscaras de diferente longitud para optimizar el uso de IPs</div>
+          </div>
+          <div class="q-feedback" id="fb8"></div>
+        </div>
+
+        <!-- Score Box -->
+        <div id="scoreBox" style="display:none;" class="content-card">
+          <h2>🏆 Resultado Final</h2>
+          <div style="text-align:center;padding:20px;">
+            <div id="scoreTxt" style="font-family:var(--font-head);font-size:2.5rem;font-weight:900;margin-bottom:8px;"></div>
+            <div id="scoreMsg" style="color:var(--gray);"></div>
+          </div>
+        </div>
+
+      </div>
+    </div><!-- /section-quiz -->
+
+  </div><!-- /wrap -->
+</div><!-- /page-content -->
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <span class="logo-cisco">CISCO</span>
+          <span class="logo-text">Academy</span>
+        </div>
+        <p>Ruta completa de aprendizaje hacia las certificaciones Cisco CCNA, CCNP y CCIE.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Módulo 1 — Fundamentos</h4>
+        <a href="fundamentos.html">← Fundamentos de Redes</a>
+        <a href="subnetting.html">📍 Subnetting IPv4 (aquí)</a>
+      </div>
+      <div class="footer-links">
+        <h4>Módulo 4 — Seguridad</h4>
+        <a href="acl.html">→ ACLs</a>
+        <a href="nat.html">→ NAT/PAT</a>
+        <a href="asistente.html">🤖 NetBot IA</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>Basado en el currículo oficial de Cisco Networking Academy · CCNA 200-301</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/main.js"></script>
+<script>
+  if (typeof CcnaQuiz === 'undefined') {
+    window.CcnaQuiz = (function() {
+      let answers = {}, score = 0, total = 0;
+      function init(n) { answers = {}; score = 0; total = n; }
+      function answer(qNum, letter, result, explanation) {
+        if (answers[qNum]) return;
+        answers[qNum] = { letter, result };
+        document.querySelectorAll('#q' + qNum + ' .q-opt').forEach(opt => {
+          opt.style.pointerEvents = 'none';
+          const l = opt.querySelector('.q-letter');
+          if (l && l.textContent === letter) opt.classList.add(result === 'correct' ? 'correct' : 'wrong');
+          if (result === 'wrong' && (opt.getAttribute('onclick') || '').includes("'correct'")) opt.classList.add('correct');
+        });
+        const fb = document.getElementById('fb' + qNum);
+        if (fb) { fb.textContent = (result === 'correct' ? '✅ ' : '❌ ') + explanation; fb.className = 'q-feedback show ' + (result === 'correct' ? 'ok' : 'bad'); }
+        if (result === 'correct') score++;
+        if (Object.keys(answers).length === total) setTimeout(() => {
+          const box = document.getElementById('scoreBox'); if (!box) return;
+          box.style.display = 'block';
+          const pct = Math.round(score / total * 100);
+          const txt = document.getElementById('scoreTxt'); const msg = document.getElementById('scoreMsg');
+          if (txt) txt.textContent = score + ' / ' + total + ' — ' + pct + '%';
+          if (msg) { if (pct>=87){txt.style.color='var(--green)';msg.textContent='🏆 ¡Excelente! Dominas el subnetting CCNA.';}else if(pct>=62){txt.style.color='var(--amber)';msg.textContent='📚 Buen progreso. Practica más los cálculos de subred.';}else{txt.style.color='var(--red)';msg.textContent='💪 Repasa el Magic Number y las fórmulas antes de continuar.';} }
+          box.scrollIntoView({ behavior: 'smooth' });
+        }, 400);
+      }
+      return { init, answer };
+    })();
+  }
+
+  CcnaQuiz.init(8);
+
+  function showSection(id, btn) {
+    document.querySelectorAll('.content-section').forEach(s => s.style.display = 'none');
+    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+    document.getElementById('section-' + id).style.display = 'block';
+    btn.classList.add('active');
+    window.scrollTo({ top: 200, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
