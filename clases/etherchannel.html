@@ -35,7 +35,7 @@
         <span class="nav-label">Módulo 3 — Routing</span>
         <a href="router.html" class="nav-link"><span class="nav-icon">🌐</span> Routers Cisco</a>
         <a href="routing.html" class="nav-link"><span class="nav-icon">🗺️</span> Routing Estático</a>
-        <a href="ospf.html" class="nav-link nav-coming"><span class="nav-icon">⭕</span> OSPF <span class="badge-soon">Próximo</span></a>
+        <a href="ospf.html" class="nav-link"><span class="nav-icon">⭕</span> OSPF</a>
       </div>
       <div class="nav-group">
         <span class="nav-label">Módulo 4 — Seguridad</span>
@@ -646,8 +646,36 @@
 
 <script src="../assets/main.js"></script>
 <script>
+  if (typeof CcnaQuiz === 'undefined') {
+    window.CcnaQuiz = (function() {
+      let answers = {}, score = 0, total = 0;
+      function init(n) { answers = {}; score = 0; total = n; }
+      function answer(qNum, letter, result, explanation) {
+        if (answers[qNum]) return;
+        answers[qNum] = { letter, result };
+        document.querySelectorAll('#q' + qNum + ' .q-opt').forEach(opt => {
+          opt.style.pointerEvents = 'none';
+          const l = opt.querySelector('.q-letter');
+          if (l && l.textContent === letter) opt.classList.add(result === 'correct' ? 'correct' : 'wrong');
+          if (result === 'wrong' && (opt.getAttribute('onclick') || '').includes("'correct'")) opt.classList.add('correct');
+        });
+        const fb = document.getElementById('fb' + qNum);
+        if (fb) { fb.textContent = (result === 'correct' ? '✅ ' : '❌ ') + explanation; fb.className = 'q-feedback show ' + (result === 'correct' ? 'ok' : 'bad'); }
+        if (result === 'correct') score++;
+        if (Object.keys(answers).length === total) setTimeout(() => {
+          const box = document.getElementById('scoreBox'); if (!box) return;
+          box.style.display = 'block';
+          const pct = Math.round(score / total * 100);
+          const txt = document.getElementById('scoreTxt'); const msg = document.getElementById('scoreMsg');
+          if (txt) txt.textContent = score + ' / ' + total + ' — ' + pct + '%';
+          if (msg) { if (pct>=87){txt.style.color='var(--green)';msg.textContent='🏆 ¡Excelente! Listo para el examen CCNA.';}else if(pct>=62){txt.style.color='var(--amber)';msg.textContent='📚 Buen progreso. Repasa los temas donde fallaste.';}else{txt.style.color='var(--red)';msg.textContent='💪 Repasa el material completo antes de continuar.';} }
+          box.scrollIntoView({ behavior: 'smooth' });
+        }, 400);
+      }
+      return { init, answer };
+    })();
+  }
   CcnaQuiz.init(6);
-
   function showSection(id, btn) {
     document.querySelectorAll('.content-section').forEach(s => s.style.display = 'none');
     document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));

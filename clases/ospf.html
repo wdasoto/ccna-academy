@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OSPF — CCNA Academy</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="page-body">
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <div class="nav-wrap">
+    <a href="../index.html" class="nav-logo">
+      <span class="logo-cisco">CISCO</span>
+      <span class="logo-text">Academy</span>
+    </a>
+    <a href="asistente.html" class="nav-link" style="color:#00d4ff;border:1px solid rgba(0,212,255,0.3);border-radius:6px;margin-left:auto;flex-shrink:0;"><span class="nav-icon">🤖</span> NetBot IA</a>
+    <button class="hamburger" id="hamburger" aria-label="Menú">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-menu" id="navMenu">
+      <div class="nav-group">
+        <span class="nav-label">Módulo 1</span>
+        <a href="fundamentos.html" class="nav-link"><span class="nav-icon">🖧</span> Fundamentos</a>
+      </div>
+      <div class="nav-group">
+        <span class="nav-label">Módulo 2 — Switching</span>
+        <a href="vlan.html" class="nav-link"><span class="nav-icon">🏷️</span> VLANs</a>
+        <a href="stp.html" class="nav-link"><span class="nav-icon">🌳</span> STP</a>
+        <a href="switches-cisco.html" class="nav-link"><span class="nav-icon">🔀</span> Switches</a>
+        <a href="etherchannel.html" class="nav-link"><span class="nav-icon">🔗</span> EtherChannel</a>
+      </div>
+      <div class="nav-group">
+        <span class="nav-label">Módulo 3 — Routing</span>
+        <a href="router.html" class="nav-link"><span class="nav-icon">🌐</span> Routers Cisco</a>
+        <a href="routing.html" class="nav-link"><span class="nav-icon">🗺️</span> Routing Estático</a>
+        <a href="ospf.html" class="nav-link active-page"><span class="nav-icon">⭕</span> OSPF</a>
+      </div>
+      <div class="nav-group">
+        <span class="nav-label">Módulo 4 — Seguridad</span>
+        <a href="acl.html" class="nav-link nav-coming"><span class="nav-icon">🔒</span> ACLs <span class="badge-soon">Próximo</span></a>
+        <a href="nat.html" class="nav-link nav-coming"><span class="nav-icon">🔄</span> NAT/PAT <span class="badge-soon">Próximo</span></a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="page-hero">
+  <div class="wrap">
+    <div class="page-breadcrumb">
+      <a href="../index.html">Inicio</a><span>/</span>
+      <span>Módulo 3 — Routing</span><span>/</span>
+      <span>OSPF</span>
+    </div>
+    <h1 class="page-title">OSPF</h1>
+    <div class="page-subtitle">Open Shortest Path First · Áreas · DR/BDR · LSA · Costo · OSPFv2 · Configuración · Troubleshooting</div>
+    <div class="page-nav-pills">
+      <button class="pill active" onclick="showSection('concepto',this)">⭕ Concepto</button>
+      <button class="pill" onclick="showSection('areas',this)">🗂️ Áreas</button>
+      <button class="pill" onclick="showSection('drbdr',this)">👑 DR/BDR</button>
+      <button class="pill" onclick="showSection('config',this)">⌨️ Configuración</button>
+      <button class="pill" onclick="showSection('trouble',this)">🔧 Troubleshooting</button>
+      <button class="pill" onclick="showSection('quiz',this)">🎯 Quiz</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONTENIDO -->
+<div class="page-content">
+  <div class="wrap">
+
+    <!-- ══════════════════════════════════════
+         SECCIÓN 1: CONCEPTO
+    ══════════════════════════════════════ -->
+    <div id="section-concepto" class="content-section">
+
+      <div class="content-card fade-up">
+        <h2>⭕ ¿Qué es OSPF?</h2>
+        <div class="def-box">
+          <span class="hl">OSPF (Open Shortest Path First)</span> es un protocolo de routing dinámico de <span class="hlg">estado de enlace (Link-State)</span>, estándar abierto IEEE definido en el RFC 2328. Cada router construye un <span class="hl">mapa completo de la topología</span> de la red (LSDB) y calcula las mejores rutas usando el <span class="hlg">algoritmo SPF de Dijkstra</span>.
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Característica</th><th>Valor</th></tr></thead>
+          <tbody>
+            <tr><td>Tipo de protocolo</td><td><span class="badge b-blue">IGP — Interior Gateway Protocol</span></td></tr>
+            <tr><td>Algoritmo</td><td><span class="badge b-green">SPF — Dijkstra (Shortest Path First)</span></td></tr>
+            <tr><td>Métrica</td><td><span class="badge b-amber">Costo (Cost) = 100 Mbps / Ancho de banda</span></td></tr>
+            <tr><td>Distancia Administrativa</td><td><span class="badge b-blue">110</span></td></tr>
+            <tr><td>Protocolo de transporte</td><td>IP Protocolo 89 (no usa TCP ni UDP)</td></tr>
+            <tr><td>Multicast Hello</td><td>224.0.0.5 (todos los routers OSPF) · 224.0.0.6 (DR/BDR)</td></tr>
+            <tr><td>Versiones</td><td>OSPFv2 (IPv4) · OSPFv3 (IPv6)</td></tr>
+            <tr><td>Estándar</td><td>RFC 2328 (OSPFv2) · RFC 5340 (OSPFv3)</td></tr>
+          </tbody>
+        </table>
+        <div class="info-box exam">
+          <div class="info-icon">🎯</div>
+          <div><strong>CCNA Examen:</strong> OSPF tiene AD = 110. Memoriza: Connected=0, Static=1, EIGRP=90, <strong>OSPF=110</strong>, RIP=120. El protocolo usa IP protocolo 89 — no TCP ni UDP.</div>
+        </div>
+      </div>
+
+      <div class="content-card fade-up fade-up-d1">
+        <h2>🆚 Link-State vs Distance Vector</h2>
+        <table class="data-table">
+          <thead><tr><th>Aspecto</th><th>Distance Vector (RIP)</th><th>Link-State (OSPF)</th></tr></thead>
+          <tbody>
+            <tr><td>Conocimiento de la red</td><td>Solo rutas vecinas (rumores)</td><td><span class="badge b-green">Mapa completo de la topología</span></td></tr>
+            <tr><td>Algoritmo</td><td>Bellman-Ford</td><td><span class="badge b-green">Dijkstra SPF</span></td></tr>
+            <tr><td>Convergencia</td><td><span class="badge b-red">Lenta (minutos)</span></td><td><span class="badge b-green">Rápida (segundos)</span></td></tr>
+            <tr><td>Base de datos</td><td>Tabla de routing</td><td><span class="badge b-blue">LSDB — Link-State Database</span></td></tr>
+            <tr><td>Bucles de routing</td><td>Propenso</td><td><span class="badge b-green">Imposible — ve topología completa</span></td></tr>
+            <tr><td>Uso de CPU/RAM</td><td>Bajo</td><td><span class="badge b-amber">Mayor — calcula SPF</span></td></tr>
+            <tr><td>Escalabilidad</td><td>Pequeñas redes</td><td><span class="badge b-green">Grandes redes — jerárquico</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="content-card fade-up fade-up-d2">
+        <h2>📐 Cálculo del Costo OSPF</h2>
+        <div class="def-box">
+          La <span class="hl">métrica de OSPF es el Costo</span>. Se calcula como: <span class="hlg">Costo = Ancho de banda de referencia / Ancho de banda de la interfaz</span>. El ancho de banda de referencia por defecto es <strong>100 Mbps</strong> (100,000,000 bps). OSPF elige siempre el camino con <span class="hl">menor costo acumulado</span>.
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Interfaz</th><th>Ancho de Banda</th><th>Costo (ref=100Mbps)</th><th>Costo (ref=1Gbps)</th></tr></thead>
+          <tbody>
+            <tr><td>Serial</td><td>1.544 Mbps (T1)</td><td><span class="badge b-red">64</span></td><td><span class="badge b-red">647</span></td></tr>
+            <tr><td>FastEthernet</td><td>100 Mbps</td><td><span class="badge b-amber">1</span></td><td><span class="badge b-amber">10</span></td></tr>
+            <tr><td>GigabitEthernet</td><td>1000 Mbps</td><td><span class="badge b-amber">1</span></td><td><span class="badge b-green">1</span></td></tr>
+            <tr><td>10GigabitEthernet</td><td>10,000 Mbps</td><td><span class="badge b-amber">1</span></td><td><span class="badge b-green">1</span></td></tr>
+          </tbody>
+        </table>
+        <div class="info-box warn">
+          <div class="info-icon">⚠️</div>
+          <div><strong>Problema clásico:</strong> Con referencia de 100 Mbps, FastEthernet y GigabitEthernet tienen el mismo costo (1). Para redes modernas se recomienda cambiar la referencia a <strong>1 Gbps o 10 Gbps</strong> con el comando <code>auto-cost reference-bandwidth</code>.</div>
+        </div>
+        <div class="cmd-block">
+          <span class="cmd-label">AJUSTAR REFERENCIA DE COSTO</span>
+          <span class="cl"><span class="cc">! Cambiar referencia a 1 Gbps (recomendado en redes modernas)</span></span>
+          <span class="cl"><span class="cp">Router(config-router)#</span> <span class="ck">auto-cost reference-bandwidth</span> <span class="cv">1000</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cc">! Ver el costo de una interfaz</span></span>
+          <span class="cl"><span class="cp">Router#</span> <span class="ck">show ip ospf interface</span> <span class="cv">GigabitEthernet0/0</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cc">! Configurar costo manualmente en una interfaz</span></span>
+          <span class="cl"><span class="cp">Router(config-if)#</span> <span class="ck">ip ospf cost</span> <span class="cv">10</span></span>
+        </div>
+      </div>
+
+      <div class="content-card fade-up fade-up-d3">
+        <h2>🤝 Proceso de Vecindad OSPF — Hello Protocol</h2>
+        <div class="def-box">
+          OSPF usa <span class="hl">paquetes Hello</span> para descubrir vecinos, establecer adyacencias y mantener la relación activa. Los Hellos se envían al multicast <span class="hlg">224.0.0.5</span> cada cierto intervalo. Si no se recibe un Hello en el tiempo <span class="hl">Dead interval</span>, el vecino se declara caído.
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Parámetro Hello</th><th>Redes Broadcast/P2P</th><th>Redes NBMA</th><th>Requerimiento</th></tr></thead>
+          <tbody>
+            <tr><td>Hello Interval</td><td><span class="badge b-green">10 segundos</span></td><td><span class="badge b-amber">30 segundos</span></td><td rowspan="2">Deben coincidir en ambos vecinos</td></tr>
+            <tr><td>Dead Interval</td><td><span class="badge b-green">40 segundos</span></td><td><span class="badge b-amber">120 segundos</span></td></tr>
+          </tbody>
+        </table>
+        <div class="info-box tip">
+          <div class="info-icon">✅</div>
+          <div><strong>Para formar adyacencia OSPF</strong> los routers vecinos deben coincidir en: mismo <strong>Area ID</strong>, mismo <strong>Hello/Dead interval</strong>, mismo <strong>Subnet</strong>, misma <strong>MTU</strong>, mismo <strong>tipo de red</strong> y misma <strong>contraseña</strong> (si se usa autenticación).</div>
+        </div>
+
+        <div class="cmd-block">
+          <span class="cmd-label">ESTADOS DE VECINDAD OSPF</span>
+          <span class="cl"><span class="cc">Down</span>        <span class="cv">→</span> No se han recibido Hellos</span>
+          <span class="cl"><span class="cc">Init</span>        <span class="cv">→</span> Hello recibido, pero no hay relación bidireccional</span>
+          <span class="cl"><span class="cc">2-Way</span>       <span class="cv">→</span> Comunicación bidireccional. Se elige DR/BDR aquí</span>
+          <span class="cl"><span class="cc">ExStart</span>     <span class="cv">→</span> Se negocia master/slave para el intercambio de DBD</span>
+          <span class="cl"><span class="cc">Exchange</span>    <span class="cv">→</span> Se intercambian paquetes DBD (Database Description)</span>
+          <span class="cl"><span class="cc">Loading</span>     <span class="cv">→</span> Se solicitan LSAs faltantes con LSR/LSU</span>
+          <span class="cl"><span class="ck">Full</span>        <span class="cv">→</span> <span class="hlg">✅ LSDB sincronizada — adyacencia completa</span></span>
+        </div>
+        <div class="info-box exam">
+          <div class="info-icon">🎯</div>
+          <div><strong>CCNA Examen:</strong> El estado final deseado es <strong>FULL</strong>. En redes broadcast, los routers DROther solo llegan a estado <strong>2-WAY</strong> entre sí — solo alcanzan FULL con el DR y BDR.</div>
+        </div>
+      </div>
+
+    </div><!-- /section-concepto -->
+
+    <!-- ══════════════════════════════════════
+         SECCIÓN 2: ÁREAS
+    ══════════════════════════════════════ -->
+    <div id="section-areas" class="content-section" style="display:none;">
+
+      <div class="content-card fade-up">
+        <h2>🗂️ Diseño Jerárquico — Áreas OSPF</h2>
+        <div class="def-box">
+          OSPF organiza los routers en <span class="hl">áreas</span> para limitar la propagación de LSAs y reducir el tamaño de la LSDB. Toda red OSPF con múltiples áreas debe tener un <span class="hlg">Área 0 (Backbone)</span>. Todas las demás áreas deben conectarse directamente al Área 0.
+        </div>
+        <div class="cmd-block">
+          <span class="cmd-label">ESTRUCTURA DE ÁREAS</span>
+          <span class="cl">                    <span class="cp">[ Área 0 — Backbone ]</span></span>
+          <span class="cl">                   /         |          \</span>
+          <span class="cl">            <span class="cv">[Área 1]</span>      <span class="cv">[Área 2]</span>      <span class="cv">[Área 3]</span></span>
+          <span class="cl">           /                                    \</span>
+          <span class="cl">     Routers internos                      Routers internos</span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cc">Regla: Toda área debe conectarse directamente al Área 0</span></span>
+          <span class="cl"><span class="cc">Si el Área 0 no es accesible directamente → usar virtual-link</span></span>
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Tipo de Área</th><th>Descripción</th><th>LSAs permitidos</th></tr></thead>
+          <tbody>
+            <tr><td><span class="badge b-blue">Área 0 — Backbone</span></td><td>Área central obligatoria. Todas las áreas deben conectarse aquí</td><td>Todos (LSA 1,2,3,4,5)</td></tr>
+            <tr><td><span class="badge b-green">Standard Area</span></td><td>Área normal que acepta todos los tipos de LSA incluyendo rutas externas</td><td>LSA 1,2,3,4,5</td></tr>
+            <tr><td><span class="badge b-amber">Stub Area</span></td><td>No acepta LSA tipo 5 (rutas externas). Usa ruta default para salir</td><td>LSA 1,2,3</td></tr>
+            <tr><td><span class="badge b-amber">Totally Stubby</span></td><td>No acepta LSA 3,4,5. Solo ruta default. Cisco propietario</td><td>LSA 1,2</td></tr>
+            <tr><td><span class="badge" style="background:rgba(139,92,246,0.15);border:1px solid #8b5cf6;color:#c4b5fd;">NSSA</span></td><td>Not-So-Stubby Area: stub que puede recibir rutas externas via LSA tipo 7</td><td>LSA 1,2,3,7</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="content-card fade-up fade-up-d1">
+        <h2>🖥️ Tipos de Routers OSPF</h2>
+        <table class="data-table">
+          <thead><tr><th>Tipo</th><th>Sigla</th><th>Descripción</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><span class="badge b-blue">Internal Router</span></td>
+              <td>IR</td>
+              <td>Todas sus interfaces están en la misma área. Solo tiene LSDB de esa área</td>
+            </tr>
+            <tr>
+              <td><span class="badge b-green">Backbone Router</span></td>
+              <td>BR</td>
+              <td>Al menos una interfaz en el Área 0</td>
+            </tr>
+            <tr>
+              <td><span class="badge b-amber">Area Border Router</span></td>
+              <td>ABR</td>
+              <td>Conecta dos o más áreas. Tiene LSDB de cada área. Genera LSA tipo 3</td>
+            </tr>
+            <tr>
+              <td><span class="badge b-red">Autonomous System Boundary Router</span></td>
+              <td>ASBR</td>
+              <td>Conecta OSPF con otro protocolo de routing (RIP, EIGRP, BGP). Redistribuye rutas externas</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="info-box exam">
+          <div class="info-icon">🎯</div>
+          <div><strong>CCNA Examen:</strong> El <strong>ABR</strong> conecta áreas OSPF entre sí y genera LSA tipo 3. El <strong>ASBR</strong> conecta OSPF con protocolos externos y genera LSA tipo 5. Un router puede ser ABR y ASBR simultáneamente.</div>
+        </div>
+      </div>
+
+      <div class="content-card fade-up fade-up-d2">
+        <h2>📦 Tipos de LSA</h2>
+        <div class="def-box">
+          Los <span class="hl">LSA (Link-State Advertisements)</span> son los mensajes que los routers OSPF intercambian para construir la LSDB. Cada tipo describe una parte diferente de la topología.
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Tipo</th><th>Nombre</th><th>Generado por</th><th>Descripción</th></tr></thead>
+          <tbody>
+            <tr><td><span class="badge b-green">1</span></td><td>Router LSA</td><td>Todos los routers</td><td>Describe los enlaces del router y sus estados. Solo se propaga dentro del área</td></tr>
+            <tr><td><span class="badge b-green">2</span></td><td>Network LSA</td><td>DR</td><td>Describe la red multi-acceso y los routers conectados. Solo dentro del área</td></tr>
+            <tr><td><span class="badge b-blue">3</span></td><td>Summary LSA</td><td>ABR</td><td>Anuncia redes de otras áreas. Viaja entre áreas a través del Backbone</td></tr>
+            <tr><td><span class="badge b-blue">4</span></td><td>ASBR Summary LSA</td><td>ABR</td><td>Informa la ubicación del ASBR. Necesario para alcanzar rutas externas</td></tr>
+            <tr><td><span class="badge b-amber">5</span></td><td>AS External LSA</td><td>ASBR</td><td>Rutas redistribuidas desde otros protocolos. Se propaga por todo el AS OSPF</td></tr>
+            <tr><td><span class="badge" style="background:rgba(139,92,246,0.15);border:1px solid #8b5cf6;color:#c4b5fd;">7</span></td><td>NSSA External LSA</td><td>ASBR en NSSA</td><td>Rutas externas en áreas NSSA. El ABR convierte tipo 7 a tipo 5</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div><!-- /section-areas -->
+
+    <!-- ══════════════════════════════════════
+         SECCIÓN 3: DR / BDR
+    ══════════════════════════════════════ -->
+    <div id="section-drbdr" class="content-section" style="display:none;">
+
+      <div class="content-card fade-up">
+        <h2>👑 DR y BDR — Designated Router</h2>
+        <div class="def-box">
+          En redes <span class="hl">multi-acceso (Ethernet, Frame Relay)</span>, OSPF elige un <span class="hlg">DR (Designated Router)</span> y un <span class="hlg">BDR (Backup Designated Router)</span> para reducir el tráfico de LSAs. Sin DR/BDR, cada router formaría adyacencia FULL con todos los demás — en una red de N routers: <strong>N×(N-1)/2 adyacencias</strong>. Con DR/BDR: solo <strong>N-1 adyacencias</strong> con el DR.
+        </div>
+        <div class="cmd-block">
+          <span class="cmd-label">SIN DR vs CON DR — RED DE 4 ROUTERS</span>
+          <span class="cl"><span class="cc">Sin DR: 4×3/2 = 6 adyacencias FULL necesarias</span></span>
+          <span class="cl"><span class="cc">Con DR: Solo 3 adyacencias FULL (cada router con el DR)</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl">     <span class="cp">R1</span> ←──FULL──→ <span class="cp">DR</span> ←──FULL──→ <span class="cp">R3</span></span>
+          <span class="cl">              ↑</span>
+          <span class="cl">           FULL</span>
+          <span class="cl">              ↓</span>
+          <span class="cl">             <span class="cp">R2</span>  <span class="cc">(también FULL con BDR)</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cc">R1, R2, R3 entre sí: solo estado 2-WAY (DROther)</span></span>
+        </div>
+      </div>
+
+      <div class="content-card fade-up fade-up-d1">
+        <h2>🗳️ Proceso de Elección DR/BDR</h2>
+        <div class="def-box">
+          La elección se realiza durante el intercambio de Hellos en el estado <strong>2-Way</strong>. Se basa en dos criterios en orden de prioridad:
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Criterio</th><th>Orden</th><th>Descripción</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><span class="badge b-blue">OSPF Priority</span></td>
+              <td>1°</td>
+              <td>Mayor prioridad gana. Rango: 0-255. Default: 1. Prioridad 0 = nunca será DR/BDR</td>
+            </tr>
+            <tr>
+              <td><span class="badge b-green">Router ID</span></td>
+              <td>2° (desempate)</td>
+              <td>Mayor Router ID gana si la prioridad es igual</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="info-box warn">
+          <div class="info-icon">⚠️</div>
+          <div><strong>Importante:</strong> La elección de DR/BDR es <strong>no preemptiva</strong>. Si llega un router con mayor prioridad después de la elección, <strong>NO desplaza al DR actual</strong>. Solo cambia cuando el DR actual falla.</div>
+        </div>
+        <div class="info-box exam">
+          <div class="info-icon">🎯</div>
+          <div><strong>Router ID en OSPF</strong> — se determina en este orden: (1) <code>router-id</code> configurado manualmente, (2) IP más alta de loopback activa, (3) IP más alta de interfaz física activa.</div>
+        </div>
+      </div>
+
+      <div class="content-card fade-up fade-up-d2">
+        <h2>📡 Roles en la Red Multi-acceso</h2>
+        <table class="data-table">
+          <thead><tr><th>Rol</th><th>Descripción</th><th>Multicast</th><th>Estado con vecinos</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><span class="badge b-blue">DR</span></td>
+              <td>Designated Router — recolecta y redistribuye todos los LSAs del segmento</td>
+              <td>Escucha 224.0.0.5 · Envía a 224.0.0.5</td>
+              <td>FULL con todos</td>
+            </tr>
+            <tr>
+              <td><span class="badge b-green">BDR</span></td>
+              <td>Backup DR — monitorea al DR, toma el relevo si el DR falla</td>
+              <td>Escucha 224.0.0.5 y 224.0.0.6</td>
+              <td>FULL con DR y DROther</td>
+            </tr>
+            <tr>
+              <td><span class="badge b-amber">DROther</span></td>
+              <td>Router que no es DR ni BDR. Envía LSAs solo al DR y BDR</td>
+              <td>Envía a 224.0.0.6</td>
+              <td>2-WAY con otros DROther · FULL con DR y BDR</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="cmd-block">
+          <span class="cmd-label">CONFIGURAR PRIORIDAD DR</span>
+          <span class="cl"><span class="cc">! Asegurar que R1 sea siempre el DR (prioridad máxima)</span></span>
+          <span class="cl"><span class="cp">R1(config)#</span> <span class="ck">interface</span> <span class="cv">GigabitEthernet0/0</span></span>
+          <span class="cl"><span class="cp">R1(config-if)#</span> <span class="ck">ip ospf priority</span> <span class="cv">255</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cc">! Excluir un router de la elección DR/BDR (prioridad 0)</span></span>
+          <span class="cl"><span class="cp">R3(config-if)#</span> <span class="ck">ip ospf priority</span> <span class="cv">0</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cc">! Verificar quién es el DR/BDR</span></span>
+          <span class="cl"><span class="cp">Router#</span> <span class="ck">show ip ospf neighbor</span></span>
+        </div>
+      </div>
+
+    </div><!-- /section-drbdr -->
+
+    <!-- ══════════════════════════════════════
+         SECCIÓN 4: CONFIGURACIÓN
+    ══════════════════════════════════════ -->
+    <div id="section-config" class="content-section" style="display:none;">
+
+      <div class="content-card fade-up">
+        <h2>🏗️ Topología de Laboratorio</h2>
+        <div class="def-box">
+          Laboratorio con <span class="hl">3 routers (R1, R2, R3)</span> en una sola área OSPF (Área 0). Todas las redes LAN deben ser alcanzables mediante <span class="hlg">OSPFv2 — Single Area</span>.
+        </div>
+        <div class="cmd-block">
+          <span class="cmd-label">TOPOLOGÍA</span>
+          <span class="cl" style="color:#38d9ff;">PC1 (192.168.1.10)</span>
+          <span class="cl">   |</span>
+          <span class="cl"><span class="cp">[R1]</span> Gi0/0: 192.168.1.1/24  ← LAN1</span>
+          <span class="cl">     Gi0/1: 10.0.12.1/30    ← WAN R1-R2</span>
+          <span class="cl">           |</span>
+          <span class="cl"><span class="cp">[R2]</span> Gi0/0: 10.0.12.2/30    ← WAN R1-R2</span>
+          <span class="cl">     Gi0/1: 10.0.23.1/30    ← WAN R2-R3</span>
+          <span class="cl">     Gi0/2: 192.168.2.1/24  ← LAN2</span>
+          <span class="cl">           |</span>
+          <span class="cl"><span class="cp">[R3]</span> Gi0/0: 10.0.23.2/30    ← WAN R2-R3</span>
+          <span class="cl">     Gi0/1: 192.168.3.1/24  ← LAN3</span>
+          <span class="cl" style="color:#38d9ff;">PC3 (192.168.3.10)</span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cc">Todos en Área 0 — OSPFv2 proceso 1</span></span>
+        </div>
+      </div>
+
+      <div class="content-card fade-up fade-up-d1">
+        <h2>⌨️ Configuración R1</h2>
+        <div class="cmd-block">
+          <span class="cmd-label">R1 — OSPF CONFIG</span>
+          <span class="cl"><span class="cc">! Paso 1: Configurar Router ID estable (recomendado: loopback)</span></span>
+          <span class="cl"><span class="cp">R1(config)#</span> <span class="ck">interface</span> <span class="cv">loopback 0</span></span>
+          <span class="cl"><span class="cp">R1(config-if)#</span> <span class="ck">ip address</span> <span class="cv">1.1.1.1 255.255.255.255</span></span>
+          <span class="cl"><span class="cp">R1(config-if)#</span> <span class="ck">exit</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cc">! Paso 2: Activar proceso OSPF</span></span>
+          <span class="cl"><span class="cp">R1(config)#</span> <span class="ck">router ospf</span> <span class="cv">1</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cc">! Paso 3: Definir Router ID explícitamente</span></span>
+          <span class="cl"><span class="cp">R1(config-router)#</span> <span class="ck">router-id</span> <span class="cv">1.1.1.1</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cc">! Paso 4: Anunciar redes con comando network</span></span>
+          <span class="cl"><span class="cc">! Sintaxis: network [IP-red] [wildcard-mask] area [área]</span></span>
+          <span class="cl"><span class="cp">R1(config-router)#</span> <span class="ck">network</span> <span class="cv">192.168.1.0 0.0.0.255 area 0</span></span>
+          <span class="cl"><span class="cp">R1(config-router)#</span> <span class="ck">network</span> <span class="cv">10.0.12.0 0.0.0.3 area 0</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cc">! Paso 5: Evitar Hellos hacia la LAN (pasiva — no hay routers)</span></span>
+          <span class="cl"><span class="cp">R1(config-router)#</span> <span class="ck">passive-interface</span> <span class="cv">GigabitEthernet0/0</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cc">! Ajustar referencia de costo para redes Gigabit</span></span>
+          <span class="cl"><span class="cp">R1(config-router)#</span> <span class="ck">auto-cost reference-bandwidth</span> <span class="cv">1000</span></span>
+        </div>
+      </div>
+
+      <div class="content-card fade-up fade-up-d2">
+        <h2>⌨️ Configuración R2 y R3</h2>
+        <div class="cmd-block">
+          <span class="cmd-label">R2 — OSPF CONFIG</span>
+          <span class="cl"><span class="cp">R2(config)#</span> <span class="ck">interface loopback 0</span></span>
+          <span class="cl"><span class="cp">R2(config-if)#</span> <span class="ck">ip address</span> <span class="cv">2.2.2.2 255.255.255.255</span></span>
+          <span class="cl"><span class="cp">R2(config-if)#</span> <span class="ck">exit</span></span>
+          <span class="cl"><span class="cp">R2(config)#</span> <span class="ck">router ospf</span> <span class="cv">1</span></span>
+          <span class="cl"><span class="cp">R2(config-router)#</span> <span class="ck">router-id</span> <span class="cv">2.2.2.2</span></span>
+          <span class="cl"><span class="cp">R2(config-router)#</span> <span class="ck">network</span> <span class="cv">10.0.12.0 0.0.0.3 area 0</span></span>
+          <span class="cl"><span class="cp">R2(config-router)#</span> <span class="ck">network</span> <span class="cv">10.0.23.0 0.0.0.3 area 0</span></span>
+          <span class="cl"><span class="cp">R2(config-router)#</span> <span class="ck">network</span> <span class="cv">192.168.2.0 0.0.0.255 area 0</span></span>
+          <span class="cl"><span class="cp">R2(config-router)#</span> <span class="ck">passive-interface</span> <span class="cv">GigabitEthernet0/2</span></span>
+          <span class="cl"><span class="cp">R2(config-router)#</span> <span class="ck">auto-cost reference-bandwidth</span> <span class="cv">1000</span></span>
+        </div>
+        <div class="cmd-block">
+          <span class="cmd-label">R3 — OSPF CONFIG</span>
+          <span class="cl"><span class="cp">R3(config)#</span> <span class="ck">interface loopback 0</span></span>
+          <span class="cl"><span class="cp">R3(config-if)#</span> <span class="ck">ip address</span> <span class="cv">3.3.3.3 255.255.255.255</span></span>
+          <span class="cl"><span class="cp">R3(config-if)#</span> <span class="ck">exit</span></span>
+          <span class="cl"><span class="cp">R3(config)#</span> <span class="ck">router ospf</span> <span class="cv">1</span></span>
+          <span class="cl"><span class="cp">R3(config-router)#</span> <span class="ck">router-id</span> <span class="cv">3.3.3.3</span></span>
+          <span class="cl"><span class="cp">R3(config-router)#</span> <span class="ck">network</span> <span class="cv">10.0.23.0 0.0.0.3 area 0</span></span>
+          <span class="cl"><span class="cp">R3(config-router)#</span> <span class="ck">network</span> <span class="cv">192.168.3.0 0.0.0.255 area 0</span></span>
+          <span class="cl"><span class="cp">R3(config-router)#</span> <span class="ck">passive-interface</span> <span class="cv">GigabitEthernet0/1</span></span>
+          <span class="cl"><span class="cp">R3(config-router)#</span> <span class="ck">auto-cost reference-bandwidth</span> <span class="cv">1000</span></span>
+        </div>
+        <div class="info-box tip">
+          <div class="info-icon">✅</div>
+          <div><strong>passive-interface</strong> evita que OSPF envíe Hellos por interfaces donde no hay routers OSPF (LANs con PCs). Mejora la seguridad y reduce el tráfico innecesario.</div>
+        </div>
+      </div>
+
+      <div class="content-card fade-up fade-up-d3">
+        <h2>📐 Wildcard Mask — La inversa de la máscara</h2>
+        <div class="def-box">
+          El comando <span class="hl">network</span> usa <span class="hlg">wildcard mask</span>, que es la <strong>inversa</strong> de la máscara de subred. Un <strong>0</strong> significa "debe coincidir" y un <strong>1</strong> significa "no importa".
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Máscara de subred</th><th>Wildcard mask</th><th>Ejemplo de uso</th></tr></thead>
+          <tbody>
+            <tr><td>/8  — 255.0.0.0</td><td><span class="badge b-amber">0.255.255.255</span></td><td>network 10.0.0.0 0.255.255.255 area 0</td></tr>
+            <tr><td>/16 — 255.255.0.0</td><td><span class="badge b-amber">0.0.255.255</span></td><td>network 172.16.0.0 0.0.255.255 area 0</td></tr>
+            <tr><td>/24 — 255.255.255.0</td><td><span class="badge b-green">0.0.0.255</span></td><td>network 192.168.1.0 0.0.0.255 area 0</td></tr>
+            <tr><td>/30 — 255.255.255.252</td><td><span class="badge b-green">0.0.0.3</span></td><td>network 10.0.12.0 0.0.0.3 area 0</td></tr>
+            <tr><td>/32 — 255.255.255.255</td><td><span class="badge b-blue">0.0.0.0</span></td><td>network 1.1.1.1 0.0.0.0 area 0 (host exacto)</td></tr>
+          </tbody>
+        </table>
+        <div class="info-box tip">
+          <div class="info-icon">✅</div>
+          <div><strong>Alternativa moderna:</strong> En lugar de <code>network</code>, puedes activar OSPF directamente en la interfaz:<br>
+          <code style="color:var(--blue-b);">Router(config-if)# ip ospf 1 area 0</code><br>
+          Es más preciso y recomendado en entornos actuales.</div>
+        </div>
+        <div class="cmd-block">
+          <span class="cmd-label">ACTIVAR OSPF POR INTERFAZ (MÉTODO MODERNO)</span>
+          <span class="cl"><span class="cp">R1(config)#</span> <span class="ck">interface</span> <span class="cv">GigabitEthernet0/0</span></span>
+          <span class="cl"><span class="cp">R1(config-if)#</span> <span class="ck">ip ospf</span> <span class="cv">1 area 0</span></span>
+          <span class="cl"><span class="cp">R1(config)#</span> <span class="ck">interface</span> <span class="cv">GigabitEthernet0/1</span></span>
+          <span class="cl"><span class="cp">R1(config-if)#</span> <span class="ck">ip ospf</span> <span class="cv">1 area 0</span></span>
+        </div>
+      </div>
+
+      <div class="content-card fade-up">
+        <h2>🌐 Distribuir Ruta Default en OSPF</h2>
+        <div class="cmd-block">
+          <span class="cmd-label">DEFAULT ROUTE VIA OSPF</span>
+          <span class="cl"><span class="cc">! En el router con salida a Internet (ASBR)</span></span>
+          <span class="cl"><span class="cp">R1(config)#</span> <span class="ck">ip route</span> <span class="cv">0.0.0.0 0.0.0.0 203.0.113.1</span>   <span class="cc">! ruta default estática</span></span>
+          <span class="cl"><span class="cp">R1(config)#</span> <span class="ck">router ospf</span> <span class="cv">1</span></span>
+          <span class="cl"><span class="cc">! Distribuir la ruta default a todos los vecinos OSPF</span></span>
+          <span class="cl"><span class="cp">R1(config-router)#</span> <span class="ck">default-information originate</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cc">! Los demás routers verán en su tabla de routing:</span></span>
+          <span class="cl"><span class="cp">O*E2</span>  <span class="ck">0.0.0.0/0</span> <span class="cv">[110/1]</span> via 10.0.12.1    <span class="cc">! E2 = External tipo 2</span></span>
+        </div>
+      </div>
+
+    </div><!-- /section-config -->
+
+    <!-- ══════════════════════════════════════
+         SECCIÓN 5: TROUBLESHOOTING
+    ══════════════════════════════════════ -->
+    <div id="section-trouble" class="content-section" style="display:none;">
+
+      <div class="content-card fade-up">
+        <h2>🔧 Comandos de Verificación OSPF</h2>
+        <table class="data-table">
+          <thead><tr><th>Comando</th><th>Qué muestra</th><th>Cuándo usarlo</th></tr></thead>
+          <tbody>
+            <tr><td><span class="badge b-blue">show ip ospf neighbor</span></td><td>Lista de vecinos: ID, estado, interfaz</td><td>Primera verificación — confirmar adyacencias</td></tr>
+            <tr><td><span class="badge b-blue">show ip ospf neighbor detail</span></td><td>Detalle completo de cada vecino</td><td>Troubleshooting de adyacencias</td></tr>
+            <tr><td><span class="badge b-green">show ip route ospf</span></td><td>Solo rutas aprendidas por OSPF (código O)</td><td>Verificar que las rutas se instalan correctamente</td></tr>
+            <tr><td><span class="badge b-green">show ip ospf</span></td><td>Info del proceso OSPF: Router ID, área, SPF runs</td><td>Verificar proceso y parámetros</td></tr>
+            <tr><td><span class="badge b-amber">show ip ospf interface</span></td><td>Estado OSPF por interfaz: costo, tipo, Hello/Dead</td><td>Verificar parámetros por interfaz</td></tr>
+            <tr><td><span class="badge b-amber">show ip ospf database</span></td><td>Contenido completo de la LSDB</td><td>Verificar sincronización de base de datos</td></tr>
+            <tr><td><span class="badge b-red">debug ip ospf events</span></td><td>Eventos OSPF en tiempo real</td><td>Troubleshooting avanzado</td></tr>
+            <tr><td><span class="badge b-red">debug ip ospf adj</span></td><td>Proceso de formación de adyacencias</td><td>Diagnosticar por qué no se forma vecindad</td></tr>
+          </tbody>
+        </table>
+        <div class="info-box warn">
+          <div class="info-icon">⚠️</div>
+          <div>Los comandos <strong>debug</strong> generan mucha salida en producción. Usar siempre <strong>undebug all</strong> para detenerlos inmediatamente después del diagnóstico.</div>
+        </div>
+      </div>
+
+      <div class="content-card fade-up fade-up-d1">
+        <h2>📊 Interpretando show ip ospf neighbor</h2>
+        <div class="cmd-block">
+          <span class="cmd-label">SHOW IP OSPF NEIGHBOR</span>
+          <span class="cl"><span class="cp">R1#</span> <span class="ck">show ip ospf neighbor</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl" style="color:#6b8aa8;">Neighbor ID   Pri  State        Dead Time  Address      Interface</span>
+          <span class="cl"><span class="cv">2.2.2.2</span>         1  <span class="ck">FULL/DR</span>      00:00:38   10.0.12.2    GigabitEthernet0/1</span>
+          <span class="cl"><span class="cv">3.3.3.3</span>         1  <span class="ck">FULL/  -</span>     00:00:32   10.0.23.2    GigabitEthernet0/1</span>
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Campo</th><th>Descripción</th></tr></thead>
+          <tbody>
+            <tr><td><span class="badge b-green">FULL/DR</span></td><td>Adyacencia completa y el vecino es el DR del segmento ✅</td></tr>
+            <tr><td><span class="badge b-green">FULL/BDR</span></td><td>Adyacencia completa y el vecino es el BDR ✅</td></tr>
+            <tr><td><span class="badge b-green">FULL/ —</span></td><td>Adyacencia completa en enlace punto a punto ✅</td></tr>
+            <tr><td><span class="badge b-amber">2WAY/DROTHER</span></td><td>Comunicación bidireccional — router DROther (normal entre DROthers) ⚠️</td></tr>
+            <tr><td><span class="badge b-red">EXSTART</span></td><td>Problema en negociación de master/slave — verificar MTU ❌</td></tr>
+            <tr><td><span class="badge b-red">INIT</span></td><td>Hellos recibidos pero sin respuesta — posible firewall o ACL ❌</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="content-card fade-up fade-up-d2">
+        <h2>🚨 Causas comunes de fallo en adyacencias</h2>
+        <div class="info-box warn">
+          <div class="info-icon">❌</div>
+          <div><strong>Hello/Dead interval distintos</strong> — Si R1 tiene Hello=10 y R2 tiene Hello=30, nunca forman adyacencia.<br><span style="color:var(--gray);font-size:0.88rem;">Verificar con: <code>show ip ospf interface</code> — ambos lados deben coincidir exactamente.</span></div>
+        </div>
+        <div class="info-box warn">
+          <div class="info-icon">❌</div>
+          <div><strong>Area ID diferente</strong> — R1 en área 0 y R2 en área 1 en el mismo enlace.<br><span style="color:var(--gray);font-size:0.88rem;">Verificar con: <code>show ip ospf</code> — deben estar en la misma área para ser vecinos directos.</span></div>
+        </div>
+        <div class="info-box warn">
+          <div class="info-icon">❌</div>
+          <div><strong>MTU mismatch</strong> — Las interfaces tienen MTU diferente. El intercambio de DBD falla y la adyacencia queda en EXSTART/EXCHANGE.<br><span style="color:var(--gray);font-size:0.88rem;">Solución: igualar MTU con <code>ip mtu 1500</code> o usar <code>ip ospf mtu-ignore</code>.</span></div>
+        </div>
+        <div class="info-box warn">
+          <div class="info-icon">❌</div>
+          <div><strong>Passive-interface incorrecta</strong> — Se configuró passive-interface en una interfaz que debería tener vecinos.<br><span style="color:var(--gray);font-size:0.88rem;">Solo usar passive en interfaces de LAN donde no hay routers OSPF.</span></div>
+        </div>
+        <div class="info-box warn">
+          <div class="info-icon">❌</div>
+          <div><strong>Subnet diferente</strong> — Las interfaces del enlace están en subnets distintas.<br><span style="color:var(--gray);font-size:0.88rem;">Verificar con: <code>show ip interface brief</code> — los dos lados deben estar en la misma subred.</span></div>
+        </div>
+        <div class="info-box exam">
+          <div class="info-icon">🎯</div>
+          <div><strong>Método sistemático:</strong> 1) <code>show ip ospf neighbor</code> → 2) <code>show ip ospf interface</code> → 3) <code>show ip route ospf</code> → 4) Verificar passive-interface → 5) debug ip ospf adj</div>
+        </div>
+      </div>
+
+    </div><!-- /section-trouble -->
+
+    <!-- ══════════════════════════════════════
+         SECCIÓN 6: QUIZ
+    ══════════════════════════════════════ -->
+    <div id="section-quiz" class="content-section" style="display:none;">
+
+      <div class="content-card">
+        <h2>🎯 Quiz — OSPF (Estilo Examen CCNA 200-301)</h2>
+        <div class="info-box exam">
+          <div class="info-icon">📋</div>
+          <div>Preguntas estilo examen oficial Cisco CCNA 200-301. Razona cada opción antes de responder.</div>
+        </div>
+
+        <!-- Q1 -->
+        <div class="q-box" id="q1">
+          <div class="q-num">PREGUNTA 01 / 07</div>
+          <div class="q-text">¿Cuál es la Distancia Administrativa (AD) de OSPF en routers Cisco?</div>
+          <div class="q-opts">
+            <div class="q-opt" onclick="CcnaQuiz.answer(1,'A','wrong','Incorrecto. AD 90 es de EIGRP (Internal). OSPF tiene una AD mayor que EIGRP porque EIGRP es considerado más confiable al ser propietario de Cisco con métricas más precisas.')"><div class="q-letter">A</div>90</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(1,'B','correct','¡Correcto! OSPF tiene AD = 110. Memoriza la tabla completa: Connected=0, Static=1, EIGRP=90, OSPF=110, RIP=120. La AD menor indica mayor confiabilidad para el router.')"><div class="q-letter">B</div>110</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(1,'C','wrong','Incorrecto. AD 120 es de RIP (Routing Information Protocol). RIP es el menos confiable de los tres protocolos IGP mencionados y tiene la AD más alta.')"><div class="q-letter">C</div>120</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(1,'D','wrong','Incorrecto. AD 1 es de rutas estáticas. Las estáticas tienen la AD más baja después de las redes directamente conectadas (AD=0), lo que las hace muy confiables.')"><div class="q-letter">D</div>1</div>
+          </div>
+          <div class="q-feedback" id="fb1"></div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="q-box" id="q2">
+          <div class="q-num">PREGUNTA 02 / 07</div>
+          <div class="q-text">¿Qué algoritmo utiliza OSPF para calcular las rutas óptimas en la LSDB?</div>
+          <div class="q-opts">
+            <div class="q-opt" onclick="CcnaQuiz.answer(2,'A','wrong','Incorrecto. Bellman-Ford es el algoritmo usado por RIP y otros protocolos Distance-Vector. OSPF es un protocolo Link-State que usa un algoritmo diferente y más eficiente.')"><div class="q-letter">A</div>Bellman-Ford</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(2,'B','wrong','Incorrecto. DUAL (Diffusing Update Algorithm) es el algoritmo propietario de Cisco usado por EIGRP. Es muy eficiente pero no es el que usa OSPF.')"><div class="q-letter">B</div>DUAL (Diffusing Update Algorithm)</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(2,'C','correct','¡Correcto! OSPF usa el algoritmo SPF de Dijkstra (Shortest Path First). Cada router ejecuta SPF sobre su LSDB para construir un árbol de caminos más cortos con él mismo como raíz, calculando la ruta de menor costo hacia cada destino.')"><div class="q-letter">C</div>SPF — Dijkstra (Shortest Path First)</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(2,'D','wrong','Incorrecto. El algoritmo de Floyd-Warshall calcula rutas más cortas entre todos los pares de nodos. OSPF usa SPF de Dijkstra que calcula desde un solo origen (el propio router) hacia todos los destinos.')"><div class="q-letter">D</div>Floyd-Warshall</div>
+          </div>
+          <div class="q-feedback" id="fb2"></div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="q-box" id="q3">
+          <div class="q-num">PREGUNTA 03 / 07</div>
+          <div class="q-text">Un administrador ejecuta <code style="background:rgba(0,188,235,0.1);padding:2px 6px;border-radius:4px;">show ip ospf neighbor</code> y ve el estado <strong>FULL/DR</strong>. ¿Qué indica este estado?</div>
+          <div class="q-opts">
+            <div class="q-opt" onclick="CcnaQuiz.answer(3,'A','wrong','Incorrecto. El estado INIT significa que se recibieron Hellos pero aún no hay comunicación bidireccional. FULL es el estado final deseado que indica adyacencia completamente establecida.')"><div class="q-letter">A</div>El vecino está en estado inicial — aún no hay adyacencia</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(3,'B','wrong','Incorrecto. Un estado de error se vería como EXSTART (atascado en negociación) o EXCHANGE, generalmente por mismatch de MTU. FULL/DR es el estado correcto y deseado.')"><div class="q-letter">B</div>Hay un error en la formación de la adyacencia</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(3,'C','correct','¡Correcto! FULL indica que la adyacencia está completamente establecida — la LSDB está sincronizada con este vecino. DR indica que ese vecino es el Designated Router del segmento. Es el estado ideal.')"><div class="q-letter">C</div>La adyacencia está completa y el vecino es el DR del segmento</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(3,'D','wrong','Incorrecto. 2WAY/DROTHER indica comunicación bidireccional entre dos routers que son DROther entre sí. FULL/DR es un estado diferente que indica adyacencia completa con el Designated Router.')"><div class="q-letter">D</div>El vecino está en estado 2-Way — es un DROther</div>
+          </div>
+          <div class="q-feedback" id="fb3"></div>
+        </div>
+
+        <!-- Q4 -->
+        <div class="q-box" id="q4">
+          <div class="q-num">PREGUNTA 04 / 07</div>
+          <div class="q-text">¿Cuál es la métrica que usa OSPF para seleccionar la mejor ruta?</div>
+          <div class="q-opts">
+            <div class="q-opt" onclick="CcnaQuiz.answer(4,'A','wrong','Incorrecto. El conteo de saltos (hop count) es la métrica de RIP, limitada a 15 saltos. OSPF no usa saltos sino una métrica basada en el ancho de banda disponible de los enlaces.')"><div class="q-letter">A</div>Número de saltos (hop count)</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(4,'B','wrong','Incorrecto. El ancho de banda, delay, carga y confiabilidad son los componentes de la métrica compuesta de EIGRP. OSPF usa solo una métrica simple basada en el costo del enlace.')"><div class="q-letter">B</div>Ancho de banda + Delay + Carga + Confiabilidad</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(4,'C','correct','¡Correcto! OSPF usa el Costo (Cost) como métrica. Costo = Ancho de banda de referencia (default 100 Mbps) / Ancho de banda de la interfaz. OSPF elige siempre el camino con menor costo acumulado hasta el destino.')"><div class="q-letter">C</div>Costo (Cost) = Ancho de banda de referencia / Ancho de banda de la interfaz</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(4,'D','wrong','Incorrecto. La Distancia Administrativa (AD=110) no es la métrica de OSPF. La AD se usa para comparar entre diferentes protocolos de routing, no para elegir rutas dentro del mismo protocolo.')"><div class="q-letter">D</div>Distancia Administrativa (AD = 110)</div>
+          </div>
+          <div class="q-feedback" id="fb4"></div>
+        </div>
+
+        <!-- Q5 -->
+        <div class="q-box" id="q5">
+          <div class="q-num">PREGUNTA 05 / 07</div>
+          <div class="q-text">¿Qué parámetros deben coincidir en ambos routers para que se forme una adyacencia OSPF? (Elige la opción más completa y correcta)</div>
+          <div class="q-opts">
+            <div class="q-opt" onclick="CcnaQuiz.answer(5,'A','wrong','Incorrecto. El Router ID NO necesita coincidir — de hecho, deben ser diferentes para identificarse mutuamente. Los que sí deben coincidir son los parámetros de temporización y de área.')"><div class="q-letter">A</div>Router ID, Proceso OSPF y Ancho de banda de la interfaz</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(5,'B','correct','¡Correcto! Para formar adyacencia OSPF ambos routers deben tener: mismo Area ID, mismo Hello interval, mismo Dead interval, estar en la misma subred, tener la misma MTU y coincidir en el tipo de red y autenticación si está configurada.')"><div class="q-letter">B</div>Area ID, Hello/Dead interval, misma subred y MTU</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(5,'C','wrong','Incorrecto. El número de proceso OSPF (1, 2, 100, etc.) es local al router y NO necesita coincidir entre vecinos. Dos routers con proceso 1 y proceso 5 pueden formar adyacencia sin problema.')"><div class="q-letter">C</div>Número de proceso OSPF y Router ID</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(5,'D','wrong','Incorrecto. El costo de la interfaz no necesita coincidir para formar adyacencia — solo afecta la selección de rutas. Lo que debe coincidir es el Area ID, Hello/Dead timers, subred y MTU.')"><div class="q-letter">D</div>Costo de la interfaz y número de proceso OSPF</div>
+          </div>
+          <div class="q-feedback" id="fb5"></div>
+        </div>
+
+        <!-- Q6 -->
+        <div class="q-box" id="q6">
+          <div class="q-num">PREGUNTA 06 / 07</div>
+          <div class="q-text">¿Cuál es el criterio principal para la elección del DR en una red OSPF multi-acceso?</div>
+          <div class="q-opts">
+            <div class="q-opt" onclick="CcnaQuiz.answer(6,'A','wrong','Incorrecto. El Router ID más alto es el SEGUNDO criterio de desempate, no el primero. El criterio principal es la prioridad OSPF de la interfaz, que por defecto es 1 en todos los routers.')"><div class="q-letter">A</div>El router con el Router ID más alto</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(6,'B','correct','¡Correcto! El criterio principal es la OSPF Priority de la interfaz (rango 0-255, default 1). Mayor prioridad = DR. Si hay empate en prioridad, el desempate es el Router ID más alto. Prioridad 0 = excluido de la elección.')"><div class="q-letter">B</div>El router con mayor OSPF Priority en la interfaz (default 1)</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(6,'C','wrong','Incorrecto. El primer router en encenderse puede ganar la elección si todos tienen la misma prioridad y el Router ID es el más alto, pero no es el criterio principal. La prioridad configurada siempre tiene precedencia.')"><div class="q-letter">C</div>El primer router en encenderse en el segmento</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(6,'D','wrong','Incorrecto. La velocidad de la interfaz afecta el costo OSPF para el cálculo de rutas, pero no tiene ningún rol en la elección del DR/BDR. La elección se basa en priority y Router ID.')"><div class="q-letter">D</div>El router con la interfaz de mayor velocidad</div>
+          </div>
+          <div class="q-feedback" id="fb6"></div>
+        </div>
+
+        <!-- Q7 -->
+        <div class="q-box" id="q7">
+          <div class="q-num">PREGUNTA 07 / 07</div>
+          <div class="q-text">Un router tiene en su tabla de routing la entrada: <code style="background:rgba(0,188,235,0.1);padding:2px 6px;border-radius:4px;">O 192.168.3.0/24 [110/2] via 10.0.12.2</code>. ¿Qué significa el valor <strong>2</strong> en <strong>[110/2]</strong>?</div>
+          <div class="q-opts">
+            <div class="q-opt" onclick="CcnaQuiz.answer(7,'A','wrong','Incorrecto. El número de saltos no es la métrica de OSPF. RIP usa hop count. OSPF usa el costo acumulado basado en el ancho de banda de los enlaces recorridos, no en la cantidad de routers.')"><div class="q-letter">A</div>El número de saltos (hops) hasta la red destino</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(7,'B','wrong','Incorrecto. El primer valor [110] es la Distancia Administrativa de OSPF. El segundo valor es la métrica específica del protocolo, que en OSPF es el costo acumulado del camino.')"><div class="q-letter">B</div>La Distancia Administrativa de la ruta</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(7,'C','correct','¡Correcto! El formato es [AD/Métrica]. En OSPF la métrica es el costo acumulado. Costo 2 significa que la suma de costos de todos los enlaces hasta 192.168.3.0 es 2. OSPF siempre elige el camino con menor costo total acumulado.')"><div class="q-letter">C</div>El costo acumulado OSPF hasta la red destino</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(7,'D','wrong','Incorrecto. El área OSPF no aparece directamente en la tabla de routing. El área se configura con el comando network o ip ospf, pero la entrada de la tabla muestra [AD/Costo], no el número de área.')"><div class="q-letter">D</div>El número de área OSPF donde está la red destino</div>
+          </div>
+          <div class="q-feedback" id="fb7"></div>
+        </div>
+
+        <!-- Score Box -->
+        <div id="scoreBox" style="display:none;" class="content-card">
+          <h2>🏆 Resultado Final</h2>
+          <div style="text-align:center;padding:20px;">
+            <div id="scoreTxt" style="font-family:var(--font-head);font-size:2.5rem;font-weight:900;margin-bottom:8px;"></div>
+            <div id="scoreMsg" style="color:var(--gray);"></div>
+          </div>
+        </div>
+
+      </div>
+    </div><!-- /section-quiz -->
+
+  </div><!-- /wrap -->
+</div><!-- /page-content -->
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <span class="logo-cisco">CISCO</span>
+          <span class="logo-text">Academy</span>
+        </div>
+        <p>Ruta completa de aprendizaje hacia las certificaciones Cisco CCNA, CCNP y CCIE.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Módulo 3 — Routing</h4>
+        <a href="router.html">← Routers Cisco</a>
+        <a href="routing.html">← Routing Estático</a>
+        <a href="ospf.html">📍 OSPF (aquí)</a>
+      </div>
+      <div class="footer-links">
+        <h4>Módulo 4 — Seguridad</h4>
+        <a href="acl.html">→ ACLs (Próximo)</a>
+        <a href="nat.html">→ NAT/PAT (Próximo)</a>
+        <a href="asistente.html">🤖 NetBot IA</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>Basado en el currículo oficial de Cisco Networking Academy · CCNA 200-301</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/main.js"></script>
+<script>
+  /* ── Quiz Engine fallback (por si main.js no carga en local) ── */
+  if (typeof CcnaQuiz === 'undefined') {
+    window.CcnaQuiz = (function() {
+      let answers = {}, score = 0, total = 0;
+      function init(n) { answers = {}; score = 0; total = n; }
+      function answer(qNum, letter, result, explanation) {
+        if (answers[qNum]) return;
+        answers[qNum] = { letter, result };
+        const opts = document.querySelectorAll('#q' + qNum + ' .q-opt');
+        opts.forEach(opt => {
+          opt.style.pointerEvents = 'none';
+          const l = opt.querySelector('.q-letter');
+          if (l && l.textContent === letter) opt.classList.add(result === 'correct' ? 'correct' : 'wrong');
+          if (result === 'wrong' && opt.getAttribute('onclick') && opt.getAttribute('onclick').includes("'correct'"))
+            opt.classList.add('correct');
+        });
+        const fb = document.getElementById('fb' + qNum);
+        if (fb) {
+          fb.textContent = (result === 'correct' ? '✅ ' : '❌ ') + explanation;
+          fb.className = 'q-feedback show ' + (result === 'correct' ? 'ok' : 'bad');
+        }
+        if (result === 'correct') score++;
+        if (Object.keys(answers).length === total) setTimeout(showScore, 400);
+      }
+      function showScore() {
+        const box = document.getElementById('scoreBox');
+        if (!box) return;
+        box.style.display = 'block';
+        const pct = Math.round(score / total * 100);
+        const txt = document.getElementById('scoreTxt');
+        const msg = document.getElementById('scoreMsg');
+        if (txt) txt.textContent = score + ' / ' + total + ' — ' + pct + '%';
+        if (msg) {
+          if (pct >= 87) { txt.style.color = 'var(--green)'; msg.textContent = '🏆 ¡Excelente! Listo para el examen CCNA en este tema.'; }
+          else if (pct >= 62) { txt.style.color = 'var(--amber)'; msg.textContent = '📚 Buen progreso. Repasa los temas donde fallaste.'; }
+          else { txt.style.color = 'var(--red)'; msg.textContent = '💪 Repasa el material completo antes de continuar.'; }
+        }
+        box.scrollIntoView({ behavior: 'smooth' });
+      }
+      return { init, answer };
+    })();
+  }
+
+  CcnaQuiz.init(7);
+
+  function showSection(id, btn) {
+    document.querySelectorAll('.content-section').forEach(s => s.style.display = 'none');
+    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+    document.getElementById('section-' + id).style.display = 'block';
+    btn.classList.add('active');
+    window.scrollTo({ top: 200, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
