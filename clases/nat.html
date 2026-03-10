@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NAT/PAT — CCNA Academy</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="page-body">
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <div class="nav-wrap">
+    <a href="../index.html" class="nav-logo">
+      <span class="logo-cisco">CISCO</span>
+      <span class="logo-text">Academy</span>
+    </a>
+    <a href="asistente.html" class="nav-link" style="color:#00d4ff;border:1px solid rgba(0,212,255,0.3);border-radius:6px;margin-left:auto;flex-shrink:0;"><span class="nav-icon">🤖</span> NetBot IA</a>
+    <button class="hamburger" id="hamburger" aria-label="Menú">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-menu" id="navMenu">
+      <div class="nav-group">
+        <span class="nav-label">Módulo 1</span>
+        <a href="fundamentos.html" class="nav-link"><span class="nav-icon">🖧</span> Fundamentos</a>
+      </div>
+      <div class="nav-group">
+        <span class="nav-label">Módulo 2 — Switching</span>
+        <a href="vlan.html" class="nav-link"><span class="nav-icon">🏷️</span> VLANs</a>
+        <a href="stp.html" class="nav-link"><span class="nav-icon">🌳</span> STP</a>
+        <a href="switches-cisco.html" class="nav-link"><span class="nav-icon">🔀</span> Switches</a>
+        <a href="etherchannel.html" class="nav-link"><span class="nav-icon">🔗</span> EtherChannel</a>
+      </div>
+      <div class="nav-group">
+        <span class="nav-label">Módulo 3 — Routing</span>
+        <a href="router.html" class="nav-link"><span class="nav-icon">🌐</span> Routers Cisco</a>
+        <a href="routing.html" class="nav-link"><span class="nav-icon">🗺️</span> Routing Estático</a>
+        <a href="ospf.html" class="nav-link"><span class="nav-icon">⭕</span> OSPF</a>
+      </div>
+      <div class="nav-group">
+        <span class="nav-label">Módulo 4 — Seguridad</span>
+        <a href="acl.html" class="nav-link"><span class="nav-icon">🔒</span> ACLs</a>
+        <a href="nat.html" class="nav-link active-page"><span class="nav-icon">🔄</span> NAT/PAT</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="page-hero">
+  <div class="wrap">
+    <div class="page-breadcrumb">
+      <a href="../index.html">Inicio</a><span>/</span>
+      <span>Módulo 4 — Seguridad</span><span>/</span>
+      <span>NAT/PAT</span>
+    </div>
+    <h1 class="page-title">NAT / PAT</h1>
+    <div class="page-subtitle">Network Address Translation · Static NAT · Dynamic NAT · PAT/Overload · Verificación · Troubleshooting</div>
+    <div class="page-nav-pills">
+      <button class="pill active" onclick="showSection('concepto',this)">🔄 Concepto</button>
+      <button class="pill" onclick="showSection('static',this)">📌 NAT Estático</button>
+      <button class="pill" onclick="showSection('dynamic',this)">🔀 NAT Dinámico</button>
+      <button class="pill" onclick="showSection('pat',this)">⚡ PAT / Overload</button>
+      <button class="pill" onclick="showSection('config',this)">⌨️ Configuración</button>
+      <button class="pill" onclick="showSection('trouble',this)">🔧 Troubleshooting</button>
+      <button class="pill" onclick="showSection('quiz',this)">🎯 Quiz</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONTENIDO -->
+<div class="page-content">
+  <div class="wrap">
+
+    <!-- ══════════════════════════════════════
+         SECCIÓN 1: CONCEPTO
+    ══════════════════════════════════════ -->
+    <div id="section-concepto" class="content-section">
+
+      <div class="content-card fade-up">
+        <h2>🔄 ¿Qué es NAT?</h2>
+        <div class="def-box">
+          <span class="hl">NAT (Network Address Translation)</span> es un proceso que <span class="hlg">traduce direcciones IP privadas a públicas</span> (y viceversa) cuando el tráfico atraviesa el router hacia Internet. Permite que múltiples dispositivos con IPs privadas compartan una o pocas IPs públicas, siendo la solución principal al agotamiento de IPv4.
+        </div>
+        <div class="info-box tip">
+          <div class="info-icon">✅</div>
+          <div><strong>¿Por qué existe NAT?</strong> IPv4 solo tiene ~4.300 millones de direcciones. Con NAT, toda una empresa con miles de PCs puede conectarse a Internet usando una sola IP pública. Sin NAT, cada dispositivo necesitaría su propia IP pública.</div>
+        </div>
+        <div class="info-box exam">
+          <div class="info-icon">🎯</div>
+          <div><strong>CCNA Examen:</strong> NAT opera en <strong>Capa 3</strong> del modelo OSI. El router que realiza NAT se llama <strong>NAT router</strong> o <strong>border router</strong>. NAT modifica las cabeceras IP de los paquetes.</div>
+        </div>
+      </div>
+
+      <div class="content-card fade-up fade-up-d1">
+        <h2>🗺️ Terminología Clave NAT</h2>
+        <div class="def-box">
+          NAT usa cuatro términos para describir las direcciones — es esencial entender la diferencia entre <span class="hl">Inside/Outside</span> y <span class="hlg">Local/Global</span>.
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Término</th><th>Descripción</th><th>Ejemplo típico</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><span class="badge b-blue">Inside Local</span></td>
+              <td>IP privada del dispositivo interno — como la ve la red interna</td>
+              <td>192.168.1.10 (PC en la LAN)</td>
+            </tr>
+            <tr>
+              <td><span class="badge b-green">Inside Global</span></td>
+              <td>IP pública que representa al dispositivo interno hacia Internet</td>
+              <td>203.0.113.5 (IP del ISP)</td>
+            </tr>
+            <tr>
+              <td><span class="badge b-amber">Outside Global</span></td>
+              <td>IP pública del servidor en Internet — como la ven todos</td>
+              <td>8.8.8.8 (DNS de Google)</td>
+            </tr>
+            <tr>
+              <td><span class="badge" style="background:rgba(139,92,246,0.15);border:1px solid #8b5cf6;color:#c4b5fd;">Outside Local</span></td>
+              <td>IP con la que el router interno ve al servidor externo (usualmente = Outside Global)</td>
+              <td>8.8.8.8 (sin NAT en destino)</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="cmd-block">
+          <span class="cmd-label">FLUJO DE TRADUCCIÓN NAT</span>
+          <span class="cl"><span class="cp">[PC: 192.168.1.10]</span> → Router → <span class="cv">[Internet: 8.8.8.8]</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cc">  Salida (inside → outside):</span></span>
+          <span class="cl">  IP origen: <span class="cp">192.168.1.10</span> (Inside Local)  →  <span class="ck">203.0.113.5</span> (Inside Global)</span>
+          <span class="cl">  IP destino: <span class="cv">8.8.8.8</span> (Outside Global) →  <span class="cv">8.8.8.8</span> (Outside Local, sin cambio)</span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cc">  Retorno (outside → inside):</span></span>
+          <span class="cl">  IP origen: <span class="cv">8.8.8.8</span>  →  <span class="cv">8.8.8.8</span>  (sin cambio)</span>
+          <span class="cl">  IP destino: <span class="ck">203.0.113.5</span> (Inside Global) →  <span class="cp">192.168.1.10</span> (Inside Local)</span>
+        </div>
+      </div>
+
+      <div class="content-card fade-up fade-up-d2">
+        <h2>📊 Tipos de NAT</h2>
+        <table class="data-table">
+          <thead><tr><th>Tipo</th><th>Mapeo</th><th>IPs públicas</th><th>Uso típico</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><span class="badge b-amber">Static NAT</span></td>
+              <td>1 IP privada ↔ 1 IP pública (fija)</td>
+              <td>Una por host</td>
+              <td>Servidores web, DMZ — acceso desde Internet</td>
+            </tr>
+            <tr>
+              <td><span class="badge b-blue">Dynamic NAT</span></td>
+              <td>Pool de IPs privadas → Pool de IPs públicas</td>
+              <td>Un pool definido</td>
+              <td>Empresas con varias IPs públicas disponibles</td>
+            </tr>
+            <tr>
+              <td><span class="badge b-green">PAT / Overload</span></td>
+              <td>Múltiples IPs privadas → 1 sola IP pública (usando puertos)</td>
+              <td><span class="badge b-green">Solo una</span></td>
+              <td>Hogares, empresas — lo más común en el mundo real</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="info-box exam">
+          <div class="info-icon">🎯</div>
+          <div><strong>CCNA Examen:</strong> <strong>PAT</strong> (Port Address Translation) también se llama <strong>NAT Overload</strong>. Es el tipo más común y el que permite que toda una red hogareña acceda a Internet con una sola IP del ISP. PAT usa los puertos TCP/UDP para distinguir conexiones.</div>
+        </div>
+      </div>
+
+      <div class="content-card fade-up fade-up-d3">
+        <h2>🏷️ Interfaces Inside y Outside</h2>
+        <div class="def-box">
+          Para que NAT funcione, el router debe saber qué interfaz es <span class="hl">inside</span> (hacia la red privada) y cuál es <span class="hl">outside</span> (hacia Internet/red pública). Esta configuración es <span class="hlg">obligatoria</span> — sin ella NAT no traduce nada.
+        </div>
+        <div class="cmd-block">
+          <span class="cmd-label">DEFINIR INSIDE Y OUTSIDE</span>
+          <span class="cl"><span class="cc">! Interfaz hacia la LAN privada → inside</span></span>
+          <span class="cl"><span class="cp">Router(config)#</span> <span class="ck">interface</span> <span class="cv">GigabitEthernet0/0</span>   <span class="cc">← LAN 192.168.1.0/24</span></span>
+          <span class="cl"><span class="cp">Router(config-if)#</span> <span class="ck">ip nat inside</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cc">! Interfaz hacia Internet/ISP → outside</span></span>
+          <span class="cl"><span class="cp">Router(config)#</span> <span class="ck">interface</span> <span class="cv">GigabitEthernet0/1</span>   <span class="cc">← ISP / Internet</span></span>
+          <span class="cl"><span class="cp">Router(config-if)#</span> <span class="ck">ip nat outside</span></span>
+        </div>
+        <div class="info-box warn">
+          <div class="info-icon">⚠️</div>
+          <div><strong>Error más común:</strong> Olvidar configurar <code>ip nat inside</code> y <code>ip nat outside</code> en las interfaces. Sin esto, el router no realiza ninguna traducción aunque el NAT esté configurado correctamente.</div>
+        </div>
+      </div>
+
+    </div><!-- /section-concepto -->
+
+    <!-- ══════════════════════════════════════
+         SECCIÓN 2: STATIC NAT
+    ══════════════════════════════════════ -->
+    <div id="section-static" class="content-section" style="display:none;">
+
+      <div class="content-card fade-up">
+        <h2>📌 NAT Estático — 1 a 1 Permanente</h2>
+        <div class="def-box">
+          El <span class="hl">Static NAT</span> crea un mapeo <span class="hlg">permanente y fijo</span> entre una IP privada y una IP pública. A diferencia del dinámico, la traducción siempre es la misma. Se usa principalmente para <span class="hl">servidores que deben ser accesibles desde Internet</span> (web, correo, FTP).
+        </div>
+        <div class="info-box tip">
+          <div class="info-icon">✅</div>
+          <div><strong>Bidireccional:</strong> Con Static NAT, el tráfico puede iniciar desde Internet hacia el servidor interno. Esto es imposible con Dynamic NAT o PAT (donde la conexión siempre debe iniciar desde dentro).</div>
+        </div>
+        <div class="def-box">
+          <strong style="color:var(--blue-b);">Sintaxis:</strong><br>
+          <code style="color:var(--green);">ip nat inside source static [IP-local] [IP-global]</code>
+        </div>
+      </div>
+
+      <div class="content-card fade-up fade-up-d1">
+        <h2>⌨️ Configuración NAT Estático</h2>
+        <div class="cmd-block">
+          <span class="cmd-label">STATIC NAT — SERVIDOR WEB EN DMZ</span>
+          <span class="cl"><span class="cc">! Escenario: Servidor web interno 10.0.0.10 accesible desde Internet</span></span>
+          <span class="cl"><span class="cc">! IP pública asignada: 203.0.113.10</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cc">! Paso 1: Definir la traducción estática</span></span>
+          <span class="cl"><span class="cp">R1(config)#</span> <span class="ck">ip nat inside source static</span> <span class="cv">10.0.0.10 203.0.113.10</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cc">! Paso 2: Configurar interfaces</span></span>
+          <span class="cl"><span class="cp">R1(config)#</span> <span class="ck">interface</span> <span class="cv">GigabitEthernet0/0</span>   <span class="cc">← hacia el servidor</span></span>
+          <span class="cl"><span class="cp">R1(config-if)#</span> <span class="ck">ip nat inside</span></span>
+          <span class="cl"><span class="cp">R1(config)#</span> <span class="ck">interface</span> <span class="cv">GigabitEthernet0/1</span>   <span class="cc">← hacia Internet</span></span>
+          <span class="cl"><span class="cp">R1(config-if)#</span> <span class="ck">ip nat outside</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cc">! Verificar</span></span>
+          <span class="cl"><span class="cp">R1#</span> <span class="ck">show ip nat translations</span></span>
+          <span class="cl" style="color:#6b8aa8;">Pro  Inside global     Inside local      Outside local     Outside global</span>
+          <span class="cl" style="color:#6b8aa8;">---  203.0.113.10      10.0.0.10         ---               ---</span>
+        </div>
+        <div class="cmd-block">
+          <span class="cmd-label">STATIC NAT CON PUERTO — PORT FORWARDING</span>
+          <span class="cl"><span class="cc">! Redirigir solo el puerto 80 de la IP pública al servidor interno</span></span>
+          <span class="cl"><span class="cc">! (Port Forwarding — variante del Static NAT)</span></span>
+          <span class="cl"><span class="cp">R1(config)#</span> <span class="ck">ip nat inside source static tcp</span> <span class="cv">10.0.0.10 80 203.0.113.5 80</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cc">! También SSH (puerto 22) a otro servidor interno</span></span>
+          <span class="cl"><span class="cp">R1(config)#</span> <span class="ck">ip nat inside source static tcp</span> <span class="cv">10.0.0.20 22 203.0.113.5 2222</span></span>
+          <span class="cl"><span class="cc">! ↑ Conexión a 203.0.113.5:2222 → redirige a 10.0.0.20:22</span></span>
+        </div>
+        <div class="info-box exam">
+          <div class="info-icon">🎯</div>
+          <div><strong>CCNA Examen:</strong> Static NAT con puerto específico se llama <strong>Port Forwarding</strong>. Permite redirigir un puerto de la IP pública a un servidor interno específico. Es muy común en laboratorios domésticos y pequeñas empresas.</div>
+        </div>
+      </div>
+
+    </div><!-- /section-static -->
+
+    <!-- ══════════════════════════════════════
+         SECCIÓN 3: DYNAMIC NAT
+    ══════════════════════════════════════ -->
+    <div id="section-dynamic" class="content-section" style="display:none;">
+
+      <div class="content-card fade-up">
+        <h2>🔀 NAT Dinámico — Pool de IPs Públicas</h2>
+        <div class="def-box">
+          El <span class="hl">Dynamic NAT</span> mapea IPs privadas a un <span class="hlg">pool (grupo) de IPs públicas</span> de forma dinámica. Cuando un host interno quiere salir, el router le asigna la primera IP pública disponible del pool. Cuando termina la sesión, la IP pública vuelve al pool para ser usada por otro host.
+        </div>
+        <div class="info-box warn">
+          <div class="info-icon">⚠️</div>
+          <div><strong>Limitación crítica:</strong> Si el pool tiene 10 IPs y hay 11 hosts intentando salir simultáneamente, el host número 11 <strong>no podrá conectarse</strong> hasta que una IP quede libre. Esto es un problema real que PAT resuelve.</div>
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Componente</th><th>Comando</th><th>Descripción</th></tr></thead>
+          <tbody>
+            <tr><td><span class="badge b-blue">ACL</span></td><td>access-list [n] permit [red] [wildcard]</td><td>Define qué IPs internas pueden usar NAT</td></tr>
+            <tr><td><span class="badge b-green">Pool NAT</span></td><td>ip nat pool [nombre] [IP-inicio] [IP-fin] netmask [máscara]</td><td>Define el rango de IPs públicas disponibles</td></tr>
+            <tr><td><span class="badge b-amber">Binding</span></td><td>ip nat inside source list [ACL] pool [nombre]</td><td>Vincula la ACL con el pool de IPs públicas</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="content-card fade-up fade-up-d1">
+        <h2>⌨️ Configuración NAT Dinámico</h2>
+        <div class="cmd-block">
+          <span class="cmd-label">DYNAMIC NAT — POOL DE IPs PÚBLICAS</span>
+          <span class="cl"><span class="cc">! Escenario: LAN 192.168.1.0/24 → Pool público 203.0.113.10 a 203.0.113.20</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cc">! Paso 1: ACL — definir quién puede usar NAT</span></span>
+          <span class="cl"><span class="cp">R1(config)#</span> <span class="ck">access-list</span> <span class="cv">1 permit 192.168.1.0 0.0.0.255</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cc">! Paso 2: Crear el pool de IPs públicas</span></span>
+          <span class="cl"><span class="cp">R1(config)#</span> <span class="ck">ip nat pool</span> <span class="cv">POOL-PUBLICO 203.0.113.10 203.0.113.20 netmask 255.255.255.0</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cc">! Paso 3: Vincular ACL con pool</span></span>
+          <span class="cl"><span class="cp">R1(config)#</span> <span class="ck">ip nat inside source list</span> <span class="cv">1 pool POOL-PUBLICO</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cc">! Paso 4: Interfaces inside/outside</span></span>
+          <span class="cl"><span class="cp">R1(config)#</span> <span class="ck">interface</span> <span class="cv">GigabitEthernet0/0</span></span>
+          <span class="cl"><span class="cp">R1(config-if)#</span> <span class="ck">ip nat inside</span></span>
+          <span class="cl"><span class="cp">R1(config)#</span> <span class="ck">interface</span> <span class="cv">GigabitEthernet0/1</span></span>
+          <span class="cl"><span class="cp">R1(config-if)#</span> <span class="ck">ip nat outside</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cc">! Verificar traducciones activas</span></span>
+          <span class="cl"><span class="cp">R1#</span> <span class="ck">show ip nat translations</span></span>
+          <span class="cl" style="color:#6b8aa8;">Pro  Inside global    Inside local      Outside local    Outside global</span>
+          <span class="cl" style="color:#6b8aa8;">tcp  203.0.113.10:1024  192.168.1.10:1024  8.8.8.8:53  8.8.8.8:53</span>
+          <span class="cl" style="color:#6b8aa8;">tcp  203.0.113.11:1025  192.168.1.20:1025  1.1.1.1:80  1.1.1.1:80</span>
+        </div>
+      </div>
+
+    </div><!-- /section-dynamic -->
+
+    <!-- ══════════════════════════════════════
+         SECCIÓN 4: PAT / OVERLOAD
+    ══════════════════════════════════════ -->
+    <div id="section-pat" class="content-section" style="display:none;">
+
+      <div class="content-card fade-up">
+        <h2>⚡ PAT — Port Address Translation</h2>
+        <div class="def-box">
+          <span class="hl">PAT</span> (también llamado <span class="hlg">NAT Overload</span>) es la forma <strong>más usada en el mundo real</strong>. Permite que <span class="hl">miles de hosts internos compartan una sola IP pública</span>, diferenciándolos por el <span class="hlg">número de puerto TCP/UDP</span> origen. Tu router doméstico usa PAT.
+        </div>
+        <div class="cmd-block">
+          <span class="cmd-label">CÓMO PAT DISTINGUE LAS CONEXIONES</span>
+          <span class="cl"><span class="cc">PC1 (192.168.1.10:50001) → 203.0.113.5:50001 → Google 8.8.8.8:53</span></span>
+          <span class="cl"><span class="cc">PC2 (192.168.1.20:50002) → 203.0.113.5:50002 → YouTube 1.1.1.1:443</span></span>
+          <span class="cl"><span class="cc">PC3 (192.168.1.30:50003) → 203.0.113.5:50003 → Netflix 52.1.1.1:443</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cv">Misma IP pública: 203.0.113.5</span></span>
+          <span class="cl"><span class="cv">Cada sesión identificada por un puerto único</span></span>
+          <span class="cl"><span class="cv">El router mantiene la tabla de traducción para el retorno</span></span>
+        </div>
+        <div class="info-box tip">
+          <div class="info-icon">✅</div>
+          <div><strong>Capacidad teórica:</strong> Con una sola IP pública, PAT puede manejar hasta <strong>65.535 conexiones simultáneas</strong> (una por número de puerto disponible). En la práctica, los routers Cisco soportan miles de traducciones concurrentes.</div>
+        </div>
+      </div>
+
+      <div class="content-card fade-up fade-up-d1">
+        <h2>⌨️ Configuración PAT — Usando IP de Interfaz</h2>
+        <div class="def-box">
+          El método más común: usar la <span class="hl">IP de la interfaz outside</span> del router como IP pública. Ideal cuando el ISP asigna una sola IP dinámica o estática. Se agrega la palabra <span class="hlg">overload</span> al final del comando.
+        </div>
+        <div class="cmd-block">
+          <span class="cmd-label">PAT CON IP DE INTERFAZ (MÁS COMÚN)</span>
+          <span class="cl"><span class="cc">! Paso 1: ACL — definir la red interna que usará PAT</span></span>
+          <span class="cl"><span class="cp">R1(config)#</span> <span class="ck">access-list</span> <span class="cv">1 permit 192.168.1.0 0.0.0.255</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cc">! Paso 2: Habilitar PAT usando la IP de la interfaz outside</span></span>
+          <span class="cl"><span class="cc">!          "interface" en lugar de un pool + "overload" al final</span></span>
+          <span class="cl"><span class="cp">R1(config)#</span> <span class="ck">ip nat inside source list</span> <span class="cv">1 interface GigabitEthernet0/1 overload</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cc">! Paso 3: Interfaces inside / outside</span></span>
+          <span class="cl"><span class="cp">R1(config)#</span> <span class="ck">interface</span> <span class="cv">GigabitEthernet0/0</span>   <span class="cc">← LAN privada</span></span>
+          <span class="cl"><span class="cp">R1(config-if)#</span> <span class="ck">ip nat inside</span></span>
+          <span class="cl"><span class="cp">R1(config)#</span> <span class="ck">interface</span> <span class="cv">GigabitEthernet0/1</span>   <span class="cc">← Internet/ISP</span></span>
+          <span class="cl"><span class="cp">R1(config-if)#</span> <span class="ck">ip nat outside</span></span>
+        </div>
+      </div>
+
+      <div class="content-card fade-up fade-up-d2">
+        <h2>⌨️ Configuración PAT — Usando Pool de IPs</h2>
+        <div class="def-box">
+          Variante de PAT con un <span class="hl">pool de IPs públicas</span>. Útil cuando el ISP proporciona más de una IP pero aun así se quiere usar PAT para maximizar el número de usuarios.
+        </div>
+        <div class="cmd-block">
+          <span class="cmd-label">PAT CON POOL</span>
+          <span class="cl"><span class="cp">R1(config)#</span> <span class="ck">access-list</span> <span class="cv">1 permit 192.168.0.0 0.0.255.255</span></span>
+          <span class="cl"><span class="cp">R1(config)#</span> <span class="ck">ip nat pool</span> <span class="cv">PAT-POOL 203.0.113.1 203.0.113.3 netmask 255.255.255.0</span></span>
+          <span class="cl"><span class="cc">! "overload" al final → activa PAT en el pool</span></span>
+          <span class="cl"><span class="cp">R1(config)#</span> <span class="ck">ip nat inside source list</span> <span class="cv">1 pool PAT-POOL overload</span></span>
+        </div>
+        <div class="info-box exam">
+          <div class="info-icon">🎯</div>
+          <div><strong>Diferencia clave CCNA:</strong> Dynamic NAT sin <code>overload</code> → una IP pública por host (limitado al tamaño del pool). Dynamic NAT con <code>overload</code> → PAT, múltiples hosts por IP pública usando puertos. La palabra <strong>overload</strong> es lo que activa PAT.</div>
+        </div>
+      </div>
+
+      <div class="content-card fade-up fade-up-d3">
+        <h2>📊 Comparativa Final de los 3 Tipos</h2>
+        <table class="data-table">
+          <thead><tr><th>Aspecto</th><th>Static NAT</th><th>Dynamic NAT</th><th>PAT / Overload</th></tr></thead>
+          <tbody>
+            <tr><td>Mapeo</td><td>1 privada ↔ 1 pública fija</td><td>1 privada ↔ 1 pública del pool</td><td><span class="badge b-green">Muchas privadas ↔ 1 pública</span></td></tr>
+            <tr><td>IPs públicas necesarias</td><td>1 por servidor</td><td>1 por conexión simultánea</td><td><span class="badge b-green">Solo 1 para toda la red</span></td></tr>
+            <tr><td>Iniciación tráfico</td><td>Bidireccional ✅</td><td>Solo desde dentro</td><td>Solo desde dentro</td></tr>
+            <tr><td>Persistencia</td><td>Permanente</td><td>Temporal (timeouts)</td><td>Temporal (timeouts)</td></tr>
+            <tr><td>Comando clave</td><td>ip nat inside source static</td><td>ip nat inside source list [ACL] pool [pool]</td><td><span class="badge b-blue">+ overload al final</span></td></tr>
+            <tr><td>Uso más común</td><td>Servidores DMZ</td><td>Empresas con pool de IPs</td><td><span class="badge b-green">Hogares y empresas — lo más usado</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div><!-- /section-pat -->
+
+    <!-- ══════════════════════════════════════
+         SECCIÓN 5: CONFIGURACIÓN COMPLETA
+    ══════════════════════════════════════ -->
+    <div id="section-config" class="content-section" style="display:none;">
+
+      <div class="content-card fade-up">
+        <h2>🏗️ Topología de Laboratorio Completo</h2>
+        <div class="def-box">
+          Red empresarial con <span class="hl">LAN interna, servidor web en DMZ y acceso a Internet</span>. Se implementan los tres tipos de NAT:
+          Static para el servidor web, PAT para los usuarios de la LAN.
+        </div>
+        <div class="cmd-block">
+          <span class="cmd-label">TOPOLOGÍA</span>
+          <span class="cl"><span class="cv">LAN usuarios: 192.168.1.0/24</span>     <span class="cv">DMZ servidores: 10.0.0.0/30</span></span>
+          <span class="cl">         \                                  /</span>
+          <span class="cl">    <span class="cp">[R1]</span> Gi0/0: 192.168.1.1/24   Gi0/2: 10.0.0.1/30</span>
+          <span class="cl">          Gi0/1: 203.0.113.2/30  <span class="cc">← hacia ISP</span></span>
+          <span class="cl">               |</span>
+          <span class="cl">         <span class="cp">[ISP]</span> 203.0.113.1/30</span>
+          <span class="cl">               |</span>
+          <span class="cl">           <span class="cv">Internet</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cp">Servidor web:</span>  10.0.0.2  <span class="cc">→ IP pública: 203.0.113.10 (Static NAT)</span></span>
+          <span class="cl"><span class="cp">Usuarios LAN:</span> 192.168.1.x <span class="cc">→ salen por 203.0.113.2  (PAT/Overload)</span></span>
+        </div>
+      </div>
+
+      <div class="content-card fade-up fade-up-d1">
+        <h2>⌨️ Configuración Completa — Paso a Paso</h2>
+        <div class="cmd-block">
+          <span class="cmd-label">PASO 1 — INTERFACES</span>
+          <span class="cl"><span class="cp">R1(config)#</span> <span class="ck">interface</span> <span class="cv">GigabitEthernet0/0</span></span>
+          <span class="cl"><span class="cp">R1(config-if)#</span> <span class="ck">ip address</span> <span class="cv">192.168.1.1 255.255.255.0</span></span>
+          <span class="cl"><span class="cp">R1(config-if)#</span> <span class="ck">ip nat inside</span></span>
+          <span class="cl"><span class="cp">R1(config-if)#</span> <span class="ck">no shutdown</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cp">R1(config)#</span> <span class="ck">interface</span> <span class="cv">GigabitEthernet0/1</span></span>
+          <span class="cl"><span class="cp">R1(config-if)#</span> <span class="ck">ip address</span> <span class="cv">203.0.113.2 255.255.255.252</span></span>
+          <span class="cl"><span class="cp">R1(config-if)#</span> <span class="ck">ip nat outside</span></span>
+          <span class="cl"><span class="cp">R1(config-if)#</span> <span class="ck">no shutdown</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cp">R1(config)#</span> <span class="ck">interface</span> <span class="cv">GigabitEthernet0/2</span></span>
+          <span class="cl"><span class="cp">R1(config-if)#</span> <span class="ck">ip address</span> <span class="cv">10.0.0.1 255.255.255.252</span></span>
+          <span class="cl"><span class="cp">R1(config-if)#</span> <span class="ck">ip nat inside</span>   <span class="cc">← DMZ también es inside</span></span>
+          <span class="cl"><span class="cp">R1(config-if)#</span> <span class="ck">no shutdown</span></span>
+        </div>
+        <div class="cmd-block">
+          <span class="cmd-label">PASO 2 — STATIC NAT PARA SERVIDOR WEB</span>
+          <span class="cl"><span class="cc">! Servidor 10.0.0.2 visible desde Internet como 203.0.113.10</span></span>
+          <span class="cl"><span class="cp">R1(config)#</span> <span class="ck">ip nat inside source static</span> <span class="cv">10.0.0.2 203.0.113.10</span></span>
+        </div>
+        <div class="cmd-block">
+          <span class="cmd-label">PASO 3 — PAT PARA USUARIOS LAN</span>
+          <span class="cl"><span class="cc">! ACL para identificar los usuarios de la LAN</span></span>
+          <span class="cl"><span class="cp">R1(config)#</span> <span class="ck">access-list</span> <span class="cv">10 permit 192.168.1.0 0.0.0.255</span></span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cc">! PAT usando la IP de la interfaz outside (203.0.113.2)</span></span>
+          <span class="cl"><span class="cp">R1(config)#</span> <span class="ck">ip nat inside source list</span> <span class="cv">10 interface GigabitEthernet0/1 overload</span></span>
+        </div>
+        <div class="cmd-block">
+          <span class="cmd-label">PASO 4 — RUTA DEFAULT HACIA ISP</span>
+          <span class="cl"><span class="cc">! Sin ruta default el router no sabe hacia dónde enviar el tráfico a Internet</span></span>
+          <span class="cl"><span class="cp">R1(config)#</span> <span class="ck">ip route</span> <span class="cv">0.0.0.0 0.0.0.0 203.0.113.1</span>   <span class="cc">← gateway ISP</span></span>
+        </div>
+        <div class="info-box tip">
+          <div class="info-icon">✅</div>
+          <div><strong>Orden correcto de implementación:</strong> 1) Interfaces + inside/outside → 2) Static NAT (servidores) → 3) ACL para usuarios → 4) PAT/Overload → 5) Ruta default → 6) Verificar con show ip nat translations.</div>
+        </div>
+      </div>
+
+    </div><!-- /section-config -->
+
+    <!-- ══════════════════════════════════════
+         SECCIÓN 6: TROUBLESHOOTING
+    ══════════════════════════════════════ -->
+    <div id="section-trouble" class="content-section" style="display:none;">
+
+      <div class="content-card fade-up">
+        <h2>🔧 Comandos de Verificación NAT</h2>
+        <table class="data-table">
+          <thead><tr><th>Comando</th><th>Qué muestra</th><th>Cuándo usarlo</th></tr></thead>
+          <tbody>
+            <tr><td><span class="badge b-blue">show ip nat translations</span></td><td>Tabla activa de traducciones NAT — IPs y puertos</td><td>Primera verificación siempre</td></tr>
+            <tr><td><span class="badge b-blue">show ip nat translations verbose</span></td><td>Detalle completo incluyendo timeouts y flags</td><td>Troubleshooting de sesiones específicas</td></tr>
+            <tr><td><span class="badge b-green">show ip nat statistics</span></td><td>Contadores totales, hits, misses, interfaces configuradas</td><td>Verificar que NAT está procesando tráfico</td></tr>
+            <tr><td><span class="badge b-green">show running-config | include nat</span></td><td>Todas las líneas NAT de la configuración</td><td>Revisión rápida de la configuración aplicada</td></tr>
+            <tr><td><span class="badge b-amber">clear ip nat translation *</span></td><td>Limpia TODAS las traducciones activas</td><td>Resetear estado NAT para pruebas</td></tr>
+            <tr><td><span class="badge b-amber">clear ip nat translation inside [IP]</span></td><td>Limpia solo la traducción de una IP específica</td><td>Limpiar una sola entrada sin afectar el resto</td></tr>
+            <tr><td><span class="badge b-red">debug ip nat</span></td><td>Traducciones en tiempo real paquete a paquete</td><td>Troubleshooting avanzado — usar con cuidado</td></tr>
+            <tr><td><span class="badge b-red">debug ip nat detailed</span></td><td>Detalles de cada traducción incluyendo fallos</td><td>Diagnosticar por qué no se traduce un paquete</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="content-card fade-up fade-up-d1">
+        <h2>📊 Interpretando show ip nat translations</h2>
+        <div class="cmd-block">
+          <span class="cmd-label">SHOW IP NAT TRANSLATIONS</span>
+          <span class="cl"><span class="cp">R1#</span> <span class="ck">show ip nat translations</span></span>
+          <span class="cl" style="color:#6b8aa8;">Pro  Inside global        Inside local        Outside local    Outside global</span>
+          <span class="cl"><span class="cv">---  203.0.113.10         10.0.0.2            ---              ---</span>           <span class="cc">← Static</span></span>
+          <span class="cl"><span class="ck">tcp  203.0.113.2:51234   192.168.1.10:51234  8.8.8.8:53       8.8.8.8:53</span>    <span class="cc">← PAT DNS</span></span>
+          <span class="cl"><span class="ck">tcp  203.0.113.2:51235   192.168.1.20:51235  1.1.1.1:443      1.1.1.1:443</span>   <span class="cc">← PAT HTTPS</span></span>
+          <span class="cl"><span class="ck">tcp  203.0.113.2:51236   192.168.1.30:51236  52.0.0.1:443     52.0.0.1:443</span>  <span class="cc">← PAT HTTPS</span></span>
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Campo</th><th>Descripción</th></tr></thead>
+          <tbody>
+            <tr><td><span class="badge b-amber">Pro</span></td><td>Protocolo (tcp, udp, icmp, ---=static)</td></tr>
+            <tr><td><span class="badge b-green">Inside global</span></td><td>IP pública (+ puerto en PAT) que ve Internet</td></tr>
+            <tr><td><span class="badge b-blue">Inside local</span></td><td>IP privada real del host interno (+ puerto en PAT)</td></tr>
+            <tr><td><span class="badge b-amber">Outside global/local</span></td><td>IP del servidor de destino en Internet</td></tr>
+          </tbody>
+        </table>
+        <div class="cmd-block">
+          <span class="cmd-label">SHOW IP NAT STATISTICS</span>
+          <span class="cl"><span class="cp">R1#</span> <span class="ck">show ip nat statistics</span></span>
+          <span class="cl" style="color:#6b8aa8;">Total active translations: 4 (1 static, 3 dynamic; 3 extended)</span>
+          <span class="cl" style="color:#6b8aa8;">Outside interfaces: GigabitEthernet0/1</span>
+          <span class="cl" style="color:#6b8aa8;">Inside interfaces:  GigabitEthernet0/0, GigabitEthernet0/2</span>
+          <span class="cl" style="color:#6b8aa8;">Hits: 892  Misses: 3</span>
+          <span class="cl" style="color:#6b8aa8;">Expired translations: 15</span>
+          <span class="cl">&nbsp;</span>
+          <span class="cl"><span class="cc">! Hits   = paquetes que encontraron traducción existente ✅</span></span>
+          <span class="cl"><span class="cc">! Misses = paquetes que tuvieron que crear nueva traducción</span></span>
+        </div>
+      </div>
+
+      <div class="content-card fade-up fade-up-d2">
+        <h2>🚨 Errores Comunes — Troubleshooting</h2>
+        <div class="info-box warn">
+          <div class="info-icon">❌</div>
+          <div><strong>Error 1: Falta ip nat inside / outside en interfaces</strong><br>
+          NAT configurado correctamente pero no traduce nada.<br>
+          <span style="color:var(--gray);font-size:0.88rem;">Verificar con <code>show ip nat statistics</code> → si Inside/Outside interfaces están vacíos, falta la configuración en las interfaces.</span></div>
+        </div>
+        <div class="info-box warn">
+          <div class="info-icon">❌</div>
+          <div><strong>Error 2: ACL incorrecta en Dynamic NAT / PAT</strong><br>
+          La ACL no coincide con la red interna — los hosts no pueden salir.<br>
+          <span style="color:var(--gray);font-size:0.88rem;">Verificar con <code>show access-lists</code> y comprobar que la wildcard mask cubre los hosts de la LAN.</span></div>
+        </div>
+        <div class="info-box warn">
+          <div class="info-icon">❌</div>
+          <div><strong>Error 3: Pool NAT con máscara incorrecta</strong><br>
+          La máscara del pool no coincide con las IPs públicas del rango definido.<br>
+          <span style="color:var(--gray);font-size:0.88rem;">Ejemplo: pool 203.0.113.10 a 203.0.113.20 necesita netmask 255.255.255.0, no /30.</span></div>
+        </div>
+        <div class="info-box warn">
+          <div class="info-icon">❌</div>
+          <div><strong>Error 4: Falta ruta default hacia el ISP</strong><br>
+          NAT traduce correctamente pero el tráfico no llega a Internet.<br>
+          <span style="color:var(--gray);font-size:0.88rem;">Verificar con <code>show ip route</code> — debe existir una ruta 0.0.0.0/0 hacia el gateway del ISP.</span></div>
+        </div>
+        <div class="info-box warn">
+          <div class="info-icon">❌</div>
+          <div><strong>Error 5: Olvidar "overload" en PAT</strong><br>
+          Sin <code>overload</code>, el router usa Dynamic NAT (una IP por host) y se agota el pool rápidamente.<br>
+          <span style="color:var(--gray);font-size:0.88rem;">El comando correcto es: <code>ip nat inside source list 1 interface Gi0/1 overload</code></span></div>
+        </div>
+        <div class="info-box tip">
+          <div class="info-icon">✅</div>
+          <div><strong>Método sistemático:</strong> 1) <code>show ip nat statistics</code> → interfaces ok 2) <code>show ip nat translations</code> → hay entradas 3) <code>show access-lists</code> → ACL correcta 4) <code>show ip route</code> → ruta default existe 5) <code>debug ip nat</code> solo si todo lo anterior es correcto.</div>
+        </div>
+      </div>
+
+    </div><!-- /section-trouble -->
+
+    <!-- ══════════════════════════════════════
+         SECCIÓN 7: QUIZ
+    ══════════════════════════════════════ -->
+    <div id="section-quiz" class="content-section" style="display:none;">
+
+      <div class="content-card">
+        <h2>🎯 Quiz — NAT/PAT (Estilo Examen CCNA 200-301)</h2>
+        <div class="info-box exam">
+          <div class="info-icon">📋</div>
+          <div>Preguntas estilo examen oficial Cisco CCNA 200-301. NAT/PAT es uno de los temas más evaluados.</div>
+        </div>
+
+        <!-- Q1 -->
+        <div class="q-box" id="q1">
+          <div class="q-num">PREGUNTA 01 / 07</div>
+          <div class="q-text">¿Qué término NAT describe la dirección IP <strong>privada</strong> del host interno tal como se ve desde <strong>dentro</strong> de la red?</div>
+          <div class="q-opts">
+            <div class="q-opt" onclick="CcnaQuiz.answer(1,'A','wrong','Incorrecto. Inside Global es la dirección IP pública que representa al host interno en Internet. Es la IP que ven los servidores externos cuando reciben tráfico del host interno.')"><div class="q-letter">A</div>Inside Global</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(1,'B','correct','¡Correcto! Inside Local es la dirección IP privada real del host interno, tal como se configura en su tarjeta de red. Es la IP que "la red local ve" del dispositivo, antes de cualquier traducción NAT.')"><div class="q-letter">B</div>Inside Local</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(1,'C','wrong','Incorrecto. Outside Global es la dirección IP pública del servidor en Internet (por ejemplo 8.8.8.8). No tiene relación con los hosts de la red interna.')"><div class="q-letter">C</div>Outside Global</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(1,'D','wrong','Incorrecto. Outside Local es cómo la red interna ve la dirección del servidor externo. En la mayoría de los casos es igual a Outside Global, ya que normalmente no se aplica NAT al destino.')"><div class="q-letter">D</div>Outside Local</div>
+          </div>
+          <div class="q-feedback" id="fb1"></div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="q-box" id="q2">
+          <div class="q-num">PREGUNTA 02 / 07</div>
+          <div class="q-text">¿Qué tipo de NAT permite que <strong>múltiples hosts internos</strong> compartan <strong>una sola dirección IP pública</strong> usando números de puerto para distinguir las sesiones?</div>
+          <div class="q-opts">
+            <div class="q-opt" onclick="CcnaQuiz.answer(2,'A','wrong','Incorrecto. Static NAT mapea una IP privada a una IP pública de forma permanente y exclusiva (1 a 1). No permite que múltiples hosts compartan una sola IP pública.')"><div class="q-letter">A</div>Static NAT</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(2,'B','wrong','Incorrecto. Dynamic NAT sin overload asigna una IP pública del pool a cada host de forma dinámica, pero sigue siendo una IP por host activo. Si el pool se agota, nuevos hosts no pueden conectarse.')"><div class="q-letter">B</div>Dynamic NAT sin overload</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(2,'C','correct','¡Correcto! PAT (Port Address Translation), también llamado NAT Overload, permite que miles de hosts internos compartan una sola IP pública. Usa los números de puerto TCP/UDP para identificar cada sesión de forma única. Es el tipo más utilizado en el mundo real.')"><div class="q-letter">C</div>PAT (NAT Overload)</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(2,'D','wrong','Incorrecto. El NAT Bidireccional no es un término estándar de Cisco IOS. La característica de permitir tráfico bidireccional (desde Internet hacia adentro) corresponde al Static NAT, no al PAT.')"><div class="q-letter">D</div>NAT Bidireccional</div>
+          </div>
+          <div class="q-feedback" id="fb2"></div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="q-box" id="q3">
+          <div class="q-num">PREGUNTA 03 / 07</div>
+          <div class="q-text">Un administrador configura NAT pero los hosts internos no pueden acceder a Internet. Al revisar con <code style="background:rgba(0,188,235,0.1);padding:2px 6px;border-radius:4px;">show ip nat statistics</code> observa que los campos Inside interfaces y Outside interfaces están vacíos. ¿Cuál es la causa?</div>
+          <div class="q-opts">
+            <div class="q-opt" onclick="CcnaQuiz.answer(3,'A','wrong','Incorrecto. La ACL puede estar correctamente configurada y aun así aparecer vacíos los campos de interfaces. El problema que describe específicamente la ausencia de Inside/Outside interfaces en las estadísticas es otro.')"><div class="q-letter">A</div>La ACL de NAT no está configurada correctamente</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(3,'B','wrong','Incorrecto. La falta de ruta default causaría que el tráfico no llegue a Internet, pero show ip nat statistics sí mostraría las interfaces si están configuradas. El problema aquí es que las interfaces aparecen vacías.')"><div class="q-letter">B</div>Falta la ruta default hacia el ISP</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(3,'C','correct','¡Correcto! Si los campos Inside/Outside interfaces están vacíos en show ip nat statistics, significa que no se ejecutó ip nat inside ni ip nat outside en las interfaces del router. Sin esta configuración, NAT no sabe qué interfaz es privada y cuál es pública, por lo que no realiza ninguna traducción.')"><div class="q-letter">C</div>No se configuró ip nat inside / ip nat outside en las interfaces</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(3,'D','wrong','Incorrecto. El proceso NAT en Cisco IOS no necesita activarse por separado — se activa automáticamente cuando se configura una traducción (static, dynamic o PAT) y se definen las interfaces inside/outside.')"><div class="q-letter">D</div>El proceso NAT no está activado globalmente en el router</div>
+          </div>
+          <div class="q-feedback" id="fb3"></div>
+        </div>
+
+        <!-- Q4 -->
+        <div class="q-box" id="q4">
+          <div class="q-num">PREGUNTA 04 / 07</div>
+          <div class="q-text">¿Cuál es el comando correcto para configurar PAT usando la dirección IP de la interfaz GigabitEthernet0/1 como IP pública para la ACL número 1?</div>
+          <div class="q-opts">
+            <div class="q-opt" onclick="CcnaQuiz.answer(4,'A','wrong','Incorrecto. Este comando configura Dynamic NAT con un pool llamado PAT-POOL, pero NO activa PAT. Sin la palabra "overload" al final, es NAT dinámico normal (una IP pública por host), no PAT.')"><div class="q-letter">A</div>ip nat inside source list 1 pool PAT-POOL</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(4,'B','wrong','Incorrecto. ip nat outside source no es el comando correcto para PAT. El comando para traducir direcciones de hosts internos es ip nat inside source. ip nat outside source se usa en escenarios especiales de NAT en el lado outside.')"><div class="q-letter">B</div>ip nat outside source list 1 interface GigabitEthernet0/1 overload</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(4,'C','correct','¡Correcto! El comando completo para PAT con IP de interfaz es: ip nat inside source list [ACL] interface [interfaz-outside] overload. Los tres elementos clave son: "inside source" (traducción de dentro hacia afuera), "interface" (usar IP de la interfaz, no un pool) y "overload" (activa PAT).')"><div class="q-letter">C</div>ip nat inside source list 1 interface GigabitEthernet0/1 overload</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(4,'D','wrong','Incorrecto. Aunque usa "overload", falta especificar si se usa "interface" o "pool". El comando correcto debe incluir la palabra "interface" para indicar que se usará la IP de esa interfaz, no un pool de IPs.')"><div class="q-letter">D</div>ip nat inside source list 1 GigabitEthernet0/1 overload</div>
+          </div>
+          <div class="q-feedback" id="fb4"></div>
+        </div>
+
+        <!-- Q5 -->
+        <div class="q-box" id="q5">
+          <div class="q-num">PREGUNTA 05 / 07</div>
+          <div class="q-text">Una empresa tiene un servidor web interno con IP 192.168.10.5 que debe ser accesible desde Internet con la IP pública 200.1.1.10. ¿Qué tipo de NAT y qué comando se deben usar?</div>
+          <div class="q-opts">
+            <div class="q-opt" onclick="CcnaQuiz.answer(5,'A','wrong','Incorrecto. PAT se usa para que múltiples usuarios internos salgan a Internet compartiendo una IP pública. No es adecuado para hacer un servidor accesible desde Internet, ya que PAT no permite que las conexiones se inicien desde fuera.')"><div class="q-letter">A</div>PAT: ip nat inside source list 10 interface Gi0/1 overload</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(5,'B','correct','¡Correcto! Para un servidor que debe ser accesible desde Internet se usa Static NAT, que crea un mapeo permanente y bidireccional entre la IP privada y la pública. El comando es: ip nat inside source static 192.168.10.5 200.1.1.10. Static NAT permite que el tráfico se inicie desde Internet hacia el servidor.')"><div class="q-letter">B</div>Static NAT: ip nat inside source static 192.168.10.5 200.1.1.10</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(5,'C','wrong','Incorrecto. Dynamic NAT asigna IPs del pool de forma temporal cuando el host inicia tráfico hacia afuera. No garantiza que el servidor siempre tenga la misma IP pública, y no permite que las conexiones se inicien desde Internet.')"><div class="q-letter">C</div>Dynamic NAT: ip nat inside source list 1 pool POOL-WEB</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(5,'D','wrong','Incorrecto. La sintaxis correcta del Static NAT es "ip nat inside source static [IP-privada] [IP-pública]". El orden de los argumentos importa: primero la IP interna (privada), luego la IP externa (pública).')"><div class="q-letter">D</div>Static NAT: ip nat inside source static 200.1.1.10 192.168.10.5</div>
+          </div>
+          <div class="q-feedback" id="fb5"></div>
+        </div>
+
+        <!-- Q6 -->
+        <div class="q-box" id="q6">
+          <div class="q-num">PREGUNTA 06 / 07</div>
+          <div class="q-text">¿Qué diferencia fundamental hay entre Dynamic NAT y PAT (NAT Overload)?</div>
+          <div class="q-opts">
+            <div class="q-opt" onclick="CcnaQuiz.answer(6,'A','wrong','Incorrecto. Tanto Dynamic NAT como PAT pueden usar una ACL para definir qué hosts pueden usar NAT. La diferencia no está en el uso de ACL sino en cómo se realiza el mapeo de direcciones.')"><div class="q-letter">A</div>Dynamic NAT usa una ACL y PAT no usa ACL</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(6,'B','wrong','Incorrecto. Es al revés. PAT puede funcionar con una sola IP pública (la de la interfaz). Dynamic NAT sin overload requiere un pool de IPs públicas — una por cada host activo simultáneamente.')"><div class="q-letter">B</div>PAT requiere un pool de IPs públicas y Dynamic NAT solo necesita una</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(6,'C','correct','¡Correcto! Dynamic NAT asigna una IP pública exclusiva a cada host activo (1 a 1 temporal). PAT usa números de puerto para permitir que múltiples hosts compartan una misma IP pública simultáneamente. La diferencia en el comando es la palabra "overload" al final.')"><div class="q-letter">C</div>Dynamic NAT asigna una IP pública por host; PAT usa puertos para que múltiples hosts compartan una IP</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(6,'D','wrong','Incorrecto. Dynamic NAT puede ser bidireccional en algunos casos especiales, pero PAT generalmente no permite tráfico iniciado desde Internet. La diferencia principal es el uso de puertos para compartir una IP, no la direccionalidad.')"><div class="q-letter">D</div>Dynamic NAT es bidireccional y PAT solo funciona de dentro hacia afuera</div>
+          </div>
+          <div class="q-feedback" id="fb6"></div>
+        </div>
+
+        <!-- Q7 -->
+        <div class="q-box" id="q7">
+          <div class="q-num">PREGUNTA 07 / 07</div>
+          <div class="q-text">Al ejecutar <code style="background:rgba(0,188,235,0.1);padding:2px 6px;border-radius:4px;">show ip nat translations</code> en un router con PAT activo, ¿qué característica distingue visualmente las entradas PAT de una entrada Static NAT?</div>
+          <div class="q-opts">
+            <div class="q-opt" onclick="CcnaQuiz.answer(7,'A','wrong','Incorrecto. Las entradas Static NAT muestran "---" en la columna Pro (protocolo) porque no tienen protocolo específico. Las entradas PAT sí muestran el protocolo (tcp, udp, icmp).')"><div class="q-letter">A</div>Las entradas PAT muestran "---" en la columna del protocolo</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(7,'B','correct','¡Correcto! Las entradas PAT muestran números de puerto junto a las IPs (ej: 203.0.113.2:51234), mientras que las entradas Static NAT solo muestran IPs sin puerto (ej: 203.0.113.10 sin número de puerto). Esta es la forma visual de distinguirlas en el output del comando.')"><div class="q-letter">B</div>Las entradas PAT incluyen números de puerto junto a las IPs; Static NAT solo muestra IPs</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(7,'C','wrong','Incorrecto. Ambos tipos aparecen en la misma tabla del comando show ip nat translations. No hay tablas separadas. La diferencia está en el contenido de cada entrada (puertos vs solo IPs).')"><div class="q-letter">C</div>PAT tiene su propia tabla separada — show ip nat translations solo muestra Static NAT</div>
+            <div class="q-opt" onclick="CcnaQuiz.answer(7,'D','wrong','Incorrecto. Las entradas PAT no tienen un timeout visible en el output básico de show ip nat translations. El timeout se puede ver con show ip nat translations verbose. La diferencia visible son los números de puerto.')"><div class="q-letter">D</div>Las entradas PAT tienen un campo de timeout visible que las Static no tienen</div>
+          </div>
+          <div class="q-feedback" id="fb7"></div>
+        </div>
+
+        <!-- Score Box -->
+        <div id="scoreBox" style="display:none;" class="content-card">
+          <h2>🏆 Resultado Final</h2>
+          <div style="text-align:center;padding:20px;">
+            <div id="scoreTxt" style="font-family:var(--font-head);font-size:2.5rem;font-weight:900;margin-bottom:8px;"></div>
+            <div id="scoreMsg" style="color:var(--gray);"></div>
+          </div>
+        </div>
+
+      </div>
+    </div><!-- /section-quiz -->
+
+  </div><!-- /wrap -->
+</div><!-- /page-content -->
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <span class="logo-cisco">CISCO</span>
+          <span class="logo-text">Academy</span>
+        </div>
+        <p>Ruta completa de aprendizaje hacia las certificaciones Cisco CCNA, CCNP y CCIE.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Módulo 4 — Seguridad</h4>
+        <a href="acl.html">← ACLs</a>
+        <a href="nat.html">📍 NAT/PAT (aquí)</a>
+      </div>
+      <div class="footer-links">
+        <h4>Módulo 3 — Routing</h4>
+        <a href="routing.html">← Routing Estático</a>
+        <a href="ospf.html">← OSPF</a>
+        <a href="asistente.html">🤖 NetBot IA</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>Basado en el currículo oficial de Cisco Networking Academy · CCNA 200-301</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/main.js"></script>
+<script>
+  if (typeof CcnaQuiz === 'undefined') {
+    window.CcnaQuiz = (function() {
+      let answers = {}, score = 0, total = 0;
+      function init(n) { answers = {}; score = 0; total = n; }
+      function answer(qNum, letter, result, explanation) {
+        if (answers[qNum]) return;
+        answers[qNum] = { letter, result };
+        document.querySelectorAll('#q' + qNum + ' .q-opt').forEach(opt => {
+          opt.style.pointerEvents = 'none';
+          const l = opt.querySelector('.q-letter');
+          if (l && l.textContent === letter) opt.classList.add(result === 'correct' ? 'correct' : 'wrong');
+          if (result === 'wrong' && (opt.getAttribute('onclick') || '').includes("'correct'")) opt.classList.add('correct');
+        });
+        const fb = document.getElementById('fb' + qNum);
+        if (fb) { fb.textContent = (result === 'correct' ? '✅ ' : '❌ ') + explanation; fb.className = 'q-feedback show ' + (result === 'correct' ? 'ok' : 'bad'); }
+        if (result === 'correct') score++;
+        if (Object.keys(answers).length === total) setTimeout(() => {
+          const box = document.getElementById('scoreBox'); if (!box) return;
+          box.style.display = 'block';
+          const pct = Math.round(score / total * 100);
+          const txt = document.getElementById('scoreTxt'); const msg = document.getElementById('scoreMsg');
+          if (txt) txt.textContent = score + ' / ' + total + ' — ' + pct + '%';
+          if (msg) { if (pct>=87){txt.style.color='var(--green)';msg.textContent='🏆 ¡Excelente! Listo para el examen CCNA.';}else if(pct>=62){txt.style.color='var(--amber)';msg.textContent='📚 Buen progreso. Repasa los temas donde fallaste.';}else{txt.style.color='var(--red)';msg.textContent='💪 Repasa el material completo antes de continuar.';} }
+          box.scrollIntoView({ behavior: 'smooth' });
+        }, 400);
+      }
+      return { init, answer };
+    })();
+  }
+
+  CcnaQuiz.init(7);
+
+  function showSection(id, btn) {
+    document.querySelectorAll('.content-section').forEach(s => s.style.display = 'none');
+    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+    document.getElementById('section-' + id).style.display = 'block';
+    btn.classList.add('active');
+    window.scrollTo({ top: 200, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
