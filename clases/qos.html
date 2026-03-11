@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QoS — CCNA Academy</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="page-body">
+
+<!-- NAVBAR -->
+<nav style="position:fixed;top:0;left:0;right:0;z-index:9000;height:64px;background:rgba(6,12,24,0.97);border-bottom:1px solid rgba(0,188,235,0.2);backdrop-filter:blur(20px);">
+  <div style="max-width:1400px;margin:0 auto;padding:0 24px;height:64px;display:flex;align-items:center;">
+    <a href="../index.html" style="display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;">
+      <span style="font-family:Orbitron,monospace;font-weight:900;font-size:0.9rem;letter-spacing:3px;background:linear-gradient(135deg,#00bceb,#38d9ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;border:1px solid rgba(0,188,235,0.35);padding:5px 10px;border-radius:5px;">CISCO</span>
+      <span style="font-family:Orbitron,monospace;font-size:0.65rem;color:#4a6a84;letter-spacing:2.5px;font-weight:500;">ACADEMY</span>
+    </a>
+    <a href="asistente.html" style="display:flex;align-items:center;gap:8px;padding:7px 16px;border-radius:8px;font-size:0.82rem;font-weight:700;color:#00d4ff;border:1px solid rgba(0,212,255,0.35);text-decoration:none;margin-left:20px;flex-shrink:0;white-space:nowrap;background:rgba(0,212,255,0.06);font-family:Orbitron,monospace;letter-spacing:0.5px;">🤖 NetBot IA</a>
+    <button id="ccna-btn" onclick="ccnaToggle()" style="display:flex;flex-direction:column;justify-content:center;gap:6px;background:rgba(0,188,235,0.07);border:1px solid rgba(0,188,235,0.3);border-radius:9px;cursor:pointer;padding:10px 13px;margin-left:auto;flex-shrink:0;" onmouseover="this.style.background='rgba(0,188,235,0.15)';this.style.borderColor='#00bceb';" onmouseout="this.style.background='rgba(0,188,235,0.07)';this.style.borderColor='rgba(0,188,235,0.3)';">
+      <span style="display:block;width:22px;height:2px;background:#38d9ff;border-radius:2px;"></span>
+      <span style="display:block;width:16px;height:2px;background:#38d9ff;border-radius:2px;"></span>
+      <span style="display:block;width:22px;height:2px;background:#38d9ff;border-radius:2px;"></span>
+    </button>
+  </div>
+</nav>
+<div id="ccna-overlay" onclick="ccnaClose()" style="display:none;position:fixed;inset:0;top:64px;background:rgba(0,0,0,0.6);z-index:8998;"></div>
+<div id="ccna-drawer" style="display:none;flex-direction:column;position:fixed;top:64px;right:0;width:280px;height:calc(100vh - 64px);background:linear-gradient(180deg,rgba(4,10,22,0.99),rgba(6,14,28,0.99));border-left:1px solid rgba(0,188,235,0.15);padding:0;overflow-y:auto;z-index:8999;box-shadow:-20px 0 60px rgba(0,0,0,0.7);">
+  <div style="padding:16px 16px 8px;border-bottom:1px solid rgba(0,188,235,0.08);">
+    <div style="font-family:Orbitron,monospace;font-size:0.6rem;color:#00bceb;letter-spacing:3px;text-transform:uppercase;opacity:0.8;">Navegación</div>
+  </div>
+  <div style="padding:8px 10px 24px;display:flex;flex-direction:column;gap:2px;">
+    <div style="font-family:Orbitron,monospace;font-size:0.52rem;color:#00bceb;letter-spacing:2px;text-transform:uppercase;padding:14px 8px 5px;opacity:0.7;">Módulo 1 — Fundamentos</div>
+    <a href="fundamentos.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🔌</span>Fundamentos de Redes</a>
+    <a href="subnetting.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🔢</span>Subnetting IPv4</a>
+    <div style="font-family:Orbitron,monospace;font-size:0.52rem;color:#00bceb;letter-spacing:2px;text-transform:uppercase;padding:14px 8px 5px;border-top:1px solid rgba(0,188,235,0.08);opacity:0.7;margin-top:6px;">Módulo 2 — Switching</div>
+    <a href="vlan.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🏷️</span>VLANs</a>
+    <a href="stp.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🌳</span>STP</a>
+    <a href="switches-cisco.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🖧</span>Switches Cisco</a>
+    <a href="etherchannel.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🔗</span>EtherChannel</a>
+    <div style="font-family:Orbitron,monospace;font-size:0.52rem;color:#00bceb;letter-spacing:2px;text-transform:uppercase;padding:14px 8px 5px;border-top:1px solid rgba(0,188,235,0.08);opacity:0.7;margin-top:6px;">Módulo 3 — Routing</div>
+    <a href="router.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🌐</span>Routers Cisco</a>
+    <a href="routing.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">📋</span>Routing Estático</a>
+    <a href="ospf.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🔴</span>OSPF</a>
+    <div style="font-family:Orbitron,monospace;font-size:0.52rem;color:#00bceb;letter-spacing:2px;text-transform:uppercase;padding:14px 8px 5px;border-top:1px solid rgba(0,188,235,0.08);opacity:0.7;margin-top:6px;">Módulo 4 — Seguridad</div>
+    <a href="acl.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🔒</span>ACLs</a>
+    <a href="nat.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🔀</span>NAT/PAT</a>
+    <div style="font-family:Orbitron,monospace;font-size:0.52rem;color:#00bceb;letter-spacing:2px;text-transform:uppercase;padding:14px 8px 5px;border-top:1px solid rgba(0,188,235,0.08);opacity:0.7;margin-top:6px;">Módulo 5 — WAN y Servicios</div>
+    <a href="wan.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🌍</span>WAN y Servicios</a>
+    <a href="dhcp.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">📡</span>DHCP</a>
+    <a href="qos.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#38d9ff;text-decoration:none;background:rgba(0,188,235,0.12);border-left:2px solid #00bceb;padding-left:10px;"><span style="width:20px;text-align:center;">📶</span>QoS</a>
+  </div>
+</div>
+<script>
+function ccnaToggle(){var d=document.getElementById('ccna-drawer');var o=document.getElementById('ccna-overlay');var open=d.style.display==='flex';d.style.display=open?'none':'flex';o.style.display=open?'none':'block';}
+function ccnaClose(){document.getElementById('ccna-drawer').style.display='none';document.getElementById('ccna-overlay').style.display='none';}
+</script>
+
+<!-- HERO -->
+<div class="page-hero">
+  <div class="wrap">
+    <div class="page-breadcrumb">
+      <a href="../index.html">Inicio</a><span>/</span>
+      <span>Módulo 5 — WAN y Servicios</span><span>/</span>
+      <span>QoS</span>
+    </div>
+    <h1 class="page-title">QoS</h1>
+    <div class="page-subtitle">Calidad de Servicio · Clasificación · Marcado · Colas · Policing · Shaping · MQC · DSCP · CoS</div>
+    <div class="page-nav-pills">
+      <button class="pill active" onclick="showSection('concepto',this)">📶 Concepto</button>
+      <button class="pill" onclick="showSection('modelos',this)">🏗️ Modelos QoS</button>
+      <button class="pill" onclick="showSection('marcado',this)">🏷️ Clasificación y Marcado</button>
+      <button class="pill" onclick="showSection('colas',this)">📦 Colas y Scheduling</button>
+      <button class="pill" onclick="showSection('mqc',this)">⌨️ MQC — Config</button>
+      <button class="pill" onclick="showSection('trouble',this)">🔍 Verificación</button>
+      <button class="pill" onclick="showSection('quiz',this)">🎯 Quiz</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONTENIDO -->
+<div class="page-content">
+  <div class="wrap">
+
+<!-- ══════════════════════════════════════
+     SECCIÓN 1: CONCEPTO
+══════════════════════════════════════ -->
+<div id="section-concepto" class="content-section">
+
+  <div class="content-card fade-up">
+    <h2>📶 ¿Qué es QoS?</h2>
+    <div class="def-box">
+      <span class="hl">QoS (Quality of Service)</span> es un conjunto de técnicas que permiten a la red <span class="hlg">priorizar ciertos tipos de tráfico</span> sobre otros cuando los recursos (ancho de banda, buffer) son limitados. Sin QoS, la red trata todos los paquetes por igual — <em>Best Effort</em> — sin garantías de entrega, retardo ni jitter.
+    </div>
+    <div class="info-box tip">
+      <div class="info-icon">✅</div>
+      <div>QoS <strong>no crea más ancho de banda</strong>. Lo que hace es <strong>administrar la congestión</strong> dando preferencia al tráfico crítico (voz, video) cuando la red está saturada. Si no hay congestión, QoS no tiene efecto visible.</div>
+    </div>
+    <div class="info-box exam">
+      <div class="info-icon">🎯</div>
+      <div><strong>CCNA Examen:</strong> Los tres problemas que QoS resuelve son: <strong>Bandwidth</strong> (ancho de banda insuficiente), <strong>Delay/Latency</strong> (retardo excesivo), <strong>Jitter</strong> (variación del retardo) y <strong>Packet Loss</strong> (pérdida de paquetes).</div>
+    </div>
+  </div>
+
+  <div class="content-card fade-up fade-up-d1">
+    <h2>⚡ Los 4 problemas que resuelve QoS</h2>
+    <table class="data-table">
+      <thead><tr><th>Problema</th><th>Descripción</th><th>Impacto sin QoS</th><th>Tráfico más afectado</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="hl">Bandwidth</span></td>
+          <td>Ancho de banda insuficiente para todo el tráfico simultáneo</td>
+          <td>Transferencias lentas, buffering en video</td>
+          <td>Video streaming, backups</td>
+        </tr>
+        <tr>
+          <td><span class="hl">Delay (Latencia)</span></td>
+          <td>Tiempo que tarda un paquete en llegar al destino</td>
+          <td>Eco en llamadas, lag en videollamadas</td>
+          <td><span class="badge b-red">VoIP (&lt;150ms)</span></td>
+        </tr>
+        <tr>
+          <td><span class="hl">Jitter</span></td>
+          <td>Variación en el retardo entre paquetes consecutivos</td>
+          <td>Voz entrecortada, video pixelado</td>
+          <td><span class="badge b-red">VoIP (&lt;30ms)</span></td>
+        </tr>
+        <tr>
+          <td><span class="hl">Packet Loss</span></td>
+          <td>Paquetes descartados por desbordamiento de buffers</td>
+          <td>Cortes en la voz, retransmisiones TCP</td>
+          <td><span class="badge b-red">VoIP (&lt;1%)</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="content-card fade-up fade-up-d2">
+    <h2>📊 Requerimientos por tipo de tráfico</h2>
+    <table class="data-table">
+      <thead><tr><th>Tipo de tráfico</th><th>Bandwidth</th><th>Delay máx.</th><th>Jitter máx.</th><th>Pérdida máx.</th><th>Prioridad</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>🎙️ <strong>VoIP</strong></td>
+          <td>30–128 Kbps/llamada</td>
+          <td><span class="badge b-red">150 ms</span></td>
+          <td><span class="badge b-red">30 ms</span></td>
+          <td><span class="badge b-red">1%</span></td>
+          <td><span class="badge b-green">Máxima</span></td>
+        </tr>
+        <tr>
+          <td>📹 <strong>Video conferencia</strong></td>
+          <td>384 Kbps – 2 Mbps</td>
+          <td><span class="badge b-amber">150 ms</span></td>
+          <td><span class="badge b-amber">30 ms</span></td>
+          <td><span class="badge b-amber">1%</span></td>
+          <td><span class="badge b-green">Alta</span></td>
+        </tr>
+        <tr>
+          <td>🎬 <strong>Video streaming</strong></td>
+          <td>1–20 Mbps</td>
+          <td>Segundos</td>
+          <td>Variable (buffer)</td>
+          <td>&lt; 5%</td>
+          <td><span class="badge b-blue">Media-alta</span></td>
+        </tr>
+        <tr>
+          <td>💼 <strong>Datos críticos</strong></td>
+          <td>Variable</td>
+          <td>Segundos</td>
+          <td>No crítico</td>
+          <td>&lt; 1%</td>
+          <td><span class="badge b-blue">Media</span></td>
+        </tr>
+        <tr>
+          <td>📧 <strong>Email / FTP</strong></td>
+          <td>Variable</td>
+          <td>Sin requisito</td>
+          <td>No crítico</td>
+          <td>TCP retransmite</td>
+          <td><span class="badge b-amber">Baja</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="info-box warn">
+      <div class="info-icon">⚠️</div>
+      <div><strong>VoIP es intransigente:</strong> el tráfico de voz es UDP — no hay retransmisión. Si un paquete llega tarde o se pierde, simplemente se descarta. Por eso VoIP siempre debe tener la <strong>máxima prioridad</strong> en QoS.</div>
+    </div>
+  </div>
+
+</div><!-- /section-concepto -->
+
+<!-- ══════════════════════════════════════
+     SECCIÓN 2: MODELOS QoS
+══════════════════════════════════════ -->
+<div id="section-modelos" class="content-section" style="display:none;">
+
+  <div class="content-card fade-up">
+    <h2>🏗️ Los Tres Modelos de QoS</h2>
+    <div class="def-box">
+      Cisco implementa QoS mediante tres modelos principales con diferentes niveles de <span class="hlg">garantía y complejidad</span>. El más usado en redes empresariales modernas es <span class="hl">DiffServ</span>, que es escalable y flexible.
+    </div>
+    <table class="data-table">
+      <thead><tr><th>Modelo</th><th>Sigla</th><th>Funcionamiento</th><th>Escalabilidad</th><th>Uso típico</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="hl">Best Effort</span></td>
+          <td><span class="badge b-amber">—</span></td>
+          <td>Sin QoS. Todos los paquetes se tratan igual. FIFO puro.</td>
+          <td><span class="badge b-green">Alta</span></td>
+          <td>Redes pequeñas sin tráfico crítico</td>
+        </tr>
+        <tr>
+          <td><span class="hl">IntServ</span></td>
+          <td><span class="badge b-blue">IS</span></td>
+          <td>Reserva recursos por flujo usando RSVP. Garantías estrictas extremo a extremo.</td>
+          <td><span class="badge b-red">Baja</span></td>
+          <td>Redes pequeñas, legacy, multimedia profesional</td>
+        </tr>
+        <tr>
+          <td><span class="hl">DiffServ</span></td>
+          <td><span class="badge b-green">DS</span></td>
+          <td>Clasifica tráfico en clases con DSCP. Cada router aplica per-hop behaviors (PHB).</td>
+          <td><span class="badge b-green">Alta</span></td>
+          <td><span class="badge b-green">Estándar empresarial y SP</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="content-card fade-up fade-up-d1">
+    <h2>🔄 Best Effort vs IntServ vs DiffServ</h2>
+    <div class="cmd-block">
+      <span class="cmd-label">COMPARATIVA DE MODELOS</span>
+      <span class="cl"><span class="cc">══════════ BEST EFFORT ══════════</span></span>
+      <span class="cl">  Pkt1 ──┐</span>
+      <span class="cl">  Pkt2 ──┤──► <span class="cv">FIFO Queue</span> ──► Todos salen igual, sin prioridad</span>
+      <span class="cl">  Pkt3 ──┘</span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl"><span class="cc">══════════ INTSERV (RSVP) ═══════</span></span>
+      <span class="cl">  VoIP ──► <span class="cp">RSVP Reserva</span> ──► Ancho de banda garantizado por flujo</span>
+      <span class="cl">  <span class="cc">! Cada router debe mantener estado por flujo → no escala</span></span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl"><span class="cc">══════════ DIFFSERV (DSCP) ══════</span></span>
+      <span class="cl">  VoIP ──► <span class="ck">DSCP EF (46)</span> ──► Cola PQ ──► Sale primero ✅</span>
+      <span class="cl">  Video ──► <span class="ck">DSCP AF41 (34)</span> ──► Cola CBWFQ ──► Ancho garantizado</span>
+      <span class="cl">  Email ──► <span class="ck">DSCP BE (0)</span> ──► Cola Best Effort ──► Sale cuando puede</span>
+      <span class="cl">  <span class="cc">! Solo se marca el paquete — el router actúa según la marca</span></span>
+    </div>
+    <div class="info-box exam">
+      <div class="info-icon">🎯</div>
+      <div><strong>CCNA Examen:</strong> <strong>DiffServ</strong> es el modelo más utilizado hoy. Usa el campo <strong>DSCP</strong> del encabezado IP (6 bits del byte ToS) para marcar hasta <strong>64 clases</strong> de tráfico diferentes. Cada dispositivo aplica políticas según esa marca.</div>
+    </div>
+  </div>
+
+  <div class="content-card fade-up fade-up-d2">
+    <h2>🔁 Los 3 Pasos Clave de QoS</h2>
+    <div class="cmd-block">
+      <span class="cmd-label">FLUJO QoS — SIEMPRE ESTOS 3 PASOS</span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl">  <span class="cp">PASO 1 — CLASIFICACIÓN</span>   ¿Qué tipo de tráfico es?</span>
+      <span class="cl">  ┌─────────────────────────────────────────────────────┐</span>
+      <span class="cl">  │  ACL · NBAR · DSCP existente · Puerto TCP/UDP      │</span>
+      <span class="cl">  └─────────────────────────────────────────────────────┘</span>
+      <span class="cl">                        │</span>
+      <span class="cl">                        ▼</span>
+      <span class="cl">  <span class="ck">PASO 2 — MARCADO</span>        Asignar una etiqueta al paquete</span>
+      <span class="cl">  ┌─────────────────────────────────────────────────────┐</span>
+      <span class="cl">  │  DSCP (IP) · CoS (Ethernet 802.1p) · MPLS EXP     │</span>
+      <span class="cl">  └─────────────────────────────────────────────────────┘</span>
+      <span class="cl">                        │</span>
+      <span class="cl">                        ▼</span>
+      <span class="cl">  <span class="cv">PASO 3 — ACCIÓN</span>         Qué hacer con cada clase</span>
+      <span class="cl">  ┌─────────────────────────────────────────────────────┐</span>
+      <span class="cl">  │  Queuing · Policing · Shaping · Compression        │</span>
+      <span class="cl">  └─────────────────────────────────────────────────────┘</span>
+    </div>
+  </div>
+
+</div><!-- /section-modelos -->
+
+<!-- ══════════════════════════════════════
+     SECCIÓN 3: CLASIFICACIÓN Y MARCADO
+══════════════════════════════════════ -->
+<div id="section-marcado" class="content-section" style="display:none;">
+
+  <div class="content-card fade-up">
+    <h2>🏷️ Clasificación del Tráfico</h2>
+    <div class="def-box">
+      <span class="hl">Clasificar</span> es identificar a qué clase pertenece un paquete. Se puede clasificar por <span class="hlg">ACLs</span> (dirección IP/puerto), por <span class="hlg">NBAR</span> (reconocimiento de aplicación en capa 7) o por la <span class="hlg">marca DSCP</span> que ya trae el paquete.
+    </div>
+    <table class="data-table">
+      <thead><tr><th>Método</th><th>Capa</th><th>Criterio</th><th>Precisión</th></tr></thead>
+      <tbody>
+        <tr><td><span class="hl">ACL</span></td><td>L3/L4</td><td>IP origen/destino, puerto TCP/UDP, protocolo</td><td><span class="badge b-blue">Media</span></td></tr>
+        <tr><td><span class="hl">NBAR</span></td><td>L4–L7</td><td>Inspección profunda de paquetes — identifica apps (YouTube, Skype, SIP)</td><td><span class="badge b-green">Alta</span></td></tr>
+        <tr><td><span class="hl">DSCP / ToS</span></td><td>L3</td><td>Marca ya presente en el campo IP ToS/DS</td><td><span class="badge b-green">Alta</span></td></tr>
+        <tr><td><span class="hl">CoS 802.1p</span></td><td>L2</td><td>Campo de 3 bits en trama Ethernet con VLAN tag</td><td><span class="badge b-blue">Media</span></td></tr>
+        <tr><td><span class="hl">Interfaz</span></td><td>L1</td><td>Todo el tráfico de una interfaz en la misma clase</td><td><span class="badge b-amber">Baja</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="content-card fade-up fade-up-d1">
+    <h2>🎨 DSCP — Differentiated Services Code Point</h2>
+    <div class="def-box">
+      <span class="hl">DSCP</span> usa <span class="hlg">6 bits</span> del byte ToS del encabezado IPv4 (o Traffic Class en IPv6), permitiendo <strong>64 valores</strong> de marcado (0–63). Los valores más importantes son los <strong>Per-Hop Behaviors (PHB)</strong> estándar.
+    </div>
+    <table class="data-table">
+      <thead><tr><th>PHB</th><th>Nombre</th><th>Valor DSCP</th><th>Binario</th><th>Uso típico</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="hl">EF</span></td>
+          <td>Expedited Forwarding</td>
+          <td><span class="badge b-red">46</span></td>
+          <td>101110</td>
+          <td>🎙️ VoIP — máxima prioridad, cola dedicada</td>
+        </tr>
+        <tr>
+          <td><span class="hl">CS5</span></td>
+          <td>Class Selector 5</td>
+          <td><span class="badge b-red">40</span></td>
+          <td>101000</td>
+          <td>📹 Señalización de voz (SIP, H.323)</td>
+        </tr>
+        <tr>
+          <td><span class="hl">AF41</span></td>
+          <td>Assured Forwarding 4-1</td>
+          <td><span class="badge b-amber">34</span></td>
+          <td>100010</td>
+          <td>📹 Video interactivo (Webex, Teams)</td>
+        </tr>
+        <tr>
+          <td><span class="hl">AF31</span></td>
+          <td>Assured Forwarding 3-1</td>
+          <td><span class="badge b-amber">26</span></td>
+          <td>011010</td>
+          <td>💼 Aplicaciones críticas de negocio</td>
+        </tr>
+        <tr>
+          <td><span class="hl">AF21</span></td>
+          <td>Assured Forwarding 2-1</td>
+          <td><span class="badge b-blue">18</span></td>
+          <td>010010</td>
+          <td>📊 Datos transaccionales (ERP, DB)</td>
+        </tr>
+        <tr>
+          <td><span class="hl">CS1</span></td>
+          <td>Class Selector 1 (Scavenger)</td>
+          <td><span class="badge b-amber">8</span></td>
+          <td>001000</td>
+          <td>🎮 Tráfico no deseado (P2P, juegos)</td>
+        </tr>
+        <tr>
+          <td><span class="hl">BE / DF</span></td>
+          <td>Best Effort / Default</td>
+          <td><span class="badge b-amber">0</span></td>
+          <td>000000</td>
+          <td>📧 Tráfico sin clasificar</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="info-box tip">
+      <div class="info-icon">💡</div>
+      <div><strong>Formato AF (Assured Forwarding):</strong> Los valores AF se escriben como <code>AFxy</code> donde <strong>x</strong> = clase (1–4, mayor = más prioritario) e <strong>y</strong> = probabilidad de descarte (1=bajo, 2=medio, 3=alto). <code>AF41</code> = clase 4, descarte bajo = mejor que AF43.</div>
+    </div>
+  </div>
+
+  <div class="content-card fade-up fade-up-d2">
+    <h2>🔵 CoS — Class of Service (802.1p)</h2>
+    <div class="def-box">
+      <span class="hl">CoS (Class of Service)</span> es el equivalente de DSCP pero en capa 2. Usa <span class="hlg">3 bits</span> del campo PCP en la cabecera <strong>802.1Q (VLAN tag)</strong>, dando 8 niveles de prioridad (0–7). Solo existe en tramas con VLAN tag.
+    </div>
+    <table class="data-table">
+      <thead><tr><th>CoS</th><th>Descripción</th><th>DSCP equivalente</th></tr></thead>
+      <tbody>
+        <tr><td><span class="badge b-red">7</span></td><td>Control de red (reservado)</td><td>CS7 (56)</td></tr>
+        <tr><td><span class="badge b-red">6</span></td><td>Control de internetwork</td><td>CS6 (48)</td></tr>
+        <tr><td><span class="badge b-red">5</span></td><td>🎙️ Voz (VoIP)</td><td>EF (46)</td></tr>
+        <tr><td><span class="badge b-amber">4</span></td><td>📹 Video conferencia</td><td>AF41 (34)</td></tr>
+        <tr><td><span class="badge b-amber">3</span></td><td>💼 Aplicaciones críticas</td><td>AF31 (26)</td></tr>
+        <tr><td><span class="badge b-blue">2</span></td><td>📊 Datos importantes</td><td>AF21 (18)</td></tr>
+        <tr><td><span class="badge b-blue">1</span></td><td>Datos de fondo</td><td>CS1 (8)</td></tr>
+        <tr><td><span class="badge b-amber">0</span></td><td>Best Effort (default)</td><td>BE (0)</td></tr>
+      </tbody>
+    </table>
+    <div class="info-box exam">
+      <div class="info-icon">🎯</div>
+      <div><strong>CCNA Examen:</strong> El <strong>trust boundary</strong> (límite de confianza) define hasta dónde la red confía en las marcas QoS que vienen de los dispositivos finales. Lo ideal es marcar en el <strong>primer switch de acceso</strong> y no confiar en las marcas de los PCs (pueden ser manipuladas).</div>
+    </div>
+  </div>
+
+</div><!-- /section-marcado -->
+
+<!-- ══════════════════════════════════════
+     SECCIÓN 4: COLAS Y SCHEDULING
+══════════════════════════════════════ -->
+<div id="section-colas" class="content-section" style="display:none;">
+
+  <div class="content-card fade-up">
+    <h2>📦 Mecanismos de Cola (Queuing)</h2>
+    <div class="def-box">
+      El <span class="hl">queuing (encolado)</span> determina en qué orden salen los paquetes cuando la interfaz de salida está congestionada. Es el corazón de QoS — sin congestión, no hay diferencia entre algoritmos. Cisco ofrece varios mecanismos con distintas garantías.
+    </div>
+    <table class="data-table">
+      <thead><tr><th>Algoritmo</th><th>Sigla</th><th>Cómo funciona</th><th>Mejor para</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="hl">First In First Out</span></td>
+          <td><span class="badge b-amber">FIFO</span></td>
+          <td>Sin diferenciación. Sale primero el que llegó primero.</td>
+          <td>Interfaces sin congestión, enlaces rápidos</td>
+        </tr>
+        <tr>
+          <td><span class="hl">Priority Queuing</span></td>
+          <td><span class="badge b-red">PQ</span></td>
+          <td>4 colas fijas (High/Med/Low/Normal). La High se vacía completamente antes de atender las demás.</td>
+          <td>VoIP — latencia mínima garantizada</td>
+        </tr>
+        <tr>
+          <td><span class="hl">Custom Queuing</span></td>
+          <td><span class="badge b-blue">CQ</span></td>
+          <td>16 colas. Asigna % de bytes por cola. Round-robin pesado.</td>
+          <td>Distribución proporcional de BW</td>
+        </tr>
+        <tr>
+          <td><span class="hl">Weighted Fair Queuing</span></td>
+          <td><span class="badge b-blue">WFQ</span></td>
+          <td>Colas dinámicas por flujo. Peso según IP Prec. Default en &lt;2Mbps.</td>
+          <td>Equidad entre muchos flujos pequeños</td>
+        </tr>
+        <tr>
+          <td><span class="hl">Class-Based WFQ</span></td>
+          <td><span class="badge b-green">CBWFQ</span></td>
+          <td>Extiende WFQ con clases definidas por el usuario. Garantiza % de BW por clase.</td>
+          <td>Datos críticos con BW garantizado</td>
+        </tr>
+        <tr>
+          <td><span class="hl">Low Latency Queuing</span></td>
+          <td><span class="badge b-green">LLQ</span></td>
+          <td>CBWFQ + cola PQ estricta para VoIP. El estándar recomendado por Cisco.</td>
+          <td><span class="badge b-green">VoIP + datos — mejor solución general</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="content-card fade-up fade-up-d1">
+    <h2>🏆 LLQ — Low Latency Queuing (El estándar)</h2>
+    <div class="def-box">
+      <span class="hl">LLQ</span> combina una <span class="hlg">cola de prioridad estricta (PQ)</span> para VoIP con <span class="hlg">CBWFQ</span> para el resto. Es la solución recomendada por Cisco para redes con voz y datos porque garantiza latencia mínima para VoIP sin matar el ancho de banda de otras clases.
+    </div>
+    <div class="cmd-block">
+      <span class="cmd-label">ARQUITECTURA LLQ</span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl"><span class="cc">  Tráfico entrante</span></span>
+      <span class="cl">        │</span>
+      <span class="cl">        ├──► <span class="cp">Cola PQ ESTRICTA</span>  ◄── VoIP DSCP EF (46)</span>
+      <span class="cl">        │    <span class="cc">Sale SIEMPRE primero — garantía de latencia</span></span>
+      <span class="cl">        │    <span class="cc">Policied: si supera el límite, se descarta</span></span>
+      <span class="cl">        │</span>
+      <span class="cl">        ├──► <span class="ck">Cola CBWFQ 30%</span>   ◄── Video DSCP AF41</span>
+      <span class="cl">        │    <span class="cc">30% BW garantizado cuando hay congestión</span></span>
+      <span class="cl">        │</span>
+      <span class="cl">        ├──► <span class="ck">Cola CBWFQ 20%</span>   ◄── Datos críticos DSCP AF31</span>
+      <span class="cl">        │</span>
+      <span class="cl">        └──► <span class="cv">Cola Best Effort</span>  ◄── Resto del tráfico DSCP 0</span>
+      <span class="cl">             <span class="cc">Recibe el BW sobrante</span></span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl">             <span class="cc">──── Interfaz de salida ────►</span></span>
+    </div>
+    <div class="info-box warn">
+      <div class="info-icon">⚠️</div>
+      <div><strong>Peligro de la cola PQ estricta:</strong> Si el tráfico VoIP supera el límite configurado, los paquetes extra son <strong>descartados (policed)</strong>. Si la cola PQ nunca se vacía, el resto del tráfico nunca sale — esto se llama <strong>starvation</strong>.</div>
+    </div>
+  </div>
+
+  <div class="content-card fade-up fade-up-d2">
+    <h2>🚦 Policing vs Shaping</h2>
+    <div class="def-box">
+      Dos técnicas para controlar la tasa de tráfico: <span class="hl">Policing</span> <strong>descarta o remarcar</strong> el exceso de forma inmediata. <span class="hlg">Shaping</span> <strong>retarda</strong> el exceso almacenándolo en buffer hasta que haya espacio — más suave pero añade delay.
+    </div>
+    <div class="cmd-block">
+      <span class="cmd-label">POLICING vs SHAPING — COMPARATIVA</span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl"><span class="cc">════ POLICING ════════════════════════════════════════════</span></span>
+      <span class="cl">  Tráfico │████████████████████▓▓▓▓▓▓▓▓▓▓│</span>
+      <span class="cl">  Límite  │────────────────────────────────────│  ← 10 Mbps</span>
+      <span class="cl">  Salida  │████████████████████<span class="cp">XXXXXXXXXXXX</span>│</span>
+      <span class="cl">           <span class="cc">Dentro del límite  Exceso = DESCARTADO ❌</span></span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl"><span class="cc">════ SHAPING ═════════════════════════════════════════════</span></span>
+      <span class="cl">  Tráfico │████████████████████▓▓▓▓▓▓▓▓▓▓│</span>
+      <span class="cl">  Límite  │────────────────────────────────────│  ← 10 Mbps</span>
+      <span class="cl">  Salida  │████████████████████████████████│</span>
+      <span class="cl">           <span class="cc">Dentro del límite  Exceso = BUFFEREADO ⏱️ → Sale después</span></span>
+    </div>
+    <table class="data-table">
+      <thead><tr><th>Característica</th><th>Policing</th><th>Shaping</th></tr></thead>
+      <tbody>
+        <tr><td>Acción ante exceso</td><td><span class="badge b-red">Descarta (drop) o remarca</span></td><td><span class="badge b-amber">Retarda (buffer)</span></td></tr>
+        <tr><td>Introduce delay</td><td><span class="badge b-green">No</span></td><td><span class="badge b-red">Sí (jitter)</span></td></tr>
+        <tr><td>Uso en routers</td><td><span class="badge b-green">Sí</span></td><td><span class="badge b-green">Sí</span></td></tr>
+        <tr><td>Uso en switches</td><td><span class="badge b-green">Sí</span></td><td><span class="badge b-amber">Limitado</span></td></tr>
+        <tr><td>Mejor para</td><td>Tráfico entrante del ISP, control de abuso</td><td>Tráfico saliente a WAN con límite de BW</td></tr>
+      </tbody>
+    </table>
+    <div class="info-box exam">
+      <div class="info-icon">🎯</div>
+      <div><strong>CCNA Examen:</strong> Policing se usa típicamente en la <strong>entrada</strong> (inbound) de interfaces WAN para controlar el tráfico que viene del proveedor. Shaping se usa en la <strong>salida</strong> (outbound) para adaptar el tráfico al CIR del enlace WAN contratado.</div>
+    </div>
+  </div>
+
+</div><!-- /section-colas -->
+
+<!-- ══════════════════════════════════════
+     SECCIÓN 5: MQC — CONFIGURACIÓN
+══════════════════════════════════════ -->
+<div id="section-mqc" class="content-section" style="display:none;">
+
+  <div class="content-card fade-up">
+    <h2>⌨️ MQC — Modular QoS CLI</h2>
+    <div class="def-box">
+      <span class="hl">MQC (Modular QoS CLI)</span> es el framework de Cisco para configurar QoS. Se basa en <span class="hlg">tres bloques</span> que se crean por separado y se vinculan: <strong>class-map</strong> (clasificar), <strong>policy-map</strong> (definir acciones) y <strong>service-policy</strong> (aplicar a interfaz).
+    </div>
+    <div class="cmd-block">
+      <span class="cmd-label">ESTRUCTURA MQC — 3 BLOQUES</span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl">  <span class="cp">1. class-map</span>    → Define QUÉ tráfico pertenece a cada clase</span>
+      <span class="cl">  <span class="ck">2. policy-map</span>   → Define QUÉ HACER con cada clase</span>
+      <span class="cl">  <span class="cv">3. service-policy</span> → APLICA la política a una interfaz</span>
+    </div>
+  </div>
+
+  <div class="content-card fade-up fade-up-d1">
+    <h2>📝 Paso 1 — class-map (Clasificación)</h2>
+    <div class="cmd-block">
+      <span class="cmd-label">CONFIGURAR class-map</span>
+      <span class="cl"><span class="cp">R1(config)#</span> <span class="ck">class-map match-all</span> <span class="cv">VOIP</span></span>
+      <span class="cl"><span class="cp">R1(config-cmap)#</span> <span class="ck">match dscp ef</span></span>
+      <span class="cl"><span class="cc">! match-all = AND lógico (todos los criterios deben cumplirse)</span></span>
+      <span class="cl"><span class="cc">! match-any = OR lógico (basta con uno)</span></span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl"><span class="cp">R1(config)#</span> <span class="ck">class-map match-any</span> <span class="cv">VIDEO</span></span>
+      <span class="cl"><span class="cp">R1(config-cmap)#</span> <span class="ck">match dscp af41</span></span>
+      <span class="cl"><span class="cp">R1(config-cmap)#</span> <span class="ck">match dscp af42</span></span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl"><span class="cp">R1(config)#</span> <span class="ck">class-map match-all</span> <span class="cv">DATOS-CRITICOS</span></span>
+      <span class="cl"><span class="cp">R1(config-cmap)#</span> <span class="ck">match dscp af31</span></span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl"><span class="cc">! También se puede clasificar por ACL:</span></span>
+      <span class="cl"><span class="cp">R1(config)#</span> <span class="ck">class-map match-all</span> <span class="cv">VOIP-ACL</span></span>
+      <span class="cl"><span class="cp">R1(config-cmap)#</span> <span class="ck">match access-group name</span> <span class="cv">ACL-VOIP</span></span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl"><span class="cc">! O por protocolo con NBAR:</span></span>
+      <span class="cl"><span class="cp">R1(config)#</span> <span class="ck">class-map match-all</span> <span class="cv">YOUTUBE</span></span>
+      <span class="cl"><span class="cp">R1(config-cmap)#</span> <span class="ck">match protocol youtube</span></span>
+    </div>
+  </div>
+
+  <div class="content-card fade-up fade-up-d2">
+    <h2>📝 Paso 2 — policy-map (Acciones)</h2>
+    <div class="cmd-block">
+      <span class="cmd-label">CONFIGURAR policy-map CON LLQ</span>
+      <span class="cl"><span class="cp">R1(config)#</span> <span class="ck">policy-map</span> <span class="cv">QOS-WAN</span></span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl"><span class="cc">! ── Cola PQ estricta para VoIP ──────────────────────</span></span>
+      <span class="cl"><span class="cp">R1(config-pmap)#</span> <span class="ck">class</span> <span class="cv">VOIP</span></span>
+      <span class="cl"><span class="cp">R1(config-pmap-c)#</span> <span class="ck">priority</span> <span class="cv">128</span></span>
+      <span class="cl"><span class="cc">! priority = LLQ (cola estricta) — 128 Kbps máximo</span></span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl"><span class="cc">! ── CBWFQ para Video ────────────────────────────────</span></span>
+      <span class="cl"><span class="cp">R1(config-pmap)#</span> <span class="ck">class</span> <span class="cv">VIDEO</span></span>
+      <span class="cl"><span class="cp">R1(config-pmap-c)#</span> <span class="ck">bandwidth percent</span> <span class="cv">30</span></span>
+      <span class="cl"><span class="cc">! Garantiza 30% del BW de la interfaz</span></span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl"><span class="cc">! ── CBWFQ para Datos Críticos ───────────────────────</span></span>
+      <span class="cl"><span class="cp">R1(config-pmap)#</span> <span class="ck">class</span> <span class="cv">DATOS-CRITICOS</span></span>
+      <span class="cl"><span class="cp">R1(config-pmap-c)#</span> <span class="ck">bandwidth percent</span> <span class="cv">25</span></span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl"><span class="cc">! ── Best Effort (class-default) ─────────────────────</span></span>
+      <span class="cl"><span class="cp">R1(config-pmap)#</span> <span class="ck">class class-default</span></span>
+      <span class="cl"><span class="cp">R1(config-pmap-c)#</span> <span class="ck">fair-queue</span></span>
+      <span class="cl"><span class="cc">! El resto del tráfico usa WFQ equitativo</span></span>
+    </div>
+
+    <div class="cmd-block">
+      <span class="cmd-label">POLICING Y MARCADO EN policy-map</span>
+      <span class="cl"><span class="cp">R1(config)#</span> <span class="ck">policy-map</span> <span class="cv">POLICING-ENTRADA</span></span>
+      <span class="cl"><span class="cp">R1(config-pmap)#</span> <span class="ck">class class-default</span></span>
+      <span class="cl"><span class="cp">R1(config-pmap-c)#</span> <span class="ck">police rate</span> <span class="cv">10000000 bps</span></span>
+      <span class="cl"><span class="cp">R1(config-pmap-c-police)#</span> <span class="ck">conform-action transmit</span></span>
+      <span class="cl"><span class="cp">R1(config-pmap-c-police)#</span> <span class="ck">exceed-action drop</span></span>
+      <span class="cl"><span class="cc">! Tráfico dentro del límite → transmit</span></span>
+      <span class="cl"><span class="cc">! Tráfico sobre el límite  → drop (policing)</span></span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl"><span class="cc">! Alternativa: remarcar en lugar de descartar:</span></span>
+      <span class="cl"><span class="cp">R1(config-pmap-c-police)#</span> <span class="ck">exceed-action set-dscp-transmit</span> <span class="cv">af12</span></span>
+      <span class="cl"><span class="cc">! El exceso se remarca a menor prioridad y se reenvía</span></span>
+    </div>
+  </div>
+
+  <div class="content-card fade-up fade-up-d3">
+    <h2>📝 Paso 3 — service-policy (Aplicar a interfaz)</h2>
+    <div class="cmd-block">
+      <span class="cmd-label">APLICAR POLÍTICA A INTERFAZ</span>
+      <span class="cl"><span class="cp">R1(config)#</span> <span class="ck">interface serial 0/0/0</span></span>
+      <span class="cl"><span class="cc">! Interfaz WAN — aquí aplica QoS outbound</span></span>
+      <span class="cl"><span class="cp">R1(config-if)#</span> <span class="ck">service-policy output</span> <span class="cv">QOS-WAN</span></span>
+      <span class="cl"><span class="cc">! output = aplica cuando los paquetes SALEN por esta interfaz</span></span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl"><span class="cp">R1(config-if)#</span> <span class="ck">service-policy input</span> <span class="cv">POLICING-ENTRADA</span></span>
+      <span class="cl"><span class="cc">! input = aplica cuando los paquetes ENTRAN por esta interfaz</span></span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl"><span class="cc">! ─── Marcado en la interfaz de acceso (trust boundary) ─────</span></span>
+      <span class="cl"><span class="cp">SW1(config)#</span> <span class="ck">interface gigabitEthernet 1/0/1</span></span>
+      <span class="cl"><span class="cc">! Puerto donde conecta el teléfono IP</span></span>
+      <span class="cl"><span class="cp">SW1(config-if)#</span> <span class="ck">mls qos trust dscp</span></span>
+      <span class="cl"><span class="cc">! Confiar en el marcado DSCP del teléfono IP Cisco</span></span>
+      <span class="cl"><span class="cc">! Otras opciones: trust cos | trust ip-prec</span></span>
+    </div>
+    <div class="info-box exam">
+      <div class="info-icon">🎯</div>
+      <div><strong>CCNA Examen:</strong> Una interfaz solo puede tener <strong>una service-policy input y una output</strong> simultáneamente. El comando <code>service-policy output</code> en la interfaz WAN es el más común — aplica LLQ/CBWFQ cuando los paquetes esperan para salir.</div>
+    </div>
+  </div>
+
+</div><!-- /section-mqc -->
+
+<!-- ══════════════════════════════════════
+     SECCIÓN 6: VERIFICACIÓN
+══════════════════════════════════════ -->
+<div id="section-trouble" class="content-section" style="display:none;">
+
+  <div class="content-card fade-up">
+    <h2>🔍 Verificación de QoS</h2>
+    <div class="def-box">
+      Verificar QoS implica confirmar que las <span class="hl">class-maps</span> clasifican correctamente, que la <span class="hlg">policy-map</span> está aplicada en la interfaz correcta y que los <strong>contadores de paquetes</strong> muestran tráfico en cada clase.
+    </div>
+  </div>
+
+  <div class="content-card fade-up fade-up-d1">
+    <h2>🛠️ Comandos Show y Debug</h2>
+    <div class="cmd-block">
+      <span class="cmd-label">VERIFICACIÓN COMPLETA QoS</span>
+      <span class="cl"><span class="cc">── Ver class-maps configuradas ────────────────────────────</span></span>
+      <span class="cl"><span class="cp">R1#</span> <span class="ck">show class-map</span></span>
+      <span class="cl"><span class="cc">! Lista todas las class-maps y sus criterios de match</span></span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl"><span class="cc">── Ver policy-maps configuradas ──────────────────────────</span></span>
+      <span class="cl"><span class="cp">R1#</span> <span class="ck">show policy-map</span></span>
+      <span class="cl"><span class="cc">! Lista todas las policies y sus acciones por clase</span></span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl"><span class="cc">── Ver estadísticas en tiempo real de una interfaz ───────</span></span>
+      <span class="cl"><span class="cp">R1#</span> <span class="ck">show policy-map interface serial 0/0/0</span></span>
+      <span class="cl"><span class="cc">! MUY IMPORTANTE — muestra por clase:</span></span>
+      <span class="cl"><span class="cc">!  · Paquetes clasificados y transmitidos</span></span>
+      <span class="cl"><span class="cc">!  · Paquetes descartados (drops)</span></span>
+      <span class="cl"><span class="cc">!  · Bytes en cola actual</span></span>
+      <span class="cl"><span class="cc">!  · Tasa de transmisión actual</span></span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl"><span class="cc">── Ver interfaz y service-policy aplicada ────────────────</span></span>
+      <span class="cl"><span class="cp">R1#</span> <span class="ck">show running-config | section policy-map</span></span>
+      <span class="cl"><span class="cp">R1#</span> <span class="ck">show running-config | section class-map</span></span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl"><span class="cc">── Verificar NBAR ─────────────────────────────────────────</span></span>
+      <span class="cl"><span class="cp">R1#</span> <span class="ck">show ip nbar protocol-discovery</span></span>
+      <span class="cl"><span class="cc">! Ver qué protocolos/apps detecta NBAR en la interfaz</span></span>
+    </div>
+
+    <div class="cmd-block">
+      <span class="cmd-label">SALIDA TÍPICA — show policy-map interface</span>
+      <span class="cl"><span class="cc">Serial0/0/0</span></span>
+      <span class="cl"><span class="cc">  Service-policy output: QOS-WAN</span></span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl">    Class-map: <span class="cv">VOIP</span> (match-all)</span>
+      <span class="cl">      <span class="ck">1240 packets, 148800 bytes</span></span>
+      <span class="cl">      <span class="cp">30 second offered rate 128000 bps</span></span>
+      <span class="cl">      <span class="cc">Match: dscp ef (46)</span></span>
+      <span class="cl">      <span class="cc">Queueing: Strict Priority</span></span>
+      <span class="cl">      <span class="cc">Output Queue: Conversation 264</span></span>
+      <span class="cl">      <span class="cc">(pkts matched/bytes matched) 1240/148800</span></span>
+      <span class="cl">      <span class="cc">(depth/total drops/no-buffer drops) 0/0/0</span></span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl">    Class-map: <span class="cv">VIDEO</span> (match-any)</span>
+      <span class="cl">      <span class="ck">856 packets, 1027200 bytes</span></span>
+      <span class="cl">      <span class="cc">Bandwidth: 30% (3072 kbps)</span></span>
+    </div>
+  </div>
+
+  <div class="content-card fade-up fade-up-d2">
+    <h2>🚨 Troubleshooting QoS — Problemas comunes</h2>
+    <table class="data-table">
+      <thead><tr><th>Síntoma</th><th>Causa probable</th><th>Verificación / Solución</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>VoIP con cortes aunque QoS está configurado</td>
+          <td>QoS no está en todas las interfaces del camino</td>
+          <td>QoS debe configurarse en <strong>cada salto</strong> — verificar todos los routers del path</td>
+        </tr>
+        <tr>
+          <td>class-map no clasifica tráfico</td>
+          <td>ACL mal aplicada o DSCP no se está marcando</td>
+          <td><code>show policy-map interface</code> — ver si hay 0 paquetes en la clase</td>
+        </tr>
+        <tr>
+          <td>La política no tiene efecto visible</td>
+          <td>No hay congestión en la interfaz</td>
+          <td>QoS solo actúa bajo congestión — usar traffic generator para probar</td>
+        </tr>
+        <tr>
+          <td>Tráfico bulk satura la cola PQ</td>
+          <td>Algo más que VoIP está marcado EF</td>
+          <td>Verificar marcado en el trust boundary — usar <code>mls qos trust dscp</code> solo en puertos de teléfonos</td>
+        </tr>
+        <tr>
+          <td>Error al aplicar service-policy</td>
+          <td>Suma de % BW excede 100% o &gt;75% en CBWFQ</td>
+          <td>CBWFQ permite máximo 75% en clases — el 25% restante queda para class-default</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="info-box warn">
+      <div class="info-icon">⚠️</div>
+      <div><strong>Límite CBWFQ:</strong> La suma de todos los <code>bandwidth percent</code> en las clases de un policy-map <strong>no puede superar el 75%</strong> del ancho de banda total. El 25% restante siempre se reserva para <code>class-default</code> y tráfico de control.</div>
+    </div>
+  </div>
+
+</div><!-- /section-trouble -->
+
+<!-- ══════════════════════════════════════
+     SECCIÓN 7: QUIZ
+══════════════════════════════════════ -->
+<div id="section-quiz" class="content-section" style="display:none;">
+  <div class="content-card">
+    <h2>🎯 Quiz — QoS (Estilo Examen CCNA)</h2>
+    <div class="info-box exam">
+      <div class="info-icon">📋</div>
+      <div>8 preguntas tipo examen oficial Cisco CCNA 200-301 sobre QoS.</div>
+    </div>
+
+    <div class="q-box" id="q1">
+      <div class="q-num">PREGUNTA 01 / 08</div>
+      <div class="q-text">¿Cuál es el valor DSCP asignado al Per-Hop Behavior EF (Expedited Forwarding), utilizado para tráfico VoIP?</div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="CcnaQuiz.answer(1,'A','wrong','DSCP 0 es Best Effort (Default), el más bajo — sin prioridad.')"><div class="q-letter">A</div>DSCP 0 — Best Effort</div>
+        <div class="q-opt" onclick="CcnaQuiz.answer(1,'B','wrong','DSCP 26 corresponde a AF31 — tráfico de datos críticos de negocio, no VoIP.')"><div class="q-letter">B</div>DSCP 26 — AF31</div>
+        <div class="q-opt" onclick="CcnaQuiz.answer(1,'C','correct','¡Correcto! EF (Expedited Forwarding) = DSCP 46. Es el valor estándar para VoIP que garantiza latencia mínima.')"><div class="q-letter">C</div>DSCP 46 — EF</div>
+        <div class="q-opt" onclick="CcnaQuiz.answer(1,'D','wrong','DSCP 34 es AF41, usado para video interactivo como Webex o Teams, no para VoIP.')"><div class="q-letter">D</div>DSCP 34 — AF41</div>
+      </div>
+      <div class="q-feedback" id="fb1"></div>
+    </div>
+
+    <div class="q-box" id="q2">
+      <div class="q-num">PREGUNTA 02 / 08</div>
+      <div class="q-text">Un ingeniero configura QoS con LLQ. ¿Cuál es la diferencia principal entre el comando <code>priority</code> y el comando <code>bandwidth</code> en un policy-map?</div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="CcnaQuiz.answer(2,'A','wrong','Es al revés: priority crea una cola estricta (LLQ), no bandwidth.')"><div class="q-letter">A</div>bandwidth crea una cola de prioridad estricta; priority garantiza un porcentaje mínimo</div>
+        <div class="q-opt" onclick="CcnaQuiz.answer(2,'B','correct','¡Correcto! priority crea la cola LLQ (prioridad estricta, sale siempre primero). bandwidth garantiza un % mínimo de BW sin prioridad absoluta — CBWFQ.')"><div class="q-letter">B</div>priority crea una cola de prioridad estricta (LLQ); bandwidth garantiza un porcentaje mínimo del BW</div>
+        <div class="q-opt" onclick="CcnaQuiz.answer(2,'C','wrong','Ambos se usan en interfaces WAN congestionadas, no solo en LAN.')"><div class="q-letter">C</div>priority se usa solo en interfaces LAN; bandwidth se usa en interfaces WAN</div>
+        <div class="q-opt" onclick="CcnaQuiz.answer(2,'D','wrong','Ambos comandos permiten especificar el tráfico con class-maps.')"><div class="q-letter">D</div>Son idénticos — solo cambia la sintaxis</div>
+      </div>
+      <div class="q-feedback" id="fb2"></div>
+    </div>
+
+    <div class="q-box" id="q3">
+      <div class="q-num">PREGUNTA 03 / 08</div>
+      <div class="q-text">¿Cuáles son los tres problemas de rendimiento que QoS está diseñado para resolver? (Selecciona la mejor respuesta)</div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="CcnaQuiz.answer(3,'A','wrong','La segmentación y el enrutamiento no son problemas de QoS — son funciones de red básicas.')"><div class="q-letter">A</div>Segmentación, enrutamiento y encapsulación</div>
+        <div class="q-opt" onclick="CcnaQuiz.answer(3,'B','correct','¡Correcto! Los tres problemas centrales de QoS son: Bandwidth (ancho de banda), Delay/Jitter (latencia y variación) y Packet Loss (pérdida de paquetes).')"><div class="q-letter">B</div>Bandwidth insuficiente, Delay/Jitter excesivo y Packet Loss</div>
+        <div class="q-opt" onclick="CcnaQuiz.answer(3,'C','wrong','Las colisiones se resuelven con Ethernet full-duplex y switching — no son problemas de QoS.')"><div class="q-letter">C</div>Colisiones, errores CRC y bucles de switching</div>
+        <div class="q-opt" onclick="CcnaQuiz.answer(3,'D','wrong','El direccionamiento IP y el NAT no tienen relación con QoS.')"><div class="q-letter">D</div>Direccionamiento IP, NAT y fragmentación</div>
+      </div>
+      <div class="q-feedback" id="fb3"></div>
+    </div>
+
+    <div class="q-box" id="q4">
+      <div class="q-num">PREGUNTA 04 / 08</div>
+      <div class="q-text">¿Cuál es la diferencia entre <strong>Policing</strong> y <strong>Shaping</strong> en QoS?</div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="CcnaQuiz.answer(4,'A','wrong','Es exactamente al revés: Policing descarta, Shaping retarda.')"><div class="q-letter">A</div>Policing retarda el exceso de tráfico en buffer; Shaping descarta el exceso inmediatamente</div>
+        <div class="q-opt" onclick="CcnaQuiz.answer(4,'B','wrong','Policing se puede usar tanto en entrada como en salida. Shaping solo en salida.')"><div class="q-letter">B</div>Policing solo se usa en interfaces WAN de salida; Shaping en interfaces LAN</div>
+        <div class="q-opt" onclick="CcnaQuiz.answer(4,'C','correct','¡Correcto! Policing descarta (o remarca) el tráfico que excede el límite de forma inmediata. Shaping almacena el exceso en buffer y lo envía cuando hay capacidad — añade delay pero no pierde paquetes.')"><div class="q-letter">C</div>Policing descarta o remarca el exceso inmediatamente; Shaping retarda el exceso almacenándolo en buffer</div>
+        <div class="q-opt" onclick="CcnaQuiz.answer(4,'D','wrong','Ambos mecanismos controlan la tasa de tráfico — esa es precisamente su función compartida.')"><div class="q-letter">D</div>Son iguales — ambos controlan la tasa de tráfico de la misma forma</div>
+      </div>
+      <div class="q-feedback" id="fb4"></div>
+    </div>
+
+    <div class="q-box" id="q5">
+      <div class="q-num">PREGUNTA 05 / 08</div>
+      <div class="q-text">¿En qué orden correcto se configuran los tres componentes del framework MQC de Cisco?</div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="CcnaQuiz.answer(5,'A','wrong','service-policy no puede aplicarse antes de crear las class-maps y policy-maps — generará error.')"><div class="q-letter">A</div>service-policy → class-map → policy-map</div>
+        <div class="q-opt" onclick="CcnaQuiz.answer(5,'B','wrong','policy-map debe referenciarse antes de aplicarlo. Además, class-map debe existir para ser usada en policy-map.')"><div class="q-letter">B</div>policy-map → service-policy → class-map</div>
+        <div class="q-opt" onclick="CcnaQuiz.answer(5,'C','correct','¡Correcto! El orden MQC es: 1) class-map (definir criterios), 2) policy-map (referenciar class-maps y definir acciones), 3) service-policy (aplicar el policy-map a la interfaz).')"><div class="q-letter">C</div>class-map → policy-map → service-policy</div>
+        <div class="q-opt" onclick="CcnaQuiz.answer(5,'D','wrong','service-policy es el último paso — aplica la política ya construida a la interfaz.')"><div class="q-letter">D</div>class-map → service-policy → policy-map</div>
+      </div>
+      <div class="q-feedback" id="fb5"></div>
+    </div>
+
+    <div class="q-box" id="q6">
+      <div class="q-num">PREGUNTA 06 / 08</div>
+      <div class="q-text">¿Cuántos bits usa DSCP para clasificar el tráfico, y cuántos valores distintos permite?</div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="CcnaQuiz.answer(6,'A','wrong','3 bits solo permite 8 valores — eso es CoS 802.1p, no DSCP.')"><div class="q-letter">A</div>3 bits — 8 valores posibles (como CoS)</div>
+        <div class="q-opt" onclick="CcnaQuiz.answer(6,'B','correct','¡Correcto! DSCP usa 6 bits del byte ToS/DS del encabezado IP, lo que permite 2^6 = 64 valores distintos de marcado (0–63).')"><div class="q-letter">B</div>6 bits — 64 valores posibles</div>
+        <div class="q-opt" onclick="CcnaQuiz.answer(6,'C','wrong','8 bits = 256 valores. IP Precedence usa los 3 bits más significativos del byte ToS, pero DSCP usa 6 bits.')"><div class="q-letter">C</div>8 bits — 256 valores posibles</div>
+        <div class="q-opt" onclick="CcnaQuiz.answer(6,'D','wrong','4 bits = 16 valores. DSCP usa 6 bits del campo ToS del header IPv4.')"><div class="q-letter">D</div>4 bits — 16 valores posibles</div>
+      </div>
+      <div class="q-feedback" id="fb6"></div>
+    </div>
+
+    <div class="q-box" id="q7">
+      <div class="q-num">PREGUNTA 07 / 08</div>
+      <div class="q-text">Un administrador configura CBWFQ y asigna: VOIP 10%, VIDEO 35%, DATOS 35%, CRITICO 20%. Al intentar aplicar el policy-map, IOS genera un error. ¿Cuál es la causa?</div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="CcnaQuiz.answer(7,'A','wrong','El error no es de sintaxis — CBWFQ acepta percent perfectamente. El problema es la suma.')"><div class="q-letter">A</div>El comando bandwidth percent tiene un error de sintaxis</div>
+        <div class="q-opt" onclick="CcnaQuiz.answer(7,'B','wrong','4 clases es perfectamente válido en CBWFQ — puede haber muchas más.')"><div class="q-letter">B</div>CBWFQ solo permite un máximo de 3 clases definidas por usuario</div>
+        <div class="q-opt" onclick="CcnaQuiz.answer(7,'C','correct','¡Correcto! CBWFQ limita la asignación total a un máximo del 75% del ancho de banda. 10+35+35+20 = 100%, superando ese límite. El 25% restante debe quedar para class-default y tráfico de control.')"><div class="q-letter">C</div>La suma de bandwidth percent (100%) supera el máximo permitido del 75% en CBWFQ</div>
+        <div class="q-opt" onclick="CcnaQuiz.answer(7,'D','wrong','LLQ usa el comando priority — en este caso se usó bandwidth. El problema es la suma porcentual.')"><div class="q-letter">D</div>VOIP debe usar priority en lugar de bandwidth</div>
+      </div>
+      <div class="q-feedback" id="fb7"></div>
+    </div>
+
+    <div class="q-box" id="q8">
+      <div class="q-num">PREGUNTA 08 / 08</div>
+      <div class="q-text">¿Qué define el concepto de <strong>Trust Boundary</strong> en una red con QoS?</div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="CcnaQuiz.answer(8,'A','wrong','Trust Boundary es un concepto de QoS, no de seguridad de acceso a la red o autenticación.')"><div class="q-letter">A</div>El firewall que separa la red interna de Internet</div>
+        <div class="q-opt" onclick="CcnaQuiz.answer(8,'B','wrong','El ancho de banda contratado define el CIR del enlace WAN, no el trust boundary de QoS.')"><div class="q-letter">B</div>El límite de ancho de banda contratado con el ISP</div>
+        <div class="q-opt" onclick="CcnaQuiz.answer(8,'C','correct','¡Correcto! El Trust Boundary define hasta qué punto la red confía en las marcas QoS de los dispositivos finales. Generalmente se establece en el primer switch de acceso usando mls qos trust, para que los PCs no puedan manipular sus propias marcas DSCP.')"><div class="q-letter">C</div>El punto de la red hasta donde se confía en el marcado QoS de los dispositivos finales</div>
+        <div class="q-opt" onclick="CcnaQuiz.answer(8,'D','wrong','El default gateway es el router de salida de la LAN — no tiene relación directa con el concepto de trust boundary de QoS.')"><div class="q-letter">D</div>La dirección del default gateway en cada subred</div>
+      </div>
+      <div class="q-feedback" id="fb8"></div>
+    </div>
+
+    <div id="scoreBox" style="display:none;" class="content-card">
+      <h2>🏆 Resultado Final</h2>
+      <div style="text-align:center;padding:20px;">
+        <div id="scoreTxt" style="font-family:var(--font-head);font-size:2.5rem;font-weight:900;margin-bottom:8px;"></div>
+        <div id="scoreMsg" style="color:var(--gray);"></div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /section-quiz -->
+
+  </div><!-- /wrap -->
+</div><!-- /page-content -->
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <span class="logo-cisco">CISCO</span>
+          <span class="logo-text">Academy</span>
+        </div>
+        <p>Ruta completa de aprendizaje hacia las certificaciones Cisco CCNA, CCNP y CCIE.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Módulo 5 — WAN y Servicios</h4>
+        <a href="wan.html">← WAN y Servicios</a>
+        <a href="dhcp.html">← DHCP</a>
+        <a href="qos.html">📍 QoS (aquí)</a>
+      </div>
+      <div class="footer-links">
+        <h4>Recursos</h4>
+        <a href="asistente.html">🤖 NetBot IA</a>
+        <a href="../index.html">← Inicio</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>Basado en el currículo oficial de Cisco Networking Academy · CCNA 200-301</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/main.js"></script>
+<script>
+  if (typeof CcnaQuiz === 'undefined') {
+    window.CcnaQuiz = (function() {
+      let answers = {}, score = 0, total = 0;
+      function init(n) { answers = {}; score = 0; total = n; }
+      function answer(qNum, letter, result, explanation) {
+        if (answers[qNum]) return;
+        answers[qNum] = { letter, result };
+        document.querySelectorAll('#q' + qNum + ' .q-opt').forEach(opt => {
+          opt.style.pointerEvents = 'none';
+          const l = opt.querySelector('.q-letter');
+          if (l && l.textContent === letter) opt.classList.add(result === 'correct' ? 'correct' : 'wrong');
+          if (result === 'wrong' && (opt.getAttribute('onclick') || '').includes("'correct'")) opt.classList.add('correct');
+        });
+        const fb = document.getElementById('fb' + qNum);
+        if (fb) { fb.textContent = (result === 'correct' ? '✅ ' : '❌ ') + explanation; fb.className = 'q-feedback show ' + (result === 'correct' ? 'ok' : 'bad'); }
+        if (result === 'correct') score++;
+        if (Object.keys(answers).length === total) setTimeout(() => {
+          const box = document.getElementById('scoreBox'); if (!box) return;
+          box.style.display = 'block';
+          const pct = Math.round(score / total * 100);
+          const txt = document.getElementById('scoreTxt'); const msg = document.getElementById('scoreMsg');
+          if (txt) txt.textContent = score + ' / ' + total + ' — ' + pct + '%';
+          if (msg) { if(pct>=87){txt.style.color='var(--green)';msg.textContent='🏆 ¡Excelente! Dominas QoS al nivel del examen CCNA.';}else if(pct>=62){txt.style.color='var(--amber)';msg.textContent='📚 Buen progreso. Repasa los temas de DSCP y MQC donde fallaste.';}else{txt.style.color='var(--red)';msg.textContent='💪 Repasa el material completo — enfócate en DSCP, LLQ y MQC.';} }
+          box.scrollIntoView({ behavior: 'smooth' });
+        }, 400);
+      }
+      return { init, answer };
+    })();
+  }
+  CcnaQuiz.init(8);
+
+  function showSection(id, btn) {
+    document.querySelectorAll('.content-section').forEach(s => s.style.display = 'none');
+    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+    document.getElementById('section-' + id).style.display = 'block';
+    btn.classList.add('active');
+    window.scrollTo({ top: 200, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
