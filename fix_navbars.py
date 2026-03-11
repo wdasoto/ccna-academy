@@ -38,6 +38,7 @@ NAVBAR_NUEVO = """\
     <div style="font-family:Orbitron,monospace;font-size:0.52rem;color:#00bceb;letter-spacing:2px;text-transform:uppercase;padding:14px 8px 5px;opacity:0.7;">Módulo 1 — Fundamentos</div>
     <a href="fundamentos.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🔌</span>Fundamentos de Redes</a>
     <a href="subnetting.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🔢</span>Subnetting IPv4</a>
+    <a href="calculadora.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🧮</span>Calculadora IP</a>
     <div style="font-family:Orbitron,monospace;font-size:0.52rem;color:#00bceb;letter-spacing:2px;text-transform:uppercase;padding:14px 8px 5px;border-top:1px solid rgba(0,188,235,0.08);opacity:0.7;margin-top:6px;">Módulo 2 — Switching</div>
     <a href="vlan.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🏷️</span>VLANs</a>
     <a href="stp.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🌳</span>STP</a>
@@ -112,6 +113,9 @@ def verificar(html, nombre):
         ok = False
     if 'eigrp.html' not in html:
         problemas.append('EIGRP no está en el drawer')
+        ok = False
+    if 'calculadora.html' not in html:
+        problemas.append('Calculadora IP no está en el drawer')
         ok = False
     if 'PRONTO' in html or 'badge-soon' in html:
         problemas.append('quedan badges PRONTO/badge-soon')
