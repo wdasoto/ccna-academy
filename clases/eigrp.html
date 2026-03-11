@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EIGRP — CCNA Academy</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="page-body">
+
+<!-- NAVBAR -->
+<nav style="position:fixed;top:0;left:0;right:0;z-index:9000;height:64px;background:rgba(6,12,24,0.97);border-bottom:1px solid rgba(0,188,235,0.2);backdrop-filter:blur(20px);">
+  <div style="max-width:1400px;margin:0 auto;padding:0 24px;height:64px;display:flex;align-items:center;">
+    <a href="../index.html" style="display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;">
+      <span style="font-family:Orbitron,monospace;font-weight:900;font-size:0.9rem;letter-spacing:3px;background:linear-gradient(135deg,#00bceb,#38d9ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;border:1px solid rgba(0,188,235,0.35);padding:5px 10px;border-radius:5px;">CISCO</span>
+      <span style="font-family:Orbitron,monospace;font-size:0.65rem;color:#4a6a84;letter-spacing:2.5px;font-weight:500;">ACADEMY</span>
+    </a>
+    <a href="asistente.html" style="display:flex;align-items:center;gap:8px;padding:7px 16px;border-radius:8px;font-size:0.82rem;font-weight:700;color:#00d4ff;border:1px solid rgba(0,212,255,0.35);text-decoration:none;margin-left:20px;flex-shrink:0;white-space:nowrap;background:rgba(0,212,255,0.06);font-family:Orbitron,monospace;letter-spacing:0.5px;">🤖 NetBot IA</a>
+    <button onclick="ccnaToggle()" style="display:flex;flex-direction:column;justify-content:center;gap:6px;background:rgba(0,188,235,0.07);border:1px solid rgba(0,188,235,0.3);border-radius:9px;cursor:pointer;padding:10px 13px;margin-left:auto;flex-shrink:0;" onmouseover="this.style.background='rgba(0,188,235,0.15)';this.style.borderColor='#00bceb';" onmouseout="this.style.background='rgba(0,188,235,0.07)';this.style.borderColor='rgba(0,188,235,0.3)';">
+      <span style="display:block;width:22px;height:2px;background:#38d9ff;border-radius:2px;"></span>
+      <span style="display:block;width:16px;height:2px;background:#38d9ff;border-radius:2px;"></span>
+      <span style="display:block;width:22px;height:2px;background:#38d9ff;border-radius:2px;"></span>
+    </button>
+  </div>
+</nav>
+<div id="ccna-overlay" onclick="ccnaClose()" style="display:none;position:fixed;inset:0;top:64px;background:rgba(0,0,0,0.6);z-index:8998;"></div>
+<div id="ccna-drawer" style="display:none;flex-direction:column;position:fixed;top:64px;right:0;width:280px;height:calc(100vh - 64px);background:linear-gradient(180deg,rgba(4,10,22,0.99),rgba(6,14,28,0.99));border-left:1px solid rgba(0,188,235,0.15);padding:0;overflow-y:auto;z-index:8999;box-shadow:-20px 0 60px rgba(0,0,0,0.7);">
+  <div style="padding:16px 16px 8px;border-bottom:1px solid rgba(0,188,235,0.08);">
+    <div style="font-family:Orbitron,monospace;font-size:0.6rem;color:#00bceb;letter-spacing:3px;text-transform:uppercase;opacity:0.8;">Navegación</div>
+  </div>
+  <div style="padding:8px 10px 24px;display:flex;flex-direction:column;gap:2px;">
+    <div style="font-family:Orbitron,monospace;font-size:0.52rem;color:#00bceb;letter-spacing:2px;text-transform:uppercase;padding:14px 8px 5px;opacity:0.7;">Módulo 1 — Fundamentos</div>
+    <a href="fundamentos.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🔌</span>Fundamentos de Redes</a>
+    <a href="subnetting.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🔢</span>Subnetting IPv4</a>
+    <div style="font-family:Orbitron,monospace;font-size:0.52rem;color:#00bceb;letter-spacing:2px;text-transform:uppercase;padding:14px 8px 5px;border-top:1px solid rgba(0,188,235,0.08);opacity:0.7;margin-top:6px;">Módulo 2 — Switching</div>
+    <a href="vlan.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🏷️</span>VLANs</a>
+    <a href="stp.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🌳</span>STP</a>
+    <a href="switches-cisco.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🖧</span>Switches Cisco</a>
+    <a href="etherchannel.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🔗</span>EtherChannel</a>
+    <div style="font-family:Orbitron,monospace;font-size:0.52rem;color:#00bceb;letter-spacing:2px;text-transform:uppercase;padding:14px 8px 5px;border-top:1px solid rgba(0,188,235,0.08);opacity:0.7;margin-top:6px;">Módulo 3 — Routing</div>
+    <a href="router.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🌐</span>Routers Cisco</a>
+    <a href="routing.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">📋</span>Routing Estático</a>
+    <a href="ospf.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🔴</span>OSPF</a>
+    <a href="eigrp.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#38d9ff;text-decoration:none;background:rgba(0,188,235,0.12);border-left:2px solid #00bceb;padding-left:10px;"><span style="width:20px;text-align:center;">⚡</span>EIGRP</a>
+    <div style="font-family:Orbitron,monospace;font-size:0.52rem;color:#00bceb;letter-spacing:2px;text-transform:uppercase;padding:14px 8px 5px;border-top:1px solid rgba(0,188,235,0.08);opacity:0.7;margin-top:6px;">Módulo 4 — Seguridad</div>
+    <a href="acl.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🔒</span>ACLs</a>
+    <a href="nat.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🔀</span>NAT/PAT</a>
+    <div style="font-family:Orbitron,monospace;font-size:0.52rem;color:#00bceb;letter-spacing:2px;text-transform:uppercase;padding:14px 8px 5px;border-top:1px solid rgba(0,188,235,0.08);opacity:0.7;margin-top:6px;">Módulo 5 — WAN y Servicios</div>
+    <a href="wan.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🌍</span>WAN y Servicios</a>
+    <a href="dhcp.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">📡</span>DHCP</a>
+    <a href="qos.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">📶</span>QoS</a>
+  </div>
+</div>
+<script>
+function ccnaToggle(){var d=document.getElementById('ccna-drawer');var o=document.getElementById('ccna-overlay');var open=d.style.display==='flex';d.style.display=open?'none':'flex';o.style.display=open?'none':'block';}
+function ccnaClose(){document.getElementById('ccna-drawer').style.display='none';document.getElementById('ccna-overlay').style.display='none';}
+</script>
+
+<!-- HERO -->
+<div class="page-hero">
+  <div class="wrap">
+    <div class="page-breadcrumb">
+      <a href="../index.html">Inicio</a><span>/</span>
+      <span>Módulo 3 — Routing</span><span>/</span>
+      <span>EIGRP</span>
+    </div>
+    <h1 class="page-title">EIGRP</h1>
+    <div class="page-subtitle">Enhanced Interior Gateway Routing Protocol · Algoritmo DUAL · Vecinos · Métricas · Sumarización · Troubleshooting</div>
+    <div class="page-nav-pills">
+      <button class="pill active" onclick="showSection('concepto',this)">⚡ Concepto</button>
+      <button class="pill" onclick="showSection('dual',this)">🧮 Algoritmo DUAL</button>
+      <button class="pill" onclick="showSection('vecinos',this)">🤝 Vecinos y Tablas</button>
+      <button class="pill" onclick="showSection('metrica',this)">📐 Métrica y K-values</button>
+      <button class="pill" onclick="showSection('config',this)">⌨️ Configuración</button>
+      <button class="pill" onclick="showSection('trouble',this)">🔍 Verificación</button>
+      <button class="pill" onclick="showSection('quiz',this)">🎯 Quiz</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONTENIDO -->
+<div class="page-content">
+  <div class="wrap">
+
+<!-- ══════════════════════════════════════
+     SECCIÓN 1 — CONCEPTO
+══════════════════════════════════════ -->
+<div id="section-concepto" class="content-section">
+
+  <div class="content-card fade-up">
+    <h2>⚡ ¿Qué es EIGRP?</h2>
+    <div class="def-box">
+      <span class="hl">EIGRP (Enhanced Interior Gateway Routing Protocol)</span> es un protocolo de enrutamiento <span class="hlg">propietario de Cisco</span> (abierto desde 2013 como RFC 7868) clasificado como <strong>protocolo híbrido</strong> — combina las ventajas de los protocolos de vector de distancia (como RIP) con características de los protocolos de estado de enlace (como OSPF). Utiliza el <span class="hl">algoritmo DUAL</span> para garantizar rutas libres de bucles y convergencia ultrarrápida.
+    </div>
+    <div class="info-box tip">
+      <div class="info-icon">✅</div>
+      <div>EIGRP es considerado el protocolo IGP de <strong>convergencia más rápida</strong> disponible en Cisco IOS. En escenarios ideales, la conmutación de ruta puede ser <strong>instantánea</strong> si existe una ruta de respaldo precalculada (Feasible Successor).</div>
+    </div>
+    <div class="info-box exam">
+      <div class="info-icon">🎯</div>
+      <div><strong>CCNA Examen:</strong> EIGRP es clasificado como protocolo <strong>Advanced Distance Vector</strong> (o híbrido). Usa <strong>multicast 224.0.0.10</strong> para comunicarse con vecinos y el número de protocolo IP <strong>88</strong>. AD interna = <strong>90</strong>, AD externa = <strong>170</strong>.</div>
+    </div>
+  </div>
+
+  <div class="content-card fade-up fade-up-d1">
+    <h2>📊 EIGRP vs RIP vs OSPF — Comparativa general</h2>
+    <table class="data-table">
+      <thead><tr><th>Característica</th><th>RIP v2</th><th>EIGRP</th><th>OSPF</th></tr></thead>
+      <tbody>
+        <tr><td>Tipo de protocolo</td><td>Distance Vector</td><td><span class="badge b-green">Advanced DV / Híbrido</span></td><td>Link State</td></tr>
+        <tr><td>Algoritmo</td><td>Bellman-Ford</td><td><span class="badge b-green">DUAL</span></td><td>Dijkstra (SPF)</td></tr>
+        <tr><td>Métrica</td><td>Hop count (máx. 15)</td><td><span class="badge b-green">Compuesta (BW + Delay)</span></td><td>Cost (basado en BW)</td></tr>
+        <tr><td>Distancia Administrativa</td><td>120</td><td><span class="badge b-blue">90 (int) / 170 (ext)</span></td><td>110</td></tr>
+        <tr><td>Convergencia</td><td><span class="badge b-red">Lenta (30s updates)</span></td><td><span class="badge b-green">Muy rápida</span></td><td><span class="badge b-amber">Rápida</span></td></tr>
+        <tr><td>Soporte VLSM/CIDR</td><td>Sí</td><td><span class="badge b-green">Sí</span></td><td>Sí</td></tr>
+        <tr><td>Actualizaciones</td><td>Broadcast periódico</td><td><span class="badge b-green">Multicast parcial</span></td><td>Multicast cuando cambia</td></tr>
+        <tr><td>Autenticación</td><td>MD5</td><td><span class="badge b-green">MD5 / SHA-256</span></td><td>MD5 / SHA</td></tr>
+        <tr><td>Balanceo desigual</td><td>No</td><td><span class="badge b-green">Sí — Unequal Cost LB</span></td><td>No</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="content-card fade-up fade-up-d2">
+    <h2>🏗️ Las 3 tablas de EIGRP</h2>
+    <div class="cmd-block">
+      <span class="cmd-label">TABLAS INTERNAS EIGRP</span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl">  <span class="cp">1. Tabla de Vecinos (Neighbor Table)</span></span>
+      <span class="cl">     Almacena todos los routers EIGRP adyacentes confirmados</span>
+      <span class="cl">     → <span class="ck">show ip eigrp neighbors</span></span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl">  <span class="ck">2. Tabla de Topología (Topology Table)</span></span>
+      <span class="cl">     Contiene TODAS las rutas conocidas hacia cada destino</span>
+      <span class="cl">     Incluye Successor y Feasible Successors (rutas backup)</span>
+      <span class="cl">     → <span class="ck">show ip eigrp topology</span></span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl">  <span class="cv">3. Tabla de Enrutamiento (Routing Table)</span></span>
+      <span class="cl">     Solo contiene las mejores rutas (Successors)</span>
+      <span class="cl">     Marcadas con <span class="cv">D</span> en la tabla de rutas</span>
+      <span class="cl">     → <span class="ck">show ip route eigrp</span></span>
+    </div>
+    <div class="info-box tip">
+      <div class="info-icon">💡</div>
+      <div>La clave de la velocidad de EIGRP es la <strong>Tabla de Topología</strong> — ya tiene las rutas backup calculadas. Si la ruta principal falla, la ruta backup (Feasible Successor) se instala en la tabla de enrutamiento <strong>de forma instantánea</strong>, sin recalcular.</div>
+    </div>
+  </div>
+
+</div><!-- /section-concepto -->
+
+<!-- ══════════════════════════════════════
+     SECCIÓN 2 — ALGORITMO DUAL
+══════════════════════════════════════ -->
+<div id="section-dual" class="content-section" style="display:none;">
+
+  <div class="content-card fade-up">
+    <h2>🧮 Algoritmo DUAL</h2>
+    <div class="def-box">
+      <span class="hl">DUAL (Diffusing Update Algorithm)</span> es el motor matemático de EIGRP. Garantiza que las rutas calculadas sean <span class="hlg">libres de bucles en todo momento</span> y permite una convergencia ultrarrápida usando rutas de respaldo precalculadas. Fue desarrollado por J.J. Garcia-Luna-Aceves en la Universidad de California.
+    </div>
+  </div>
+
+  <div class="content-card fade-up fade-up-d1">
+    <h2>📏 Conceptos clave de DUAL</h2>
+    <table class="data-table">
+      <thead><tr><th>Término</th><th>Definición</th><th>Analogía</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="hl">Reported Distance (RD)</span></td>
+          <td>Métrica que un vecino anuncia para llegar a una red destino. También llamada Advertised Distance (AD).</td>
+          <td>Lo que el vecino dice que le cuesta llegar al destino</td>
+        </tr>
+        <tr>
+          <td><span class="hl">Feasible Distance (FD)</span></td>
+          <td>Métrica total desde el router local hasta el destino, pasando por ese vecino. FD = RD del vecino + costo del enlace al vecino.</td>
+          <td>Lo que me cuesta a MÍ llegar al destino por ese camino</td>
+        </tr>
+        <tr>
+          <td><span class="hl">Successor (S)</span></td>
+          <td>Vecino con la <strong>menor FD</strong> hacia un destino. Es la ruta principal instalada en la tabla de enrutamiento.</td>
+          <td>El camino más corto actual</td>
+        </tr>
+        <tr>
+          <td><span class="hl">Feasible Successor (FS)</span></td>
+          <td>Vecino de respaldo que cumple la <strong>Feasibility Condition</strong>. Se mantiene en la tabla de topología listo para usar.</td>
+          <td>El camino alternativo ya listo</td>
+        </tr>
+        <tr>
+          <td><span class="hl">Feasibility Condition (FC)</span></td>
+          <td>Un vecino es FS si su <strong>RD &lt; FD del Successor actual</strong>. Garantiza que la ruta alternativa no cause bucles.</td>
+          <td>El vecino promete que su camino es más corto que el mío total</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="content-card fade-up fade-up-d2">
+    <h2>🗺️ Ejemplo DUAL — Successor y Feasible Successor</h2>
+    <div class="cmd-block">
+      <span class="cmd-label">TOPOLOGÍA — CÁLCULO DUAL</span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl">              <span class="cc">FD=1000  ← costo R1→R2</span></span>
+      <span class="cl">  <span class="cp">R1</span> ──────────────► <span class="cp">R2</span> ──────────► <span class="cv">Red 10.0.0.0</span></span>
+      <span class="cl">   │              RD=500 ↑</span>
+      <span class="cl">   │   FD=1500</span>
+      <span class="cl">   └──────────────► <span class="ck">R3</span> ──────────► <span class="cv">Red 10.0.0.0</span></span>
+      <span class="cl">              RD=300 ↑</span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl">  Desde <span class="cp">R1</span> hacia <span class="cv">10.0.0.0</span>:</span>
+      <span class="cl">  ┌─────────┬──────────┬──────────┬─────────────────────────┐</span>
+      <span class="cl">  │ Vecino  │    RD    │    FD    │ Rol                     │</span>
+      <span class="cl">  ├─────────┼──────────┼──────────┼─────────────────────────┤</span>
+      <span class="cl">  │ <span class="cp">R2</span>      │   500    │  1000    │ <span class="cp">SUCCESSOR</span> (menor FD)     │</span>
+      <span class="cl">  │ <span class="ck">R3</span>      │   300    │  1500    │ <span class="ck">FEASIBLE SUCCESSOR</span>       │</span>
+      <span class="cl">  │        │          │          │ <span class="cc">RD(300) &lt; FD_S(1000) ✅  │</span></span>
+      <span class="cl">  └─────────┴──────────┴──────────┴─────────────────────────┘</span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl">  <span class="cc">Si R2 falla → R3 se instala INSTANTÁNEAMENTE como nueva ruta</span></span>
+      <span class="cl">  <span class="cc">Sin consultar vecinos, sin recalcular — convergencia = 0ms</span></span>
+    </div>
+    <div class="info-box warn">
+      <div class="info-icon">⚠️</div>
+      <div><strong>Sin Feasible Successor:</strong> Si ningún vecino cumple la FC, EIGRP pone la ruta en estado <strong>Active</strong> y envía mensajes <strong>QUERY</strong> a todos sus vecinos preguntando por rutas alternativas. Esto se llama <em>diffusing computation</em> y puede tardar varios segundos — evitarlo es crítico en producción.</div>
+    </div>
+    <div class="info-box exam">
+      <div class="info-icon">🎯</div>
+      <div><strong>CCNA Examen — Truco mnemónico:</strong> Para que un vecino sea Feasible Successor, su <strong>RD debe ser MENOR que la FD actual del Successor</strong>. Si RD ≥ FD del Successor → NO es FS → no garantiza ausencia de bucles → DUAL lo rechaza como backup.</div>
+    </div>
+  </div>
+
+  <div class="content-card fade-up fade-up-d3">
+    <h2>🔄 Estados de ruta EIGRP</h2>
+    <table class="data-table">
+      <thead><tr><th>Estado</th><th>Descripción</th><th>Acción DUAL</th></tr></thead>
+      <tbody>
+        <tr><td><span class="badge b-green">Passive (P)</span></td><td>Estado normal — ruta estable, Successor conocido</td><td>Nada — la ruta funciona correctamente</td></tr>
+        <tr><td><span class="badge b-red">Active (A)</span></td><td>Ruta en recálculo — Successor perdido, sin FS disponible</td><td>Envía QUERYs a vecinos, espera RESPLYs</td></tr>
+        <tr><td><span class="badge b-amber">SIA (Stuck In Active)</span></td><td>Un vecino no respondió el QUERY en 3 minutos</td><td>EIGRP borra la adyacencia con ese vecino — Neighbor reset</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div><!-- /section-dual -->
+
+<!-- ══════════════════════════════════════
+     SECCIÓN 3 — VECINOS Y TABLAS
+══════════════════════════════════════ -->
+<div id="section-vecinos" class="content-section" style="display:none;">
+
+  <div class="content-card fade-up">
+    <h2>🤝 Establecimiento de Vecindad EIGRP</h2>
+    <div class="def-box">
+      EIGRP usa <span class="hl">mensajes Hello</span> para descubrir y mantener vecinos. Los Hellos se envían por multicast <span class="hlg">224.0.0.10</span> periódicamente. Cuando dos routers se descubren mutuamente, intercambian sus tablas de topología completas mediante mensajes <strong>Update</strong> y forman una adyacencia.
+    </div>
+    <table class="data-table">
+      <thead><tr><th>Parámetro</th><th>Enlace rápido (&ge;1Gbps / T1)</th><th>Enlace lento (&lt;1.544 Mbps)</th></tr></thead>
+      <tbody>
+        <tr><td><span class="hl">Hello Interval</span></td><td><span class="badge b-blue">5 segundos</span></td><td><span class="badge b-amber">60 segundos</span></td></tr>
+        <tr><td><span class="hl">Hold Time</span></td><td><span class="badge b-blue">15 segundos</span> (3× Hello)</td><td><span class="badge b-amber">180 segundos</span> (3× Hello)</td></tr>
+      </tbody>
+    </table>
+    <div class="info-box exam">
+      <div class="info-icon">🎯</div>
+      <div><strong>CCNA Examen:</strong> Los vecinos EIGRP se pueden establecer aunque los <strong>Hello/Hold timers sean diferentes</strong> entre sí (a diferencia de OSPF). Sin embargo, para formar adyacencia deben coincidir: <strong>AS number, K-values y autenticación</strong>.</div>
+    </div>
+  </div>
+
+  <div class="content-card fade-up fade-up-d1">
+    <h2>📋 Requisitos para formar vecindad EIGRP</h2>
+    <table class="data-table">
+      <thead><tr><th>Requisito</th><th>¿Debe coincidir?</th><th>Detalle</th></tr></thead>
+      <tbody>
+        <tr><td><span class="hl">Autonomous System (AS)</span></td><td><span class="badge b-red">SÍ — obligatorio</span></td><td>Mismo número de proceso EIGRP en ambos routers</td></tr>
+        <tr><td><span class="hl">K-values (métricas)</span></td><td><span class="badge b-red">SÍ — obligatorio</span></td><td>Los pesos de la fórmula de métrica deben ser idénticos</td></tr>
+        <tr><td><span class="hl">Autenticación</span></td><td><span class="badge b-red">SÍ — si está configurada</span></td><td>Misma contraseña MD5 o SHA-256</td></tr>
+        <tr><td><span class="hl">Subnet de la interfaz</span></td><td><span class="badge b-red">SÍ — deben estar en la misma red</span></td><td>Las IPs de las interfaces deben pertenecer a la misma subred</td></tr>
+        <tr><td>Hello/Hold Timers</td><td><span class="badge b-green">NO — pueden ser distintos</span></td><td>La adyacencia funciona aunque sean diferentes</td></tr>
+        <tr><td>Passive Interface</td><td><span class="badge b-amber">Bloquea vecindad</span></td><td>Una interfaz pasiva no envía ni recibe Hellos</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="content-card fade-up fade-up-d2">
+    <h2>📨 Tipos de paquetes EIGRP</h2>
+    <table class="data-table">
+      <thead><tr><th>Paquete</th><th>Tipo</th><th>Propósito</th><th>Envío</th></tr></thead>
+      <tbody>
+        <tr><td><span class="hl">Hello</span></td><td><span class="badge b-blue">1</span></td><td>Descubrir y mantener vecinos. Heartbeat periódico.</td><td>Multicast 224.0.0.10</td></tr>
+        <tr><td><span class="hl">Update</span></td><td><span class="badge b-green">4</span></td><td>Enviar información de rutas. Solo cuando cambia algo.</td><td>Multicast / Unicast</td></tr>
+        <tr><td><span class="hl">Query</span></td><td><span class="badge b-red">3</span></td><td>Preguntar a vecinos por rutas alternativas cuando una ruta queda Active.</td><td>Multicast / Unicast</td></tr>
+        <tr><td><span class="hl">Reply</span></td><td><span class="badge b-amber">4</span></td><td>Responder a un Query con información de ruta o indicando que no se conoce.</td><td>Unicast</td></tr>
+        <tr><td><span class="hl">Acknowledgment</span></td><td><span class="badge b-blue">5</span></td><td>Confirmar recepción de paquetes confiables (Update, Query, Reply).</td><td>Unicast</td></tr>
+      </tbody>
+    </table>
+    <div class="info-box tip">
+      <div class="info-icon">💡</div>
+      <div>EIGRP usa su propio mecanismo de <strong>entrega confiable (RTP — Reliable Transport Protocol)</strong>. Los paquetes Update, Query y Reply son confiables (requieren ACK). Los Hello y ACK son no confiables (no requieren confirmación).</div>
+    </div>
+  </div>
+
+</div><!-- /section-vecinos -->
+
+<!-- ══════════════════════════════════════
+     SECCIÓN 4 — MÉTRICA Y K-VALUES
+══════════════════════════════════════ -->
+<div id="section-metrica" class="content-section" style="display:none;">
+
+  <div class="content-card fade-up">
+    <h2>📐 La Métrica Compuesta de EIGRP</h2>
+    <div class="def-box">
+      EIGRP usa una <span class="hl">métrica compuesta</span> calculada con hasta 5 factores denominados <span class="hlg">K-values (K1–K5)</span>. Por defecto solo se usan <strong>K1 (Bandwidth)</strong> y <strong>K3 (Delay)</strong>. Los demás (K2=Load, K4=Reliability, K5=MTU) están desactivados por defecto.
+    </div>
+  </div>
+
+  <div class="content-card fade-up fade-up-d1">
+    <h2>🔢 Fórmula de Métrica EIGRP</h2>
+    <div class="cmd-block">
+      <span class="cmd-label">FÓRMULA COMPLETA</span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl">  Métrica = <span class="ck">256</span> × [ (<span class="cp">K1 × BW</span>) + (<span class="cv">K2 × BW</span> / (256 – Load)) + (<span class="cp">K3 × Delay</span>) ]</span>
+      <span class="cl">                  × [ <span class="cv">K5</span> / (Reliability + <span class="cv">K4</span>) ]</span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl">  Donde:</span>
+      <span class="cl">    <span class="cp">BW</span>    = 10^7 / Bandwidth_mínimo_en_kbps  (peor enlace en el path)</span>
+      <span class="cl">    <span class="cp">Delay</span> = Suma de delays en decenas de microsegundos</span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl">  <span class="cc">── Con valores por defecto (K1=1, K2=0, K3=1, K4=0, K5=0): ──</span></span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl">  Métrica = <span class="ck">256</span> × (<span class="cp">BW_min</span> + <span class="cv">Delay_total</span>)</span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl">  <span class="cc">Ejemplo — path con FastEthernet (100Mbps, delay 100µs):</span></span>
+      <span class="cl">    BW    = 10^7 / 100000 = <span class="cp">100</span></span>
+      <span class="cl">    Delay = 100 / 10     = <span class="cv">10</span></span>
+      <span class="cl">    Métrica = 256 × (100 + 10) = <span class="ck">28160</span></span>
+    </div>
+    <div class="info-box warn">
+      <div class="info-icon">⚠️</div>
+      <div><strong>Importante:</strong> Para BW, EIGRP usa el <strong>mínimo</strong> del camino (el enlace más lento — bottleneck). Para Delay, suma <strong>todos los delays</strong> del camino. Este es un error clásico en el examen: BW = mínimo, Delay = suma.</div>
+    </div>
+  </div>
+
+  <div class="content-card fade-up fade-up-d2">
+    <h2>📊 K-Values y valores típicos de interfaces</h2>
+    <table class="data-table">
+      <thead><tr><th>K-Value</th><th>Factor</th><th>Por defecto</th><th>Nota</th></tr></thead>
+      <tbody>
+        <tr><td><span class="badge b-green">K1</span></td><td>Bandwidth (ancho de banda)</td><td><span class="badge b-green">1 (activo)</span></td><td>Factor más influyente</td></tr>
+        <tr><td><span class="badge b-amber">K2</span></td><td>Load (carga del enlace)</td><td><span class="badge b-red">0 (inactivo)</span></td><td>Variable — genera inestabilidad</td></tr>
+        <tr><td><span class="badge b-green">K3</span></td><td>Delay (retardo acumulado)</td><td><span class="badge b-green">1 (activo)</span></td><td>Segundo factor más importante</td></tr>
+        <tr><td><span class="badge b-amber">K4</span></td><td>Reliability (confiabilidad)</td><td><span class="badge b-red">0 (inactivo)</span></td><td>Variable — genera inestabilidad</td></tr>
+        <tr><td><span class="badge b-amber">K5</span></td><td>MTU</td><td><span class="badge b-red">0 (inactivo)</span></td><td>Raramente usado</td></tr>
+      </tbody>
+    </table>
+    <table class="data-table">
+      <thead><tr><th>Tipo de interfaz</th><th>Bandwidth (kbps)</th><th>Delay (µs)</th><th>Métrica típica</th></tr></thead>
+      <tbody>
+        <tr><td>Serial (T1 / 1.544 Mbps)</td><td>1,544</td><td>20,000 µs</td><td><span class="badge b-red">2,170,112</span></td></tr>
+        <tr><td>Ethernet (10 Mbps)</td><td>10,000</td><td>1,000 µs</td><td><span class="badge b-amber">281,600</span></td></tr>
+        <tr><td>FastEthernet (100 Mbps)</td><td>100,000</td><td>100 µs</td><td><span class="badge b-blue">28,160</span></td></tr>
+        <tr><td>GigabitEthernet (1 Gbps)</td><td>1,000,000</td><td>10 µs</td><td><span class="badge b-green">2,816</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="content-card fade-up fade-up-d3">
+    <h2>⚖️ Balanceo de Carga — Equal y Unequal Cost</h2>
+    <div class="def-box">
+      EIGRP soporta dos tipos de balanceo: <span class="hl">Equal-Cost Load Balancing</span> (igual que OSPF, hasta 4 rutas por defecto) y la característica exclusiva <span class="hlg">Unequal-Cost Load Balancing</span> mediante el comando <strong>variance</strong> — única en EIGRP entre todos los protocolos IGP.
+    </div>
+    <div class="cmd-block">
+      <span class="cmd-label">VARIANCE — BALANCEO DESIGUAL</span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl">  FD del Successor: <span class="cp">10000</span></span>
+      <span class="cl">  variance <span class="ck">2</span>  → incluye rutas con FD ≤ (10000 × 2) = <span class="cv">20000</span></span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl">  Rutas disponibles:</span>
+      <span class="cl">    R2 → FD = <span class="cp">10000</span>  → <span class="cp">Successor</span>     ✅ incluida</span>
+      <span class="cl">    R3 → FD = <span class="ck">15000</span>  → <span class="ck">Feasible Succ</span> ✅ 15000 &lt; 20000 → incluida</span>
+      <span class="cl">    R4 → FD = <span class="cv">22000</span>  → <span class="cc">No es FS</span>      ❌ 22000 &gt; 20000 → excluida</span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl">  <span class="cc">! Solo los Feasible Successors pueden participar en variance</span></span>
+      <span class="cl">  <span class="cc">! El tráfico se distribuye proporcional al inverso de la FD</span></span>
+    </div>
+    <div class="info-box exam">
+      <div class="info-icon">🎯</div>
+      <div><strong>CCNA Examen:</strong> <code>variance 1</code> (defecto) = solo equal-cost LB. <code>variance 2</code> = incluye rutas hasta 2× la FD del Successor. <strong>Solo Feasible Successors</strong> pueden entrar al balanceo desigual — nunca rutas en estado Active.</div>
+    </div>
+  </div>
+
+</div><!-- /section-metrica -->
+
+<!-- ══════════════════════════════════════
+     SECCIÓN 5 — CONFIGURACIÓN
+══════════════════════════════════════ -->
+<div id="section-config" class="content-section" style="display:none;">
+
+  <div class="content-card fade-up">
+    <h2>⌨️ Configuración básica EIGRP Clásico</h2>
+    <div class="def-box">
+      EIGRP tiene dos modos de configuración: el modo <span class="hl">clásico</span> (más antiguo, compatible con todos los IOS) y el modo <span class="hlg">Named EIGRP</span> (IOS 15+, más organizado y con soporte IPv4/IPv6 unificado). El examen CCNA puede evaluar ambos.
+    </div>
+    <div class="cmd-block">
+      <span class="cmd-label">EIGRP CLÁSICO — CONFIGURACIÓN COMPLETA</span>
+      <span class="cl"><span class="cp">R1(config)#</span> <span class="ck">router eigrp</span> <span class="cv">100</span></span>
+      <span class="cl"><span class="cc">! 100 = número de AS (Autonomous System) — debe coincidir en todos los routers</span></span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl"><span class="cp">R1(config-router)#</span> <span class="ck">network</span> <span class="cv">192.168.1.0</span></span>
+      <span class="cl"><span class="cc">! Activa EIGRP en interfaces que coincidan con esa red (classful por defecto)</span></span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl"><span class="cp">R1(config-router)#</span> <span class="ck">network</span> <span class="cv">10.0.0.0</span> <span class="cv">0.0.0.255</span></span>
+      <span class="cl"><span class="cc">! Con wildcard mask — más preciso, activa EIGRP solo en 10.0.0.x</span></span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl"><span class="cp">R1(config-router)#</span> <span class="ck">no auto-summary</span></span>
+      <span class="cl"><span class="cc">! Desactivar sumarización automática — OBLIGATORIO en redes discontiguas</span></span>
+      <span class="cl"><span class="cc">! En IOS 15+ está desactivado por defecto</span></span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl"><span class="cp">R1(config-router)#</span> <span class="ck">eigrp router-id</span> <span class="cv">1.1.1.1</span></span>
+      <span class="cl"><span class="cc">! Router-ID: IP más alta de loopback, o IP más alta de interfaz activa</span></span>
+      <span class="cl"><span class="cc">! Recomendado configurarlo manualmente para evitar cambios inesperados</span></span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl"><span class="cp">R1(config-router)#</span> <span class="ck">passive-interface</span> <span class="cv">gigabitEthernet 0/0</span></span>
+      <span class="cl"><span class="cc">! No envía Hellos por Gi0/0 — anuncia la red pero no busca vecinos ahí</span></span>
+      <span class="cl"><span class="cc">! Usar en interfaces LAN donde no hay otros routers EIGRP</span></span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl"><span class="cp">R1(config-router)#</span> <span class="ck">passive-interface default</span></span>
+      <span class="cl"><span class="cp">R1(config-router)#</span> <span class="ck">no passive-interface</span> <span class="cv">serial 0/0/0</span></span>
+      <span class="cl"><span class="cc">! Alternativa: todas pasivas por defecto, activar solo en las WAN</span></span>
+    </div>
+  </div>
+
+  <div class="content-card fade-up fade-up-d1">
+    <h2>📝 Named EIGRP (IOS 15+)</h2>
+    <div class="cmd-block">
+      <span class="cmd-label">EIGRP NAMED MODE</span>
+      <span class="cl"><span class="cp">R1(config)#</span> <span class="ck">router eigrp</span> <span class="cv">EMPRESA</span></span>
+      <span class="cl"><span class="cc">! Nombre descriptivo en lugar de número</span></span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl"><span class="cp">R1(config-router)#</span> <span class="ck">address-family ipv4 unicast autonomous-system</span> <span class="cv">100</span></span>
+      <span class="cl"><span class="cp">R1(config-router-af)#</span> <span class="ck">network</span> <span class="cv">192.168.1.0</span></span>
+      <span class="cl"><span class="cp">R1(config-router-af)#</span> <span class="ck">network</span> <span class="cv">10.0.0.0</span> <span class="cv">0.0.0.255</span></span>
+      <span class="cl"><span class="cp">R1(config-router-af)#</span> <span class="ck">eigrp router-id</span> <span class="cv">1.1.1.1</span></span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl"><span class="cp">R1(config-router-af)#</span> <span class="ck">af-interface gigabitEthernet 0/0</span></span>
+      <span class="cl"><span class="cp">R1(config-router-af-interface)#</span> <span class="ck">passive-interface</span></span>
+      <span class="cl"><span class="cp">R1(config-router-af-interface)#</span> <span class="ck">exit</span></span>
+    </div>
+  </div>
+
+  <div class="content-card fade-up fade-up-d2">
+    <h2>🔐 Autenticación MD5</h2>
+    <div class="cmd-block">
+      <span class="cmd-label">AUTENTICACIÓN EIGRP MD5</span>
+      <span class="cl"><span class="cc">! Paso 1: Crear key chain</span></span>
+      <span class="cl"><span class="cp">R1(config)#</span> <span class="ck">key chain</span> <span class="cv">EIGRP-KEYS</span></span>
+      <span class="cl"><span class="cp">R1(config-keychain)#</span> <span class="ck">key</span> <span class="cv">1</span></span>
+      <span class="cl"><span class="cp">R1(config-keychain-key)#</span> <span class="ck">key-string</span> <span class="cv">Cisco123!</span></span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl"><span class="cc">! Paso 2: Aplicar en la interfaz</span></span>
+      <span class="cl"><span class="cp">R1(config)#</span> <span class="ck">interface serial 0/0/0</span></span>
+      <span class="cl"><span class="cp">R1(config-if)#</span> <span class="ck">ip authentication mode eigrp</span> <span class="cv">100</span> <span class="ck">md5</span></span>
+      <span class="cl"><span class="cp">R1(config-if)#</span> <span class="ck">ip authentication key-chain eigrp</span> <span class="cv">100</span> <span class="cv">EIGRP-KEYS</span></span>
+    </div>
+  </div>
+
+  <div class="content-card fade-up fade-up-d3">
+    <h2>📡 Sumarización Manual y Ruta por Defecto</h2>
+    <div class="cmd-block">
+      <span class="cmd-label">SUMARIZACIÓN Y DEFAULT ROUTE</span>
+      <span class="cl"><span class="cc">! Sumarización manual en una interfaz:</span></span>
+      <span class="cl"><span class="cp">R1(config)#</span> <span class="ck">interface serial 0/0/0</span></span>
+      <span class="cl"><span class="cp">R1(config-if)#</span> <span class="ck">ip summary-address eigrp</span> <span class="cv">100</span> <span class="cv">10.0.0.0 255.0.0.0</span></span>
+      <span class="cl"><span class="cc">! Anuncia 10.0.0.0/8 en lugar de subredes individuales</span></span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl"><span class="cc">! Redistribuir ruta por defecto:</span></span>
+      <span class="cl"><span class="cp">R1(config)#</span> <span class="ck">ip route 0.0.0.0 0.0.0.0</span> <span class="cv">serial 0/0/1</span></span>
+      <span class="cl"><span class="cp">R1(config)#</span> <span class="ck">router eigrp</span> <span class="cv">100</span></span>
+      <span class="cl"><span class="cp">R1(config-router)#</span> <span class="ck">redistribute static</span></span>
+      <span class="cl"><span class="cc">! Propaga la ruta 0.0.0.0/0 a todos los vecinos EIGRP como ruta externa</span></span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl"><span class="cc">! Variance para balanceo desigual:</span></span>
+      <span class="cl"><span class="cp">R1(config-router)#</span> <span class="ck">variance</span> <span class="cv">2</span></span>
+      <span class="cl"><span class="cc">! Incluye rutas hasta 2× la FD del Successor (solo Feasible Successors)</span></span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl"><span class="cc">! Máximo de rutas de balanceo:</span></span>
+      <span class="cl"><span class="cp">R1(config-router)#</span> <span class="ck">maximum-paths</span> <span class="cv">4</span></span>
+      <span class="cl"><span class="cc">! Defecto=4, máximo=16 en IOS moderno</span></span>
+    </div>
+  </div>
+
+</div><!-- /section-config -->
+
+<!-- ══════════════════════════════════════
+     SECCIÓN 6 — VERIFICACIÓN
+══════════════════════════════════════ -->
+<div id="section-trouble" class="content-section" style="display:none;">
+
+  <div class="content-card fade-up">
+    <h2>🔍 Verificación y Troubleshooting EIGRP</h2>
+    <div class="def-box">
+      El diagnóstico de EIGRP sigue un orden lógico: primero verificar <span class="hl">vecinos</span>, luego <span class="hlg">topología</span> y finalmente la <span class="hl">tabla de rutas</span>. Si no hay vecinos, no hay rutas — ese es el punto de partida siempre.
+    </div>
+  </div>
+
+  <div class="content-card fade-up fade-up-d1">
+    <h2>🛠️ Comandos Show esenciales</h2>
+    <div class="cmd-block">
+      <span class="cmd-label">VERIFICACIÓN COMPLETA EIGRP</span>
+      <span class="cl"><span class="cc">── Vecinos ─────────────────────────────────────────────────</span></span>
+      <span class="cl"><span class="cp">R1#</span> <span class="ck">show ip eigrp neighbors</span></span>
+      <span class="cl"><span class="cc">! Ver: IP del vecino, interfaz, Uptime, Q Cnt (0=normal), Seq Num</span></span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl"><span class="cc">── Tabla de topología ──────────────────────────────────────</span></span>
+      <span class="cl"><span class="cp">R1#</span> <span class="ck">show ip eigrp topology</span></span>
+      <span class="cl"><span class="cc">! Ver: FD, RD, Successor, Feasible Successors, estado P/A</span></span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl"><span class="cp">R1#</span> <span class="ck">show ip eigrp topology all-links</span></span>
+      <span class="cl"><span class="cc">! Muestra TODAS las rutas, incluso las que no cumplen FC</span></span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl"><span class="cc">── Tabla de rutas EIGRP ────────────────────────────────────</span></span>
+      <span class="cl"><span class="cp">R1#</span> <span class="ck">show ip route eigrp</span></span>
+      <span class="cl"><span class="cc">! D = EIGRP interna (AD 90)  |  D EX = EIGRP externa (AD 170)</span></span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl"><span class="cc">── Interfaces activas ──────────────────────────────────────</span></span>
+      <span class="cl"><span class="cp">R1#</span> <span class="ck">show ip eigrp interfaces</span></span>
+      <span class="cl"><span class="cc">! Interfaces con EIGRP activo, peers, Hello interval</span></span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl"><span class="cc">── Contadores de tráfico ───────────────────────────────────</span></span>
+      <span class="cl"><span class="cp">R1#</span> <span class="ck">show ip eigrp traffic</span></span>
+      <span class="cl"><span class="cc">! Hellos, Updates, Queries, Replies enviados/recibidos</span></span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl"><span class="cc">── Debug (usar con cuidado en producción) ──────────────────</span></span>
+      <span class="cl"><span class="cp">R1#</span> <span class="ck">debug eigrp neighbors</span></span>
+      <span class="cl"><span class="cp">R1#</span> <span class="ck">debug eigrp packets</span></span>
+      <span class="cl"><span class="cp">R1#</span> <span class="ck">undebug all</span></span>
+    </div>
+
+    <div class="cmd-block">
+      <span class="cmd-label">SALIDA TÍPICA — show ip eigrp neighbors</span>
+      <span class="cl"><span class="cc">EIGRP-IPv4 Neighbors for AS(100)</span></span>
+      <span class="cl"><span class="cc">H   Address       Interface    Hold  Uptime   SRTT   RTO    Q   Seq</span></span>
+      <span class="cl"><span class="cc">                               (sec)          (ms)        Cnt Num</span></span>
+      <span class="cl"><span class="cv">0   10.0.12.2</span>    <span class="cp">Se0/0/0</span>      <span class="ck">12</span>   01:23:45  28     200    <span class="cp">0</span>   47</span>
+      <span class="cl"><span class="cv">1   10.0.13.3</span>    <span class="ck">Gi0/1</span>       <span class="ck">14</span>   00:45:12  5      100    <span class="cp">0</span>   23</span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl">  <span class="cc">Q Cnt = 0 → Normal. Si Q Cnt &gt; 0 por mucho tiempo → problema de congestión</span></span>
+    </div>
+
+    <div class="cmd-block">
+      <span class="cmd-label">SALIDA TÍPICA — show ip eigrp topology</span>
+      <span class="cl"><span class="cc">EIGRP-IPv4 Topology Table for AS(100)/ID(1.1.1.1)</span></span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl"><span class="cc">Codes: P-Passive, A-Active, U-Update, Q-Query, R-Reply</span></span>
+      <span class="cl"><span class="cc">       r-reply Status, s-sia Status</span></span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl"><span class="cp">P</span> <span class="cv">192.168.2.0/24</span>, 2 successors, FD is <span class="ck">28160</span></span>
+      <span class="cl">        via <span class="cp">10.0.12.2</span> (<span class="ck">28160/25600</span>), Serial0/0/0</span>
+      <span class="cl">        via <span class="ck">10.0.13.3</span> (<span class="ck">30720/28160</span>), GigabitEthernet0/1</span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl">  <span class="cc">Formato: (FD/RD) → 28160=FD del Successor, 25600=RD del vecino</span></span>
+    </div>
+  </div>
+
+  <div class="content-card fade-up fade-up-d2">
+    <h2>🚨 Problemas comunes y soluciones</h2>
+    <table class="data-table">
+      <thead><tr><th>Síntoma</th><th>Causa</th><th>Verificación / Solución</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>No se forman vecinos</td>
+          <td>AS number diferente, K-values distintos, subnet diferente, autenticación</td>
+          <td><code>show ip eigrp neighbors</code> — sin output. Verificar AS y K-values con <code>show ip protocols</code></td>
+        </tr>
+        <tr>
+          <td>Vecinos fluctúan (flapping)</td>
+          <td>Hello/Hold timers muy ajustados, problema de conectividad en el enlace</td>
+          <td><code>debug eigrp neighbors</code> — ajustar timers o revisar la capa física</td>
+        </tr>
+        <tr>
+          <td>Ruta faltante en tabla</td>
+          <td>auto-summary activado con redes discontiguas, passive-interface mal</td>
+          <td><code>show ip eigrp topology</code> — verificar si existe en topología pero no en rutas</td>
+        </tr>
+        <tr>
+          <td>Ruta en estado Active</td>
+          <td>Successor perdido sin Feasible Successor disponible</td>
+          <td><code>show ip eigrp topology active</code> — revisar si hay Query loops o SIA</td>
+        </tr>
+        <tr>
+          <td>SIA (Stuck in Active)</td>
+          <td>Vecino no responde el Query en 3 minutos</td>
+          <td>EIGRP resetea la adyacencia. Verificar conectividad con el vecino que no respondió</td>
+        </tr>
+        <tr>
+          <td>Métrica subóptima</td>
+          <td>Bandwidth de interfaz mal configurado</td>
+          <td><code>show interface serial 0/0/0</code> — ajustar con <code>bandwidth</code> (solo afecta métricas, no BW real)</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="info-box tip">
+      <div class="info-icon">💡</div>
+      <div><strong>Truco CCNA:</strong> El comando <code>bandwidth</code> en una interfaz <strong>NO cambia el ancho de banda real</strong> del enlace — solo cambia el valor que EIGRP (y OSPF) usa para calcular la métrica. Siempre verifica que el bandwidth configurado refleje la velocidad real del enlace.</div>
+    </div>
+  </div>
+
+</div><!-- /section-trouble -->
+
+<!-- ══════════════════════════════════════
+     SECCIÓN 7 — QUIZ
+══════════════════════════════════════ -->
+<div id="section-quiz" class="content-section" style="display:none;">
+  <div class="content-card">
+    <h2>🎯 Quiz — EIGRP (Estilo Examen CCNA)</h2>
+    <div class="info-box exam">
+      <div class="info-icon">📋</div>
+      <div>8 preguntas tipo examen oficial Cisco CCNA 200-301 sobre EIGRP.</div>
+    </div>
+
+    <div class="q-box" id="q1">
+      <div class="q-num">PREGUNTA 01 / 08</div>
+      <div class="q-text">¿Cuál es la Distancia Administrativa (AD) de una ruta EIGRP <strong>interna</strong>?</div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="CcnaQuiz.answer(1,'A','wrong','AD 110 pertenece a OSPF, no a EIGRP.')"><div class="q-letter">A</div>110</div>
+        <div class="q-opt" onclick="CcnaQuiz.answer(1,'B','correct','¡Correcto! EIGRP interno tiene AD = 90. EIGRP externo (redistribuido) tiene AD = 170. OSPF = 110, RIP = 120.')"><div class="q-letter">B</div>90</div>
+        <div class="q-opt" onclick="CcnaQuiz.answer(1,'C','wrong','AD 170 es la Distancia Administrativa de rutas EIGRP EXTERNAS (redistribuidas), no internas.')"><div class="q-letter">C</div>170</div>
+        <div class="q-opt" onclick="CcnaQuiz.answer(1,'D','wrong','AD 120 pertenece a RIP versión 1 y 2.')"><div class="q-letter">D</div>120</div>
+      </div>
+      <div class="q-feedback" id="fb1"></div>
+    </div>
+
+    <div class="q-box" id="q2">
+      <div class="q-num">PREGUNTA 02 / 08</div>
+      <div class="q-text">¿Qué condición debe cumplir un vecino para ser considerado <strong>Feasible Successor</strong> por el algoritmo DUAL?</div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="CcnaQuiz.answer(2,'A','wrong','La FD del vecino no es el criterio — lo que importa es su RD (Reported Distance), que es la métrica que ese vecino anuncia hacia el destino.')"><div class="q-letter">A</div>Su FD debe ser menor que la FD del Successor actual</div>
+        <div class="q-opt" onclick="CcnaQuiz.answer(2,'B','correct','¡Correcto! La Feasibility Condition dice: RD del vecino candidato &lt; FD del Successor actual. Si el vecino promete un costo menor al que ya tengo total, garantiza que no generará bucles.')"><div class="q-letter">B</div>Su RD (Reported Distance) debe ser menor que la FD del Successor</div>
+        <div class="q-opt" onclick="CcnaQuiz.answer(2,'C','wrong','Los timers Hello/Hold no tienen relación con el algoritmo DUAL ni con la selección de Feasible Successors.')"><div class="q-letter">C</div>Debe tener el mismo Hello timer que el router local</div>
+        <div class="q-opt" onclick="CcnaQuiz.answer(2,'D','wrong','El número de hops no es el criterio de DUAL. EIGRP usa la Feasibility Condition basada en RD vs FD.')"><div class="q-letter">D</div>Debe estar a no más de 2 hops del destino</div>
+      </div>
+      <div class="q-feedback" id="fb2"></div>
+    </div>
+
+    <div class="q-box" id="q3">
+      <div class="q-num">PREGUNTA 03 / 08</div>
+      <div class="q-text">¿Cuáles son los dos factores que usa EIGRP por defecto para calcular su métrica compuesta?</div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="CcnaQuiz.answer(3,'A','wrong','Hop count es la métrica de RIP, no de EIGRP. EIGRP no usa el conteo de saltos en su métrica.')"><div class="q-letter">A</div>Hop count y Bandwidth</div>
+        <div class="q-opt" onclick="CcnaQuiz.answer(3,'B','wrong','Load y Reliability son factores K2 y K4 respectivamente, pero están desactivados por defecto (valor 0) en EIGRP.')"><div class="q-letter">B</div>Load y Reliability</div>
+        <div class="q-opt" onclick="CcnaQuiz.answer(3,'C','correct','¡Correcto! Por defecto EIGRP activa K1=1 (Bandwidth mínimo del path) y K3=1 (Delay acumulado). Los demás K-values (K2=Load, K4=Reliability, K5=MTU) están en 0 por defecto.')"><div class="q-letter">C</div>Bandwidth (mínimo) y Delay (acumulado)</div>
+        <div class="q-opt" onclick="CcnaQuiz.answer(3,'D','wrong','MTU es K5 y está desactivado por defecto. Cost es la métrica de OSPF, no de EIGRP.')"><div class="q-letter">D</div>MTU y Cost</div>
+      </div>
+      <div class="q-feedback" id="fb3"></div>
+    </div>
+
+    <div class="q-box" id="q4">
+      <div class="q-num">PREGUNTA 04 / 08</div>
+      <div class="q-text">Un router EIGRP pierde su ruta Successor y no tiene Feasible Successor. ¿En qué estado entra la ruta y qué mensajes envía EIGRP?</div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="CcnaQuiz.answer(4,'A','wrong','Los mensajes Hello sirven para mantener adyacencias — EIGRP no los usa para buscar rutas alternativas.')"><div class="q-letter">A</div>Estado Passive — envía mensajes Hello a todos los vecinos</div>
+        <div class="q-opt" onclick="CcnaQuiz.answer(4,'B','correct','¡Correcto! Sin Feasible Successor, la ruta entra en estado Active y EIGRP envía mensajes Query a todos sus vecinos preguntando por una ruta alternativa. Espera Reply de cada vecino.')"><div class="q-letter">B</div>Estado Active — envía mensajes Query a todos los vecinos</div>
+        <div class="q-opt" onclick="CcnaQuiz.answer(4,'C','wrong','Los Update se usan para compartir información de topología, no para buscar rutas cuando hay una falla.')"><div class="q-letter">C</div>Estado Active — envía mensajes Update anunciando la pérdida</div>
+        <div class="q-opt" onclick="CcnaQuiz.answer(4,'D','wrong','EIGRP no descarta la ruta inmediatamente — la mantiene en estado Active mientras busca una alternativa mediante Queries.')"><div class="q-letter">D</div>Estado Down — elimina la ruta de la tabla y espera nuevos Hellos</div>
+      </div>
+      <div class="q-feedback" id="fb4"></div>
+    </div>
+
+    <div class="q-box" id="q5">
+      <div class="q-num">PREGUNTA 05 / 08</div>
+      <div class="q-text">¿A qué dirección multicast envía EIGRP sus mensajes Hello?</div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="CcnaQuiz.answer(5,'A','wrong','224.0.0.5 y 224.0.0.6 son las direcciones multicast usadas por OSPF para All-OSPF-Routers y All-DR-Routers respectivamente.')"><div class="q-letter">A</div>224.0.0.5</div>
+        <div class="q-opt" onclick="CcnaQuiz.answer(5,'B','wrong','255.255.255.255 es la dirección de broadcast limitado — RIP v1 usa broadcast, no EIGRP.')"><div class="q-letter">B</div>255.255.255.255</div>
+        <div class="q-opt" onclick="CcnaQuiz.answer(5,'C','correct','¡Correcto! EIGRP usa 224.0.0.10 para enviar mensajes Hello y Updates a sus vecinos. Este es un dato clave que el examen CCNA suele preguntar.')"><div class="q-letter">C</div>224.0.0.10</div>
+        <div class="q-opt" onclick="CcnaQuiz.answer(5,'D','wrong','224.0.0.9 es la dirección multicast de RIP versión 2 para All-RIP-Routers.')"><div class="q-letter">D</div>224.0.0.9</div>
+      </div>
+      <div class="q-feedback" id="fb5"></div>
+    </div>
+
+    <div class="q-box" id="q6">
+      <div class="q-num">PREGUNTA 06 / 08</div>
+      <div class="q-text">Un administrador configura <code>variance 3</code> en EIGRP. La Feasible Distance del Successor es 10000. ¿Cuáles rutas pueden participar en el balanceo de carga desigual?</div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="CcnaQuiz.answer(6,'A','wrong','variance multiplica la FD del Successor, no la suma. 10000+3=10003 es incorrecto.')"><div class="q-letter">A</div>Solo rutas con FD ≤ 10003 (10000 + variance)</div>
+        <div class="q-opt" onclick="CcnaQuiz.answer(6,'B','wrong','Todas las rutas conocidas no pueden participar — solo las que son Feasible Successors y cumplen el multiplicador de variance.')"><div class="q-letter">B</div>Todas las rutas conocidas hacia ese destino</div>
+        <div class="q-opt" onclick="CcnaQuiz.answer(6,'C','correct','¡Correcto! variance 3 significa: incluir rutas con FD ≤ 3 × 10000 = 30000. Pero SOLO las que sean Feasible Successors (cumplen la Feasibility Condition). Rutas que no son FS nunca participan aunque su FD esté en el rango.')"><div class="q-letter">C</div>Feasible Successors con FD ≤ 30000 (10000 × 3)</div>
+        <div class="q-opt" onclick="CcnaQuiz.answer(6,'D','wrong','variance no está limitado a exactamente 3 rutas — depende de cuántos Feasible Successors haya dentro del rango multiplicado.')"><div class="q-letter">D</div>Exactamente 3 rutas adicionales al Successor</div>
+      </div>
+      <div class="q-feedback" id="fb6"></div>
+    </div>
+
+    <div class="q-box" id="q7">
+      <div class="q-num">PREGUNTA 07 / 08</div>
+      <div class="q-text">¿Cuáles de estos parámetros deben coincidir para que dos routers formen adyacencia EIGRP? (Selecciona la mejor respuesta)</div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="CcnaQuiz.answer(7,'A','wrong','Los Hello y Hold timers NO necesitan coincidir entre vecinos EIGRP — esto es diferente a OSPF donde sí deben coincidir.')"><div class="q-letter">A</div>Hello timers, Hold timers y número de AS</div>
+        <div class="q-opt" onclick="CcnaQuiz.answer(7,'B','correct','¡Correcto! Para formar adyacencia EIGRP deben coincidir: Número de AS (Autonomous System), K-values (pesos de la métrica) y Autenticación (si está configurada). Los timers Hello/Hold pueden ser diferentes.')"><div class="q-letter">B</div>Número de AS, K-values y autenticación (si está habilitada)</div>
+        <div class="q-opt" onclick="CcnaQuiz.answer(7,'C','wrong','El Router-ID en EIGRP no bloquea la formación de adyacencias (a diferencia de OSPF donde IDs duplicados sí causan problemas en el mismo área).')"><div class="q-letter">C</div>Router-ID, número de AS y Hello timers</div>
+        <div class="q-opt" onclick="CcnaQuiz.answer(7,'D','wrong','El número máximo de rutas (maximum-paths) y la versión de IOS no son requisitos para formar adyacencias EIGRP.')"><div class="q-letter">D</div>Versión de IOS y número máximo de rutas (maximum-paths)</div>
+      </div>
+      <div class="q-feedback" id="fb7"></div>
+    </div>
+
+    <div class="q-box" id="q8">
+      <div class="q-num">PREGUNTA 08 / 08</div>
+      <div class="q-text">Un ingeniero ejecuta <code>show ip eigrp topology</code> y observa que una ruta aparece como <strong>"P 10.1.0.0/24, 1 successors, FD is 28160"</strong> con <strong>via 10.0.12.2 (28160/25600)</strong>. ¿Qué significan los valores 28160 y 25600?</div>
+      <div class="q-opts">
+        <div class="q-opt" onclick="CcnaQuiz.answer(8,'A','wrong','Es al revés: el primer valor es FD (costo total desde el router local), el segundo es RD (costo anunciado por el vecino).')"><div class="q-letter">A</div>28160 = RD del vecino; 25600 = FD del router local</div>
+        <div class="q-opt" onclick="CcnaQuiz.answer(8,'B','wrong','Estos valores son métricas EIGRP calculadas con la fórmula compuesta, no son tiempos en milisegundos.')"><div class="q-letter">B</div>28160 = tiempo de convergencia; 25600 = latencia del enlace en ms</div>
+        <div class="q-opt" onclick="CcnaQuiz.answer(8,'C','correct','¡Correcto! En la salida de show ip eigrp topology, el formato es (FD/RD). 28160 = Feasible Distance total desde el router local hasta el destino por ese vecino. 25600 = Reported Distance (lo que el vecino 10.0.12.2 anuncia como su costo hacia 10.1.0.0/24).')"><div class="q-letter">C</div>28160 = FD total del router local; 25600 = RD anunciada por el vecino 10.0.12.2</div>
+        <div class="q-opt" onclick="CcnaQuiz.answer(8,'D','wrong','La AD (Distancia Administrativa) de EIGRP es siempre 90 para rutas internas — no aparece en la tabla de topología como parte del par de valores.')"><div class="q-letter">D</div>28160 = AD de la ruta; 25600 = número de interfaz de salida</div>
+      </div>
+      <div class="q-feedback" id="fb8"></div>
+    </div>
+
+    <div id="scoreBox" style="display:none;" class="content-card">
+      <h2>🏆 Resultado Final</h2>
+      <div style="text-align:center;padding:20px;">
+        <div id="scoreTxt" style="font-family:var(--font-head);font-size:2.5rem;font-weight:900;margin-bottom:8px;"></div>
+        <div id="scoreMsg" style="color:var(--gray);"></div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /section-quiz -->
+
+  </div><!-- /wrap -->
+</div><!-- /page-content -->
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <span class="logo-cisco">CISCO</span>
+          <span class="logo-text">Academy</span>
+        </div>
+        <p>Ruta completa de aprendizaje hacia las certificaciones Cisco CCNA, CCNP y CCIE.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Módulo 3 — Routing</h4>
+        <a href="router.html">← Routers Cisco</a>
+        <a href="routing.html">← Routing Estático</a>
+        <a href="ospf.html">← OSPF</a>
+        <a href="eigrp.html">📍 EIGRP (aquí)</a>
+      </div>
+      <div class="footer-links">
+        <h4>Recursos</h4>
+        <a href="asistente.html">🤖 NetBot IA</a>
+        <a href="../index.html">← Inicio</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>Basado en el currículo oficial de Cisco Networking Academy · CCNA 200-301</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/main.js"></script>
+<script>
+  if (typeof CcnaQuiz === 'undefined') {
+    window.CcnaQuiz = (function() {
+      let answers = {}, score = 0, total = 0;
+      function init(n) { answers = {}; score = 0; total = n; }
+      function answer(qNum, letter, result, explanation) {
+        if (answers[qNum]) return;
+        answers[qNum] = { letter, result };
+        document.querySelectorAll('#q' + qNum + ' .q-opt').forEach(opt => {
+          opt.style.pointerEvents = 'none';
+          const l = opt.querySelector('.q-letter');
+          if (l && l.textContent === letter) opt.classList.add(result === 'correct' ? 'correct' : 'wrong');
+          if (result === 'wrong' && (opt.getAttribute('onclick') || '').includes("'correct'")) opt.classList.add('correct');
+        });
+        const fb = document.getElementById('fb' + qNum);
+        if (fb) { fb.textContent = (result === 'correct' ? '✅ ' : '❌ ') + explanation; fb.className = 'q-feedback show ' + (result === 'correct' ? 'ok' : 'bad'); }
+        if (result === 'correct') score++;
+        if (Object.keys(answers).length === total) setTimeout(() => {
+          const box = document.getElementById('scoreBox'); if (!box) return;
+          box.style.display = 'block';
+          const pct = Math.round(score / total * 100);
+          const txt = document.getElementById('scoreTxt'); const msg = document.getElementById('scoreMsg');
+          if (txt) txt.textContent = score + ' / ' + total + ' — ' + pct + '%';
+          if (msg) { if(pct>=87){txt.style.color='var(--green)';msg.textContent='🏆 ¡Excelente! Dominas EIGRP — DUAL, métricas y configuración al nivel CCNA.';}else if(pct>=62){txt.style.color='var(--amber)';msg.textContent='📚 Buen progreso. Repasa el algoritmo DUAL y los K-values donde fallaste.';}else{txt.style.color='var(--red)';msg.textContent='💪 Repasa Feasibility Condition, tablas EIGRP y la fórmula de métrica.';} }
+          box.scrollIntoView({ behavior: 'smooth' });
+        }, 400);
+      }
+      return { init, answer };
+    })();
+  }
+  CcnaQuiz.init(8);
+
+  function showSection(id, btn) {
+    document.querySelectorAll('.content-section').forEach(s => s.style.display = 'none');
+    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+    document.getElementById('section-' + id).style.display = 'block';
+    btn.classList.add('active');
+    window.scrollTo({ top: 200, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
