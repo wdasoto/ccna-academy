@@ -4,59 +4,56 @@
 
 // ── Navbar scroll effect & hamburger drawer ──
 (function() {
-  const navbar = document.getElementById('navbar');
+  const navbar    = document.getElementById('navbar');
   const hamburger = document.getElementById('hamburger');
-  const navMenu = document.getElementById('navMenu');
+  const navMenu   = document.getElementById('navMenu');
 
+  // Scroll effect
   if (navbar) {
     window.addEventListener('scroll', () => {
       navbar.classList.toggle('scrolled', window.scrollY > 20);
     });
   }
 
-  // Crear overlay dinámicamente
+  // Crear overlay dinámicamente si no existe
   let overlay = document.getElementById('navOverlay');
   if (!overlay) {
     overlay = document.createElement('div');
     overlay.id = 'navOverlay';
-    overlay.className = 'nav-overlay';
     document.body.appendChild(overlay);
   }
 
   function closeMenu() {
-    hamburger && hamburger.classList.remove('open');
-    navMenu && navMenu.classList.remove('open');
+    if (hamburger) hamburger.classList.remove('open');
+    if (navMenu)   navMenu.classList.remove('open');
     overlay.classList.remove('open');
+  }
+  function openMenu() {
+    if (hamburger) hamburger.classList.add('open');
+    if (navMenu)   navMenu.classList.add('open');
+    overlay.classList.add('open');
   }
 
   if (hamburger && navMenu) {
     hamburger.addEventListener('click', (e) => {
       e.stopPropagation();
-      const isOpen = navMenu.classList.contains('open');
-      if (isOpen) {
-        closeMenu();
-      } else {
-        hamburger.classList.add('open');
-        navMenu.classList.add('open');
-        overlay.classList.add('open');
-      }
+      navMenu.classList.contains('open') ? closeMenu() : openMenu();
     });
-    // Cerrar al hacer click en el overlay
     overlay.addEventListener('click', closeMenu);
-    // Cerrar al navegar a una página
-    navMenu.querySelectorAll('.nav-link:not(.nav-coming)').forEach(link => {
-      link.addEventListener('click', () => setTimeout(closeMenu, 100));
+    // Cerrar al navegar (links activos)
+    navMenu.querySelectorAll('a.nav-link:not(.nav-coming)').forEach(link => {
+      link.addEventListener('click', () => setTimeout(closeMenu, 120));
     });
   }
 
-  // Active page highlight
+  // Active page highlight automático
   const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-  document.querySelectorAll('.nav-link').forEach(link => {
-    const href = link.getAttribute('href');
-    if (href && href.includes(currentPage) && currentPage !== 'index.html') {
-      link.classList.add('active-page');
-    }
-  });
+  if (currentPage !== 'index.html') {
+    document.querySelectorAll('.nav-link').forEach(link => {
+      const href = (link.getAttribute('href') || '').split('/').pop();
+      if (href && href === currentPage) link.classList.add('active-page');
+    });
+  }
 })();
 
 // ── Network canvas animation (hero page only) ──
