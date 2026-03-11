@@ -2,7 +2,7 @@
    CCNA Academy — Main JS
    ============================================================ */
 
-// ── Navbar scroll effect & hamburger ──
+// ── Navbar scroll effect & hamburger drawer ──
 (function() {
   const navbar = document.getElementById('navbar');
   const hamburger = document.getElementById('hamburger');
@@ -14,17 +14,38 @@
     });
   }
 
+  // Crear overlay dinámicamente
+  let overlay = document.getElementById('navOverlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'navOverlay';
+    overlay.className = 'nav-overlay';
+    document.body.appendChild(overlay);
+  }
+
+  function closeMenu() {
+    hamburger && hamburger.classList.remove('open');
+    navMenu && navMenu.classList.remove('open');
+    overlay.classList.remove('open');
+  }
+
   if (hamburger && navMenu) {
-    hamburger.addEventListener('click', () => {
-      hamburger.classList.toggle('open');
-      navMenu.classList.toggle('open');
-    });
-    // Close on outside click
-    document.addEventListener('click', (e) => {
-      if (!navbar.contains(e.target)) {
-        hamburger.classList.remove('open');
-        navMenu.classList.remove('open');
+    hamburger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = navMenu.classList.contains('open');
+      if (isOpen) {
+        closeMenu();
+      } else {
+        hamburger.classList.add('open');
+        navMenu.classList.add('open');
+        overlay.classList.add('open');
       }
+    });
+    // Cerrar al hacer click en el overlay
+    overlay.addEventListener('click', closeMenu);
+    // Cerrar al navegar a una página
+    navMenu.querySelectorAll('.nav-link:not(.nav-coming)').forEach(link => {
+      link.addEventListener('click', () => setTimeout(closeMenu, 100));
     });
   }
 

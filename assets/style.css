@@ -63,7 +63,7 @@ img { max-width:100%; }
 }
 .nav-logo {
   display: flex; align-items: center; gap: 10px;
-  text-decoration: none; flex-shrink: 0; margin-right: 32px;
+  text-decoration: none; flex-shrink: 0;
 }
 .logo-cisco {
   font-family: var(--font-head); font-weight: 900; font-size: 1rem;
@@ -78,57 +78,103 @@ img { max-width:100%; }
   color: var(--gray); letter-spacing: 2px; text-transform: uppercase;
 }
 
-/* Hamburger */
+/* ── Hamburger: SIEMPRE visible en desktop y mobile ── */
 .hamburger {
-  display: none; flex-direction: column; gap: 5px;
-  background: none; border: none; cursor: pointer;
-  padding: 8px; margin-left: auto;
+  display: flex; flex-direction: column; justify-content: center; gap: 5px;
+  background: rgba(0,188,235,0.08); border: 1px solid var(--border);
+  border-radius: 8px; cursor: pointer;
+  padding: 10px 12px; margin-left: 16px; flex-shrink: 0;
+  transition: background 0.2s, border-color 0.2s;
 }
+.hamburger:hover { background: var(--blue-dim); border-color: var(--blue); }
 .hamburger span {
-  display: block; width: 24px; height: 2px;
-  background: var(--blue); border-radius: 2px;
+  display: block; width: 22px; height: 2px;
+  background: var(--blue-b); border-radius: 2px;
   transition: all 0.3s;
 }
+.hamburger.open { background: var(--blue-dim); border-color: var(--blue); }
 .hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
 .hamburger.open span:nth-child(2) { opacity: 0; }
 .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
 
-/* Nav menu */
+/* NetBot IA pill */
+.nav-netbot {
+  margin-left: auto; flex-shrink: 0;
+}
+
+/* ── Nav DRAWER: panel lateral/superior siempre desplegable ── */
 .nav-menu {
-  display: flex; align-items: center; gap: 4px;
-  flex: 1;
+  display: none;
+  flex-direction: column;
+  position: fixed;
+  top: 64px; right: 0;
+  width: 260px;
+  height: calc(100vh - 64px);
+  background: rgba(4,10,20,0.98);
+  border-left: 1px solid var(--border);
+  backdrop-filter: blur(20px);
+  padding: 16px 12px;
+  gap: 2px;
+  overflow-y: auto;
+  z-index: 999;
+  box-shadow: -8px 0 32px rgba(0,0,0,0.5);
+  transition: transform 0.3s ease;
 }
+.nav-menu.open {
+  display: flex;
+}
+
+/* Grupos dentro del drawer */
 .nav-group {
-  position: relative; display: flex; align-items: center;
-}
-.nav-group:not(:first-child) {
-  border-left: 1px solid var(--border); padding-left: 4px; margin-left: 4px;
+  display: flex; flex-direction: column; align-items: flex-start;
+  width: 100%; margin-bottom: 4px;
 }
 .nav-label {
-  display: none; /* hidden on desktop, shown in mobile */
+  display: block;
+  font-size: 0.58rem; font-family: var(--font-mono);
+  color: var(--blue); letter-spacing: 2.5px; text-transform: uppercase;
+  padding: 10px 10px 4px;
+  border-top: 1px solid rgba(0,188,235,0.15);
+  width: 100%;
+  margin-top: 4px;
+}
+.nav-group:first-child .nav-label {
+  border-top: none; margin-top: 0; padding-top: 4px;
 }
 .nav-link {
-  display: flex; align-items: center; gap: 7px;
-  padding: 7px 12px; border-radius: 7px;
-  font-size: 0.82rem; font-weight: 600;
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 10px; border-radius: 7px;
+  font-size: 0.83rem; font-weight: 600;
   color: var(--gray); white-space: nowrap;
-  transition: all 0.2s; position: relative;
+  width: 100%;
+  transition: all 0.18s; position: relative;
 }
 .nav-link:hover {
   background: var(--blue-dim); color: var(--blue-b);
 }
 .nav-link.active-page {
-  color: var(--blue-b);
-  background: var(--blue-dim);
+  color: var(--blue-b); background: var(--blue-dim);
+  border-left: 2px solid var(--blue);
+  padding-left: 8px;
 }
-.nav-coming { opacity: 0.55; cursor: default; pointer-events: none; }
-.nav-icon { font-size: 0.9rem; }
+.nav-coming { opacity: 0.45; cursor: default; pointer-events: none; }
+.nav-icon { font-size: 0.9rem; flex-shrink: 0; }
 .badge-soon {
-  font-size: 0.6rem; font-family: var(--font-mono);
-  background: rgba(245,158,11,0.2); color: var(--amber);
-  border: 1px solid rgba(245,158,11,0.4);
-  padding: 1px 6px; border-radius: 10px; letter-spacing: 0.5px;
+  font-size: 0.58rem; font-family: var(--font-mono);
+  background: rgba(245,158,11,0.15); color: var(--amber);
+  border: 1px solid rgba(245,158,11,0.35);
+  padding: 1px 5px; border-radius: 8px; letter-spacing: 0.5px;
+  margin-left: auto;
 }
+
+/* Overlay al abrir el menú */
+.nav-overlay {
+  display: none;
+  position: fixed; inset: 0; top: 64px;
+  background: rgba(0,0,0,0.5);
+  z-index: 998;
+}
+.nav-overlay.open { display: block; }
 
 /* ============================================================
    HERO
@@ -496,18 +542,12 @@ img { max-width:100%; }
 }
 
 @media (max-width: 700px) {
-  .hamburger { display: flex; }
   .nav-menu {
-    display: none; flex-direction: column; align-items: stretch;
-    position: absolute; top: 64px; left: 0; right: 0;
-    background: rgba(6,12,24,0.98); border-bottom: 1px solid var(--border);
-    padding: 16px; gap: 2px;
-    backdrop-filter: blur(16px);
+    width: 100%;
+    border-left: none;
+    border-top: 1px solid var(--border);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
   }
-  .nav-menu.open { display: flex; }
-  .nav-group { flex-direction: column; align-items: flex-start; border-left: none !important; padding-left: 0 !important; margin-left: 0 !important; }
-  .nav-label { display: block; font-size: 0.65rem; color: var(--gray); letter-spacing: 2px; text-transform: uppercase; padding: 8px 12px 4px; }
-  .nav-link { width: 100%; }
   .hero > .wrap { padding-top: 30px; }
   .footer-grid { grid-template-columns: 1fr; }
   .cert-track { gap: 10px; }
