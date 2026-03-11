@@ -752,5 +752,25 @@
     window.scrollTo({ top: 200, behavior: 'smooth' });
   }
 </script>
+
+<script>
+(function(){
+  var h = document.getElementById('hamburger');
+  var m = document.getElementById('navMenu');
+  var nb = document.getElementById('navbar');
+  var ov = document.getElementById('navOverlay');
+  if(!ov){ ov=document.createElement('div'); ov.id='navOverlay'; document.body.appendChild(ov); }
+  function close(){ h&&h.classList.remove('open'); m&&m.classList.remove('open'); ov.classList.remove('open'); }
+  if(h&&m){
+    h.addEventListener('click',function(e){ e.stopPropagation(); m.classList.contains('open')?close():(h.classList.add('open'),m.classList.add('open'),ov.classList.add('open')); });
+    ov.addEventListener('click',close);
+    m.querySelectorAll('a.nav-link:not(.nav-coming)').forEach(function(l){ l.addEventListener('click',function(){ setTimeout(close,120); }); });
+  }
+  if(nb) window.addEventListener('scroll',function(){ nb.classList.toggle('scrolled',window.scrollY>20); });
+  var cur=window.location.pathname.split('/').pop()||'index.html';
+  if(cur!=='index.html') document.querySelectorAll('.nav-link').forEach(function(l){ if((l.getAttribute('href')||'').split('/').pop()===cur) l.classList.add('active-page'); });
+})();
+</script>
+
 </body>
 </html>
