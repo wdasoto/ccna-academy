@@ -61,42 +61,7 @@ body::after {
   z-index:0;
 }
 
-/* ===== HEADER ===== */
-header {
-  position: relative;
-  z-index: 10;
-  padding: 0 40px;
-  height: 70px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: 1px solid var(--border);
-  background: rgba(5,8,16,0.9);
-  backdrop-filter: blur(20px);
-}
-
-.logo {
-  font-family: var(--display);
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--accent);
-  letter-spacing: 3px;
-  text-shadow: var(--glow);
-}
-
-.logo span { color: var(--accent2); }
-
-nav { display: flex; gap: 30px; }
-nav a {
-  font-family: var(--mono);
-  font-size: 0.75rem;
-  color: var(--gray);
-  text-decoration: none;
-  letter-spacing: 2px;
-  transition: color 0.3s;
-}
-nav a:hover { color: var(--accent); }
-nav a.active { color: var(--accent); }
+/* ===== HEADER (drawer moderno — ver nav inline) ===== */
 
 .badge {
   font-family: var(--mono);
@@ -690,10 +655,8 @@ tr:hover td { background: rgba(0,245,255,0.03); }
   .main { grid-template-columns: 1fr; }
   .sidebar { position: static; }
   .modes-grid { grid-template-columns: 1fr; }
-  header { padding: 0 20px; }
   .hero { padding: 50px 20px 40px; }
   .main { padding: 0 20px 60px; }
-  nav { display: none; }
 }
 </style>
 </head>
@@ -745,38 +708,7 @@ function ccnaClose(){document.getElementById('ccna-drawer').style.display='none'
 (function(){var cur=window.location.pathname.split('/').pop();if(!cur||cur==='index.html')return;document.querySelectorAll('#ccna-drawer a').forEach(function(l){if(l.getAttribute('href')===cur){l.style.background='rgba(0,188,235,0.12)';l.style.color='#38d9ff';l.style.borderLeft='2px solid #00bceb';l.style.paddingLeft='10px';}});})();
 </script>
 
-<!-- HEADER -->
-<header>
-  <div class="logo">CCNA<span>.</span>ACADEMY</div>
-  <nav>
-    <a href="#">Academy</a>
-    <a href="#">Fundamentos</a>
-    <a href="#">Switches</a>
-    <a href="#" class="active">VLANs</a>
-    <a href="#">STP</a>
-    <a href="#">Router</a>
-  </nav>
-  <div style="display:flex;align-items:center;gap:12px">
-    <div class="badge">MÓDULO 04</div>
-    <a href="asistente.html" style="
-      font-family:var(--mono);
-      font-size:0.7rem;
-      letter-spacing:2px;
-      padding:8px 16px;
-      background:rgba(0,245,255,0.08);
-      border:1px solid var(--accent);
-      color:var(--accent);
-      text-decoration:none;
-      display:flex;
-      align-items:center;
-      gap:8px;
-      transition:all 0.3s;
-    " onmouseover="this.style.background='rgba(0,245,255,0.18)'" 
-       onmouseout="this.style.background='rgba(0,245,255,0.08)'">
-      🤖 NETBOT
-    </a>
-  </div>
-</header>
+<div style="height:64px;"></div><!-- Spacer navbar fijo -->
 
 <!-- HERO -->
 <div class="hero">
