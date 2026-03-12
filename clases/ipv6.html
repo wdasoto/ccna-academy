@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CCNA - Clase Magistral: IPv6</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;600;700&display=swap');
+
+  :root {
+    --cisco-blue: #00bceb;
+    --cisco-dark: #0a1628;
+    --cisco-mid: #0d2240;
+    --cisco-accent: #00e5ff;
+    --cisco-green: #00ff88;
+    --cisco-orange: #ff6b35;
+    --cisco-yellow: #ffd700;
+    --cisco-red: #ff3366;
+    --cisco-purple: #8b5cf6;
+    --text-primary: #e8f4fd;
+    --text-secondary: #8ab4d0;
+    --card-bg: rgba(13, 34, 64, 0.85);
+    --border-glow: rgba(0, 188, 235, 0.4);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--cisco-dark);
+    color: var(--text-primary);
+    font-family: 'Exo 2', sans-serif;
+    overflow-x: hidden;
+    background-image:
+      radial-gradient(ellipse at 20% 50%, rgba(0,188,235,0.05) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, rgba(139,92,246,0.04) 0%, transparent 40%),
+      linear-gradient(180deg, #0a1628 0%, #050d1a 100%);
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image:
+      linear-gradient(rgba(0,188,235,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,188,235,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 1; }
+
+  .hero { padding: 60px 0 40px; text-align: center; position: relative; }
+  .hero::after {
+    content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 200px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--cisco-blue), transparent);
+  }
+
+  .hero h1 {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 900;
+    background: linear-gradient(135deg, #fff 0%, #8b5cf6 40%, var(--cisco-accent) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    margin-bottom: 16px; line-height: 1.1;
+    animation: titleGlow 3s ease-in-out infinite alternate;
+  }
+
+  @keyframes titleGlow {
+    from { filter: drop-shadow(0 0 8px rgba(139,92,246,0.3)); }
+    to   { filter: drop-shadow(0 0 20px rgba(139,92,246,0.7)); }
+  }
+
+  .hero-sub { color: var(--text-secondary); font-size: 1.1rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 30px; }
+
+  .objective-bar {
+    display: inline-flex; gap: 20px; flex-wrap: wrap; justify-content: center;
+    background: rgba(139,92,246,0.05); border: 1px solid rgba(139,92,246,0.3);
+    border-radius: 12px; padding: 16px 30px;
+  }
+
+  .obj-item { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--cisco-accent); }
+  .obj-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--cisco-purple); box-shadow: 0 0 8px var(--cisco-purple);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.5;transform:scale(0.8);} }
+
+  .nav-tabs {
+    display: flex; gap: 4px; margin: 40px 0 30px;
+    background: rgba(13,34,64,0.8); border: 1px solid var(--border-glow);
+    border-radius: 12px; padding: 6px; overflow-x: auto; flex-wrap: wrap;
+  }
+
+  .tab-btn {
+    flex: 1; min-width: 120px; padding: 10px 16px;
+    background: transparent; border: none; color: var(--text-secondary);
+    font-family: 'Exo 2', sans-serif; font-size: 0.8rem; font-weight: 600;
+    cursor: pointer; border-radius: 8px; transition: all 0.3s;
+    text-transform: uppercase; letter-spacing: 1px; white-space: nowrap;
+  }
+
+  .tab-btn:hover { background: rgba(139,92,246,0.1); color: var(--cisco-purple); }
+  .tab-btn.active {
+    background: linear-gradient(135deg, rgba(139,92,246,0.3), rgba(80,40,160,0.4));
+    color: #fff; border: 1px solid var(--cisco-purple);
+    box-shadow: 0 0 15px rgba(139,92,246,0.2);
+  }
+
+  .section { display: none; animation: fadeIn 0.4s ease; }
+  .section.active { display: block; }
+
+  @keyframes fadeIn { from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);} }
+
+  .card {
+    background: var(--card-bg); border: 1px solid var(--border-glow);
+    border-radius: 16px; padding: 30px; margin-bottom: 24px;
+    position: relative; overflow: hidden; backdrop-filter: blur(10px);
+  }
+
+  .card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--cisco-purple), var(--cisco-blue), var(--cisco-accent));
+  }
+
+  .card-title {
+    font-family: 'Orbitron', monospace; font-size: 1.1rem; color: var(--cisco-blue);
+    margin-bottom: 20px; display: flex; align-items: center; gap: 12px;
+  }
+
+  .card-icon {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, rgba(139,92,246,0.3), rgba(80,40,160,0.4));
+    border: 1px solid var(--cisco-purple); border-radius: 8px;
+    display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+  }
+
+  .definition-box {
+    background: linear-gradient(135deg, rgba(139,92,246,0.08), rgba(0,60,100,0.15));
+    border: 1px solid rgba(139,92,246,0.4); border-left: 4px solid var(--cisco-purple);
+    border-radius: 8px; padding: 20px 24px; margin: 20px 0;
+    font-size: 1.05rem; line-height: 1.7; color: var(--text-primary);
+  }
+
+  .highlight        { color: var(--cisco-accent);  font-weight: 700; }
+  .highlight-green  { color: var(--cisco-green);   font-weight: 700; }
+  .highlight-orange { color: var(--cisco-orange);  font-weight: 700; }
+  .highlight-yellow { color: var(--cisco-yellow);  font-weight: 700; }
+  .highlight-purple { color: var(--cisco-purple);  font-weight: 700; }
+  .highlight-red    { color: var(--cisco-red);     font-weight: 700; }
+
+  .network-diagram {
+    background: rgba(5,13,26,0.9); border: 1px solid var(--border-glow);
+    border-radius: 12px; padding: 30px; margin: 20px 0;
+  }
+
+  .diagram-title {
+    text-align: center; font-family: 'Share Tech Mono', monospace;
+    color: var(--cisco-purple); font-size: 0.8rem; letter-spacing: 2px;
+    margin-bottom: 20px; text-transform: uppercase;
+  }
+
+  svg { max-width: 100%; height: auto; }
+
+  .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 16px; margin: 20px 0; }
+  .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); gap: 16px; margin: 20px 0; }
+
+  .feature-card {
+    background: rgba(5,13,26,0.8); border: 1px solid var(--border-glow);
+    border-radius: 12px; padding: 20px; text-align: center; transition: all 0.3s;
+  }
+
+  .feature-card:hover { border-color: var(--cisco-purple); transform: translateY(-4px); box-shadow: 0 8px 25px rgba(139,92,246,0.2); }
+  .feature-icon { font-size: 2rem; margin-bottom: 10px; }
+  .feature-name { font-weight: 700; font-size: 0.9rem; color: var(--cisco-accent); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+  .feature-desc { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5; }
+
+  /* Bloques de dirección IPv6 */
+  .ipv6-addr {
+    background: rgba(5,13,26,0.9); border: 1px solid rgba(139,92,246,0.4);
+    border-radius: 10px; padding: 20px; margin: 16px 0; font-family: 'Share Tech Mono', monospace;
+  }
+
+  .ipv6-full { font-size: 1.1rem; color: var(--cisco-purple); letter-spacing: 2px; word-break: break-all; }
+  .ipv6-compressed { font-size: 1.1rem; color: var(--cisco-green); letter-spacing: 2px; margin-top: 8px; }
+  .ipv6-label { font-size: 0.7rem; color: var(--text-secondary); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
+
+  .addr-segments {
+    display: flex; flex-wrap: wrap; gap: 4px; margin: 12px 0;
+  }
+
+  .seg {
+    padding: 6px 10px; border-radius: 6px; font-family: 'Share Tech Mono', monospace;
+    font-size: 0.85rem; font-weight: 700; text-align: center;
+  }
+
+  .seg-net    { background: rgba(139,92,246,0.2); border: 1px solid var(--cisco-purple); color: var(--cisco-purple); }
+  .seg-subnet { background: rgba(0,188,235,0.2);  border: 1px solid var(--cisco-blue);   color: var(--cisco-blue); }
+  .seg-host   { background: rgba(0,255,136,0.15); border: 1px solid var(--cisco-green);  color: var(--cisco-green); }
+  .seg-sep    { color: #444; padding: 6px 2px; font-size: 1rem; }
+
+  /* Tipo cards */
+  .type-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 14px; margin: 20px 0; }
+
+  .type-card {
+    border-radius: 12px; padding: 18px; text-align: center; transition: all 0.3s;
+  }
+
+  .type-card:hover { transform: translateY(-3px); }
+  .type-card.unicast  { background: rgba(139,92,246,0.08); border: 1px solid rgba(139,92,246,0.4); }
+  .type-card.multicast{ background: rgba(0,188,235,0.08);  border: 1px solid rgba(0,188,235,0.4); }
+  .type-card.anycast  { background: rgba(0,255,136,0.06);  border: 1px solid rgba(0,255,136,0.4); }
+
+  .type-icon { font-size: 1.8rem; margin-bottom: 8px; }
+  .type-name { font-family: 'Orbitron', monospace; font-size: 0.85rem; font-weight: 700; margin-bottom: 6px; }
+  .type-card.unicast  .type-name { color: var(--cisco-purple); }
+  .type-card.multicast .type-name { color: var(--cisco-blue); }
+  .type-card.anycast  .type-name { color: var(--cisco-green); }
+  .type-desc { font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5; }
+
+  .cmd-block {
+    background: #020a14; border: 1px solid rgba(0,255,136,0.3);
+    border-radius: 8px; padding: 20px; margin: 16px 0;
+    font-family: 'Share Tech Mono', monospace; font-size: 0.9rem;
+    position: relative; overflow-x: auto;
+  }
+
+  .cmd-prompt  { color: var(--cisco-green); }
+  .cmd-comment { color: #4a6a84; font-style: italic; }
+  .cmd-keyword { color: var(--cisco-yellow); }
+  .cmd-value   { color: var(--cisco-orange); }
+  .cmd-ipv6    { color: var(--cisco-purple); }
+  .cmd-line    { display: block; padding: 2px 0; }
+
+  .cmd-label {
+    position: absolute; top: 8px; right: 12px; font-size: 0.65rem;
+    color: var(--cisco-green); background: rgba(0,255,136,0.1);
+    padding: 3px 8px; border-radius: 4px; letter-spacing: 1px;
+    font-family: 'Exo 2', sans-serif; text-transform: uppercase;
+  }
+
+  .cmd-section-title {
+    font-family: 'Orbitron', monospace; font-size: 0.75rem; color: var(--cisco-yellow);
+    letter-spacing: 2px; text-transform: uppercase; margin: 24px 0 10px;
+    padding-left: 10px; border-left: 3px solid var(--cisco-yellow);
+  }
+
+  .info-box {
+    display: flex; gap: 14px; align-items: flex-start;
+    padding: 16px 20px; border-radius: 10px; margin: 16px 0;
+    font-size: 0.9rem; line-height: 1.6;
+  }
+
+  .info-box.tip       { background: rgba(0,255,136,0.08);  border: 1px solid rgba(0,255,136,0.3); }
+  .info-box.warning   { background: rgba(255,107,53,0.08); border: 1px solid rgba(255,107,53,0.3); }
+  .info-box.important { background: rgba(0,188,235,0.08);  border: 1px solid rgba(0,188,235,0.3); }
+  .info-box.exam      { background: rgba(255,215,0,0.08);  border: 1px solid rgba(255,215,0,0.4); }
+  .info-box.purple    { background: rgba(139,92,246,0.08); border: 1px solid rgba(139,92,246,0.4); }
+  .info-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 2px; }
+
+  .data-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.88rem; }
+  .data-table th {
+    background: rgba(139,92,246,0.15); color: var(--cisco-purple);
+    font-family: 'Orbitron', monospace; font-size: 0.7rem; letter-spacing: 1px;
+    padding: 12px 16px; text-align: left; border-bottom: 2px solid var(--cisco-purple);
+    text-transform: uppercase;
+  }
+  .data-table td { padding: 11px 16px; border-bottom: 1px solid rgba(0,188,235,0.1); color: var(--text-primary); vertical-align: top; }
+  .data-table tr:hover td { background: rgba(139,92,246,0.04); }
+
+  .steps { counter-reset: step-counter; list-style: none; }
+  .step-item { counter-increment: step-counter; display: flex; gap: 16px; margin-bottom: 20px; align-items: flex-start; }
+  .step-num {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--cisco-purple), #5010a0);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-family: 'Orbitron', monospace; font-weight: 700; font-size: 0.85rem;
+    flex-shrink: 0; box-shadow: 0 0 12px rgba(139,92,246,0.3);
+  }
+  .step-num::before { content: counter(step-counter, decimal-leading-zero); }
+  .step-content  { flex: 1; padding-top: 6px; }
+  .step-title    { font-weight: 700; color: var(--cisco-accent); margin-bottom: 6px; }
+  .step-desc     { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; }
+
+  .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin: 2px; }
+  .badge-blue   { background: rgba(0,188,235,0.2);  border: 1px solid var(--cisco-blue);   color: var(--cisco-blue); }
+  .badge-green  { background: rgba(0,255,136,0.15); border: 1px solid var(--cisco-green);  color: var(--cisco-green); }
+  .badge-purple { background: rgba(139,92,246,0.2); border: 1px solid var(--cisco-purple); color: var(--cisco-purple); }
+  .badge-yellow { background: rgba(255,215,0,0.15); border: 1px solid var(--cisco-yellow); color: var(--cisco-yellow); }
+  .badge-orange { background: rgba(255,107,53,0.15);border: 1px solid var(--cisco-orange); color: var(--cisco-orange); }
+
+  .scenario {
+    background: linear-gradient(135deg, rgba(139,92,246,0.06), rgba(0,60,100,0.08));
+    border: 1px solid rgba(139,92,246,0.3); border-radius: 12px; padding: 24px; margin: 20px 0;
+  }
+  .scenario-title {
+    font-family: 'Orbitron', monospace; font-size: 0.8rem; color: var(--cisco-purple);
+    letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px;
+  }
+
+  .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px,1fr)); gap: 16px; margin: 20px 0; }
+  .summary-item { background: rgba(5,13,26,0.8); border: 1px solid var(--border-glow); border-radius: 12px; padding: 20px; }
+  .summary-item h4 { color: var(--cisco-purple); font-size: 0.85rem; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
+  .summary-item ul { list-style: none; font-size: 0.85rem; color: var(--text-secondary); }
+  .summary-item ul li { padding: 4px 0; padding-left: 16px; position: relative; }
+  .summary-item ul li::before { content: '▸'; position: absolute; left: 0; color: var(--cisco-purple); }
+
+  /* QUIZ */
+  .quiz-q { background: rgba(5,13,26,0.9); border: 1px solid var(--border-glow); border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+  .quiz-q-num     { font-family: 'Share Tech Mono', monospace; color: var(--cisco-yellow); font-size: 0.75rem; margin-bottom: 8px; letter-spacing: 1px; }
+  .quiz-question  { font-weight: 600; font-size: 1rem; margin-bottom: 16px; color: var(--text-primary); line-height: 1.5; }
+  .quiz-options   { display: grid; gap: 8px; }
+  .quiz-opt {
+    display: flex; align-items: center; gap: 12px; padding: 12px 16px;
+    background: rgba(139,92,246,0.04); border: 1px solid rgba(139,92,246,0.15);
+    border-radius: 8px; cursor: pointer; transition: all 0.2s; font-size: 0.9rem;
+  }
+  .quiz-opt:hover   { background: rgba(139,92,246,0.1); border-color: var(--cisco-purple); }
+  .quiz-opt.correct { background: rgba(0,255,136,0.15); border-color: var(--cisco-green); color: var(--cisco-green); }
+  .quiz-opt.wrong   { background: rgba(255,51,102,0.1); border-color: var(--cisco-red);   color: var(--cisco-red); }
+  .quiz-opt-letter {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.3);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Orbitron', monospace; font-size: 0.7rem; font-weight: 700; flex-shrink: 0;
+  }
+  .quiz-feedback { display: none; margin-top: 14px; padding: 12px 16px; border-radius: 8px; font-size: 0.88rem; line-height: 1.5; }
+  .quiz-feedback.show       { display: block; }
+  .quiz-feedback.correct-fb { background: rgba(0,255,136,0.1);  border: 1px solid var(--cisco-green); color: var(--cisco-green); }
+  .quiz-feedback.wrong-fb   { background: rgba(255,51,102,0.08);border: 1px solid var(--cisco-red);   color: #ff8fa0; }
+
+  footer { background: rgba(10,22,40,0.95); border-top: 1px solid var(--border-glow); padding: 30px 0; margin-top: 60px; text-align: center; }
+  .footer-text { color: var(--text-secondary); font-size: 0.8rem; line-height: 1.8; }
+
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--cisco-dark); }
+  ::-webkit-scrollbar-thumb { background: var(--cisco-purple); border-radius: 3px; }
+
+  @media (max-width: 600px) {
+    .hero h1 { font-size: 1.8rem; }
+    .card { padding: 20px; }
+    .cmd-block { font-size: 0.78rem; }
+    .addr-segments { gap: 2px; }
+    .seg { font-size: 0.7rem; padding: 4px 6px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav style="position:fixed;top:0;left:0;right:0;z-index:9000;height:64px;background:rgba(6,12,24,0.97);border-bottom:1px solid rgba(0,188,235,0.2);backdrop-filter:blur(20px);">
+  <div style="max-width:1400px;margin:0 auto;padding:0 24px;height:64px;display:flex;align-items:center;">
+    <a href="../index.html" style="display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;"><span style="font-family:Orbitron,monospace;font-weight:900;font-size:0.9rem;letter-spacing:3px;background:linear-gradient(135deg,#00bceb,#38d9ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;border:1px solid rgba(0,188,235,0.35);padding:5px 10px;border-radius:5px;">CISCO</span><span style="font-family:Orbitron,monospace;font-size:0.65rem;color:#4a6a84;letter-spacing:2.5px;font-weight:500;">ACADEMY</span></a>
+    <a href="asistente.html" style="display:flex;align-items:center;gap:8px;padding:7px 16px;border-radius:8px;font-size:0.82rem;font-weight:700;color:#00d4ff;border:1px solid rgba(0,212,255,0.35);text-decoration:none;margin-left:20px;flex-shrink:0;white-space:nowrap;background:rgba(0,212,255,0.06);font-family:Orbitron,monospace;letter-spacing:0.5px;">🤖 NetBot IA</a>
+    <button onclick="ccnaToggle()" style="display:flex;flex-direction:column;justify-content:center;gap:6px;background:rgba(0,188,235,0.07);border:1px solid rgba(0,188,235,0.3);border-radius:9px;cursor:pointer;padding:10px 13px;margin-left:auto;flex-shrink:0;" onmouseover="this.style.background='rgba(0,188,235,0.15)';this.style.borderColor='#00bceb';" onmouseout="this.style.background='rgba(0,188,235,0.07)';this.style.borderColor='rgba(0,188,235,0.3)';">
+      <span style="display:block;width:22px;height:2px;background:#38d9ff;border-radius:2px;"></span>
+      <span style="display:block;width:16px;height:2px;background:#38d9ff;border-radius:2px;"></span>
+      <span style="display:block;width:22px;height:2px;background:#38d9ff;border-radius:2px;"></span>
+    </button>
+  </div>
+</nav>
+<div id="ccna-overlay" onclick="ccnaClose()" style="display:none;position:fixed;inset:0;top:64px;background:rgba(0,0,0,0.6);z-index:8998;"></div>
+<div id="ccna-drawer" style="display:none;flex-direction:column;position:fixed;top:64px;right:0;width:280px;height:calc(100vh - 64px);background:linear-gradient(180deg,rgba(4,10,22,0.99),rgba(6,14,28,0.99));border-left:1px solid rgba(0,188,235,0.15);padding:0;overflow-y:auto;z-index:8999;box-shadow:-20px 0 60px rgba(0,0,0,0.7);">
+  <div style="padding:16px 16px 8px;border-bottom:1px solid rgba(0,188,235,0.08);"><div style="font-family:Orbitron,monospace;font-size:0.6rem;color:#00bceb;letter-spacing:3px;text-transform:uppercase;opacity:0.8;">Navegación</div></div>
+  <div style="padding:8px 10px 24px;display:flex;flex-direction:column;gap:2px;">
+    <div style="font-family:Orbitron,monospace;font-size:0.52rem;color:#00bceb;letter-spacing:2px;text-transform:uppercase;padding:14px 8px 5px;opacity:0.7;">Módulo 1 — Fundamentos</div>
+    <a href="fundamentos.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🔌</span>Fundamentos de Redes</a>
+    <a href="subnetting.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🔢</span>Subnetting IPv4</a>
+    <a href="calculadora.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🧮</span>Calculadora IP</a>
+    <div style="font-family:Orbitron,monospace;font-size:0.52rem;color:#00bceb;letter-spacing:2px;text-transform:uppercase;padding:14px 8px 5px;border-top:1px solid rgba(0,188,235,0.08);opacity:0.7;margin-top:6px;">Módulo 2 — Switching</div>
+    <a href="vlan.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🏷️</span>VLANs</a>
+    <a href="stp.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🌳</span>STP</a>
+    <a href="switches-cisco.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🖧</span>Switches Cisco</a>
+    <a href="etherchannel.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🔗</span>EtherChannel</a>
+    <a href="port-security.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🛡️</span>Port Security</a>
+    <div style="font-family:Orbitron,monospace;font-size:0.52rem;color:#00bceb;letter-spacing:2px;text-transform:uppercase;padding:14px 8px 5px;border-top:1px solid rgba(0,188,235,0.08);opacity:0.7;margin-top:6px;">Módulo 3 — Routing</div>
+    <a href="router.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🌐</span>Routers Cisco</a>
+    <a href="routing.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">📋</span>Routing Estático</a>
+    <a href="ospf.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🔴</span>OSPF</a>
+    <a href="eigrp.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">⚡</span>EIGRP</a>
+    <div style="font-family:Orbitron,monospace;font-size:0.52rem;color:#00bceb;letter-spacing:2px;text-transform:uppercase;padding:14px 8px 5px;border-top:1px solid rgba(0,188,235,0.08);opacity:0.7;margin-top:6px;">Módulo 4 — Seguridad</div>
+    <a href="acl.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🔒</span>ACLs</a>
+    <a href="nat.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🔀</span>NAT/PAT</a>
+    <div style="font-family:Orbitron,monospace;font-size:0.52rem;color:#00bceb;letter-spacing:2px;text-transform:uppercase;padding:14px 8px 5px;border-top:1px solid rgba(0,188,235,0.08);opacity:0.7;margin-top:6px;">Módulo 5 — WAN y Servicios</div>
+    <a href="wan.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🌍</span>WAN y Servicios</a>
+    <a href="dhcp.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">📡</span>DHCP</a>
+    <a href="qos.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">📶</span>QoS</a>
+    <div style="font-family:Orbitron,monospace;font-size:0.52rem;color:#8b5cf6;letter-spacing:2px;text-transform:uppercase;padding:14px 8px 5px;border-top:1px solid rgba(139,92,246,0.15);opacity:0.9;margin-top:6px;">Módulo 6 — IPv6</div>
+    <a href="ipv6.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(139,92,246,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🌐</span>IPv6</a>
+  </div>
+</div>
+<script>
+function ccnaToggle(){var d=document.getElementById('ccna-drawer');var o=document.getElementById('ccna-overlay');var open=d.style.display==='flex';d.style.display=open?'none':'flex';o.style.display=open?'none':'block';}
+function ccnaClose(){document.getElementById('ccna-drawer').style.display='none';document.getElementById('ccna-overlay').style.display='none';}
+(function(){var cur=window.location.pathname.split('/').pop();if(!cur||cur==='index.html')return;document.querySelectorAll('#ccna-drawer a').forEach(function(l){if(l.getAttribute('href')===cur){l.style.background='rgba(139,92,246,0.12)';l.style.color='#c4b5fd';l.style.borderLeft='2px solid #8b5cf6';l.style.paddingLeft='10px';}});})();
+</script>
+
+<div style="height:56px;"></div>
+
+<div class="container">
+
+  <!-- HERO -->
+  <div class="hero">
+    <h1>IPv6</h1>
+    <div class="hero-sub">Protocolo de Internet v6 · Direccionamiento · NDP · Transición</div>
+    <div class="objective-bar">
+      <div class="obj-item"><div class="obj-dot"></div> Fundamentos IPv6</div>
+      <div class="obj-item"><div class="obj-dot"></div> Tipos de Dirección</div>
+      <div class="obj-item"><div class="obj-dot"></div> Autoconfiguración</div>
+      <div class="obj-item"><div class="obj-dot"></div> Configuración IOS</div>
+      <div class="obj-item"><div class="obj-dot"></div> Transición IPv4/IPv6</div>
+      <div class="obj-item"><div class="obj-dot"></div> Quiz CCNA</div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="showTab('fundamentos',event)">📘 Fundamentos</button>
+    <button class="tab-btn" onclick="showTab('tipos',event)">🏷️ Tipos</button>
+    <button class="tab-btn" onclick="showTab('autoconfig',event)">⚙️ SLAAC/NDP</button>
+    <button class="tab-btn" onclick="showTab('config',event)">⌨️ Configuración</button>
+    <button class="tab-btn" onclick="showTab('transicion',event)">🔄 Transición</button>
+    <button class="tab-btn" onclick="showTab('quiz',event)">🎯 Quiz CCNA</button>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SECCIÓN 1: FUNDAMENTOS -->
+  <!-- ============================================================ -->
+  <div id="fundamentos" class="section active">
+
+    <div class="card">
+      <div class="card-title"><div class="card-icon">💡</div>¿Por qué IPv6? — El agotamiento de IPv4</div>
+      <div class="definition-box">
+        <span class="highlight-purple">IPv4</span> utiliza direcciones de <span class="highlight">32 bits</span> → solo <span class="highlight-yellow">~4.300 millones</span> de direcciones posibles. Con el explosivo crecimiento de Internet, IoT y dispositivos móviles, el espacio de direcciones IPv4 se <span class="highlight-red">agotó oficialmente en 2011</span> (IANA) y en 2015 en Europa (RIPE NCC).<br><br>
+        <span class="highlight-purple">IPv6</span> usa direcciones de <span class="highlight">128 bits</span> → <span class="highlight-green">340 undecillones</span> de direcciones (3.4 × 10³⁸). Suficiente para asignar miles de millones de IPs a cada átomo de la Tierra.
+      </div>
+
+      <div class="grid-3">
+        <div class="feature-card">
+          <div class="feature-icon">📏</div>
+          <div class="feature-name">Espacio enorme</div>
+          <div class="feature-desc">128 bits = 340 undecillones de direcciones. Nunca se agotará en la práctica humana.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⚡</div>
+          <div class="feature-name">Cabecera simplificada</div>
+          <div class="feature-desc">IPv6 tiene cabecera fija de 40 bytes, más eficiente que IPv4. Sin checksum en cabecera → procesamiento más rápido.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔒</div>
+          <div class="feature-name">Seguridad integrada</div>
+          <div class="feature-desc">IPsec fue diseñado nativamente para IPv6. Autenticación e integridad son parte del protocolo.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🚫</div>
+          <div class="feature-name">Sin NAT necesario</div>
+          <div class="feature-desc">Cada dispositivo puede tener una IP pública única. End-to-end connectivity restaurada.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🤖</div>
+          <div class="feature-name">Autoconfiguración</div>
+          <div class="feature-desc">SLAAC permite que los dispositivos configuren su IP automáticamente sin servidor DHCP.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📡</div>
+          <div class="feature-name">Multicast nativo</div>
+          <div class="feature-desc">IPv6 reemplaza broadcast con multicast eficiente. No existe broadcast en IPv6.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><div class="card-icon">📐</div>Estructura de una dirección IPv6</div>
+      <div class="definition-box">
+        Una dirección IPv6 tiene <span class="highlight">128 bits</span> divididos en <span class="highlight-purple">8 grupos de 16 bits</span> (hextetos), separados por dos puntos (:). Cada grupo se escribe en <span class="highlight-yellow">hexadecimal</span>.
+      </div>
+
+      <div class="ipv6-addr">
+        <div class="ipv6-label">Dirección completa (full):</div>
+        <div class="ipv6-full">2001:0DB8:0000:0001:0000:0000:0000:0001</div>
+        <div style="margin-top:14px;">
+          <div class="addr-segments">
+            <span class="seg seg-net">2001</span><span class="seg-sep">:</span>
+            <span class="seg seg-net">0DB8</span><span class="seg-sep">:</span>
+            <span class="seg seg-subnet">0000</span><span class="seg-sep">:</span>
+            <span class="seg seg-subnet">0001</span><span class="seg-sep">:</span>
+            <span class="seg seg-host">0000</span><span class="seg-sep">:</span>
+            <span class="seg seg-host">0000</span><span class="seg-sep">:</span>
+            <span class="seg seg-host">0000</span><span class="seg-sep">:</span>
+            <span class="seg seg-host">0001</span>
+          </div>
+          <div style="display:flex;gap:20px;margin-top:8px;font-size:0.75rem;font-family:'Share Tech Mono',monospace;">
+            <span style="color:var(--cisco-purple);">■ Prefijo global (48 bits)</span>
+            <span style="color:var(--cisco-blue);">■ Subred (16 bits)</span>
+            <span style="color:var(--cisco-green);">■ Interface ID (64 bits)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-title" style="margin-top:24px;font-size:0.95rem;"><div class="card-icon">✂️</div>Reglas de compresión IPv6</div>
+
+      <table class="data-table">
+        <thead>
+          <tr><th>Regla</th><th>Descripción</th><th>Ejemplo</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="badge badge-purple">Regla 1</span></td>
+            <td>Omitir ceros a la izquierda dentro de un grupo</td>
+            <td style="font-family:monospace;"><span style="color:#ff6b35;">0</span>DB8 → DB8 &nbsp;|&nbsp; <span style="color:#ff6b35;">00</span>01 → 1</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-blue">Regla 2</span></td>
+            <td>Reemplazar uno o más grupos de solo ceros consecutivos con <code>::</code> — solo UNA vez por dirección</td>
+            <td style="font-family:monospace;">:0000:0000:0000: → ::</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="network-diagram">
+        <div class="diagram-title">Paso a paso — Compresión de IPv6</div>
+        <svg viewBox="0 0 700 200" xmlns="http://www.w3.org/2000/svg">
+          <!-- Paso 1 -->
+          <rect x="10" y="20" width="680" height="40" rx="8" fill="rgba(139,92,246,0.08)" stroke="rgba(139,92,246,0.3)" stroke-width="1"/>
+          <text x="20" y="36" fill="#8b5cf6" font-family="Share Tech Mono" font-size="9">ORIGINAL:</text>
+          <text x="100" y="36" fill="#e8f4fd" font-family="Share Tech Mono" font-size="11">2001:0DB8:0000:0001:0000:0000:0000:0001</text>
+          <text x="20" y="52" fill="#4a6a84" font-family="Share Tech Mono" font-size="8">128 bits — 8 grupos de 4 dígitos hex</text>
+
+          <!-- Flecha -->
+          <text x="350" y="82" text-anchor="middle" fill="#8b5cf6" font-size="16">↓</text>
+          <text x="430" y="82" fill="#ffd700" font-family="Share Tech Mono" font-size="8">Regla 1: quitar ceros iniciales</text>
+
+          <!-- Paso 2 -->
+          <rect x="10" y="90" width="680" height="40" rx="8" fill="rgba(0,188,235,0.06)" stroke="rgba(0,188,235,0.3)" stroke-width="1"/>
+          <text x="20" y="106" fill="#00bceb" font-family="Share Tech Mono" font-size="9">PASO 1:</text>
+          <text x="100" y="106" fill="#e8f4fd" font-family="Share Tech Mono" font-size="11">2001:DB8:0:1:0:0:0:1</text>
+          <text x="20" y="122" fill="#4a6a84" font-family="Share Tech Mono" font-size="8">0DB8→DB8 · 0000→0 · 0001→1</text>
+
+          <!-- Flecha -->
+          <text x="350" y="152" text-anchor="middle" fill="#8b5cf6" font-size="16">↓</text>
+          <text x="430" y="152" fill="#ffd700" font-family="Share Tech Mono" font-size="8">Regla 2: reemplazar :0:0:0: con ::</text>
+
+          <!-- Resultado -->
+          <rect x="10" y="160" width="680" height="35" rx="8" fill="rgba(0,255,136,0.08)" stroke="rgba(0,255,136,0.4)" stroke-width="2"/>
+          <text x="20" y="176" fill="#00ff88" font-family="Share Tech Mono" font-size="9">RESULTADO:</text>
+          <text x="110" y="176" fill="#00ff88" font-family="Share Tech Mono" font-size="13" font-weight="bold">2001:DB8:0:1::1</text>
+          <text x="20" y="189" fill="#4a6a84" font-family="Share Tech Mono" font-size="8">De 39 caracteres → 14 caracteres</text>
+        </svg>
+      </div>
+
+      <div class="info-box exam">
+        <div class="info-icon">🎯</div>
+        <div><strong>EXAMEN CCNA:</strong> El <code style="color:#ffd700;">::</code> solo puede aparecer <strong>una vez</strong> en una dirección. Si hay dos grupos de ceros separados, se comprime el más largo. En caso de empate, se comprime el primero. Ejemplo: <code style="color:#8b5cf6;">2001:0:0:1:0:0:0:1</code> → <code style="color:#00ff88;">2001:0:0:1::1</code> (no <code style="color:#ff3366;">2001::1:0:0:0:1</code>).</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><div class="card-icon">📊</div>IPv4 vs IPv6 — Comparativa completa</div>
+      <table class="data-table">
+        <thead>
+          <tr><th>Característica</th><th>IPv4</th><th>IPv6</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Longitud de dirección</td><td>32 bits</td><td style="color:#8b5cf6;font-weight:700;">128 bits</td></tr>
+          <tr><td>Espacio de direcciones</td><td>~4.300 millones</td><td style="color:#00ff88;font-weight:700;">340 undecillones</td></tr>
+          <tr><td>Notación</td><td>Decimal con puntos (192.168.1.1)</td><td style="color:#8b5cf6;">Hexadecimal con dos puntos (2001:DB8::1)</td></tr>
+          <tr><td>Broadcast</td><td style="color:#00ff88;">Sí</td><td style="color:#ff3366;">No (reemplazado por multicast)</td></tr>
+          <tr><td>NAT requerido</td><td style="color:#ff6b35;">Generalmente sí</td><td style="color:#00ff88;">No (IPs públicas para todos)</td></tr>
+          <tr><td>Configuración automática</td><td>DHCP (manual/servidor)</td><td style="color:#00ff88;">SLAAC (nativa, sin servidor)</td></tr>
+          <tr><td>IPsec</td><td>Opcional</td><td style="color:#00ff88;">Nativo</td></tr>
+          <tr><td>Cabecera</td><td>Variable (20-60 bytes)</td><td style="color:#00ff88;">Fija 40 bytes</td></tr>
+          <tr><td>Checksum en cabecera</td><td>Sí</td><td style="color:#00ff88;">No (más eficiente)</td></tr>
+          <tr><td>Fragmentación</td><td>Routers y hosts</td><td style="color:#00ff88;">Solo el host origen</td></tr>
+          <tr><td>Resolución de direcciones</td><td>ARP (broadcast)</td><td style="color:#8b5cf6;">NDP/ICMPv6 (multicast)</td></tr>
+          <tr><td>Prefijo de subred</td><td>Máscara (/24 o 255.255.255.0)</td><td style="color:#8b5cf6;">Solo longitud de prefijo (/64)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SECCIÓN 2: TIPOS -->
+  <!-- ============================================================ -->
+  <div id="tipos" class="section">
+
+    <div class="card">
+      <div class="card-title"><div class="card-icon">🏷️</div>Tipos de direcciones IPv6</div>
+      <div class="definition-box">
+        A diferencia de IPv4, IPv6 tiene <span class="highlight-purple">3 tipos principales</span> de direcciones. <span class="highlight-red">No existe broadcast</span> en IPv6 — fue reemplazado por multicast eficiente.
+      </div>
+
+      <div class="type-grid">
+        <div class="type-card unicast">
+          <div class="type-icon">📍</div>
+          <div class="type-name">UNICAST</div>
+          <div class="type-desc">Identifica una única interfaz. El paquete se entrega a un solo destino.</div>
+        </div>
+        <div class="type-card multicast">
+          <div class="type-icon">📢</div>
+          <div class="type-name">MULTICAST</div>
+          <div class="type-desc">Identifica un grupo de interfaces. El paquete se entrega a todos los miembros del grupo. Prefijo <strong>FF00::/8</strong></div>
+        </div>
+        <div class="type-card anycast">
+          <div class="type-icon">🎯</div>
+          <div class="type-name">ANYCAST</div>
+          <div class="type-desc">Asignada a múltiples interfaces. El paquete se entrega solo al más cercano (routing).</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><div class="card-icon">🌐</div>Tipos de direcciones Unicast</div>
+      <table class="data-table">
+        <thead>
+          <tr><th>Tipo</th><th>Prefijo</th><th>Descripción</th><th>Equivalente IPv4</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="badge badge-purple">Global Unicast (GUA)</span></td>
+            <td style="font-family:monospace;color:#8b5cf6;">2000::/3<br><small style="color:#4a6a84;">(2000:: a 3FFF::)</small></td>
+            <td>Direcciones públicas enrutables en Internet. Asignadas por ISPs.</td>
+            <td style="color:#4a6a84;">IP pública IPv4</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-orange">Link-Local (LLA)</span></td>
+            <td style="font-family:monospace;color:#ff6b35;">FE80::/10</td>
+            <td>Solo válida en el enlace local (segmento). <strong>Obligatoria en toda interfaz IPv6.</strong> No enrutable. Usada por NDP, routing protocols.</td>
+            <td style="color:#4a6a84;">169.254.x.x (APIPA)</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-blue">Unique Local (ULA)</span></td>
+            <td style="font-family:monospace;color:#00bceb;">FC00::/7<br><small style="color:#4a6a84;">(FC00:: a FDFF::)</small></td>
+            <td>IPs privadas IPv6. No enrutables en Internet. Para redes internas.</td>
+            <td style="color:#4a6a84;">192.168.x.x / 10.x.x.x</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-green">Loopback</span></td>
+            <td style="font-family:monospace;color:#00ff88;">::1/128</td>
+            <td>Interfaz loopback. Equivale a 127.0.0.1 en IPv4.</td>
+            <td style="color:#4a6a84;">127.0.0.1</td>
+          </tr>
+          <tr>
+            <td><span class="badge" style="background:rgba(255,215,0,0.15);border:1px solid #ffd700;color:#ffd700;">Unspecified</span></td>
+            <td style="font-family:monospace;color:#ffd700;">::/128</td>
+            <td>Dirección no especificada. Usada en el origen de paquetes sin IP aún configurada.</td>
+            <td style="color:#4a6a84;">0.0.0.0</td>
+          </tr>
+          <tr>
+            <td><span class="badge" style="background:rgba(0,188,235,0.15);border:1px solid #00bceb;color:#00bceb;">IPv4 Mapped</span></td>
+            <td style="font-family:monospace;color:#00bceb;">::FFFF:0:0/96</td>
+            <td>Permite representar una IPv4 dentro de IPv6. Usada en mecanismos de transición.</td>
+            <td style="color:#4a6a84;">::FFFF:192.168.1.1</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="info-box exam">
+        <div class="info-icon">🎯</div>
+        <div><strong>EXAMEN CCNA:</strong> <strong>Toda interfaz IPv6 habilitada SIEMPRE tiene una Link-Local (FE80::/10)</strong> configurada automáticamente, incluso si no se configura ninguna GUA. La Link-Local es requerida para NDP y muchos protocolos de routing.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><div class="card-icon">📢</div>Direcciones Multicast más importantes</div>
+      <table class="data-table">
+        <thead>
+          <tr><th>Dirección</th><th>Nombre</th><th>Destinatarios</th></tr>
+        </thead>
+        <tbody>
+          <tr><td style="font-family:monospace;color:#00bceb;">FF02::1</td><td>All-nodes</td><td>Todos los nodos IPv6 en el enlace (≈ broadcast)</td></tr>
+          <tr><td style="font-family:monospace;color:#00bceb;">FF02::2</td><td>All-routers</td><td>Todos los routers IPv6 en el enlace</td></tr>
+          <tr><td style="font-family:monospace;color:#00bceb;">FF02::5</td><td>All-OSPFv3 routers</td><td>Todos los routers OSPF (DR/BDR)</td></tr>
+          <tr><td style="font-family:monospace;color:#00bceb;">FF02::6</td><td>OSPF DR routers</td><td>Solo el Designated Router OSPF</td></tr>
+          <tr><td style="font-family:monospace;color:#8b5cf6;">FF02::1:FFxx:xxxx</td><td>Solicited-Node</td><td>Generada automáticamente por cada dirección unicast. Usada en NDP para Neighbor Discovery.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="info-box purple">
+        <div class="info-icon">💜</div>
+        <div><strong>Solicited-Node Multicast:</strong> Se genera tomando los últimos <strong>24 bits</strong> de la dirección unicast y añadiéndolos al prefijo <code style="color:#8b5cf6;">FF02::1:FF</code>. Reemplaza al ARP de IPv4 con eficiencia multicast en lugar de broadcast.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><div class="card-icon">🔗</div>EUI-64 — Generación automática del Interface ID</div>
+      <div class="definition-box">
+        <span class="highlight-purple">EUI-64</span> es el método para generar automáticamente los <span class="highlight">64 bits del Interface ID</span> a partir de la <span class="highlight-yellow">dirección MAC de 48 bits</span>. Usado en SLAAC y Link-Local automáticas.
+      </div>
+
+      <div class="network-diagram">
+        <div class="diagram-title">Proceso EUI-64 — De MAC a Interface ID</div>
+        <svg viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg">
+          <!-- MAC original -->
+          <rect x="10" y="15" width="680" height="38" rx="6" fill="rgba(255,215,0,0.06)" stroke="rgba(255,215,0,0.3)" stroke-width="1"/>
+          <text x="20" y="30" fill="#ffd700" font-family="Share Tech Mono" font-size="9">MAC 48 bits:</text>
+          <text x="130" y="30" fill="#ffd700" font-family="Share Tech Mono" font-size="12">AA : BB : CC : DD : EE : FF</text>
+          <text x="20" y="46" fill="#4a6a84" font-family="Share Tech Mono" font-size="8">OUI (24 bits) + NIC (24 bits)</text>
+
+          <text x="350" y="75" text-anchor="middle" fill="#8b5cf6" font-size="14">↓</text>
+          <text x="420" y="75" fill="#ffd700" font-family="Share Tech Mono" font-size="8">Paso 1: insertar FFFE en el medio</text>
+
+          <!-- Con FFFE -->
+          <rect x="10" y="85" width="680" height="38" rx="6" fill="rgba(0,188,235,0.06)" stroke="rgba(0,188,235,0.3)" stroke-width="1"/>
+          <text x="20" y="100" fill="#00bceb" font-family="Share Tech Mono" font-size="9">+ FFFE:</text>
+          <text x="100" y="100" fill="#e8f4fd" font-family="Share Tech Mono" font-size="12">AA:BB:CC:<span style="fill:#ff6b35">FF:FE</span>:DD:EE:FF</text>
+          <text x="20" y="116" fill="#4a6a84" font-family="Share Tech Mono" font-size="8">64 bits = 8 grupos de 8 bits</text>
+
+          <text x="350" y="145" text-anchor="middle" fill="#8b5cf6" font-size="14">↓</text>
+          <text x="420" y="145" fill="#ffd700" font-family="Share Tech Mono" font-size="8">Paso 2: invertir bit U/L (bit 7 del primer octeto)</text>
+
+          <!-- Resultado EUI-64 -->
+          <rect x="10" y="155" width="680" height="55" rx="6" fill="rgba(0,255,136,0.06)" stroke="rgba(0,255,136,0.4)" stroke-width="2"/>
+          <text x="20" y="173" fill="#00ff88" font-family="Share Tech Mono" font-size="9">RESULT EUI-64:</text>
+          <text x="150" y="173" fill="#00ff88" font-family="Share Tech Mono" font-size="12" font-weight="bold">A8BB:CCFF:FEDD:EEFF</text>
+          <text x="20" y="190" fill="#4a6a84" font-family="Share Tech Mono" font-size="8">AA → A8 (0xAA = 10101010 → bit U/L invertido → 10101000 = 0xA8)</text>
+          <text x="20" y="203" fill="#4a6a84" font-family="Share Tech Mono" font-size="8">Interface ID final de 64 bits para usar en SLAAC</text>
+        </svg>
+      </div>
+
+      <div class="info-box warning">
+        <div class="info-icon">⚠️</div>
+        <div><strong>Privacidad:</strong> EUI-64 expone la MAC del dispositivo en la dirección IPv6, lo que puede ser un problema de privacidad. Por eso los sistemas operativos modernos (Windows, Linux, Android) usan <strong>extensiones de privacidad</strong> que generan Interface IDs aleatorios en lugar de EUI-64.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SECCIÓN 3: SLAAC/NDP -->
+  <!-- ============================================================ -->
+  <div id="autoconfig" class="section">
+
+    <div class="card">
+      <div class="card-title"><div class="card-icon">⚙️</div>SLAAC — Stateless Address Autoconfiguration</div>
+      <div class="definition-box">
+        <span class="highlight-purple">SLAAC</span> (RFC 4862) permite que un host configure automáticamente su dirección IPv6 <span class="highlight-green">sin necesidad de un servidor DHCP</span>. El host obtiene el prefijo de red del router y genera su propio Interface ID (EUI-64 o aleatorio).
+      </div>
+
+      <div class="network-diagram">
+        <div class="diagram-title">Proceso SLAAC — 4 pasos</div>
+        <svg viewBox="0 0 700 260" xmlns="http://www.w3.org/2000/svg">
+          <!-- Host -->
+          <rect x="30" y="100" width="100" height="60" rx="8" fill="#0a2040" stroke="#8b5cf6" stroke-width="2"/>
+          <text x="80" y="126" text-anchor="middle" fill="#8b5cf6" font-family="Share Tech Mono" font-size="9">HOST</text>
+          <text x="80" y="141" text-anchor="middle" fill="#4a6a84" font-family="Share Tech Mono" font-size="8">PC / IoT</text>
+          <text x="80" y="154" text-anchor="middle" fill="#ffd700" font-family="Share Tech Mono" font-size="7">FE80::auto</text>
+
+          <!-- Router -->
+          <rect x="570" y="100" width="100" height="60" rx="8" fill="#0a2040" stroke="#00bceb" stroke-width="2"/>
+          <text x="620" y="126" text-anchor="middle" fill="#00bceb" font-family="Share Tech Mono" font-size="9">ROUTER</text>
+          <text x="620" y="141" text-anchor="middle" fill="#4a6a84" font-family="Share Tech Mono" font-size="8">Cisco ISR</text>
+          <text x="620" y="154" text-anchor="middle" fill="#00bceb" font-family="Share Tech Mono" font-size="7">2001:DB8::/64</text>
+
+          <!-- Paso 1: RS -->
+          <line x1="130" y1="115" x2="570" y2="115" stroke="#ffd700" stroke-width="1.5" stroke-dasharray="6,3"/>
+          <polygon points="570,111 580,115 570,119" fill="#ffd700"/>
+          <text x="350" y="108" text-anchor="middle" fill="#ffd700" font-family="Share Tech Mono" font-size="8">① Router Solicitation (RS) → FF02::2</text>
+
+          <!-- Paso 2: RA -->
+          <line x1="570" y1="135" x2="130" y2="135" stroke="#00bceb" stroke-width="2"/>
+          <polygon points="130,131 120,135 130,139" fill="#00bceb"/>
+          <text x="350" y="148" text-anchor="middle" fill="#00bceb" font-family="Share Tech Mono" font-size="8">② Router Advertisement (RA) — prefijo 2001:DB8::/64</text>
+
+          <!-- Paso 3: EUI-64 -->
+          <rect x="150" y="170" width="200" height="35" rx="6" fill="rgba(139,92,246,0.1)" stroke="rgba(139,92,246,0.4)" stroke-width="1"/>
+          <text x="250" y="184" text-anchor="middle" fill="#8b5cf6" font-family="Share Tech Mono" font-size="8">③ Host genera Interface ID</text>
+          <text x="250" y="197" text-anchor="middle" fill="#8b5cf6" font-family="Share Tech Mono" font-size="8">(EUI-64 o aleatorio)</text>
+
+          <!-- Paso 4: DAD -->
+          <rect x="380" y="170" width="200" height="35" rx="6" fill="rgba(0,255,136,0.08)" stroke="rgba(0,255,136,0.3)" stroke-width="1"/>
+          <text x="480" y="184" text-anchor="middle" fill="#00ff88" font-family="Share Tech Mono" font-size="8">④ DAD — Duplicate Address Detection</text>
+          <text x="480" y="197" text-anchor="middle" fill="#00ff88" font-family="Share Tech Mono" font-size="8">NS/NA para verificar unicidad</text>
+
+          <!-- Resultado -->
+          <rect x="150" y="225" width="400" height="28" rx="6" fill="rgba(0,255,136,0.06)" stroke="rgba(0,255,136,0.4)" stroke-width="1.5"/>
+          <text x="350" y="244" text-anchor="middle" fill="#00ff88" font-family="Share Tech Mono" font-size="9">✅ IP asignada: 2001:DB8::A8BB:CCFF:FEDD:EEFF/64</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><div class="card-icon">🔍</div>NDP — Neighbor Discovery Protocol</div>
+      <div class="definition-box">
+        <span class="highlight-purple">NDP</span> (RFC 4861) es el protocolo que reemplaza a ARP en IPv6. Usa mensajes <span class="highlight">ICMPv6</span> para descubrir routers, vecinos y detectar direcciones duplicadas. Opera en el enlace local usando multicast en lugar de broadcast.
+      </div>
+
+      <table class="data-table">
+        <thead>
+          <tr><th>Mensaje ICMPv6</th><th>Tipo</th><th>Función</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="badge badge-purple">Router Solicitation (RS)</span></td>
+            <td style="font-family:monospace;color:#ffd700;">Type 133</td>
+            <td>Host solicita info de configuración a los routers del enlace → FF02::2</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-blue">Router Advertisement (RA)</span></td>
+            <td style="font-family:monospace;color:#ffd700;">Type 134</td>
+            <td>Router anuncia prefijo, gateway y flags de configuración → FF02::1 o unicast</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-green">Neighbor Solicitation (NS)</span></td>
+            <td style="font-family:monospace;color:#ffd700;">Type 135</td>
+            <td>Equivale al ARP Request. Resuelve IPv6 → MAC. También usado en DAD.</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-orange">Neighbor Advertisement (NA)</span></td>
+            <td style="font-family:monospace;color:#ffd700;">Type 136</td>
+            <td>Equivale al ARP Reply. Responde con la MAC solicitada.</td>
+          </tr>
+          <tr>
+            <td><span class="badge" style="background:rgba(255,51,102,0.12);border:1px solid #ff3366;color:#ff3366;">Redirect</span></td>
+            <td style="font-family:monospace;color:#ffd700;">Type 137</td>
+            <td>Router informa al host de un mejor next-hop para un destino.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="info-box important">
+        <div class="info-icon">📌</div>
+        <div><strong>DAD (Duplicate Address Detection):</strong> Antes de usar una dirección IPv6, el host envía un <strong>Neighbor Solicitation</strong> a la dirección Solicited-Node multicast correspondiente. Si recibe respuesta (Neighbor Advertisement), la dirección ya existe → conflicto. Si no hay respuesta en cierto tiempo, la dirección es única y puede usarse.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><div class="card-icon">🚦</div>Flags del Router Advertisement — Modos de configuración</div>
+      <table class="data-table">
+        <thead>
+          <tr><th>Flag</th><th>Nombre</th><th>Significado</th><th>Resultado</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="badge badge-green">A=1, M=0, O=0</span></td>
+            <td>SLAAC puro</td>
+            <td>Autoconfigure con prefijo del RA, sin DHCP</td>
+            <td style="color:#00ff88;">IP y gateway del RA. Sin DNS automático.</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-blue">A=1, M=0, O=1</span></td>
+            <td>SLAAC + DHCPv6 Stateless</td>
+            <td>IP de SLAAC, info adicional (DNS) de DHCPv6</td>
+            <td style="color:#00bceb;">IP del RA + DNS del servidor DHCPv6</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-purple">A=0, M=1, O=1</span></td>
+            <td>DHCPv6 Stateful</td>
+            <td>Toda la configuración viene de DHCPv6</td>
+            <td style="color:#8b5cf6;">Como DHCP en IPv4. El servidor asigna todo.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SECCIÓN 4: CONFIGURACIÓN -->
+  <!-- ============================================================ -->
+  <div id="config" class="section">
+
+    <div class="card">
+      <div class="card-title"><div class="card-icon">⌨️</div>Configuración IPv6 en Cisco IOS</div>
+
+      <div class="info-box purple">
+        <div class="info-icon">💜</div>
+        <div><strong>Habilitar IPv6 globalmente:</strong> En Cisco IOS, primero debes ejecutar <code style="color:#ffd700;">ipv6 unicast-routing</code> en modo global para que el router enrute paquetes IPv6. Sin este comando, las interfaces solo tienen IPs locales pero no enrutan.</div>
+      </div>
+
+      <div class="cmd-section-title">PASO 1 — Habilitar IPv6 Unicast Routing</div>
+      <div class="cmd-block">
+        <span class="cmd-label">GLOBAL CONFIG</span>
+        <span class="cmd-line"><span class="cmd-prompt">Router></span> <span class="cmd-keyword">enable</span></span>
+        <span class="cmd-line"><span class="cmd-prompt">Router#</span> <span class="cmd-keyword">configure terminal</span></span>
+        <span class="cmd-line"><span class="cmd-comment">! Habilitar routing IPv6 (obligatorio)</span></span>
+        <span class="cmd-line"><span class="cmd-prompt">Router(config)#</span> <span class="cmd-keyword">ipv6 unicast-routing</span></span>
+      </div>
+
+      <div class="cmd-section-title">PASO 2 — Configurar dirección GUA en interfaz</div>
+      <div class="cmd-block">
+        <span class="cmd-label">INTERFAZ IPv6</span>
+        <span class="cmd-line"><span class="cmd-prompt">Router(config)#</span> <span class="cmd-keyword">interface</span> <span class="cmd-value">GigabitEthernet0/0</span></span>
+        <span class="cmd-line"><span class="cmd-comment">! Asignar dirección IPv6 manualmente</span></span>
+        <span class="cmd-line"><span class="cmd-prompt">Router(config-if)#</span> <span class="cmd-keyword">ipv6 address</span> <span class="cmd-ipv6">2001:DB8:ACAD:1::1/64</span></span>
+        <span class="cmd-line"><span class="cmd-prompt">Router(config-if)#</span> <span class="cmd-keyword">no shutdown</span></span>
+        <span class="cmd-line"><span class="cmd-prompt">Router(config-if)#</span> <span class="cmd-keyword">exit</span></span>
+        <span class="cmd-line"> </span>
+        <span class="cmd-line"><span class="cmd-comment">! Segunda interfaz</span></span>
+        <span class="cmd-line"><span class="cmd-prompt">Router(config)#</span> <span class="cmd-keyword">interface</span> <span class="cmd-value">GigabitEthernet0/1</span></span>
+        <span class="cmd-line"><span class="cmd-prompt">Router(config-if)#</span> <span class="cmd-keyword">ipv6 address</span> <span class="cmd-ipv6">2001:DB8:ACAD:2::1/64</span></span>
+        <span class="cmd-line"><span class="cmd-prompt">Router(config-if)#</span> <span class="cmd-keyword">no shutdown</span></span>
+      </div>
+
+      <div class="cmd-section-title">PASO 3 — Configurar Link-Local manualmente (opcional)</div>
+      <div class="cmd-block">
+        <span class="cmd-label">LINK-LOCAL</span>
+        <span class="cmd-line"><span class="cmd-comment">! Por defecto se genera automáticamente, pero se puede configurar manualmente</span></span>
+        <span class="cmd-line"><span class="cmd-prompt">Router(config-if)#</span> <span class="cmd-keyword">ipv6 address</span> <span class="cmd-ipv6">FE80::1</span> <span class="cmd-keyword">link-local</span></span>
+        <span class="cmd-line"><span class="cmd-comment">! Usar FE80::1 es buena práctica — fácil de recordar como gateway</span></span>
+      </div>
+
+      <div class="cmd-section-title">PASO 4 — Configurar EUI-64 (Interface ID automático)</div>
+      <div class="cmd-block">
+        <span class="cmd-label">EUI-64</span>
+        <span class="cmd-line"><span class="cmd-comment">! EUI-64: el IOS genera el Interface ID desde la MAC de la interfaz</span></span>
+        <span class="cmd-line"><span class="cmd-prompt">Router(config-if)#</span> <span class="cmd-keyword">ipv6 address</span> <span class="cmd-ipv6">2001:DB8:ACAD:1::/64</span> <span class="cmd-keyword">eui-64</span></span>
+        <span class="cmd-line"><span class="cmd-comment">! Resultado: 2001:DB8:ACAD:1:[Interface-ID-generado-de-MAC]/64</span></span>
+      </div>
+
+      <div class="cmd-section-title">PASO 5 — Configurar SLAAC en el router (RA)</div>
+      <div class="cmd-block">
+        <span class="cmd-label">SLAAC / RA</span>
+        <span class="cmd-line"><span class="cmd-comment">! El router enviará RA automáticamente al habilitar ipv6 unicast-routing</span></span>
+        <span class="cmd-line"><span class="cmd-comment">! Para forzar envío de RA inmediato:</span></span>
+        <span class="cmd-line"><span class="cmd-prompt">Router(config-if)#</span> <span class="cmd-keyword">ipv6 nd ra-interval</span> <span class="cmd-value">10</span>    <span class="cmd-comment">! Cada 10 seg</span></span>
+        <span class="cmd-line"><span class="cmd-comment">! Para deshabilitar RA (en puertos hacia usuarios finales):</span></span>
+        <span class="cmd-line"><span class="cmd-prompt">Router(config-if)#</span> <span class="cmd-keyword">ipv6 nd ra suppress</span>             <span class="cmd-comment">! Deshabilitar RA</span></span>
+        <span class="cmd-line"><span class="cmd-comment">! Configurar flags para DHCPv6 stateful (M=1, O=1):</span></span>
+        <span class="cmd-line"><span class="cmd-prompt">Router(config-if)#</span> <span class="cmd-keyword">ipv6 nd managed-config-flag</span>      <span class="cmd-comment">! Flag M=1</span></span>
+        <span class="cmd-line"><span class="cmd-prompt">Router(config-if)#</span> <span class="cmd-keyword">ipv6 nd other-config-flag</span>         <span class="cmd-comment">! Flag O=1</span></span>
+      </div>
+
+      <div class="cmd-section-title">PASO 6 — Ruta estática IPv6</div>
+      <div class="cmd-block">
+        <span class="cmd-label">STATIC ROUTE</span>
+        <span class="cmd-line"><span class="cmd-comment">! Ruta estática IPv6 con next-hop</span></span>
+        <span class="cmd-line"><span class="cmd-prompt">Router(config)#</span> <span class="cmd-keyword">ipv6 route</span> <span class="cmd-ipv6">2001:DB8:ACAD:3::/64</span> <span class="cmd-ipv6">2001:DB8:ACAD:2::2</span></span>
+        <span class="cmd-line"><span class="cmd-comment">! Ruta estática con interfaz de salida</span></span>
+        <span class="cmd-line"><span class="cmd-prompt">Router(config)#</span> <span class="cmd-keyword">ipv6 route</span> <span class="cmd-ipv6">2001:DB8:ACAD:3::/64</span> <span class="cmd-value">GigabitEthernet0/1</span></span>
+        <span class="cmd-line"><span class="cmd-comment">! Ruta por defecto IPv6</span></span>
+        <span class="cmd-line"><span class="cmd-prompt">Router(config)#</span> <span class="cmd-keyword">ipv6 route</span> <span class="cmd-ipv6">::/0</span> <span class="cmd-ipv6">2001:DB8:ACAD:2::2</span></span>
+      </div>
+
+      <div class="cmd-section-title">VERIFICACIÓN COMPLETA</div>
+      <div class="cmd-block">
+        <span class="cmd-label">SHOW COMMANDS</span>
+        <span class="cmd-line"><span class="cmd-prompt">Router#</span> <span class="cmd-keyword">show ipv6 interface brief</span>        <span class="cmd-comment">! Ver IPs en todas las interfaces</span></span>
+        <span class="cmd-line"><span class="cmd-prompt">Router#</span> <span class="cmd-keyword">show ipv6 interface</span> <span class="cmd-value">Gi0/0</span>       <span class="cmd-comment">! Detalle de una interfaz</span></span>
+        <span class="cmd-line"><span class="cmd-prompt">Router#</span> <span class="cmd-keyword">show ipv6 route</span>                  <span class="cmd-comment">! Tabla de routing IPv6</span></span>
+        <span class="cmd-line"><span class="cmd-prompt">Router#</span> <span class="cmd-keyword">show ipv6 neighbors</span>              <span class="cmd-comment">! Tabla NDP (equivale a show arp)</span></span>
+        <span class="cmd-line"><span class="cmd-prompt">Router#</span> <span class="cmd-keyword">show ipv6 routers</span>                <span class="cmd-comment">! Ver RAs recibidos</span></span>
+        <span class="cmd-line"><span class="cmd-prompt">Router#</span> <span class="cmd-keyword">ping ipv6</span> <span class="cmd-ipv6">2001:DB8:ACAD:1::10</span>  <span class="cmd-comment">! Ping IPv6</span></span>
+        <span class="cmd-line"><span class="cmd-prompt">Router#</span> <span class="cmd-keyword">traceroute ipv6</span> <span class="cmd-ipv6">2001:DB8:ACAD:3::1</span> <span class="cmd-comment">! Traceroute IPv6</span></span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><div class="card-icon">🏗️</div>Lab Completo — Red Dual-Stack IPv4/IPv6</div>
+      <div class="scenario">
+        <div class="scenario-title">🔬 Escenario: Empresa DualNet Corp</div>
+        <p style="color:#ccc;font-size:0.9rem;line-height:1.8;">
+          R1 con dos interfaces: G0/0 hacia LAN1 y G0/1 hacia LAN2.<br>
+          • <strong style="color:#8b5cf6;">LAN1:</strong> 2001:DB8:ACAD:1::/64 — usuarios finales con SLAAC<br>
+          • <strong style="color:#00bceb;">LAN2:</strong> 2001:DB8:ACAD:2::/64 — servidores con IPs manuales<br>
+          • Link-Local: FE80::1 en ambas interfaces (fácil de recordar)<br>
+          • Ruta por defecto hacia ISP: ::/0 via 2001:DB8:1::1
+        </p>
+      </div>
+      <ol class="steps">
+        <li class="step-item">
+          <div class="step-num"></div>
+          <div class="step-content">
+            <div class="step-title">Habilitar IPv6 routing y configurar G0/0</div>
+            <div class="step-desc">ipv6 unicast-routing → interface G0/0 → ipv6 address 2001:DB8:ACAD:1::1/64 → ipv6 address FE80::1 link-local → no shutdown</div>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num"></div>
+          <div class="step-content">
+            <div class="step-title">Configurar G0/1 para servidores</div>
+            <div class="step-desc">interface G0/1 → ipv6 address 2001:DB8:ACAD:2::1/64 → ipv6 address FE80::1 link-local → no shutdown</div>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num"></div>
+          <div class="step-content">
+            <div class="step-title">Configurar ruta por defecto IPv6</div>
+            <div class="step-desc">ipv6 route ::/0 2001:DB8:1::1 — Todo tráfico sin ruta específica va al ISP.</div>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num"></div>
+          <div class="step-content">
+            <div class="step-title">Verificar con show ipv6 interface brief y ping ipv6</div>
+            <div class="step-desc">Confirmar que las interfaces muestran estado UP/UP y que los PCs reciben su IP por SLAAC. Verificar show ipv6 neighbors para la tabla NDP.</div>
+          </div>
+        </li>
+      </ol>
+    </div>
+
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SECCIÓN 5: TRANSICIÓN -->
+  <!-- ============================================================ -->
+  <div id="transicion" class="section">
+
+    <div class="card">
+      <div class="card-title"><div class="card-icon">🔄</div>Mecanismos de transición IPv4 → IPv6</div>
+      <div class="definition-box">
+        La transición de IPv4 a IPv6 no es inmediata — Internet necesita años para completarla. Existen <span class="highlight-purple">3 categorías de mecanismos</span> para permitir coexistencia e interoperabilidad durante la transición.
+      </div>
+
+      <div class="grid-3">
+        <div class="feature-card" style="border-color:rgba(139,92,246,0.4);">
+          <div class="feature-icon">🥞</div>
+          <div class="feature-name" style="color:#8b5cf6;">Dual Stack</div>
+          <div class="feature-desc">El dispositivo ejecuta IPv4 e IPv6 simultáneamente. Usa IPv6 cuando está disponible, IPv4 como fallback. La solución más limpia y recomendada.</div>
+        </div>
+        <div class="feature-card" style="border-color:rgba(0,188,235,0.4);">
+          <div class="feature-icon">🚇</div>
+          <div class="feature-name" style="color:#00bceb;">Tunneling</div>
+          <div class="feature-desc">Encapsula paquetes IPv6 dentro de IPv4 para cruzar redes IPv4. 6to4, 6in4, ISATAP, Teredo, GRE tunnels.</div>
+        </div>
+        <div class="feature-card" style="border-color:rgba(0,255,136,0.4);">
+          <div class="feature-icon">🔀</div>
+          <div class="feature-name" style="color:#00ff88;">Translation (NAT64)</div>
+          <div class="feature-desc">Traduce entre IPv4 e IPv6. Permite que hosts IPv6-only se comuniquen con servidores IPv4-only y viceversa.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><div class="card-icon">🥞</div>Dual Stack — La solución preferida</div>
+      <div class="definition-box">
+        En <span class="highlight-purple">Dual Stack</span>, un dispositivo tiene configuradas <strong>ambas</strong> direcciones — IPv4 e IPv6 — en la misma interfaz. El sistema operativo y las aplicaciones pueden usar cualquiera de los dos protocolos según disponibilidad y preferencia (normalmente IPv6 tiene preferencia).
+      </div>
+
+      <div class="cmd-section-title">Configuración Dual Stack en Cisco IOS</div>
+      <div class="cmd-block">
+        <span class="cmd-label">DUAL STACK</span>
+        <span class="cmd-line"><span class="cmd-prompt">Router(config)#</span> <span class="cmd-keyword">ipv6 unicast-routing</span></span>
+        <span class="cmd-line"><span class="cmd-prompt">Router(config)#</span> <span class="cmd-keyword">interface</span> <span class="cmd-value">GigabitEthernet0/0</span></span>
+        <span class="cmd-line"><span class="cmd-comment">! IPv4 en la misma interfaz</span></span>
+        <span class="cmd-line"><span class="cmd-prompt">Router(config-if)#</span> <span class="cmd-keyword">ip address</span> <span class="cmd-value">192.168.1.1 255.255.255.0</span></span>
+        <span class="cmd-line"><span class="cmd-comment">! IPv6 en la misma interfaz</span></span>
+        <span class="cmd-line"><span class="cmd-prompt">Router(config-if)#</span> <span class="cmd-keyword">ipv6 address</span> <span class="cmd-ipv6">2001:DB8:ACAD:1::1/64</span></span>
+        <span class="cmd-line"><span class="cmd-prompt">Router(config-if)#</span> <span class="cmd-keyword">ipv6 address</span> <span class="cmd-ipv6">FE80::1</span> <span class="cmd-keyword">link-local</span></span>
+        <span class="cmd-line"><span class="cmd-prompt">Router(config-if)#</span> <span class="cmd-keyword">no shutdown</span></span>
+        <span class="cmd-line"><span class="cmd-comment">! Ambos protocolos activos en la misma interfaz física</span></span>
+      </div>
+
+      <div class="info-box tip">
+        <div class="info-icon">✅</div>
+        <div><strong>Buena práctica:</strong> Dual Stack es la estrategia de transición recomendada por Cisco y el IETF. Permite migrar gradualmente sin interrupciones. Las empresas pueden mantener IPv4 para aplicaciones legadas mientras adoptan IPv6 para servicios nuevos.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><div class="card-icon">🚇</div>Tunneling IPv6 — Tipos principales</div>
+      <table class="data-table">
+        <thead>
+          <tr><th>Tecnología</th><th>Descripción</th><th>Uso</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="badge badge-purple">6in4 (GRE)</span></td>
+            <td>Encapsula IPv6 en GRE/IPv4. Requiere IPs IPv4 estáticas en ambos extremos. Manual.</td>
+            <td>Conexión punto a punto entre islas IPv6 sobre backbone IPv4</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-blue">6to4</span></td>
+            <td>Automático. Embebe la IP IPv4 dentro del prefijo IPv6 (2002::/16). No requiere configuración manual del túnel.</td>
+            <td>Redes medianas. Deprecated en muchos sistemas.</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-green">ISATAP</span></td>
+            <td>Intra-Site Automatic Tunnel Addressing Protocol. Para conectar hosts IPv6 aislados dentro de una red IPv4.</td>
+            <td>Empresas en transición. Windows lo soporta nativamente.</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-yellow">Teredo</span></td>
+            <td>Tunneling IPv6 sobre UDP/IPv4 cruzando NAT. Diseñado para hosts detrás de NAT IPv4.</td>
+            <td>Hosts de usuario final sin IPv6 nativo en su ISP.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="cmd-section-title">Configuración túnel GRE IPv6-over-IPv4</div>
+      <div class="cmd-block">
+        <span class="cmd-label">GRE TUNNEL</span>
+        <span class="cmd-line"><span class="cmd-comment">! Crear túnel GRE para transportar IPv6 sobre red IPv4</span></span>
+        <span class="cmd-line"><span class="cmd-prompt">Router(config)#</span> <span class="cmd-keyword">interface</span> <span class="cmd-value">Tunnel0</span></span>
+        <span class="cmd-line"><span class="cmd-prompt">Router(config-if)#</span> <span class="cmd-keyword">ipv6 address</span> <span class="cmd-ipv6">2001:DB8:TUNNEL::1/64</span></span>
+        <span class="cmd-line"><span class="cmd-prompt">Router(config-if)#</span> <span class="cmd-keyword">tunnel source</span> <span class="cmd-value">192.168.1.1</span>    <span class="cmd-comment">! IP IPv4 local</span></span>
+        <span class="cmd-line"><span class="cmd-prompt">Router(config-if)#</span> <span class="cmd-keyword">tunnel destination</span> <span class="cmd-value">10.0.0.2</span>  <span class="cmd-comment">! IP IPv4 remota</span></span>
+        <span class="cmd-line"><span class="cmd-prompt">Router(config-if)#</span> <span class="cmd-keyword">tunnel mode</span> <span class="cmd-value">ipv6ip</span>           <span class="cmd-comment">! IPv6 sobre IPv4</span></span>
+        <span class="cmd-line"><span class="cmd-prompt">Router(config-if)#</span> <span class="cmd-keyword">no shutdown</span></span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SECCIÓN 6: QUIZ -->
+  <!-- ============================================================ -->
+  <div id="quiz" class="section">
+
+    <div class="card">
+      <div class="card-title"><div class="card-icon">🎯</div>Quiz CCNA — IPv6 (Estilo Examen Real)</div>
+      <div class="info-box exam">
+        <div class="info-icon">📋</div>
+        <div>Preguntas estilo examen oficial <strong>Cisco CCNA 200-301</strong>. Lee con cuidado, selecciona y recibe explicación detallada.</div>
+      </div>
+
+      <!-- P1 -->
+      <div class="quiz-q" id="q1">
+        <div class="quiz-q-num">PREGUNTA 01 / 08</div>
+        <div class="quiz-question">¿Cuántos bits tiene una dirección IPv6?</div>
+        <div class="quiz-options">
+          <div class="quiz-opt" onclick="answer(1,'A','wrong','32 bits es el tamaño de IPv4. IPv6 fue diseñado para superar las limitaciones de espacio de IPv4.')"><div class="quiz-opt-letter">A</div>32 bits</div>
+          <div class="quiz-opt" onclick="answer(1,'B','wrong','64 bits es el tamaño del Interface ID en IPv6, no de la dirección completa.')"><div class="quiz-opt-letter">B</div>64 bits</div>
+          <div class="quiz-opt" onclick="answer(1,'C','correct','¡Correcto! IPv6 usa 128 bits organizados en 8 grupos de 16 bits cada uno, escritos en hexadecimal y separados por dos puntos. Esto proporciona 3.4 × 10³⁸ direcciones posibles.')"><div class="quiz-opt-letter">C</div>128 bits</div>
+          <div class="quiz-opt" onclick="answer(1,'D','wrong','256 bits no es el tamaño de IPv6. Los 128 bits de IPv6 ya son más que suficientes para el futuro previsible.')"><div class="quiz-opt-letter">D</div>256 bits</div>
+        </div>
+        <div class="quiz-feedback" id="fb1"></div>
+      </div>
+
+      <!-- P2 -->
+      <div class="quiz-q" id="q2">
+        <div class="quiz-q-num">PREGUNTA 02 / 08</div>
+        <div class="quiz-question">¿Cuál es la forma comprimida correcta de la dirección <code style="color:#8b5cf6;background:rgba(139,92,246,0.1);padding:2px 6px;border-radius:4px;">2001:0DB8:0000:0000:0000:0000:0000:0001</code>?</div>
+        <div class="quiz-options">
+          <div class="quiz-opt" onclick="answer(2,'A','wrong','2001:DB8:0:0:0:0:0:1 aplica solo la Regla 1 (quitar ceros iniciales) pero no la Regla 2 (comprimir grupos de ceros con ::). La forma más corta debe usar ::.')"><div class="quiz-opt-letter">A</div>2001:DB8:0:0:0:0:0:1</div>
+          <div class="quiz-opt" onclick="answer(2,'B','correct','¡Correcto! Primero se aplica la Regla 1 (0DB8→DB8, quitar ceros iniciales) y luego la Regla 2 (cinco grupos consecutivos de 0 → ::). El resultado es 2001:DB8::1, que es la forma más comprimida válida.')"><div class="quiz-opt-letter">B</div>2001:DB8::1</div>
+          <div class="quiz-opt" onclick="answer(2,'C','wrong','2001::DB8::1 usa :: dos veces, lo cual es inválido. El :: solo puede aparecer una vez en una dirección IPv6.')"><div class="quiz-opt-letter">C</div>2001::DB8::1</div>
+          <div class="quiz-opt" onclick="answer(2,'D','wrong','2001:DB8:1 está incompleto. Falta especificar el número de grupos que reemplaza el :: y el formato no es válido.')"><div class="quiz-opt-letter">D</div>2001:DB8:1</div>
+        </div>
+        <div class="quiz-feedback" id="fb2"></div>
+      </div>
+
+      <!-- P3 -->
+      <div class="quiz-q" id="q3">
+        <div class="quiz-q-num">PREGUNTA 03 / 08</div>
+        <div class="quiz-question">¿Qué tipo de dirección IPv6 es siempre requerida en una interfaz habilitada para IPv6, incluso sin configuración manual?</div>
+        <div class="quiz-options">
+          <div class="quiz-opt" onclick="answer(3,'A','wrong','La dirección Global Unicast (GUA) es opcional — se configura manualmente o via SLAAC. No se asigna automáticamente sin configuración.')"><div class="quiz-opt-letter">A</div>Global Unicast Address (GUA)</div>
+          <div class="quiz-opt" onclick="answer(3,'B','correct','¡Correcto! La dirección Link-Local (FE80::/10) se genera automáticamente en TODA interfaz donde IPv6 está habilitado. Es obligatoria y se usa para comunicación local, NDP, protocolos de routing y como gateway por defecto.')"><div class="quiz-opt-letter">B</div>Link-Local Address (FE80::/10)</div>
+          <div class="quiz-opt" onclick="answer(3,'C','wrong','La Unique Local Address (FC00::/7) es el equivalente IPv6 de las IPs privadas. Se configura manualmente, no es automática.')"><div class="quiz-opt-letter">C</div>Unique Local Address (ULA)</div>
+          <div class="quiz-opt" onclick="answer(3,'D','wrong','La dirección anycast se asigna manualmente a múltiples interfaces para propósitos específicos de routing. No es automática.')"><div class="quiz-opt-letter">D</div>Anycast Address</div>
+        </div>
+        <div class="quiz-feedback" id="fb3"></div>
+      </div>
+
+      <!-- P4 -->
+      <div class="quiz-q" id="q4">
+        <div class="quiz-q-num">PREGUNTA 04 / 08</div>
+        <div class="quiz-question">¿Qué protocolo reemplaza a ARP en IPv6 para resolver direcciones?</div>
+        <div class="quiz-options">
+          <div class="quiz-opt" onclick="answer(4,'A','wrong','DHCPv6 asigna direcciones IP y parámetros de red, pero no resuelve la correspondencia entre IPv6 e MAC como hace ARP.')"><div class="quiz-opt-letter">A</div>DHCPv6</div>
+          <div class="quiz-opt" onclick="answer(4,'B','wrong','OSPFv3 es un protocolo de routing dinámico para IPv6. No realiza resolución de direcciones MAC.')"><div class="quiz-opt-letter">B</div>OSPFv3</div>
+          <div class="quiz-opt" onclick="answer(4,'C','correct','¡Correcto! NDP (Neighbor Discovery Protocol, RFC 4861) reemplaza a ARP en IPv6. Usa mensajes ICMPv6 tipo 135 (Neighbor Solicitation) y 136 (Neighbor Advertisement) para resolver IPv6 → MAC, con multicast en lugar del broadcast de ARP.')"><div class="quiz-opt-letter">C</div>NDP (Neighbor Discovery Protocol)</div>
+          <div class="quiz-opt" onclick="answer(4,'D','wrong','SLAAC es para autoconfiguración de direcciones IP, no para resolución de MAC addresses.')"><div class="quiz-opt-letter">D</div>SLAAC</div>
+        </div>
+        <div class="quiz-feedback" id="fb4"></div>
+      </div>
+
+      <!-- P5 -->
+      <div class="quiz-q" id="q5">
+        <div class="quiz-q-num">PREGUNTA 05 / 08</div>
+        <div class="quiz-question">¿Qué comando es obligatorio en un router Cisco para que enrute paquetes IPv6?</div>
+        <div class="quiz-options">
+          <div class="quiz-opt" onclick="answer(5,'A','wrong','ip routing habilita el routing IPv4, que ya está activo por defecto en routers Cisco. No afecta a IPv6.')"><div class="quiz-opt-letter">A</div>ip routing</div>
+          <div class="quiz-opt" onclick="answer(5,'B','wrong','ipv6 enable habilita IPv6 en una interfaz específica (genera link-local), pero no activa el routing IPv6 en el router.')"><div class="quiz-opt-letter">B</div>ipv6 enable</div>
+          <div class="quiz-opt" onclick="answer(5,'C','correct','¡Correcto! El comando ipv6 unicast-routing (en modo global config) es obligatorio para que un router Cisco reenvíe paquetes IPv6 entre interfaces. Sin él, las interfaces tienen IPs IPv6 pero no enrutan.')"><div class="quiz-opt-letter">C</div>ipv6 unicast-routing</div>
+          <div class="quiz-opt" onclick="answer(5,'D','wrong','ipv6 address solo asigna una dirección a una interfaz específica. No activa el routing IPv6 global.')"><div class="quiz-opt-letter">D</div>ipv6 address</div>
+        </div>
+        <div class="quiz-feedback" id="fb5"></div>
+      </div>
+
+      <!-- P6 -->
+      <div class="quiz-q" id="q6">
+        <div class="quiz-q-num">PREGUNTA 06 / 08</div>
+        <div class="quiz-question">¿Qué proceso usa SLAAC para verificar que la dirección generada no está en uso antes de asignarla?</div>
+        <div class="quiz-options">
+          <div class="quiz-opt" onclick="answer(6,'A','wrong','ARP es de IPv4 y no existe en IPv6. SLAAC usa ICMPv6 para la detección de duplicados.')"><div class="quiz-opt-letter">A</div>ARP Request broadcast</div>
+          <div class="quiz-opt" onclick="answer(6,'B','wrong','DHCP Conflict Detection es un mecanismo de DHCPv4 que usa ARP para detectar conflictos antes de asignar. No aplica a IPv6/SLAAC.')"><div class="quiz-opt-letter">B</div>DHCP Conflict Detection</div>
+          <div class="quiz-opt" onclick="answer(6,'C','correct','¡Correcto! DAD (Duplicate Address Detection) usa mensajes ICMPv6 Neighbor Solicitation enviados a la dirección Solicited-Node multicast. Si nadie responde con un Neighbor Advertisement, la dirección es única y puede usarse.')"><div class="quiz-opt-letter">C</div>DAD (Duplicate Address Detection)</div>
+          <div class="quiz-opt" onclick="answer(6,'D','wrong','EUI-64 es el método para generar el Interface ID a partir de la MAC. No detecta duplicados por sí solo.')"><div class="quiz-opt-letter">D</div>EUI-64 verification</div>
+        </div>
+        <div class="quiz-feedback" id="fb6"></div>
+      </div>
+
+      <!-- P7 -->
+      <div class="quiz-q" id="q7">
+        <div class="quiz-q-num">PREGUNTA 07 / 08</div>
+        <div class="quiz-question">¿A qué dirección multicast envía un host un Router Solicitation (RS)?</div>
+        <div class="quiz-options">
+          <div class="quiz-opt" onclick="answer(7,'A','wrong','FF02::1 es la dirección All-Nodes multicast — llega a todos los nodos IPv6 del enlace. Los RS se envían específicamente a los routers.')"><div class="quiz-opt-letter">A</div>FF02::1 (All-nodes)</div>
+          <div class="quiz-opt" onclick="answer(7,'B','correct','¡Correcto! FF02::2 es la dirección All-Routers multicast. Al enviar el RS a FF02::2, el host se comunica con todos los routers del enlace sin necesidad de conocer su dirección específica. Solo los routers IPv6 pertenecen a este grupo.')"><div class="quiz-opt-letter">B</div>FF02::2 (All-routers)</div>
+          <div class="quiz-opt" onclick="answer(7,'C','wrong','FF02::5 es la dirección para todos los routers OSPFv3. No es la dirección correcta para mensajes NDP generales.')"><div class="quiz-opt-letter">C</div>FF02::5 (OSPFv3)</div>
+          <div class="quiz-opt" onclick="answer(7,'D','wrong','FE80::1 es una dirección Link-Local unicast, no multicast. Los RS se envían a una dirección multicast para llegar a todos los routers.')"><div class="quiz-opt-letter">D</div>FE80::1</div>
+        </div>
+        <div class="quiz-feedback" id="fb7"></div>
+      </div>
+
+      <!-- P8 -->
+      <div class="quiz-q" id="q8">
+        <div class="quiz-q-num">PREGUNTA 08 / 08</div>
+        <div class="quiz-question">¿Cuál es la ruta por defecto en IPv6?</div>
+        <div class="quiz-options">
+          <div class="quiz-opt" onclick="answer(8,'A','wrong','0.0.0.0/0 es la ruta por defecto en IPv4. IPv6 usa una notación diferente.')"><div class="quiz-opt-letter">A</div>0.0.0.0/0</div>
+          <div class="quiz-opt" onclick="answer(8,'B','wrong','::1/128 es la dirección de loopback en IPv6, equivalente a 127.0.0.1 en IPv4. No es la ruta por defecto.')"><div class="quiz-opt-letter">B</div>::1/128</div>
+          <div class="quiz-opt" onclick="answer(8,'C','wrong','FE80::/10 es el prefijo de direcciones Link-Local. No es una ruta por defecto.')"><div class="quiz-opt-letter">C</div>FE80::/10</div>
+          <div class="quiz-opt" onclick="answer(8,'D','correct','¡Correcto! ::/0 es la ruta por defecto en IPv6. El :: representa todos los ceros (equivale a 0.0.0.0 en IPv4) y el /0 indica que ningún bit del prefijo importa → coincide con cualquier destino. Se configura con: ipv6 route ::/0 [next-hop].')"><div class="quiz-opt-letter">D</div>::/0</div>
+        </div>
+        <div class="quiz-feedback" id="fb8"></div>
+      </div>
+
+      <!-- Score -->
+      <div id="scoreArea" style="display:none;" class="card">
+        <div class="card-title"><div class="card-icon">🏆</div>Resultado del Quiz</div>
+        <div style="text-align:center;padding:20px;">
+          <div id="scoreText" style="font-family:'Orbitron',monospace;font-size:2.5rem;font-weight:900;margin-bottom:10px;"></div>
+          <div id="scoreMsg" style="color:var(--text-secondary);font-size:0.95rem;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAREA -->
+    <div class="card">
+      <div class="card-title"><div class="card-icon">📝</div>Tarea Práctica — Lab IPv6 en Packet Tracer</div>
+      <div class="scenario">
+        <div class="scenario-title">🔬 Lab: Red Corporativa IPv6 — FutureNet S.A.</div>
+        <p style="color:#ccc;font-size:0.9rem;line-height:1.8;">
+          2 routers (R1, R2) conectados entre sí. Cada uno con una LAN.<br>
+          • <strong style="color:#8b5cf6;">R1 LAN:</strong> 2001:DB8:1::/64 — SLAAC para PCs<br>
+          • <strong style="color:#00bceb;">R2 LAN:</strong> 2001:DB8:2::/64 — SLAAC para PCs<br>
+          • <strong style="color:#ffd700;">Enlace R1-R2:</strong> 2001:DB8:FF::/64<br>
+          • Link-Locals: FE80::1 en R1, FE80::2 en R2<br>
+          • Rutas estáticas en ambos routers para alcanzar la LAN remota<br>
+          • Verificar con ping ipv6 entre PCs de distintas LANs
+        </p>
+      </div>
+      <ol class="steps">
+        <li class="step-item"><div class="step-num"></div><div class="step-content"><div class="step-title">Configurar R1</div><div class="step-desc">ipv6 unicast-routing → G0/0: 2001:DB8:1::1/64 + FE80::1 → G0/1: 2001:DB8:FF::1/64 + FE80::1</div></div></li>
+        <li class="step-item"><div class="step-num"></div><div class="step-content"><div class="step-title">Configurar R2</div><div class="step-desc">ipv6 unicast-routing → G0/0: 2001:DB8:2::1/64 + FE80::2 → G0/1: 2001:DB8:FF::2/64 + FE80::2</div></div></li>
+        <li class="step-item"><div class="step-num"></div><div class="step-content"><div class="step-title">Rutas estáticas</div><div class="step-desc">R1: ipv6 route 2001:DB8:2::/64 2001:DB8:FF::2 | R2: ipv6 route 2001:DB8:1::/64 2001:DB8:FF::1</div></div></li>
+        <li class="step-item"><div class="step-num"></div><div class="step-content"><div class="step-title">Verificar SLAAC en PCs</div><div class="step-desc">Las PCs deben recibir automáticamente una IP del prefijo de su red via RA. Verificar show ipv6 neighbors en los routers.</div></div></li>
+        <li class="step-item"><div class="step-num"></div><div class="step-content"><div class="step-title">Ping y traceroute IPv6</div><div class="step-desc">ping ipv6 desde PC de LAN1 a PC de LAN2. Usar traceroute ipv6 para ver el path.</div></div></li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- RESUMEN FINAL -->
+  <div class="card" style="margin-top:10px;">
+    <div class="card-title"><div class="card-icon">📋</div>Resumen de Comandos Esenciales — IPv6 CCNA</div>
+    <div class="summary-grid">
+      <div class="summary-item">
+        <h4>🔧 Configuración base</h4>
+        <ul>
+          <li>ipv6 unicast-routing (global)</li>
+          <li>ipv6 address [addr]/[prefix]</li>
+          <li>ipv6 address [addr] eui-64</li>
+          <li>ipv6 address FE80::X link-local</li>
+          <li>ipv6 enable (solo link-local)</li>
+        </ul>
+      </div>
+      <div class="summary-item">
+        <h4>🗺️ Routing IPv6</h4>
+        <ul>
+          <li>ipv6 route [prefix] [next-hop]</li>
+          <li>ipv6 route ::/0 [next-hop]</li>
+          <li>ipv6 route [prefix] [interfaz]</li>
+          <li>show ipv6 route</li>
+          <li>ping ipv6 / traceroute ipv6</li>
+        </ul>
+      </div>
+      <div class="summary-item">
+        <h4>🔍 Verificación</h4>
+        <ul>
+          <li>show ipv6 interface brief</li>
+          <li>show ipv6 interface [int]</li>
+          <li>show ipv6 neighbors</li>
+          <li>show ipv6 routers</li>
+          <li>show ipv6 route</li>
+        </ul>
+      </div>
+      <div class="summary-item">
+        <h4>⚙️ NDP / SLAAC</h4>
+        <ul>
+          <li>ipv6 nd ra suppress</li>
+          <li>ipv6 nd ra-interval [seg]</li>
+          <li>ipv6 nd managed-config-flag</li>
+          <li>ipv6 nd other-config-flag</li>
+          <li>show ipv6 routers</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end container -->
+
+<footer>
+  <div class="container">
+    <div class="footer-text">
+      <strong style="color:var(--cisco-purple);">CISCO CCNA 200-301</strong> — Clase Magistral: IPv6<br>
+      Ruta: CCNA → CCNP → CCIE · Módulo 6 · RFC 2460 · RFC 4291 · RFC 4861 · Cisco IOS<br>
+      <span style="color:rgba(255,255,255,0.3);">Próxima clase: CDP/LLDP — Descubrimiento de vecinos</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  function showTab(tabId, evt) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    if(evt && evt.target) evt.target.classList.add('active');
+    window.scrollTo({top: 200, behavior: 'smooth'});
+  }
+
+  var answers = {}, score = 0;
+
+  function answer(qNum, letter, result, explanation) {
+    if (answers[qNum]) return;
+    answers[qNum] = {letter: letter, result: result};
+    var opts = document.querySelectorAll('#q' + qNum + ' .quiz-opt');
+    opts.forEach(function(opt) {
+      opt.style.pointerEvents = 'none';
+      var l = opt.querySelector('.quiz-opt-letter').textContent;
+      if (l === letter) opt.classList.add(result === 'correct' ? 'correct' : 'wrong');
+      if (result === 'wrong' && opt.getAttribute('onclick').indexOf("'correct'") !== -1) opt.classList.add('correct');
+    });
+    var fb = document.getElementById('fb' + qNum);
+    fb.textContent = (result === 'correct' ? '✅ ' : '❌ ') + explanation;
+    fb.className = 'quiz-feedback show ' + (result === 'correct' ? 'correct-fb' : 'wrong-fb');
+    if (result === 'correct') score++;
+    if (Object.keys(answers).length === 8) showScore();
+  }
+
+  function showScore() {
+    var area = document.getElementById('scoreArea');
+    area.style.display = 'block';
+    var pct = Math.round((score / 8) * 100);
+    var scoreText = document.getElementById('scoreText');
+    var scoreMsg  = document.getElementById('scoreMsg');
+    scoreText.textContent = score + ' / 8 — ' + pct + '%';
+    if (pct >= 87) { scoreText.style.color = 'var(--cisco-green)'; scoreMsg.textContent = '🏆 ¡Excelente! Dominas IPv6 a nivel CCNA. Practica en Packet Tracer.'; }
+    else if (pct >= 62) { scoreText.style.color = 'var(--cisco-yellow)'; scoreMsg.textContent = '📚 Buen progreso. Repasa SLAAC, NDP y tipos de dirección.'; }
+    else { scoreText.style.color = 'var(--cisco-red)'; scoreMsg.textContent = '💪 Necesitas repasar. Vuelve a Fundamentos y Tipos de Dirección.'; }
+    area.scrollIntoView({behavior: 'smooth'});
+  }
+</script>
+</body>
+</html>
