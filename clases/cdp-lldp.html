@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CCNA — CDP / LLDP: Descubrimiento de Vecinos</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;600;700&display=swap');
+  :root{
+    --cisco-blue:#00bceb; --cisco-dark:#0a1628; --cisco-accent:#00e5ff;
+    --cisco-green:#00ff88; --cisco-orange:#ff6b35; --cisco-yellow:#ffd700;
+    --cisco-red:#ff3366; --cisco-teal:#00d4aa;
+    --text-primary:#e8f4fd; --text-secondary:#8ab4d0;
+    --card-bg:rgba(13,34,64,0.85); --border-glow:rgba(0,188,235,0.4);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--cisco-dark);color:var(--text-primary);font-family:"Exo 2",sans-serif;overflow-x:hidden;
+    background-image:radial-gradient(ellipse at 15% 50%,rgba(0,188,235,.05) 0%,transparent 50%),
+    radial-gradient(ellipse at 85% 20%,rgba(0,212,170,.04) 0%,transparent 40%),
+    linear-gradient(180deg,#0a1628 0%,#050d1a 100%);}
+  body::before{content:"";position:fixed;inset:0;
+    background-image:linear-gradient(rgba(0,188,235,.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,188,235,.03) 1px,transparent 1px);
+    background-size:40px 40px;pointer-events:none;z-index:0;}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 20px;position:relative;z-index:1;}
+
+  /* HERO */
+  .hero{padding:60px 0 40px;text-align:center;position:relative;}
+  .hero::after{content:"";position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+    width:200px;height:1px;background:linear-gradient(90deg,transparent,var(--cisco-teal),transparent);}
+  .badge{display:inline-block;padding:4px 14px;border-radius:20px;margin-bottom:16px;
+    font-family:"Orbitron",monospace;font-size:.65rem;letter-spacing:3px;
+    background:rgba(0,212,170,.1);border:1px solid rgba(0,212,170,.4);
+    color:var(--cisco-teal);text-transform:uppercase;}
+  .hero h1{font-family:"Orbitron",monospace;font-size:clamp(2rem,5vw,3.4rem);
+    font-weight:900;line-height:1.1;margin-bottom:14px;
+    background:linear-gradient(135deg,#fff 0%,var(--cisco-teal) 50%,var(--cisco-blue) 100%);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    animation:glow 3s ease-in-out infinite alternate;}
+  @keyframes glow{from{filter:drop-shadow(0 0 8px rgba(0,212,170,.3));}to{filter:drop-shadow(0 0 22px rgba(0,212,170,.7));}}
+  .hero-sub{color:var(--text-secondary);font-size:1rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:26px;}
+  .obj-bar{display:inline-flex;gap:18px;flex-wrap:wrap;justify-content:center;
+    background:rgba(0,212,170,.05);border:1px solid rgba(0,212,170,.3);border-radius:12px;padding:12px 24px;}
+  .obj-item{display:flex;align-items:center;gap:8px;font-size:.85rem;color:var(--cisco-accent);}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--cisco-teal);
+    box-shadow:0 0 8px var(--cisco-teal);animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.5;transform:scale(.8);}}
+
+  /* TABS */
+  .tabs{display:flex;gap:4px;margin:38px 0 26px;background:rgba(13,34,64,.8);
+    border:1px solid var(--border-glow);border-radius:12px;padding:6px;overflow-x:auto;flex-wrap:wrap;}
+  .tbtn{flex:1;min-width:108px;padding:10px 12px;background:transparent;border:none;
+    color:var(--text-secondary);font-family:"Exo 2",sans-serif;font-size:.78rem;font-weight:600;
+    cursor:pointer;border-radius:8px;transition:all .3s;text-transform:uppercase;letter-spacing:1px;white-space:nowrap;}
+  .tbtn:hover{background:rgba(0,212,170,.1);color:var(--cisco-teal);}
+  .tbtn.on{background:linear-gradient(135deg,rgba(0,212,170,.25),rgba(0,100,80,.35));
+    color:#fff;border:1px solid var(--cisco-teal);box-shadow:0 0 15px rgba(0,212,170,.2);}
+  .sec{display:none;animation:fi .4s ease;}.sec.on{display:block;}
+  @keyframes fi{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+  /* CARDS */
+  .card{background:var(--card-bg);border:1px solid var(--border-glow);
+    border-radius:16px;padding:28px;margin-bottom:22px;position:relative;overflow:hidden;backdrop-filter:blur(10px);}
+  .card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;
+    background:linear-gradient(90deg,var(--cisco-teal),var(--cisco-blue),var(--cisco-accent));}
+  .ctit{font-family:"Orbitron",monospace;font-size:1.05rem;color:var(--cisco-blue);
+    margin-bottom:18px;display:flex;align-items:center;gap:10px;}
+  .cico{width:34px;height:34px;flex-shrink:0;
+    background:linear-gradient(135deg,rgba(0,212,170,.25),rgba(0,100,80,.35));
+    border:1px solid var(--cisco-teal);border-radius:8px;
+    display:flex;align-items:center;justify-content:center;font-size:1rem;}
+
+  /* DEFINICION */
+  .def{background:linear-gradient(135deg,rgba(0,212,170,.06),rgba(0,60,100,.12));
+    border:1px solid rgba(0,212,170,.35);border-left:4px solid var(--cisco-teal);
+    border-radius:8px;padding:18px 22px;margin:16px 0;font-size:.98rem;line-height:1.75;}
+
+  /* HIGHLIGHTS */
+  .hl{color:var(--cisco-accent);font-weight:700;}
+  .ht{color:var(--cisco-teal);font-weight:700;}
+  .hg{color:var(--cisco-green);font-weight:700;}
+  .hy{color:var(--cisco-yellow);font-weight:700;}
+  .ho{color:var(--cisco-orange);font-weight:700;}
+  .hr{color:var(--cisco-red);font-weight:700;}
+
+  /* GRIDS */
+  .g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin:16px 0;}
+  .g3{display:grid;grid-template-columns:repeat(auto-fit,minmax(195px,1fr));gap:14px;margin:16px 0;}
+
+  /* FEATURE CARDS */
+  .fc{background:rgba(5,13,26,.8);border:1px solid var(--border-glow);border-radius:12px;
+    padding:18px;text-align:center;transition:all .3s;}
+  .fc:hover{border-color:var(--cisco-teal);transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,212,170,.15);}
+  .fi2{font-size:1.9rem;margin-bottom:9px;}
+  .fn{font-weight:700;font-size:.85rem;color:var(--cisco-teal);margin-bottom:7px;text-transform:uppercase;letter-spacing:1px;}
+  .fd{font-size:.81rem;color:var(--text-secondary);line-height:1.55;}
+
+  /* COMPARE */
+  .cg{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0;}
+  @media(max-width:680px){.cg{grid-template-columns:1fr;}}
+  .cm{border-radius:14px;padding:22px;position:relative;overflow:hidden;}
+  .cm::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;}
+  .cdp-c{background:rgba(0,188,235,.07);border:1px solid rgba(0,188,235,.4);}
+  .cdp-c::before{background:linear-gradient(90deg,var(--cisco-blue),var(--cisco-accent));}
+  .lldp-c{background:rgba(0,212,170,.07);border:1px solid rgba(0,212,170,.4);}
+  .lldp-c::before{background:linear-gradient(90deg,var(--cisco-teal),var(--cisco-green));}
+  .ct{font-family:"Orbitron",monospace;font-size:1.1rem;font-weight:900;margin-bottom:4px;}
+  .cdp-c .ct{color:var(--cisco-blue);}.lldp-c .ct{color:var(--cisco-teal);}
+  .cs{font-size:.74rem;color:var(--text-secondary);margin-bottom:13px;letter-spacing:1px;}
+  .cl{list-style:none;font-size:.85rem;}
+  .cl li{padding:4px 0;padding-left:17px;position:relative;color:var(--text-primary);line-height:1.5;}
+  .cl li::before{content:"▸";position:absolute;left:0;}
+  .cdp-c .cl li::before{color:var(--cisco-blue);}.lldp-c .cl li::before{color:var(--cisco-teal);}
+
+  /* TLV GRID */
+  .tlvg{display:grid;grid-template-columns:repeat(auto-fit,minmax(152px,1fr));gap:9px;margin:14px 0;}
+  .tlv{background:rgba(5,13,26,.8);border-radius:10px;padding:13px;text-align:center;transition:transform .3s;}
+  .tlv:hover{transform:translateY(-3px);}
+  .tlv.M{border:1px solid rgba(0,212,170,.5);}
+  .tlv.O{border:1px solid rgba(0,188,235,.3);}
+  .tlvb{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.63rem;
+    font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:7px;}
+  .tlv.M .tlvb{background:rgba(0,212,170,.15);color:var(--cisco-teal);border:1px solid var(--cisco-teal);}
+  .tlv.O .tlvb{background:rgba(0,188,235,.12);color:var(--cisco-blue);border:1px solid var(--cisco-blue);}
+  .tlvn{font-size:.81rem;font-weight:700;color:var(--text-primary);margin-bottom:3px;}
+  .tlvd{font-size:.71rem;color:var(--text-secondary);line-height:1.4;}
+
+  /* DIAGRAM */
+  .diag{background:rgba(5,13,26,.9);border:1px solid var(--border-glow);border-radius:12px;padding:24px;margin:16px 0;}
+  .diag-t{text-align:center;font-family:"Share Tech Mono",monospace;color:var(--cisco-teal);
+    font-size:.78rem;letter-spacing:2px;margin-bottom:16px;text-transform:uppercase;}
+  svg{max-width:100%;height:auto;}
+
+  /* COMMANDS */
+  .stit{font-family:"Orbitron",monospace;font-size:.73rem;color:var(--cisco-yellow);
+    letter-spacing:2px;text-transform:uppercase;margin:20px 0 9px;
+    padding-left:10px;border-left:3px solid var(--cisco-yellow);}
+  .cmd{background:#020a14;border:1px solid rgba(0,255,136,.3);border-radius:8px;
+    padding:18px;margin:10px 0;font-family:"Share Tech Mono",monospace;font-size:.86rem;
+    position:relative;overflow-x:auto;}
+  .cmdlbl{position:absolute;top:7px;right:11px;font-size:.63rem;color:var(--cisco-teal);
+    background:rgba(0,212,170,.1);padding:3px 8px;border-radius:4px;letter-spacing:1px;
+    font-family:"Exo 2",sans-serif;text-transform:uppercase;}
+  .ln{display:block;padding:2px 0;}
+  .p{color:var(--cisco-green);}.k{color:var(--cisco-yellow);}.v{color:var(--cisco-orange);}.c{color:#4a6a84;font-style:italic;}
+
+  /* OUTPUT */
+  .out{background:#010810;border:1px solid rgba(0,212,170,.25);border-radius:8px;
+    padding:17px;margin:10px 0;font-family:"Share Tech Mono",monospace;font-size:.82rem;
+    overflow-x:auto;position:relative;}
+  .outlbl{position:absolute;top:7px;right:11px;font-size:.63rem;color:var(--cisco-orange);
+    background:rgba(255,107,53,.1);padding:3px 8px;border-radius:4px;letter-spacing:1px;
+    font-family:"Exo 2",sans-serif;text-transform:uppercase;}
+  .oh{color:var(--cisco-teal);font-weight:700;}.of{color:var(--cisco-yellow);}.ov{color:var(--text-primary);}.os{color:#2a4a60;}
+
+  /* INFO BOXES */
+  .ib{display:flex;gap:13px;align-items:flex-start;padding:14px 17px;
+    border-radius:10px;margin:13px 0;font-size:.88rem;line-height:1.6;}
+  .ib.tip{background:rgba(0,255,136,.07);border:1px solid rgba(0,255,136,.3);}
+  .ib.warn{background:rgba(255,107,53,.07);border:1px solid rgba(255,107,53,.3);}
+  .ib.exam{background:rgba(255,215,0,.07);border:1px solid rgba(255,215,0,.35);}
+  .ib.sec{background:rgba(255,51,102,.07);border:1px solid rgba(255,51,102,.3);}
+  .ib.tl{background:rgba(0,212,170,.07);border:1px solid rgba(0,212,170,.3);}
+  .ii{font-size:1.25rem;flex-shrink:0;margin-top:2px;}
+
+  /* TABLE */
+  .dt{width:100%;border-collapse:collapse;margin:14px 0;font-size:.86rem;}
+  .dt th{background:rgba(0,212,170,.12);color:var(--cisco-teal);font-family:"Orbitron",monospace;
+    font-size:.68rem;letter-spacing:1px;padding:10px 13px;text-align:left;
+    border-bottom:2px solid var(--cisco-teal);text-transform:uppercase;}
+  .dt td{padding:9px 13px;border-bottom:1px solid rgba(0,188,235,.1);vertical-align:top;}
+  .dt tr:hover td{background:rgba(0,212,170,.03);}
+
+  /* STEPS */
+  .steps{list-style:none;counter-reset:sc;}
+  .si{counter-increment:sc;display:flex;gap:15px;margin-bottom:18px;}
+  .snum{width:34px;height:34px;flex-shrink:0;
+    background:linear-gradient(135deg,var(--cisco-teal),#005540);
+    border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-family:"Orbitron",monospace;font-weight:700;font-size:.78rem;
+    box-shadow:0 0 12px rgba(0,212,170,.3);}
+  .snum::before{content:counter(sc,decimal-leading-zero);}
+  .sc{flex:1;padding-top:5px;}
+  .stl{font-weight:700;color:var(--cisco-accent);margin-bottom:5px;}
+  .sd{color:var(--text-secondary);font-size:.87rem;line-height:1.6;}
+
+  /* BADGES */
+  .b{display:inline-block;padding:3px 9px;border-radius:20px;font-size:.7rem;
+    font-weight:700;letter-spacing:1px;text-transform:uppercase;margin:2px;}
+  .bt{background:rgba(0,212,170,.15);border:1px solid var(--cisco-teal);color:var(--cisco-teal);}
+  .bb{background:rgba(0,188,235,.15);border:1px solid var(--cisco-blue);color:var(--cisco-blue);}
+  .bg{background:rgba(0,255,136,.12);border:1px solid var(--cisco-green);color:var(--cisco-green);}
+  .by{background:rgba(255,215,0,.12);border:1px solid var(--cisco-yellow);color:var(--cisco-yellow);}
+  .br{background:rgba(255,51,102,.1);border:1px solid var(--cisco-red);color:var(--cisco-red);}
+  .bo{background:rgba(255,107,53,.12);border:1px solid var(--cisco-orange);color:var(--cisco-orange);}
+
+  /* SCENARIO */
+  .scen{background:linear-gradient(135deg,rgba(0,212,170,.05),rgba(0,60,80,.08));
+    border:1px solid rgba(0,212,170,.3);border-radius:12px;padding:20px;margin:16px 0;}
+  .scen-t{font-family:"Orbitron",monospace;font-size:.75rem;color:var(--cisco-teal);
+    letter-spacing:2px;text-transform:uppercase;margin-bottom:9px;}
+
+  /* SUMMARY */
+  .sumg{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:16px 0;}
+  .sumi{background:rgba(5,13,26,.8);border:1px solid var(--border-glow);border-radius:12px;padding:17px;}
+  .sumi h4{color:var(--cisco-teal);font-size:.81rem;margin-bottom:9px;text-transform:uppercase;letter-spacing:1px;}
+  .sumi ul{list-style:none;font-size:.82rem;color:var(--text-secondary);}
+  .sumi ul li{padding:3px 0;padding-left:15px;position:relative;}
+  .sumi ul li::before{content:"▸";position:absolute;left:0;color:var(--cisco-teal);}
+
+  /* QUIZ */
+  .qq{background:rgba(5,13,26,.9);border:1px solid var(--border-glow);border-radius:12px;padding:22px;margin-bottom:18px;}
+  .qqn{font-family:"Share Tech Mono",monospace;color:var(--cisco-yellow);font-size:.73rem;margin-bottom:7px;letter-spacing:1px;}
+  .qqq{font-weight:600;font-size:.97rem;margin-bottom:14px;color:var(--text-primary);line-height:1.5;}
+  .qqo{display:grid;gap:7px;}
+  .qo{display:flex;align-items:center;gap:11px;padding:11px 15px;
+    background:rgba(0,212,170,.03);border:1px solid rgba(0,212,170,.15);
+    border-radius:8px;cursor:pointer;transition:all .2s;font-size:.88rem;}
+  .qo:hover{background:rgba(0,212,170,.08);border-color:var(--cisco-teal);}
+  .qo.ok{background:rgba(0,255,136,.12);border-color:var(--cisco-green);color:var(--cisco-green);pointer-events:none;}
+  .qo.bad{background:rgba(255,51,102,.08);border-color:var(--cisco-red);color:var(--cisco-red);pointer-events:none;}
+  .ql{width:27px;height:27px;border-radius:50%;flex-shrink:0;
+    background:rgba(0,212,170,.12);border:1px solid rgba(0,212,170,.3);
+    display:flex;align-items:center;justify-content:center;
+    font-family:"Orbitron",monospace;font-size:.68rem;font-weight:700;}
+  .qf{display:none;margin-top:11px;padding:11px 15px;border-radius:8px;font-size:.86rem;line-height:1.5;}
+  .qf.show{display:block;}
+  .qf.ok{background:rgba(0,255,136,.08);border:1px solid var(--cisco-green);color:var(--cisco-green);}
+  .qf.bad{background:rgba(255,51,102,.07);border:1px solid var(--cisco-red);color:#ff8fa0;}
+
+  footer{background:rgba(10,22,40,.95);border-top:1px solid var(--border-glow);padding:26px 0;margin-top:56px;text-align:center;}
+  .ft{color:var(--text-secondary);font-size:.78rem;line-height:1.8;}
+  ::-webkit-scrollbar{width:6px;height:6px;}
+  ::-webkit-scrollbar-track{background:var(--cisco-dark);}
+  ::-webkit-scrollbar-thumb{background:var(--cisco-teal);border-radius:3px;}
+  @media(max-width:600px){.hero h1{font-size:1.8rem;}.card{padding:17px;}.cmd{font-size:.74rem;}}
+</style>
+</head>
+<body>
+<nav style="position:fixed;top:0;left:0;right:0;z-index:9000;height:64px;background:rgba(6,12,24,0.97);border-bottom:1px solid rgba(0,188,235,0.2);backdrop-filter:blur(20px);">
+  <div style="max-width:1400px;margin:0 auto;padding:0 24px;height:64px;display:flex;align-items:center;">
+    <a href="../index.html" style="display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;"><span style="font-family:Orbitron,monospace;font-weight:900;font-size:0.9rem;letter-spacing:3px;background:linear-gradient(135deg,#00bceb,#38d9ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;border:1px solid rgba(0,188,235,0.35);padding:5px 10px;border-radius:5px;">CISCO</span><span style="font-family:Orbitron,monospace;font-size:0.65rem;color:#4a6a84;letter-spacing:2.5px;font-weight:500;">ACADEMY</span></a>
+    <a href="asistente.html" style="display:flex;align-items:center;gap:8px;padding:7px 16px;border-radius:8px;font-size:0.82rem;font-weight:700;color:#00d4ff;border:1px solid rgba(0,212,255,0.35);text-decoration:none;margin-left:20px;flex-shrink:0;white-space:nowrap;background:rgba(0,212,255,0.06);font-family:Orbitron,monospace;letter-spacing:0.5px;">🤖 NetBot IA</a>
+    <button onclick="ccnaToggle()" style="display:flex;flex-direction:column;justify-content:center;gap:6px;background:rgba(0,188,235,0.07);border:1px solid rgba(0,188,235,0.3);border-radius:9px;cursor:pointer;padding:10px 13px;margin-left:auto;flex-shrink:0;" onmouseover="this.style.background='rgba(0,188,235,0.15)';this.style.borderColor='#00bceb';" onmouseout="this.style.background='rgba(0,188,235,0.07)';this.style.borderColor='rgba(0,188,235,0.3)';">
+      <span style="display:block;width:22px;height:2px;background:#38d9ff;border-radius:2px;"></span>
+      <span style="display:block;width:16px;height:2px;background:#38d9ff;border-radius:2px;"></span>
+      <span style="display:block;width:22px;height:2px;background:#38d9ff;border-radius:2px;"></span>
+    </button>
+  </div>
+</nav>
+
+<div id="ccna-overlay" onclick="ccnaClose()" style="display:none;position:fixed;inset:0;top:64px;background:rgba(0,0,0,0.6);z-index:8998;"></div>
+
+
+<div id="ccna-drawer" style="display:none;flex-direction:column;position:fixed;top:64px;right:0;width:280px;height:calc(100vh - 64px);background:linear-gradient(180deg,rgba(4,10,22,0.99),rgba(6,14,28,0.99));border-left:1px solid rgba(0,188,235,0.15);padding:0;overflow-y:auto;z-index:8999;box-shadow:-20px 0 60px rgba(0,0,0,0.7);">
+  <div style="padding:16px 16px 8px;border-bottom:1px solid rgba(0,188,235,0.08);"><div style="font-family:Orbitron,monospace;font-size:0.6rem;color:#00bceb;letter-spacing:3px;text-transform:uppercase;opacity:0.8;">Navegación</div></div>
+  <div style="padding:8px 10px 24px;display:flex;flex-direction:column;gap:2px;">
+    <div style="font-family:Orbitron,monospace;font-size:0.52rem;color:#00bceb;letter-spacing:2px;text-transform:uppercase;padding:14px 8px 5px;opacity:0.7;">Módulo 1 — Fundamentos</div>
+    <a href="fundamentos.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🔌</span>Fundamentos de Redes</a>
+    <a href="subnetting.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🔢</span>Subnetting IPv4</a>
+    <a href="calculadora.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🧮</span>Calculadora IP</a>
+    <div style="font-family:Orbitron,monospace;font-size:0.52rem;color:#00bceb;letter-spacing:2px;text-transform:uppercase;padding:14px 8px 5px;border-top:1px solid rgba(0,188,235,0.08);opacity:0.7;margin-top:6px;">Módulo 2 — Switching</div>
+    <a href="vlan.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🏷️</span>VLANs</a>
+    <a href="stp.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🌳</span>STP</a>
+    <a href="switches-cisco.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🖧</span>Switches Cisco</a>
+    <a href="etherchannel.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🔗</span>EtherChannel</a>
+    <a href="port-security.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🛡️</span>Port Security</a>
+    <div style="font-family:Orbitron,monospace;font-size:0.52rem;color:#00bceb;letter-spacing:2px;text-transform:uppercase;padding:14px 8px 5px;border-top:1px solid rgba(0,188,235,0.08);opacity:0.7;margin-top:6px;">Módulo 3 — Routing</div>
+    <a href="router.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🌐</span>Routers Cisco</a>
+    <a href="routing.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">📋</span>Routing Estático</a>
+    <a href="ospf.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🔴</span>OSPF</a>
+    <a href="eigrp.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">⚡</span>EIGRP</a>
+    <a href="cdp-lldp.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,212,170,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🔍</span>CDP / LLDP</a>
+    <div style="font-family:Orbitron,monospace;font-size:0.52rem;color:#00bceb;letter-spacing:2px;text-transform:uppercase;padding:14px 8px 5px;border-top:1px solid rgba(0,188,235,0.08);opacity:0.7;margin-top:6px;">Módulo 4 — Seguridad</div>
+    <a href="acl.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🔒</span>ACLs</a>
+    <a href="nat.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🔀</span>NAT/PAT</a>
+    <div style="font-family:Orbitron,monospace;font-size:0.52rem;color:#00bceb;letter-spacing:2px;text-transform:uppercase;padding:14px 8px 5px;border-top:1px solid rgba(0,188,235,0.08);opacity:0.7;margin-top:6px;">Módulo 5 — WAN y Servicios</div>
+    <a href="wan.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🌍</span>WAN y Servicios</a>
+    <a href="dhcp.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">📡</span>DHCP</a>
+    <a href="qos.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">📶</span>QoS</a>
+    <div style="font-family:Orbitron,monospace;font-size:0.52rem;color:#8b5cf6;letter-spacing:2px;text-transform:uppercase;padding:14px 8px 5px;border-top:1px solid rgba(139,92,246,0.15);opacity:0.9;margin-top:6px;">Módulo 6 — IPv6</div>
+    <a href="ipv6.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(139,92,246,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🌐</span>IPv6</a>
+  </div>
+</div>
+<script>
+function ccnaToggle(){var d=document.getElementById('ccna-drawer');var o=document.getElementById('ccna-overlay');var open=d.style.display==='flex';d.style.display=open?'none':'flex';o.style.display=open?'none':'block';}
+function ccnaClose(){document.getElementById('ccna-drawer').style.display='none';document.getElementById('ccna-overlay').style.display='none';}
+(function(){var cur=window.location.pathname.split('/').pop();if(!cur||cur==='index.html')return;document.querySelectorAll('#ccna-drawer a').forEach(function(l){if(l.getAttribute('href')===cur){l.style.background='rgba(0,212,170,0.12)';l.style.color='#5eead4';l.style.borderLeft='2px solid #00d4aa';l.style.paddingLeft='10px';}});})();
+</script>
+<div style="height:56px;"></div>
+<div class="wrap">
+
+<!-- HERO -->
+<div class="hero">
+  <div class="badge">Módulo 3 — Routing &amp; Descubrimiento de Vecinos</div>
+  <h1>CDP &amp; LLDP</h1>
+  <div class="hero-sub">Cisco Discovery Protocol · Link Layer Discovery Protocol · IEEE 802.1AB</div>
+  <div class="obj-bar">
+    <div class="obj-item"><div class="dot"></div>Fundamentos</div>
+    <div class="obj-item"><div class="dot"></div>CDP Detallado</div>
+    <div class="obj-item"><div class="dot"></div>LLDP &amp; MED</div>
+    <div class="obj-item"><div class="dot"></div>Comandos IOS</div>
+    <div class="obj-item"><div class="dot"></div>Seguridad</div>
+    <div class="obj-item"><div class="dot"></div>Quiz CCNA</div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tbtn on"  onclick="showT('t1',this)">📘 Fundamentos</button>
+  <button class="tbtn"     onclick="showT('t2',this)">🔵 CDP</button>
+  <button class="tbtn"     onclick="showT('t3',this)">🟢 LLDP</button>
+  <button class="tbtn"     onclick="showT('t4',this)">⌨️ Comandos</button>
+  <button class="tbtn"     onclick="showT('t5',this)">🔒 Seguridad</button>
+  <button class="tbtn"     onclick="showT('t6',this)">🎯 Quiz CCNA</button>
+</div>
+
+<!-- ══════════════ TAB 1: FUNDAMENTOS ══════════════ -->
+<div id="t1" class="sec on">
+
+<div class="card">
+  <div class="ctit"><div class="cico">💡</div>¿Qué son los protocolos de descubrimiento de vecinos?</div>
+  <div class="def">
+    Los <span class="ht">protocolos de descubrimiento de capa 2</span> permiten que los dispositivos de red descubran automáticamente información sobre sus <span class="hl">vecinos directamente conectados</span> — sin configuración manual ni acceso físico al dispositivo remoto.
+    Operan en la <span class="hl">Capa 2 del modelo OSI</span> y son fundamentales para <span class="hg">documentación, troubleshooting y gestión</span>. Los frames van a una dirección <span class="hy">multicast L2</span> — no se reenvían más allá del enlace directo.
+  </div>
+  <div class="g3">
+    <div class="fc"><div class="fi2">🗺️</div><div class="fn">Mapeo de topología</div><div class="fd">Descubren dispositivos, puerto de conexión y capacidades. Esencial para documentar redes desconocidas en minutos.</div></div>
+    <div class="fc"><div class="fi2">🔧</div><div class="fn">Troubleshooting</div><div class="fd">Verifican conexiones físicas, detectan misconfiguraciones y confirman la topología real vs la documentada.</div></div>
+    <div class="fc"><div class="fi2">📊</div><div class="fn">Inventario automático</div><div class="fd">Obtienen modelo, versión IOS, IP y capacidades del vecino sin acceso directo al dispositivo.</div></div>
+    <div class="fc"><div class="fi2">⚡</div><div class="fn">Sin IP requerida</div><div class="fd">Funcionan aunque el vecino no tenga IP configurada. Solo requieren conectividad a nivel de enlace L2.</div></div>
+    <div class="fc"><div class="fi2">🔄</div><div class="fn">Anuncios periódicos</div><div class="fd">Envían helllos en intervalos configurables. Si no llega anuncio en el holdtime, el vecino expira.</div></div>
+    <div class="fc"><div class="fi2">🎯</div><div class="fn">Solo vecinos directos</div><div class="fd">Solo descubren el primer salto. Los frames multicast L2 no se propagan más allá del enlace inmediato.</div></div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="ctit"><div class="cico">⚖️</div>CDP vs LLDP — Comparativa completa</div>
+  <div class="cg">
+    <div class="cm cdp-c">
+      <div class="ct">CDP</div>
+      <div class="cs">Cisco Discovery Protocol</div>
+      <ul class="cl">
+        <li>Propietario <strong>Cisco</strong> — solo entre Cisco</li>
+        <li>Capa 2 — no depende de IP ni routing</li>
+        <li><span class="hg">Habilitado por defecto</span> en IOS</li>
+        <li>Timer: <strong>60 s</strong> · Holdtime: <strong>180 s</strong></li>
+        <li>Multicast: <code style="color:#00bceb">01:00:0C:CC:CC:CC</code></li>
+        <li>Encapsulación LLC/SNAP</li>
+        <li>Soporta teléfonos IP y APs Cisco</li>
+        <li>Comparte: VTP domain, Native VLAN, duplex</li>
+      </ul>
+    </div>
+    <div class="cm lldp-c">
+      <div class="ct">LLDP</div>
+      <div class="cs">IEEE 802.1AB — Estándar abierto</div>
+      <ul class="cl">
+        <li>Estándar <strong>IEEE 802.1AB</strong> — multi-vendor</li>
+        <li>Capa 2 — independiente de capa 3</li>
+        <li><span class="ho">Deshabilitado por defecto</span> — requiere <code>lldp run</code></li>
+        <li>Timer: <strong>30 s</strong> · Holdtime: <strong>120 s</strong></li>
+        <li>Multicast: <code style="color:#00d4aa">01:80:C2:00:00:0E</code></li>
+        <li>Ethernet Type 0x88CC</li>
+        <li>Extensión LLDP-MED para VoIP/PoE</li>
+        <li>Tx y Rx <strong>configurables por separado</strong></li>
+      </ul>
+    </div>
+  </div>
+  <table class="dt">
+    <thead><tr><th>Característica</th><th>CDP</th><th>LLDP</th></tr></thead>
+    <tbody>
+      <tr><td>Estándar</td><td><span class="b bb">Propietario Cisco</span></td><td><span class="b bt">IEEE 802.1AB</span></td></tr>
+      <tr><td>Compatibilidad</td><td>Solo Cisco</td><td>Multi-vendor (Cisco, HP, Juniper, Huawei…)</td></tr>
+      <tr><td>Estado por defecto</td><td style="color:var(--cisco-green);font-weight:700">Habilitado</td><td style="color:var(--cisco-orange);font-weight:700">Deshabilitado</td></tr>
+      <tr><td>Timer de anuncio</td><td>60 segundos</td><td>30 segundos</td></tr>
+      <tr><td>Holdtime</td><td>180 segundos (3× timer)</td><td>120 segundos (4× timer)</td></tr>
+      <tr><td>Dirección multicast</td><td style="font-family:monospace;color:#00bceb">01:00:0C:CC:CC:CC</td><td style="font-family:monospace;color:#00d4aa">01:80:C2:00:00:0E</td></tr>
+      <tr><td>Control Tx / Rx</td><td>Juntos (on/off global por interfaz)</td><td>Independientes por interfaz</td></tr>
+      <tr><td>Extensión VoIP</td><td>CDP Voice VLAN</td><td>LLDP-MED (ANSI/TIA-1057)</td></tr>
+      <tr><td>Activar global</td><td style="font-family:monospace;color:#ffd700">cdp run</td><td style="font-family:monospace;color:#ffd700">lldp run</td></tr>
+    </tbody>
+  </table>
+  <div class="ib exam"><div class="ii">🎯</div><div><strong>EXAMEN CCNA 200-301:</strong> CDP está <strong>habilitado por defecto</strong>. LLDP está <strong>deshabilitado por defecto</strong>. Timer CDP=60s/holdtime=180s. Timer LLDP=30s/holdtime=120s. Son preguntas muy frecuentes en el examen oficial.</div></div>
+</div>
+
+<div class="card">
+  <div class="ctit"><div class="cico">🌐</div>Proceso de descubrimiento — Cómo funcionan</div>
+  <div class="diag">
+    <div class="diag-t">Topología descubierta con CDP / LLDP — Solo vecinos directos</div>
+    <svg viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg">
+      <rect x="15" y="80" width="115" height="60" rx="10" fill="#0a2040" stroke="#00bceb" stroke-width="2"/>
+      <text x="72" y="105" text-anchor="middle" fill="#00bceb" font-family="Share Tech Mono" font-size="10" font-weight="bold">ROUTER R1</text>
+      <text x="72" y="120" text-anchor="middle" fill="#4a6a84" font-family="Share Tech Mono" font-size="8">Gi0/0</text>
+      <text x="72" y="133" text-anchor="middle" fill="#ffd700" font-family="Share Tech Mono" font-size="7">10.0.0.1</text>
+      <rect x="285" y="45" width="130" height="60" rx="10" fill="#0a2040" stroke="#00d4aa" stroke-width="2"/>
+      <text x="350" y="70" text-anchor="middle" fill="#00d4aa" font-family="Share Tech Mono" font-size="10" font-weight="bold">SWITCH SW1</text>
+      <text x="350" y="85" text-anchor="middle" fill="#4a6a84" font-family="Share Tech Mono" font-size="8">Fa0/1 — Gi0/1</text>
+      <text x="350" y="98" text-anchor="middle" fill="#ffd700" font-family="Share Tech Mono" font-size="7">Catalyst 2960</text>
+      <rect x="285" y="160" width="130" height="52" rx="10" fill="#0a2040" stroke="#00d4aa" stroke-width="2"/>
+      <text x="350" y="182" text-anchor="middle" fill="#00d4aa" font-family="Share Tech Mono" font-size="10" font-weight="bold">SWITCH SW2</text>
+      <text x="350" y="197" text-anchor="middle" fill="#ffd700" font-family="Share Tech Mono" font-size="7">Catalyst 3750</text>
+      <rect x="560" y="80" width="125" height="60" rx="10" fill="#0a2040" stroke="#00bceb" stroke-width="2"/>
+      <text x="622" y="105" text-anchor="middle" fill="#00bceb" font-family="Share Tech Mono" font-size="10" font-weight="bold">ROUTER R2</text>
+      <text x="622" y="120" text-anchor="middle" fill="#4a6a84" font-family="Share Tech Mono" font-size="8">Gi0/0</text>
+      <text x="622" y="133" text-anchor="middle" fill="#ffd700" font-family="Share Tech Mono" font-size="7">10.0.0.2</text>
+      <line x1="130" y1="110" x2="285" y2="78" stroke="rgba(0,188,235,.5)" stroke-width="2"/>
+      <text x="202" y="82" text-anchor="middle" fill="#00bceb" font-family="Share Tech Mono" font-size="7">CDP/LLDP ↔</text>
+      <line x1="350" y1="105" x2="350" y2="160" stroke="rgba(0,212,170,.5)" stroke-width="2"/>
+      <text x="362" y="138" fill="#00d4aa" font-family="Share Tech Mono" font-size="7">trunk</text>
+      <line x1="415" y1="75" x2="560" y2="110" stroke="rgba(0,188,235,.5)" stroke-width="2"/>
+      <text x="490" y="80" text-anchor="middle" fill="#00bceb" font-family="Share Tech Mono" font-size="7">CDP/LLDP ↔</text>
+      <rect x="10" y="155" width="265" height="58" rx="7" fill="rgba(0,188,235,.05)" stroke="rgba(0,188,235,.25)" stroke-width="1"/>
+      <text x="22" y="172" fill="#00bceb" font-family="Share Tech Mono" font-size="7">R1 → SW1: hostname, IOS, platform, IP,</text>
+      <text x="22" y="184" fill="#00bceb" font-family="Share Tech Mono" font-size="7">capabilities, port-id, duplex</text>
+      <text x="22" y="200" fill="#00d4aa" font-family="Share Tech Mono" font-size="7">SW1 → R1: Catalyst 2960, VTP domain,</text>
+      <text x="22" y="212" fill="#00d4aa" font-family="Share Tech Mono" font-size="7">Native VLAN, IOS 15.x, PoE info</text>
+    </svg>
+  </div>
+  <div class="ib tl"><div class="ii">📡</div><div><strong>Principio clave:</strong> Los frames CDP/LLDP van a una <strong>dirección multicast L2 específica</strong> y NO son reenviados por switches ni routers. Cada dispositivo anuncia su propia información y recibe la del vecino de forma independiente. Alcance: solo el enlace directo.</div></div>
+</div>
+
+</div><!-- /t1 -->
+
+<!-- ══════════════ TAB 2: CDP ══════════════ -->
+<div id="t2" class="sec">
+
+<div class="card">
+  <div class="ctit"><div class="cico">🔵</div>CDP — Cisco Discovery Protocol en profundidad</div>
+  <div class="def">
+    <span class="hl">CDP</span> es un protocolo propietario Cisco encapsulado en frames <span class="ht">LLC/SNAP</span> sobre capa 2. Cada dispositivo envía anuncios CDP cada <span class="hy">60 segundos</span>. Si no se recibe ningún anuncio en <span class="ho">180 segundos</span> (holdtime), el vecino se elimina de la tabla CDP. Funciona en routers, switches, teléfonos IP y APs Cisco.
+  </div>
+  <div class="g2">
+    <div>
+      <div class="stit" style="margin-top:0">Información TLV que comparte CDP</div>
+      <table class="dt">
+        <thead><tr><th>TLV CDP</th><th>Información proporcionada</th></tr></thead>
+        <tbody>
+          <tr><td><span class="b bt">Device-ID</span></td><td>Hostname del vecino</td></tr>
+          <tr><td><span class="b bb">Addresses</span></td><td>IPs IPv4/IPv6 del vecino</td></tr>
+          <tr><td><span class="b bt">Port-ID</span></td><td>Interfaz del vecino conectada (ej: Gi0/1)</td></tr>
+          <tr><td><span class="b bb">Capabilities</span></td><td>R=Router, S=Switch, H=Host, I=IGMP, P=Phone</td></tr>
+          <tr><td><span class="b bt">Version</span></td><td>Versión del IOS del vecino</td></tr>
+          <tr><td><span class="b bb">Platform</span></td><td>Modelo hardware (ej: Cisco 2911)</td></tr>
+          <tr><td><span class="b bt">VTP Domain</span></td><td>Dominio VTP del switch</td></tr>
+          <tr><td><span class="b bb">Native VLAN</span></td><td>VLAN nativa del enlace trunk</td></tr>
+          <tr><td><span class="b bt">Duplex</span></td><td>Half/Full duplex de la interfaz</td></tr>
+          <tr><td><span class="b bb">Power (PoE)</span></td><td>Requerimiento de energía (Teléfonos IP)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <div class="stit" style="margin-top:0">Casos de uso prácticos</div>
+      <ol class="steps">
+        <li class="si"><div class="snum"></div><div class="sc"><div class="stl">Documentar topología desconocida</div><div class="sd">show cdp neighbors revela todos los dispositivos conectados directamente. En minutos mapeas una red sin documentación previa.</div></div></li>
+        <li class="si"><div class="snum"></div><div class="sc"><div class="stl">Verificar conexiones físicas</div><div class="sd">Confirmar que el cable está en el puerto correcto del switch remoto sin moverse al rack. El Port-ID indica exactamente dónde conecta.</div></div></li>
+        <li class="si"><div class="snum"></div><div class="sc"><div class="stl">Detectar duplex mismatch</div><div class="sd">CDP informa el duplex del vecino. Si hay mismatch (uno full, otro half) se generan colisiones, errores y pérdida de performance.</div></div></li>
+        <li class="si"><div class="snum"></div><div class="sc"><div class="stl">Soporte VoIP — Voice VLAN</div><div class="sd">Teléfonos IP Cisco usan CDP para negociar la Voice VLAN con el switch y recibir configuración PoE automáticamente.</div></div></li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="ctit"><div class="cico">⏱️</div>Timers CDP — Anuncios, holdtime y expiración</div>
+  <div class="diag">
+    <div class="diag-t">Timeline CDP — Anuncios periódicos y expiración del vecino</div>
+    <svg viewBox="0 0 700 125" xmlns="http://www.w3.org/2000/svg">
+      <line x1="30" y1="62" x2="670" y2="62" stroke="rgba(0,188,235,.3)" stroke-width="2"/>
+      <line x1="30" y1="47" x2="30" y2="77" stroke="#00bceb" stroke-width="2"/>
+      <text x="30" y="93" text-anchor="middle" fill="#4a6a84" font-family="Share Tech Mono" font-size="8">t=0s</text>
+      <text x="30" y="36" text-anchor="middle" fill="#00bceb" font-family="Share Tech Mono" font-size="7">CDP hello</text>
+      <line x1="200" y1="47" x2="200" y2="77" stroke="#00bceb" stroke-width="2"/>
+      <text x="200" y="93" text-anchor="middle" fill="#4a6a84" font-family="Share Tech Mono" font-size="8">t=60s</text>
+      <text x="200" y="36" text-anchor="middle" fill="#00bceb" font-family="Share Tech Mono" font-size="7">CDP hello</text>
+      <line x1="370" y1="47" x2="370" y2="77" stroke="#00bceb" stroke-width="2"/>
+      <text x="370" y="93" text-anchor="middle" fill="#4a6a84" font-family="Share Tech Mono" font-size="8">t=120s</text>
+      <text x="370" y="36" text-anchor="middle" fill="#00bceb" font-family="Share Tech Mono" font-size="7">CDP hello</text>
+      <text x="545" y="52" text-anchor="middle" fill="#ff3366" font-size="22">✕</text>
+      <text x="545" y="93" text-anchor="middle" fill="#4a6a84" font-family="Share Tech Mono" font-size="8">t=180s</text>
+      <text x="545" y="25" text-anchor="middle" fill="#ff3366" font-family="Share Tech Mono" font-size="7">VECINO EXPIRA</text>
+      <rect x="30" y="100" width="515" height="13" rx="3" fill="rgba(255,107,53,.15)" stroke="rgba(255,107,53,.4)" stroke-width="1"/>
+      <text x="287" y="110" text-anchor="middle" fill="#ff6b35" font-family="Share Tech Mono" font-size="7">HOLDTIME = 180 segundos (3 × timer de 60s)</text>
+      <text x="110" y="55" text-anchor="middle" fill="#00bceb" font-family="Share Tech Mono" font-size="7">← timer 60s →</text>
+    </svg>
+  </div>
+  <div class="ib exam"><div class="ii">🎯</div><div><strong>EXAMEN CCNA:</strong> Holdtime CDP = <strong>3× el timer</strong> → 60s timer / 180s holdtime. Cambiar el timer con <code style="color:#ffd700">cdp timer</code> <strong>NO</strong> cambia el holdtime automáticamente — debes ajustar con <code style="color:#ffd700">cdp holdtime</code> por separado. LLDP: timer=30s / holdtime=120s.</div></div>
+</div>
+
+</div><!-- /t2 -->
+
+<!-- ══════════════ TAB 3: LLDP ══════════════ -->
+<div id="t3" class="sec">
+
+<div class="card">
+  <div class="ctit"><div class="cico">🟢</div>LLDP — IEEE 802.1AB en profundidad</div>
+  <div class="def">
+    <span class="ht">LLDP</span> (IEEE 802.1AB) es el estándar abierto multi-vendor equivalente a CDP. Funciona entre Cisco, HP/Aruba, Juniper, Huawei y cualquier fabricante compatible. En Cisco IOS está <span class="ho">deshabilitado por defecto</span> y debe activarse con <span class="hy">lldp run</span>. Característica única: el <span class="ht">Tx y Rx son independientes</span> — se pueden controlar por separado por interfaz.
+  </div>
+  <div class="stit" style="margin-top:10px">TLVs de LLDP — Obligatorios y Opcionales</div>
+  <p style="color:var(--text-secondary);font-size:.88rem;margin-bottom:13px">Los mensajes LLDP se componen de bloques TLV (Type/Length/Value). Cuatro son mandatorios en cualquier implementación:</p>
+  <div class="tlvg">
+    <div class="tlv M"><div class="tlvb">Obligatorio</div><div class="tlvn">Chassis ID</div><div class="tlvd">Identificador único del dispositivo (MAC, hostname o IP)</div></div>
+    <div class="tlv M"><div class="tlvb">Obligatorio</div><div class="tlvn">Port ID</div><div class="tlvd">Identificador del puerto desde donde se envía el frame</div></div>
+    <div class="tlv M"><div class="tlvb">Obligatorio</div><div class="tlvn">Time to Live</div><div class="tlvd">Holdtime en segundos (TTL = Timer × Multiplier)</div></div>
+    <div class="tlv M"><div class="tlvb">Obligatorio</div><div class="tlvn">End of LLDPDU</div><div class="tlvd">Marca el fin del frame LLDP (TLV tipo 0)</div></div>
+    <div class="tlv O"><div class="tlvb">Opcional</div><div class="tlvn">System Name</div><div class="tlvd">Hostname del dispositivo</div></div>
+    <div class="tlv O"><div class="tlvb">Opcional</div><div class="tlvn">System Description</div><div class="tlvd">SO, versión firmware y hardware</div></div>
+    <div class="tlv O"><div class="tlvb">Opcional</div><div class="tlvn">System Capabilities</div><div class="tlvd">Router, Switch, Bridge, Phone, WLAN AP</div></div>
+    <div class="tlv O"><div class="tlvb">Opcional</div><div class="tlvn">Management Address</div><div class="tlvd">IP de gestión del dispositivo</div></div>
+    <div class="tlv O"><div class="tlvb">Opcional</div><div class="tlvn">Port Description</div><div class="tlvd">Descripción del puerto (interface description)</div></div>
+    <div class="tlv O"><div class="tlvb">Opcional</div><div class="tlvn">VLAN Name</div><div class="tlvd">Nombre de VLAN — extensión IEEE 802.1</div></div>
+    <div class="tlv O"><div class="tlvb">Opcional</div><div class="tlvn">MAC/PHY Config</div><div class="tlvd">Duplex, velocidad y capacidades físicas del puerto</div></div>
+    <div class="tlv O"><div class="tlvb">Opcional</div><div class="tlvn">LLDP-MED</div><div class="tlvd">Extensión VoIP, PoE y localización</div></div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="ctit"><div class="cico">📞</div>LLDP-MED — Media Endpoint Discovery</div>
+  <div class="def">
+    <span class="ht">LLDP-MED</span> (ANSI/TIA-1057) extiende LLDP para entornos de <span class="hl">comunicaciones unificadas</span>. Proporciona capacidades avanzadas para teléfonos IP, sistemas de conferencia y dispositivos PoE. Compatible entre cualquier fabricante que implemente el estándar.
+  </div>
+  <div class="g3">
+    <div class="fc" style="border-color:rgba(0,212,170,.4)"><div class="fi2">📞</div><div class="fn">Network Policy</div><div class="fd">Comunica VLAN de voz, prioridad CoS/DSCP y política QoS al teléfono IP automáticamente vía switch.</div></div>
+    <div class="fc" style="border-color:rgba(0,212,170,.4)"><div class="fi2">⚡</div><div class="fn">Extended Power</div><div class="fd">Negociación PoE detallada — el endpoint informa la potencia exacta requerida al switch PoE.</div></div>
+    <div class="fc" style="border-color:rgba(0,212,170,.4)"><div class="fi2">📍</div><div class="fn">Location</div><div class="fd">Información de ubicación física para servicios E-911. El switch comunica la localización al endpoint.</div></div>
+    <div class="fc" style="border-color:rgba(0,212,170,.4)"><div class="fi2">🔎</div><div class="fn">Inventory</div><div class="fd">Firmware, modelo y serial number del endpoint para inventario automático de activos.</div></div>
+    <div class="fc" style="border-color:rgba(0,212,170,.4)"><div class="fi2">🏷️</div><div class="fn">Device Class</div><div class="fd">Class I (genérico), Class II (media endpoint), Class III (teléfono IP VoIP con llamadas de voz).</div></div>
+    <div class="fc" style="border-color:rgba(0,212,170,.4)"><div class="fi2">🔄</div><div class="fn">Multi-vendor</div><div class="fd">Switch Cisco con teléfonos Polycom, Avaya, Yealink o cualquier endpoint que implemente 802.1AB.</div></div>
+  </div>
+  <div class="ib tl"><div class="ii">💡</div><div><strong>CDP vs LLDP-MED en VoIP:</strong> Teléfonos IP <em>Cisco</em> usan CDP para negociar Voice VLAN. En redes <em>multi-vendor</em> LLDP-MED es la solución estándar. En entornos empresariales modernos se habilitan <strong>ambos simultáneamente</strong> para soportar cualquier fabricante.</div></div>
+</div>
+
+</div><!-- /t3 -->
+
+<!-- ══════════════ TAB 4: COMANDOS ══════════════ -->
+<div id="t4" class="sec">
+
+<div class="card">
+  <div class="ctit"><div class="cico">⌨️</div>Comandos CDP — Referencia completa IOS</div>
+
+  <div class="stit">Habilitar / Deshabilitar CDP</div>
+  <div class="cmd"><span class="cmdlbl">CDP GLOBAL</span>
+<span class="ln"><span class="c">! CDP activo por defecto — rehabilitar si fue deshabilitado</span></span>
+<span class="ln"><span class="p">Router(config)#</span> <span class="k">cdp run</span></span>
+<span class="ln"><span class="c">! Deshabilitar CDP en TODO el dispositivo</span></span>
+<span class="ln"><span class="p">Router(config)#</span> <span class="k">no cdp run</span></span>
+<span class="ln"><span class="c">! Deshabilitar CDP solo en una interfaz (buena práctica en puertos de usuario)</span></span>
+<span class="ln"><span class="p">Router(config)#</span> <span class="k">interface</span> <span class="v">GigabitEthernet0/0</span></span>
+<span class="ln"><span class="p">Router(config-if)#</span> <span class="k">no cdp enable</span></span>
+<span class="ln"><span class="c">! Rehabilitar CDP en la interfaz</span></span>
+<span class="ln"><span class="p">Router(config-if)#</span> <span class="k">cdp enable</span></span></div>
+
+  <div class="stit">Ajustar timers CDP</div>
+  <div class="cmd"><span class="cmdlbl">CDP TIMERS</span>
+<span class="ln"><span class="c">! Timer de anuncio — default 60s</span></span>
+<span class="ln"><span class="p">Router(config)#</span> <span class="k">cdp timer</span> <span class="v">30</span></span>
+<span class="ln"><span class="c">! Holdtime — default 180s (recomendado mantener 3 × timer)</span></span>
+<span class="ln"><span class="p">Router(config)#</span> <span class="k">cdp holdtime</span> <span class="v">90</span></span>
+<span class="ln"><span class="c">! Verificar timers actuales</span></span>
+<span class="ln"><span class="p">Router#</span> <span class="k">show cdp</span></span></div>
+
+  <div class="stit">Comandos show CDP</div>
+  <div class="cmd"><span class="cmdlbl">VERIFICACIÓN</span>
+<span class="ln"><span class="p">Router#</span> <span class="k">show cdp neighbors</span>                  <span class="c">! Resumen de vecinos</span></span>
+<span class="ln"><span class="p">Router#</span> <span class="k">show cdp neighbors detail</span>           <span class="c">! Detalle completo</span></span>
+<span class="ln"><span class="p">Router#</span> <span class="k">show cdp entry</span> <span class="v">SW1.empresa.com</span>    <span class="c">! Vecino específico</span></span>
+<span class="ln"><span class="p">Router#</span> <span class="k">show cdp interface</span> <span class="v">GigabitEthernet0/0</span> <span class="c">! CDP en interfaz</span></span>
+<span class="ln"><span class="p">Router#</span> <span class="k">show cdp traffic</span>                   <span class="c">! Estadísticas tx/rx</span></span></div>
+
+  <div class="stit">Salida: show cdp neighbors</div>
+  <div class="out"><span class="outlbl">OUTPUT</span>
+<span class="ln"><span class="oh">Router# show cdp neighbors</span></span>
+<span class="ln"><span class="os">───────────────────────────────────────────────────────────────</span></span>
+<span class="ln"><span class="oh">Device ID        Local Intrfce  Holdtme  Capability  Platform      Port ID</span></span>
+<span class="ln"><span class="os">───────────────────────────────────────────────────────────────</span></span>
+<span class="ln"><span class="ov">SW1.empresa.com  Gig 0/0        <span class="hy">168</span>      S I         <span class="ht">WS-C2960</span>      Fas 0/1</span></span>
+<span class="ln"><span class="ov">SW2.empresa.com  Gig 0/1        <span class="hy">152</span>      S I         <span class="ht">WS-C3750</span>      Gig 1/0/1</span></span>
+<span class="ln"><span class="ov">R2.empresa.com   Ser 0/0/0      <span class="hy">170</span>      R B         <span class="ht">Cisco 2911</span>    Ser 0/0/0</span></span>
+<span class="ln"> </span>
+<span class="ln"><span class="of">Capabilities: R=Router S=Switch H=Host I=IGMP B=Bridge P=Phone T=Trans-Bridge</span></span></div>
+
+  <div class="stit">Salida: show cdp neighbors detail</div>
+  <div class="out"><span class="outlbl">DETALLE CDP</span>
+<span class="ln"><span class="oh">Router# show cdp neighbors detail</span></span>
+<span class="ln"><span class="os">────────────────────────────────────</span></span>
+<span class="ln"><span class="of">Device ID:</span> <span class="ov">SW1.empresa.com</span></span>
+<span class="ln"><span class="of">Entry address(es):</span>  <span class="of">IP address:</span> <span class="ov">192.168.1.2</span></span>
+<span class="ln"><span class="of">Platform:</span> <span class="ov">cisco WS-C2960-24TT-L,</span>  <span class="of">Capabilities:</span> <span class="ov">Switch IGMP</span></span>
+<span class="ln"><span class="of">Interface:</span> <span class="ov">GigabitEthernet0/0,</span>  <span class="of">Port ID (outgoing):</span> <span class="ov">FastEthernet0/1</span></span>
+<span class="ln"><span class="of">Holdtime:</span> <span class="hy">168</span> sec</span>
+<span class="ln"><span class="of">Version:</span> <span class="ov">Cisco IOS Software, C2960, Version 15.0(2)SE</span></span>
+<span class="ln"><span class="of">VTP Management Domain:</span> <span class="ov">'EMPRESA'</span></span>
+<span class="ln"><span class="of">Native VLAN:</span> <span class="ov">1</span></span>
+<span class="ln"><span class="of">Duplex:</span> <span class="hg">full</span></span>
+<span class="ln"><span class="of">Management address(es):</span>  <span class="of">IP address:</span> <span class="ov">192.168.1.2</span></span></div>
+</div>
+
+<div class="card">
+  <div class="ctit"><div class="cico">🟢</div>Comandos LLDP — Referencia completa IOS</div>
+
+  <div class="stit">Habilitar / Configurar LLDP</div>
+  <div class="cmd"><span class="cmdlbl">LLDP GLOBAL</span>
+<span class="ln"><span class="c">! Habilitar LLDP globalmente (deshabilitado por defecto en Cisco)</span></span>
+<span class="ln"><span class="p">Switch(config)#</span> <span class="k">lldp run</span></span>
+<span class="ln"><span class="c">! Deshabilitar LLDP globalmente</span></span>
+<span class="ln"><span class="p">Switch(config)#</span> <span class="k">no lldp run</span></span>
+<span class="ln"><span class="c">! Ajustar timers LLDP</span></span>
+<span class="ln"><span class="p">Switch(config)#</span> <span class="k">lldp timer</span> <span class="v">20</span>       <span class="c">! Anunciar cada 20s (default 30s)</span></span>
+<span class="ln"><span class="p">Switch(config)#</span> <span class="k">lldp holdtime</span> <span class="v">60</span>    <span class="c">! Holdtime (default 120s)</span></span>
+<span class="ln"><span class="p">Switch(config)#</span> <span class="k">lldp reinit</span> <span class="v">3</span>       <span class="c">! Delay reinicio interfaz (default 2s)</span></span>
+<span class="ln"><span class="c">! Control POR INTERFAZ — Tx y Rx INDEPENDIENTES</span></span>
+<span class="ln"><span class="p">Switch(config)#</span> <span class="k">interface</span> <span class="v">GigabitEthernet0/1</span></span>
+<span class="ln"><span class="p">Switch(config-if)#</span> <span class="k">lldp transmit</span>     <span class="c">! Solo enviar</span></span>
+<span class="ln"><span class="p">Switch(config-if)#</span> <span class="k">lldp receive</span>      <span class="c">! Solo recibir</span></span>
+<span class="ln"><span class="p">Switch(config-if)#</span> <span class="k">no lldp transmit</span>  <span class="c">! Deshabilitar envío</span></span>
+<span class="ln"><span class="p">Switch(config-if)#</span> <span class="k">no lldp receive</span>   <span class="c">! Deshabilitar recepción</span></span></div>
+
+  <div class="stit">Comandos show LLDP</div>
+  <div class="cmd"><span class="cmdlbl">VERIFICACIÓN</span>
+<span class="ln"><span class="p">Switch#</span> <span class="k">show lldp</span>                          <span class="c">! Estado global y timers</span></span>
+<span class="ln"><span class="p">Switch#</span> <span class="k">show lldp neighbors</span>               <span class="c">! Resumen vecinos</span></span>
+<span class="ln"><span class="p">Switch#</span> <span class="k">show lldp neighbors detail</span>        <span class="c">! Detalle completo</span></span>
+<span class="ln"><span class="p">Switch#</span> <span class="k">show lldp entry</span> <span class="v">R1.empresa.com</span>   <span class="c">! Vecino específico</span></span>
+<span class="ln"><span class="p">Switch#</span> <span class="k">show lldp interface</span> <span class="v">Gi0/1</span>         <span class="c">! LLDP en interfaz</span></span>
+<span class="ln"><span class="p">Switch#</span> <span class="k">show lldp traffic</span>                 <span class="c">! Estadísticas</span></span></div>
+
+  <div class="stit">Salida: show lldp neighbors detail</div>
+  <div class="out"><span class="outlbl">LLDP OUTPUT</span>
+<span class="ln"><span class="oh">Switch# show lldp neighbors detail</span></span>
+<span class="ln"><span class="os">────────────────────────────────────</span></span>
+<span class="ln"><span class="of">Local Intf:</span> <span class="ov">Gi0/1</span></span>
+<span class="ln"><span class="of">Chassis id:</span> <span class="ov">aabb.cc00.0100</span></span>
+<span class="ln"><span class="of">Port id:</span> <span class="ov">Gi0/0</span></span>
+<span class="ln"><span class="of">Port Description:</span> <span class="ov">Link to SW1</span></span>
+<span class="ln"><span class="of">System Name:</span> <span class="ov">R1.empresa.com</span></span>
+<span class="ln"><span class="of">System Description:</span> <span class="ov">Cisco IOS Software, Version 15.7(3)M</span></span>
+<span class="ln"><span class="of">Time remaining:</span> <span class="hy">115</span> seconds</span>
+<span class="ln"><span class="of">System Capabilities:</span> <span class="ov">B, R</span></span>
+<span class="ln"><span class="of">Enabled Capabilities:</span> <span class="ov">R</span></span>
+<span class="ln"><span class="of">Management Addresses:</span>  <span class="of">IP:</span> <span class="ov">10.0.0.1</span></span>
+<span class="ln"><span class="of">Auto Negotiation:</span> <span class="hg">supported, enabled</span></span>
+<span class="ln"><span class="of">Physical media:</span> <span class="ov">1000baseT(FD), 100base-TX(FD/HD)</span></span></div>
+
+  <div class="ib tl"><div class="ii">🔬</div><div><strong>Lab práctico:</strong> En Packet Tracer: habilita <code style="color:#ffd700">lldp run</code> en R1 y SW1 conectados. Ejecuta <code style="color:#ffd700">show lldp neighbors detail</code> en R1 — verás el Chassis ID (MAC del switch), System Name, Port ID y Time remaining. Compara con <code style="color:#ffd700">show cdp neighbors detail</code> del mismo enlace.</div></div>
+</div>
+
+</div><!-- /t4 -->
+
+<!-- ══════════════ TAB 5: SEGURIDAD ══════════════ -->
+<div id="t5" class="sec">
+
+<div class="card">
+  <div class="ctit"><div class="cico">⚠️</div>Riesgos de seguridad — CDP/LLDP como vectores de ataque</div>
+  <div class="def">
+    Aunque CDP y LLDP son herramientas de gestión esenciales, también representan <span class="hr">riesgos de seguridad críticos</span> si están habilitados en puertos orientados a usuarios o redes no confiables. Un atacante con un simple <span class="hl">Wireshark</span> puede capturar frames CDP sin ninguna autenticación y obtener información detallada de la infraestructura.
+  </div>
+  <div class="g2">
+    <div class="fc" style="border-color:rgba(255,51,102,.4)"><div class="fi2">🔍</div><div class="fn" style="color:var(--cisco-red)">Reconocimiento de red</div><div class="fd">CDP revela modelo exacto, versión IOS y topología completa. Un atacante identifica vulnerabilidades específicas de la plataforma para lanzar exploits dirigidos.</div></div>
+    <div class="fc" style="border-color:rgba(255,51,102,.4)"><div class="fi2">🎭</div><div class="fn" style="color:var(--cisco-red)">Spoofing de vecinos</div><div class="fd">Un atacante puede enviar frames CDP/LLDP falsos para llenar la tabla de vecinos o impersonar un switch legítimo de la red.</div></div>
+    <div class="fc" style="border-color:rgba(255,51,102,.4)"><div class="fi2">💥</div><div class="fn" style="color:var(--cisco-red)">DoS — Memory exhaustion</div><div class="fd">Enviar miles de frames CDP con Device-IDs distintos agota la memoria del dispositivo manteniendo entradas de vecinos falsas (Cisco Security Advisory).</div></div>
+    <div class="fc" style="border-color:rgba(255,51,102,.4)"><div class="fi2">📡</div><div class="fn" style="color:var(--cisco-red)">Exfiltración de datos</div><div class="fd">VTP domain, Native VLAN, versión IOS — información que permite planificar ataques VLAN hopping y seleccionar exploits específicos del SO.</div></div>
+  </div>
+  <div class="ib sec"><div class="ii">☠️</div><div><strong>CVE-2020-3110:</strong> Vulnerabilidad en el procesamiento de paquetes CDP en cámaras IP Cisco que permitía <strong>Remote Code Execution (RCE)</strong> sin autenticación. Cisco publicó un advisory recomendando deshabilitar CDP en todos los dispositivos finales. Prueba de que CDP no es solo una herramienta de gestión inocua.</div></div>
+</div>
+
+<div class="card">
+  <div class="ctit"><div class="cico">🛡️</div>Mejores prácticas de seguridad — Hardening CDP/LLDP</div>
+  <table class="dt">
+    <thead><tr><th>Prioridad</th><th>Práctica</th><th>Comandos</th></tr></thead>
+    <tbody>
+      <tr><td><span class="b br">Crítico</span></td><td>Deshabilitar CDP/LLDP en <strong>puertos de acceso</strong> — usuarios finales, PCs, impresoras</td><td style="font-family:monospace;color:#ffd700;font-size:.78rem">no cdp enable<br>no lldp transmit<br>no lldp receive</td></tr>
+      <tr><td><span class="b br">Crítico</span></td><td>Deshabilitar en <strong>interfaces WAN/DMZ</strong> — redes no confiables e Internet</td><td style="font-family:monospace;color:#ffd700;font-size:.78rem">no cdp enable<br>(interface WAN)</td></tr>
+      <tr><td><span class="b bo">Alto</span></td><td>Habilitar solo en <strong>uplinks inter-switch y router-switch</strong></td><td style="font-family:monospace;color:#ffd700;font-size:.78rem">cdp enable<br>(selectivo)</td></tr>
+      <tr><td><span class="b by">Medio</span></td><td>Reducir holdtime en entornos de alta seguridad</td><td style="font-family:monospace;color:#ffd700;font-size:.78rem">cdp holdtime 60</td></tr>
+      <tr><td><span class="b bg">Recomendado</span></td><td>Monitorizar periódicamente vecinos CDP para detectar dispositivos no autorizados</td><td style="font-family:monospace;color:#ffd700;font-size:.78rem">show cdp neighbors</td></tr>
+    </tbody>
+  </table>
+  <div class="stit">Plantilla hardening — Puertos de acceso</div>
+  <div class="cmd"><span class="cmdlbl">HARDENING</span>
+<span class="ln"><span class="c">! Aplicar en TODOS los puertos de acceso hacia usuarios finales</span></span>
+<span class="ln"><span class="p">Switch(config)#</span> <span class="k">interface range</span> <span class="v">FastEthernet0/1 - 24</span></span>
+<span class="ln"><span class="p">Switch(config-if-range)#</span> <span class="k">no cdp enable</span></span>
+<span class="ln"><span class="p">Switch(config-if-range)#</span> <span class="k">no lldp transmit</span></span>
+<span class="ln"><span class="p">Switch(config-if-range)#</span> <span class="k">no lldp receive</span></span>
+<span class="ln"><span class="p">Switch(config-if-range)#</span> <span class="k">exit</span></span>
+<span class="ln"><span class="c">! Mantener CDP/LLDP SOLO en uplinks de infraestructura</span></span>
+<span class="ln"><span class="p">Switch(config)#</span> <span class="k">interface</span> <span class="v">GigabitEthernet0/1</span>   <span class="c">! Uplink a distribución</span></span>
+<span class="ln"><span class="p">Switch(config-if)#</span> <span class="k">cdp enable</span></span>
+<span class="ln"><span class="p">Switch(config-if)#</span> <span class="k">lldp transmit</span></span>
+<span class="ln"><span class="p">Switch(config-if)#</span> <span class="k">lldp receive</span></span></div>
+  <div class="ib tip"><div class="ii">✅</div><div><strong>Regla de oro:</strong> <em>"CDP y LLDP son herramientas de administrador, no de usuario final."</em> Solo actívalos en los enlaces de infraestructura donde los necesitas para gestión. En puertos de usuarios, WAN o DMZ — siempre deshabilitados.</div></div>
+</div>
+
+</div><!-- /t5 -->
+
+<!-- ══════════════ TAB 6: QUIZ ══════════════ -->
+<div id="t6" class="sec">
+<div class="card">
+  <div class="ctit"><div class="cico">🎯</div>Quiz CCNA — CDP / LLDP (Estilo Examen Real 200-301)</div>
+  <div class="ib exam"><div class="ii">📋</div><div>8 preguntas estilo examen oficial <strong>CCNA 200-301</strong>. Selecciona la respuesta y recibe explicación detallada inmediata.</div></div>
+
+  <div class="qq"><div class="qqn">PREGUNTA 01 / 08</div>
+    <div class="qqq">¿En qué capa del modelo OSI operan CDP y LLDP?</div>
+    <div class="qqo">
+      <div class="qo" onclick="ans(1,'A','bad','Capa 3 (Red) es la capa de IP y routing. CDP/LLDP operan en una capa inferior, sin necesidad de direcciones IP.')"><div class="ql">A</div>Capa 3 — Red</div>
+      <div class="qo" onclick="ans(1,'B','ok','¡Correcto! CDP y LLDP operan en la Capa 2 (Enlace de Datos). Por eso funcionan aunque el vecino no tenga IP y sus frames no se reenvían más allá del enlace directo.')"><div class="ql">B</div>Capa 2 — Enlace de Datos</div>
+      <div class="qo" onclick="ans(1,'C','bad','Capa 1 (Física) es la del medio físico. Los protocolos de descubrimiento requieren al menos la capa de enlace para operar.')"><div class="ql">C</div>Capa 1 — Física</div>
+      <div class="qo" onclick="ans(1,'D','bad','Capa 4 (Transporte) incluye TCP/UDP. CDP y LLDP operan directamente sobre la capa de enlace, sin transporte.')"><div class="ql">D</div>Capa 4 — Transporte</div>
+    </div><div class="qf" id="fb1"></div>
+  </div>
+
+  <div class="qq"><div class="qqn">PREGUNTA 02 / 08</div>
+    <div class="qqq">¿Cuál es el estado por defecto de CDP y LLDP en un switch Cisco IOS?</div>
+    <div class="qqo">
+      <div class="qo" onclick="ans(2,'A','bad','Ambos deshabilitados es incorrecto. CDP sí viene habilitado por defecto en todos los dispositivos Cisco.')"><div class="ql">A</div>Ambos deshabilitados</div>
+      <div class="qo" onclick="ans(2,'B','bad','Ambos habilitados es incorrecto. LLDP requiere activarse manualmente con el comando lldp run.')"><div class="ql">B</div>Ambos habilitados</div>
+      <div class="qo" onclick="ans(2,'C','ok','¡Correcto! CDP está HABILITADO por defecto en Cisco. LLDP está DESHABILITADO por defecto y debe activarse con lldp run. Una de las diferencias más evaluadas en CCNA 200-301.')"><div class="ql">C</div>CDP habilitado — LLDP deshabilitado</div>
+      <div class="qo" onclick="ans(2,'D','bad','CDP deshabilitado y LLDP habilitado es lo contrario a la realidad. CDP es propietario Cisco y viene activo por defecto.')"><div class="ql">D</div>CDP deshabilitado — LLDP habilitado</div>
+    </div><div class="qf" id="fb2"></div>
+  </div>
+
+  <div class="qq"><div class="qqn">PREGUNTA 03 / 08</div>
+    <div class="qqq">¿Cuáles son los timers por defecto de CDP? (Timer de anuncio / Holdtime)</div>
+    <div class="qqo">
+      <div class="qo" onclick="ans(3,'A','bad','30s/120s son los valores de LLDP, no de CDP. Es una confusión muy común en el examen CCNA.')"><div class="ql">A</div>30 segundos / 120 segundos</div>
+      <div class="qo" onclick="ans(3,'B','ok','¡Correcto! CDP: timer=60s, holdtime=180s (3× el timer). Si no llega anuncio en 180s el vecino se elimina de la tabla. LLDP: timer=30s, holdtime=120s.')"><div class="ql">B</div>60 segundos / 180 segundos</div>
+      <div class="qo" onclick="ans(3,'C','bad','90s/270s no son los valores estándar de CDP. Los por defecto son 60s timer y 180s holdtime.')"><div class="ql">C</div>90 segundos / 270 segundos</div>
+      <div class="qo" onclick="ans(3,'D','bad','120s/360s tampoco son correctos. Memoriza: CDP timer=60 holdtime=180, LLDP timer=30 holdtime=120.')"><div class="ql">D</div>120 segundos / 360 segundos</div>
+    </div><div class="qf" id="fb3"></div>
+  </div>
+
+  <div class="qq"><div class="qqn">PREGUNTA 04 / 08</div>
+    <div class="qqq">En <code style="background:rgba(0,212,170,.1);padding:2px 6px;border-radius:4px;color:#00d4aa">show cdp neighbors</code>, un vecino muestra <strong>Capability: S I</strong>. ¿Qué significa?</div>
+    <div class="qqo">
+      <div class="qo" onclick="ans(4,'A','bad','R=Router en CDP Capabilities. La S no significa Router — significa Switch.')"><div class="ql">A</div>Router con soporte IPv6</div>
+      <div class="qo" onclick="ans(4,'B','bad','S=Switch es correcto pero falta la I. En CDP Capabilities: I significa IGMP (soporta IGMP snooping), no algo más.')"><div class="ql">B</div>Solo un Switch sin capacidades especiales</div>
+      <div class="qo" onclick="ans(4,'C','ok','¡Correcto! S=Switch (capacidad de switching L2) e I=IGMP (soporte de IGMP snooping para multicast). Otros valores: R=Router, H=Host, B=Bridge, T=Trans-Bridge, P=Phone.')"><div class="ql">C</div>Switch con soporte IGMP snooping</div>
+      <div class="qo" onclick="ans(4,'D','bad','La I en CDP capabilities significa IGMP, no Internet. Valores CDP: R Router, S Switch, H Host, I IGMP, B Bridge, P Phone.')"><div class="ql">D</div>Switch con conectividad a Internet</div>
+    </div><div class="qf" id="fb4"></div>
+  </div>
+
+  <div class="qq"><div class="qqn">PREGUNTA 05 / 08</div>
+    <div class="qqq">¿Cuál es la diferencia principal entre LLDP y CDP respecto a compatibilidad con fabricantes?</div>
+    <div class="qqo">
+      <div class="qo" onclick="ans(5,'A','bad','Es al contrario — CDP es el propietario de Cisco. LLDP es el estándar IEEE que funciona con múltiples fabricantes.')"><div class="ql">A</div>LLDP es propietario Cisco; CDP es estándar IEEE</div>
+      <div class="qo" onclick="ans(5,'B','bad','Ambos operan en capa 2. La diferencia no es la capa sino la compatibilidad entre fabricantes.')"><div class="ql">B</div>CDP opera en capa 3; LLDP en capa 2</div>
+      <div class="qo" onclick="ans(5,'C','ok','¡Correcto! CDP es propietario Cisco — solo entre dispositivos Cisco. LLDP es IEEE 802.1AB, compatible con Cisco, HP/Aruba, Juniper, Huawei y cualquier fabricante que implemente el estándar.')"><div class="ql">C</div>CDP solo funciona entre Cisco; LLDP es multi-vendor IEEE 802.1AB</div>
+      <div class="qo" onclick="ans(5,'D','bad','Ambos descubren switches y routers. La diferencia fundamental es propietario (CDP) vs estándar abierto (LLDP).')"><div class="ql">D</div>CDP solo descubre switches; LLDP descubre routers también</div>
+    </div><div class="qf" id="fb5"></div>
+  </div>
+
+  <div class="qq"><div class="qqn">PREGUNTA 06 / 08</div>
+    <div class="qqq">¿Qué comando deshabilita CDP únicamente en la interfaz GigabitEthernet0/0 sin afectar el resto del dispositivo?</div>
+    <div class="qqo">
+      <div class="qo" onclick="ans(6,'A','bad','no cdp run deshabilita CDP GLOBALMENTE en todo el dispositivo, no solo en una interfaz.')"><div class="ql">A</div>Router(config)# no cdp run</div>
+      <div class="qo" onclick="ans(6,'B','ok','¡Correcto! Para deshabilitar CDP solo en una interfaz: no cdp enable en modo config-if. El comando global no cdp run afecta a todo el equipo.')"><div class="ql">B</div>Router(config-if)# no cdp enable</div>
+      <div class="qo" onclick="ans(6,'C','bad','cdp disable no es un comando válido en Cisco IOS. El correcto es: no cdp enable (en modo configuración de interfaz).')"><div class="ql">C</div>Router(config-if)# cdp disable</div>
+      <div class="qo" onclick="ans(6,'D','bad','no cdp advertise-v2 controla la versión del protocolo CDP, no lo deshabilita en la interfaz.')"><div class="ql">D</div>Router(config-if)# no cdp advertise-v2</div>
+    </div><div class="qf" id="fb6"></div>
+  </div>
+
+  <div class="qq"><div class="qqn">PREGUNTA 07 / 08</div>
+    <div class="qqq">Un ingeniero necesita que una interfaz LLDP <strong>solo RECIBA</strong> información de vecinos sin enviar nada. ¿Qué comandos aplica en esa interfaz?</div>
+    <div class="qqo">
+      <div class="qo" onclick="ans(7,'A','bad','lldp transmit + lldp receive activa AMBAS funciones. Si no queremos transmitir, debemos deshabilitar el transmit.')"><div class="ql">A</div>lldp transmit / lldp receive</div>
+      <div class="qo" onclick="ans(7,'B','bad','no lldp transmit + no lldp receive deshabilita AMBAS funciones — la interfaz no transmitiría NI recibiría.')"><div class="ql">B</div>no lldp transmit / no lldp receive</div>
+      <div class="qo" onclick="ans(7,'C','ok','¡Correcto! En LLDP, Tx y Rx son independientes. Para solo recibir: no lldp transmit (deshabilita envío) + lldp receive (habilita recepción). Esta independencia es una diferencia clave vs CDP.')"><div class="ql">C</div>no lldp transmit / lldp receive</div>
+      <div class="qo" onclick="ans(7,'D','bad','lldp transmit + no lldp receive configura la interfaz para SOLO ENVIAR sin recibir — lo contrario a lo requerido.')"><div class="ql">D</div>lldp transmit / no lldp receive</div>
+    </div><div class="qf" id="fb7"></div>
+  </div>
+
+  <div class="qq"><div class="qqn">PREGUNTA 08 / 08</div>
+    <div class="qqq">¿Por qué es una mejor práctica de seguridad deshabilitar CDP/LLDP en los puertos de acceso hacia usuarios finales?</div>
+    <div class="qqo">
+      <div class="qo" onclick="ans(8,'A','bad','CDP/LLDP no consumen ancho de banda significativo — sus frames son pequeños y poco frecuentes. No es la razón de seguridad.')"><div class="ql">A</div>Para reducir el consumo de ancho de banda</div>
+      <div class="qo" onclick="ans(8,'B','bad','CDP/LLDP no afectan la autonegociación de velocidad de la interfaz. Son protocolos completamente independientes.')"><div class="ql">B</div>Porque ralentizan la negociación de velocidad de la interfaz</div>
+      <div class="qo" onclick="ans(8,'C','ok','¡Correcto! CDP revela modelo exacto, versión IOS, topología, VTP domain y Native VLAN. Un atacante con Wireshark en cualquier puerto de usuario captura estos frames sin autenticación y planifica ataques dirigidos. Hardening fundamental CCNA.')"><div class="ql">C</div>Porque exponen información sensible (modelo, IOS, topología) que puede usar un atacante</div>
+      <div class="qo" onclick="ans(8,'D','bad','CDP/LLDP no tienen ningún impacto en DHCP. Son protocolos completamente independientes del servidor de direcciones IP.')"><div class="ql">D</div>Para evitar conflictos con el servidor DHCP</div>
+    </div><div class="qf" id="fb8"></div>
+  </div>
+
+  <div id="scoreArea" style="display:none" class="card" style="margin-top:16px">
+    <div class="ctit"><div class="cico">🏆</div>Resultado del Quiz</div>
+    <div style="text-align:center;padding:22px">
+      <div id="scoreText" style="font-family:Orbitron,monospace;font-size:2.4rem;font-weight:900;margin-bottom:10px"></div>
+      <div id="scoreMsg" style="color:var(--text-secondary);font-size:.93rem;margin-top:8px"></div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="ctit"><div class="cico">📝</div>Tarea Práctica — Lab CDP/LLDP en Packet Tracer</div>
+  <div class="scen">
+    <div class="scen-t">🔬 Escenario: Red corporativa sin documentación</div>
+    <p style="color:#ccc;font-size:.88rem;line-height:1.8">Red: R1 → SW1 → (SW2, SW3) → PCs y 2 Teléfonos IP Cisco<br>
+    Solo tienes acceso inicial a R1. Objetivo: mapear toda la topología usando CDP y LLDP, luego aplicar hardening de seguridad en puertos de acceso.</p>
+  </div>
+  <ol class="steps">
+    <li class="si"><div class="snum"></div><div class="sc"><div class="stl">Desde R1: show cdp neighbors detail</div><div class="sd">Documentar SW1: hostname, IP, modelo, interface local y remota. Esta será la puerta de entrada a toda la topología.</div></div></li>
+    <li class="si"><div class="snum"></div><div class="sc"><div class="stl">Acceder a SW1 y repetir el descubrimiento</div><div class="sd">show cdp neighbors detail desde SW1. Descubrir SW2, SW3 y los teléfonos IP. Construir el mapa de topología completo.</div></div></li>
+    <li class="si"><div class="snum"></div><div class="sc"><div class="stl">Activar LLDP en todos los dispositivos</div><div class="sd">lldp run en R1, SW1, SW2, SW3. show lldp neighbors — comparar con CDP. Observar TLVs adicionales que LLDP proporciona.</div></div></li>
+    <li class="si"><div class="snum"></div><div class="sc"><div class="stl">Hardening: deshabilitar en puertos de usuario</div><div class="sd">interface range Fa0/1-24 en cada switch → no cdp enable, no lldp transmit, no lldp receive. Los PCs NO deben aparecer como vecinos.</div></div></li>
+    <li class="si"><div class="snum"></div><div class="sc"><div class="stl">Verificación final de seguridad</div><div class="sd">show cdp neighbors y show lldp neighbors deben mostrar SOLO la infraestructura (switches, router). Los PCs y endpoints deben desaparecer de la tabla.</div></div></li>
+  </ol>
+</div>
+
+</div><!-- /t6 -->
+
+<!-- RESUMEN FINAL -->
+<div class="card" style="margin-top:8px">
+  <div class="ctit"><div class="cico">📋</div>Resumen de Comandos Esenciales CCNA</div>
+  <div class="sumg">
+    <div class="sumi"><h4>🔵 CDP — Global</h4><ul>
+      <li>cdp run</li>
+      <li>no cdp run</li>
+      <li>cdp timer [seg] (def: 60)</li>
+      <li>cdp holdtime [seg] (def: 180)</li>
+    </ul></div>
+    <div class="sumi"><h4>🔵 CDP — Show</h4><ul>
+      <li>show cdp neighbors</li>
+      <li>show cdp neighbors detail</li>
+      <li>show cdp entry [hostname]</li>
+      <li>show cdp interface [int]</li>
+      <li>show cdp / show cdp traffic</li>
+    </ul></div>
+    <div class="sumi"><h4>🟢 LLDP — Global</h4><ul>
+      <li>lldp run</li>
+      <li>no lldp run</li>
+      <li>lldp timer [seg] (def: 30)</li>
+      <li>lldp holdtime [seg] (def: 120)</li>
+      <li>lldp reinit [seg] (def: 2)</li>
+    </ul></div>
+    <div class="sumi"><h4>🟢 LLDP — Interfaz</h4><ul>
+      <li>lldp transmit</li>
+      <li>no lldp transmit</li>
+      <li>lldp receive</li>
+      <li>no lldp receive</li>
+      <li>show lldp neighbors detail</li>
+      <li>show lldp interface [int]</li>
+    </ul></div>
+  </div>
+</div>
+
+</div><!-- /wrap -->
+
+<footer>
+  <div class="wrap">
+    <div class="ft">
+      <strong style="color:var(--cisco-teal)">CISCO CCNA 200-301</strong> — Clase Magistral: CDP / LLDP<br>
+      Módulo 3 — Routing · Cisco Discovery Protocol · IEEE 802.1AB · LLDP-MED<br>
+      <span style="color:rgba(255,255,255,.3)">Próxima clase: NTP / Syslog — Tiempo y monitoreo de red</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+function showT(id,el){
+  document.querySelectorAll('.sec').forEach(function(s){s.classList.remove('on');});
+  document.querySelectorAll('.tbtn').forEach(function(b){b.classList.remove('on');});
+  document.getElementById(id).classList.add('on');
+  if(el)el.classList.add('on');
+  window.scrollTo({top:180,behavior:'smooth'});
+}
+var _ans={},_score=0;
+function ans(q,l,r,exp){
+  if(_ans[q])return;
+  _ans[q]=true;
+  var opts=document.querySelectorAll('#t6 .qq:nth-child('+(q+1)+') .qo');
+  document.querySelectorAll('.qq').forEach(function(qq,i){
+    if(i===(q-1)){
+      qq.querySelectorAll('.qo').forEach(function(o){
+        o.style.pointerEvents='none';
+        var ltr=o.querySelector('.ql').textContent;
+        if(ltr===l)o.classList.add(r);
+        if(r==='bad'&&o.getAttribute('onclick')&&o.getAttribute('onclick').indexOf("'ok'")!==-1)o.classList.add('ok');
+      });
+      var fb=document.getElementById('fb'+q);
+      fb.textContent=(r==='ok'?'✅ ':'❌ ')+exp;
+      fb.className='qf show '+r;
+    }
+  });
+  if(r==='ok')_score++;
+  if(Object.keys(_ans).length===8){
+    setTimeout(function(){
+      var a=document.getElementById('scoreArea');
+      a.style.display='block';
+      var pct=Math.round(_score/8*100);
+      var st=document.getElementById('scoreText');
+      var sm=document.getElementById('scoreMsg');
+      st.textContent=_score+' / 8 — '+pct+'%';
+      if(pct>=87){st.style.color='var(--cisco-green)';sm.textContent='🏆 ¡Excelente! Dominas CDP/LLDP nivel CCNA. Practica el lab en Packet Tracer.';}
+      else if(pct>=62){st.style.color='var(--cisco-yellow)';sm.textContent='📚 Buen progreso. Repasa los timers y diferencias CDP vs LLDP.';}
+      else{st.style.color='var(--cisco-red)';sm.textContent='💪 Repasa los fundamentos. Regresa a las pestañas de CDP y Comandos.';}
+      a.scrollIntoView({behavior:'smooth'});
+    },400);
+  }
+}
+</script>
+</body>
+</html>
