@@ -1,317 +1,603 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fundamentos de Redes — CCNA Academy</title>
-<link rel="stylesheet" href="../assets/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fundamentos de Redes – CCNA Academy</title>
+  <meta name="description" content="Modelos OSI y TCP/IP, encapsulación, topologías y medios de transmisión. Clase magistral CCNA 200-301.">
+  <link rel="stylesheet" href="../assets/style.css">
 </head>
-<body class="page-body">
+<body>
 
-<!-- NAVBAR -->
-<nav style="position:fixed;top:0;left:0;right:0;z-index:9000;height:64px;background:rgba(6,12,24,0.97);border-bottom:1px solid rgba(0,188,235,0.2);backdrop-filter:blur(20px);">
-  <div style="max-width:1400px;margin:0 auto;padding:0 24px;height:64px;display:flex;align-items:center;">
-    <a href="../index.html" style="display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;"><span style="font-family:Orbitron,monospace;font-weight:900;font-size:0.9rem;letter-spacing:3px;background:linear-gradient(135deg,#00bceb,#38d9ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;border:1px solid rgba(0,188,235,0.35);padding:5px 10px;border-radius:5px;">CISCO</span><span style="font-family:Orbitron,monospace;font-size:0.65rem;color:#4a6a84;letter-spacing:2.5px;font-weight:500;">ACADEMY</span></a>
-    <a href="asistente.html" style="display:flex;align-items:center;gap:8px;padding:7px 16px;border-radius:8px;font-size:0.82rem;font-weight:700;color:#00d4ff;border:1px solid rgba(0,212,255,0.35);text-decoration:none;margin-left:20px;flex-shrink:0;white-space:nowrap;background:rgba(0,212,255,0.06);font-family:Orbitron,monospace;letter-spacing:0.5px;">🤖 NetBot IA</a>
-    <button onclick="ccnaToggle()" style="display:flex;flex-direction:column;justify-content:center;gap:6px;background:rgba(0,188,235,0.07);border:1px solid rgba(0,188,235,0.3);border-radius:9px;cursor:pointer;padding:10px 13px;margin-left:auto;flex-shrink:0;" onmouseover="this.style.background='rgba(0,188,235,0.15)';this.style.borderColor='#00bceb';" onmouseout="this.style.background='rgba(0,188,235,0.07)';this.style.borderColor='rgba(0,188,235,0.3)';">
-      <span style="display:block;width:22px;height:2px;background:#38d9ff;border-radius:2px;"></span>
-      <span style="display:block;width:16px;height:2px;background:#38d9ff;border-radius:2px;"></span>
-      <span style="display:block;width:22px;height:2px;background:#38d9ff;border-radius:2px;"></span>
-    </button>
+<div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
+
+<nav class="ccna-drawer" id="ccnaDrawer">
+  <div class="drawer-header">
+    <h2>◈ NAVEGACIÓN</h2>
+    <button class="drawer-close" onclick="ccnaClose()">✕</button>
+  </div>
+  <div class="drawer-section">
+    <div class="drawer-section-title">General</div>
+    <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a>
+  </div>
+  <div class="drawer-section">
+    <div class="drawer-section-title">M1 · Fundamentos</div>
+    <a href="fundamentos.html"  class="drawer-link active"><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
+    <a href="subnetting.html"   class="drawer-link"><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
+    <a href="ipv6.html"         class="drawer-link"><span class="dl-icon">6️⃣</span> IPv6</a>
+  </div>
+  <div class="drawer-section">
+    <div class="drawer-section-title">M2 · Dispositivos Cisco</div>
+    <a href="router.html"         class="drawer-link"><span class="dl-icon">📡</span> Routers Cisco</a>
+    <a href="switches-cisco.html" class="drawer-link"><span class="dl-icon">🔀</span> Switches Cisco</a>
+  </div>
+  <div class="drawer-section">
+    <div class="drawer-section-title">M3 · Switching</div>
+    <a href="vlan.html"               class="drawer-link"><span class="dl-icon">🏷️</span> VLANs</a>
+    <a href="inter-vlan-routing.html" class="drawer-link"><span class="dl-icon">🔁</span> Inter-VLAN Routing</a>
+    <a href="stp.html"                class="drawer-link"><span class="dl-icon">🌳</span> STP</a>
+    <a href="etherchannel.html"       class="drawer-link"><span class="dl-icon">🔗</span> EtherChannel</a>
+    <a href="port-security.html"      class="drawer-link"><span class="dl-icon">🔒</span> Port Security</a>
+    <a href="cdp-lldp.html"           class="drawer-link"><span class="dl-icon">🔍</span> CDP / LLDP</a>
+  </div>
+  <div class="drawer-section">
+    <div class="drawer-section-title">M4 · Routing</div>
+    <a href="routing.html" class="drawer-link"><span class="dl-icon">🗺️</span> Routing Estático</a>
+    <a href="ospf.html"    class="drawer-link"><span class="dl-icon">⭕</span> OSPF</a>
+    <a href="eigrp.html"   class="drawer-link"><span class="dl-icon">⚡</span> EIGRP</a>
+  </div>
+  <div class="drawer-section">
+    <div class="drawer-section-title">M5 · Servicios IP</div>
+    <a href="dhcp.html" class="drawer-link"><span class="dl-icon">📋</span> DHCP</a>
+    <a href="nat.html"  class="drawer-link"><span class="dl-icon">🔄</span> NAT / PAT</a>
+  </div>
+  <div class="drawer-section">
+    <div class="drawer-section-title">M6 · Seguridad</div>
+    <a href="acl.html" class="drawer-link"><span class="dl-icon">🛡️</span> ACLs</a>
+  </div>
+  <div class="drawer-section">
+    <div class="drawer-section-title">M7 · WAN &amp; QoS</div>
+    <a href="wan.html" class="drawer-link"><span class="dl-icon">🌍</span> WAN</a>
+    <a href="qos.html" class="drawer-link"><span class="dl-icon">📊</span> QoS</a>
   </div>
 </nav>
-<div id="ccna-overlay" onclick="ccnaClose()" style="display:none;position:fixed;inset:0;top:64px;background:rgba(0,0,0,0.6);z-index:8998;"></div>
-<div id="ccna-drawer" style="display:none;flex-direction:column;position:fixed;top:64px;right:0;width:280px;height:calc(100vh - 64px);background:linear-gradient(180deg,rgba(4,10,22,0.99),rgba(6,14,28,0.99));border-left:1px solid rgba(0,188,235,0.15);padding:0;overflow-y:auto;z-index:8999;box-shadow:-20px 0 60px rgba(0,0,0,0.7);">
-  <div style="padding:16px 16px 8px;border-bottom:1px solid rgba(0,188,235,0.08);"><div style="font-family:Orbitron,monospace;font-size:0.6rem;color:#00bceb;letter-spacing:3px;text-transform:uppercase;opacity:0.8;">Navegación</div></div>
-  <div style="padding:8px 10px 24px;display:flex;flex-direction:column;gap:2px;">
-    <div style="font-family:Orbitron,monospace;font-size:0.52rem;color:#00bceb;letter-spacing:2px;text-transform:uppercase;padding:14px 8px 5px;opacity:0.7;">Módulo 1 — Fundamentos</div>
-    <a href="fundamentos.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🔌</span>Fundamentos de Redes</a>
-    <a href="subnetting.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🔢</span>Subnetting IPv4</a>
-    <a href="calculadora.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🧮</span>Calculadora IP</a>
-    <div style="font-family:Orbitron,monospace;font-size:0.52rem;color:#00bceb;letter-spacing:2px;text-transform:uppercase;padding:14px 8px 5px;border-top:1px solid rgba(0,188,235,0.08);opacity:0.7;margin-top:6px;">Módulo 2 — Switching</div>
-    <a href="vlan.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🏷️</span>VLANs</a>
-    <a href="stp.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🌳</span>STP</a>
-    <a href="switches-cisco.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🖧</span>Switches Cisco</a>
-    <a href="etherchannel.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🔗</span>EtherChannel</a>
-    <div style="font-family:Orbitron,monospace;font-size:0.52rem;color:#00bceb;letter-spacing:2px;text-transform:uppercase;padding:14px 8px 5px;border-top:1px solid rgba(0,188,235,0.08);opacity:0.7;margin-top:6px;">Módulo 3 — Routing</div>
-    <a href="router.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🌐</span>Routers Cisco</a>
-    <a href="routing.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">📋</span>Routing Estático</a>
-    <a href="ospf.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🔴</span>OSPF</a>
-    <a href="eigrp.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">⚡</span>EIGRP</a>
-    <a href="cdp-lldp.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,212,170,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🔍</span>CDP / LLDP</a>
-    <div style="font-family:Orbitron,monospace;font-size:0.52rem;color:#00bceb;letter-spacing:2px;text-transform:uppercase;padding:14px 8px 5px;border-top:1px solid rgba(0,188,235,0.08);opacity:0.7;margin-top:6px;">Módulo 4 — Seguridad</div>
-    <a href="acl.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🔒</span>ACLs</a>
-    <a href="nat.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🔀</span>NAT/PAT</a>
-    <div style="font-family:Orbitron,monospace;font-size:0.52rem;color:#00bceb;letter-spacing:2px;text-transform:uppercase;padding:14px 8px 5px;border-top:1px solid rgba(0,188,235,0.08);opacity:0.7;margin-top:6px;">Módulo 5 — WAN y Servicios</div>
-    <a href="wan.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🌍</span>WAN y Servicios</a>
-    <a href="dhcp.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">📡</span>DHCP</a>
-    <a href="qos.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">📶</span>QoS</a>
-    <div style="font-family:Orbitron,monospace;font-size:0.52rem;color:#8b5cf6;letter-spacing:2px;text-transform:uppercase;padding:14px 8px 5px;border-top:1px solid rgba(139,92,246,0.15);opacity:0.9;margin-top:6px;">Módulo 6 — IPv6</div>
-    <a href="ipv6.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(139,92,246,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🌐</span>IPv6</a>
-  </div>
-</div>
-<script>
-function ccnaToggle(){var d=document.getElementById('ccna-drawer');var o=document.getElementById('ccna-overlay');var open=d.style.display==='flex';d.style.display=open?'none':'flex';o.style.display=open?'none':'block';}
-function ccnaClose(){document.getElementById('ccna-drawer').style.display='none';document.getElementById('ccna-overlay').style.display='none';}
-(function(){var cur=window.location.pathname.split('/').pop();if(!cur||cur==='index.html')return;document.querySelectorAll('#ccna-drawer a').forEach(function(l){if(l.getAttribute('href')===cur){l.style.background='rgba(0,188,235,0.12)';l.style.color='#38d9ff';l.style.borderLeft='2px solid #00bceb';l.style.paddingLeft='10px';}});})();
-</script>
 
-<div class="page-hero">
-  <div class="wrap">
-    <div class="page-breadcrumb">
-      <a href="../index.html">Inicio</a><span>/</span>
-      <span>Módulo 1</span><span>/</span>
-      <span>Fundamentos de Redes</span>
-    </div>
-    <h1 class="page-title">Fundamentos de Redes</h1>
-    <div class="page-subtitle">Modelos OSI · TCP/IP · Protocolos · Topologías · Direccionamiento</div>
-    <div class="page-nav-pills">
-      <button class="pill active" onclick="showSection('osi',this)">📐 Modelo OSI</button>
-      <button class="pill" onclick="showSection('tcpip',this)">🌐 TCP/IP</button>
-      <button class="pill" onclick="showSection('protocolos',this)">📡 Protocolos</button>
-      <button class="pill" onclick="showSection('config',this)">⌨️ Comandos</button>
-      <button class="pill" onclick="showSection('quiz',this)">🎯 Quiz</button>
-    </div>
+<header class="navbar">
+  <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
+  <a href="../index.html" class="navbar-brand">CCNA<span> ACADEMY</span></a>
+  <div class="navbar-spacer"></div>
+  <a href="../index.html" class="navbar-link">← Inicio</a>
+</header>
+<div class="nav-spacer"></div>
+
+<div class="page-header">
+  <div class="breadcrumb">
+    <a href="../index.html">Inicio</a> › M1 · Fundamentos › Fundamentos de Redes
+  </div>
+  <h1>Fundamentos de <span class="accent">Redes</span></h1>
+  <p class="page-subtitle">Modelos OSI · TCP/IP · Encapsulación · Topologías · Protocolos</p>
+  <div class="badges">
+    <span class="badge badge-teal">CCNA 200-301</span>
+    <span class="badge badge-blue">Módulo 1 · Fundamentos</span>
+    <span class="badge badge-yellow">⭐ Base de todo CCNA</span>
   </div>
 </div>
 
-<div class="page-content">
-  <div class="wrap">
-
-    <!-- OSI -->
-    <div id="section-osi" class="content-section">
-      <div class="content-card fade-up">
-        <h2>📐 El Modelo OSI — 7 Capas</h2>
-        <div class="def-box">
-          El <span class="hl">Modelo OSI (Open Systems Interconnection)</span> es un marco de referencia que divide las funciones de red en <span class="hlg">7 capas independientes</span>. Cada capa tiene una función específica y se comunica solo con las capas adyacentes. Fue creado por la ISO en 1984 y es la base conceptual para entender cualquier protocolo de red.
-        </div>
-        <table class="data-table">
-          <thead><tr><th>#</th><th>Capa</th><th>Función</th><th>Protocolos / Dispositivos</th><th>PDU</th></tr></thead>
-          <tbody>
-            <tr><td style="color:#f87171;font-weight:700;">7</td><td><span class="badge b-red">Aplicación</span></td><td>Interfaz con el usuario final. Servicios de red a aplicaciones.</td><td>HTTP, HTTPS, FTP, DNS, DHCP, SMTP, SSH, Telnet</td><td>Datos</td></tr>
-            <tr><td style="color:#fb923c;font-weight:700;">6</td><td><span class="badge b-amber">Presentación</span></td><td>Formato, cifrado/descifrado, compresión de datos.</td><td>SSL/TLS, JPEG, MPEG, ASCII, UTF-8</td><td>Datos</td></tr>
-            <tr><td style="color:#fcd34d;font-weight:700;">5</td><td><span class="badge b-amber">Sesión</span></td><td>Establece, gestiona y cierra sesiones entre aplicaciones.</td><td>NetBIOS, RPC, SQL</td><td>Datos</td></tr>
-            <tr><td style="color:#34d399;font-weight:700;">4</td><td><span class="badge b-green">Transporte</span></td><td>Transporte extremo a extremo, control de flujo, corrección de errores.</td><td>TCP, UDP. Segmentos</td><td>Segmento</td></tr>
-            <tr><td style="color:#38bdf8;font-weight:700;">3</td><td><span class="badge b-blue">Red</span></td><td>Direccionamiento lógico (IP), routing entre redes.</td><td>IPv4, IPv6, ICMP, OSPF, EIGRP. Routers.</td><td>Paquete</td></tr>
-            <tr><td style="color:#818cf8;font-weight:700;">2</td><td><span class="badge" style="background:rgba(139,92,246,0.15);border:1px solid #8b5cf6;color:#c4b5fd;">Enlace de Datos</span></td><td>Direccionamiento físico (MAC), detección de errores, frame switching.</td><td>Ethernet, 802.11 Wi-Fi, VLANs. Switches.</td><td>Trama</td></tr>
-            <tr><td style="color:#94a3b8;font-weight:700;">1</td><td><span class="badge" style="background:rgba(100,116,139,0.15);border:1px solid #475569;color:#94a3b8;">Física</span></td><td>Transmisión de bits por el medio físico. Voltajes, señales, cables.</td><td>Cables UTP/STP, fibra óptica, Wi-Fi, Hubs, Repetidores.</td><td>Bit</td></tr>
-          </tbody>
-        </table>
-        <div class="info-box exam">
-          <div class="info-icon">🎯</div>
-          <div><strong>Mnemotecnia CCNA:</strong> <strong style="color:var(--blue-b);">"All People Seem To Need Data Processing"</strong> (Aplicación, Presentación, Sesión, Transporte, Red, Datos, Física) — de capa 7 a 1. O al revés: <strong style="color:var(--green);">"Please Do Not Throw Sausage Pizza Away"</strong></div>
-        </div>
-      </div>
-
-      <div class="content-card fade-up fade-up-d1">
-        <h2>🔄 Encapsulación y Desencapsulación</h2>
-        <div class="def-box">
-          Cuando un dato viaja de una PC hacia la red, cada capa del modelo OSI <span class="hl">agrega su propio encabezado (header)</span> — esto se llama <span class="hlg">encapsulación</span>. En el destino, el proceso inverso elimina los headers capa por capa — esto es la <span class="hlg">desencapsulación</span>.
-        </div>
-        <div class="info-box tip">
-          <div class="info-icon">✅</div>
-          <div>Dato → Segmento (Capa 4 agrega puerto TCP/UDP) → Paquete (Capa 3 agrega IP origen/destino) → Trama (Capa 2 agrega MAC origen/destino) → Bits (Capa 1 convierte a señal eléctrica/óptica)</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- TCP/IP -->
-    <div id="section-tcpip" class="content-section" style="display:none;">
-      <div class="content-card fade-up">
-        <h2>🌐 Modelo TCP/IP — 4 Capas</h2>
-        <div class="def-box">
-          El <span class="hl">Modelo TCP/IP</span> (también llamado DoD o Internet Model) es el modelo práctico que usa Internet. Tiene <span class="hlg">4 capas</span> y es el que realmente implementan los sistemas operativos y dispositivos de red.
-        </div>
-        <table class="data-table">
-          <thead><tr><th>Capa TCP/IP</th><th>Equivalente OSI</th><th>Protocolos clave</th></tr></thead>
-          <tbody>
-            <tr><td><span class="badge b-red">Aplicación</span></td><td>Capas 5, 6, 7 OSI</td><td>HTTP, FTP, DNS, DHCP, SSH, Telnet, SNMP, NTP</td></tr>
-            <tr><td><span class="badge b-green">Transporte</span></td><td>Capa 4 OSI</td><td>TCP (confiable, orientado a conexión) · UDP (no confiable, rápido)</td></tr>
-            <tr><td><span class="badge b-blue">Internet</span></td><td>Capa 3 OSI</td><td>IPv4, IPv6, ICMP, ARP (debate: algunos lo ubican en capa 2)</td></tr>
-            <tr><td><span class="badge b-amber">Acceso a Red</span></td><td>Capas 1 y 2 OSI</td><td>Ethernet, 802.11 Wi-Fi, PPP, Frame Relay</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="content-card fade-up fade-up-d1">
-        <h2>⚖️ TCP vs UDP</h2>
-        <table class="data-table">
-          <thead><tr><th>Característica</th><th>TCP</th><th>UDP</th></tr></thead>
-          <tbody>
-            <tr><td>Orientado a conexión</td><td style="color:var(--green);">✓ Sí (3-way handshake)</td><td style="color:var(--red-bright);">✗ No</td></tr>
-            <tr><td>Confiabilidad</td><td style="color:var(--green);">✓ ACKs, retransmisión</td><td style="color:var(--red-bright);">✗ Best-effort</td></tr>
-            <tr><td>Control de flujo</td><td style="color:var(--green);">✓ Ventana deslizante</td><td style="color:var(--red-bright);">✗ No</td></tr>
-            <tr><td>Velocidad</td><td style="color:var(--amber);">Más lento</td><td style="color:var(--green);">Más rápido</td></tr>
-            <tr><td>Uso típico</td><td>HTTP, FTP, SSH, SMTP</td><td>DNS, DHCP, VoIP, video streaming, TFTP</td></tr>
-            <tr><td>Puerto conocido ej.</td><td>HTTP:80, HTTPS:443, SSH:22</td><td>DNS:53, DHCP:67/68, TFTP:69</td></tr>
-          </tbody>
-        </table>
-        <div class="info-box exam">
-          <div class="info-icon">🎯</div>
-          <div><strong>CCNA Examen:</strong> TCP usa el <strong>3-Way Handshake</strong>: SYN → SYN-ACK → ACK. DNS usa UDP puerto 53 para consultas normales y TCP para transferencias de zona (>512 bytes). DHCP usa UDP puertos 67 (servidor) y 68 (cliente).</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- PROTOCOLOS -->
-    <div id="section-protocolos" class="content-section" style="display:none;">
-      <div class="content-card fade-up">
-        <h2>📡 Puertos y Protocolos Esenciales CCNA</h2>
-        <table class="data-table">
-          <thead><tr><th>Protocolo</th><th>Puerto</th><th>Transport</th><th>Función</th></tr></thead>
-          <tbody>
-            <tr><td><span class="badge b-blue">FTP</span></td><td>20/21</td><td>TCP</td><td>Transferencia de archivos (datos:20, control:21)</td></tr>
-            <tr><td><span class="badge b-blue">SSH</span></td><td>22</td><td>TCP</td><td>Acceso remoto seguro (reemplaza Telnet)</td></tr>
-            <tr><td><span class="badge b-red">Telnet</span></td><td>23</td><td>TCP</td><td>Acceso remoto no seguro (texto plano) ⚠️</td></tr>
-            <tr><td><span class="badge b-blue">SMTP</span></td><td>25</td><td>TCP</td><td>Envío de correo electrónico</td></tr>
-            <tr><td><span class="badge b-green">DNS</span></td><td>53</td><td>UDP/TCP</td><td>Resolución de nombres a IP</td></tr>
-            <tr><td><span class="badge b-green">DHCP</span></td><td>67/68</td><td>UDP</td><td>Asignación automática de IPs</td></tr>
-            <tr><td><span class="badge b-green">TFTP</span></td><td>69</td><td>UDP</td><td>Transferencia simple de archivos (IOS upgrades)</td></tr>
-            <tr><td><span class="badge b-blue">HTTP</span></td><td>80</td><td>TCP</td><td>Web sin cifrar</td></tr>
-            <tr><td><span class="badge b-green">SNMP</span></td><td>161/162</td><td>UDP</td><td>Gestión y monitoreo de red</td></tr>
-            <tr><td><span class="badge b-blue">HTTPS</span></td><td>443</td><td>TCP</td><td>Web cifrada con TLS/SSL</td></tr>
-            <tr><td><span class="badge b-amber">Syslog</span></td><td>514</td><td>UDP</td><td>Registro de eventos del sistema</td></tr>
-            <tr><td><span class="badge b-amber">NTP</span></td><td>123</td><td>UDP</td><td>Sincronización de tiempo de red</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- COMANDOS -->
-    <div id="section-config" class="content-section" style="display:none;">
-      <div class="content-card fade-up">
-        <h2>⌨️ Comandos IOS Fundamentales</h2>
-        <div class="cmd-block">
-          <span class="cmd-label">MODOS IOS</span>
-          <span class="cl"><span class="cp">Router></span>           <span class="cc">! Modo Usuario (solo lectura)</span></span>
-          <span class="cl"><span class="cp">Router></span> <span class="ck">enable</span></span>
-          <span class="cl"><span class="cp">Router#</span>           <span class="cc">! Modo Privilegiado (EXEC)</span></span>
-          <span class="cl"><span class="cp">Router#</span> <span class="ck">configure terminal</span></span>
-          <span class="cl"><span class="cp">Router(config)#</span>   <span class="cc">! Modo Configuración Global</span></span>
-          <span class="cl"><span class="cp">Router(config)#</span> <span class="ck">interface</span> <span class="cv">GigabitEthernet0/0</span></span>
-          <span class="cl"><span class="cp">Router(config-if)#</span> <span class="cc">! Modo Configuración de Interfaz</span></span>
-          <span class="cl"><span class="cp">Router(config-if)#</span> <span class="ck">exit</span>  <span class="cc">! o Ctrl+Z para volver al modo privilegiado</span></span>
-        </div>
-        <div class="cmd-block">
-          <span class="cmd-label">COMANDOS ESENCIALES</span>
-          <span class="cl"><span class="cp">Router#</span> <span class="ck">show running-config</span>        <span class="cc">! Ver configuración activa en RAM</span></span>
-          <span class="cl"><span class="cp">Router#</span> <span class="ck">show startup-config</span>        <span class="cc">! Ver configuración guardada en NVRAM</span></span>
-          <span class="cl"><span class="cp">Router#</span> <span class="ck">copy running-config startup-config</span> <span class="cc">! Guardar (write memory)</span></span>
-          <span class="cl"><span class="cp">Router#</span> <span class="ck">show ip interface brief</span>    <span class="cc">! Estado de todas las interfaces</span></span>
-          <span class="cl"><span class="cp">Router#</span> <span class="ck">show interfaces</span>            <span class="cc">! Detalle de interfaces</span></span>
-          <span class="cl"><span class="cp">Router#</span> <span class="ck">show version</span>              <span class="cc">! Versión IOS, hardware, uptime</span></span>
-          <span class="cl"><span class="cp">Router#</span> <span class="ck">show cdp neighbors</span>         <span class="cc">! Ver vecinos Cisco directamente conectados</span></span>
-          <span class="cl"><span class="cp">Router#</span> <span class="ck">ping</span> <span class="cv">192.168.1.1</span>          <span class="cc">! Prueba de conectividad</span></span>
-          <span class="cl"><span class="cp">Router#</span> <span class="ck">traceroute</span> <span class="cv">8.8.8.8</span>       <span class="cc">! Trazar ruta hacia destino</span></span>
-        </div>
-      </div>
-    </div>
-
-    <!-- QUIZ -->
-    <div id="section-quiz" class="content-section" style="display:none;">
-      <div class="content-card">
-        <h2>🎯 Quiz — Fundamentos CCNA</h2>
-        <div class="info-box exam"><div class="info-icon">📋</div><div>Preguntas estilo examen oficial Cisco CCNA 200-301.</div></div>
-
-        <div class="q-box" id="q1">
-          <div class="q-num">PREGUNTA 01 / 05</div>
-          <div class="q-text">¿En qué capa del modelo OSI opera un switch de Capa 2?</div>
-          <div class="q-opts">
-            <div class="q-opt" onclick="CcnaQuiz.answer(1,'A','wrong','La capa física (capa 1) opera con bits y señales eléctricas. Los hubs y repetidores trabajan en esta capa.')"><div class="q-letter">A</div>Capa 1 — Física</div>
-            <div class="q-opt" onclick="CcnaQuiz.answer(1,'B','correct','¡Correcto! Los switches de capa 2 operan en la capa de Enlace de Datos (capa 2). Toman decisiones de forwarding basadas en direcciones MAC, no en IPs.')"><div class="q-letter">B</div>Capa 2 — Enlace de Datos</div>
-            <div class="q-opt" onclick="CcnaQuiz.answer(1,'C','wrong','La capa de Red (capa 3) es donde operan los routers y los switches multilayer. Usan direcciones IP para el routing.')"><div class="q-letter">C</div>Capa 3 — Red</div>
-            <div class="q-opt" onclick="CcnaQuiz.answer(1,'D','wrong','La capa de Transporte (capa 4) es donde opera TCP y UDP. No es donde trabajan los switches.')"><div class="q-letter">D</div>Capa 4 — Transporte</div>
-          </div>
-          <div class="q-feedback" id="fb1"></div>
-        </div>
-
-        <div class="q-box" id="q2">
-          <div class="q-num">PREGUNTA 02 / 05</div>
-          <div class="q-text">¿Cuál protocolo de la capa de transporte garantiza la entrega de datos mediante acuses de recibo (ACKs) y retransmisión?</div>
-          <div class="q-opts">
-            <div class="q-opt" onclick="CcnaQuiz.answer(2,'A','correct','¡Correcto! TCP (Transmission Control Protocol) es orientado a conexión y garantiza la entrega mediante el 3-way handshake, numeración de secuencia, ACKs y retransmisión de paquetes perdidos.')"><div class="q-letter">A</div>TCP</div>
-            <div class="q-opt" onclick="CcnaQuiz.answer(2,'B','wrong','UDP (User Datagram Protocol) es no orientado a conexión y no garantiza la entrega. Es más rápido pero no confiable. Usado para VoIP, DNS, streaming.')"><div class="q-letter">B</div>UDP</div>
-            <div class="q-opt" onclick="CcnaQuiz.answer(2,'C','wrong','ICMP (Internet Control Message Protocol) opera en capa 3 y se usa para diagnóstico (ping, traceroute), no para transmisión de datos garantizada.')"><div class="q-letter">C</div>ICMP</div>
-            <div class="q-opt" onclick="CcnaQuiz.answer(2,'D','wrong','ARP (Address Resolution Protocol) resuelve IPs a MACs y opera entre capas 2 y 3. No tiene función de garantía de entrega de datos.')"><div class="q-letter">D</div>ARP</div>
-          </div>
-          <div class="q-feedback" id="fb2"></div>
-        </div>
-
-        <div class="q-box" id="q3">
-          <div class="q-num">PREGUNTA 03 / 05</div>
-          <div class="q-text">¿Qué puerto y protocolo de transporte usa DHCP para el servidor?</div>
-          <div class="q-opts">
-            <div class="q-opt" onclick="CcnaQuiz.answer(3,'A','wrong','Puerto 80 TCP es HTTP (web). DHCP no usa TCP ni el puerto 80.')"><div class="q-letter">A</div>TCP Puerto 80</div>
-            <div class="q-opt" onclick="CcnaQuiz.answer(3,'B','wrong','UDP 53 es DNS, no DHCP. DNS usa UDP 53 para consultas (y TCP 53 para transferencias de zona).')"><div class="q-letter">B</div>UDP Puerto 53</div>
-            <div class="q-opt" onclick="CcnaQuiz.answer(3,'C','correct','¡Correcto! DHCP usa UDP. El servidor DHCP escucha en el puerto 67 y el cliente en el puerto 68. Usa UDP porque en el momento del descubrimiento el cliente aún no tiene IP y no puede establecer conexión TCP.')"><div class="q-letter">C</div>UDP Puerto 67 (servidor) / 68 (cliente)</div>
-            <div class="q-opt" onclick="CcnaQuiz.answer(3,'D','wrong','TCP 22 es SSH (Secure Shell), el protocolo de acceso remoto seguro que reemplaza a Telnet.')"><div class="q-letter">D</div>TCP Puerto 22</div>
-          </div>
-          <div class="q-feedback" id="fb3"></div>
-        </div>
-
-        <div class="q-box" id="q4">
-          <div class="q-num">PREGUNTA 04 / 05</div>
-          <div class="q-text">¿Cuál es el comando para guardar la configuración activa en la NVRAM de un dispositivo Cisco?</div>
-          <div class="q-opts">
-            <div class="q-opt" onclick="CcnaQuiz.answer(4,'A','wrong','show running-config muestra la configuración en RAM pero no la guarda. Es solo lectura.')"><div class="q-letter">A</div>show running-config</div>
-            <div class="q-opt" onclick="CcnaQuiz.answer(4,'B','correct','¡Correcto! copy running-config startup-config (o el atajo write memory / wr) copia la config de la RAM (running) hacia la NVRAM (startup). Si haces reload sin este comando, pierdes todos los cambios.')"><div class="q-letter">B</div>copy running-config startup-config</div>
-            <div class="q-opt" onclick="CcnaQuiz.answer(4,'C','wrong','copy startup-config running-config hace lo contrario: carga la config guardada hacia la RAM activa, sobreescribiendo cambios no guardados.')"><div class="q-letter">C</div>copy startup-config running-config</div>
-            <div class="q-opt" onclick="CcnaQuiz.answer(4,'D','wrong','write erase (o erase startup-config) borra la NVRAM. Es el opuesto de guardar — deja el dispositivo sin configuración para el próximo reinicio.')"><div class="q-letter">D</div>write erase</div>
-          </div>
-          <div class="q-feedback" id="fb4"></div>
-        </div>
-
-        <div class="q-box" id="q5">
-          <div class="q-num">PREGUNTA 05 / 05</div>
-          <div class="q-text">¿Qué hace el comando "show cdp neighbors" en un switch Cisco?</div>
-          <div class="q-opts">
-            <div class="q-opt" onclick="CcnaQuiz.answer(5,'A','wrong','show ip route muestra la tabla de routing. CDP no tiene relación con el routing.')"><div class="q-letter">A</div>Muestra la tabla de routing del switch</div>
-            <div class="q-opt" onclick="CcnaQuiz.answer(5,'B','wrong','show vlan brief muestra las VLANs configuradas. CDP no descubre VLANs.')"><div class="q-letter">B</div>Muestra todas las VLANs configuradas</div>
-            <div class="q-opt" onclick="CcnaQuiz.answer(5,'C','correct','¡Correcto! CDP (Cisco Discovery Protocol) es un protocolo propietario de Cisco que opera en capa 2. Permite descubrir automáticamente los dispositivos Cisco directamente conectados, mostrando: nombre del vecino, modelo, puerto local/remoto, versión IOS y dirección IP de management.')"><div class="q-letter">C</div>Muestra los dispositivos Cisco directamente conectados (vecinos)</div>
-            <div class="q-opt" onclick="CcnaQuiz.answer(5,'D','wrong','show mac address-table muestra la tabla CAM del switch con las MACs aprendidas. CDP muestra vecinos, no MACs.')"><div class="q-letter">D</div>Muestra la tabla de direcciones MAC del switch</div>
-          </div>
-          <div class="q-feedback" id="fb5"></div>
-        </div>
-
-        <div id="scoreBox" style="display:none;" class="content-card">
-          <h2>🏆 Resultado</h2>
-          <div style="text-align:center;padding:20px;">
-            <div id="scoreTxt" style="font-family:var(--font-head);font-size:2.5rem;font-weight:900;margin-bottom:8px;"></div>
-            <div id="scoreMsg" style="color:var(--gray);"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
+<div class="tabs-wrapper">
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('osi',this)">📐 Modelo OSI</button>
+    <button class="tab-btn" onclick="showTab('tcpip',this)">🌐 TCP/IP</button>
+    <button class="tab-btn" onclick="showTab('protocolos',this)">📡 Protocolos</button>
+    <button class="tab-btn" onclick="showTab('comandos',this)">⌨️ Comandos</button>
+    <button class="tab-btn" onclick="showTab('quiz',this)">🎯 Quiz</button>
   </div>
 </div>
 
-<footer class="site-footer">
-  <div class="wrap">
-    <div class="footer-grid">
-      <div class="footer-brand">
-        <div class="footer-logo"><span class="logo-cisco">CISCO</span><span class="logo-text">Academy</span></div>
-        <p>Ruta completa de aprendizaje hacia las certificaciones Cisco CCNA, CCNP y CCIE.</p>
+<!-- ════ TAB OSI ════ -->
+<div class="tab-panel active" id="tab-osi">
+<div class="content">
+
+  <div class="section">
+    <h2 class="section-title">📐 El Modelo OSI — 7 Capas</h2>
+    <p>El <strong>Modelo OSI</strong> (Open Systems Interconnection) es un marco de referencia que divide las funciones de red en <strong>7 capas independientes</strong>. Cada capa tiene una función específica y se comunica solo con las capas adyacentes. Fue creado por la ISO en 1984 y es la base conceptual para entender cualquier protocolo de red.</p>
+
+    <!-- Tabla OSI estilizada -->
+    <div class="osi-table-wrap">
+      <table class="osi-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Capa</th>
+            <th>Función</th>
+            <th>Protocolos / Dispositivos</th>
+            <th>PDU</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="osi-num osi-7">7</span></td>
+            <td><span class="osi-layer-name">Aplicación</span></td>
+            <td>Interfaz con el usuario final. Servicios de red a aplicaciones.</td>
+            <td><span class="osi-protocols">HTTP · HTTPS · FTP · DNS · DHCP · SMTP · SSH · Telnet</span></td>
+            <td><span class="osi-pdu">Datos</span></td>
+          </tr>
+          <tr>
+            <td><span class="osi-num osi-6">6</span></td>
+            <td><span class="osi-layer-name">Presentación</span></td>
+            <td>Formato, cifrado/descifrado, compresión de datos.</td>
+            <td><span class="osi-protocols">SSL/TLS · JPEG · MPEG · ASCII · UTF-8</span></td>
+            <td><span class="osi-pdu">Datos</span></td>
+          </tr>
+          <tr>
+            <td><span class="osi-num osi-5">5</span></td>
+            <td><span class="osi-layer-name">Sesión</span></td>
+            <td>Establece, gestiona y cierra sesiones entre aplicaciones.</td>
+            <td><span class="osi-protocols">NetBIOS · RPC · SQL</span></td>
+            <td><span class="osi-pdu">Datos</span></td>
+          </tr>
+          <tr>
+            <td><span class="osi-num osi-4">4</span></td>
+            <td><span class="osi-layer-name">Transporte</span></td>
+            <td>Transporte extremo a extremo, control de flujo, corrección de errores.</td>
+            <td><span class="osi-protocols">TCP · UDP</span></td>
+            <td><span class="osi-pdu">Segmento</span></td>
+          </tr>
+          <tr>
+            <td><span class="osi-num osi-3">3</span></td>
+            <td><span class="osi-layer-name">Red</span></td>
+            <td>Direccionamiento lógico (IP), routing entre redes.</td>
+            <td><span class="osi-protocols">IPv4 · IPv6 · ICMP · OSPF · EIGRP · Routers</span></td>
+            <td><span class="osi-pdu">Paquete</span></td>
+          </tr>
+          <tr>
+            <td><span class="osi-num osi-2">2</span></td>
+            <td><span class="osi-layer-name">Enlace de Datos</span></td>
+            <td>Direccionamiento físico (MAC), detección de errores, frame switching.</td>
+            <td><span class="osi-protocols">Ethernet · 802.11 Wi-Fi · VLANs · Switches</span></td>
+            <td><span class="osi-pdu">Trama</span></td>
+          </tr>
+          <tr>
+            <td><span class="osi-num osi-1">1</span></td>
+            <td><span class="osi-layer-name">Física</span></td>
+            <td>Transmisión de bits por el medio físico. Voltajes, señales, cables.</td>
+            <td><span class="osi-protocols">Cables UTP/STP · Fibra óptica · Wi-Fi · Hubs · Repetidores</span></td>
+            <td><span class="osi-pdu">Bit</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="concept-box success">
+      <h4>🎯 Mnemotecnia CCNA</h4>
+      <p><strong>De 7 a 1 (bajando):</strong> <em>"All People Seem To Need Data Processing"</em><br>
+      (Aplicación, Presentación, Sesión, Transporte, Red, Datos, Física)</p>
+      <p style="margin-top:.5rem"><strong>De 1 a 7 (subiendo):</strong> <em>"Please Do Not Throw Sausage Pizza Away"</em></p>
+    </div>
+  </div>
+
+  <!-- Encapsulación -->
+  <div class="section">
+    <h2 class="section-title">🔄 Encapsulación y Desencapsulación</h2>
+    <p>Cuando un dato viaja de una PC hacia la red, cada capa del modelo OSI agrega su propio encabezado (<strong>header</strong>) — esto se llama <strong>encapsulación</strong>. En el destino, el proceso inverso elimina los headers capa por capa — esto es la <strong>desencapsulación</strong>.</p>
+
+    <div class="encap-flow">
+      <div class="encap-step">
+        <span class="encap-label">L7 – Datos</span>
+        <div class="encap-bar encap-7">
+          <span>📦 Datos de la aplicación (HTTP, DNS, FTP…)</span>
+        </div>
       </div>
-      <div class="footer-links">
-        <h4>Siguiente clase</h4>
-        <a href="vlan.html">→ VLANs</a>
-        <a href="stp.html">→ STP</a>
+      <div class="encap-step">
+        <span class="encap-label">L4 – Segmento</span>
+        <div class="encap-bar encap-4">
+          <span>[TCP/UDP Header]</span><span>Datos</span>
+        </div>
+      </div>
+      <div class="encap-step">
+        <span class="encap-label">L3 – Paquete</span>
+        <div class="encap-bar encap-3">
+          <span>[IP Header: src/dst IP]</span><span>[TCP Header]</span><span>Datos</span>
+        </div>
+      </div>
+      <div class="encap-step">
+        <span class="encap-label">L2 – Trama</span>
+        <div class="encap-bar encap-2">
+          <span>[ETH Header: src/dst MAC]</span><span>[IP]</span><span>[TCP]</span><span>Datos</span><span>[FCS]</span>
+        </div>
+      </div>
+      <div class="encap-step">
+        <span class="encap-label">L1 – Bits</span>
+        <div class="encap-bar encap-1">
+          <span>01001101 00110101 10110010 … (señal eléctrica / luz)</span>
+        </div>
       </div>
     </div>
-    <div class="footer-bottom"><span>Basado en el currículo oficial de Cisco Networking Academy</span></div>
+
+    <div class="concept-box info">
+      <h4>💡 Regla de oro de encapsulación</h4>
+      <p>Dato → <strong>Segmento</strong> (L4 agrega puerto TCP/UDP) → <strong>Paquete</strong> (L3 agrega IP origen/destino) → <strong>Trama</strong> (L2 agrega MAC origen/destino + FCS) → <strong>Bits</strong> (L1 convierte a señal)</p>
+    </div>
   </div>
+
+  <!-- Diagrama OSI comunicación -->
+  <div class="section">
+    <h2 class="section-title">📡 Comunicación entre dos hosts</h2>
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 720 380" xmlns="http://www.w3.org/2000/svg" font-family="'Share Tech Mono',monospace">
+        <rect width="720" height="380" fill="#080c18"/>
+
+        <!-- HOST A -->
+        <rect x="20" y="30" width="200" height="320" rx="10" fill="#0d1222" stroke="#243050" stroke-width="1.5"/>
+        <text x="120" y="22" fill="#7a8fa8" font-size="10" text-anchor="middle">HOST A (EMISOR)</text>
+
+        <!-- capas A -->
+        <rect x="30" y="36"  width="180" height="36" rx="5" fill="rgba(0,212,170,.12)"  stroke="rgba(0,212,170,.3)"  stroke-width="1"/><text x="120" y="52" fill="#00d4aa" font-size="10" text-anchor="middle">7 · Aplicación</text>  <text x="120" y="64" fill="#455570" font-size="8" text-anchor="middle">HTTP / DNS / FTP</text>
+        <rect x="30" y="76"  width="180" height="36" rx="5" fill="rgba(0,196,154,.1)"   stroke="rgba(0,196,154,.25)" stroke-width="1"/><text x="120" y="91" fill="#00c49a" font-size="10" text-anchor="middle">6 · Presentación</text><text x="120" y="103" fill="#455570" font-size="8" text-anchor="middle">SSL · JPEG · ASCII</text>
+        <rect x="30" y="116" width="180" height="36" rx="5" fill="rgba(77,166,255,.1)"  stroke="rgba(77,166,255,.25)"stroke-width="1"/><text x="120" y="131" fill="#4da6ff" font-size="10" text-anchor="middle">5 · Sesión</text>     <text x="120" y="143" fill="#455570" font-size="8" text-anchor="middle">NetBIOS · RPC</text>
+        <rect x="30" y="156" width="180" height="36" rx="5" fill="rgba(77,166,255,.12)" stroke="rgba(77,166,255,.3)" stroke-width="1"/><text x="120" y="171" fill="#5ab4ff" font-size="10" text-anchor="middle">4 · Transporte</text>  <text x="120" y="183" fill="#455570" font-size="8" text-anchor="middle">TCP · UDP · Segmento</text>
+        <rect x="30" y="196" width="180" height="36" rx="5" fill="rgba(245,197,66,.1)"  stroke="rgba(245,197,66,.25)"stroke-width="1"/><text x="120" y="211" fill="#f5c542" font-size="10" text-anchor="middle">3 · Red</text>         <text x="120" y="223" fill="#455570" font-size="8" text-anchor="middle">IP · ICMP · Paquete</text>
+        <rect x="30" y="236" width="180" height="36" rx="5" fill="rgba(240,184,0,.12)"  stroke="rgba(240,184,0,.3)"  stroke-width="1"/><text x="120" y="251" fill="#f0b800" font-size="10" text-anchor="middle">2 · Enlace</text>      <text x="120" y="263" fill="#455570" font-size="8" text-anchor="middle">Ethernet · MAC · Trama</text>
+        <rect x="30" y="276" width="180" height="36" rx="5" fill="rgba(255,69,96,.1)"   stroke="rgba(255,69,96,.25)" stroke-width="1"/><text x="120" y="291" fill="#ff4560" font-size="10" text-anchor="middle">1 · Física</text>      <text x="120" y="303" fill="#455570" font-size="8" text-anchor="middle">Bits · Cable · Señal</text>
+
+        <!-- HOST B -->
+        <rect x="500" y="30" width="200" height="320" rx="10" fill="#0d1222" stroke="#243050" stroke-width="1.5"/>
+        <text x="600" y="22" fill="#7a8fa8" font-size="10" text-anchor="middle">HOST B (RECEPTOR)</text>
+
+        <rect x="510" y="36"  width="180" height="36" rx="5" fill="rgba(0,212,170,.12)"  stroke="rgba(0,212,170,.3)"  stroke-width="1"/><text x="600" y="52" fill="#00d4aa" font-size="10" text-anchor="middle">7 · Aplicación</text>
+        <rect x="510" y="76"  width="180" height="36" rx="5" fill="rgba(0,196,154,.1)"   stroke="rgba(0,196,154,.25)" stroke-width="1"/><text x="600" y="91" fill="#00c49a" font-size="10" text-anchor="middle">6 · Presentación</text>
+        <rect x="510" y="116" width="180" height="36" rx="5" fill="rgba(77,166,255,.1)"  stroke="rgba(77,166,255,.25)"stroke-width="1"/><text x="600" y="131" fill="#4da6ff" font-size="10" text-anchor="middle">5 · Sesión</text>
+        <rect x="510" y="156" width="180" height="36" rx="5" fill="rgba(77,166,255,.12)" stroke="rgba(77,166,255,.3)" stroke-width="1"/><text x="600" y="171" fill="#5ab4ff" font-size="10" text-anchor="middle">4 · Transporte</text>
+        <rect x="510" y="196" width="180" height="36" rx="5" fill="rgba(245,197,66,.1)"  stroke="rgba(245,197,66,.25)"stroke-width="1"/><text x="600" y="211" fill="#f5c542" font-size="10" text-anchor="middle">3 · Red</text>
+        <rect x="510" y="236" width="180" height="36" rx="5" fill="rgba(240,184,0,.12)"  stroke="rgba(240,184,0,.3)"  stroke-width="1"/><text x="600" y="251" fill="#f0b800" font-size="10" text-anchor="middle">2 · Enlace</text>
+        <rect x="510" y="276" width="180" height="36" rx="5" fill="rgba(255,69,96,.1)"   stroke="rgba(255,69,96,.25)" stroke-width="1"/><text x="600" y="291" fill="#ff4560" font-size="10" text-anchor="middle">1 · Física</text>
+
+        <!-- Flechas -->
+        <!-- bajada lado A -->
+        <line x1="215" y1="54"  x2="215" y2="310" stroke="#243050" stroke-width="1" stroke-dasharray="3,3"/>
+        <polygon points="210,310 220,310 215,320" fill="#243050"/>
+
+        <!-- Comunicación física central -->
+        <line x1="220" y1="294" x2="500" y2="294" stroke="#ff4560" stroke-width="2"/>
+        <text x="360" y="288" fill="#ff4560" font-size="9" text-anchor="middle">Medio físico (cable / aire)</text>
+        <text x="360" y="310" fill="#455570" font-size="8" text-anchor="middle">01001101 10110010…</text>
+
+        <!-- subida lado B -->
+        <line x1="505" y1="310" x2="505" y2="54" stroke="#243050" stroke-width="1" stroke-dasharray="3,3"/>
+        <polygon points="500,54 510,54 505,44" fill="#243050"/>
+
+        <!-- Labels encapsulación -->
+        <text x="250" y="175" fill="#455570" font-size="8" text-anchor="middle" transform="rotate(-90,250,175)">ENCAPSULACIÓN ↓</text>
+        <text x="470" y="175" fill="#455570" font-size="8" text-anchor="middle" transform="rotate(90,470,175)">DESENCAPSULACIÓN ↑</text>
+
+        <!-- Nota peer layers -->
+        <line x1="210" y1="174" x2="510" y2="174" stroke="#5ab4ff" stroke-width="1" stroke-dasharray="5,4" opacity=".4"/>
+        <text x="360" y="170" fill="#5ab4ff" font-size="7.5" text-anchor="middle" opacity=".7">comunicación lógica entre peers L4</text>
+      </svg>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ════ TAB TCP/IP ════ -->
+<div class="tab-panel" id="tab-tcpip">
+<div class="content">
+
+  <div class="section">
+    <h2 class="section-title">🌐 Modelo TCP/IP — 4 Capas</h2>
+    <p>El modelo <strong>TCP/IP</strong> (también llamado modelo de Internet o DoD) es el modelo <strong>práctico</strong> que realmente se implementa en las redes actuales. Tiene 4 capas y es el estándar de facto de Internet.</p>
+
+    <div class="osi-table-wrap">
+      <table class="osi-table">
+        <thead>
+          <tr>
+            <th>Capa TCP/IP</th>
+            <th>Capas OSI equivalentes</th>
+            <th>Protocolos principales</th>
+            <th>PDU</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="osi-layer-name" style="color:var(--teal)">4 · Aplicación</span></td>
+            <td><span class="osi-protocols">OSI 5,6,7 (Sesión, Presentación, Aplicación)</span></td>
+            <td>HTTP · HTTPS · FTP · SFTP · DNS · DHCP · SMTP · SSH · Telnet · SNMP · NTP</td>
+            <td><span class="osi-pdu">Datos</span></td>
+          </tr>
+          <tr>
+            <td><span class="osi-layer-name" style="color:#5ab4ff">3 · Transporte</span></td>
+            <td><span class="osi-protocols">OSI 4 (Transporte)</span></td>
+            <td>TCP · UDP</td>
+            <td><span class="osi-pdu">Segmento</span></td>
+          </tr>
+          <tr>
+            <td><span class="osi-layer-name" style="color:var(--yellow)">2 · Internet</span></td>
+            <td><span class="osi-protocols">OSI 3 (Red)</span></td>
+            <td>IPv4 · IPv6 · ICMP · ARP · OSPF · EIGRP · BGP</td>
+            <td><span class="osi-pdu">Paquete</span></td>
+          </tr>
+          <tr>
+            <td><span class="osi-layer-name" style="color:var(--red)">1 · Acceso a Red</span></td>
+            <td><span class="osi-protocols">OSI 1,2 (Física + Enlace)</span></td>
+            <td>Ethernet · 802.11 Wi-Fi · PPP · HDLC · Frame Relay</td>
+            <td><span class="osi-pdu">Trama / Bits</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="info-grid" style="margin-top:1.5rem">
+      <div class="info-card">
+        <h4>🔵 TCP vs UDP</h4>
+        <ul>
+          <li><strong>TCP:</strong> orientado a conexión, ACKs, confiable (HTTP, SSH, FTP)</li>
+          <li><strong>UDP:</strong> sin conexión, rápido, sin garantía (DNS, DHCP, VoIP)</li>
+          <li>TCP usa handshake de 3 vías: SYN → SYN-ACK → ACK</li>
+        </ul>
+      </div>
+      <div class="info-card">
+        <h4>📌 Puertos bien conocidos</h4>
+        <ul>
+          <li>HTTP: 80 · HTTPS: 443</li>
+          <li>SSH: 22 · Telnet: 23</li>
+          <li>FTP: 20/21 · SFTP: 22</li>
+          <li>DNS: 53 · DHCP: 67/68</li>
+          <li>SMTP: 25 · SNMP: 161</li>
+          <li>NTP: 123 · BGP: 179</li>
+        </ul>
+      </div>
+      <div class="info-card">
+        <h4>🌐 ARP — Address Resolution</h4>
+        <p>ARP traduce una dirección IP a su MAC correspondiente en la misma red local.</p>
+        <ul>
+          <li>ARP Request: broadcast → "¿Quién tiene 192.168.1.1?"</li>
+          <li>ARP Reply: unicast → "Yo soy AA:BB:CC:DD:EE:FF"</li>
+          <li><span class="highlight">show ip arp</span> → ver tabla ARP</li>
+        </ul>
+      </div>
+      <div class="info-card">
+        <h4>📡 ICMP — Mensajes de control</h4>
+        <p>ICMP (Internet Control Message Protocol) envía mensajes de error y diagnóstico:</p>
+        <ul>
+          <li>Echo Request/Reply → <strong>ping</strong></li>
+          <li>Destination Unreachable</li>
+          <li>Time Exceeded (TTL=0)</li>
+          <li>traceroute utiliza ICMP TTL</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ════ TAB PROTOCOLOS ════ -->
+<div class="tab-panel" id="tab-protocolos">
+<div class="content">
+
+  <div class="section">
+    <h2 class="section-title">📡 Topologías de Red</h2>
+    <div class="info-grid">
+      <div class="info-card">
+        <h4>⭐ Estrella</h4>
+        <p>Todos los dispositivos conectados a un switch/hub central. La más común en redes LAN actuales. Si el central falla, toda la red cae.</p>
+      </div>
+      <div class="info-card">
+        <h4>🔘 Bus</h4>
+        <p>Todos comparten un solo cable (coaxial). Obsoleta. Una falla en el cable corta toda la red. Colisiones frecuentes.</p>
+      </div>
+      <div class="info-card">
+        <h4>⭕ Anillo</h4>
+        <p>Cada dispositivo conectado al siguiente formando un anillo. Token Ring (IBM). Una falla puede cortar todo el tráfico.</p>
+      </div>
+      <div class="info-card">
+        <h4>🕸️ Malla Completa</h4>
+        <p>Cada dispositivo conectado a todos los demás. Alta redundancia. Usada en backbone WAN. Costo elevado: n(n-1)/2 enlaces.</p>
+      </div>
+      <div class="info-card">
+        <h4>🌿 Malla Parcial</h4>
+        <p>Solo algunos nodos tienen conexiones múltiples. Balance entre costo y redundancia. Común en redes empresariales WAN.</p>
+      </div>
+      <div class="info-card">
+        <h4>🌲 Árbol (Jerárquica)</h4>
+        <p>Modelo de 3 capas: Core → Distribution → Access. El diseño estándar de redes empresariales Cisco.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">🔌 Medios de Transmisión</h2>
+    <div class="ref-table-wrap">
+      <table class="ref-table">
+        <thead>
+          <tr><th>Medio</th><th>Velocidad</th><th>Distancia máx.</th><th>Uso típico</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Cat 5e UTP</td><td>1 Gbps</td><td>100 m</td><td>LAN de oficina</td></tr>
+          <tr><td>Cat 6 UTP</td><td>10 Gbps</td><td>55 m (10G) / 100 m (1G)</td><td>LAN empresarial</td></tr>
+          <tr><td>Cat 6A UTP</td><td>10 Gbps</td><td>100 m</td><td>Data center, campus</td></tr>
+          <tr><td>Fibra multimodo</td><td>10–100 Gbps</td><td>550 m – 2 km</td><td>Backbone de edificio</td></tr>
+          <tr><td>Fibra monomodo</td><td>100+ Gbps</td><td>40–80 km</td><td>WAN, interconexión campus</td></tr>
+          <tr><td>Wi-Fi 802.11ac</td><td>hasta 3.5 Gbps</td><td>~50 m interior</td><td>Acceso inalámbrico</td></tr>
+          <tr><td>Wi-Fi 802.11ax (Wi-Fi 6)</td><td>hasta 9.6 Gbps</td><td>~60 m interior</td><td>Alta densidad, IoT</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">🏢 Tipos de Red</h2>
+    <div class="info-grid">
+      <div class="info-card">
+        <h4>LAN — Local Area Network</h4>
+        <p>Red de área local. Cubre un edificio o campus. Alta velocidad (1–10 Gbps). Tecnología: Ethernet 802.3, Wi-Fi 802.11.</p>
+      </div>
+      <div class="info-card">
+        <h4>WAN — Wide Area Network</h4>
+        <p>Red de área amplia. Cubre ciudades, países o el planeta. Velocidades variables. Tecnologías: MPLS, SD-WAN, leased lines.</p>
+      </div>
+      <div class="info-card">
+        <h4>MAN — Metropolitan Area Network</h4>
+        <p>Red metropolitana. Cubre una ciudad. Conecta múltiples LANs. Tecnologías: Metro Ethernet, fibra óptica.</p>
+      </div>
+      <div class="info-card">
+        <h4>PAN — Personal Area Network</h4>
+        <p>Red de área personal. Rango de metros. Bluetooth, USB, NFC, Zigbee. Dispositivos personales.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ════ TAB COMANDOS ════ -->
+<div class="tab-panel" id="tab-comandos">
+<div class="content">
+
+  <div class="section">
+    <h2 class="section-title">⌨️ Comandos Diagnóstico Básico</h2>
+
+    <div class="cli-block" data-label="CISCO IOS — SHOW">
+      <pre><code><span class="cmt">! Verificar versión IOS y hardware</span>
+<span class="cmd">Router# show version</span>
+<span class="out">Cisco IOS Software, Version 15.4(3)M2...
+ROM: System Bootstrap, Version 15.4(3)M2
+Router uptime is 2 days, 14 hours, 22 minutes
+...cisco ISR4331 (1RU) processor with 1687137K/6147K bytes of memory.</span>
+
+<span class="cmt">! Estado de interfaces</span>
+<span class="cmd">Router# show ip interface brief</span>
+<span class="out">Interface          IP-Address      OK? Method Status   Protocol
+GigabitEthernet0/0 192.168.1.1     YES manual up       up
+GigabitEthernet0/1 unassigned      YES unset  down     down</span>
+
+<span class="cmt">! Tabla de routing</span>
+<span class="cmd">Router# show ip route</span>
+<span class="out">Codes: C - connected, S - static, O - OSPF, D - EIGRP
+C    192.168.1.0/24 is directly connected, GigabitEthernet0/0
+S    0.0.0.0/0 [1/0] via 203.0.113.1</span>
+
+<span class="cmt">! Tabla ARP</span>
+<span class="cmd">Router# show ip arp</span>
+<span class="out">Protocol  Address       Age  Hardware Addr   Type  Interface
+Internet  192.168.1.1   -    aa11.bb22.cc33  ARPA  GigabitEthernet0/0
+Internet  192.168.1.100 4    dd44.ee55.ff66  ARPA  GigabitEthernet0/0</span></code></pre>
+    </div>
+
+    <div class="cli-block" data-label="DIAGNÓSTICO — PING / TRACEROUTE">
+      <pre><code><span class="cmt">! Ping básico</span>
+<span class="cmd">Router# ping 192.168.1.100</span>
+<span class="out">Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 192.168.1.100, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/4 ms</span>
+
+<span class="cmt">! Ping extendido</span>
+<span class="cmd">Router# ping 8.8.8.8 repeat 100 size 1500</span>
+
+<span class="cmt">! Traceroute</span>
+<span class="cmd">Router# traceroute 8.8.8.8</span>
+<span class="out">Type escape sequence to abort.
+Tracing the route to 8.8.8.8
+  1 203.0.113.1 4 msec 4 msec 4 msec
+  2 10.0.0.1 8 msec 8 msec 8 msec
+  3 8.8.8.8 12 msec 12 msec 12 msec</span></code></pre>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">📋 Referencia de Comandos</h2>
+      <div id="refTableContainer"></div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ════ TAB QUIZ ════ -->
+<div class="tab-panel" id="tab-quiz">
+<div class="content">
+  <div class="section">
+    <h2 class="section-title">🎯 Quiz · Fundamentos · Estilo CCNA 200-301</h2>
+    <p style="color:var(--text-m);margin-bottom:1.5rem">8 preguntas al nivel del examen real.</p>
+    <div id="quiz-container"></div>
+    <div id="quiz-container-result"></div>
+  </div>
+</div>
+</div>
+
+<footer class="footer">
+  <p>CCNA Academy · Fundamentos de Redes · Basado en CCNA 200-301 Official Cert Guide (Wendell Odom) Cap. 1-3 y Daniel Pérez Torres</p>
+  <p style="margin-top:.4rem"><a href="../index.html">← Volver al índice</a></p>
 </footer>
 
 <script src="../assets/main.js"></script>
 <script>
-  CcnaQuiz.init(5);
-  function showSection(id, btn) {
-    document.querySelectorAll('.content-section').forEach(s => s.style.display='none');
-    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
-    document.getElementById('section-'+id).style.display='block';
-    btn.classList.add('active');
-    window.scrollTo({top:200, behavior:'smooth'});
-  }
+const cmdData = [
+  { Comando:'show version',            Modo:'EXEC privilegiado', Descripción:'Versión IOS, uptime, hardware' },
+  { Comando:'show ip interface brief', Modo:'EXEC privilegiado', Descripción:'Estado resumido de todas las interfaces' },
+  { Comando:'show interfaces',         Modo:'EXEC privilegiado', Descripción:'Estadísticas detalladas de interfaces' },
+  { Comando:'show ip route',           Modo:'EXEC privilegiado', Descripción:'Tabla de enrutamiento completa' },
+  { Comando:'show ip arp',             Modo:'EXEC privilegiado', Descripción:'Tabla ARP (IP ↔ MAC)' },
+  { Comando:'show running-config',     Modo:'EXEC privilegiado', Descripción:'Configuración activa en RAM' },
+  { Comando:'show startup-config',     Modo:'EXEC privilegiado', Descripción:'Configuración guardada en NVRAM' },
+  { Comando:'ping X.X.X.X',           Modo:'EXEC',              Descripción:'Prueba conectividad ICMP' },
+  { Comando:'traceroute X.X.X.X',     Modo:'EXEC',              Descripción:'Muestra saltos hasta el destino' },
+  { Comando:'copy running-config startup-config', Modo:'EXEC privilegiado', Descripción:'Guarda la config (también: wr)' },
+];
+buildRefTable(cmdData, 'refTableContainer');
+
+const preguntas = [
+  {
+    pregunta:'¿En qué capa del modelo OSI opera un Switch de Capa 2?',
+    opciones:['Capa 1 – Física','Capa 2 – Enlace de Datos','Capa 3 – Red','Capa 4 – Transporte'],
+    respuesta:1,
+    explicacion:'Los switches de Capa 2 operan en la capa de Enlace de Datos (L2) y toman decisiones de reenvío basadas en direcciones MAC. Los routers operan en Capa 3 usando direcciones IP.'
+  },
+  {
+    pregunta:'¿Cuál es la PDU (Protocol Data Unit) de la capa de Transporte en el modelo OSI?',
+    opciones:['Bit','Trama','Paquete','Segmento'],
+    respuesta:3,
+    explicacion:'La PDU de la Capa 4 (Transporte) es el Segmento (para TCP) o Datagrama (para UDP). La capa 3 usa Paquetes, la capa 2 usa Tramas y la capa 1 usa Bits.'
+  },
+  {
+    pregunta:'¿Qué protocolo de Capa 4 garantiza la entrega de datos mediante acuse de recibo (ACK)?',
+    opciones:['UDP','ICMP','TCP','IP'],
+    respuesta:2,
+    explicacion:'TCP (Transmission Control Protocol) es orientado a conexión y garantiza la entrega usando ACKs, retransmisiones y control de flujo. UDP es más rápido pero no garantiza la entrega.'
+  },
+  {
+    pregunta:'Un host envía un ARP Request. ¿Qué tipo de transmisión utiliza?',
+    opciones:['Unicast','Multicast','Anycast','Broadcast'],
+    respuesta:3,
+    explicacion:'Un ARP Request se envía como broadcast (FF:FF:FF:FF:FF:FF) porque el host no conoce aún la MAC del destino. Todos los dispositivos del segmento lo reciben, pero solo el dueño de la IP responde.'
+  },
+  {
+    pregunta:'¿Qué capa del modelo TCP/IP corresponde a las capas OSI de Sesión, Presentación y Aplicación?',
+    opciones:['Capa de Acceso a Red','Capa de Internet','Capa de Transporte','Capa de Aplicación'],
+    respuesta:3,
+    explicacion:'El modelo TCP/IP condensa las 3 capas superiores del OSI (Sesión, Presentación, Aplicación) en una sola capa llamada Aplicación. Esto simplifica el modelo práctico de Internet.'
+  },
+  {
+    pregunta:'¿Cuál es el puerto TCP utilizado por HTTPS?',
+    opciones:['80','8080','443','22'],
+    respuesta:2,
+    explicacion:'HTTPS (HTTP Seguro con TLS/SSL) utiliza el puerto TCP 443. HTTP no cifrado usa el puerto 80. SSH usa 22 y el puerto 8080 es alternativo de HTTP.'
+  },
+  {
+    pregunta:'En el proceso de encapsulación, ¿qué agrega la Capa 3 (Red) al paquete?',
+    opciones:['Direcciones MAC origen y destino','Números de puerto TCP/UDP','Direcciones IP origen y destino','El checksum FCS'],
+    respuesta:2,
+    explicacion:'La Capa 3 (Red) agrega el encabezado IP que contiene las direcciones IP de origen y destino. La Capa 2 agrega las MACs, la Capa 4 agrega los puertos TCP/UDP y el FCS lo agrega la Capa 2 al final de la trama.'
+  },
+  {
+    pregunta:'¿Qué dispositivo de red opera en las 3 primeras capas del modelo OSI?',
+    opciones:['Hub','Switch L2','Router','Repetidor'],
+    respuesta:2,
+    explicacion:'Un Router opera en Capa 1 (física), Capa 2 (para recibir/enviar tramas) y Capa 3 (para tomar decisiones de routing basadas en IPs). Un Switch L2 opera en capas 1 y 2. Un Hub solo en Capa 1.'
+  },
+];
+initQuiz(preguntas, 'quiz-container');
 </script>
+
 </body>
 </html>
