@@ -1,468 +1,110 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CCNA Academy — Curso Completo de Redes Cisco</title>
-<meta name="description" content="Curso completo para certificaciones CCNA, CCNP y CCIE. Clases interactivas, laboratorios prácticos y quiz tipo examen real.">
-<link rel="stylesheet" href="assets/style.css">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CCNA Academy – Plataforma de Aprendizaje Cisco</title>
+  <meta name="description" content="Plataforma educativa completa para la certificación CCNA 200-301. Clases magistrales, laboratorios Packet Tracer y quizzes interactivos.">
+  <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
 
-<!-- NAVBAR -->
-<nav style="position:fixed;top:0;left:0;right:0;z-index:9000;height:64px;background:rgba(6,12,24,0.97);border-bottom:1px solid rgba(0,188,235,0.2);backdrop-filter:blur(20px);">
-  <div style="max-width:1400px;margin:0 auto;padding:0 24px;height:64px;display:flex;align-items:center;">
-    <a href="index.html" style="display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;">
-      <span style="font-family:Orbitron,monospace;font-weight:900;font-size:0.9rem;letter-spacing:3px;background:linear-gradient(135deg,#00bceb,#38d9ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;border:1px solid rgba(0,188,235,0.35);padding:5px 10px;border-radius:5px;">CISCO</span>
-      <span style="font-family:Orbitron,monospace;font-size:0.65rem;color:#4a6a84;letter-spacing:2.5px;font-weight:500;">ACADEMY</span>
-    </a>
-    <a href="clases/asistente.html" style="display:flex;align-items:center;gap:8px;padding:7px 16px;border-radius:8px;font-size:0.82rem;font-weight:700;color:#00d4ff;border:1px solid rgba(0,212,255,0.35);text-decoration:none;margin-left:20px;flex-shrink:0;white-space:nowrap;background:rgba(0,212,255,0.06);font-family:Orbitron,monospace;letter-spacing:0.5px;">🤖 NetBot IA</a>
-    <button onclick="ccnaToggle()" style="display:flex;flex-direction:column;justify-content:center;gap:6px;background:rgba(0,188,235,0.07);border:1px solid rgba(0,188,235,0.3);border-radius:9px;cursor:pointer;padding:10px 13px;margin-left:auto;flex-shrink:0;" onmouseover="this.style.background='rgba(0,188,235,0.15)';this.style.borderColor='#00bceb';" onmouseout="this.style.background='rgba(0,188,235,0.07)';this.style.borderColor='rgba(0,188,235,0.3)';">
-      <span style="display:block;width:22px;height:2px;background:#38d9ff;border-radius:2px;"></span>
-      <span style="display:block;width:16px;height:2px;background:#38d9ff;border-radius:2px;"></span>
-      <span style="display:block;width:22px;height:2px;background:#38d9ff;border-radius:2px;"></span>
-    </button>
+<!-- ── Overlay ──────────────────────────────────────────────── -->
+<div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
+
+<!-- ── Drawer ───────────────────────────────────────────────── -->
+<nav class="ccna-drawer" id="ccnaDrawer">
+  <div class="drawer-header">
+    <h2>◈ NAVEGACIÓN</h2>
+    <button class="drawer-close" onclick="ccnaClose()">✕</button>
+  </div>
+
+  <div class="drawer-section">
+    <div class="drawer-section-title">General</div>
+    <a href="../index.html" class="drawer-link active"><span class="dl-icon">🏠</span> Inicio</a>
+  </div>
+
+  <div class="drawer-section">
+    <div class="drawer-section-title">M1 · Fundamentos</div>
+    <a href="clases/fundamentos.html"  class="drawer-link"><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
+    <a href="clases/subnetting.html"   class="drawer-link"><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
+    <a href="clases/ipv6.html"         class="drawer-link"><span class="dl-icon">6️⃣</span> IPv6</a>
+  </div>
+
+  <div class="drawer-section">
+    <div class="drawer-section-title">M2 · Dispositivos Cisco</div>
+    <a href="clases/router.html"        class="drawer-link"><span class="dl-icon">📡</span> Routers Cisco</a>
+    <a href="clases/switches-cisco.html"class="drawer-link"><span class="dl-icon">🔀</span> Switches Cisco</a>
+  </div>
+
+  <div class="drawer-section">
+    <div class="drawer-section-title">M3 · Switching</div>
+    <a href="clases/vlan.html"              class="drawer-link"><span class="dl-icon">🏷️</span> VLANs</a>
+    <a href="clases/inter-vlan-routing.html"class="drawer-link"><span class="dl-icon">🔁</span> Inter-VLAN Routing</a>
+    <a href="clases/stp.html"               class="drawer-link"><span class="dl-icon">🌳</span> Spanning Tree Protocol</a>
+    <a href="clases/etherchannel.html"      class="drawer-link"><span class="dl-icon">🔗</span> EtherChannel</a>
+    <a href="clases/port-security.html"     class="drawer-link"><span class="dl-icon">🔒</span> Port Security</a>
+    <a href="clases/cdp-lldp.html"          class="drawer-link"><span class="dl-icon">🔍</span> CDP / LLDP</a>
+  </div>
+
+  <div class="drawer-section">
+    <div class="drawer-section-title">M4 · Routing</div>
+    <a href="clases/routing.html" class="drawer-link"><span class="dl-icon">🗺️</span> Routing Estático</a>
+    <a href="clases/ospf.html"    class="drawer-link"><span class="dl-icon">⭕</span> OSPF</a>
+    <a href="clases/eigrp.html"   class="drawer-link"><span class="dl-icon">⚡</span> EIGRP</a>
+  </div>
+
+  <div class="drawer-section">
+    <div class="drawer-section-title">M5 · Servicios IP</div>
+    <a href="clases/dhcp.html" class="drawer-link"><span class="dl-icon">📋</span> DHCP</a>
+    <a href="clases/nat.html"  class="drawer-link"><span class="dl-icon">🔄</span> NAT / PAT</a>
+  </div>
+
+  <div class="drawer-section">
+    <div class="drawer-section-title">M6 · Seguridad</div>
+    <a href="clases/acl.html" class="drawer-link"><span class="dl-icon">🛡️</span> ACLs</a>
+  </div>
+
+  <div class="drawer-section">
+    <div class="drawer-section-title">M7 · WAN &amp; QoS</div>
+    <a href="clases/wan.html" class="drawer-link"><span class="dl-icon">🌍</span> WAN</a>
+    <a href="clases/qos.html" class="drawer-link"><span class="dl-icon">📊</span> QoS</a>
   </div>
 </nav>
-<div id="ccna-overlay" onclick="ccnaClose()" style="display:none;position:fixed;inset:0;top:64px;background:rgba(0,0,0,0.6);z-index:8998;"></div>
-<div id="ccna-drawer" style="display:none;flex-direction:column;position:fixed;top:64px;right:0;width:280px;height:calc(100vh - 64px);background:linear-gradient(180deg,rgba(4,10,22,0.99),rgba(6,14,28,0.99));border-left:1px solid rgba(0,188,235,0.15);padding:0;overflow-y:auto;z-index:8999;box-shadow:-20px 0 60px rgba(0,0,0,0.7);">
-  <div style="padding:16px 16px 8px;border-bottom:1px solid rgba(0,188,235,0.08);">
-    <div style="font-family:Orbitron,monospace;font-size:0.6rem;color:#00bceb;letter-spacing:3px;text-transform:uppercase;opacity:0.8;">Navegación</div>
-  </div>
-  <div style="padding:8px 10px 24px;display:flex;flex-direction:column;gap:2px;">
-    <div style="font-family:Orbitron,monospace;font-size:0.52rem;color:#00bceb;letter-spacing:2px;text-transform:uppercase;padding:14px 8px 5px;opacity:0.7;">Módulo 1 — Fundamentos</div>
-    <a href="clases/fundamentos.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🔌</span>Fundamentos de Redes</a>
-    <a href="clases/subnetting.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🔢</span>Subnetting IPv4</a>
-    <a href="clases/calculadora.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🧮</span>Calculadora IP</a>
-    <div style="font-family:Orbitron,monospace;font-size:0.52rem;color:#00bceb;letter-spacing:2px;text-transform:uppercase;padding:14px 8px 5px;border-top:1px solid rgba(0,188,235,0.08);opacity:0.7;margin-top:6px;">Módulo 2 — Switching</div>
-    <a href="clases/vlan.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🏷️</span>VLANs</a>
-    <a href="clases/stp.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🌳</span>STP</a>
-    <a href="clases/switches-cisco.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🖧</span>Switches Cisco</a>
-    <a href="clases/etherchannel.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🔗</span>EtherChannel</a>
-    <div style="font-family:Orbitron,monospace;font-size:0.52rem;color:#00bceb;letter-spacing:2px;text-transform:uppercase;padding:14px 8px 5px;border-top:1px solid rgba(0,188,235,0.08);opacity:0.7;margin-top:6px;">Módulo 3 — Routing</div>
-    <a href="clases/router.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🌐</span>Routers Cisco</a>
-    <a href="clases/routing.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">📋</span>Routing Estático</a>
-    <a href="clases/ospf.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🔴</span>OSPF</a>
-    <a href="clases/eigrp.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">⚡</span>EIGRP</a>
-    <a href="clases/cdp-lldp.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,212,170,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🔍</span>CDP / LLDP</a>
-    <div style="font-family:Orbitron,monospace;font-size:0.52rem;color:#00bceb;letter-spacing:2px;text-transform:uppercase;padding:14px 8px 5px;border-top:1px solid rgba(0,188,235,0.08);opacity:0.7;margin-top:6px;">Módulo 4 — Seguridad</div>
-    <a href="clases/acl.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🔒</span>ACLs</a>
-    <a href="clases/nat.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🔀</span>NAT/PAT</a>
-    <div style="font-family:Orbitron,monospace;font-size:0.52rem;color:#00bceb;letter-spacing:2px;text-transform:uppercase;padding:14px 8px 5px;border-top:1px solid rgba(0,188,235,0.08);opacity:0.7;margin-top:6px;">Módulo 5 — WAN y Servicios</div>
-    <a href="clases/wan.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🌍</span>WAN y Servicios</a>
-    <a href="clases/dhcp.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">📡</span>DHCP</a>
-    <a href="clases/qos.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(0,188,235,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">📶</span>QoS</a>
-    <div style="font-family:Orbitron,monospace;font-size:0.52rem;color:#8b5cf6;letter-spacing:2px;text-transform:uppercase;padding:14px 8px 5px;border-top:1px solid rgba(139,92,246,0.15);opacity:0.9;margin-top:6px;">Módulo 6 — IPv6</div>
-    <a href="clases/ipv6.html" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.83rem;font-weight:600;color:#8aa8c0;text-decoration:none;" onmouseover="this.style.background='rgba(139,92,246,0.1)';this.style.color='#e0f4ff';" onmouseout="this.style.background='transparent';this.style.color='#8aa8c0';"><span style="width:20px;text-align:center;">🌐</span>IPv6</a>
-  </div>
-</div>
-<script>
-function ccnaToggle(){var d=document.getElementById('ccna-drawer');var o=document.getElementById('ccna-overlay');var open=d.style.display==='flex';d.style.display=open?'none':'flex';o.style.display=open?'none':'block';}
-function ccnaClose(){document.getElementById('ccna-drawer').style.display='none';document.getElementById('ccna-overlay').style.display='none';}
-/* Neutralizar el hamburger viejo del main.js para que no interfiera */
-document.addEventListener('DOMContentLoaded',function(){
-  var hb=document.getElementById('hamburger');
-  var nm=document.getElementById('navMenu');
-  if(hb){hb.style.display='none';}
-  if(nm){nm.style.display='none';}
-  var oldNav=document.querySelector('nav.navbar');
-  if(oldNav){oldNav.style.display='none';}
-});
-</script>
 
-<!-- HERO -->
+<!-- ── Navbar ───────────────────────────────────────────────── -->
+<header class="navbar">
+  <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
+  <a href="index.html" class="navbar-brand">CCNA<span> ACADEMY</span></a>
+  <div class="navbar-spacer"></div>
+  <a href="https://www.cisco.com/site/us/en/learn/training-certifications/training/netacad/index.html"
+     target="_blank" class="navbar-home">NetAcad ↗</a>
+</header>
+
+<div class="nav-spacer"></div>
+
+<!-- ── Hero ─────────────────────────────────────────────────── -->
 <section class="hero">
-  <div class="hero-bg"></div>
-  <div class="hero-grid"></div>
-  <div class="wrap">
-    <div class="hero-content">
-      <div class="hero-badge">
-        <span class="badge-dot"></span>
-        Ruta de certificación activa
-      </div>
-      <h1 class="hero-title">
-        Domina las<br>
-        <span class="title-accent">Redes Cisco</span>
-      </h1>
-      <p class="hero-desc">
-        Curso profesional completo hacia las certificaciones 
-        <strong>CCNA · CCNP · CCIE</strong>. 
-        Clases interactivas, laboratorios en Packet Tracer y quizzes tipo examen real.
-      </p>
-      <div class="hero-cta">
-        <a href="clases/fundamentos.html" class="btn-primary">
-          Comenzar desde cero →
-        </a>
-        <a href="#modulos" class="btn-ghost">Ver temario completo</a>
-      </div>
-      <div class="hero-stats">
-        <div class="stat">
-          <span class="stat-num" id="countLessons">16</span>
-          <span class="stat-lbl">Clases activas</span>
-        </div>
-        <div class="stat-div"></div>
-        <div class="stat">
-          <span class="stat-num">3+</span>
-          <span class="stat-lbl">En desarrollo</span>
-        </div>
-        <div class="stat-div"></div>
-        <div class="stat">
-          <span class="stat-num">3</span>
-          <span class="stat-lbl">Certificaciones</span>
-        </div>
-      </div>
-    </div>
-    <div class="hero-visual">
-      <canvas id="networkCanvas" width="420" height="380"></canvas>
-    </div>
-  </div>
+  <div class="hero-tag">CCNA 200-301 · Cisco Networking</div>
+  <h1>Aprende <span class="accent">Redes Cisco</span><br>desde cero hasta CCNA</h1>
+  <p>Clases magistrales, laboratorios en Packet Tracer, diagramas interactivos y quizzes al estilo del examen oficial.</p>
 </section>
 
-<!-- CERT PATH -->
-<section class="cert-path">
-  <div class="wrap">
-    <div class="cert-track">
-      <div class="cert-item active">
-        <div class="cert-icon">🎓</div>
-        <div class="cert-name">CCNA</div>
-        <div class="cert-sub">200-301</div>
-      </div>
-      <div class="cert-arrow">→</div>
-      <div class="cert-item">
-        <div class="cert-icon">🏆</div>
-        <div class="cert-name">CCNP</div>
-        <div class="cert-sub">Enterprise</div>
-      </div>
-      <div class="cert-arrow">→</div>
-      <div class="cert-item">
-        <div class="cert-icon">⭐</div>
-        <div class="cert-name">CCIE</div>
-        <div class="cert-sub">Expert</div>
-      </div>
-      <div class="cert-arrow">→</div>
-      <div class="cert-item">
-        <div class="cert-icon">🛡️</div>
-        <div class="cert-name">CCST</div>
-        <div class="cert-sub">Security</div>
-      </div>
-    </div>
-  </div>
-</section>
+<!-- ── Índice Dinámico ───────────────────────────────────────── -->
+<main id="ccna-index">
+  <!-- Generado automáticamente por main.js → buildDynamicIndex() -->
+  <noscript>
+    <p style="text-align:center;color:#8899aa;padding:2rem">
+      Activa JavaScript para ver el índice de clases.
+    </p>
+  </noscript>
+</main>
 
-<!-- MÓDULOS -->
-<section class="modulos" id="modulos">
-  <div class="wrap">
-    <div class="section-header">
-      <h2 class="section-title">Temario Completo</h2>
-      <p class="section-sub">Navega por módulos o sigue la ruta recomendada de aprendizaje</p>
-    </div>
-
-    <!-- MÓDULO 1 -->
-    <div class="module-block">
-      <div class="module-header">
-        <div class="module-num">01</div>
-        <div>
-          <div class="module-name">Fundamentos de Redes</div>
-          <div class="module-sub">Modelos OSI/TCP-IP · Protocolos · Direccionamiento · Subnetting · Calculadora IP</div>
-        </div>
-        <div class="module-progress">
-          <div class="prog-bar"><div class="prog-fill" style="width:100%"></div></div>
-          <span class="prog-txt">3/3 clases</span>
-        </div>
-      </div>
-      <div class="lessons-grid">
-        <a href="clases/fundamentos.html" class="lesson-card active">
-          <div class="lc-icon">🖧</div>
-          <div class="lc-body">
-            <div class="lc-title">Fundamentos de Redes</div>
-            <div class="lc-desc">Modelos OSI y TCP/IP, tipos de redes, topologías, protocolos esenciales y el modelo de capas.</div>
-            <div class="lc-tags">
-              <span class="tag">OSI</span>
-              <span class="tag">TCP/IP</span>
-              <span class="tag">Protocolos</span>
-            </div>
-          </div>
-          <div class="lc-status ready">✓ Disponible</div>
-        </a>
-        <a href="clases/subnetting.html" class="lesson-card active">
-          <div class="lc-icon">🔢</div>
-          <div class="lc-body">
-            <div class="lc-title">Subnetting IPv4</div>
-            <div class="lc-desc">Segmentación de redes, VLSM, CIDR, cálculo de subredes y ejercicios tipo CCNA.</div>
-            <div class="lc-tags">
-              <span class="tag">VLSM</span>
-              <span class="tag">CIDR</span>
-              <span class="tag">IPv4</span>
-            </div>
-          </div>
-          <div class="lc-status ready">✓ Disponible</div>
-        </a>
-        <a href="clases/calculadora.html" class="lesson-card active">
-          <div class="lc-icon">🧮</div>
-          <div class="lc-body">
-            <div class="lc-title">Calculadora de Subredes</div>
-            <div class="lc-desc">Calculadora magistral IPv4/IPv6, VLSM automático, verificador de pertenencia, conversor binario y AND lógico.</div>
-            <div class="lc-tags">
-              <span class="tag">IPv4</span>
-              <span class="tag">IPv6</span>
-              <span class="tag">VLSM</span>
-              <span class="tag">Binario</span>
-            </div>
-          </div>
-          <div class="lc-status ready">✓ Disponible</div>
-        </a>
-      </div>
-    </div>
-
-    <!-- MÓDULO 2 -->
-    <div class="module-block">
-      <div class="module-header">
-        <div class="module-num">02</div>
-        <div>
-          <div class="module-name">Switching — Capa 2</div>
-          <div class="module-sub">VLANs · STP · Switches · EtherChannel · Port Security</div>
-        </div>
-        <div class="module-progress">
-          <div class="prog-bar"><div class="prog-fill" style="width:100%"></div></div>
-          <span class="prog-txt">4/4 clases</span>
-        </div>
-      </div>
-      <div class="lessons-grid">
-        <a href="clases/vlan.html" class="lesson-card active">
-          <div class="lc-icon">🏷️</div>
-          <div class="lc-body">
-            <div class="lc-title">VLANs</div>
-            <div class="lc-desc">Segmentación lógica de redes, trunking 802.1Q, DTP, inter-VLAN routing y Voice VLAN.</div>
-            <div class="lc-tags">
-              <span class="tag">802.1Q</span>
-              <span class="tag">Trunking</span>
-              <span class="tag">DTP</span>
-            </div>
-          </div>
-          <div class="lc-status ready">✓ Disponible</div>
-        </a>
-        <a href="clases/stp.html" class="lesson-card active">
-          <div class="lc-icon">🌳</div>
-          <div class="lc-body">
-            <div class="lc-title">STP — Spanning Tree Protocol</div>
-            <div class="lc-desc">Prevención de bucles L2, Root Bridge, Port States, RSTP, Rapid PVST+ y PortFast.</div>
-            <div class="lc-tags">
-              <span class="tag">802.1D</span>
-              <span class="tag">RSTP</span>
-              <span class="tag">PVST+</span>
-            </div>
-          </div>
-          <div class="lc-status ready">✓ Disponible</div>
-        </a>
-        <a href="clases/switches-cisco.html" class="lesson-card active">
-          <div class="lc-icon">🔀</div>
-          <div class="lc-body">
-            <div class="lc-title">Switches Cisco</div>
-            <div class="lc-desc">Tabla CAM, Half/Full Duplex, Port Security, SVI Management, CDP/LLDP y configuración IOS.</div>
-            <div class="lc-tags">
-              <span class="tag">Tabla CAM</span>
-              <span class="tag">Port Security</span>
-              <span class="tag">CDP</span>
-            </div>
-          </div>
-          <div class="lc-status ready">✓ Disponible</div>
-        </a>
-        <a href="clases/etherchannel.html" class="lesson-card active">
-          <div class="lc-icon">🔗</div>
-          <div class="lc-body">
-            <div class="lc-title">EtherChannel</div>
-            <div class="lc-desc">Agregación de enlaces, LACP (802.3ad), PAgP, Port-Channel y Load Balancing.</div>
-            <div class="lc-tags">
-              <span class="tag">LACP</span>
-              <span class="tag">PAgP</span>
-              <span class="tag">LAG</span>
-            </div>
-          </div>
-          <div class="lc-status ready">✓ Disponible</div>
-        </a>
-      </div>
-    </div>
-
-    <!-- MÓDULO 3 -->
-    <div class="module-block">
-      <div class="module-header">
-        <div class="module-num">03</div>
-        <div>
-          <div class="module-name">Routing — Capa 3</div>
-          <div class="module-sub">Routers Cisco · Routing Estático · OSPF · EIGRP · CDP/LLDP</div>
-        </div>
-        <div class="module-progress">
-          <div class="prog-bar"><div class="prog-fill" style="width:100%"></div></div>
-          <span class="prog-txt">5/5 clases</span>
-        </div>
-      </div>
-      <div class="lessons-grid">
-        <a href="clases/router.html" class="lesson-card active">
-          <div class="lc-icon">🌐</div>
-          <div class="lc-body">
-            <div class="lc-title">Routers Cisco</div>
-            <div class="lc-desc">Configuración inicial, interfaces, IOS, CDP, verificación y buenas prácticas en routers Cisco.</div>
-            <div class="lc-tags"><span class="tag">IOS</span><span class="tag">Interfaces</span><span class="tag">CDP</span></div>
-          </div>
-          <div class="lc-status ready">✓ Disponible</div>
-        </a>
-        <a href="clases/routing.html" class="lesson-card active">
-          <div class="lc-icon">📋</div>
-          <div class="lc-body">
-            <div class="lc-title">Routing Estático</div>
-            <div class="lc-desc">Tablas de routing, rutas estáticas, rutas flotantes, rutas por defecto y troubleshooting.</div>
-            <div class="lc-tags"><span class="tag">ip route</span><span class="tag">IPv4/IPv6</span></div>
-          </div>
-          <div class="lc-status ready">✓ Disponible</div>
-        </a>
-        <a href="clases/ospf.html" class="lesson-card active">
-          <div class="lc-icon">🔴</div>
-          <div class="lc-body">
-            <div class="lc-title">OSPF</div>
-            <div class="lc-desc">Open Shortest Path First, áreas, DR/BDR, LSAs, OSPFv2 y OSPFv3 para IPv6.</div>
-            <div class="lc-tags"><span class="tag">OSPFv2</span><span class="tag">Áreas</span><span class="tag">DR/BDR</span></div>
-          </div>
-          <div class="lc-status ready">✓ Disponible</div>
-        </a>
-        <a href="clases/eigrp.html" class="lesson-card active">
-          <div class="lc-icon">⚡</div>
-          <div class="lc-body">
-            <div class="lc-title">EIGRP</div>
-            <div class="lc-desc">Enhanced IGRP, algoritmo DUAL, Feasible Successor, K-values, variance y Named Mode.</div>
-            <div class="lc-tags"><span class="tag">DUAL</span><span class="tag">Cisco</span><span class="tag">Híbrido</span></div>
-          </div>
-          <div class="lc-status ready">✓ Disponible</div>
-        </a>
-        <a href="clases/cdp-lldp.html" class="lesson-card active">
-          <div class="lc-icon">🔍</div>
-          <div class="lc-body">
-            <div class="lc-title">CDP / LLDP</div>
-            <div class="lc-desc">Protocolos de descubrimiento de vecinos, TLVs, LLDP-MED, comandos IOS y hardening de seguridad.</div>
-            <div class="lc-tags"><span class="tag">CDP</span><span class="tag">IEEE 802.1AB</span><span class="tag">Vecinos</span></div>
-          </div>
-          <div class="lc-status ready">✓ Disponible</div>
-        </a>
-      </div>
-    </div>
-
-    <!-- MÓDULO 4 -->
-    <div class="module-block">
-      <div class="module-header">
-        <div class="module-num">04</div>
-        <div>
-          <div class="module-name">Seguridad de Red</div>
-          <div class="module-sub">ACLs · NAT/PAT · Port Security · VPN · Firewall</div>
-        </div>
-        <div class="module-progress">
-          <div class="prog-bar"><div class="prog-fill" style="width:100%"></div></div>
-          <span class="prog-txt">2/2 clases</span>
-        </div>
-      </div>
-      <div class="lessons-grid">
-        <a href="clases/acl.html" class="lesson-card active">
-          <div class="lc-icon">🔒</div>
-          <div class="lc-body">
-            <div class="lc-title">ACLs — Listas de Control de Acceso</div>
-            <div class="lc-desc">ACL estándar, extendida, nombrada, IPv6 ACL y mejores prácticas de seguridad.</div>
-            <div class="lc-tags"><span class="tag">Standard</span><span class="tag">Extended</span></div>
-          </div>
-          <div class="lc-status ready">✓ Disponible</div>
-        </a>
-        <a href="clases/nat.html" class="lesson-card active">
-          <div class="lc-icon">🔀</div>
-          <div class="lc-body">
-            <div class="lc-title">NAT y PAT</div>
-            <div class="lc-desc">Network Address Translation, PAT (Overload), NAT estático, dinámico y verificación.</div>
-            <div class="lc-tags"><span class="tag">NAT</span><span class="tag">PAT</span><span class="tag">IPv4</span></div>
-          </div>
-          <div class="lc-status ready">✓ Disponible</div>
-        </a>
-      </div>
-    </div>
-
-    <!-- MÓDULO 5 -->
-    <div class="module-block">
-      <div class="module-header">
-        <div class="module-num">05</div>
-        <div>
-          <div class="module-name">WAN y Servicios</div>
-          <div class="module-sub">WAN · DHCP · QoS · DNS · NTP · SNMP</div>
-        </div>
-        <div class="module-progress">
-          <div class="prog-bar"><div class="prog-fill" style="width:100%"></div></div>
-          <span class="prog-txt">3/3 clases</span>
-        </div>
-      </div>
-      <div class="lessons-grid">
-        <a href="clases/wan.html" class="lesson-card active">
-          <div class="lc-icon">🌍</div>
-          <div class="lc-body">
-            <div class="lc-title">WAN y Servicios</div>
-            <div class="lc-desc">Tecnologías WAN, Frame Relay, MPLS, SD-WAN, PPP, HDLC y conexiones a Internet.</div>
-            <div class="lc-tags"><span class="tag">WAN</span><span class="tag">MPLS</span><span class="tag">PPP</span></div>
-          </div>
-          <div class="lc-status ready">✓ Disponible</div>
-        </a>
-        <a href="clases/dhcp.html" class="lesson-card active">
-          <div class="lc-icon">📡</div>
-          <div class="lc-body">
-            <div class="lc-title">DHCP</div>
-            <div class="lc-desc">Proceso DORA, servidor DHCP en IOS, DHCP Relay (ip helper-address), snooping y troubleshooting.</div>
-            <div class="lc-tags"><span class="tag">DORA</span><span class="tag">ip helper</span><span class="tag">Snooping</span></div>
-          </div>
-          <div class="lc-status ready">✓ Disponible</div>
-        </a>
-        <a href="clases/qos.html" class="lesson-card active">
-          <div class="lc-icon">📶</div>
-          <div class="lc-body">
-            <div class="lc-title">QoS — Calidad de Servicio</div>
-            <div class="lc-desc">Clasificación, marcado DSCP/CoS, LLQ, CBWFQ, Policing, Shaping y MQC Cisco.</div>
-            <div class="lc-tags"><span class="tag">DSCP</span><span class="tag">LLQ</span><span class="tag">MQC</span></div>
-          </div>
-          <div class="lc-status ready">✓ Disponible</div>
-        </a>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-
-<footer class="site-footer">
-  <div class="wrap">
-    <div class="footer-grid">
-      <div class="footer-brand">
-        <div class="footer-logo">
-          <span class="logo-cisco">CISCO</span>
-          <span class="logo-text">Academy</span>
-        </div>
-        <p>Ruta completa de aprendizaje hacia las certificaciones Cisco CCNA, CCNP y CCIE.</p>
-      </div>
-      <div class="footer-links">
-        <h4>Módulos activos</h4>
-        <a href="clases/fundamentos.html">Fundamentos de Redes</a>
-        <a href="clases/subnetting.html">Subnetting IPv4</a>
-        <a href="clases/vlan.html">VLANs</a>
-        <a href="clases/ospf.html">OSPF</a>
-        <a href="clases/eigrp.html">EIGRP</a>
-        <a href="clases/acl.html">ACLs</a>
-        <a href="clases/dhcp.html">DHCP</a>
-        <a href="clases/qos.html">QoS</a>
-      </div>
-      <div class="footer-links">
-        <h4>Certificaciones</h4>
-        <a href="#">CCNA 200-301</a>
-        <a href="#">CCNP Enterprise</a>
-        <a href="#">CCST Security</a>
-        <a href="#">CCIE Expert</a>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <span>Basado en el currículo oficial de Cisco Networking Academy</span>
-    </div>
-  </div>
+<!-- ── Footer ───────────────────────────────────────────────── -->
+<footer class="footer">
+  <p>CCNA Academy · Basado en <a href="https://www.cisco.com" target="_blank">Cisco CCNA 200-301</a>
+  Official Cert Guide (Wendell Odom) y Daniel Pérez Torres</p>
+  <p style="margin-top:.4rem">Recurso educativo · No afiliado oficialmente con Cisco Systems</p>
 </footer>
 
 <script src="assets/main.js"></script>
