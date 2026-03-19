@@ -175,6 +175,7 @@
     </div>
 </div>
 </div>
+
 <div id="tab-clases" class="tab-panel">
 <div class="content">
 <div id="section-clases" class="content-section" style="display:none;">
@@ -272,6 +273,7 @@
     </div>
 </div>
 </div>
+
 <div id="tab-mascaras" class="tab-panel">
 <div class="content">
 <div id="section-mascaras" class="content-section" style="display:none;">
@@ -351,6 +353,7 @@
     </div>
 </div>
 </div>
+
 <div id="tab-calculo" class="tab-panel">
 <div class="content">
 <div id="section-calculo" class="content-section" style="display:none;">
@@ -426,6 +429,7 @@
     </div>
 </div>
 </div>
+
 <div id="tab-vlsm" class="tab-panel">
 <div class="content">
 <div id="section-vlsm" class="content-section" style="display:none;">
@@ -507,6 +511,7 @@
     </div>
 </div>
 </div>
+
 <div id="tab-ejercicios" class="tab-panel">
 <div class="content">
 <div id="section-ejercicios" class="content-section" style="display:none;">
@@ -580,6 +585,7 @@
     </div>
 </div>
 </div>
+
 <div id="tab-quiz" class="tab-panel">
 <div class="content">
 <div id="section-quiz" class="content-section" style="display:none;">
@@ -737,9 +743,8 @@
   </div>
 </footer>
 
-<script src="../assets/main.js"></script>
 <script>
-  if (typeof CcnaQuiz === 'undefined') {
+if (typeof CcnaQuiz === 'undefined') {
     window.CcnaQuiz = (function() {
       let answers = {}, score = 0, total = 0;
       function init(n) { answers = {}; score = 0; total = n; }
@@ -771,68 +776,13 @@
 
   CcnaQuiz.init(8);
 
-  function showSection(id, btn) {
-    document.querySelectorAll('.content-section').forEach(s => s.style.display = 'none');
-    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
-    document.getElementById('section-' + id).style.display = 'block';
-    btn.classList.add('active');
-    window.scrollTo({ top: 200, behavior: 'smooth' });
-  }
-</script>
-
-
-
-</body>
-</html>
-
-<script>
-  if (typeof CcnaQuiz === 'undefined') {
-    window.CcnaQuiz = (function() {
-      let answers = {}, score = 0, total = 0;
-      function init(n) { answers = {}; score = 0; total = n; }
-      function answer(qNum, letter, result, explanation) {
-        if (answers[qNum]) return;
-        answers[qNum] = { letter, result };
-        document.querySelectorAll('#q' + qNum + ' .q-opt').forEach(opt => {
-          opt.style.pointerEvents = 'none';
-          const l = opt.querySelector('.q-letter');
-          if (l && l.textContent === letter) opt.classList.add(result === 'correct' ? 'correct' : 'wrong');
-          if (result === 'wrong' && (opt.getAttribute('onclick') || '').includes("'correct'")) opt.classList.add('correct');
-        });
-        const fb = document.getElementById('fb' + qNum);
-        if (fb) { fb.textContent = (result === 'correct' ? '✅ ' : '❌ ') + explanation; fb.className = 'q-feedback show ' + (result === 'correct' ? 'ok' : 'bad'); }
-        if (result === 'correct') score++;
-        if (Object.keys(answers).length === total) setTimeout(() => {
-          const box = document.getElementById('scoreBox'); if (!box) return;
-          box.style.display = 'block';
-          const pct = Math.round(score / total * 100);
-          const txt = document.getElementById('scoreTxt'); const msg = document.getElementById('scoreMsg');
-          if (txt) txt.textContent = score + ' / ' + total + ' — ' + pct + '%';
-          if (msg) { if (pct>=87){txt.style.color='var(--green)';msg.textContent='🏆 ¡Excelente! Dominas el subnetting CCNA.';}else if(pct>=62){txt.style.color='var(--amber)';msg.textContent='📚 Buen progreso. Practica más los cálculos de subred.';}else{txt.style.color='var(--red)';msg.textContent='💪 Repasa el Magic Number y las fórmulas antes de continuar.';} }
-          box.scrollIntoView({ behavior: 'smooth' });
-        }, 400);
-      }
-      return { init, answer };
-    })();
-  }
-
-  CcnaQuiz.init(8);
-
-  function showSection(id, btn) {
-    document.querySelectorAll('.content-section').forEach(s => s.style.display = 'none');
-    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
-    document.getElementById('section-' + id).style.display = 'block';
-    btn.classList.add('active');
-    window.scrollTo({ top: 200, behavior: 'smooth' });
-  }
-</script>
-<script>
 function showTab(id, btn) {
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
   var panel = document.getElementById('tab-' + id);
   if (panel) panel.classList.add('active');
   if (btn) btn.classList.add('active');
+  window.scrollTo({top: 100, behavior: 'smooth'});
 }
 </script>
 <script src="../assets/main.js" defer></script>
