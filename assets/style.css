@@ -611,3 +611,201 @@ code:not(pre code) { font-family: var(--fm) !important; font-size: .87em !import
   .netbot-panel { width: calc(100vw - 2rem) !important; right: 1rem !important; bottom: 5rem !important; }
   .netbot-fab { bottom: 1rem !important; right: 1rem !important; }
 }
+
+/* ══════════════════════════════════════════════════════════════
+   OVERRIDES DE ALTA ESPECIFICIDAD
+   Garantizan que navbar y drawer siempre se renderizan
+   correctamente sin importar el CSS interno de cada clase
+══════════════════════════════════════════════════════════════ */
+
+/* Navbar — siempre fijo, siempre visible */
+body > header.navbar,
+body header.navbar {
+  position: fixed !important;
+  top: 0 !important; left: 0 !important; right: 0 !important;
+  height: 56px !important;
+  z-index: 9000 !important;
+  background: rgba(8,12,24,.97) !important;
+  backdrop-filter: blur(16px) !important;
+  border-bottom: 1px solid #243050 !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  padding: 0 1.2rem !important;
+  gap: .9rem !important;
+  font-family: 'Exo 2', sans-serif !important;
+  border-radius: 0 !important;
+  margin: 0 !important;
+  transform: none !important;
+  box-sizing: border-box !important;
+}
+
+/* Botón ☰ MENÚ — siempre a la izquierda */
+body > header.navbar .navbar-toggle,
+body header.navbar .navbar-toggle {
+  order: 0 !important;
+  flex-shrink: 0 !important;
+  background: none !important;
+  border: 1px solid #243050 !important;
+  color: #00d4aa !important;
+  padding: .38rem .75rem !important;
+  border-radius: 8px !important;
+  cursor: pointer !important;
+  font-family: 'Share Tech Mono', monospace !important;
+  font-size: .78rem !important;
+  white-space: nowrap !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+/* Brand — segundo */
+body > header.navbar .navbar-brand,
+body header.navbar .navbar-brand {
+  order: 1 !important;
+  font-family: 'Orbitron', sans-serif !important;
+  font-size: .82rem !important;
+  font-weight: 900 !important;
+  color: #00d4aa !important;
+  text-decoration: none !important;
+  letter-spacing: .12em !important;
+  white-space: nowrap !important;
+  background: none !important;
+  -webkit-text-fill-color: unset !important;
+}
+body > header.navbar .navbar-brand span,
+body header.navbar .navbar-brand span {
+  color: #dde6f0 !important;
+}
+
+/* Spacer — empuja link a la derecha */
+body > header.navbar .navbar-spacer,
+body header.navbar .navbar-spacer {
+  order: 2 !important;
+  flex: 1 !important;
+}
+
+/* Link derecho */
+body > header.navbar .navbar-link,
+body header.navbar .navbar-link {
+  order: 3 !important;
+  flex-shrink: 0 !important;
+  color: #7a8fa8 !important;
+  text-decoration: none !important;
+  font-size: .82rem !important;
+  font-family: 'Exo 2', sans-serif !important;
+}
+
+/* Nav-spacer — siempre 56px */
+body > .nav-spacer {
+  height: 56px !important;
+  display: block !important;
+}
+
+/* Overlay — siempre posicionado correctamente */
+body > .ccna-overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 8900 !important;
+  background: rgba(0,0,0,.65) !important;
+}
+
+/* Drawer — siempre posicionado desde LA IZQUIERDA */
+body > nav.ccna-drawer,
+body nav.ccna-drawer#ccnaDrawer {
+  position: fixed !important;
+  top: 0 !important;
+  left: -310px !important;
+  right: auto !important;
+  width: 298px !important;
+  height: 100vh !important;
+  background: #0d1222 !important;
+  border-right: 1px solid #243050 !important;
+  border-left: none !important;
+  z-index: 9100 !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  transition: left .3s cubic-bezier(.4,0,.2,1) !important;
+  transform: none !important;
+  margin: 0 !important;
+  padding-bottom: 3rem !important;
+  box-shadow: none !important;
+  display: block !important;
+  font-family: 'Exo 2', sans-serif !important;
+  font-size: 1rem !important;
+}
+body > nav.ccna-drawer.open,
+body nav.ccna-drawer#ccnaDrawer.open {
+  left: 0 !important;
+  box-shadow: 4px 0 24px rgba(0,0,0,.5) !important;
+}
+
+/* Drawer links — siempre en fila horizontal */
+body nav.ccna-drawer .drawer-link {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: .6rem !important;
+  padding: .52rem 1.2rem !important;
+  color: #7a8fa8 !important;
+  text-decoration: none !important;
+  font-size: .83rem !important;
+  font-family: 'Exo 2', sans-serif !important;
+  border-left: 2px solid transparent !important;
+  background: none !important;
+  width: 100% !important;
+  line-height: 1.4 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  transition: all .15s !important;
+}
+body nav.ccna-drawer .drawer-link:hover,
+body nav.ccna-drawer .drawer-link.active {
+  color: #00d4aa !important;
+  background: rgba(0,212,170,.07) !important;
+  border-left-color: #00d4aa !important;
+}
+
+/* Drawer header */
+body nav.ccna-drawer .drawer-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 1rem 1.2rem !important;
+  border-bottom: 1px solid #243050 !important;
+  position: sticky !important;
+  top: 0 !important;
+  background: #0d1222 !important;
+  z-index: 1 !important;
+}
+body nav.ccna-drawer .drawer-header h2 {
+  font-family: 'Orbitron', sans-serif !important;
+  font-size: .7rem !important;
+  color: #00d4aa !important;
+  letter-spacing: .14em !important;
+  background: none !important;
+  -webkit-text-fill-color: unset !important;
+}
+body nav.ccna-drawer .drawer-close {
+  background: none !important;
+  border: none !important;
+  color: #7a8fa8 !important;
+  font-size: 1.3rem !important;
+  cursor: pointer !important;
+}
+body nav.ccna-drawer .drawer-section-title {
+  font-family: 'Orbitron', sans-serif !important;
+  font-size: .58rem !important;
+  color: #455570 !important;
+  letter-spacing: .18em !important;
+  text-transform: uppercase !important;
+  padding: .5rem 1.2rem .3rem !important;
+  display: block !important;
+}
+body nav.ccna-drawer .dl-icon {
+  font-size: .95rem !important;
+  width: 1.2rem !important;
+  text-align: center !important;
+  flex-shrink: 0 !important;
+  display: inline-block !important;
+}

@@ -74,6 +74,8 @@
   <a href="../index.html" class="navbar-link">← Inicio</a>
 </header>
 <div class="nav-spacer"></div>
+<div class="page-content">
+
 </div>
   <div style="padding:8px 10px 24px;display:flex;flex-direction:column;gap:2px;">
     <div style="font-family:Orbitron,monospace;font-size:0.52rem;color:#00bceb;letter-spacing:2px;text-transform:uppercase;padding:14px 8px 5px;opacity:0.7;">Módulo 1 — Fundamentos</div>
@@ -130,11 +132,11 @@ function ccnaClose(){document.getElementById('ccna-drawer').style.display='none'
 <!-- ESTILOS PROPIOS DE LA CALCULADORA -->
 <style>
 /* ── Calc inputs ─────────────────────────────────────────── */
-.calc-wrap { max-width:1100px; margin:0 auto; padding:0 24px 80px; }
-.calc-panel { display:none; }
-.calc-panel.active { display:block; }
+.page-content .calc-wrap{ max-width:1100px; margin:0 auto; padding:0 24px 80px; }
+.page-content .calc-panel{ display:none; }
+.page-content .calc-panel.active{ display:block; }
 
-.calc-card {
+.page-content .calc-card{
   background:var(--bg-card);
   border:1px solid var(--border);
   border-radius:16px;
@@ -143,13 +145,13 @@ function ccnaClose(){document.getElementById('ccna-drawer').style.display='none'
   position:relative;
   overflow:hidden;
 }
-.calc-card::before {
+.page-content .calc-card::before{
   content:'';
   position:absolute;
   top:0;left:0;right:0;height:3px;
   background:linear-gradient(90deg,#00bceb,#38d9ff,transparent);
 }
-.calc-card h2 {
+.page-content .calc-card h2{
   font-family:var(--font-head);
   font-size:1rem;
   color:#38d9ff;
@@ -158,25 +160,25 @@ function ccnaClose(){document.getElementById('ccna-drawer').style.display='none'
 }
 
 /* ── Input group ─────────────────────────────────────────── */
-.input-row {
+.page-content .input-row{
   display:grid;
   grid-template-columns:1fr 1fr auto;
   gap:16px;
   align-items:end;
   margin-bottom:8px;
 }
-.input-row.single { grid-template-columns:1fr auto; }
-.input-row.triple { grid-template-columns:1fr 1fr 1fr auto; }
+.page-content .input-row.single{ grid-template-columns:1fr auto; }
+.page-content .input-row.triple{ grid-template-columns:1fr 1fr 1fr auto; }
 
-.input-group { display:flex; flex-direction:column; gap:6px; }
-.input-group label {
+.page-content .input-group{ display:flex; flex-direction:column; gap:6px; }
+.page-content .input-group label{
   font-size:0.72rem;
   font-family:var(--font-head);
   color:#4a6a84;
   letter-spacing:2px;
   text-transform:uppercase;
 }
-.calc-input {
+.page-content .calc-input{
   background:rgba(0,188,235,0.05);
   border:1px solid rgba(0,188,235,0.25);
   border-radius:10px;
@@ -189,15 +191,15 @@ function ccnaClose(){document.getElementById('ccna-drawer').style.display='none'
   width:100%;
   box-sizing:border-box;
 }
-.calc-input:focus {
+.page-content .calc-input:focus{
   border-color:#00bceb;
   background:rgba(0,188,235,0.1);
   box-shadow:0 0 0 3px rgba(0,188,235,0.12);
 }
-.calc-input.error { border-color:#ef4444; background:rgba(239,68,68,0.08); }
-.calc-input.ok    { border-color:#00e676; }
+.page-content .calc-input.error{ border-color:#ef4444; background:rgba(239,68,68,0.08); }
+.page-content .calc-input.ok{ border-color:#00e676; }
 
-.calc-select {
+.page-content .calc-select{
   background:rgba(0,188,235,0.05);
   border:1px solid rgba(0,188,235,0.25);
   border-radius:10px;
@@ -211,11 +213,11 @@ function ccnaClose(){document.getElementById('ccna-drawer').style.display='none'
   box-sizing:border-box;
   transition:border-color .2s;
 }
-.calc-select:focus { border-color:#00bceb; }
-.calc-select option { background:#0e1f3a; color:#e0f4ff; }
+.page-content .calc-select:focus{ border-color:#00bceb; }
+.page-content .calc-select option{ background:#0e1f3a; color:#e0f4ff; }
 
 /* ── Botones ─────────────────────────────────────────────── */
-.btn-calc {
+.page-content .btn-calc{
   background:linear-gradient(135deg,#00bceb,#0099cc);
   border:none;
   border-radius:10px;
@@ -230,9 +232,9 @@ function ccnaClose(){document.getElementById('ccna-drawer').style.display='none'
   transition:transform .15s, box-shadow .15s;
   display:flex;align-items:center;gap:8px;
 }
-.btn-calc:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,188,235,0.35); }
-.btn-calc:active { transform:translateY(0); }
-.btn-clear {
+.page-content .btn-calc:hover{ transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,188,235,0.35); }
+.page-content .btn-calc:active{ transform:translateY(0); }
+.page-content .btn-clear{
   background:rgba(239,68,68,0.12);
   border:1px solid rgba(239,68,68,0.3);
   border-radius:10px;
@@ -245,10 +247,10 @@ function ccnaClose(){document.getElementById('ccna-drawer').style.display='none'
   cursor:pointer;
   transition:background .2s;
 }
-.btn-clear:hover { background:rgba(239,68,68,0.22); }
+.page-content .btn-clear:hover{ background:rgba(239,68,68,0.22); }
 
 /* ── Resultado grid ──────────────────────────────────────── */
-.result-grid {
+.page-content .result-grid{
   display:grid;
   grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
   gap:14px;
@@ -257,7 +259,7 @@ function ccnaClose(){document.getElementById('ccna-drawer').style.display='none'
 }
 @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:none} }
 
-.result-item {
+.page-content .result-item{
   background:rgba(0,188,235,0.05);
   border:1px solid rgba(0,188,235,0.15);
   border-radius:12px;
@@ -266,17 +268,17 @@ function ccnaClose(){document.getElementById('ccna-drawer').style.display='none'
   cursor:pointer;
   transition:border-color .2s, background .2s;
 }
-.result-item:hover { border-color:rgba(0,188,235,0.4); background:rgba(0,188,235,0.1); }
-.result-item.highlight {
+.page-content .result-item:hover{ border-color:rgba(0,188,235,0.4); background:rgba(0,188,235,0.1); }
+.page-content .result-item.highlight{
   border-color:#00e676;
   background:rgba(0,230,118,0.07);
 }
-.result-item.warn-item {
+.page-content .result-item.warn-item{
   border-color:#f59e0b;
   background:rgba(245,158,11,0.07);
 }
 
-.result-label {
+.page-content .result-label{
   font-family:var(--font-head);
   font-size:0.6rem;
   color:#4a6a84;
@@ -284,20 +286,20 @@ function ccnaClose(){document.getElementById('ccna-drawer').style.display='none'
   text-transform:uppercase;
   margin-bottom:8px;
 }
-.result-value {
+.page-content .result-value{
   font-family:var(--font-mono);
   font-size:1.05rem;
   color:#e0f4ff;
   word-break:break-all;
 }
-.result-value span { color:#38d9ff; font-weight:700; }
-.result-sub {
+.page-content .result-value span{ color:#38d9ff; font-weight:700; }
+.page-content .result-sub{
   font-size:0.75rem;
   color:#4a6a84;
   margin-top:4px;
   font-family:var(--font-mono);
 }
-.copy-hint {
+.page-content .copy-hint{
   position:absolute;
   top:8px;right:10px;
   font-size:0.6rem;
@@ -305,24 +307,24 @@ function ccnaClose(){document.getElementById('ccna-drawer').style.display='none'
   opacity:0;
   transition:opacity .2s;
 }
-.result-item:hover .copy-hint { opacity:1; }
+.page-content .result-item:hover .copy-hint{ opacity:1; }
 
 /* ── Barra visual de hosts ───────────────────────────────── */
-.host-bar-wrap { margin-top:20px; }
-.host-bar-label {
+.page-content .host-bar-wrap{ margin-top:20px; }
+.page-content .host-bar-label{
   display:flex;justify-content:space-between;
   font-size:0.72rem;color:#4a6a84;
   font-family:var(--font-head);letter-spacing:1px;
   margin-bottom:6px;
 }
-.host-bar {
+.page-content .host-bar{
   height:10px;
   border-radius:6px;
   background:rgba(0,188,235,0.1);
   border:1px solid rgba(0,188,235,0.2);
   overflow:hidden;
 }
-.host-bar-fill {
+.page-content .host-bar-fill{
   height:100%;
   border-radius:6px;
   background:linear-gradient(90deg,#00bceb,#00e676);
@@ -331,8 +333,8 @@ function ccnaClose(){document.getElementById('ccna-drawer').style.display='none'
 }
 
 /* ── Tabla binaria ───────────────────────────────────────── */
-.bin-table { width:100%; border-collapse:separate; border-spacing:3px; margin-top:20px; }
-.bin-table td {
+.page-content .bin-table{ width:100%; border-collapse:separate; border-spacing:3px; margin-top:20px; }
+.page-content .bin-table td{
   width:32px; height:32px;
   text-align:center;
   font-family:var(--font-mono);
@@ -340,33 +342,33 @@ function ccnaClose(){document.getElementById('ccna-drawer').style.display='none'
   border-radius:5px;
   border:1px solid rgba(0,188,235,0.15);
 }
-.bin-1 { background:rgba(0,188,235,0.25); color:#38d9ff; font-weight:700; }
-.bin-0 { background:rgba(255,255,255,0.03); color:#4a6a84; }
-.bin-net { background:rgba(0,188,235,0.15); color:#38d9ff; }
-.bin-host { background:rgba(0,230,118,0.1); color:#00e676; }
-.bin-header {
+.page-content .bin-1{ background:rgba(0,188,235,0.25); color:#38d9ff; font-weight:700; }
+.page-content .bin-0{ background:rgba(255,255,255,0.03); color:#4a6a84; }
+.page-content .bin-net{ background:rgba(0,188,235,0.15); color:#38d9ff; }
+.page-content .bin-host{ background:rgba(0,230,118,0.1); color:#00e676; }
+.page-content .bin-header{
   font-family:var(--font-head);font-size:0.55rem;
   color:#4a6a84;letter-spacing:1px;
   text-transform:uppercase;padding:4px 0;
 }
-.octet-sep { width:8px; }
+.page-content .octet-sep{ width:8px; }
 
 /* ── Tabla VLSM ──────────────────────────────────────────── */
-.vlsm-table { width:100%; border-collapse:collapse; margin-top:20px; font-size:0.82rem; }
-.vlsm-table th {
+.page-content .vlsm-table{ width:100%; border-collapse:collapse; margin-top:20px; font-size:0.82rem; }
+.page-content .vlsm-table th{
   font-family:var(--font-head);font-size:0.6rem;letter-spacing:2px;
   color:#4a6a84;text-transform:uppercase;padding:10px 14px;
   border-bottom:1px solid rgba(0,188,235,0.15);text-align:left;
 }
-.vlsm-table td {
+.page-content .vlsm-table td{
   padding:11px 14px;
   border-bottom:1px solid rgba(0,188,235,0.07);
   font-family:var(--font-mono);
   color:#c8dff0;
 }
-.vlsm-table tr:last-child td { border-bottom:none; }
-.vlsm-table tr:hover td { background:rgba(0,188,235,0.05); }
-.vlsm-idx {
+.page-content .vlsm-table tr:last-child td{ border-bottom:none; }
+.page-content .vlsm-table tr:hover td{ background:rgba(0,188,235,0.05); }
+.page-content .vlsm-idx{
   width:32px;height:32px;border-radius:50%;
   display:inline-flex;align-items:center;justify-content:center;
   font-family:var(--font-head);font-size:0.7rem;font-weight:900;
@@ -376,24 +378,24 @@ function ccnaClose(){document.getElementById('ccna-drawer').style.display='none'
 }
 
 /* ── Tabla Referencia ────────────────────────────────────── */
-.ref-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
-.ref-table { width:100%; border-collapse:collapse; font-size:0.82rem; }
-.ref-table th {
+.page-content .ref-grid{ display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+.page-content .ref-table{ width:100%; border-collapse:collapse; font-size:0.82rem; }
+.page-content .ref-table th{
   font-family:var(--font-head);font-size:0.6rem;letter-spacing:2px;
   color:#38d9ff;text-transform:uppercase;padding:10px 14px;
   border-bottom:1px solid rgba(0,188,235,0.2);text-align:left;
   background:rgba(0,188,235,0.05);
 }
-.ref-table td {
+.page-content .ref-table td{
   padding:9px 14px;
   border-bottom:1px solid rgba(0,188,235,0.07);
   font-family:var(--font-mono);color:#c8dff0;
 }
-.ref-table tr:hover td { background:rgba(0,188,235,0.05); }
-.ref-table .cur-row td { color:#38d9ff; background:rgba(0,188,235,0.1) !important; font-weight:700; }
+.page-content .ref-table tr:hover td{ background:rgba(0,188,235,0.05); }
+.page-content .ref-table .cur-row td{ color:#38d9ff; background:rgba(0,188,235,0.1) !important; font-weight:700; }
 
 /* ── Mensaje de error ────────────────────────────────────── */
-.calc-error {
+.page-content .calc-error{
   background:rgba(239,68,68,0.1);
   border:1px solid rgba(239,68,68,0.3);
   border-radius:10px;
@@ -406,32 +408,32 @@ function ccnaClose(){document.getElementById('ccna-drawer').style.display='none'
 }
 
 /* ── Toast copy ──────────────────────────────────────────── */
-#toast {
+.page-content #toast{
   position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(20px);
   background:#00bceb;color:#060c18;
   font-family:var(--font-head);font-size:0.75rem;font-weight:700;letter-spacing:2px;
   padding:10px 24px;border-radius:30px;
   opacity:0;transition:all .3s;z-index:9999;pointer-events:none;
 }
-#toast.show { opacity:1;transform:translateX(-50%) translateY(0); }
+.page-content #toast.show{ opacity:1;transform:translateX(-50%) translateY(0); }
 
 /* ── Clases tipo CCNA ────────────────────────────────────── */
-.class-badge {
+.page-content .class-badge{
   display:inline-flex;align-items:center;gap:6px;
   padding:4px 12px;border-radius:20px;font-family:var(--font-head);
   font-size:0.65rem;font-weight:700;letter-spacing:1.5px;
 }
-.class-a { background:rgba(0,230,118,0.15);color:#00e676;border:1px solid rgba(0,230,118,0.3); }
-.class-b { background:rgba(0,188,235,0.15);color:#38d9ff;border:1px solid rgba(0,188,235,0.3); }
-.class-c { background:rgba(245,158,11,0.15);color:#f59e0b;border:1px solid rgba(245,158,11,0.3); }
-.class-d { background:rgba(239,68,68,0.15);color:#ef4444;border:1px solid rgba(239,68,68,0.3); }
-.class-e { background:rgba(139,92,246,0.15);color:#a78bfa;border:1px solid rgba(139,92,246,0.3); }
-.class-priv { background:rgba(0,230,118,0.1);color:#00e676;border:1px solid rgba(0,230,118,0.2);font-size:0.6rem; }
+.page-content .class-a{ background:rgba(0,230,118,0.15);color:#00e676;border:1px solid rgba(0,230,118,0.3); }
+.page-content .class-b{ background:rgba(0,188,235,0.15);color:#38d9ff;border:1px solid rgba(0,188,235,0.3); }
+.page-content .class-c{ background:rgba(245,158,11,0.15);color:#f59e0b;border:1px solid rgba(245,158,11,0.3); }
+.page-content .class-d{ background:rgba(239,68,68,0.15);color:#ef4444;border:1px solid rgba(239,68,68,0.3); }
+.page-content .class-e{ background:rgba(139,92,246,0.15);color:#a78bfa;border:1px solid rgba(139,92,246,0.3); }
+.page-content .class-priv{ background:rgba(0,230,118,0.1);color:#00e676;border:1px solid rgba(0,230,118,0.2);font-size:0.6rem; }
 
 @media(max-width:700px){
-  .input-row,.input-row.triple{grid-template-columns:1fr;}
-  .ref-grid{grid-template-columns:1fr;}
-  .result-grid{grid-template-columns:1fr;}
+    .page-content .input-row, .page-content .input-row.triple{grid-template-columns:1fr;}
+    .page-content .ref-grid{grid-template-columns:1fr;}
+    .page-content .result-grid{grid-template-columns:1fr;}
 }
 </style>
 
@@ -1191,5 +1193,6 @@ window.addEventListener('load',()=>{
   buildRefTable && buildRefTable();
 });
 </script>
+</div><!-- /.page-content -->
 </body>
 </html>
