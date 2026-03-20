@@ -3,108 +3,862 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CCNA Academy – Aprende Redes Cisco desde Cero</title>
-  <meta name="description" content="Plataforma educativa completa para la certificación Cisco CCNA 200-301. Clases magistrales, laboratorios Packet Tracer, diagramas y quizzes interactivos.">
+  <title>CCNA Academy — Aprende Redes Cisco desde Cero</title>
+  <meta name="description" content="Plataforma educativa completa CCNA 200-301. Clases magistrales, laboratorios, calculadora IP, NetBot IA y simulacros de examen. Todo lo que necesitas para certificarte.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/style.css">
+
+<style>
+/* ════════════════════════════════════════════════
+   INDEX CUSTOM STYLES — CCNA ACADEMY
+════════════════════════════════════════════════ */
+:root {
+  --idx-bg:     #06080f;
+  --idx-bg2:    #090d1a;
+  --idx-bg3:    #0d1220;
+  --idx-surf:   #131929;
+  --idx-teal:   #00d4aa;
+  --idx-blue:   #38bdf8;
+  --idx-purple: #a78bfa;
+  --idx-amber:  #fbbf24;
+  --idx-green:  #34d399;
+  --idx-red:    #f87171;
+  --idx-border: rgba(0,212,170,0.12);
+  --idx-head:   'Orbitron', sans-serif;
+  --idx-mono:   'Share Tech Mono', monospace;
+  --idx-body:   'Exo 2', sans-serif;
+}
+
+/* Reset base para el index */
+body { background: var(--idx-bg) !important; color: #e2e8f0 !important; font-family: var(--idx-body) !important; }
+.navbar { background: rgba(6,8,15,0.97) !important; border-bottom: 1px solid rgba(0,212,170,0.15) !important; }
+
+/* ── GLOBAL GRID BG ── */
+body::before {
+  content:'';
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background-image:
+    linear-gradient(rgba(0,212,170,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,212,170,0.025) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+body::after {
+  content:'';
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:
+    radial-gradient(ellipse 70% 50% at 50% -5%, rgba(0,212,170,0.09) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 35% at 90% 90%, rgba(167,139,250,0.06) 0%, transparent 55%),
+    radial-gradient(ellipse 30% 25% at 10% 80%, rgba(56,189,248,0.04) 0%, transparent 50%);
+}
+
+/* ── HERO ── */
+.idx-hero {
+  position: relative; z-index: 1;
+  padding: 90px 24px 70px;
+  text-align: center;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.idx-hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 16px; border-radius: 20px; margin-bottom: 28px;
+  background: rgba(0,212,170,0.08); border: 1px solid rgba(0,212,170,0.25);
+  font-family: var(--idx-mono); font-size: 0.72rem; color: var(--idx-teal);
+  letter-spacing: 2px; text-transform: uppercase;
+  animation: fadeIn 0.8s ease;
+}
+.idx-hero-badge-dot { width:7px; height:7px; border-radius:50%; background:var(--idx-teal); box-shadow:0 0 8px var(--idx-teal); animation:blink 2s infinite; }
+@keyframes blink { 0%,100%{opacity:1;}50%{opacity:.3;} }
+@keyframes fadeIn { from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);} }
+@keyframes fadeUp { from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);} }
+
+.idx-hero-title {
+  font-family: var(--idx-head);
+  font-size: clamp(2.4rem, 6vw, 4.2rem);
+  font-weight: 900;
+  letter-spacing: 4px;
+  line-height: 1.1;
+  margin-bottom: 12px;
+  animation: fadeUp 0.9s ease 0.1s both;
+}
+.idx-hero-title .grd {
+  background: linear-gradient(135deg, var(--idx-teal) 0%, var(--idx-blue) 50%, var(--idx-purple) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.idx-hero-sub {
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  color: #6b7a9a; font-weight: 400; margin-bottom: 36px;
+  line-height: 1.6;
+  animation: fadeUp 0.9s ease 0.2s both;
+}
+.idx-hero-sub strong { color: #a0b0cc; }
+
+.idx-hero-ctas {
+  display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
+  animation: fadeUp 0.9s ease 0.3s both;
+}
+.idx-cta-primary {
+  padding: 14px 32px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--idx-teal), #00a88a);
+  color: #000; font-family: var(--idx-mono); font-size: 0.85rem; font-weight: 700;
+  text-decoration: none; border: none; cursor: pointer;
+  box-shadow: 0 0 28px rgba(0,212,170,0.3);
+  transition: all 0.2s; letter-spacing: 1px;
+}
+.idx-cta-primary:hover { transform: translateY(-2px); box-shadow: 0 0 40px rgba(0,212,170,0.45); }
+.idx-cta-secondary {
+  padding: 14px 32px; border-radius: 10px;
+  background: rgba(167,139,250,0.08); border: 1px solid rgba(167,139,250,0.3);
+  color: var(--idx-purple); font-family: var(--idx-mono); font-size: 0.85rem;
+  text-decoration: none; transition: all 0.2s; letter-spacing: 1px;
+}
+.idx-cta-secondary:hover { background: rgba(167,139,250,0.15); transform: translateY(-2px); }
+.idx-cta-ghost {
+  padding: 14px 32px; border-radius: 10px;
+  background: rgba(56,189,248,0.06); border: 1px solid rgba(56,189,248,0.25);
+  color: var(--idx-blue); font-family: var(--idx-mono); font-size: 0.85rem;
+  text-decoration: none; transition: all 0.2s; letter-spacing: 1px;
+}
+.idx-cta-ghost:hover { background: rgba(56,189,248,0.12); transform: translateY(-2px); }
+
+/* ── STATS BAR ── */
+.idx-stats {
+  position: relative; z-index: 1;
+  display: flex; justify-content: center; gap: 0;
+  margin: 0 auto 70px; max-width: 900px; padding: 0 24px;
+  animation: fadeUp 0.9s ease 0.4s both;
+}
+.idx-stat {
+  flex: 1; text-align: center; padding: 22px 16px;
+  border: 1px solid var(--idx-border);
+  background: var(--idx-bg2);
+}
+.idx-stat:first-child { border-radius: 12px 0 0 12px; }
+.idx-stat:last-child  { border-radius: 0 12px 12px 0; }
+.idx-stat + .idx-stat { border-left: none; }
+.idx-stat-num {
+  font-family: var(--idx-head); font-size: 1.8rem; font-weight: 900;
+  background: linear-gradient(135deg, var(--idx-teal), var(--idx-blue));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.idx-stat-label { font-size: 0.72rem; color: #4a5780; font-family: var(--idx-mono); letter-spacing: 1px; margin-top: 4px; text-transform: uppercase; }
+
+/* ── WRAPPER ── */
+.idx-wrap { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+/* ── SECTION HEADER ── */
+.idx-section { margin-bottom: 72px; }
+.idx-section-hdr { text-align: center; margin-bottom: 40px; }
+.idx-section-tag {
+  display: inline-block; padding: 4px 14px; border-radius: 20px; margin-bottom: 12px;
+  font-family: var(--idx-mono); font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase;
+  background: rgba(0,212,170,0.08); border: 1px solid rgba(0,212,170,0.2); color: var(--idx-teal);
+}
+.idx-section-title {
+  font-family: var(--idx-head); font-size: clamp(1.4rem, 3vw, 1.9rem);
+  font-weight: 700; letter-spacing: 3px; color: #c2d0e8; margin-bottom: 10px;
+}
+.idx-section-sub { font-size: 0.9rem; color: #4a5780; max-width: 600px; margin: 0 auto; line-height: 1.7; }
+
+/* ── MÓDULOS GRID ── */
+.idx-modules { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 20px; }
+.idx-module {
+  background: var(--idx-bg2); border: 1px solid var(--idx-border);
+  border-radius: 14px; overflow: hidden;
+  transition: all 0.22s; cursor: pointer;
+  text-decoration: none; display: block;
+}
+.idx-module:hover { border-color: rgba(0,212,170,0.35); transform: translateY(-3px); box-shadow: 0 12px 36px rgba(0,0,0,0.4), 0 0 20px rgba(0,212,170,0.08); }
+.idx-module-header {
+  padding: 18px 20px 14px;
+  display: flex; align-items: center; gap: 14px;
+  border-bottom: 1px solid var(--idx-border);
+}
+.idx-module-icon {
+  width: 44px; height: 44px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem; flex-shrink: 0;
+}
+.idx-module-meta { flex: 1; }
+.idx-module-tag { font-family: var(--idx-mono); font-size: 0.6rem; color: #4a5780; letter-spacing: 2px; text-transform: uppercase; }
+.idx-module-name { font-weight: 700; font-size: 1rem; color: #c2d0e8; margin-top: 2px; }
+.idx-module-body { padding: 16px 20px; }
+.idx-module-desc { font-size: 0.82rem; color: #6b7a9a; line-height: 1.65; margin-bottom: 14px; }
+.idx-module-topics { display: flex; flex-wrap: wrap; gap: 6px; }
+.idx-topic {
+  padding: 3px 9px; border-radius: 5px; font-size: 0.68rem;
+  font-family: var(--idx-mono); border: 1px solid rgba(0,212,170,0.15);
+  color: #4a5780; background: rgba(0,212,170,0.04);
+  transition: all 0.15s;
+}
+.idx-module:hover .idx-topic { color: var(--idx-teal); border-color: rgba(0,212,170,0.3); background: rgba(0,212,170,0.08); }
+
+/* Colores de módulos */
+.m1 { background: linear-gradient(135deg, rgba(56,189,248,0.12), rgba(0,212,170,0.08)); }
+.m2 { background: linear-gradient(135deg, rgba(167,139,250,0.12), rgba(56,189,248,0.08)); }
+.m3 { background: linear-gradient(135deg, rgba(251,191,36,0.12), rgba(248,113,113,0.08)); }
+.m4 { background: linear-gradient(135deg, rgba(52,211,153,0.12), rgba(56,189,248,0.08)); }
+.m5 { background: linear-gradient(135deg, rgba(0,212,170,0.12), rgba(52,211,153,0.08)); }
+.m6 { background: linear-gradient(135deg, rgba(248,113,113,0.12), rgba(167,139,250,0.08)); }
+.m7 { background: linear-gradient(135deg, rgba(251,191,36,0.12), rgba(167,139,250,0.08)); }
+
+/* ── HERRAMIENTAS GRID ── */
+.idx-tools { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+.idx-tool {
+  background: var(--idx-bg2); border: 1px solid var(--idx-border);
+  border-radius: 14px; padding: 22px 20px;
+  text-decoration: none; display: block; transition: all 0.22s;
+}
+.idx-tool:hover { border-color: rgba(0,212,170,0.35); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,0.35); }
+.idx-tool-icon { font-size: 2.2rem; margin-bottom: 12px; }
+.idx-tool-name { font-family: var(--idx-mono); font-size: 0.82rem; color: var(--idx-teal); margin-bottom: 6px; letter-spacing: 1px; }
+.idx-tool-desc { font-size: 0.8rem; color: #4a5780; line-height: 1.6; }
+.idx-tool-badge {
+  display: inline-block; margin-top: 10px; padding: 3px 10px;
+  border-radius: 4px; font-size: 0.65rem; font-family: var(--idx-mono);
+  background: rgba(0,212,170,0.08); border: 1px solid rgba(0,212,170,0.2); color: var(--idx-teal);
+}
+.idx-tool-badge.ai { background: rgba(167,139,250,0.1); border-color: rgba(167,139,250,0.3); color: var(--idx-purple); }
+.idx-tool-badge.new { background: rgba(251,191,36,0.1); border-color: rgba(251,191,36,0.3); color: var(--idx-amber); }
+
+/* ── NETBOT FEATURE ── */
+.idx-netbot {
+  background: linear-gradient(135deg, rgba(0,212,170,0.06) 0%, rgba(167,139,250,0.06) 50%, rgba(56,189,248,0.06) 100%);
+  border: 1px solid rgba(0,212,170,0.2);
+  border-radius: 20px; padding: 48px 40px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 48px;
+  align-items: center; position: relative; overflow: hidden;
+  margin-bottom: 70px;
+}
+.idx-netbot::before {
+  content:'';
+  position: absolute; top: -80px; right: -80px;
+  width: 300px; height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,212,170,0.06) 0%, transparent 70%);
+}
+.idx-nb-tag { font-family: var(--idx-mono); font-size: 0.65rem; color: var(--idx-purple); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; }
+.idx-nb-title { font-family: var(--idx-head); font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 700; letter-spacing: 3px; margin-bottom: 14px; color: #c2d0e8; }
+.idx-nb-title span { background: linear-gradient(135deg, var(--idx-teal), var(--idx-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.idx-nb-desc { font-size: 0.9rem; color: #6b7a9a; line-height: 1.75; margin-bottom: 22px; }
+.idx-nb-features { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+.idx-nb-feature {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px; border-radius: 8px;
+  background: rgba(0,0,0,0.2); border: 1px solid var(--idx-border);
+  font-size: 0.82rem; color: #8294b8;
+}
+.idx-nb-feature-icon { font-size: 1.1rem; flex-shrink: 0; }
+.idx-nb-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 14px 28px; border-radius: 10px;
+  background: linear-gradient(135deg, rgba(0,212,170,0.15), rgba(167,139,250,0.1));
+  border: 1px solid rgba(0,212,170,0.3); color: var(--idx-teal);
+  font-family: var(--idx-mono); font-size: 0.82rem; font-weight: 700;
+  text-decoration: none; transition: all 0.2s; letter-spacing: 1px;
+}
+.idx-nb-btn:hover { background: rgba(0,212,170,0.2); box-shadow: 0 0 20px rgba(0,212,170,0.2); }
+.idx-nb-terminal {
+  background: #050810; border: 1px solid rgba(0,212,170,0.2);
+  border-radius: 12px; overflow: hidden;
+}
+.idx-nb-term-bar {
+  padding: 10px 16px; background: rgba(0,212,170,0.06);
+  border-bottom: 1px solid rgba(0,212,170,0.1);
+  display: flex; align-items: center; gap: 8px;
+}
+.idx-nb-term-dot { width:10px; height:10px; border-radius:50%; }
+.idx-nb-term-title { font-family: var(--idx-mono); font-size: 0.65rem; color: #4a5780; margin-left: 6px; }
+.idx-nb-term-body { padding: 20px; font-family: var(--idx-mono); font-size: 0.78rem; line-height: 2; }
+.t-gray { color: #374060; }
+.t-teal { color: var(--idx-teal); }
+.t-blue { color: var(--idx-blue); }
+.t-purple { color: var(--idx-purple); }
+.t-amber { color: var(--idx-amber); }
+.t-green { color: var(--idx-green); }
+.t-white { color: #c2d0e8; }
+.t-cursor { display:inline-block; width:9px; height:16px; background:var(--idx-teal); animation:blink 1s infinite; vertical-align: text-bottom; margin-left:2px; }
+
+/* ── EXAM READY SECTION ── */
+.idx-exam {
+  background: var(--idx-bg2); border: 1px solid var(--idx-border);
+  border-radius: 20px; padding: 48px 40px;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px;
+  margin-bottom: 70px;
+}
+.idx-exam-item { text-align: center; padding: 24px; }
+.idx-exam-num {
+  font-family: var(--idx-head); font-size: 2.8rem; font-weight: 900;
+  background: linear-gradient(135deg, var(--idx-teal), var(--idx-blue));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  margin-bottom: 8px;
+}
+.idx-exam-label { font-size: 0.82rem; color: #6b7a9a; line-height: 1.5; }
+.idx-exam-label strong { display: block; color: #a0b0cc; font-size: 0.9rem; margin-bottom: 4px; }
+.idx-exam-divider { width: 1px; background: var(--idx-border); }
+
+/* ── PROGRESS BAR SECTION ── */
+.idx-path {
+  background: var(--idx-bg2); border: 1px solid var(--idx-border);
+  border-radius: 16px; padding: 36px 32px; margin-bottom: 70px;
+}
+.idx-path-title { font-family: var(--idx-head); font-size: 0.9rem; letter-spacing: 2px; color: var(--idx-teal); margin-bottom: 24px; }
+.idx-path-list { display: flex; flex-direction: column; gap: 12px; }
+.idx-path-item {
+  display: flex; align-items: center; gap: 16px;
+  padding: 12px 16px; border-radius: 8px;
+  border: 1px solid transparent;
+  text-decoration: none; transition: all 0.18s;
+  background: rgba(0,0,0,0.2);
+}
+.idx-path-item:hover { border-color: rgba(0,212,170,0.2); background: rgba(0,212,170,0.04); }
+.idx-path-num {
+  font-family: var(--idx-mono); font-size: 0.72rem; color: #374060;
+  width: 28px; flex-shrink: 0; text-align: center;
+}
+.idx-path-icon { font-size: 1.2rem; flex-shrink: 0; width: 30px; text-align: center; }
+.idx-path-info { flex: 1; }
+.idx-path-name { font-size: 0.88rem; color: #a0b0cc; font-weight: 600; }
+.idx-path-sub { font-size: 0.72rem; color: #374060; margin-top: 2px; font-family: var(--idx-mono); }
+.idx-path-arrow { font-size: 0.8rem; color: #374060; }
+.idx-path-item:hover .idx-path-arrow { color: var(--idx-teal); }
+
+/* ── TIPS ── */
+.idx-tips { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin-bottom: 70px; }
+.idx-tip {
+  background: var(--idx-bg2); border: 1px solid var(--idx-border);
+  border-radius: 12px; padding: 20px;
+}
+.idx-tip-tag { font-family: var(--idx-mono); font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+.idx-tip-text { font-size: 0.83rem; color: #8294b8; line-height: 1.65; }
+.idx-tip-text code { font-family: var(--idx-mono); font-size: 0.8rem; background: rgba(0,212,170,0.08); color: var(--idx-teal); padding: 1px 5px; border-radius: 3px; }
+.tag-teal  { color: var(--idx-teal); }
+.tag-blue  { color: var(--idx-blue); }
+.tag-amber { color: var(--idx-amber); }
+.tag-purple{ color: var(--idx-purple); }
+.tag-green { color: var(--idx-green); }
+
+/* ── FOOTER GRANDE ── */
+.idx-footer {
+  position: relative; z-index: 1;
+  border-top: 1px solid var(--idx-border);
+  background: var(--idx-bg2);
+  padding: 56px 24px 40px;
+}
+.idx-footer-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; }
+.idx-footer-brand-name { font-family: var(--idx-head); font-size: 1.1rem; letter-spacing: 3px; background: linear-gradient(90deg, var(--idx-teal), var(--idx-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 10px; }
+.idx-footer-brand-desc { font-size: 0.8rem; color: #374060; line-height: 1.7; max-width: 280px; }
+.idx-footer-col-title { font-family: var(--idx-mono); font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; color: #4a5780; margin-bottom: 14px; }
+.idx-footer-links { display: flex; flex-direction: column; gap: 8px; }
+.idx-footer-link { font-size: 0.8rem; color: #374060; text-decoration: none; transition: color 0.15s; }
+.idx-footer-link:hover { color: var(--idx-teal); }
+.idx-footer-bottom { max-width: 1200px; margin: 0 auto; padding-top: 32px; margin-top: 32px; border-top: 1px solid rgba(255,255,255,0.04); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+.idx-footer-copy { font-family: var(--idx-mono); font-size: 0.65rem; color: #374060; }
+.idx-footer-badges { display: flex; gap: 8px; }
+.idx-footer-badge { padding: 4px 10px; border-radius: 5px; font-family: var(--idx-mono); font-size: 0.62rem; background: rgba(0,212,170,0.06); border: 1px solid rgba(0,212,170,0.15); color: #4a5780; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .idx-netbot { grid-template-columns: 1fr; }
+  .idx-nb-terminal { display: none; }
+  .idx-exam { grid-template-columns: 1fr; }
+  .idx-exam-divider { display: none; }
+  .idx-footer-inner { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 600px) {
+  .idx-stats { flex-wrap: wrap; }
+  .idx-stat { border-radius: 8px !important; border: 1px solid var(--idx-border) !important; }
+  .idx-hero-ctas { flex-direction: column; align-items: center; }
+  .idx-footer-inner { grid-template-columns: 1fr; }
+}
+</style>
 </head>
 <body>
-
+<!-- ═══ DRAWER + NAVBAR ═══ -->
 <div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
-
 <nav class="ccna-drawer" id="ccnaDrawer">
-  <div class="drawer-header">
-    <h2>◈ NAVEGACIÓN</h2>
-    <button class="drawer-close" onclick="ccnaClose()">✕</button>
-  </div>
-  <div class="drawer-section">
-    <div class="drawer-section-title">General</div>
-    <a href="index.html" class="drawer-link active"><span class="dl-icon">🏠</span> Inicio</a>
-  </div>
-  <div class="drawer-section">
-    <div class="drawer-section-title">M1 · Fundamentos</div>
+  <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
+  <div class="drawer-section"><div class="drawer-section-title">General</div>
+    <a href="index.html" class="drawer-link active"><span class="dl-icon">🏠</span> Inicio</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M1 · Fundamentos</div>
     <a href="clases/fundamentos.html"  class="drawer-link"><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
     <a href="clases/subnetting.html"   class="drawer-link"><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
-    <a href="clases/ipv6.html"         class="drawer-link"><span class="dl-icon">6️⃣</span> IPv6</a>
-  </div>
-  <div class="drawer-section">
-    <div class="drawer-section-title">M2 · Dispositivos Cisco</div>
-    <a href="clases/router.html"         class="drawer-link"><span class="dl-icon">📡</span> Routers Cisco</a>
-    <a href="clases/switches-cisco.html" class="drawer-link"><span class="dl-icon">🔀</span> Switches Cisco</a>
-  </div>
-  <div class="drawer-section">
-    <div class="drawer-section-title">M3 · Switching</div>
+    <a href="clases/calculadora.html"  class="drawer-link"><span class="dl-icon">🧮</span> Calculadora IP</a>
+    <a href="clases/ipv6.html"         class="drawer-link"><span class="dl-icon">6️⃣</span> IPv6</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M2 · Dispositivos Cisco</div>
+    <a href="clases/router.html"          class="drawer-link"><span class="dl-icon">📡</span> Routers Cisco</a>
+    <a href="clases/switches-cisco.html"  class="drawer-link"><span class="dl-icon">🔀</span> Switches Cisco</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M3 · Switching</div>
     <a href="clases/vlan.html"               class="drawer-link"><span class="dl-icon">🏷️</span> VLANs</a>
     <a href="clases/inter-vlan-routing.html" class="drawer-link"><span class="dl-icon">🔁</span> Inter-VLAN Routing</a>
-    <a href="clases/stp.html"                class="drawer-link"><span class="dl-icon">🌳</span> STP</a>
+    <a href="clases/stp.html"                class="drawer-link"><span class="dl-icon">🌳</span> Spanning Tree Protocol</a>
     <a href="clases/etherchannel.html"       class="drawer-link"><span class="dl-icon">🔗</span> EtherChannel</a>
     <a href="clases/port-security.html"      class="drawer-link"><span class="dl-icon">🔒</span> Port Security</a>
-    <a href="clases/cdp-lldp.html"           class="drawer-link"><span class="dl-icon">🔍</span> CDP / LLDP</a>
-  </div>
-  <div class="drawer-section">
-    <div class="drawer-section-title">M4 · Routing</div>
+    <a href="clases/cdp-lldp.html"           class="drawer-link"><span class="dl-icon">🔍</span> CDP / LLDP</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M4 · Routing</div>
     <a href="clases/routing.html" class="drawer-link"><span class="dl-icon">🗺️</span> Routing Estático</a>
     <a href="clases/ospf.html"    class="drawer-link"><span class="dl-icon">⭕</span> OSPF</a>
-    <a href="clases/eigrp.html"   class="drawer-link"><span class="dl-icon">⚡</span> EIGRP</a>
-  </div>
-  <div class="drawer-section">
-    <div class="drawer-section-title">M5 · Servicios IP</div>
+    <a href="clases/eigrp.html"   class="drawer-link"><span class="dl-icon">⚡</span> EIGRP</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M5 · Servicios IP</div>
     <a href="clases/dhcp.html" class="drawer-link"><span class="dl-icon">📋</span> DHCP</a>
-    <a href="clases/nat.html"  class="drawer-link"><span class="dl-icon">🔄</span> NAT / PAT</a>
-  </div>
-  <div class="drawer-section">
-    <div class="drawer-section-title">M6 · Seguridad</div>
-    <a href="clases/acl.html" class="drawer-link"><span class="dl-icon">🛡️</span> ACLs</a>
-  </div>
-  <div class="drawer-section">
-    <div class="drawer-section-title">M7 · WAN &amp; QoS</div>
+    <a href="clases/nat.html"  class="drawer-link"><span class="dl-icon">🔄</span> NAT / PAT</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M6 · Seguridad</div>
+    <a href="clases/acl.html" class="drawer-link"><span class="dl-icon">🛡️</span> ACLs</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M7 · WAN &amp; QoS</div>
     <a href="clases/wan.html" class="drawer-link"><span class="dl-icon">🌍</span> WAN</a>
-    <a href="clases/qos.html" class="drawer-link"><span class="dl-icon">📊</span> QoS</a>
-  </div>
+    <a href="clases/qos.html" class="drawer-link"><span class="dl-icon">📊</span> QoS</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">⚡ Herramientas</div>
+    <a href="clases/asistente.html"   class="drawer-link"><span class="dl-icon">🤖</span> NetBot IA — Asistente</a>
+    <a href="clases/calculadora.html" class="drawer-link"><span class="dl-icon">🧮</span> Calculadora IP / VLSM</a></div>
 </nav>
 
 <header class="navbar">
   <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
-  <a href="index.html" class="navbar-brand">CCNA<span> ACADEMY</span></a>
+  <a href="index.html" class="navbar-brand">CISCO<span> ACADEMY</span></a>
   <div class="navbar-spacer"></div>
-  <a href="https://www.cisco.com/site/us/en/learn/training-certifications/training/netacad/index.html"
-     target="_blank" rel="noopener" class="navbar-link">NetAcad ↗</a>
+  <a href="clases/asistente.html" class="navbar-link" style="color:#a78bfa;border:1px solid rgba(167,139,250,0.25);padding:5px 12px;border-radius:6px;font-size:0.75rem;font-family:'Share Tech Mono',monospace;">🤖 NetBot IA</a>
 </header>
-
 <div class="nav-spacer"></div>
 
-<section class="hero">
-  <div class="hero-bg"></div>
-  <div class="hero-grid"></div>
-  <div class="hero-tag">◈ CCNA 200-301 · Cisco Networking Academy</div>
-  <h1>Domina las <span class="accent">Redes Cisco</span><br>desde cero hasta CCNA</h1>
-  <p class="hero-sub">Clases magistrales con diagramas SVG, laboratorios Packet Tracer, bloques de comandos IOS reales y quizzes al estilo del examen oficial.</p>
-  <div class="hero-stats">
-    <div class="hero-stat">
-      <div class="hero-stat-num" id="stat-clases">19</div>
-      <div class="hero-stat-label">Clases</div>
+<!-- ═══ HERO ═══ -->
+<div class="idx-hero">
+  <div class="idx-hero-badge">
+    <div class="idx-hero-badge-dot"></div>
+    CCNA 200-301 · Plataforma Educativa Actualizada
+  </div>
+  <h1 class="idx-hero-title">
+    DOMINA<br>
+    <span class="grd">CISCO CCNA</span>
+  </h1>
+  <p class="idx-hero-sub">
+    La plataforma más completa en español para preparar el examen<br>
+    <strong>CCNA 200-301</strong>. Clases magistrales, laboratorios Packet Tracer,<br>
+    calculadora IP y el <strong>NetBot IA</strong> — tu profesor Cisco disponible 24/7.
+  </p>
+  <div class="idx-hero-ctas">
+    <a href="clases/fundamentos.html" class="idx-cta-primary">▶ Empezar desde Cero</a>
+    <a href="clases/asistente.html"   class="idx-cta-secondary">🤖 Abrir NetBot IA</a>
+    <a href="clases/calculadora.html" class="idx-cta-ghost">🧮 Calculadora IP</a>
+  </div>
+</div>
+
+<!-- ═══ STATS ═══ -->
+<div class="idx-stats">
+  <div class="idx-stat"><div class="idx-stat-num">21</div><div class="idx-stat-label">Clases Magistrales</div></div>
+  <div class="idx-stat"><div class="idx-stat-num">7</div><div class="idx-stat-label">Módulos CCNA</div></div>
+  <div class="idx-stat"><div class="idx-stat-num">180+</div><div class="idx-stat-label">Preguntas Quiz</div></div>
+  <div class="idx-stat"><div class="idx-stat-num">AI</div><div class="idx-stat-label">NetBot Cisco IA</div></div>
+  <div class="idx-stat"><div class="idx-stat-num">0$</div><div class="idx-stat-label">Completamente Gratis</div></div>
+</div>
+<!-- ═══ NETBOT FEATURE ═══ -->
+<div class="idx-wrap">
+  <div class="idx-netbot">
+    <div>
+      <div class="idx-nb-tag">⚡ IA ESPECIALIZADA EN CISCO</div>
+      <h2 class="idx-nb-title">Conoce a <span>NetBot IA</span></h2>
+      <p class="idx-nb-desc">El asistente de inteligencia artificial más completo para estudiar Cisco CCNA. Pregunta sobre cualquier tema, genera laboratorios completos para Packet Tracer y practica con preguntas al estilo del examen real.</p>
+      <div class="idx-nb-features">
+        <div class="idx-nb-feature"><span class="idx-nb-feature-icon">💬</span> <span>Chat IA — Respuestas como profesor experto con comandos reales IOS</span></div>
+        <div class="idx-nb-feature"><span class="idx-nb-feature-icon">🧪</span> <span>12 tipos de laboratorios generados al instante para Packet Tracer</span></div>
+        <div class="idx-nb-feature"><span class="idx-nb-feature-icon">🎯</span> <span>Modo práctica: 10 preguntas estilo CCNA 200-301 con explicaciones</span></div>
+        <div class="idx-nb-feature"><span class="idx-nb-feature-icon">🔧</span> <span>Troubleshooting paso a paso con metodología OSI</span></div>
+      </div>
+      <a href="clases/asistente.html" class="idx-nb-btn">🤖 Abrir NetBot IA →</a>
     </div>
-    <div class="hero-stat">
-      <div class="hero-stat-num" id="stat-modulos">7</div>
-      <div class="hero-stat-label">Módulos</div>
-    </div>
-    <div class="hero-stat">
-      <div class="hero-stat-num">200-301</div>
-      <div class="hero-stat-label">Exam Track</div>
-    </div>
-    <div class="hero-stat">
-      <div class="hero-stat-num">🤖</div>
-      <div class="hero-stat-label">NetBot IA</div>
+    <div class="idx-nb-terminal">
+      <div class="idx-nb-term-bar">
+        <div class="idx-nb-term-dot" style="background:#f87171"></div>
+        <div class="idx-nb-term-dot" style="background:#fbbf24;margin-left:5px"></div>
+        <div class="idx-nb-term-dot" style="background:#34d399;margin-left:5px"></div>
+        <span class="idx-nb-term-title">NETBOT IA — CISCO CCNA 200-301</span>
+      </div>
+      <div class="idx-nb-term-body">
+        <div><span class="t-teal">👤 Tú:</span> <span class="t-white">¿Cuál es la AD de OSPF?</span></div>
+        <div style="margin-top:8px"><span class="t-purple">🤖 NetBot:</span></div>
+        <div style="padding-left:16px;margin-top:4px">
+          <span class="t-white">### Distancias Administrativas</span><br>
+          <span class="t-gray">La AD determina la confiabilidad</span><br>
+          <span class="t-gray">de la fuente de la ruta:</span><br><br>
+          <span class="t-teal">Connected/Local</span><span class="t-gray"> → AD = </span><span class="t-green">0</span><br>
+          <span class="t-teal">Static route   </span><span class="t-gray"> → AD = </span><span class="t-green">1</span><br>
+          <span class="t-blue">EIGRP internal </span><span class="t-gray"> → AD = </span><span class="t-amber">90</span><br>
+          <span class="t-blue">OSPF           </span><span class="t-gray"> → AD = </span><span class="t-amber">110</span><br>
+          <span class="t-blue">RIP            </span><span class="t-gray"> → AD = </span><span class="t-amber">120</span><br><br>
+          <span class="t-purple">🎯 Para el examen: menor AD</span><br>
+          <span class="t-purple">   = más confiable = gana.</span>
+        </div>
+        <div style="margin-top:12px"><span class="t-teal">👤 Tú:</span> <span class="t-white">Configura OSPF desde cero</span><span class="t-cursor"></span></div>
+      </div>
     </div>
   </div>
-</section>
 
-<main id="ccna-index"></main>
+  <!-- ═══ MÓDULOS ═══ -->
+  <div class="idx-section">
+    <div class="idx-section-hdr">
+      <div class="idx-section-tag">📚 CONTENIDO COMPLETO</div>
+      <h2 class="idx-section-title">MÓDULOS DEL CURSO</h2>
+      <p class="idx-section-sub">21 clases magistrales organizadas en 7 módulos siguiendo el temario oficial del examen CCNA 200-301. Cada clase incluye teoría profunda, comandos IOS, laboratorio y quiz.</p>
+    </div>
+    <div class="idx-modules">
 
-<footer class="footer">
-  <p>CCNA Academy · Basado en <a href="https://www.cisco.com" target="_blank">Cisco CCNA 200-301 Official Cert Guide</a> (Wendell Odom) y Daniel Pérez Torres</p>
-  <p style="margin-top:.4rem">Recurso educativo · No afiliado oficialmente con Cisco Systems, Inc.</p>
+      <!-- M1 -->
+      <a href="clases/fundamentos.html" class="idx-module">
+        <div class="idx-module-header">
+          <div class="idx-module-icon m1">🌐</div>
+          <div class="idx-module-meta">
+            <div class="idx-module-tag">Módulo 1</div>
+            <div class="idx-module-name">Fundamentos de Redes</div>
+          </div>
+        </div>
+        <div class="idx-module-body">
+          <p class="idx-module-desc">Modelos OSI y TCP/IP, encapsulación, direccionamiento IPv4/IPv6, subnetting VLSM y la calculadora IP interactiva.</p>
+          <div class="idx-module-topics">
+            <span class="idx-topic">Fundamentos</span>
+            <span class="idx-topic">Subnetting</span>
+            <span class="idx-topic">VLSM</span>
+            <span class="idx-topic">IPv6</span>
+            <span class="idx-topic">Calculadora IP</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- M2 -->
+      <a href="clases/router.html" class="idx-module">
+        <div class="idx-module-header">
+          <div class="idx-module-icon m2">📡</div>
+          <div class="idx-module-meta">
+            <div class="idx-module-tag">Módulo 2</div>
+            <div class="idx-module-name">Dispositivos Cisco</div>
+          </div>
+        </div>
+        <div class="idx-module-body">
+          <p class="idx-module-desc">Arquitectura interna, boot sequence, IOS CLI, interfaces, SSH v2, NTP, Syslog, recuperación de contraseña en routers y switches Cisco.</p>
+          <div class="idx-module-topics">
+            <span class="idx-topic">Routers</span>
+            <span class="idx-topic">Switches</span>
+            <span class="idx-topic">Boot Sequence</span>
+            <span class="idx-topic">SSH v2</span>
+            <span class="idx-topic">NTP / Syslog</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- M3 -->
+      <a href="clases/vlan.html" class="idx-module">
+        <div class="idx-module-header">
+          <div class="idx-module-icon m3">🏷️</div>
+          <div class="idx-module-meta">
+            <div class="idx-module-tag">Módulo 3</div>
+            <div class="idx-module-name">Switching Avanzado</div>
+          </div>
+        </div>
+        <div class="idx-module-body">
+          <p class="idx-module-desc">VLANs, trunk 802.1Q, DTP, VTP, STP/RSTP/PVST+, EtherChannel LACP/PAgP, Port Security y CDP/LLDP.</p>
+          <div class="idx-module-topics">
+            <span class="idx-topic">VLANs</span>
+            <span class="idx-topic">Trunk 802.1Q</span>
+            <span class="idx-topic">STP / RSTP</span>
+            <span class="idx-topic">EtherChannel</span>
+            <span class="idx-topic">Port Security</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- M4 -->
+      <a href="clases/routing.html" class="idx-module">
+        <div class="idx-module-header">
+          <div class="idx-module-icon m4">🗺️</div>
+          <div class="idx-module-meta">
+            <div class="idx-module-tag">Módulo 4</div>
+            <div class="idx-module-name">Routing IP</div>
+          </div>
+        </div>
+        <div class="idx-module-body">
+          <p class="idx-module-desc">Routing estático, rutas flotantes, default route, OSPF con áreas y DR/BDR, EIGRP con algoritmo DUAL y Feasible Successor.</p>
+          <div class="idx-module-topics">
+            <span class="idx-topic">Routing Estático</span>
+            <span class="idx-topic">OSPF</span>
+            <span class="idx-topic">EIGRP</span>
+            <span class="idx-topic">AD</span>
+            <span class="idx-topic">Longest Match</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- M5 -->
+      <a href="clases/dhcp.html" class="idx-module">
+        <div class="idx-module-header">
+          <div class="idx-module-icon m5">⚙️</div>
+          <div class="idx-module-meta">
+            <div class="idx-module-tag">Módulo 5</div>
+            <div class="idx-module-name">Servicios IP</div>
+          </div>
+        </div>
+        <div class="idx-module-body">
+          <p class="idx-module-desc">DHCP DORA y relay agent, NAT estático, NAT dinámico y PAT overload con terminología Inside/Outside completa.</p>
+          <div class="idx-module-topics">
+            <span class="idx-topic">DHCP DORA</span>
+            <span class="idx-topic">DHCP Relay</span>
+            <span class="idx-topic">NAT Estático</span>
+            <span class="idx-topic">PAT / Overload</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- M6 -->
+      <a href="clases/acl.html" class="idx-module">
+        <div class="idx-module-header">
+          <div class="idx-module-icon m6">🛡️</div>
+          <div class="idx-module-meta">
+            <div class="idx-module-tag">Módulo 6</div>
+            <div class="idx-module-name">Seguridad de Red</div>
+          </div>
+        </div>
+        <div class="idx-module-body">
+          <p class="idx-module-desc">ACLs estándar, extendidas y nombradas con wildcard masks, implicit deny, ubicación correcta y aplicación en interfaces VTY.</p>
+          <div class="idx-module-topics">
+            <span class="idx-topic">ACL Estándar</span>
+            <span class="idx-topic">ACL Extendida</span>
+            <span class="idx-topic">ACL Nombrada</span>
+            <span class="idx-topic">Wildcard</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- M7 -->
+      <a href="clases/wan.html" class="idx-module">
+        <div class="idx-module-header">
+          <div class="idx-module-icon m7">🌍</div>
+          <div class="idx-module-meta">
+            <div class="idx-module-tag">Módulo 7</div>
+            <div class="idx-module-name">WAN &amp; QoS</div>
+          </div>
+        </div>
+        <div class="idx-module-body">
+          <p class="idx-module-desc">Tecnologías WAN, MPLS, HDLC, PPP/CHAP, VPN IPsec, GRE tunnels. QoS: DSCP/CoS, LLQ, MQC con class-map y policy-map.</p>
+          <div class="idx-module-topics">
+            <span class="idx-topic">WAN / MPLS</span>
+            <span class="idx-topic">PPP CHAP</span>
+            <span class="idx-topic">VPN / GRE</span>
+            <span class="idx-topic">QoS / LLQ</span>
+            <span class="idx-topic">MQC</span>
+          </div>
+        </div>
+      </a>
+
+    </div>
+  </div>
+  <!-- ═══ HERRAMIENTAS ═══ -->
+  <div class="idx-section">
+    <div class="idx-section-hdr">
+      <div class="idx-section-tag">⚡ HERRAMIENTAS</div>
+      <h2 class="idx-section-title">RECURSOS INTERACTIVOS</h2>
+      <p class="idx-section-sub">Herramientas diseñadas para acelerar tu aprendizaje y preparación para el examen CCNA 200-301.</p>
+    </div>
+    <div class="idx-tools">
+
+      <a href="clases/asistente.html" class="idx-tool">
+        <div class="idx-tool-icon">🤖</div>
+        <div class="idx-tool-name">NETBOT IA — ASISTENTE CISCO</div>
+        <p class="idx-tool-desc">Chat con IA especialista en CCNA. Respuestas como profesor, comandos IOS reales, laboratorios generados al instante y modo práctica con preguntas estilo examen.</p>
+        <span class="idx-tool-badge ai">✨ Powered by Claude AI</span>
+      </a>
+
+      <a href="clases/calculadora.html" class="idx-tool">
+        <div class="idx-tool-icon">🧮</div>
+        <div class="idx-tool-name">CALCULADORA IP / VLSM</div>
+        <p class="idx-tool-desc">Calcula subredes, máscaras wildcard, rangos de host, broadcast y VLSM de forma interactiva. Perfecta para practicar subnetting antes del examen.</p>
+        <span class="idx-tool-badge">🔢 IPv4 &amp; IPv6</span>
+      </a>
+
+      <a href="clases/subnetting.html" class="idx-tool">
+        <div class="idx-tool-icon">🔢</div>
+        <div class="idx-tool-name">CLASE DE SUBNETTING</div>
+        <p class="idx-tool-desc">Aprende el método Magic Number, VLSM y CIDR con explicaciones paso a paso. Incluye ejercicios progresivos y quiz de 10 preguntas cronometradas.</p>
+        <span class="idx-tool-badge">📊 Incluye Quiz</span>
+      </a>
+
+      <a href="clases/stp.html" class="idx-tool">
+        <div class="idx-tool-icon">🌳</div>
+        <div class="idx-tool-name">SIMULADOR STP</div>
+        <p class="idx-tool-desc">Aprende el algoritmo STP con ejemplos resueltos completos. Root Bridge, costos, roles de puertos, RSTP, PVST+ y balanceo de carga por VLAN.</p>
+        <span class="idx-tool-badge new">🔥 Clase magistral</span>
+      </a>
+
+      <a href="clases/ospf.html" class="idx-tool">
+        <div class="idx-tool-icon">⭕</div>
+        <div class="idx-tool-name">LABORATORIO OSPF</div>
+        <p class="idx-tool-desc">Configuración paso a paso de OSPF. Router ID, áreas, DR/BDR, costo de enlace, passive-interface y verificación con show commands reales.</p>
+        <span class="idx-tool-badge">🧪 Lab incluido</span>
+      </a>
+
+      <a href="clases/vlan.html" class="idx-tool">
+        <div class="idx-tool-icon">🏷️</div>
+        <div class="idx-tool-name">LABORATORIO VLANs</div>
+        <p class="idx-tool-desc">Desde la teoría de 802.1Q hasta la configuración de Inter-VLAN Routing. DTP, VTP, ataques VLAN Hopping y hardening completo de switches.</p>
+        <span class="idx-tool-badge new">🏆 Clase más completa</span>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- ═══ EXAM READY ═══ -->
+  <div class="idx-section">
+    <div class="idx-section-hdr">
+      <div class="idx-section-tag">🎓 CERTIFICACIÓN</div>
+      <h2 class="idx-section-title">PREPARADO PARA EL EXAMEN</h2>
+      <p class="idx-section-sub">Todo el contenido está alineado con el examen oficial CCNA 200-301 de Cisco.</p>
+    </div>
+    <div class="idx-exam">
+      <div class="idx-exam-item">
+        <div class="idx-exam-num">120</div>
+        <div class="idx-exam-label"><strong>Minutos de examen</strong>El examen real CCNA 200-301 tiene 120 minutos para ~100 preguntas de opción múltiple, simulación y arrastrar-soltar.</div>
+      </div>
+      <div class="idx-exam-divider"></div>
+      <div class="idx-exam-item">
+        <div class="idx-exam-num">825</div>
+        <div class="idx-exam-label"><strong>Puntuación para aprobar</strong>El puntaje mínimo es 825 sobre 1000. La plataforma cubre el 100% de los dominios del examen oficial.</div>
+      </div>
+      <div class="idx-exam-divider"></div>
+      <div class="idx-exam-item">
+        <div class="idx-exam-num">100%</div>
+        <div class="idx-exam-label"><strong>Cobertura del temario</strong>Los 7 módulos cubren todos los dominios: Network Fundamentals, Switching, Routing, Services, Security, Automation y WAN.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ RUTA DE APRENDIZAJE ═══ -->
+  <div class="idx-section">
+    <div class="idx-section-hdr">
+      <div class="idx-section-tag">🗺️ RUTA RECOMENDADA</div>
+      <h2 class="idx-section-title">¿POR DÓNDE EMPEZAR?</h2>
+      <p class="idx-section-sub">Sigue esta secuencia para una preparación óptima del examen CCNA 200-301.</p>
+    </div>
+    <div class="idx-path">
+      <div class="idx-path-title">◈ SECUENCIA DE ESTUDIO CCNA 200-301</div>
+      <div class="idx-path-list">
+        <a href="clases/fundamentos.html"      class="idx-path-item"><span class="idx-path-num">01</span><span class="idx-path-icon">🌐</span><div class="idx-path-info"><div class="idx-path-name">Fundamentos de Redes</div><div class="idx-path-sub">OSI · TCP/IP · Ethernet · Binario/Hex</div></div><span class="idx-path-arrow">→</span></a>
+        <a href="clases/subnetting.html"       class="idx-path-item"><span class="idx-path-num">02</span><span class="idx-path-icon">🔢</span><div class="idx-path-info"><div class="idx-path-name">Subnetting &amp; VLSM</div><div class="idx-path-sub">Magic Number · CIDR · Wildcard masks</div></div><span class="idx-path-arrow">→</span></a>
+        <a href="clases/ipv6.html"             class="idx-path-item"><span class="idx-path-num">03</span><span class="idx-path-icon">6️⃣</span><div class="idx-path-info"><div class="idx-path-name">IPv6</div><div class="idx-path-sub">EUI-64 · SLAAC · NDP · DHCPv6</div></div><span class="idx-path-arrow">→</span></a>
+        <a href="clases/router.html"           class="idx-path-item"><span class="idx-path-num">04</span><span class="idx-path-icon">📡</span><div class="idx-path-info"><div class="idx-path-name">Routers Cisco — IOS CLI</div><div class="idx-path-sub">Boot Sequence · SSH · NTP · Recuperación</div></div><span class="idx-path-arrow">→</span></a>
+        <a href="clases/switches-cisco.html"   class="idx-path-item"><span class="idx-path-num">05</span><span class="idx-path-icon">🔀</span><div class="idx-path-info"><div class="idx-path-name">Switches Cisco</div><div class="idx-path-sub">Tabla MAC · Forwarding · Duplex · SVI</div></div><span class="idx-path-arrow">→</span></a>
+        <a href="clases/vlan.html"             class="idx-path-item"><span class="idx-path-num">06</span><span class="idx-path-icon">🏷️</span><div class="idx-path-info"><div class="idx-path-name">VLANs y Trunk 802.1Q</div><div class="idx-path-sub">DTP · VTP · VLAN Hopping · Hardening</div></div><span class="idx-path-arrow">→</span></a>
+        <a href="clases/inter-vlan-routing.html" class="idx-path-item"><span class="idx-path-num">07</span><span class="idx-path-icon">🔁</span><div class="idx-path-info"><div class="idx-path-name">Inter-VLAN Routing</div><div class="idx-path-sub">Router-on-a-Stick · Switch L3 · SVIs</div></div><span class="idx-path-arrow">→</span></a>
+        <a href="clases/stp.html"              class="idx-path-item"><span class="idx-path-num">08</span><span class="idx-path-icon">🌳</span><div class="idx-path-info"><div class="idx-path-name">Spanning Tree Protocol</div><div class="idx-path-sub">Root Bridge · RSTP · PVST+ · PortFast · BPDU Guard</div></div><span class="idx-path-arrow">→</span></a>
+        <a href="clases/etherchannel.html"     class="idx-path-item"><span class="idx-path-num">09</span><span class="idx-path-icon">🔗</span><div class="idx-path-info"><div class="idx-path-name">EtherChannel</div><div class="idx-path-sub">LACP · PAgP · Port-Channel · Verificación</div></div><span class="idx-path-arrow">→</span></a>
+        <a href="clases/routing.html"          class="idx-path-item"><span class="idx-path-num">10</span><span class="idx-path-icon">🗺️</span><div class="idx-path-info"><div class="idx-path-name">Routing Estático</div><div class="idx-path-sub">Longest Match · AD · Rutas flotantes · Default route</div></div><span class="idx-path-arrow">→</span></a>
+        <a href="clases/ospf.html"             class="idx-path-item"><span class="idx-path-num">11</span><span class="idx-path-icon">⭕</span><div class="idx-path-info"><div class="idx-path-name">OSPF</div><div class="idx-path-sub">Link-State · Áreas · DR/BDR · Costo · Router ID</div></div><span class="idx-path-arrow">→</span></a>
+        <a href="clases/eigrp.html"            class="idx-path-item"><span class="idx-path-num">12</span><span class="idx-path-icon">⚡</span><div class="idx-path-info"><div class="idx-path-name">EIGRP</div><div class="idx-path-sub">DUAL · Successor · Feasible Successor · K-values</div></div><span class="idx-path-arrow">→</span></a>
+        <a href="clases/dhcp.html"             class="idx-path-item"><span class="idx-path-num">13</span><span class="idx-path-icon">📋</span><div class="idx-path-info"><div class="idx-path-name">DHCP</div><div class="idx-path-sub">DORA · Pool · ip helper-address · DHCP Snooping</div></div><span class="idx-path-arrow">→</span></a>
+        <a href="clases/nat.html"              class="idx-path-item"><span class="idx-path-num">14</span><span class="idx-path-icon">🔄</span><div class="idx-path-info"><div class="idx-path-name">NAT / PAT</div><div class="idx-path-sub">Static · Dynamic · Overload · Inside/Outside</div></div><span class="idx-path-arrow">→</span></a>
+        <a href="clases/acl.html"              class="idx-path-item"><span class="idx-path-num">15</span><span class="idx-path-icon">🛡️</span><div class="idx-path-info"><div class="idx-path-name">ACLs</div><div class="idx-path-sub">Estándar · Extendida · Nombrada · Implicit Deny</div></div><span class="idx-path-arrow">→</span></a>
+        <a href="clases/wan.html"              class="idx-path-item"><span class="idx-path-num">16</span><span class="idx-path-icon">🌍</span><div class="idx-path-info"><div class="idx-path-name">WAN</div><div class="idx-path-sub">MPLS · HDLC · PPP · VPN IPsec · GRE</div></div><span class="idx-path-arrow">→</span></a>
+        <a href="clases/qos.html"              class="idx-path-item"><span class="idx-path-num">17</span><span class="idx-path-icon">📊</span><div class="idx-path-info"><div class="idx-path-name">QoS</div><div class="idx-path-sub">DSCP · CoS · LLQ · MQC · Policing vs Shaping</div></div><span class="idx-path-arrow">→</span></a>
+        <a href="clases/asistente.html"        class="idx-path-item" style="border-color:rgba(167,139,250,0.25);"><span class="idx-path-num">✓</span><span class="idx-path-icon">🤖</span><div class="idx-path-info"><div class="idx-path-name" style="color:#a78bfa;">NetBot IA — Práctica final</div><div class="idx-path-sub">Genera simulacros de examen con preguntas estilo CCNA real</div></div><span class="idx-path-arrow" style="color:#a78bfa;">→</span></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ TIPS DEL EXAMEN ═══ -->
+  <div class="idx-section">
+    <div class="idx-section-hdr">
+      <div class="idx-section-tag">🎯 TIPS</div>
+      <h2 class="idx-section-title">CLAVES PARA EL EXAMEN CCNA</h2>
+      <p class="idx-section-sub">Los conceptos más frecuentes y trampas más comunes del examen CCNA 200-301.</p>
+    </div>
+    <div class="idx-tips">
+      <div class="idx-tip"><div class="idx-tip-tag tag-teal">⚡ ROUTING</div><p class="idx-tip-text">La AD (Distancia Administrativa) determina qué protocolo gana cuando hay rutas de distintas fuentes. Connected=0, Static=1, EIGRP=90, OSPF=110, RIP=120. <strong>Menor AD = más confiable.</strong></p></div>
+      <div class="idx-tip"><div class="idx-tip-tag tag-blue">🔀 SWITCHING</div><p class="idx-tip-text">Las interfaces del <strong>router</strong> están <code>administratively down</code> por defecto. Las del <strong>switch</strong> están activas al conectar cable. Siempre usar <code>no shutdown</code> en el router.</p></div>
+      <div class="idx-tip"><div class="idx-tip-tag tag-amber">🌳 STP</div><p class="idx-tip-text">La priority STP solo acepta múltiplos de 4096 (0, 4096, 8192...61440). Default = 32768. <code>root primary</code> ajusta a 24576. <code>root secondary</code> ajusta a 28672.</p></div>
+      <div class="idx-tip"><div class="idx-tip-tag tag-purple">🔐 SSH</div><p class="idx-tip-text">SSH v2 requiere: hostname distinto de Router, <code>ip domain-name</code>, y <code>crypto key generate rsa modulus 2048</code>. Sin <code>ip domain-name</code>, el comando RSA falla.</p></div>
+      <div class="idx-tip"><div class="idx-tip-tag tag-green">🏷️ VLANs</div><p class="idx-tip-text">Las VLANs se guardan en <code>flash:vlan.dat</code>, separado de startup-config. <code>erase startup-config</code> NO borra las VLANs. Para borrarlas: <code>delete flash:vlan.dat</code>.</p></div>
+      <div class="idx-tip"><div class="idx-tip-tag tag-teal">🔄 NAT</div><p class="idx-tip-text">Marcar siempre <code>ip nat inside</code> en la LAN e <code>ip nat outside</code> en la WAN. PAT usa <code>overload</code> al final del comando. Sin <code>overload</code> es NAT dinámico (no PAT).</p></div>
+      <div class="idx-tip"><div class="idx-tip-tag tag-blue">🛡️ ACLs</div><p class="idx-tip-text">ACL Estándar → colocar cerca del <strong>destino</strong>. ACL Extendida → cerca del <strong>origen</strong>. Toda ACL tiene un <code>implicit deny any any</code> al final que no aparece en la config.</p></div>
+      <div class="idx-tip"><div class="idx-tip-tag tag-amber">⭕ OSPF</div><p class="idx-tip-text">El Router ID OSPF se elige en orden: 1° manual (<code>router-id</code>), 2° IP más alta de Loopback activa, 3° IP más alta de cualquier interfaz activa. Siempre configurarlo manualmente.</p></div>
+      <div class="idx-tip"><div class="idx-tip-tag tag-purple">🔑 RECUPERACIÓN</div><p class="idx-tip-text">Config-register <code>0x2142</code> = ignora startup-config. <code>0x2102</code> = operación normal. Después de recuperar contraseña, <strong>siempre</strong> restaurar a 0x2102 y hacer <code>copy run start</code>.</p></div>
+    </div>
+  </div>
+
+</div><!-- /.idx-wrap -->
+<!-- ═══ FOOTER GRANDE ═══ -->
+<footer class="idx-footer">
+  <div class="idx-footer-inner">
+    <div>
+      <div class="idx-footer-brand-name">CCNA ACADEMY</div>
+      <p class="idx-footer-brand-desc">Plataforma educativa gratuita para preparar la certificación Cisco CCNA 200-301. Contenido técnico profundo, laboratorios Packet Tracer y el NetBot IA para aprendizaje acelerado.</p>
+    </div>
+    <div>
+      <div class="idx-footer-col-title">M1–M3 · Redes</div>
+      <div class="idx-footer-links">
+        <a href="clases/fundamentos.html"  class="idx-footer-link">🌐 Fundamentos</a>
+        <a href="clases/subnetting.html"   class="idx-footer-link">🔢 Subnetting</a>
+        <a href="clases/ipv6.html"         class="idx-footer-link">6️⃣ IPv6</a>
+        <a href="clases/vlan.html"         class="idx-footer-link">🏷️ VLANs</a>
+        <a href="clases/stp.html"          class="idx-footer-link">🌳 STP</a>
+        <a href="clases/etherchannel.html" class="idx-footer-link">🔗 EtherChannel</a>
+      </div>
+    </div>
+    <div>
+      <div class="idx-footer-col-title">M4–M7 · Routing</div>
+      <div class="idx-footer-links">
+        <a href="clases/routing.html" class="idx-footer-link">🗺️ Routing Estático</a>
+        <a href="clases/ospf.html"    class="idx-footer-link">⭕ OSPF</a>
+        <a href="clases/eigrp.html"   class="idx-footer-link">⚡ EIGRP</a>
+        <a href="clases/dhcp.html"    class="idx-footer-link">📋 DHCP</a>
+        <a href="clases/nat.html"     class="idx-footer-link">🔄 NAT / PAT</a>
+        <a href="clases/acl.html"     class="idx-footer-link">🛡️ ACLs</a>
+        <a href="clases/wan.html"     class="idx-footer-link">🌍 WAN</a>
+        <a href="clases/qos.html"     class="idx-footer-link">📊 QoS</a>
+      </div>
+    </div>
+    <div>
+      <div class="idx-footer-col-title">⚡ Herramientas</div>
+      <div class="idx-footer-links">
+        <a href="clases/asistente.html"   class="idx-footer-link" style="color:#a78bfa;">🤖 NetBot IA</a>
+        <a href="clases/calculadora.html" class="idx-footer-link">🧮 Calculadora IP</a>
+        <a href="clases/router.html"      class="idx-footer-link">📡 Routers Cisco</a>
+        <a href="clases/switches-cisco.html" class="idx-footer-link">🔀 Switches Cisco</a>
+        <a href="clases/port-security.html"  class="idx-footer-link">🔒 Port Security</a>
+        <a href="clases/cdp-lldp.html"    class="idx-footer-link">🔍 CDP / LLDP</a>
+      </div>
+    </div>
+  </div>
+  <div class="idx-footer-bottom">
+    <div class="idx-footer-copy">
+      © 2024 CCNA Academy · wdasoto.github.io/ccna-academy · Contenido educativo gratuito
+    </div>
+    <div class="idx-footer-badges">
+      <span class="idx-footer-badge">CCNA 200-301</span>
+      <span class="idx-footer-badge">Cisco IOS</span>
+      <span class="idx-footer-badge">NetBot IA</span>
+      <span class="idx-footer-badge">Open Source</span>
+    </div>
+  </div>
 </footer>
 
-<script src="assets/main.js"></script>
+<script src="assets/main.js" defer></script>
+<script>
+// Animación de entrada para las tarjetas
+document.addEventListener('DOMContentLoaded', function() {
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  var items = document.querySelectorAll('.idx-module, .idx-tool, .idx-tip, .idx-path-item');
+  items.forEach(function(el, i) {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(16px)';
+    el.style.transition = 'opacity 0.45s ease ' + (i * 0.05) + 's, transform 0.45s ease ' + (i * 0.05) + 's';
+    observer.observe(el);
+  });
+});
+</script>
 </body>
 </html>
