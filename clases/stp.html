@@ -1,416 +1,47 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CCNA — Spanning Tree Protocol (STP)</title>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&family=Bebas+Neue&display=swap');
-
-.page-content{
-  --bg-deep: #060b14;
-  --bg-mid: #0c1a2e;
-  --bg-card: #0f2040;
-  --amber: #f59e0b;
-  --amber-bright: #fcd34d;
-  --amber-dim: rgba(245,158,11,0.15);
-  --green: #10b981;
-  --green-bright: #34d399;
-  --red: #ef4444;
-  --red-bright: #f87171;
-  --blue: #3b82f6;
-  --blue-bright: #60a5fa;
-  --purple: #8b5cf6;
-  --gray: #94a3b8;
-  --white: #f1f5f9;
-  --border: rgba(245,158,11,0.2);
-}
-
-.page-content{ margin:0; padding:0; box-sizing:border-box; }
-
-.page-content{
-  background: var(--bg-deep);
-  color: var(--white);
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 16px;
-  line-height: 1.6;
-  overflow-x: hidden;
-}
-
-/* Animated background */
-.page-content::before{
-  content:'';
-  position:fixed; inset:0;
-  background:
-    radial-gradient(ellipse 80% 40% at 10% 20%, rgba(245,158,11,0.04) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 50% at 90% 80%, rgba(59,130,246,0.04) 0%, transparent 60%);
-  pointer-events:none; z-index:0;
-}
-
-.page-content .wrap{ max-width:1140px; margin:0 auto; padding:0 24px; position:relative; z-index:1; }
-
-/* ─── HEADER ─── */
-.page-content header{
-  background: linear-gradient(180deg, rgba(15,32,64,0.98) 0%, rgba(6,11,20,0.95) 100%);
-  border-bottom: 1px solid var(--border);
-  padding: 18px 0;
-  position: sticky; top:0; z-index:200;
-  box-shadow: 0 4px 40px rgba(245,158,11,0.08);
-}
-.page-content .hdr{ display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
-.page-content .hdr-brand{ display:flex; align-items:center; gap:14px; }
-.page-content .cisco-pill{
-  font-family:'Bebas Neue'; font-size:1.3rem; letter-spacing:3px;
-  background: linear-gradient(135deg,#f59e0b,#fcd34d);
-  color:#000; padding:6px 14px; border-radius:3px;
-}
-.page-content .hdr-title{ font-size:0.75rem; color:var(--amber); letter-spacing:3px; text-transform:uppercase; }
-.page-content .hdr-sub{ font-size:1rem; font-weight:700; color:var(--white); }
-.page-content .lesson-tag{
-  background: rgba(245,158,11,0.1); border:1px solid var(--border);
-  color:var(--amber-bright); font-family:'JetBrains Mono'; font-size:0.7rem;
-  padding:6px 14px; border-radius:20px; letter-spacing:1px;
-}
-
-/* ─── HERO ─── */
-.page-content .hero{ padding:56px 0 40px; text-align:center; }
-.page-content .hero h1{
-  font-family:'Bebas Neue'; font-size:clamp(2.8rem,7vw,5rem);
-  letter-spacing:4px; line-height:1;
-  background: linear-gradient(135deg, #fff 0%, #f59e0b 40%, #fcd34d 70%, #fff 100%);
-  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
-  animation: shimmer 4s ease infinite alternate;
-  filter: drop-shadow(0 0 30px rgba(245,158,11,0.3));
-}
-@keyframes shimmer {
-  from { filter: drop-shadow(0 0 15px rgba(245,158,11,0.2)); }
-.page-content to{ filter: drop-shadow(0 0 40px rgba(245,158,11,0.6)); }
-}
-.page-content .hero-desc{ color:var(--gray); font-size:1rem; letter-spacing:2px; text-transform:uppercase; margin:12px 0 28px; }
-.page-content .hero-pills{ display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
-.page-content .hero-pill{
-  background:rgba(245,158,11,0.08); border:1px solid var(--border);
-  border-radius:20px; padding:6px 16px; font-size:0.82rem; color:var(--amber-bright);
-  display:flex; align-items:center; gap:7px;
-}
-.page-content .pill-dot{ width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:blink 1.8s infinite; }
-@keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
-
-/* ─── NAV TABS ─── */
-.page-content .nav{
-  display:flex; gap:4px; margin:36px 0 28px;
-  background:rgba(15,32,64,0.8); border:1px solid var(--border);
-  border-radius:10px; padding:5px; overflow-x:auto; flex-wrap:wrap;
-}
-.page-content .nb{
-  flex:1; min-width:110px; padding:9px 14px; border:none; cursor:pointer;
-  background:transparent; color:var(--gray); font-family:'Rajdhani';
-  font-size:0.78rem; font-weight:600; text-transform:uppercase; letter-spacing:1px;
-  border-radius:7px; transition:all 0.25s; white-space:nowrap;
-}
-.page-content .nb:hover{ background:rgba(245,158,11,0.08); color:var(--amber); }
-.page-content .nb.on{
-  background:linear-gradient(135deg,rgba(245,158,11,0.25),rgba(180,90,0,0.2));
-  color:#fff; border:1px solid rgba(245,158,11,0.5);
-  box-shadow:0 0 16px rgba(245,158,11,0.15);
-}
-
-/* ─── SECTIONS ─── */
-.page-content .sec{ display:none; animation:fadeUp 0.35s ease; }
-.page-content .sec.on{ display:block; }
-@keyframes fadeUp { from{opacity:0;transform:translateY(12px);} to{opacity:1;transform:translateY(0);} }
-
-/* ─── CARDS ─── */
-.page-content .card{
-  background:var(--bg-card); border:1px solid var(--border);
-  border-radius:14px; padding:28px; margin-bottom:22px;
-  position:relative; overflow:hidden;
-  backdrop-filter:blur(8px);
-}
-.page-content .card::after{
-  content:''; position:absolute; top:0;left:0;right:0; height:2px;
-  background:linear-gradient(90deg,var(--amber),var(--amber-bright),var(--green),var(--blue));
-}
-.page-content .card-h{
-  display:flex; align-items:center; gap:12px;
-  font-family:'Bebas Neue'; font-size:1.3rem; letter-spacing:2px;
-  color:var(--amber); margin-bottom:20px;
-}
-.page-content .ci{
-  width:38px;height:38px; border-radius:8px;
-  background:linear-gradient(135deg,rgba(245,158,11,0.25),rgba(120,50,0,0.3));
-  border:1px solid var(--border); display:flex;align-items:center;justify-content:center;
-  font-size:1.1rem; flex-shrink:0;
-}
-
-/* ─── DEF BOX ─── */
-.page-content .def{
-  background:linear-gradient(135deg,rgba(245,158,11,0.06),rgba(15,32,64,0.8));
-  border:1px solid rgba(245,158,11,0.35); border-left:4px solid var(--amber);
-  border-radius:8px; padding:18px 22px; margin:16px 0;
-  font-size:1rem; line-height:1.75; color:var(--white);
-}
-.page-content .hl{ color:var(--amber-bright); font-weight:700; }
-.page-content .hlg{ color:var(--green-bright); font-weight:700; }
-.page-content .hlr{ color:var(--red-bright); font-weight:700; }
-.page-content .hlb{ color:var(--blue-bright); font-weight:700; }
-.page-content .hlp{ color:#c4b5fd; font-weight:700; }
-
-/* ─── INFO BOXES ─── */
-.page-content .ibox{ display:flex; gap:13px; padding:14px 18px; border-radius:9px; margin:14px 0; font-size:0.92rem; line-height:1.65; }
-.page-content .ibox.tip{ background:rgba(16,185,129,0.07); border:1px solid rgba(16,185,129,0.3); }
-.page-content .ibox.warn{ background:rgba(239,68,68,0.07);  border:1px solid rgba(239,68,68,0.3); }
-.page-content .ibox.exam{ background:rgba(245,158,11,0.07); border:1px solid rgba(245,158,11,0.4); }
-.page-content .ibox.info{ background:rgba(59,130,246,0.07); border:1px solid rgba(59,130,246,0.3); }
-.page-content .iico{ font-size:1.25rem; flex-shrink:0; margin-top:1px; }
-
-/* ─── TABLES ─── */
-.page-content .tbl{ width:100%; border-collapse:collapse; margin:14px 0; font-size:0.88rem; }
-.page-content .tbl th{ background:rgba(245,158,11,0.12); color:var(--amber); font-family:'JetBrains Mono'; font-size:0.7rem; letter-spacing:1px; padding:11px 14px; text-align:left; border-bottom:2px solid rgba(245,158,11,0.4); text-transform:uppercase; }
-.page-content .tbl td{ padding:10px 14px; border-bottom:1px solid rgba(245,158,11,0.08); vertical-align:top; }
-.page-content .tbl tr:hover td{ background:rgba(245,158,11,0.03); }
-
-/* ─── BADGES ─── */
-.page-content .b{ display:inline-block; padding:3px 10px; border-radius:20px; font-size:0.7rem; font-weight:700; letter-spacing:1px; text-transform:uppercase; margin:2px; }
-.page-content .b-a{ background:rgba(245,158,11,0.15); border:1px solid var(--amber); color:var(--amber); }
-.page-content .b-g{ background:rgba(16,185,129,0.12); border:1px solid var(--green); color:var(--green-bright); }
-.page-content .b-r{ background:rgba(239,68,68,0.12);  border:1px solid var(--red);   color:var(--red-bright); }
-.page-content .b-b{ background:rgba(59,130,246,0.12); border:1px solid var(--blue);  color:var(--blue-bright); }
-.page-content .b-p{ background:rgba(139,92,246,0.12); border:1px solid var(--purple);color:#c4b5fd; }
-
-/* ─── CODE BLOCKS ─── */
-.page-content .cmd{
-  background:#020810; border:1px solid rgba(16,185,129,0.25);
-  border-radius:9px; padding:18px 20px; margin:14px 0;
-  font-family:'JetBrains Mono'; font-size:0.84rem;
-  overflow-x:auto; position:relative;
-}
-.page-content .cmd-tag{
-  position:absolute; top:8px;right:12px; font-size:0.62rem;
-  background:rgba(16,185,129,0.1); color:var(--green-bright);
-  padding:3px 8px; border-radius:4px; font-family:'Rajdhani'; letter-spacing:1px; text-transform:uppercase;
-}
-.page-content .cl{ display:block; padding:1.5px 0; }
-.page-content .cp{ color:var(--green-bright); }
-.page-content .ck{ color:var(--amber-bright); }
-.page-content .cv{ color:#fb923c; }
-.page-content .cc{ color:#475569; font-style:italic; }
-
-.page-content .csec{
-  font-family:'Bebas Neue'; font-size:0.85rem; letter-spacing:2px;
-  color:var(--amber); margin:22px 0 8px;
-  padding-left:12px; border-left:3px solid var(--amber);
-}
-
-/* ─── STP ANIMATION AREA ─── */
-.page-content .anim-wrap{
-  background:#020810; border:1px solid var(--border);
-  border-radius:12px; padding:24px; margin:18px 0;
-  min-height:360px; position:relative; overflow:hidden;
-}
-.page-content .anim-title{
-  text-align:center; font-family:'JetBrains Mono'; font-size:0.72rem;
-  color:var(--amber); letter-spacing:2px; margin-bottom:16px; text-transform:uppercase;
-}
-.page-content .anim-controls{ display:flex; gap:10px; justify-content:center; margin-top:16px; flex-wrap:wrap; }
-.page-content .abtn{
-  padding:8px 20px; border:1px solid var(--border); background:rgba(245,158,11,0.1);
-  color:var(--amber); font-family:'Rajdhani'; font-size:0.8rem; font-weight:600;
-  border-radius:6px; cursor:pointer; transition:all 0.2s; letter-spacing:1px; text-transform:uppercase;
-}
-.page-content .abtn:hover{ background:rgba(245,158,11,0.2); border-color:var(--amber); }
-.page-content .abtn.primary{ background:rgba(245,158,11,0.25); border-color:var(--amber); color:#fff; }
-
-/* ─── PORT STATE DEMO ─── */
-.page-content .port-states{ display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px; margin:16px 0; }
-.page-content .ps-card{
-  background:rgba(6,11,20,0.8); border:1px solid var(--border);
-  border-radius:10px; padding:16px; text-align:center; transition:all 0.3s;
-}
-.page-content .ps-card:hover{ transform:translateY(-3px); box-shadow:0 6px 20px rgba(245,158,11,0.12); }
-.page-content .ps-dot{ width:18px;height:18px;border-radius:50%;margin:0 auto 10px;position:relative; }
-.page-content .ps-dot::after{ content:'';position:absolute;inset:-4px;border-radius:50%;border:1px solid currentColor;opacity:0.4; }
-.page-content .ps-name{ font-family:'Bebas Neue'; font-size:1rem; letter-spacing:1px; margin-bottom:6px; }
-.page-content .ps-desc{ font-size:0.77rem; color:var(--gray); line-height:1.5; }
-.page-content .ps-time{ font-family:'JetBrains Mono'; font-size:0.7rem; margin-top:8px; }
-
-/* ─── GRID FEATURES ─── */
-.page-content .feat-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; margin:16px 0; }
-.page-content .feat{
-  background:rgba(6,11,20,0.7); border:1px solid var(--border);
-  border-radius:10px; padding:18px; text-align:center; transition:all 0.3s; cursor:default;
-}
-.page-content .feat:hover{ border-color:var(--amber); transform:translateY(-3px); box-shadow:0 6px 24px rgba(245,158,11,0.12); }
-.page-content .feat-icon{ font-size:1.8rem; margin-bottom:10px; }
-.page-content .feat-name{ font-family:'Bebas Neue'; font-size:1rem; letter-spacing:1px; color:var(--amber); margin-bottom:6px; }
-.page-content .feat-desc{ font-size:0.8rem; color:var(--gray); line-height:1.5; }
-
-/* ─── STEPS ─── */
-.page-content .steps{ list-style:none; counter-reset:sc; }
-.page-content .step{ counter-increment:sc; display:flex; gap:14px; margin-bottom:18px; align-items:flex-start; }
-.page-content .sn{
-  width:34px;height:34px;border-radius:50%;flex-shrink:0;
-  background:linear-gradient(135deg,var(--amber),#b45309);
-  display:flex;align-items:center;justify-content:center;
-  font-family:'Bebas Neue';font-size:0.9rem;color:#000;
-  box-shadow:0 0 14px rgba(245,158,11,0.3);
-}
-.page-content .sn::before{ content:counter(sc,decimal-leading-zero); }
-.page-content .sc{ flex:1; padding-top:5px; }
-.page-content .st{ font-weight:700; color:var(--amber-bright); margin-bottom:4px; }
-.page-content .sd{ color:var(--gray); font-size:0.88rem; line-height:1.6; }
-
-/* ─── QUIZ ─── */
-.page-content .qbox{
-  background:rgba(6,11,20,0.8); border:1px solid var(--border);
-  border-radius:12px; padding:22px; margin-bottom:18px;
-}
-.page-content .qnum{ font-family:'JetBrains Mono'; color:var(--amber); font-size:0.7rem; margin-bottom:8px; letter-spacing:1px; }
-.page-content .qq{ font-size:1rem; font-weight:600; line-height:1.55; margin-bottom:16px; }
-.page-content .opts{ display:grid; gap:8px; }
-.page-content .opt{
-  display:flex; align-items:center; gap:12px;
-  padding:11px 16px; background:rgba(245,158,11,0.03);
-  border:1px solid rgba(245,158,11,0.15); border-radius:8px;
-  cursor:pointer; transition:all 0.2s; font-size:0.9rem;
-}
-.page-content .opt:hover{ background:rgba(245,158,11,0.08); border-color:var(--amber); }
-.page-content .opt.ok{ background:rgba(16,185,129,0.12); border-color:var(--green); color:var(--green-bright); }
-.page-content .opt.no{ background:rgba(239,68,68,0.08);  border-color:var(--red);   color:var(--red-bright); }
-.page-content .ol{
-  width:26px;height:26px;border-radius:50%;
-  background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);
-  display:flex;align-items:center;justify-content:center;
-  font-family:'JetBrains Mono';font-size:0.68rem;font-weight:700;flex-shrink:0;
-}
-.page-content .qfb{ display:none; margin-top:12px; padding:12px 16px; border-radius:8px; font-size:0.87rem; line-height:1.55; }
-.page-content .qfb.show{ display:block; }
-.page-content .qfb.ok-fb{ background:rgba(16,185,129,0.08); border:1px solid var(--green); color:#6ee7b7; }
-.page-content .qfb.no-fb{ background:rgba(239,68,68,0.07);  border:1px solid var(--red);   color:#fca5a5; }
-
-/* ─── SUMMARY GRID ─── */
-.page-content .sg{ display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px; margin:16px 0; }
-.page-content .si{ background:rgba(6,11,20,0.7); border:1px solid var(--border); border-radius:10px; padding:18px; }
-.page-content .si h4{ color:var(--amber); font-size:0.8rem; text-transform:uppercase; letter-spacing:1px; margin-bottom:12px; }
-.page-content .si ul{ list-style:none; font-size:0.84rem; color:var(--gray); }
-.page-content .si ul li{ padding:3px 0 3px 14px; position:relative; }
-.page-content .si ul li::before{ content:'▸'; position:absolute; left:0; color:var(--amber); }
-
-/* ─── TIMELINE STP ─── */
-.page-content .timeline{ position:relative; padding-left:30px; margin:16px 0; }
-.page-content .timeline::before{ content:''; position:absolute; left:10px; top:0; bottom:0; width:2px; background:linear-gradient(180deg,var(--amber),var(--green)); }
-.page-content .tl-item{ position:relative; margin-bottom:20px; }
-.page-content .tl-dot{
-  position:absolute; left:-24px; top:4px;
-  width:12px;height:12px;border-radius:50%;
-  background:var(--amber); box-shadow:0 0 10px var(--amber);
-}
-.page-content .tl-title{ font-weight:700; color:var(--amber-bright); margin-bottom:4px; }
-.page-content .tl-desc{ font-size:0.88rem; color:var(--gray); line-height:1.6; }
-
-/* ─── BRIDGE ID BOX ─── */
-.page-content .bid-box{
-  display:flex; align-items:stretch; gap:0; border:2px solid var(--amber);
-  border-radius:10px; overflow:hidden; margin:16px 0; font-family:'JetBrains Mono';
-}
-.page-content .bid-part{ flex:1; padding:16px; text-align:center; }
-.page-content .bid-part:not(:last-child){ border-right:1px solid var(--border); }
-.page-content .bid-label{ font-size:0.65rem; color:var(--gray); letter-spacing:1px; text-transform:uppercase; margin-bottom:6px; }
-.page-content .bid-val{ font-size:1.1rem; color:var(--amber-bright); font-weight:700; }
-.page-content .bid-sub{ font-size:0.7rem; color:var(--gray); margin-top:4px; }
-
-/* ─── COMPARISON TABLE ─── */
-.page-content .cmp-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; margin:16px 0; }
-.page-content .cmp-card{
-  background:rgba(6,11,20,0.8); border:1px solid var(--border);
-  border-radius:10px; padding:18px; transition:all 0.3s;
-}
-.page-content .cmp-card:hover{ border-color:var(--amber); }
-.page-content .cmp-name{ font-family:'Bebas Neue'; font-size:1.1rem; letter-spacing:1px; margin-bottom:10px; }
-.page-content .cmp-row{ display:flex; justify-content:space-between; font-size:0.8rem; padding:4px 0; border-bottom:1px solid rgba(255,255,255,0.05); }
-.page-content .cmp-row:last-child{ border:none; }
-.page-content .cmp-k{ color:var(--gray); }
-.page-content .cmp-v{ font-weight:600; }
-
-.page-content footer{
-  background:rgba(12,26,46,0.95); border-top:1px solid var(--border);
-  padding:28px 0; margin-top:50px; text-align:center;
-}
-.page-content .ft{ color:var(--gray); font-size:0.8rem; line-height:2; }
-
-.page-content ::-webkit-scrollbar{width:5px;height:5px;}
-.page-content ::-webkit-scrollbar-track{background:var(--bg-deep);}
-.page-content ::-webkit-scrollbar-thumb{background:var(--amber);border-radius:3px;}
-
-@media(max-width:600px){
-    .page-content .hero h1{font-size:2.5rem;}
-    .page-content .card{padding:18px;}
-    .page-content .cmd{font-size:0.75rem;}
-}
-</style>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spanning Tree Protocol — CCNA Academy</title>
+  <meta name="description" content="Clase magistral STP CCNA 200-301. Root Bridge, roles de puerto, RSTP, PVST+, PortFast, BPDU Guard y laboratorio.">
   <link rel="stylesheet" href="../assets/style.css">
-  <script src="../assets/main.js" defer></script>
 </head>
 <body>
-
 <div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
-
 <nav class="ccna-drawer" id="ccnaDrawer">
-  <div class="drawer-header">
-    <h2>◈ NAVEGACIÓN</h2>
-    <button class="drawer-close" onclick="ccnaClose()">✕</button>
-  </div>
-  <div class="drawer-section">
-    <div class="drawer-section-title">General</div>
-    <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a>
-  </div>
-  <div class="drawer-section">
-    <div class="drawer-section-title">M1 · Fundamentos</div>
-    <a href="fundamentos.html"  class="drawer-link"><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
-    <a href="subnetting.html"   class="drawer-link"><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
-    <a href="calculadora.html"  class="drawer-link"><span class="dl-icon">🧮</span> Calculadora IP</a>
-    <a href="ipv6.html"         class="drawer-link"><span class="dl-icon">6️⃣</span> IPv6</a>
-  </div>
-  <div class="drawer-section">
-    <div class="drawer-section-title">M2 · Dispositivos Cisco</div>
-    <a href="router.html"          class="drawer-link"><span class="dl-icon">📡</span> Routers Cisco</a>
-    <a href="switches-cisco.html"  class="drawer-link"><span class="dl-icon">🔀</span> Switches Cisco</a>
-  </div>
-  <div class="drawer-section">
-    <div class="drawer-section-title">M3 · Switching</div>
-    <a href="vlan.html"                class="drawer-link"><span class="dl-icon">🏷️</span> VLANs</a>
-    <a href="inter-vlan-routing.html"  class="drawer-link"><span class="dl-icon">🔁</span> Inter-VLAN Routing</a>
-    <a href="stp.html"                 class="drawer-link active"><span class="dl-icon">🌳</span> Spanning Tree Protocol</a>
-    <a href="etherchannel.html"        class="drawer-link"><span class="dl-icon">🔗</span> EtherChannel</a>
-    <a href="port-security.html"       class="drawer-link"><span class="dl-icon">🔒</span> Port Security</a>
-    <a href="cdp-lldp.html"            class="drawer-link"><span class="dl-icon">🔍</span> CDP / LLDP</a>
-  </div>
-  <div class="drawer-section">
-    <div class="drawer-section-title">M4 · Routing</div>
-    <a href="routing.html"  class="drawer-link"><span class="dl-icon">🗺️</span> Routing Estático</a>
-    <a href="ospf.html"     class="drawer-link"><span class="dl-icon">⭕</span> OSPF</a>
-    <a href="eigrp.html"    class="drawer-link"><span class="dl-icon">⚡</span> EIGRP</a>
-  </div>
-  <div class="drawer-section">
-    <div class="drawer-section-title">M5 · Servicios IP</div>
-    <a href="dhcp.html"  class="drawer-link"><span class="dl-icon">📋</span> DHCP</a>
-    <a href="nat.html"   class="drawer-link"><span class="dl-icon">🔄</span> NAT / PAT</a>
-  </div>
-  <div class="drawer-section">
-    <div class="drawer-section-title">M6 · Seguridad</div>
-    <a href="acl.html"  class="drawer-link"><span class="dl-icon">🛡️</span> ACLs</a>
-  </div>
-  <div class="drawer-section">
-    <div class="drawer-section-title">M7 · WAN &amp; QoS</div>
-    <a href="wan.html"  class="drawer-link"><span class="dl-icon">🌍</span> WAN</a>
-    <a href="qos.html"  class="drawer-link"><span class="dl-icon">📊</span> QoS</a>
-  </div>
-  <div class="drawer-section">
-    <div class="drawer-section-title">Herramientas</div>
-    <a href="asistente.html"   class="drawer-link"><span class="dl-icon">🤖</span> Asistente IA</a>
+  <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
+  <div class="drawer-section"><div class="drawer-section-title">General</div><a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M1 · Fundamentos</div>
+    <a href="fundamentos.html" class="drawer-link"><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
+    <a href="subnetting.html" class="drawer-link"><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
     <a href="calculadora.html" class="drawer-link"><span class="dl-icon">🧮</span> Calculadora IP</a>
-  </div>
+    <a href="ipv6.html" class="drawer-link"><span class="dl-icon">6️⃣</span> IPv6</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M2 · Dispositivos Cisco</div>
+    <a href="router.html" class="drawer-link"><span class="dl-icon">📡</span> Routers Cisco</a>
+    <a href="switches-cisco.html" class="drawer-link"><span class="dl-icon">🔀</span> Switches Cisco</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M3 · Switching</div>
+    <a href="vlan.html" class="drawer-link"><span class="dl-icon">🏷️</span> VLANs</a>
+    <a href="inter-vlan-routing.html" class="drawer-link"><span class="dl-icon">🔁</span> Inter-VLAN Routing</a>
+    <a href="stp.html" class="drawer-link active"><span class="dl-icon">🌳</span> Spanning Tree Protocol</a>
+    <a href="etherchannel.html" class="drawer-link"><span class="dl-icon">🔗</span> EtherChannel</a>
+    <a href="port-security.html" class="drawer-link"><span class="dl-icon">🔒</span> Port Security</a>
+    <a href="cdp-lldp.html" class="drawer-link"><span class="dl-icon">🔍</span> CDP / LLDP</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M4 · Routing</div>
+    <a href="routing.html" class="drawer-link"><span class="dl-icon">🗺️</span> Routing Estático</a>
+    <a href="ospf.html" class="drawer-link"><span class="dl-icon">⭕</span> OSPF</a>
+    <a href="eigrp.html" class="drawer-link"><span class="dl-icon">⚡</span> EIGRP</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M5 · Servicios IP</div>
+    <a href="dhcp.html" class="drawer-link"><span class="dl-icon">📋</span> DHCP</a>
+    <a href="nat.html" class="drawer-link"><span class="dl-icon">🔄</span> NAT / PAT</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M6 · Seguridad</div>
+    <a href="acl.html" class="drawer-link"><span class="dl-icon">🛡️</span> ACLs</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M7 · WAN &amp; QoS</div>
+    <a href="wan.html" class="drawer-link"><span class="dl-icon">🌍</span> WAN</a>
+    <a href="qos.html" class="drawer-link"><span class="dl-icon">📊</span> QoS</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">Herramientas</div>
+    <a href="asistente.html" class="drawer-link"><span class="dl-icon">🤖</span> Asistente IA</a>
+    <a href="calculadora.html" class="drawer-link"><span class="dl-icon">🧮</span> Calculadora IP</a></div>
 </nav>
 
 <header class="navbar">
@@ -420,1204 +51,207 @@
   <a href="../index.html" class="navbar-link">← Inicio</a>
 </header>
 <div class="nav-spacer"></div>
-<div class="page-content">
-<!-- HERO -->
-<div class="hero">
-  <h1>Spanning Tree Protocol</h1>
-  <div class="hero-desc">STP · RSTP · PVST+ · Rapid PVST+ · Prevención de Bucles L2</div>
-  <div class="hero-pills">
-    <div class="hero-pill"><div class="pill-dot"></div> El Problema de los Bucles</div>
-    <div class="hero-pill"><div class="pill-dot"></div> Bridge ID &amp; Root Bridge</div>
-    <div class="hero-pill"><div class="pill-dot"></div> Port States &amp; Roles</div>
-    <div class="hero-pill"><div class="pill-dot"></div> RSTP &amp; PVST+</div>
-    <div class="hero-pill"><div class="pill-dot"></div> Configuración IOS</div>
-    <div class="hero-pill"><div class="pill-dot"></div> Quiz CCNA</div>
-  </div>
+<div class="page-header">
+  <div class="breadcrumb"><a href="../index.html">Inicio</a> › M3 · Switching › Spanning Tree Protocol</div>
+  <h1>Spanning Tree<span class="accent"> Protocol</span></h1>
+  <p class="page-subtitle">Root Bridge · Estados · RSTP · PVST+ · PortFast · BPDU Guard · Bucles Capa 2</p>
+  <div class="badges"><span class="badge badge badge-teal">CCNA 200-301</span><span class="badge badge badge-blue">Módulo 3 · Switching</span><span class="badge badge badge-yellow">🌳 Bucle-Free</span></div>
 </div>
-
-<!-- TABS -->
-<div class="nav">
-  <button class="nb on"  onclick="tab('problema')">⚠️ El Problema</button>
-  <button class="nb" onclick="tab('fundamentos')">📐 Fundamentos</button>
-  <button class="nb" onclick="tab('eleccion')">🗳️ Elección Root</button>
-  <button class="nb" onclick="tab('estados')">🚦 Estados de Puerto</button>
-  <button class="nb" onclick="tab('variantes')">⚡ RSTP &amp; Variantes</button>
-  <button class="nb" onclick="tab('config')">⌨️ Configuración</button>
-  <button class="nb" onclick="tab('quiz')">🎯 Quiz CCNA</button>
+<div class="tabs-wrapper"><div class="tabs">
+  <button class="tab-btn active" onclick="showTab('teoria',this)">📖 Teoría</button>
+  <button class="tab-btn" onclick="showTab('estados',this)">🔄 Estados</button>
+  <button class="tab-btn" onclick="showTab('variantes',this)">⚡ STP Variantes</button>
+  <button class="tab-btn" onclick="showTab('config',this)">⚙️ Configuración</button>
+  <button class="tab-btn" onclick="showTab('lab',this)">🧪 Laboratorio</button>
+  <button class="tab-btn" onclick="showTab('resumen',this)">📋 Resumen</button>
+  <button class="tab-btn" onclick="showTab('quiz',this)">✅ Quiz</button>
+</div></div>
+<div class="tab-panel active" id="tab-teoria">
+<div class="content">
+<div class="section"><h2 class="section-title">🌳 ¿Por qué existe STP?</h2>
+<p>En redes con switches redundantes, los <strong>bucles de Capa 2</strong> causan tormentas de broadcast, tablas MAC inestables y saturación del CPU. STP previene los bucles bloqueando selectivamente puertos redundantes.</p>
+<div class="info-grid">
+<div class="info-card"><h4>🌪️ Tormenta de broadcast</h4><p>Un frame broadcast da vueltas infinitamente por los enlaces redundantes. En segundos satura la red al 100%.</p></div>
+<div class="info-card"><h4>📋 Tabla MAC inestable</h4><p>El switch ve la misma MAC llegando por diferentes puertos y actualiza la tabla constantemente — nunca aprende correctamente.</p></div>
+<div class="info-card"><h4>♻️ Frames duplicados</h4><p>Los hosts reciben múltiples copias del mismo frame, causando problemas en protocolos de capa superior.</p></div>
 </div>
-
-<!-- ════════════════════════════════════════════════════ -->
-<!-- SEC 1: EL PROBLEMA -->
-<!-- ════════════════════════════════════════════════════ -->
-<div id="problema" class="sec on">
-
-  <div class="card">
-    <div class="card-h"><div class="ci">⚠️</div>¿Por Qué Necesitamos STP?</div>
-    <div class="def">
-      En redes con <span class="hl">redundancia física</span> (múltiples cables entre switches), si no hay ningún protocolo de control, se forman <span class="hlr">bucles de Capa 2</span>. Un bucle L2 destruye literalmente la red en segundos. <span class="hlg">STP (IEEE 802.1D)</span> resuelve esto bloqueando selectivamente algunos puertos para crear una topología <strong>libre de bucles</strong>, pero manteniendo los enlaces redundantes listos para activarse si falla el enlace principal.
-    </div>
-
-    <div class="ibox warn">
-      <div class="iico">🔥</div>
-      <div><strong>¿Qué pasa sin STP?</strong> Sin STP, una trama de broadcast entra en un bucle infinito y se duplica en cada switch. En milisegundos la red se satura al 100%, las tablas MAC se corrompen y todos los dispositivos quedan inaccesibles. Esto se llama <strong>Broadcast Storm</strong>.</div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-h"><div class="ci">🌀</div>Los 3 Problemas Mortales sin STP</div>
-
-    <div class="feat-grid">
-      <div class="feat">
-        <div class="feat-icon">🌪️</div>
-        <div class="feat-name">Broadcast Storm</div>
-        <div class="feat-desc">Un frame de broadcast entra en loop infinito. Cada switch lo replica por todos sus puertos. La red colapsa en segundos. CPU de switches al 100%.</div>
-      </div>
-      <div class="feat">
-        <div class="feat-icon">🗃️</div>
-        <div class="feat-name">Inestabilidad MAC Table</div>
-        <div class="feat-desc">El mismo MAC address llega por diferentes puertos alternadamente. El switch actualiza la tabla MAC constantemente → decisiones de forwarding incorrectas.</div>
-      </div>
-      <div class="feat">
-        <div class="feat-icon">👥</div>
-        <div class="feat-name">Frame Duplicado</div>
-        <div class="feat-desc">Un dispositivo recibe múltiples copias del mismo frame. Los protocolos de capa superior se confunden. Las aplicaciones fallan o producen errores.</div>
-      </div>
-    </div>
-
-    <!-- Diagrama visual del bucle -->
-    <div class="anim-wrap">
-      <div class="anim-title">SIMULACIÓN: Broadcast Storm sin STP</div>
-      <canvas id="loopCanvas" width="700" height="280" style="max-width:100%;display:block;margin:0 auto;"></canvas>
-      <div class="anim-controls">
-        <button class="abtn primary" onclick="startLoop()">▶ Iniciar Bucle</button>
-        <button class="abtn" onclick="stopLoop()">⏹ Detener</button>
-        <button class="abtn" onclick="showSTP()">🌳 Ver con STP</button>
-      </div>
-      <div id="loopMsg" style="text-align:center;font-family:'JetBrains Mono';font-size:0.72rem;color:var(--amber);margin-top:10px;min-height:20px;"></div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-h"><div class="ci">🛡️</div>La Solución: STP IEEE 802.1D</div>
-    <div class="def">
-      <span class="hlg">STP (Spanning Tree Protocol)</span>, definido en el estándar <span class="hl">IEEE 802.1D</span> (1990), crea automáticamente una topología lógica en forma de <span class="hl">árbol libre de bucles</span>. Bloquea selectivamente los puertos redundantes, dejando un único camino activo entre cualquier par de switches. Si el enlace activo falla, STP <span class="hlg">reactiva</span> automáticamente el puerto bloqueado.
-    </div>
-    <div class="ibox exam">
-      <div class="iico">🎯</div>
-      <div><strong>CCNA Key Point:</strong> STP intercambia mensajes llamados <strong>BPDU (Bridge Protocol Data Units)</strong> entre switches para elegir la topología. Los BPDUs se envían cada <strong>2 segundos (Hello Time)</strong> por defecto.</div>
-    </div>
-  </div>
-
-</div>
-
-<!-- ════════════════════════════════════════════════════ -->
-<!-- SEC 2: FUNDAMENTOS -->
-<!-- ════════════════════════════════════════════════════ -->
-<div id="fundamentos" class="sec">
-
-  <div class="card">
-    <div class="card-h"><div class="ci">📋</div>BPDU — Bridge Protocol Data Unit</div>
-    <div class="def">
-      Los <span class="hl">BPDUs</span> son los mensajes que usan los switches para comunicarse en STP. Contienen toda la información necesaria para la elección del Root Bridge y la configuración de la topología. Se envían cada <span class="hlg">2 segundos</span> (Hello Time por defecto) hacia la dirección multicast <span class="hl">01:80:C2:00:00:00</span>.
-    </div>
-
-    <table class="tbl">
-      <thead><tr><th>Campo BPDU</th><th>Descripción</th><th>Valor típico</th></tr></thead>
-      <tbody>
-        <tr><td><span class="b b-a">Root Bridge ID</span></td><td>ID del Root Bridge actual (BID del que ganó)</td><td>Priority + MAC Address</td></tr>
-        <tr><td><span class="b b-b">Root Path Cost</span></td><td>Costo acumulado del camino hacia el Root Bridge</td><td>0 en el propio Root Bridge</td></tr>
-        <tr><td><span class="b b-g">Sender Bridge ID</span></td><td>ID del switch que envía el BPDU</td><td>Priority + MAC local</td></tr>
-        <tr><td><span class="b b-p">Port ID</span></td><td>Puerto desde el que se envía el BPDU</td><td>Priority + número de puerto</td></tr>
-        <tr><td><span class="b b-r">Message Age</span></td><td>Tiempo desde que el Root generó el BPDU</td><td>0–20 segundos</td></tr>
-        <tr><td><span class="b b-a">Hello Time</span></td><td>Intervalo entre BPDUs</td><td>2 segundos</td></tr>
-        <tr><td><span class="b b-b">Forward Delay</span></td><td>Tiempo en estados Listening/Learning</td><td>15 segundos c/u</td></tr>
-        <tr><td><span class="b b-g">Max Age</span></td><td>Tiempo máximo sin recibir BPDU antes de reconfigurar</td><td>20 segundos</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="card">
-    <div class="card-h"><div class="ci">🆔</div>Bridge ID (BID) — La Identidad del Switch en STP</div>
-    <div class="def">
-      El <span class="hl">Bridge ID (BID)</span> identifica únicamente a cada switch en STP. Es la clave para determinar quién gana la elección del Root Bridge. Tiene <span class="hlg">8 bytes totales</span>.
-    </div>
-
-    <div class="bid-box">
-      <div class="bid-part">
-        <div class="bid-label">Bridge Priority</div>
-        <div class="bid-val">32768</div>
-        <div class="bid-sub">2 bytes · Default: 32768<br>Valores: 0–61440 (múltiplos de 4096)</div>
-      </div>
-      <div class="bid-part">
-        <div class="bid-label">Extended System ID (PVST+)</div>
-        <div class="bid-val">VLAN ID</div>
-        <div class="bid-sub">12 bits del campo Priority<br>Ej: Priority 32768 + VLAN 10 = 32778</div>
-      </div>
-      <div class="bid-part">
-        <div class="bid-label">MAC Address</div>
-        <div class="bid-val">6 bytes</div>
-        <div class="bid-sub">MAC del switch (Burned-In)<br>Desempata si el Priority es igual</div>
-      </div>
-    </div>
-
-    <div class="ibox exam">
-      <div class="iico">🎯</div>
-      <div><strong>CCNA Examen:</strong> El switch con el <strong>BID más BAJO gana</strong> la elección del Root Bridge. Primero se compara la Priority (menor = mejor). Si hay empate, gana el que tiene la <strong>MAC Address más baja (numéricamente)</strong>. El administrador puede manipular esto configurando una Priority menor (ej: 4096 o usar <code style="color:var(--amber);">spanning-tree vlan X root primary</code>).</div>
-    </div>
-
-    <table class="tbl">
-      <thead><tr><th>Priority</th><th>Valor decimal</th><th>Uso recomendado</th></tr></thead>
-      <tbody>
-        <tr><td style="color:var(--green-bright); font-family:'JetBrains Mono';">0</td><td>0</td><td>Root Bridge absoluto (nunca ceder)</td></tr>
-        <tr><td style="color:var(--green-bright); font-family:'JetBrains Mono';">4096</td><td>4096</td><td>Root Bridge primario recomendado</td></tr>
-        <tr><td style="color:var(--amber-bright); font-family:'JetBrains Mono';">8192</td><td>8192</td><td>Root Bridge secundario (backup)</td></tr>
-        <tr><td style="color:var(--gray); font-family:'JetBrains Mono';">32768</td><td>32768</td><td><strong>DEFAULT</strong> — todos los switches arrancan aquí</td></tr>
-        <tr><td style="color:var(--red-bright); font-family:'JetBrains Mono';">61440</td><td>61440</td><td>Valor máximo permitido</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="card">
-    <div class="card-h"><div class="ci">💰</div>Port Cost — El Costo del Enlace</div>
-    <div class="def">
-      El <span class="hl">Path Cost</span> es el costo acumulado de llegar desde un switch hasta el Root Bridge. <span class="hlg">Menor costo = mejor camino</span>. Cisco usa dos estándares de costos:
-    </div>
-    <table class="tbl">
-      <thead><tr><th>Velocidad del Enlace</th><th>IEEE 802.1D Cost (Corto)</th><th>IEEE 802.1t Cost (Largo)</th></tr></thead>
-      <tbody>
-        <tr><td>10 Mbps</td><td style="color:var(--red-bright); font-family:'JetBrains Mono';">100</td><td style="font-family:'JetBrains Mono';">2,000,000</td></tr>
-        <tr><td>100 Mbps (FastEthernet)</td><td style="color:var(--amber-bright); font-family:'JetBrains Mono';">19</td><td style="font-family:'JetBrains Mono';">200,000</td></tr>
-        <tr><td>1 Gbps (GigabitEthernet)</td><td style="color:var(--green-bright); font-family:'JetBrains Mono';">4</td><td style="font-family:'JetBrains Mono';">20,000</td></tr>
-        <tr><td>10 Gbps</td><td style="color:var(--green-bright); font-family:'JetBrains Mono';">2</td><td style="font-family:'JetBrains Mono';">2,000</td></tr>
-        <tr><td>100 Gbps</td><td style="color:var(--green-bright); font-family:'JetBrains Mono';">1</td><td style="font-family:'JetBrains Mono';">200</td></tr>
-      </tbody>
-    </table>
-    <div class="ibox info">
-      <div class="iico">ℹ️</div>
-      <div>Por defecto Cisco usa el <strong>costo corto (short path cost)</strong>. Puedes cambiarlo a largo con <code style="color:var(--amber);">spanning-tree pathcost method long</code>. El <strong>Root Bridge siempre tiene costo 0</strong> hacia sí mismo.</div>
-    </div>
-  </div>
-
-</div>
-
-<!-- ════════════════════════════════════════════════════ -->
-<!-- SEC 3: ELECCIÓN ROOT BRIDGE -->
-<!-- ════════════════════════════════════════════════════ -->
-<div id="eleccion" class="sec">
-
-  <div class="card">
-    <div class="card-h"><div class="ci">🗳️</div>Proceso de Elección — 4 Pasos STP</div>
-    <div class="def">
-      STP toma <span class="hlg">4 decisiones secuenciales</span> para construir la topología libre de bucles. Cada decisión usa criterios de desempate en cascada si hay igualdad.
-    </div>
-
-    <ol class="steps">
-      <li class="step">
-        <div class="sn"></div>
-        <div class="sc">
-          <div class="st">Elegir el ROOT BRIDGE — Un único por toda la red (o por VLAN en PVST+)</div>
-          <div class="sd">El switch con el <strong>BID más bajo</strong> se convierte en Root Bridge. Criterio: 1°) menor Bridge Priority → 2°) menor MAC Address. Todos los puertos del Root Bridge son <span style="color:var(--green-bright);">Designated Ports</span> en estado Forwarding.</div>
-        </div>
-      </li>
-      <li class="step">
-        <div class="sn"></div>
-        <div class="sc">
-          <div class="st">Elegir el ROOT PORT en cada switch (excepto Root Bridge)</div>
-          <div class="sd">Cada switch (no-Root) elige <strong>UN solo</strong> Root Port: el puerto con el <strong>menor costo acumulado</strong> hacia el Root Bridge. Desempate: 1°) menor Sender BID → 2°) menor Sender Port ID. El Root Port siempre está en estado <span style="color:var(--green-bright);">Forwarding</span>.</div>
-        </div>
-      </li>
-      <li class="step">
-        <div class="sn"></div>
-        <div class="sc">
-          <div class="st">Elegir DESIGNATED PORTS en cada segmento de red</div>
-          <div class="sd">En cada segmento (enlace entre dos switches), <strong>UN solo puerto</strong> es Designated Port: el que tenga el menor costo acumulado hacia el Root Bridge. Desempate: 1°) menor BID del switch → 2°) menor Port ID. En estado <span style="color:var(--green-bright);">Forwarding</span>.</div>
-        </div>
-      </li>
-      <li class="step">
-        <div class="sn"></div>
-        <div class="sc">
-          <div class="st">Los puertos restantes → ALTERNATE/BLOCKED PORTS</div>
-          <div class="sd">Cualquier puerto que no sea ni Root Port ni Designated Port se convierte en <span style="color:var(--red-bright);">Alternate Port (Blocked)</span>. Descarta todos los frames de datos. Solo escucha BPDUs para detectar cambios de topología.</div>
-        </div>
-      </li>
-    </ol>
-  </div>
-
-  <div class="card">
-    <div class="card-h"><div class="ci">🌳</div>Ejemplo Visual — Elección Root Bridge y Port Roles</div>
-
-    <div class="anim-wrap" style="min-height:400px;">
-      <div class="anim-title" id="stpTitle">TOPOLOGÍA INICIAL — Antes de STP (bucle presente)</div>
-      <canvas id="stpCanvas" width="700" height="340" style="max-width:100%;display:block;margin:0 auto;"></canvas>
-      <div class="anim-controls">
-        <button class="abtn primary" onclick="stpStep(0)">⟳ Reset</button>
-        <button class="abtn" onclick="stpStep(1)">Paso 1: Root Bridge</button>
-        <button class="abtn" onclick="stpStep(2)">Paso 2: Root Ports</button>
-        <button class="abtn" onclick="stpStep(3)">Paso 3: Designated</button>
-        <button class="abtn" onclick="stpStep(4)">Paso 4: Blocked</button>
-      </div>
-    </div>
-
-    <div class="ibox tip">
-      <div class="iico">✅</div>
-      <div><strong>Truco para el examen:</strong> En el ejemplo, SW1 tiene Priority 32768 y MAC AA:AA, SW2 tiene Priority 32768 y MAC BB:BB, SW3 tiene Priority <strong>4096</strong> y MAC CC:CC. <strong>SW3 gana</strong> porque tiene la Priority más baja (4096 &lt; 32768), aunque su MAC sea más alta. Siempre: <strong>menor Priority = Root Bridge</strong>.</div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-h"><div class="ci">📊</div>Resumen de Criterios de Desempate STP</div>
-    <table class="tbl">
-      <thead><tr><th>Decisión</th><th>1er Criterio</th><th>2do Criterio</th><th>3er Criterio</th><th>4to Criterio</th></tr></thead>
-      <tbody>
-        <tr>
-          <td><span class="b b-a">Root Bridge</span></td>
-          <td>Menor Bridge Priority</td>
-          <td>Menor MAC Address</td><td>—</td><td>—</td>
-        </tr>
-        <tr>
-          <td><span class="b b-g">Root Port</span></td>
-          <td>Menor Root Path Cost</td>
-          <td>Menor Sender BID</td>
-          <td>Menor Sender Port ID</td>
-          <td>Menor Local Port ID</td>
-        </tr>
-        <tr>
-          <td><span class="b b-b">Designated Port</span></td>
-          <td>Menor Root Path Cost</td>
-          <td>Menor BID del switch</td>
-          <td>Menor Port ID</td><td>—</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-</div>
-
-<!-- ════════════════════════════════════════════════════ -->
-<!-- SEC 4: ESTADOS DE PUERTO -->
-<!-- ════════════════════════════════════════════════════ -->
-<div id="estados" class="sec">
-
-  <div class="card">
-    <div class="card-h"><div class="ci">🚦</div>Los 5 Estados de Puerto en STP (802.1D)</div>
-    <div class="def">
-      Cada puerto en un switch con STP pasa por una serie de estados definidos. El proceso completo desde que se conecta un cable hasta que el puerto está listo para enviar datos tarda <span class="hlr">30–50 segundos</span> en STP clásico.
-    </div>
-
-    <div class="port-states">
-      <div class="ps-card">
-        <div class="ps-dot" style="background:#6b7280;color:#6b7280;box-shadow:0 0 10px #6b7280;"></div>
-        <div class="ps-name" style="color:#9ca3af;">BLOCKING</div>
-        <div class="ps-desc">No envía ni recibe frames de datos. Solo escucha BPDUs. Previene bucles. Estado inicial de puertos alternos.</div>
-        <div class="ps-time" style="color:#6b7280;">Duración: Max Age = 20s</div>
-      </div>
-      <div class="ps-card">
-        <div class="ps-dot" style="background:#f59e0b;color:#f59e0b;box-shadow:0 0 10px #f59e0b;"></div>
-        <div class="ps-name" style="color:var(--amber-bright);">LISTENING</div>
-        <div class="ps-desc">Procesa BPDUs, participa en la elección STP. NO aprende MACs. NO forwarding de datos.</div>
-        <div class="ps-time" style="color:var(--amber);">Duración: Forward Delay = 15s</div>
-      </div>
-      <div class="ps-card">
-        <div class="ps-dot" style="background:#3b82f6;color:#3b82f6;box-shadow:0 0 10px #3b82f6;"></div>
-        <div class="ps-name" style="color:var(--blue-bright);">LEARNING</div>
-        <div class="ps-desc">Aprende direcciones MAC y llena la tabla MAC. NO forwarding de datos aún. Llena la tabla para evitar flooding.</div>
-        <div class="ps-time" style="color:var(--blue-bright);">Duración: Forward Delay = 15s</div>
-      </div>
-      <div class="ps-card">
-        <div class="ps-dot" style="background:#10b981;color:#10b981;box-shadow:0 0 10px #10b981;animation:blink2 2s infinite;"></div>
-        <div class="ps-name" style="color:var(--green-bright);">FORWARDING</div>
-        <div class="ps-desc">Estado operativo. Envía y recibe frames de datos. Aprende MACs. Entra tráfico normal. Root Ports y Designated Ports llegan aquí.</div>
-        <div class="ps-time" style="color:var(--green-bright);">Estado permanente (normal)</div>
-      </div>
-      <div class="ps-card">
-        <div class="ps-dot" style="background:#ef4444;color:#ef4444;box-shadow:0 0 10px #ef4444;"></div>
-        <div class="ps-name" style="color:var(--red-bright);">DISABLED</div>
-        <div class="ps-desc">Puerto administrativamente desactivado con shutdown. No participa en STP ni en la red.</div>
-        <div class="ps-time" style="color:var(--red-bright);">Manual (shutdown)</div>
-      </div>
-    </div>
-    <style>@keyframes blink2{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.7;transform:scale(1.15);}}</style>
-
-    <div class="ibox warn">
-      <div class="iico">⏱️</div>
-      <div><strong>El gran problema de STP 802.1D:</strong> Cuando se conecta un nuevo cable o falla un enlace, el proceso de convergencia tarda <strong>30–50 segundos</strong> (Listening 15s + Learning 15s + tiempo de detección). Durante ese tiempo, la red NO funciona para los usuarios. RSTP resolvió esto reduciendo a <strong>1–2 segundos</strong>.</div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-h"><div class="ci">🎭</div>Roles de Puerto — No Confundas Estado con Rol</div>
-    <div class="ibox info">
-      <div class="iico">📌</div>
-      <div><strong>Importante:</strong> En STP, el <em>estado</em> (Blocking/Forwarding...) describe QUÉ HACE el puerto ahora. El <em>rol</em> (Root/Designated/Alternate) describe el PAPEL del puerto en la topología. Son conceptos distintos.</div>
-    </div>
-    <table class="tbl">
-      <thead><tr><th>Rol</th><th>Cantidad</th><th>Estado Final</th><th>Descripción</th></tr></thead>
-      <tbody>
-        <tr>
-          <td><span class="b b-g">Root Port (RP)</span></td>
-          <td>1 por switch no-Root</td>
-          <td style="color:var(--green-bright);">Forwarding ✅</td>
-          <td>El mejor puerto de cada switch para llegar al Root Bridge. Un switch solo puede tener UN Root Port.</td>
-        </tr>
-        <tr>
-          <td><span class="b b-b">Designated Port (DP)</span></td>
-          <td>1 por segmento</td>
-          <td style="color:var(--green-bright);">Forwarding ✅</td>
-          <td>El mejor puerto en cada segmento (enlace). Todos los puertos del Root Bridge son Designated. Envía BPDUs hacia los switches vecinos.</td>
-        </tr>
-        <tr>
-          <td><span class="b b-r">Alternate Port (AP)</span></td>
-          <td>Todos los demás</td>
-          <td style="color:var(--red-bright);">Blocking 🚫</td>
-          <td>Puerto perdedor en la elección. Bloqueado para prevenir bucles. Listo para activarse si falla el RP o DP. También llamado "Non-Designated Port" en 802.1D.</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="card">
-    <div class="card-h"><div class="ci">⚡</div>PortFast y BPDU Guard — Optimizaciones Clave</div>
-    <div class="def">
-      <span class="hl">PortFast</span> permite que un puerto pase <span class="hlg">directamente a Forwarding</span> sin pasar por Listening/Learning (elimina los 30s de espera). Se usa SOLO en puertos que conectan a dispositivos finales (PCs, servidores, impresoras). <span class="hlr">NUNCA en puertos que conectan a otros switches.</span>
-    </div>
-    <div class="def">
-      <span class="hl">BPDU Guard</span> complementa a PortFast: si un puerto PortFast recibe un BPDU (lo que indicaría que hay un switch conectado), el puerto se <span class="hlr">deshabilita automáticamente (err-disabled)</span>. Protege contra conexiones no autorizadas de switches.
-    </div>
-    <div class="def">
-      <span class="hl">BPDU Filter</span> suprime el envío y recepción de BPDUs en un puerto. Usar con precaución: deshabilitar BPDUs en un puerto trunk puede causar bucles.
-    </div>
-    <div class="def">
-      <span class="hl">Root Guard</span> previene que un switch externo (no autorizado) se convierta en Root Bridge. Si un puerto con Root Guard recibe un BPDU con BID superior (que intentaría robar la Root Bridge), el puerto se pone en estado <span class="hlr">root-inconsistent (bloqueado)</span>.
-    </div>
-    <div class="def">
-      <span class="hl">Loop Guard</span> protege contra puertos que dejan de recibir BPDUs (por fallo unidireccional del enlace). Sin Loop Guard, un puerto Blocked que deja de ver BPDUs podría transicionar erróneamente a Forwarding y crear un bucle. Loop Guard lo pone en <span class="hlr">loop-inconsistent</span> en su lugar.
-    </div>
-  </div>
-
-</div>
-
-<!-- ════════════════════════════════════════════════════ -->
-<!-- SEC 5: VARIANTES -->
-<!-- ════════════════════════════════════════════════════ -->
-<div id="variantes" class="sec">
-
-  <div class="card">
-    <div class="card-h"><div class="ci">⚡</div>Evolución de STP — De 802.1D a 802.1w</div>
-
-    <div class="cmp-grid">
-      <div class="cmp-card">
-        <div class="cmp-name" style="color:var(--red-bright);">STP 802.1D</div>
-        <div class="cmp-row"><span class="cmp-k">Estándar</span><span class="cmp-v" style="color:var(--gray);">IEEE 802.1D (1990)</span></div>
-        <div class="cmp-row"><span class="cmp-k">Convergencia</span><span class="cmp-v" style="color:var(--red-bright);">30–50 segundos ❌</span></div>
-        <div class="cmp-row"><span class="cmp-k">Instancias</span><span class="cmp-v">1 para toda la red</span></div>
-        <div class="cmp-row"><span class="cmp-k">Estados</span><span class="cmp-v">5 estados</span></div>
-        <div class="cmp-row"><span class="cmp-k">Uso hoy</span><span class="cmp-v" style="color:var(--red-bright);">Obsoleto</span></div>
-      </div>
-      <div class="cmp-card" style="border-color:rgba(245,158,11,0.4);">
-        <div class="cmp-name" style="color:var(--amber);">PVST+ (Cisco)</div>
-        <div class="cmp-row"><span class="cmp-k">Estándar</span><span class="cmp-v" style="color:var(--gray);">Cisco Propietario</span></div>
-        <div class="cmp-row"><span class="cmp-k">Convergencia</span><span class="cmp-v" style="color:var(--amber);">30–50 seg ⚠️</span></div>
-        <div class="cmp-row"><span class="cmp-k">Instancias</span><span class="cmp-v" style="color:var(--amber);">1 por VLAN ✅</span></div>
-        <div class="cmp-row"><span class="cmp-k">Estados</span><span class="cmp-v">5 estados</span></div>
-        <div class="cmp-row"><span class="cmp-k">Uso hoy</span><span class="cmp-v" style="color:var(--amber);">Común (redes Cisco)</span></div>
-      </div>
-      <div class="cmp-card" style="border-color:rgba(16,185,129,0.4);">
-        <div class="cmp-name" style="color:var(--green-bright);">RSTP 802.1w</div>
-        <div class="cmp-row"><span class="cmp-k">Estándar</span><span class="cmp-v" style="color:var(--gray);">IEEE 802.1w (2001)</span></div>
-        <div class="cmp-row"><span class="cmp-k">Convergencia</span><span class="cmp-v" style="color:var(--green-bright);">1–2 segundos ✅</span></div>
-        <div class="cmp-row"><span class="cmp-k">Instancias</span><span class="cmp-v">1 para toda la red</span></div>
-        <div class="cmp-row"><span class="cmp-k">Estados</span><span class="cmp-v" style="color:var(--green-bright);">3 estados</span></div>
-        <div class="cmp-row"><span class="cmp-k">Uso hoy</span><span class="cmp-v" style="color:var(--green-bright);">Estándar actual ✅</span></div>
-      </div>
-      <div class="cmp-card" style="border-color:rgba(59,130,246,0.4);">
-        <div class="cmp-name" style="color:var(--blue-bright);">Rapid PVST+</div>
-        <div class="cmp-row"><span class="cmp-k">Estándar</span><span class="cmp-v" style="color:var(--gray);">Cisco (base RSTP)</span></div>
-        <div class="cmp-row"><span class="cmp-k">Convergencia</span><span class="cmp-v" style="color:var(--green-bright);">1–2 segundos ✅</span></div>
-        <div class="cmp-row"><span class="cmp-k">Instancias</span><span class="cmp-v" style="color:var(--blue-bright);">1 por VLAN ✅</span></div>
-        <div class="cmp-row"><span class="cmp-k">Estados</span><span class="cmp-v" style="color:var(--green-bright);">3 estados</span></div>
-        <div class="cmp-row"><span class="cmp-k">Uso hoy</span><span class="cmp-v" style="color:var(--blue-bright);">Default Cisco ✅</span></div>
-      </div>
-      <div class="cmp-card">
-        <div class="cmp-name" style="color:#c4b5fd;">MSTP 802.1s</div>
-        <div class="cmp-row"><span class="cmp-k">Estándar</span><span class="cmp-v" style="color:var(--gray);">IEEE 802.1s (2002)</span></div>
-        <div class="cmp-row"><span class="cmp-k">Convergencia</span><span class="cmp-v" style="color:var(--green-bright);">1–2 segundos ✅</span></div>
-        <div class="cmp-row"><span class="cmp-k">Instancias</span><span class="cmp-v" style="color:#c4b5fd);">Grupos de VLANs</span></div>
-        <div class="cmp-row"><span class="cmp-k">Estados</span><span class="cmp-v">3 estados</span></div>
-        <div class="cmp-row"><span class="cmp-k">Uso hoy</span><span class="cmp-v">Grandes empresas</span></div>
-      </div>
-    </div>
-
-    <div class="ibox exam">
-      <div class="iico">🎯</div>
-      <div><strong>CCNA Examen:</strong> El default en switches Cisco modernos es <strong>Rapid PVST+</strong>. Combina la rapidez de RSTP (1-2 seg) con instancias separadas por VLAN de PVST+. Cuando el examen dice "STP" sin especificar, asume Rapid PVST+ en entornos Cisco.</div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-h"><div class="ci">🚀</div>RSTP 802.1w — Mejoras Clave</div>
-    <div class="def">
-      RSTP reduce los <span class="hlr">5 estados de STP a 3 estados</span> y añade nuevos roles de puerto. La convergencia rápida se logra mediante <span class="hlg">negociación activa entre switches</span> en lugar de esperar timers pasivos.
-    </div>
-
-    <table class="tbl">
-      <thead><tr><th>STP 802.1D</th><th>RSTP 802.1w</th><th>Descripción</th></tr></thead>
-      <tbody>
-        <tr><td style="color:#6b7280;">Disabled</td><td style="color:#6b7280;">Discarding</td><td rowspan="2" style="color:var(--gray);">RSTP unifica Blocking, Listening y Disabled en un solo estado "Discarding"</td></tr>
-        <tr><td style="color:var(--amber);">Blocking</td><td style="color:var(--red-bright);">Discarding</td></tr>
-        <tr><td style="color:var(--amber);">Listening</td><td style="color:var(--red-bright);">Discarding</td><td style="color:var(--gray);">Listening ya no existe en RSTP como estado separado</td></tr>
-        <tr><td style="color:var(--blue-bright);">Learning</td><td style="color:var(--blue-bright);">Learning</td><td style="color:var(--gray);">Se mantiene igual. Aprende MACs pero no forwardea datos.</td></tr>
-        <tr><td style="color:var(--green-bright);">Forwarding</td><td style="color:var(--green-bright);">Forwarding</td><td style="color:var(--gray);">Igual que en STP clásico. Estado operativo normal.</td></tr>
-      </tbody>
-    </table>
-
-    <div class="csec">Nuevos Roles de Puerto en RSTP</div>
-    <table class="tbl">
-      <thead><tr><th>Rol RSTP</th><th>Equivalente STP</th><th>Descripción</th></tr></thead>
-      <tbody>
-        <tr><td><span class="b b-g">Root Port</span></td><td>Root Port</td><td>Igual que en STP. Mejor puerto hacia el Root Bridge. Forwarding.</td></tr>
-        <tr><td><span class="b b-b">Designated Port</span></td><td>Designated Port</td><td>Igual que en STP. Mejor puerto en cada segmento. Forwarding.</td></tr>
-        <tr><td><span class="b b-r">Alternate Port</span></td><td>Non-Designated (Blocked)</td><td><strong>NUEVO:</strong> Puerto de backup para el Root Port. Si falla el RP, el Alternate Port toma su lugar inmediatamente (propuesta/acuerdo). Discarding.</td></tr>
-        <tr><td><span class="b b-p">Backup Port</span></td><td>Non-Designated (Blocked)</td><td><strong>NUEVO:</strong> Puerto de backup para el Designated Port en el MISMO segmento (hub). Muy raro en redes modernas. Discarding.</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-</div>
-
-<!-- ════════════════════════════════════════════════════ -->
-<!-- SEC 6: CONFIGURACIÓN -->
-<!-- ════════════════════════════════════════════════════ -->
-<div id="config" class="sec">
-
-  <div class="card">
-    <div class="card-h"><div class="ci">⌨️</div>Configuración STP Completa en Cisco IOS</div>
-
-    <div class="csec">Verificar modo STP activo</div>
-    <div class="cmd">
-      <span class="cmd-tag">VERIFICACIÓN</span>
-      <span class="cl"><span class="cp">Switch#</span> <span class="ck">show spanning-tree</span>             <span class="cc">! Ver STP de todas las VLANs</span></span>
-      <span class="cl"><span class="cp">Switch#</span> <span class="ck">show spanning-tree vlan</span> <span class="cv">10</span>       <span class="cc">! STP de VLAN específica</span></span>
-      <span class="cl"><span class="cp">Switch#</span> <span class="ck">show spanning-tree summary</span>        <span class="cc">! Resumen de todas las instancias</span></span>
-      <span class="cl"><span class="cp">Switch#</span> <span class="ck">show spanning-tree detail</span>         <span class="cc">! Info detallada con timers</span></span>
-      <span class="cl"><span class="cp">Switch#</span> <span class="ck">show spanning-tree active</span>         <span class="cc">! Solo VLANs con STP activo</span></span>
-    </div>
-
-    <div class="csec">Cambiar el modo STP (seleccionar variante)</div>
-    <div class="cmd">
-      <span class="cmd-tag">GLOBAL CONFIG</span>
-      <span class="cl"><span class="cc">! Opciones: pvst | rapid-pvst | mst</span></span>
-      <span class="cl"><span class="cp">Switch(config)#</span> <span class="ck">spanning-tree mode</span> <span class="cv">rapid-pvst</span>   <span class="cc">! Recomendado — default moderno Cisco</span></span>
-      <span class="cl"><span class="cp">Switch(config)#</span> <span class="ck">spanning-tree mode</span> <span class="cv">pvst</span>         <span class="cc">! STP clásico por VLAN</span></span>
-      <span class="cl"><span class="cp">Switch(config)#</span> <span class="ck">spanning-tree mode</span> <span class="cv">mst</span>          <span class="cc">! Multiple STP</span></span>
-    </div>
-
-    <div class="csec">Configurar Root Bridge — Método 1: Manual (Priority)</div>
-    <div class="cmd">
-      <span class="cmd-tag">ROOT BRIDGE MANUAL</span>
-      <span class="cl"><span class="cc">! Configurar Priority para VLAN 10 (múltiplos de 4096)</span></span>
-      <span class="cl"><span class="cp">Switch(config)#</span> <span class="ck">spanning-tree vlan</span> <span class="cv">10</span> <span class="ck">priority</span> <span class="cv">4096</span>   <span class="cc">! Root primario</span></span>
-      <span class="cl"><span class="cp">Switch(config)#</span> <span class="ck">spanning-tree vlan</span> <span class="cv">20</span> <span class="ck">priority</span> <span class="cv">8192</span>   <span class="cc">! Root secundario</span></span>
-      <span class="cl"><span class="cp">Switch(config)#</span> <span class="ck">spanning-tree vlan</span> <span class="cv">10</span> <span class="ck">priority</span> <span class="cv">0</span>      <span class="cc">! Prioridad absoluta (root inamovible)</span></span>
-    </div>
-
-    <div class="csec">Configurar Root Bridge — Método 2: Macro (Recomendado)</div>
-    <div class="cmd">
-      <span class="cmd-tag">ROOT BRIDGE MACRO</span>
-      <span class="cl"><span class="cc">! El switch configura automáticamente la Priority más baja disponible</span></span>
-      <span class="cl"><span class="cp">Switch(config)#</span> <span class="ck">spanning-tree vlan</span> <span class="cv">10</span> <span class="ck">root primary</span>    <span class="cc">! Root Bridge primario VLAN 10</span></span>
-      <span class="cl"><span class="cp">Switch(config)#</span> <span class="ck">spanning-tree vlan</span> <span class="cv">10</span> <span class="ck">root secondary</span>  <span class="cc">! Root Bridge backup VLAN 10</span></span>
-      <span class="cl"><span class="cc">! Nota: root primary establece Priority 24576 (o menos si hay otro más bajo)</span></span>
-      <span class="cl"><span class="cc">!       root secondary establece Priority 28672</span></span>
-    </div>
-
-    <div class="csec">Configurar Port Cost y Port Priority</div>
-    <div class="cmd">
-      <span class="cmd-tag">PORT TUNING</span>
-      <span class="cl"><span class="cc">! Cambiar costo de un puerto (influye en selección de Root Port)</span></span>
-      <span class="cl"><span class="cp">Switch(config)#</span> <span class="ck">interface</span> <span class="cv">fastEthernet 0/1</span></span>
-      <span class="cl"><span class="cp">Switch(config-if)#</span> <span class="ck">spanning-tree vlan</span> <span class="cv">10</span> <span class="ck">cost</span> <span class="cv">10</span>          <span class="cc">! Costo manual</span></span>
-      <span class="cl"><span class="cp">Switch(config-if)#</span> <span class="ck">spanning-tree vlan</span> <span class="cv">10</span> <span class="ck">port-priority</span> <span class="cv">64</span>  <span class="cc">! Prioridad de puerto (0-240, múltiplos de 16)</span></span>
-      <span class="cl"><span class="cc">! Default port-priority = 128</span></span>
-    </div>
-
-    <div class="csec">PortFast, BPDU Guard y Root Guard</div>
-    <div class="cmd">
-      <span class="cmd-tag">SEGURIDAD STP</span>
-      <span class="cl"><span class="cc">! PortFast en un puerto específico (para PCs/servidores)</span></span>
-      <span class="cl"><span class="cp">Switch(config-if)#</span> <span class="ck">spanning-tree portfast</span></span>
-      <span class="cl"> </span>
-      <span class="cl"><span class="cc">! PortFast en todos los puertos de acceso globalmente</span></span>
-      <span class="cl"><span class="cp">Switch(config)#</span> <span class="ck">spanning-tree portfast default</span></span>
-      <span class="cl"> </span>
-      <span class="cl"><span class="cc">! BPDU Guard en puerto específico</span></span>
-      <span class="cl"><span class="cp">Switch(config-if)#</span> <span class="ck">spanning-tree bpduguard enable</span></span>
-      <span class="cl"> </span>
-      <span class="cl"><span class="cc">! BPDU Guard global (aplica a todos los puertos PortFast)</span></span>
-      <span class="cl"><span class="cp">Switch(config)#</span> <span class="ck">spanning-tree portfast bpduguard default</span></span>
-      <span class="cl"> </span>
-      <span class="cl"><span class="cc">! Root Guard en puerto (evita que switch externo robe Root Bridge)</span></span>
-      <span class="cl"><span class="cp">Switch(config-if)#</span> <span class="ck">spanning-tree guard root</span></span>
-      <span class="cl"> </span>
-      <span class="cl"><span class="cc">! Loop Guard global</span></span>
-      <span class="cl"><span class="cp">Switch(config)#</span> <span class="ck">spanning-tree loopguard default</span></span>
-      <span class="cl"> </span>
-      <span class="cl"><span class="cc">! Recuperar puerto err-disabled (tras BPDU Guard)</span></span>
-      <span class="cl"><span class="cp">Switch(config-if)#</span> <span class="ck">shutdown</span></span>
-      <span class="cl"><span class="cp">Switch(config-if)#</span> <span class="ck">no shutdown</span></span>
-    </div>
-
-    <div class="csec">Cambiar Timers STP (solo en Root Bridge)</div>
-    <div class="cmd">
-      <span class="cmd-tag">TIMERS (SOLO EN ROOT)</span>
-      <span class="cl"><span class="cc">! Solo cambiar timers en el Root Bridge — se propagan por BPDUs</span></span>
-      <span class="cl"><span class="cp">Switch(config)#</span> <span class="ck">spanning-tree vlan</span> <span class="cv">10</span> <span class="ck">hello-time</span> <span class="cv">2</span>        <span class="cc">! 1-10 seg (default: 2)</span></span>
-      <span class="cl"><span class="cp">Switch(config)#</span> <span class="ck">spanning-tree vlan</span> <span class="cv">10</span> <span class="ck">forward-time</span> <span class="cv">15</span>     <span class="cc">! 4-30 seg (default: 15)</span></span>
-      <span class="cl"><span class="cp">Switch(config)#</span> <span class="ck">spanning-tree vlan</span> <span class="cv">10</span> <span class="ck">max-age</span> <span class="cv">20</span>          <span class="cc">! 6-40 seg (default: 20)</span></span>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-h"><div class="ci">📋</div>Interpretando: show spanning-tree vlan 10</div>
-    <div class="cmd">
-      <span class="cmd-tag">OUTPUT EJEMPLO</span>
-      <span class="cl" style="color:#fcd34d;">VLAN0010</span>
-      <span class="cl" style="color:#fcd34d;">  Spanning tree enabled protocol rstp</span>
-      <span class="cl" style="color:#34d399;">  Root ID    Priority    4106        <span class="cc">← 4096 + VLAN 10 (Extended System ID)</span></span>
-      <span class="cl" style="color:#34d399;">             Address     aabb.cc00.0100  <span class="cc">← MAC del Root Bridge</span></span>
-      <span class="cl" style="color:#34d399;">             Cost        4           <span class="cc">← Costo para llegar al Root (0 si eres Root)</span></span>
-      <span class="cl" style="color:#34d399;">             Port        1 (GigabitEthernet0/1)  <span class="cc">← Root Port</span></span>
-      <span class="cl" style="color:#34d399;">             Hello Time  2 sec  Max Age 20 sec  Forward Delay 15 sec</span>
-      <span class="cl"> </span>
-      <span class="cl" style="color:#60a5fa;">  Bridge ID  Priority    32778       <span class="cc">← 32768 + VLAN 10 (este switch)</span></span>
-      <span class="cl" style="color:#60a5fa;">             Address     aabb.cc00.0200  <span class="cc">← MAC de este switch</span></span>
-      <span class="cl" style="color:#60a5fa;">             Hello Time  2 sec  Max Age 20 sec  Forward Delay 15 sec</span>
-      <span class="cl"> </span>
-      <span class="cl" style="color:#e2e8f0;">Interface           Role Sts Cost      Prio.Nbr Type</span>
-      <span class="cl" style="color:#e2e8f0;">------------------- ---- --- --------- -------- ----</span>
-      <span class="cl" style="color:#34d399;">Gi0/1               Root FWD 4         128.1    P2p   <span class="cc">← Root Port - Forwarding</span></span>
-      <span class="cl" style="color:#60a5fa;">Gi0/2               Desg FWD 4         128.2    P2p   <span class="cc">← Designated - Forwarding</span></span>
-      <span class="cl" style="color:#f87171;">Gi0/3               Altn BLK 4         128.3    P2p   <span class="cc">← Alternate - Blocking ←BUCLE PREVENIDO</span></span>
-    </div>
-    <div class="ibox tip">
-      <div class="iico">✅</div>
-      <div><strong>Cómo leer el output:</strong> "Root ID" muestra al Root Bridge de la red. "Bridge ID" muestra este switch. Si ves <code style="color:var(--amber);">This bridge is the root</code>, este switch ES el Root Bridge. Los roles: <code>Root=RP</code>, <code>Desg=DP</code>, <code>Altn=Alternate (Blocked)</code>. Estados: <code>FWD=Forwarding</code>, <code>BLK=Blocking</code>, <code>LRN=Learning</code>.</div>
-    </div>
-  </div>
-
-</div>
-
-<!-- ════════════════════════════════════════════════════ -->
-<!-- SEC 7: QUIZ -->
-<!-- ════════════════════════════════════════════════════ -->
-<div id="quiz" class="sec">
-
-  <div class="card">
-    <div class="card-h"><div class="ci">🎯</div>Quiz CCNA — STP (Estilo Examen Real 200-301)</div>
-    <div class="ibox exam">
-      <div class="iico">📋</div>
-      <div>8 preguntas de examen real CCNA 200-301 sobre STP. Selecciona tu respuesta para ver la explicación detallada.</div>
-    </div>
-
-    <!-- Q1 -->
-    <div class="qbox" id="qq1">
-      <div class="qnum">PREGUNTA 01 / 08</div>
-      <div class="qq">Tres switches tienen estos Bridge IDs para VLAN 1: SW-A: Priority 32769, MAC aa:aa:aa:aa:aa:01 — SW-B: Priority 32769, MAC bb:bb:bb:bb:bb:02 — SW-C: Priority 4097, MAC cc:cc:cc:cc:cc:03. ¿Cuál se convierte en Root Bridge?</div>
-      <div class="opts">
-        <div class="opt" onclick="qa(1,'A','wrong','SW-A tiene Priority 32769, igual que SW-B. Para desempatar se usaría la MAC, pero primero debemos comparar con SW-C que tiene Priority 4097, mucho menor.')"><div class="ol">A</div>SW-A — Priority 32769, MAC más baja en hex (aa... &lt; bb... &lt; cc...)</div>
-        <div class="opt" onclick="qa(1,'B','wrong','Aunque SW-B tiene Priority 32769 igual a SW-A, SW-C tiene Priority 4097 que es mucho menor. La Priority se compara primero siempre.')"><div class="ol">B</div>SW-B — Tiene la MAC más alta por lo que tiene más "peso"</div>
-        <div class="opt" onclick="qa(1,'C','correct','¡Correcto! SW-C tiene Priority 4097 (4096 base + VLAN 1 = 4097), que es mucho menor que 32769 de SW-A y SW-B. En STP, MENOR Priority = Root Bridge. La MAC no importa cuando hay diferencia de Priority.')"><div class="ol">C</div>SW-C — Priority 4097 es la más baja de los tres</div>
-        <div class="opt" onclick="qa(1,'D','wrong','El Root Bridge no se elige por cantidad de puertos sino por BID (Priority + MAC). SW-C gana con su Priority de 4097.')"><div class="ol">D</div>El switch con más puertos se convierte en Root Bridge</div>
-      </div>
-      <div class="qfb" id="qf1"></div>
-    </div>
-
-    <!-- Q2 -->
-    <div class="qbox" id="qq2">
-      <div class="qnum">PREGUNTA 02 / 08</div>
-      <div class="qq">¿Cuánto tiempo tarda STP 802.1D clásico en converger cuando se conecta un nuevo switch a la red?</div>
-      <div class="opts">
-        <div class="opt" onclick="qa(2,'A','wrong','1-2 segundos es el tiempo de convergencia de RSTP (802.1w) y Rapid PVST+, no de STP clásico 802.1D.')"><div class="ol">A</div>1–2 segundos</div>
-        <div class="opt" onclick="qa(2,'B','wrong','5 segundos no es correcto para STP clásico. El Hello Time es 2 segundos, pero la convergencia total es mucho mayor debido a los estados Listening y Learning.')"><div class="ol">B</div>5 segundos</div>
-        <div class="opt" onclick="qa(2,'C','correct','¡Correcto! STP 802.1D necesita: tiempo de detección + Listening (15s Forward Delay) + Learning (15s Forward Delay) = mínimo 30 segundos. Con detección de fallo puede llegar a 50 segundos (20s Max Age + 15s + 15s).')"><div class="ol">C</div>30–50 segundos</div>
-        <div class="opt" onclick="qa(2,'D','wrong','5 minutos es excesivo. STP 802.1D tarda 30-50 segundos. RSTP mejoró esto a 1-2 segundos.')"><div class="ol">D</div>5 minutos</div>
-      </div>
-      <div class="qfb" id="qf2"></div>
-    </div>
-
-    <!-- Q3 -->
-    <div class="qbox" id="qq3">
-      <div class="qnum">PREGUNTA 03 / 08</div>
-      <div class="qq">¿En qué estado de puerto STP el switch aprende direcciones MAC pero NO reenvía frames de datos?</div>
-      <div class="opts">
-        <div class="opt" onclick="qa(3,'A','wrong','En Blocking, el puerto NO aprende MACs y NO reenvía datos. Solo escucha BPDUs pasivamente.')"><div class="ol">A</div>Blocking</div>
-        <div class="opt" onclick="qa(3,'B','wrong','En Listening, el puerto procesa BPDUs y participa en la elección STP, pero tampoco aprende MACs ni reenvía datos.')"><div class="ol">B</div>Listening</div>
-        <div class="opt" onclick="qa(3,'C','correct','¡Correcto! En el estado Learning, el switch aprende las direcciones MAC de los frames que recibe y llena la tabla MAC, pero NO reenvía esos frames a su destino. Dura 15 segundos (Forward Delay). Esto previene flooding masivo cuando el puerto pase a Forwarding.')"><div class="ol">C</div>Learning</div>
-        <div class="opt" onclick="qa(3,'D','wrong','En Forwarding, el puerto ya hace todo: aprende MACs Y reenvía frames de datos. Es el estado operativo normal final.')"><div class="ol">D</div>Forwarding</div>
-      </div>
-      <div class="qfb" id="qf3"></div>
-    </div>
-
-    <!-- Q4 -->
-    <div class="qbox" id="qq4">
-      <div class="qnum">PREGUNTA 04 / 08</div>
-      <div class="qq">Un administrador quiere que SW-CORE sea el Root Bridge para todas las VLANs y que NUNCA ceda ese rol a otro switch. ¿Cuál es el comando correcto?</div>
-      <div class="opts">
-        <div class="opt" onclick="qa(4,'A','wrong','spanning-tree vlan 1-100 root primary configura la Priority automáticamente a 24576 (o menor), pero si llega un switch con Priority 0 puede quitarle el rol. No garantiza "nunca ceder".')"><div class="ol">A</div>spanning-tree vlan 1-100 root primary</div>
-        <div class="opt" onclick="qa(4,'B','correct','¡Correcto! Priority 0 es el valor mínimo absoluto en STP (los valores van de 0 a 61440 en múltiplos de 4096). Ningún switch puede tener un BID menor porque 0 es el mínimo. Esto garantiza que SW-CORE SIEMPRE sea Root Bridge.')"><div class="ol">B</div>spanning-tree vlan 1-100 priority 0</div>
-        <div class="opt" onclick="qa(4,'C','wrong','spanning-tree mode rapid-pvst solo cambia la variante de STP, no la Priority ni el rol de Root Bridge.')"><div class="ol">C</div>spanning-tree mode rapid-pvst</div>
-        <div class="opt" onclick="qa(4,'D','wrong','spanning-tree guard root es una función de seguridad que se configura en los puertos para PROTEGER al Root Bridge actual, no para convertirse en Root Bridge.')"><div class="ol">D</div>spanning-tree guard root</div>
-      </div>
-      <div class="qfb" id="qf4"></div>
-    </div>
-
-    <!-- Q5 -->
-    <div class="qbox" id="qq5">
-      <div class="qnum">PREGUNTA 05 / 08</div>
-      <div class="qq">¿Qué hace PortFast y en qué tipos de puertos se debe configurar?</div>
-      <div class="opts">
-        <div class="opt" onclick="qa(5,'A','wrong','PortFast NO acelera el STP entre switches. Al contrario, se debe EVITAR en puertos que conectan switches porque si hay un switch conectado puede crear bucles antes de que STP los detecte.')"><div class="ol">A</div>Acelera STP en puertos de trunk entre switches, reduciéndolo de 30 a 10 segundos</div>
-        <div class="opt" onclick="qa(5,'B','correct','¡Correcto! PortFast hace que el puerto pase directamente de Blocking a Forwarding, saltándose los estados Listening (15s) y Learning (15s). Esto es seguro SOLO en puertos de acceso conectados a dispositivos finales (PCs, impresoras, servidores) porque no pueden crear bucles. NUNCA en puertos conectados a switches.')"><div class="ol">B</div>Permite que un puerto salte directamente a Forwarding, solo debe usarse en puertos conectados a dispositivos finales</div>
-        <div class="opt" onclick="qa(5,'C','wrong','PortFast no cambia el costo del enlace. Para modificar el costo se usa el comando spanning-tree vlan X cost Y en la interfaz.')"><div class="ol">C</div>Modifica el costo del enlace para que el puerto sea siempre el Root Port</div>
-        <div class="opt" onclick="qa(5,'D','wrong','PortFast no desactiva STP. El puerto sigue participando en STP (procesa BPDUs). Lo que hace es eliminar la espera de los estados intermedios para agilizar la conexión de dispositivos finales.')"><div class="ol">D</div>Desactiva STP completamente en ese puerto para mayor rendimiento</div>
-      </div>
-      <div class="qfb" id="qf5"></div>
-    </div>
-
-    <!-- Q6 -->
-    <div class="qbox" id="qq6">
-      <div class="qnum">PREGUNTA 06 / 08</div>
-      <div class="qq">¿Cuál es el modo STP predeterminado (default) en switches Cisco Catalyst modernos como el 2960 y 3750?</div>
-      <div class="opts">
-        <div class="opt" onclick="qa(6,'A','wrong','STP 802.1D (pvst) fue el estándar original pero los switches Cisco modernos ya no lo usan por defecto. Se cambió a Rapid PVST+ por su mayor velocidad de convergencia.')"><div class="ol">A</div>STP clásico 802.1D (pvst)</div>
-        <div class="opt" onclick="qa(6,'B','wrong','MSTP (802.1s) es soportado por Cisco pero NO es el default. Requiere configuración manual con spanning-tree mode mst.')"><div class="ol">B</div>MSTP 802.1s</div>
-        <div class="opt" onclick="qa(6,'C','correct','¡Correcto! El modo default en switches Cisco Catalyst modernos es Rapid PVST+ (Rapid Per-VLAN Spanning Tree Plus). Combina RSTP (convergencia rápida 1-2 segundos) con instancias separadas por VLAN. Puedes verificarlo con: show spanning-tree summary.')"><div class="ol">C</div>Rapid PVST+ (rapid-pvst)</div>
-        <div class="opt" onclick="qa(6,'D','wrong','RSTP puro (802.1w) usa una sola instancia para toda la red. Cisco implementa Rapid PVST+ que agrega instancias por VLAN sobre RSTP.')"><div class="ol">D</div>RSTP puro 802.1w</div>
-      </div>
-      <div class="qfb" id="qf6"></div>
-    </div>
-
-    <!-- Q7 -->
-    <div class="qbox" id="qq7">
-      <div class="qnum">PREGUNTA 07 / 08</div>
-      <div class="qq">Un puerto configurado con PortFast recibe un BPDU. Si BPDU Guard está habilitado, ¿qué ocurre?</div>
-      <div class="opts">
-        <div class="opt" onclick="qa(7,'A','wrong','BPDU Guard no desactiva PortFast simplemente. Su reacción es mucho más contundente: pone el puerto en err-disabled para proteger la red.')"><div class="ol">A</div>El puerto desactiva PortFast y entra en el proceso STP normal</div>
-        <div class="opt" onclick="qa(7,'B','wrong','BPDU Guard no ignora los BPDUs. El punto es que un puerto PortFast NO debería recibir BPDUs (significa que hay un switch conectado, lo que es peligroso).')"><div class="ol">B</div>El switch ignora el BPDU y mantiene el puerto en Forwarding</div>
-        <div class="opt" onclick="qa(7,'C','correct','¡Correcto! BPDU Guard coloca el puerto en estado err-disabled (error-disabled) inmediatamente al recibir cualquier BPDU. Esto protege la topología STP de switches no autorizados. El administrador debe recuperarlo manualmente con shutdown / no shutdown o con errdisable recovery.')"><div class="ol">C</div>El puerto se deshabilita (err-disabled) inmediatamente</div>
-        <div class="opt" onclick="qa(7,'D','wrong','BPDU Guard no reenvía el BPDU ni crea una nueva instancia STP. Solo deshabilita el puerto que no debería recibir BPDUs.')"><div class="ol">D</div>El BPDU se reenvía al Root Bridge para su procesamiento</div>
-      </div>
-      <div class="qfb" id="qf7"></div>
-    </div>
-
-    <!-- Q8 -->
-    <div class="qbox" id="qq8">
-      <div class="qnum">PREGUNTA 08 / 08</div>
-      <div class="qq">En la salida de "show spanning-tree vlan 10", un puerto aparece con Rol "Altn" y Estado "BLK". ¿Qué significa?</div>
-      <div class="opts">
-        <div class="opt" onclick="qa(8,'A','wrong','Altn BLK no es un error administrativo. Es un estado normal e intencional de STP: el puerto está bloqueado POR DISEÑO para prevenir bucles.')"><div class="ol">A</div>El puerto tiene un error administrativo y requiere intervención</div>
-        <div class="opt" onclick="qa(8,'B','correct','¡Correcto! "Altn" (Alternate Port) en estado "BLK" (Blocking) es completamente normal en STP. Significa que este puerto perdió la elección de Designated Port en su segmento y fue bloqueado para prevenir un bucle. Está listo para activarse si el Root Port o el Designated Port del segmento fallan. En RSTP se llama Alternate Port; en STP clásico se llamaba Non-Designated Port.')"><div class="ol">B</div>El puerto está bloqueado intencionalmente por STP para prevenir un bucle de Capa 2, estado normal</div>
-        <div class="opt" onclick="qa(8,'C','wrong','El Root Bridge tiene todos sus puertos como Designated (Desg) en estado Forwarding (FWD), no Alternate Blocking. Si ves Altn BLK es en un switch no-Root.')"><div class="ol">C</div>Este switch es el Root Bridge y este es su puerto de administración</div>
-        <div class="opt" onclick="qa(8,'D','wrong','BLK (Blocking) no significa que el puerto esté físicamente desconectado. "Disabled" sería el estado de un puerto desconectado o administrativamente apagado con shutdown.')"><div class="ol">D</div>El cable del puerto está físicamente desconectado</div>
-      </div>
-      <div class="qfb" id="qf8"></div>
-    </div>
-
-    <!-- Score -->
-    <div id="scoreBox" style="display:none;" class="card">
-      <div class="card-h"><div class="ci">🏆</div>Resultado del Quiz STP</div>
-      <div style="text-align:center;padding:24px;">
-        <div id="scoreTxt" style="font-family:'Bebas Neue';font-size:3rem;letter-spacing:3px;margin-bottom:10px;"></div>
-        <div id="scoreMsg" style="color:var(--gray);font-size:0.95rem;line-height:1.6;"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- TAREA -->
-  <div class="card">
-    <div class="card-h"><div class="ci">📝</div>Tarea Práctica — Lab STP en Packet Tracer</div>
-    <div style="background:linear-gradient(135deg,rgba(239,68,68,0.06),rgba(245,158,11,0.04));border:1px solid rgba(245,158,11,0.3);border-radius:10px;padding:20px;margin:14px 0;">
-      <div style="font-family:'Bebas Neue';font-size:0.85rem;color:var(--amber);letter-spacing:2px;margin-bottom:12px;">🏗️ ESCENARIO: Red con 4 Switches en Malla</div>
-      <p style="color:#cbd5e1;font-size:0.9rem;line-height:1.8;">
-        Crea una topología con <strong style="color:var(--amber-bright);">4 switches</strong> conectados en malla (cada switch conectado a los otros 3). Configura:<br>
-        • <strong style="color:var(--green-bright);">SW-CORE</strong> como Root Bridge absoluto para VLAN 10 y 20 (Priority 0)<br>
-        • <strong style="color:var(--blue-bright);">SW-DIST1</strong> como Root Bridge secundario (Priority 4096)<br>
-        • PortFast + BPDU Guard en todos los puertos de acceso<br>
-        • Verificar con <code style="color:var(--amber);">show spanning-tree</code> qué puertos quedan bloqueados<br>
-        • Desconectar el enlace del SW-CORE y medir el tiempo de convergencia con RSTP vs STP clásico
-      </p>
-    </div>
-    <ol class="steps">
-      <li class="step">
-        <div class="sn"></div>
-        <div class="sc">
-          <div class="st">Construir la topología en Packet Tracer</div>
-          <div class="sd">4 switches Catalyst 2960. Conecta cada switch a los otros 3 con cables GigabitEthernet. Tendrás 6 enlaces y varios bucles potenciales.</div>
-        </div>
-      </li>
-      <li class="step">
-        <div class="sn"></div>
-        <div class="sc">
-          <div class="st">Configurar Rapid PVST+ y Root Bridge</div>
-          <div class="sd">En todos: <code>spanning-tree mode rapid-pvst</code>. En SW-CORE: <code>spanning-tree vlan 10,20 priority 0</code>. En SW-DIST1: <code>spanning-tree vlan 10,20 root secondary</code>.</div>
-        </div>
-      </li>
-      <li class="step">
-        <div class="sn"></div>
-        <div class="sc">
-          <div class="st">Verificar la topología STP resultante</div>
-          <div class="sd">Ejecuta <code>show spanning-tree vlan 10</code> en cada switch. Identifica cuál es el Root Bridge, cuáles son los Root Ports, los Designated Ports y los Alternate/Blocked.</div>
-        </div>
-      </li>
-      <li class="step">
-        <div class="sn"></div>
-        <div class="sc">
-          <div class="st">Probar convergencia y failover</div>
-          <div class="sd">Haz ping continuo entre dos PCs. Desconecta el enlace del Root Bridge y observa cuántos pings se pierden antes de que RSTP reconstruya la topología.</div>
-        </div>
-      </li>
-    </ol>
-  </div>
-
-</div>
-
-<!-- RESUMEN FINAL -->
-<div class="card">
-  <div class="card-h"><div class="ci">📋</div>Resumen Maestro — Comandos STP Esenciales CCNA</div>
-  <div class="sg">
-    <div class="si">
-      <h4>🔍 Verificación</h4>
-      <ul>
-        <li>show spanning-tree</li>
-        <li>show spanning-tree vlan [id]</li>
-        <li>show spanning-tree summary</li>
-        <li>show spanning-tree detail</li>
-        <li>show spanning-tree active</li>
-      </ul>
-    </div>
-    <div class="si">
-      <h4>🌳 Root Bridge</h4>
-      <ul>
-        <li>spanning-tree mode rapid-pvst</li>
-        <li>spanning-tree vlan X priority 0</li>
-        <li>spanning-tree vlan X root primary</li>
-        <li>spanning-tree vlan X root secondary</li>
-        <li>spanning-tree pathcost method long</li>
-      </ul>
-    </div>
-    <div class="si">
-      <h4>🔌 Puertos</h4>
-      <ul>
-        <li>spanning-tree portfast</li>
-        <li>spanning-tree portfast default</li>
-        <li>spanning-tree bpduguard enable</li>
-        <li>spanning-tree guard root</li>
-        <li>spanning-tree loopguard default</li>
-      </ul>
-    </div>
-    <div class="si">
-      <h4>⏱️ Timers (Root Bridge)</h4>
-      <ul>
-        <li>spanning-tree vlan X hello-time 2</li>
-        <li>spanning-tree vlan X forward-time 15</li>
-        <li>spanning-tree vlan X max-age 20</li>
-        <li>spanning-tree vlan X cost [valor]</li>
-        <li>spanning-tree vlan X port-priority [val]</li>
-      </ul>
-    </div>
-  </div>
-</div>
-
-</div><!-- wrap -->
-
-<footer>
-  <div class="wrap">
-    <div class="ft">
-      <strong style="color:var(--amber);">CISCO CCNA 200-301</strong> — Clase Magistral: Spanning Tree Protocol (STP)<br>
-      IEEE 802.1D · IEEE 802.1w (RSTP) · PVST+ · Rapid PVST+ · IEEE 802.1s (MSTP) · Capa 2 Switching<br>
-      <span style="color:rgba(255,255,255,0.25);">Próxima clase: EtherChannel (LACP/PAgP) — Agregación de enlaces</span>
-    </div>
-  </div>
+<div class="concept-box" style="margin-top:1.2rem"><h4>📌 STP — Solución estándar IEEE 802.1D</h4><p>STP crea un <strong>árbol libre de bucles</strong> bloqueando puertos redundantes. Los puertos bloqueados permanecen en escucha para activarse si el enlace activo falla.</p></div></div>
+<div class="section"><h2 class="section-title">🏆 Elección del Root Bridge</h2>
+<p>STP elige un <strong>Root Bridge</strong> (la raíz del árbol) y desde ahí calcula los mejores caminos hacia todos los switches.</p>
+<div class="concept-box"><h4>🔄 Proceso de elección</h4>
+<ol style="padding-left:1.5rem;line-height:2.2">
+<li>Todos los switches se proclaman Root Bridge y envían <strong>BPDUs</strong></li>
+<li>El switch con menor <strong>Bridge ID</strong> gana (Priority + MAC)</li>
+<li>Bridge ID default = Priority <strong>32768</strong> + MAC del switch</li>
+<li>En empate de priority → menor MAC es Root Bridge</li>
+</ol></div>
+<div class="osi-table-wrap" style="margin-top:1rem"><table class="osi-table"><thead><tr><th>Elemento</th><th>Descripción</th><th>Default</th></tr></thead><tbody>
+<tr><td><strong>Bridge Priority</strong></td><td>Se configura en incrementos de 4096 (0, 4096, 8192... 61440)</td><td>32768</td></tr>
+<tr><td><strong>Bridge ID</strong></td><td>Priority (2 bytes) + MAC address (6 bytes)</td><td>32768 + MAC</td></tr>
+<tr><td><strong>Root Bridge</strong></td><td>Switch con el menor Bridge ID</td><td>El de menor MAC si priority es igual</td></tr>
+</tbody></table></div></div>
+<div class="section"><h2 class="section-title">🔌 Roles de Puerto STP</h2>
+<div class="osi-table-wrap"><table class="osi-table"><thead><tr><th>Rol</th><th>Descripción</th><th>Estado</th></tr></thead><tbody>
+<tr><td><strong>Root Port (RP)</strong></td><td>Puerto con el menor costo hacia el Root Bridge. Uno por switch (excepto Root Bridge).</td><td>Forwarding</td></tr>
+<tr><td><strong>Designated Port (DP)</strong></td><td>El mejor puerto en cada segmento hacia el Root Bridge. Todos los puertos del Root Bridge son DP.</td><td>Forwarding</td></tr>
+<tr><td><strong>Non-Designated Port</strong></td><td>Puerto bloqueado para evitar bucles.</td><td>Blocking</td></tr>
+<tr><td><strong>Disabled</strong></td><td>Puerto administrativamente apagado.</td><td>Disabled</td></tr>
+</tbody></table></div>
+<div class="concept-box" style="margin-top:1rem"><h4>📏 Costo de Puerto STP (802.1D)</h4>
+<p>10 Mbps = 100 · 100 Mbps = 19 · 1 Gbps = 4 · 10 Gbps = 2</p></div></div>
+</div></div>
+<div class="tab-panel" id="tab-estados">
+<div class="content">
+<div class="section"><h2 class="section-title">🔄 Estados de Puerto STP (802.1D)</h2>
+<div class="osi-table-wrap"><table class="osi-table"><thead><tr><th>Estado</th><th>Duración</th><th>Recibe BPDUs</th><th>Aprende MACs</th><th>Reenvía frames</th></tr></thead><tbody>
+<tr><td><strong>Blocking</strong></td><td>20 seg (Max Age)</td><td>Sí</td><td>No</td><td>No</td></tr>
+<tr><td><strong>Listening</strong></td><td>15 seg (Forward Delay)</td><td>Sí</td><td>No</td><td>No</td></tr>
+<tr><td><strong>Learning</strong></td><td>15 seg (Forward Delay)</td><td>Sí</td><td>Sí</td><td>No</td></tr>
+<tr><td><strong>Forwarding</strong></td><td>Indefinido</td><td>Sí</td><td>Sí</td><td>Sí</td></tr>
+<tr><td><strong>Disabled</strong></td><td>—</td><td>No</td><td>No</td><td>No</td></tr>
+</tbody></table></div>
+<div class="concept-box warning" style="margin-top:1rem"><h4>⚠️ Tiempo de convergencia STP clásico = 50 segundos</h4><p>Blocking(20) + Listening(15) + Learning(15) = <strong>50 segundos</strong> hasta Forwarding. RSTP reduce esto a &lt;1 segundo.</p></div>
+<div class="concept-box" style="margin-top:1rem"><h4>⚡ PortFast — Para puertos de acceso a hosts</h4><p>PortFast hace que un puerto salte directamente a Forwarding (sin pasar por Listening/Learning). Solo en puertos conectados a hosts, <strong>nunca en puertos hacia switches</strong>.</p>
+<div class="cli-block" data-label="PortFast"><pre><code><span class="cmd">SW(config)# interface FastEthernet0/1</span>
+<span class="cmd">SW(config-if)# spanning-tree portfast</span>
+<span class="cmt">! O habilitar en todos los puertos de acceso globalmente</span>
+<span class="cmd">SW(config)# spanning-tree portfast default</span></code></pre></div></div>
+<div class="concept-box warning" style="margin-top:1rem"><h4>⚠️ BPDU Guard — Protección PortFast</h4><p>Si un puerto PortFast recibe un BPDU (lo que significa que hay un switch conectado), BPDU Guard lo pone en err-disabled inmediatamente.</p>
+<div class="cli-block" data-label="BPDU Guard"><pre><code><span class="cmd">SW(config-if)# spanning-tree bpduguard enable</span>
+<span class="cmt">! O globalmente en todos los puertos PortFast</span>
+<span class="cmd">SW(config)# spanning-tree portfast bpduguard default</span></code></pre></div></div></div>
+</div></div>
+<div class="tab-panel" id="tab-variantes">
+<div class="content">
+<div class="section"><h2 class="section-title">⚡ Variantes de STP</h2>
+<div class="osi-table-wrap"><table class="osi-table"><thead><tr><th>Protocolo</th><th>Estándar</th><th>Convergencia</th><th>VLANs</th><th>Notas</th></tr></thead><tbody>
+<tr><td><strong>STP (802.1D)</strong></td><td>IEEE</td><td>~50 segundos</td><td>1 instancia para todas</td><td>Original, obsoleto</td></tr>
+<tr><td><strong>RSTP (802.1w)</strong></td><td>IEEE</td><td>&lt;1 segundo</td><td>1 instancia para todas</td><td>Retrocompatible con 802.1D</td></tr>
+<tr><td><strong>PVST+</strong></td><td>Cisco</td><td>~50 segundos</td><td>1 instancia por VLAN</td><td>Propietario Cisco</td></tr>
+<tr><td><strong>Rapid PVST+</strong></td><td>Cisco</td><td>&lt;1 segundo</td><td>1 instancia por VLAN</td><td>Default en Cisco IOS moderno</td></tr>
+<tr><td><strong>MST (802.1s)</strong></td><td>IEEE</td><td>&lt;1 segundo</td><td>Múltiples VLANs → instancias</td><td>Escalable, grandes redes</td></tr>
+</tbody></table></div>
+<div class="concept-box" style="margin-top:1rem"><h4>⚡ RSTP — Nuevos roles de puerto</h4>
+<div class="osi-table-wrap"><table class="osi-table"><thead><tr><th>Puerto RSTP</th><th>Equivalente 802.1D</th><th>Estado</th></tr></thead><tbody>
+<tr><td>Root Port</td><td>Root Port</td><td>Forwarding</td></tr>
+<tr><td>Designated Port</td><td>Designated Port</td><td>Forwarding</td></tr>
+<tr><td><strong>Alternate Port</strong></td><td>Non-Designated (Blocking)</td><td>Discarding — backup del Root Port</td></tr>
+<tr><td><strong>Backup Port</strong></td><td>Non-Designated (Blocking)</td><td>Discarding — backup del Designated Port</td></tr>
+</tbody></table></div></div>
+</div></div>
+<div class="tab-panel" id="tab-config">
+<div class="content">
+<div class="section"><h2 class="section-title">⚙️ Configuración STP</h2>
+<div class="lab-steps">
+<div class="lab-step"><h4>Verificar STP y Root Bridge actual</h4>
+<div class="cli-block" data-label="Verificación STP"><pre><code><span class="cmd">SW1# show spanning-tree</span>
+<span class="out">VLAN0001
+  Spanning tree enabled protocol rstp
+  Root ID    Priority    32769
+             Address     0001.647B.0001
+             This bridge is the root
+  Bridge ID  Priority    32769 (priority 32768 sys-id-ext 1)
+             Address     0001.647B.0001
+  Interface        Role  Sts  Cost  Prio.Nbr  Type
+  ---------------  ----  ---  ----  --------  ----
+  Fa0/1            Desg  FWD  19    128.1     P2p
+  Fa0/2            Desg  FWD  19    128.2     P2p</span>
+<span class="cmd">SW1# show spanning-tree vlan 10</span>
+<span class="cmd">SW1# show spanning-tree summary</span></code></pre></div></div>
+<div class="lab-step"><h4>Configurar Root Bridge primario y secundario</h4>
+<div class="cli-block" data-label="Root Bridge"><pre><code><span class="cmt">! Método 1: Macro — ajusta automáticamente la priority</span>
+<span class="cmd">SW1(config)# spanning-tree vlan 1 root primary</span>
+<span class="cmt">! Ajusta priority a 24576 (o menos si hay competidor)</span>
+<span class="cmd">SW2(config)# spanning-tree vlan 1 root secondary</span>
+<span class="cmt">! Ajusta priority a 28672</span>
+<span class="cmt">! Método 2: Manual — más control</span>
+<span class="cmd">SW1(config)# spanning-tree vlan 1 priority 4096</span></code></pre></div></div>
+<div class="lab-step"><h4>Cambiar costo de puerto</h4>
+<div class="cli-block" data-label="Costo STP"><pre><code><span class="cmt">! Influir en la elección del Root Port</span>
+<span class="cmd">SW2(config)# interface FastEthernet0/1</span>
+<span class="cmd">SW2(config-if)# spanning-tree cost 10</span></code></pre></div></div></div></div>
+</div></div>
+<div class="tab-panel" id="tab-lab">
+<div class="content">
+<div class="section"><h2 class="section-title">🧪 Laboratorio STP — 3 switches</h2>
+<div class="concept-box"><h4>📋 Topología: SW1─SW2─SW3 en triángulo (redundante)</h4></div>
+<div class="lab-steps">
+<div class="lab-step"><h4>Configurar Root Bridge y verificar convergencia</h4>
+<div class="cli-block" data-label="Lab STP"><pre><code><span class="cmt">! Forzar SW1 como Root Bridge para VLAN 1</span>
+<span class="cmd">SW1(config)# spanning-tree vlan 1 root primary</span>
+<span class="cmt">! SW2 como Root secundario</span>
+<span class="cmd">SW2(config)# spanning-tree vlan 1 root secondary</span>
+<span class="cmt">! Habilitar PortFast + BPDU Guard en puertos de acceso</span>
+<span class="cmd">SW1(config)# spanning-tree portfast default</span>
+<span class="cmd">SW1(config)# spanning-tree portfast bpduguard default</span>
+<span class="cmd">SW1# show spanning-tree vlan 1</span>
+<span class="out">  Root ID    Priority    24577
+             Address     0001.647B.0001
+             This bridge is the root
+  Interface    Role  Sts  Cost
+  Fa0/1        Desg  FWD  19
+  Fa0/2        Desg  FWD  19</span>
+<span class="cmd">SW3# show spanning-tree vlan 1</span>
+<span class="out">  Interface    Role  Sts  Cost
+  Fa0/1        Root  FWD  19   ← camino al Root
+  Fa0/2        Altn  BLK  19   ← bloqueado (evita bucle)</span></code></pre></div></div></div></div>
+</div></div>
+<div class="tab-panel" id="tab-resumen">
+<div class="content">
+<div class="section"><h2 class="section-title">📋 Resumen STP</h2>
+<div class="concept-box"><h4>✅ Puntos críticos del examen</h4><ul>
+<li>STP evita bucles Capa 2 bloqueando puertos redundantes</li>
+<li>Root Bridge = menor Bridge ID (Priority + MAC). Priority default = 32768</li>
+<li>Priority se configura en múltiplos de 4096</li>
+<li>Convergencia 802.1D = 50 seg | RSTP/Rapid PVST+ = &lt;1 seg</li>
+<li>PortFast = salta Listening/Learning → solo en puertos de hosts</li>
+<li>BPDU Guard = err-disabled si PortFast recibe BPDU</li>
+<li>Cisco default: Rapid PVST+ (una instancia STP por VLAN)</li>
+<li>Costo: 10M=100, 100M=19, 1G=4, 10G=2</li>
+</ul></div>
+<div class="concept-box warning" style="margin-top:1rem"><h4>⚠️ Errores comunes</h4><ul>
+<li>Habilitar PortFast en puertos hacia otros switches → bucles</li>
+<li>No configurar BPDU Guard → vulnerabilidad de seguridad</li>
+<li>Olvidar que la priority debe ser múltiplo de 4096</li>
+</ul></div>
+<div style="margin-top:1.5rem"><div id="refTableContainer"></div></div></div>
+</div></div>
+<div class="tab-panel" id="tab-quiz">
+<div class="content">
+<div class="section"><h2 class="section-title">✅ Quiz · STP — CCNA 200-301</h2>
+<div id="quiz-container"></div><div id="quiz-container-result"></div></div>
+</div></div>
+<footer class="footer">
+  <p>CCNA Academy · Spanning Tree Protocol · Basado en CCNA 200-301 Official Cert Guide (Wendell Odom)</p>
+  <p style="margin-top:.4rem"><a href="../index.html">← Volver al índice</a></p>
 </footer>
-
+<script src="../assets/main.js" defer></script>
 <script>
-// ─── TAB SYSTEM ───
-function tab(id) {
-  document.querySelectorAll('.sec').forEach(s => s.classList.remove('on'));
-  document.querySelectorAll('.nb').forEach(b => b.classList.remove('on'));
-  document.getElementById(id).classList.add('on');
-  event.target.classList.add('on');
-  window.scrollTo({top:180, behavior:'smooth'});
-}
-
-// ─── LOOP ANIMATION ───
-const lc = document.getElementById('loopCanvas');
-const lctx = lc.getContext('2d');
-let loopAnim = null;
-let loopFrames = 0;
-let stpMode = false;
-const packets = [];
-
-function drawNetwork(ctx, w, h, blocked) {
-  ctx.clearRect(0,0,w,h);
-  // Background
-  ctx.fillStyle = '#020810';
-  ctx.fillRect(0,0,w,h);
-
-  const sw = [
-    {x:w*0.5,  y:h*0.12, label:'SW1', mac:'32768\nAA:AA', color:'#f59e0b'},
-    {x:w*0.15, y:h*0.75, label:'SW2', mac:'32768\nBB:BB', color:'#3b82f6'},
-    {x:w*0.85, y:h*0.75, label:'SW3', mac:'32768\nCC:CC', color:'#8b5cf6'},
-  ];
-
-  const links = [
-    {a:0,b:1,block:blocked===0},
-    {a:1,b:2,block:blocked===1},
-    {a:0,b:2,block:blocked===2},
-  ];
-
-  // Draw links
-  links.forEach(l => {
-    const a = sw[l.a], b = sw[l.b];
-    ctx.beginPath();
-    ctx.moveTo(a.x, a.y+22);
-    ctx.lineTo(b.x, b.y+22);
-    if (l.block) {
-      ctx.strokeStyle = 'rgba(239,68,68,0.6)';
-      ctx.setLineDash([8,6]);
-      ctx.lineWidth = 2;
-    } else {
-      ctx.strokeStyle = 'rgba(16,185,129,0.7)';
-      ctx.setLineDash([]);
-      ctx.lineWidth = 2.5;
-    }
-    ctx.stroke();
-    ctx.setLineDash([]);
-    if (l.block) {
-      const mx = (a.x+b.x)/2, my = (a.y+b.y)/2+22;
-      ctx.fillStyle = '#ef4444';
-      ctx.font = 'bold 16px JetBrains Mono';
-      ctx.textAlign='center';
-      ctx.fillText('🚫', mx, my-8);
-      ctx.font = '10px JetBrains Mono';
-      ctx.fillStyle = '#ef4444';
-      ctx.fillText('BLOCKED', mx, my+6);
-    }
-  });
-
-  // Draw packets (only if not stpMode or no blocked)
-  if (!stpMode) {
-    packets.forEach(p => {
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, 5, 0, Math.PI*2);
-      ctx.fillStyle = `hsla(${p.hue},90%,60%,${p.alpha})`;
-      ctx.fill();
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, 9, 0, Math.PI*2);
-      ctx.strokeStyle = `hsla(${p.hue},90%,60%,${p.alpha*0.4})`;
-      ctx.lineWidth = 1;
-      ctx.stroke();
-    });
-  }
-
-  // Draw switches
-  sw.forEach((s,i) => {
-    // Glow
-    const grad = ctx.createRadialGradient(s.x, s.y+22, 0, s.x, s.y+22, 40);
-    grad.addColorStop(0, s.color+'33');
-    grad.addColorStop(1, 'transparent');
-    ctx.fillStyle = grad;
-    ctx.beginPath();
-    ctx.arc(s.x, s.y+22, 40, 0, Math.PI*2);
-    ctx.fill();
-
-    // Switch box
-    ctx.fillStyle = '#0f2040';
-    ctx.strokeStyle = s.color;
-    ctx.lineWidth = 2;
-    roundRect(ctx, s.x-36, s.y+8, 72, 28, 6);
-    ctx.fill();
-    ctx.stroke();
-
-    // Label
-    ctx.fillStyle = s.color;
-    ctx.font = 'bold 12px JetBrains Mono';
-    ctx.textAlign = 'center';
-    ctx.fillText(s.label, s.x, s.y+27);
-
-    // Root crown
-    if (stpMode && i===0) {
-      ctx.font = '16px Arial';
-      ctx.fillText('👑', s.x, s.y-2);
-    }
-  });
-}
-
-function roundRect(ctx, x,y,w,h,r) {
-  ctx.beginPath();
-  ctx.moveTo(x+r,y);
-  ctx.lineTo(x+w-r,y);
-  ctx.arcTo(x+w,y,x+w,y+r,r);
-  ctx.lineTo(x+w,y+h-r);
-  ctx.arcTo(x+w,y+h,x+w-r,y+h,r);
-  ctx.lineTo(x+r,y+h);
-  ctx.arcTo(x,y+h,x,y+h-r,r);
-  ctx.lineTo(x,y+r);
-  ctx.arcTo(x,y,x+r,y,r);
-  ctx.closePath();
-}
-
-function spawnPacket(w, h) {
-  const sw = [{x:w*0.5,y:h*0.12+22},{x:w*0.15,y:h*0.75+22},{x:w*0.85,y:h*0.75+22}];
-  const i = Math.floor(Math.random()*3);
-  const j = (i+1)%3;
-  packets.push({
-    x:sw[i].x, y:sw[i].y,
-    tx:sw[j].x, ty:sw[j].y,
-    hue: Math.random()*60+10,
-    alpha:1, progress:0, speed:0.015+Math.random()*0.02
-  });
-}
-
-function startLoop() {
-  stpMode = false;
-  if (loopAnim) cancelAnimationFrame(loopAnim);
-  packets.length = 0;
-  loopFrames = 0;
-  document.getElementById('loopMsg').textContent = '⚠️ BROADCAST STORM: Los paquetes se multiplican en loop infinito...';
-
-  function animate() {
-    loopFrames++;
-    const w=lc.width, h=lc.height;
-
-    // Spawn packets
-    if (loopFrames % 8 === 0 && packets.length < 60) {
-      spawnPacket(w, h);
-      spawnPacket(w, h);
-    }
-
-    // Update packets — they loop forever
-    for (let i = packets.length-1; i>=0; i--) {
-      const p = packets[i];
-      p.progress += p.speed;
-      if (p.progress >= 1) {
-        // Spawn more and redirect
-        const sw = [{x:w*0.5,y:h*0.12+22},{x:w*0.15,y:h*0.75+22},{x:w*0.85,y:h*0.75+22}];
-        const j = Math.floor(Math.random()*3);
-        p.x = p.tx; p.y = p.ty;
-        p.tx = sw[j].x; p.ty = sw[j].y;
-        p.progress = 0;
-        // Spawn clone (the broadcast replication!)
-        if (packets.length < 80) {
-          const k = (j+1)%3;
-          packets.push({x:p.x,y:p.y,tx:sw[k].x,ty:sw[k].y,hue:p.hue,alpha:0.8,progress:0,speed:p.speed});
-        }
-      } else {
-        p.x = p.x + (p.tx-p.x)*p.speed / (1-p.progress+0.01) * p.speed;
-        p.y = p.y + (p.ty-p.y)*p.speed / (1-p.progress+0.01) * p.speed;
-      }
-      p.alpha = Math.max(0.3, 1 - loopFrames*0.002);
-    }
-
-    drawNetwork(lctx, w, h, -1); // No blocked ports
-    loopAnim = requestAnimationFrame(animate);
-  }
-  animate();
-}
-
-function stopLoop() {
-  if (loopAnim) cancelAnimationFrame(loopAnim);
-  loopAnim = null;
-  packets.length = 0;
-  drawNetwork(lctx, lc.width, lc.height, -1);
-  document.getElementById('loopMsg').textContent = 'Animación detenida.';
-}
-
-function showSTP() {
-  if (loopAnim) cancelAnimationFrame(loopAnim);
-  loopAnim = null;
-  stpMode = true;
-  packets.length = 0;
-  drawNetwork(lctx, lc.width, lc.height, 2); // Block port on SW3
-  document.getElementById('loopMsg').textContent = '✅ STP ACTIVO: Puerto bloqueado (🚫). Bucle eliminado. SW1 = Root Bridge 👑';
-}
-
-// Initial draw
-drawNetwork(lctx, lc.width, lc.height, -1);
-
-// ─── STP ELECTION ANIMATION ───
-const sc = document.getElementById('stpCanvas');
-const sctx = sc ? sc.getContext('2d') : null;
-
-const stpSwitches = [
-  {x:0.5,  y:0.15, label:'SW1', priority:'32768', mac:'AA:AA', color:'#3b82f6', role:'', rp:null, dp:[], blocked:[]},
-  {x:0.15, y:0.78, label:'SW2', priority:'32768', mac:'BB:BB', color:'#8b5cf6', role:'', rp:null, dp:[], blocked:[]},
-  {x:0.85, y:0.78, label:'SW3', priority:'4096',  mac:'CC:CC', color:'#f59e0b', role:'ROOT', rp:null, dp:[], blocked:[]},
+function showTab(id,btn){document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active')});document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active')});var panel=document.getElementById('tab-'+id);if(panel)panel.classList.add('active');if(btn)btn.classList.add('active');window.scrollTo({top:90,behavior:'smooth'});}
+document.addEventListener('DOMContentLoaded',function(){
+  var refData=[
+  {Comando:'spanning-tree vlan X root primary',Modo:'config',Descripcion:'Hacer al switch Root Bridge primario'},
+  {Comando:'spanning-tree vlan X root secondary',Modo:'config',Descripcion:'Hacer al switch Root Bridge secundario'},
+  {Comando:'spanning-tree vlan X priority Y',Modo:'config',Descripcion:'Configurar priority manualmente (múltiplo de 4096)'},
+  {Comando:'spanning-tree portfast',Modo:'config-if',Descripcion:'Habilitar PortFast en un puerto de acceso'},
+  {Comando:'spanning-tree portfast default',Modo:'config',Descripcion:'PortFast en todos los puertos de acceso'},
+  {Comando:'spanning-tree bpduguard enable',Modo:'config-if',Descripcion:'BPDU Guard en un puerto específico'},
+  {Comando:'spanning-tree portfast bpduguard default',Modo:'config',Descripcion:'BPDU Guard global en todos los PortFast'},
+  {Comando:'spanning-tree cost X',Modo:'config-if',Descripcion:'Cambiar costo STP del puerto'},
+  {Comando:'show spanning-tree',Modo:'#',Descripcion:'Ver estado STP, Root Bridge, roles de puertos'},
+  {Comando:'show spanning-tree summary',Modo:'#',Descripcion:'Resumen de instancias STP activas'},
 ];
-
-const stpLinks = [
-  {a:0,b:1,blocked:false,label:''},
-  {a:1,b:2,blocked:false,label:''},
-  {a:0,b:2,blocked:false,label:''},
+if(typeof buildRefTable==="function")buildRefTable(refData,"refTableContainer");
+  var preguntas=[
+  {pregunta:"¿Cuál es la prioridad STP por defecto en un switch Cisco?",opciones:["0","4096","32768","65535"],respuesta:2,explicacion:"La prioridad STP por defecto es 32768 (0x8000). El Bridge ID = Priority + MAC. La priority debe configurarse en múltiplos de 4096."},
+  {pregunta:"¿Cuánto tiempo tarda en converger STP 802.1D estándar?",opciones:["15 segundos","30 segundos","50 segundos","2 minutos"],respuesta:2,explicacion:"802.1D: Blocking(20s Max Age) + Listening(15s) + Learning(15s) = 50 segundos hasta Forwarding. RSTP reduce esto a menos de 1 segundo."},
+  {pregunta:"¿Qué hace PortFast cuando está habilitado en un puerto?",opciones:["Bloquea BPDUs","Omite los estados Listening y Learning pasando directamente a Forwarding","Aumenta la prioridad STP","Deshabilita STP en ese puerto"],respuesta:1,explicacion:"PortFast hace que un puerto pase inmediatamente a Forwarding sin esperar 30 segundos de Listening+Learning. Solo debe usarse en puertos conectados a hosts, nunca hacia switches."},
+  {pregunta:"¿Qué hace BPDU Guard si un puerto PortFast recibe un BPDU?",opciones:["Ignora el BPDU","Desactiva PortFast en ese puerto","Pone el puerto en err-disabled","Envía un BPDU de respuesta"],respuesta:2,explicacion:"BPDU Guard es una medida de seguridad: si un puerto PortFast recibe un BPDU (indicando que hay un switch conectado donde no debería), inmediatamente pone el puerto en err-disabled."},
+  {pregunta:"¿Cuál es el protocolo STP por defecto en switches Cisco modernos?",opciones:["STP 802.1D","PVST+","Rapid PVST+","MST 802.1s"],respuesta:2,explicacion:"Rapid PVST+ (Rapid Per-VLAN Spanning Tree Plus) es el default en Cisco IOS moderno. Combina la convergencia rápida de RSTP (802.1w) con una instancia STP por VLAN."},
+  {pregunta:"¿Cuál es el costo STP de un enlace GigabitEthernet en 802.1D?",opciones:["1","4","19","100"],respuesta:1,explicacion:"Costos 802.1D: 10 Mbps=100, 100 Mbps=19, 1 Gbps=4, 10 Gbps=2. Menor costo = mejor camino hacia el Root Bridge."},
 ];
-
-const steps = [
-  {
-    title:'TOPOLOGÍA INICIAL — Bucle presente (sin STP)',
-    actions: () => {
-      stpSwitches.forEach(s=>{s.role='';s.highlight=false;});
-      stpLinks.forEach(l=>{l.blocked=false;l.label='';});
-    }
-  },
-  {
-    title:'PASO 1: Elección Root Bridge — SW3 (Priority 4096 — más baja)',
-    actions: () => {
-      stpSwitches[0].role=''; stpSwitches[0].highlight=false;
-      stpSwitches[1].role=''; stpSwitches[1].highlight=false;
-      stpSwitches[2].role='ROOT BRIDGE 👑'; stpSwitches[2].highlight=true;
-    }
-  },
-  {
-    title:'PASO 2: Root Ports — SW1 y SW2 eligen su mejor puerto hacia SW3',
-    actions: () => {
-      stpSwitches[0].role='Root Port → SW3 (cost 4)'; stpSwitches[0].highlight=false;
-      stpSwitches[1].role='Root Port → SW3 (cost 4)'; stpSwitches[1].highlight=false;
-      stpSwitches[2].role='ROOT BRIDGE 👑'; stpSwitches[2].highlight=true;
-      stpLinks[1].label='RP(SW2)';
-      stpLinks[2].label='RP(SW1)';
-    }
-  },
-  {
-    title:'PASO 3: Designated Ports — Segmento SW1↔SW2: SW3 ya no está. SW1 gana (menor MAC)',
-    actions: () => {
-      stpLinks[0].label='Desg(SW1)';
-      stpLinks[1].label='RP(SW2)→SW3';
-      stpLinks[2].label='RP(SW1)→SW3';
-    }
-  },
-  {
-    title:'PASO 4: Puerto Bloqueado — SW2 hacia SW1 bloqueado (perder en el segmento SW1-SW2)',
-    actions: () => {
-      stpLinks[0].blocked=true;
-      stpLinks[0].label='BLOCKED 🚫';
-      stpSwitches[1].role='Alternate Port ← BLOQUEADO'; stpSwitches[1].highlight=false;
-    }
-  }
-];
-
-let curStep = 0;
-
-function stpStep(n) {
-  if(!sctx) return;
-  curStep = n;
-  // Reset
-  stpLinks.forEach(l=>{l.blocked=false;l.label='';});
-  stpSwitches.forEach(s=>{s.role='';s.highlight=false;});
-  // Apply up to step n
-  for(let i=1;i<=n;i++) steps[i].actions();
-  document.getElementById('stpTitle').textContent = steps[n].title;
-  drawSTP();
-}
-
-function drawSTP() {
-  if (!sctx) return;
-  const w = sc.width, h = sc.height;
-  sctx.clearRect(0,0,w,h);
-  sctx.fillStyle = '#020810';
-  sctx.fillRect(0,0,w,h);
-
-  const pos = stpSwitches.map(s=>({x:s.x*w, y:s.y*h}));
-
-  // Links
-  stpLinks.forEach(l => {
-    const a=pos[l.a], b=pos[l.b];
-    sctx.beginPath();
-    sctx.moveTo(a.x,a.y+22); sctx.lineTo(b.x,b.y+22);
-    sctx.strokeStyle = l.blocked ? 'rgba(239,68,68,0.7)' : 'rgba(16,185,129,0.6)';
-    sctx.setLineDash(l.blocked ? [8,5] : []);
-    sctx.lineWidth = l.blocked ? 2 : 2.5;
-    sctx.stroke();
-    sctx.setLineDash([]);
-    if (l.label) {
-      const mx=(a.x+b.x)/2, my=(a.y+b.y)/2+22;
-      sctx.fillStyle = l.blocked ? '#ef4444' : '#34d399';
-      sctx.font = '10px JetBrains Mono';
-      sctx.textAlign='center';
-      sctx.fillText(l.label, mx, my-8);
-    }
-  });
-
-  // Switches
-  stpSwitches.forEach((s,i) => {
-    const p = pos[i];
-    // Glow
-    if(s.highlight) {
-      const g=sctx.createRadialGradient(p.x,p.y+22,0,p.x,p.y+22,55);
-      g.addColorStop(0,s.color+'55'); g.addColorStop(1,'transparent');
-      sctx.fillStyle=g; sctx.beginPath(); sctx.arc(p.x,p.y+22,55,0,Math.PI*2); sctx.fill();
-    }
-
-    sctx.fillStyle = '#0f2040';
-    sctx.strokeStyle = s.highlight ? '#fcd34d' : s.color;
-    sctx.lineWidth = s.highlight ? 3 : 2;
-    roundRect(sctx, p.x-42, p.y+6, 84, 32, 7);
-    sctx.fill(); sctx.stroke();
-
-    sctx.fillStyle = s.highlight ? '#fcd34d' : s.color;
-    sctx.font = `bold 12px JetBrains Mono`;
-    sctx.textAlign='center';
-    sctx.fillText(s.label, p.x, p.y+19);
-    sctx.font='9px JetBrains Mono';
-    sctx.fillStyle='#94a3b8';
-    sctx.fillText(`P:${s.priority} MAC:${s.mac}`, p.x, p.y+30);
-
-    if (s.role) {
-      sctx.fillStyle = s.highlight ? '#fcd34d' : '#94a3b8';
-      sctx.font='9px JetBrains Mono';
-      // Role below
-      sctx.fillText(s.role, p.x, p.y+52);
-    }
-  });
-}
-
-drawSTP();
-
-// ─── QUIZ ───
-let qa_ans = {};
-let qa_score = 0;
-
-function qa(n, letter, result, explanation) {
-  if (qa_ans[n]) return;
-  qa_ans[n] = {letter, result};
-
-  const opts = document.querySelectorAll(`#qq${n} .opt`);
-  opts.forEach(o => {
-    o.style.pointerEvents='none';
-    if(o.querySelector('.ol').textContent===letter) o.classList.add(result==='correct'?'ok':'no');
-    if(result==='wrong' && o.getAttribute('onclick').includes("'correct'")) o.classList.add('ok');
-  });
-
-  const fb = document.getElementById(`qf${n}`);
-  fb.textContent = (result==='correct'?'✅ ':'❌ ') + explanation;
-  fb.className = `qfb show ${result==='correct'?'ok-fb':'no-fb'}`;
-
-  if(result==='correct') qa_score++;
-  if(Object.keys(qa_ans).length===8) showScore();
-}
-
-function showScore() {
-  const box = document.getElementById('scoreBox');
-  box.style.display='block';
-  const pct = Math.round(qa_score/8*100);
-  const txt = document.getElementById('scoreTxt');
-  const msg = document.getElementById('scoreMsg');
-  txt.textContent = `${qa_score} / 8 — ${pct}%`;
-  if(pct>=87){txt.style.color='var(--green-bright)';msg.textContent='🏆 ¡Excelente! Dominas STP al nivel CCNA. Sigue con EtherChannel y luego OSPF.';}
-  else if(pct>=62){txt.style.color='var(--amber)';msg.textContent='📚 Buen trabajo. Repasa los temas de estados de puerto y el proceso de elección del Root Bridge.';}
-  else{txt.style.color='var(--red-bright)';msg.textContent='💪 Repasa todo el material de STP. Enfócate en: Bridge ID, Port States, Roles y RSTP vs STP clásico.';}
-  box.scrollIntoView({behavior:'smooth'});
-}
+if(typeof initQuiz==="function")initQuiz(preguntas,"quiz-container");
+});
 </script>
-
-</div><!-- /.page-content -->
 </body>
 </html>
