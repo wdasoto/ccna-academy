@@ -4,43 +4,46 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Spanning Tree Protocol — CCNA Academy</title>
-  <meta name="description" content="Clase magistral STP CCNA 200-301. Root Bridge, roles de puerto, RSTP, PVST+, PortFast, BPDU Guard y laboratorio.">
+  <meta name="description" content="Clase magistral STP CCNA 200-301. Root Bridge, elección, roles de puerto, estados, RSTP, PVST+, PortFast, BPDU Guard y laboratorio completo.">
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 <body>
+
 <div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
+
 <nav class="ccna-drawer" id="ccnaDrawer">
   <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
-  <div class="drawer-section"><div class="drawer-section-title">General</div><a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">General</div>
+    <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
   <div class="drawer-section"><div class="drawer-section-title">M1 · Fundamentos</div>
-    <a href="fundamentos.html" class="drawer-link"><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
-    <a href="subnetting.html" class="drawer-link"><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
-    <a href="calculadora.html" class="drawer-link"><span class="dl-icon">🧮</span> Calculadora IP</a>
-    <a href="ipv6.html" class="drawer-link"><span class="dl-icon">6️⃣</span> IPv6</a></div>
+    <a href="fundamentos.html"  class="drawer-link"><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
+    <a href="subnetting.html"   class="drawer-link"><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
+    <a href="calculadora.html"  class="drawer-link"><span class="dl-icon">🧮</span> Calculadora IP</a>
+    <a href="ipv6.html"         class="drawer-link"><span class="dl-icon">6️⃣</span> IPv6</a></div>
   <div class="drawer-section"><div class="drawer-section-title">M2 · Dispositivos Cisco</div>
-    <a href="router.html" class="drawer-link"><span class="dl-icon">📡</span> Routers Cisco</a>
-    <a href="switches-cisco.html" class="drawer-link"><span class="dl-icon">🔀</span> Switches Cisco</a></div>
+    <a href="router.html"          class="drawer-link"><span class="dl-icon">📡</span> Routers Cisco</a>
+    <a href="switches-cisco.html"  class="drawer-link"><span class="dl-icon">🔀</span> Switches Cisco</a></div>
   <div class="drawer-section"><div class="drawer-section-title">M3 · Switching</div>
-    <a href="vlan.html" class="drawer-link"><span class="dl-icon">🏷️</span> VLANs</a>
+    <a href="vlan.html"               class="drawer-link"><span class="dl-icon">🏷️</span> VLANs</a>
     <a href="inter-vlan-routing.html" class="drawer-link"><span class="dl-icon">🔁</span> Inter-VLAN Routing</a>
-    <a href="stp.html" class="drawer-link active"><span class="dl-icon">🌳</span> Spanning Tree Protocol</a>
-    <a href="etherchannel.html" class="drawer-link"><span class="dl-icon">🔗</span> EtherChannel</a>
-    <a href="port-security.html" class="drawer-link"><span class="dl-icon">🔒</span> Port Security</a>
-    <a href="cdp-lldp.html" class="drawer-link"><span class="dl-icon">🔍</span> CDP / LLDP</a></div>
+    <a href="stp.html"                class="drawer-link active"><span class="dl-icon">🌳</span> Spanning Tree Protocol</a>
+    <a href="etherchannel.html"       class="drawer-link"><span class="dl-icon">🔗</span> EtherChannel</a>
+    <a href="port-security.html"      class="drawer-link"><span class="dl-icon">🔒</span> Port Security</a>
+    <a href="cdp-lldp.html"           class="drawer-link"><span class="dl-icon">🔍</span> CDP / LLDP</a></div>
   <div class="drawer-section"><div class="drawer-section-title">M4 · Routing</div>
     <a href="routing.html" class="drawer-link"><span class="dl-icon">🗺️</span> Routing Estático</a>
-    <a href="ospf.html" class="drawer-link"><span class="dl-icon">⭕</span> OSPF</a>
-    <a href="eigrp.html" class="drawer-link"><span class="dl-icon">⚡</span> EIGRP</a></div>
+    <a href="ospf.html"    class="drawer-link"><span class="dl-icon">⭕</span> OSPF</a>
+    <a href="eigrp.html"   class="drawer-link"><span class="dl-icon">⚡</span> EIGRP</a></div>
   <div class="drawer-section"><div class="drawer-section-title">M5 · Servicios IP</div>
     <a href="dhcp.html" class="drawer-link"><span class="dl-icon">📋</span> DHCP</a>
-    <a href="nat.html" class="drawer-link"><span class="dl-icon">🔄</span> NAT / PAT</a></div>
+    <a href="nat.html"  class="drawer-link"><span class="dl-icon">🔄</span> NAT / PAT</a></div>
   <div class="drawer-section"><div class="drawer-section-title">M6 · Seguridad</div>
     <a href="acl.html" class="drawer-link"><span class="dl-icon">🛡️</span> ACLs</a></div>
   <div class="drawer-section"><div class="drawer-section-title">M7 · WAN &amp; QoS</div>
     <a href="wan.html" class="drawer-link"><span class="dl-icon">🌍</span> WAN</a>
     <a href="qos.html" class="drawer-link"><span class="dl-icon">📊</span> QoS</a></div>
   <div class="drawer-section"><div class="drawer-section-title">Herramientas</div>
-    <a href="asistente.html" class="drawer-link"><span class="dl-icon">🤖</span> Asistente IA</a>
+    <a href="asistente.html"   class="drawer-link"><span class="dl-icon">🤖</span> Asistente IA</a>
     <a href="calculadora.html" class="drawer-link"><span class="dl-icon">🧮</span> Calculadora IP</a></div>
 </nav>
 
@@ -51,207 +54,801 @@
   <a href="../index.html" class="navbar-link">← Inicio</a>
 </header>
 <div class="nav-spacer"></div>
+
 <div class="page-header">
-  <div class="breadcrumb"><a href="../index.html">Inicio</a> › M3 · Switching › Spanning Tree Protocol</div>
-  <h1>Spanning Tree<span class="accent"> Protocol</span></h1>
-  <p class="page-subtitle">Root Bridge · Estados · RSTP · PVST+ · PortFast · BPDU Guard · Bucles Capa 2</p>
-  <div class="badges"><span class="badge badge badge-teal">CCNA 200-301</span><span class="badge badge badge-blue">Módulo 3 · Switching</span><span class="badge badge badge-yellow">🌳 Bucle-Free</span></div>
+  <div class="breadcrumb">
+    <a href="../index.html">Inicio</a> › M3 · Switching › Spanning Tree Protocol
+  </div>
+  <h1>Spanning Tree <span class="accent">Protocol</span></h1>
+  <p class="page-subtitle">Root Bridge · Elección · Roles · Estados · RSTP · PVST+ · PortFast · BPDU Guard</p>
+  <div class="badges">
+    <span class="badge badge-teal">CCNA 200-301</span>
+    <span class="badge badge-blue">Módulo 3 · Switching</span>
+    <span class="badge badge-yellow">🌳 Sin bucles Capa 2</span>
+  </div>
 </div>
-<div class="tabs-wrapper"><div class="tabs">
-  <button class="tab-btn active" onclick="showTab('teoria',this)">📖 Teoría</button>
-  <button class="tab-btn" onclick="showTab('estados',this)">🔄 Estados</button>
-  <button class="tab-btn" onclick="showTab('variantes',this)">⚡ STP Variantes</button>
-  <button class="tab-btn" onclick="showTab('config',this)">⚙️ Configuración</button>
-  <button class="tab-btn" onclick="showTab('lab',this)">🧪 Laboratorio</button>
-  <button class="tab-btn" onclick="showTab('resumen',this)">📋 Resumen</button>
-  <button class="tab-btn" onclick="showTab('quiz',this)">✅ Quiz</button>
-</div></div>
-<div class="tab-panel active" id="tab-teoria">
-<div class="content">
-<div class="section"><h2 class="section-title">🌳 ¿Por qué existe STP?</h2>
-<p>En redes con switches redundantes, los <strong>bucles de Capa 2</strong> causan tormentas de broadcast, tablas MAC inestables y saturación del CPU. STP previene los bucles bloqueando selectivamente puertos redundantes.</p>
-<div class="info-grid">
-<div class="info-card"><h4>🌪️ Tormenta de broadcast</h4><p>Un frame broadcast da vueltas infinitamente por los enlaces redundantes. En segundos satura la red al 100%.</p></div>
-<div class="info-card"><h4>📋 Tabla MAC inestable</h4><p>El switch ve la misma MAC llegando por diferentes puertos y actualiza la tabla constantemente — nunca aprende correctamente.</p></div>
-<div class="info-card"><h4>♻️ Frames duplicados</h4><p>Los hosts reciben múltiples copias del mismo frame, causando problemas en protocolos de capa superior.</p></div>
+
+<div class="tabs-wrapper">
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('problema',   this)">⚠️ El Problema</button>
+    <button class="tab-btn"        onclick="showTab('eleccion',   this)">🏆 Elección</button>
+    <button class="tab-btn"        onclick="showTab('roles',      this)">🔌 Roles &amp; Estados</button>
+    <button class="tab-btn"        onclick="showTab('rstp',       this)">⚡ RSTP &amp; PVST+</button>
+    <button class="tab-btn"        onclick="showTab('config',     this)">⚙️ Configuración</button>
+    <button class="tab-btn"        onclick="showTab('resumen',    this)">📋 Resumen</button>
+    <button class="tab-btn"        onclick="showTab('quiz',       this)">✅ Quiz</button>
+  </div>
 </div>
-<div class="concept-box" style="margin-top:1.2rem"><h4>📌 STP — Solución estándar IEEE 802.1D</h4><p>STP crea un <strong>árbol libre de bucles</strong> bloqueando puertos redundantes. Los puertos bloqueados permanecen en escucha para activarse si el enlace activo falla.</p></div></div>
-<div class="section"><h2 class="section-title">🏆 Elección del Root Bridge</h2>
-<p>STP elige un <strong>Root Bridge</strong> (la raíz del árbol) y desde ahí calcula los mejores caminos hacia todos los switches.</p>
-<div class="concept-box"><h4>🔄 Proceso de elección</h4>
-<ol style="padding-left:1.5rem;line-height:2.2">
-<li>Todos los switches se proclaman Root Bridge y envían <strong>BPDUs</strong></li>
-<li>El switch con menor <strong>Bridge ID</strong> gana (Priority + MAC)</li>
-<li>Bridge ID default = Priority <strong>32768</strong> + MAC del switch</li>
-<li>En empate de priority → menor MAC es Root Bridge</li>
-</ol></div>
-<div class="osi-table-wrap" style="margin-top:1rem"><table class="osi-table"><thead><tr><th>Elemento</th><th>Descripción</th><th>Default</th></tr></thead><tbody>
-<tr><td><strong>Bridge Priority</strong></td><td>Se configura en incrementos de 4096 (0, 4096, 8192... 61440)</td><td>32768</td></tr>
-<tr><td><strong>Bridge ID</strong></td><td>Priority (2 bytes) + MAC address (6 bytes)</td><td>32768 + MAC</td></tr>
-<tr><td><strong>Root Bridge</strong></td><td>Switch con el menor Bridge ID</td><td>El de menor MAC si priority es igual</td></tr>
-</tbody></table></div></div>
-<div class="section"><h2 class="section-title">🔌 Roles de Puerto STP</h2>
-<div class="osi-table-wrap"><table class="osi-table"><thead><tr><th>Rol</th><th>Descripción</th><th>Estado</th></tr></thead><tbody>
-<tr><td><strong>Root Port (RP)</strong></td><td>Puerto con el menor costo hacia el Root Bridge. Uno por switch (excepto Root Bridge).</td><td>Forwarding</td></tr>
-<tr><td><strong>Designated Port (DP)</strong></td><td>El mejor puerto en cada segmento hacia el Root Bridge. Todos los puertos del Root Bridge son DP.</td><td>Forwarding</td></tr>
-<tr><td><strong>Non-Designated Port</strong></td><td>Puerto bloqueado para evitar bucles.</td><td>Blocking</td></tr>
-<tr><td><strong>Disabled</strong></td><td>Puerto administrativamente apagado.</td><td>Disabled</td></tr>
-</tbody></table></div>
-<div class="concept-box" style="margin-top:1rem"><h4>📏 Costo de Puerto STP (802.1D)</h4>
-<p>10 Mbps = 100 · 100 Mbps = 19 · 1 Gbps = 4 · 10 Gbps = 2</p></div></div>
-</div></div>
-<div class="tab-panel" id="tab-estados">
+
+<!-- ══════════ TAB 1: EL PROBLEMA ══════════ -->
+<div class="tab-panel active" id="tab-problema">
 <div class="content">
-<div class="section"><h2 class="section-title">🔄 Estados de Puerto STP (802.1D)</h2>
-<div class="osi-table-wrap"><table class="osi-table"><thead><tr><th>Estado</th><th>Duración</th><th>Recibe BPDUs</th><th>Aprende MACs</th><th>Reenvía frames</th></tr></thead><tbody>
-<tr><td><strong>Blocking</strong></td><td>20 seg (Max Age)</td><td>Sí</td><td>No</td><td>No</td></tr>
-<tr><td><strong>Listening</strong></td><td>15 seg (Forward Delay)</td><td>Sí</td><td>No</td><td>No</td></tr>
-<tr><td><strong>Learning</strong></td><td>15 seg (Forward Delay)</td><td>Sí</td><td>Sí</td><td>No</td></tr>
-<tr><td><strong>Forwarding</strong></td><td>Indefinido</td><td>Sí</td><td>Sí</td><td>Sí</td></tr>
-<tr><td><strong>Disabled</strong></td><td>—</td><td>No</td><td>No</td><td>No</td></tr>
-</tbody></table></div>
-<div class="concept-box warning" style="margin-top:1rem"><h4>⚠️ Tiempo de convergencia STP clásico = 50 segundos</h4><p>Blocking(20) + Listening(15) + Learning(15) = <strong>50 segundos</strong> hasta Forwarding. RSTP reduce esto a &lt;1 segundo.</p></div>
-<div class="concept-box" style="margin-top:1rem"><h4>⚡ PortFast — Para puertos de acceso a hosts</h4><p>PortFast hace que un puerto salte directamente a Forwarding (sin pasar por Listening/Learning). Solo en puertos conectados a hosts, <strong>nunca en puertos hacia switches</strong>.</p>
-<div class="cli-block" data-label="PortFast"><pre><code><span class="cmd">SW(config)# interface FastEthernet0/1</span>
+
+  <div class="section">
+    <h2 class="section-title">⚠️ El problema — Bucles de Capa 2</h2>
+    <p>En redes con switches redundantes, los <strong>bucles de Capa 2</strong> destruyen la red en segundos. A diferencia de IP (que tiene el TTL para evitar bucles de routing), Ethernet no tiene ningún mecanismo nativo para detener un frame que circula infinitamente.</p>
+
+    <div class="info-grid">
+      <div class="info-card">
+        <h4>🌪️ Tormenta de Broadcast</h4>
+        <p>Un frame broadcast (como ARP) llega al switch, que lo inunda por todos sus puertos. Al haber un bucle, el frame regresa y vuelve a inundarse infinitamente. En segundos la red alcanza el 100% de utilización y colapsa.</p>
+      </div>
+      <div class="info-card">
+        <h4>📋 Inestabilidad de Tabla MAC</h4>
+        <p>El switch ve la misma dirección MAC llegando simultáneamente por múltiples puertos. Actualiza la tabla MAC constantemente sin poder converger. Ninguna comunicación unicast funciona correctamente.</p>
+      </div>
+      <div class="info-card">
+        <h4>♻️ Frames Duplicados</h4>
+        <p>Los dispositivos reciben múltiples copias del mismo frame. Protocolos de capa superior como TCP se confunden y el rendimiento cae drásticamente.</p>
+      </div>
+    </div>
+
+    <div class="concept-box" style="margin-top:1.5rem">
+      <h4>🌳 STP — La solución: IEEE 802.1D</h4>
+      <p>Spanning Tree Protocol crea un <strong>árbol lógico libre de bucles</strong> bloqueando selectivamente los puertos redundantes. El proceso es automático: STP detecta la topología, elige un punto raíz y calcula el mejor camino desde cada switch hacia esa raíz, bloqueando los caminos alternativos.</p>
+      <p>Los puertos bloqueados permanecen en escucha pasiva: si el enlace activo falla, STP reactiva automáticamente el puerto bloqueado para mantener la conectividad.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">📨 BPDUs — Bridge Protocol Data Units</h2>
+    <p>Los switches intercambian mensajes <strong>BPDU</strong> para construir y mantener el árbol STP. Son la base de todo el proceso de STP.</p>
+
+    <div class="osi-table-wrap">
+      <table class="osi-table">
+        <thead>
+          <tr><th>Campo BPDU</th><th>Descripción</th><th>Función</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Root Bridge ID</strong></td><td>Bridge ID del Root Bridge actual</td><td>Identifica la raíz del árbol</td></tr>
+          <tr><td><strong>Root Path Cost</strong></td><td>Costo acumulado hasta el Root Bridge</td><td>Determina el mejor camino</td></tr>
+          <tr><td><strong>Sender Bridge ID</strong></td><td>Bridge ID del switch que envía el BPDU</td><td>Identifica el emisor</td></tr>
+          <tr><td><strong>Sender Port ID</strong></td><td>ID del puerto que envía el BPDU</td><td>Desempata puertos con igual costo</td></tr>
+          <tr><td><strong>Hello Time</strong></td><td>Intervalo entre BPDUs (default 2 seg)</td><td>Mantener la topología activa</td></tr>
+          <tr><td><strong>Max Age</strong></td><td>Tiempo máximo sin recibir BPDU (default 20 seg)</td><td>Detectar fallo del Root Bridge</td></tr>
+          <tr><td><strong>Forward Delay</strong></td><td>Tiempo en Listening y Learning (default 15 seg)</td><td>Evitar bucles durante convergencia</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="concept-box" style="margin-top:1.2rem">
+      <h4>📡 Hello Timers — El latido de STP</h4>
+      <ul>
+        <li><strong>Hello Time:</strong> 2 segundos — frecuencia de envío de BPDUs</li>
+        <li><strong>Max Age:</strong> 20 segundos — si no llega BPDU, la topología se considera cambiada</li>
+        <li><strong>Forward Delay:</strong> 15 segundos — tiempo en cada estado transitorio (Listening + Learning)</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+</div>
+
+
+<!-- ══════════ TAB 2: ELECCIÓN ══════════ -->
+<div class="tab-panel" id="tab-eleccion">
+<div class="content">
+
+  <div class="section">
+    <h2 class="section-title">🏆 Proceso de Elección STP — 4 decisiones</h2>
+    <p>STP toma <strong>4 decisiones</strong> en orden para construir el árbol libre de bucles. Cada decisión elimina puertos candidatos hasta determinar el rol de cada puerto.</p>
+
+    <div class="lab-steps">
+      <div class="lab-step">
+        <h4>Decisión 1 — Elegir el Root Bridge</h4>
+        <p>El switch con el <strong>menor Bridge ID</strong> se convierte en Root Bridge. Todos sus puertos quedan como Designated Ports (Forwarding).</p>
+        <div class="concept-box">
+          <h4>🔑 Bridge ID = Priority (2 bytes) + MAC Address (6 bytes)</h4>
+          <p>La prioridad se configura en <strong>múltiplos de 4096</strong> (0, 4096, 8192... hasta 61440). El default es <strong>32768</strong>.</p>
+          <p>Si dos switches tienen igual priority, gana el de <strong>menor MAC address</strong>.</p>
+          <p>En realidad el campo de prioridad tiene 2 partes: Priority (4 bits) + System ID Extension (12 bits = VLAN ID en PVST+)</p>
+        </div>
+        <div class="osi-table-wrap" style="margin-top:1rem">
+          <table class="osi-table">
+            <thead><tr><th>Switch</th><th>Priority</th><th>MAC</th><th>Bridge ID</th><th>¿Root?</th></tr></thead>
+            <tbody>
+              <tr><td>SW1</td><td>32768</td><td>0001.0001.0001</td><td>32768.0001.0001.0001</td><td>✅ Sí (menor MAC)</td></tr>
+              <tr><td>SW2</td><td>32768</td><td>0002.0002.0002</td><td>32768.0002.0002.0002</td><td>❌ No</td></tr>
+              <tr><td>SW3</td><td>4096</td> <td>0003.0003.0003</td><td>4096.0003.0003.0003</td> <td>✅ Sí (menor priority)</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="lab-step">
+        <h4>Decisión 2 — Elegir el Root Port de cada switch</h4>
+        <p>Cada switch no-Root elige <strong>UN Root Port</strong>: el puerto con el menor costo acumulado hacia el Root Bridge.</p>
+        <div class="osi-table-wrap">
+          <table class="osi-table">
+            <thead><tr><th>Velocidad del enlace</th><th>Costo STP 802.1D</th><th>Costo STP 802.1t (moderno)</th></tr></thead>
+            <tbody>
+              <tr><td>10 Mbps</td><td>100</td><td>2,000,000</td></tr>
+              <tr><td>100 Mbps (FastEthernet)</td><td>19</td><td>200,000</td></tr>
+              <tr><td>1 Gbps (GigabitEthernet)</td><td>4</td><td>20,000</td></tr>
+              <tr><td>10 Gbps</td><td>2</td><td>2,000</td></tr>
+              <tr><td>100 Gbps</td><td>—</td><td>200</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="concept-box" style="margin-top:1rem">
+          <h4>🔢 Desempate de Root Port (en caso de igual costo)</h4>
+          <ol style="padding-left:1.5rem;line-height:2.2">
+            <li>Menor <strong>Sender Bridge ID</strong> del vecino upstream</li>
+            <li>Menor <strong>Sender Port ID</strong> del vecino upstream</li>
+            <li>Menor <strong>Port ID local</strong> (priority.número de puerto)</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="lab-step">
+        <h4>Decisión 3 — Elegir Designated Port en cada segmento</h4>
+        <p>En cada segmento de red, el puerto con el <strong>menor costo acumulado al Root Bridge</strong> se convierte en Designated Port. Si hay empate, gana el menor Bridge ID.</p>
+        <p>Todos los puertos del Root Bridge son Designated Ports automáticamente (costo = 0).</p>
+      </div>
+
+      <div class="lab-step">
+        <h4>Decisión 4 — Bloquear los Non-Designated Ports</h4>
+        <p>Cualquier puerto que no sea Root Port ni Designated Port queda como <strong>Non-Designated Port (Blocking)</strong>. Esto elimina el bucle.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">🗺️ Ejemplo completo — Red triangular</h2>
+    <div class="concept-box">
+      <h4>📋 Topología: SW1─FA0/1─SW2─FA0/1─SW3─FA0/2─SW1</h4>
+      <p>SW1: priority=4096, MAC=AA | SW2: priority=32768, MAC=BB | SW3: priority=32768, MAC=CC</p>
+    </div>
+    <div class="lab-steps">
+      <div class="lab-step">
+        <h4>Resultado de las 4 decisiones</h4>
+        <div class="cli-block" data-label="Análisis STP">
+          <pre><code><span class="cmt">! Decisión 1: Root Bridge = SW1 (priority 4096, el menor)</span>
+<span class="cmt">! Todos los puertos de SW1 → Designated Port (Forwarding)</span>
+
+<span class="cmt">! Decisión 2: Root Ports</span>
+<span class="cmt">! SW2: Fa0/1 conecta a SW1 (costo=19 Fa) → Root Port</span>
+<span class="cmt">! SW3: Fa0/2 conecta a SW1 (costo=19 Fa) → Root Port</span>
+
+<span class="cmt">! Decisión 3: Designated Port en segmento SW2─SW3</span>
+<span class="cmt">! SW2 Fa0/2: costo acum. hacia Root = 19 (ya tiene 1 salto a Root)</span>
+<span class="cmt">! SW3 Fa0/1: costo acum. hacia Root = 19 (igual)</span>
+<span class="cmt">! Empate → menor Bridge ID gana → SW2 (BB &lt; CC)</span>
+<span class="cmt">! SW2 Fa0/2 → Designated Port (Forwarding)</span>
+
+<span class="cmt">! Decisión 4: Non-Designated</span>
+<span class="cmt">! SW3 Fa0/1 → Non-Designated → BLOCKING ← elimina el bucle</span></code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+
+<!-- ══════════ TAB 3: ROLES & ESTADOS ══════════ -->
+<div class="tab-panel" id="tab-roles">
+<div class="content">
+
+  <div class="section">
+    <h2 class="section-title">🔌 Roles de Puerto STP</h2>
+    <div class="osi-table-wrap">
+      <table class="osi-table">
+        <thead>
+          <tr><th>Rol</th><th>Descripción</th><th>Estado</th><th>Quién lo tiene</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Root Port (RP)</strong></td>
+            <td>El puerto con el menor costo acumulado hacia el Root Bridge</td>
+            <td>Forwarding</td>
+            <td>Uno por cada switch no-Root</td>
+          </tr>
+          <tr>
+            <td><strong>Designated Port (DP)</strong></td>
+            <td>El mejor puerto en cada segmento para enviar tráfico hacia el Root</td>
+            <td>Forwarding</td>
+            <td>Todos los puertos del Root Bridge + 1 por cada segmento</td>
+          </tr>
+          <tr>
+            <td><strong>Non-Designated Port</strong></td>
+            <td>Puerto bloqueado para prevenir bucles</td>
+            <td>Blocking</td>
+            <td>Los puertos "perdedores" en cada segmento</td>
+          </tr>
+          <tr>
+            <td><strong>Disabled</strong></td>
+            <td>Puerto administrativamente apagado (shutdown)</td>
+            <td>Disabled</td>
+            <td>Puertos con <code>shutdown</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">🔄 Estados de Puerto STP 802.1D</h2>
+    <p>Cuando un puerto STP pasa de Blocking a Forwarding, debe atravesar estados intermedios para evitar crear bucles temporales durante la convergencia.</p>
+
+    <div class="osi-table-wrap">
+      <table class="osi-table">
+        <thead>
+          <tr><th>Estado</th><th>Duración</th><th>Recibe BPDUs</th><th>Envía BPDUs</th><th>Aprende MACs</th><th>Reenvía frames</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Blocking</strong></td>
+            <td>20 seg (Max Age)</td>
+            <td>✅ Sí</td><td>❌ No</td><td>❌ No</td><td>❌ No</td>
+          </tr>
+          <tr>
+            <td><strong>Listening</strong></td>
+            <td>15 seg (Forward Delay)</td>
+            <td>✅ Sí</td><td>✅ Sí</td><td>❌ No</td><td>❌ No</td>
+          </tr>
+          <tr>
+            <td><strong>Learning</strong></td>
+            <td>15 seg (Forward Delay)</td>
+            <td>✅ Sí</td><td>✅ Sí</td><td>✅ Sí</td><td>❌ No</td>
+          </tr>
+          <tr>
+            <td><strong>Forwarding</strong></td>
+            <td>Indefinido (normal operation)</td>
+            <td>✅ Sí</td><td>✅ Sí</td><td>✅ Sí</td><td>✅ Sí</td>
+          </tr>
+          <tr>
+            <td><strong>Disabled</strong></td>
+            <td>Hasta <code>no shutdown</code></td>
+            <td>❌ No</td><td>❌ No</td><td>❌ No</td><td>❌ No</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="concept-box warning" style="margin-top:1.2rem">
+      <h4>⏱️ Tiempo total de convergencia 802.1D = 50 segundos</h4>
+      <p>Blocking (20s) → Listening (15s) → Learning (15s) → Forwarding</p>
+      <p>Esto es un problema crítico en redes modernas donde se espera convergencia en segundos. Por eso se usa RSTP.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">⚡ PortFast — Acceso instantáneo para hosts</h2>
+    <p>PortFast hace que un puerto salte <strong>directamente a Forwarding</strong> (omitiendo Listening y Learning). Solo debe usarse en puertos conectados a hosts finales.</p>
+
+    <div class="info-grid">
+      <div class="info-card">
+        <h4>✅ Cuándo usar PortFast</h4>
+        <p>Puertos conectados a PCs, servidores, impresoras, IP phones. Cualquier dispositivo que no sea un switch.</p>
+      </div>
+      <div class="info-card">
+        <h4>❌ Cuándo NO usar PortFast</h4>
+        <p>Puertos conectados a otros switches, APs con múltiples clientes, hubs. Usarlo ahí puede crear bucles.</p>
+      </div>
+    </div>
+
+    <div class="cli-block" style="margin-top:1.2rem" data-label="PortFast &amp; BPDU Guard">
+      <pre><code><span class="cmt">! Habilitar PortFast en un puerto específico</span>
+<span class="cmd">SW(config)# interface FastEthernet0/1</span>
 <span class="cmd">SW(config-if)# spanning-tree portfast</span>
-<span class="cmt">! O habilitar en todos los puertos de acceso globalmente</span>
-<span class="cmd">SW(config)# spanning-tree portfast default</span></code></pre></div></div>
-<div class="concept-box warning" style="margin-top:1rem"><h4>⚠️ BPDU Guard — Protección PortFast</h4><p>Si un puerto PortFast recibe un BPDU (lo que significa que hay un switch conectado), BPDU Guard lo pone en err-disabled inmediatamente.</p>
-<div class="cli-block" data-label="BPDU Guard"><pre><code><span class="cmd">SW(config-if)# spanning-tree bpduguard enable</span>
-<span class="cmt">! O globalmente en todos los puertos PortFast</span>
-<span class="cmd">SW(config)# spanning-tree portfast bpduguard default</span></code></pre></div></div></div>
-</div></div>
-<div class="tab-panel" id="tab-variantes">
+
+<span class="cmt">! Habilitar PortFast globalmente en todos los puertos de acceso</span>
+<span class="cmd">SW(config)# spanning-tree portfast default</span>
+
+<span class="cmt">! BPDU Guard: si un puerto PortFast recibe un BPDU → err-disabled</span>
+<span class="cmd">SW(config-if)# spanning-tree bpduguard enable</span>
+
+<span class="cmt">! BPDU Guard global (en todos los puertos PortFast)</span>
+<span class="cmd">SW(config)# spanning-tree portfast bpduguard default</span>
+
+<span class="cmt">! Recuperar puerto err-disabled</span>
+<span class="cmd">SW(config)# errdisable recovery cause bpduguard</span>
+<span class="cmd">SW(config)# errdisable recovery interval 300</span></code></pre>
+    </div>
+  </div>
+
+</div>
+</div>
+
+
+<!-- ══════════ TAB 4: RSTP & PVST+ ══════════ -->
+<div class="tab-panel" id="tab-rstp">
 <div class="content">
-<div class="section"><h2 class="section-title">⚡ Variantes de STP</h2>
-<div class="osi-table-wrap"><table class="osi-table"><thead><tr><th>Protocolo</th><th>Estándar</th><th>Convergencia</th><th>VLANs</th><th>Notas</th></tr></thead><tbody>
-<tr><td><strong>STP (802.1D)</strong></td><td>IEEE</td><td>~50 segundos</td><td>1 instancia para todas</td><td>Original, obsoleto</td></tr>
-<tr><td><strong>RSTP (802.1w)</strong></td><td>IEEE</td><td>&lt;1 segundo</td><td>1 instancia para todas</td><td>Retrocompatible con 802.1D</td></tr>
-<tr><td><strong>PVST+</strong></td><td>Cisco</td><td>~50 segundos</td><td>1 instancia por VLAN</td><td>Propietario Cisco</td></tr>
-<tr><td><strong>Rapid PVST+</strong></td><td>Cisco</td><td>&lt;1 segundo</td><td>1 instancia por VLAN</td><td>Default en Cisco IOS moderno</td></tr>
-<tr><td><strong>MST (802.1s)</strong></td><td>IEEE</td><td>&lt;1 segundo</td><td>Múltiples VLANs → instancias</td><td>Escalable, grandes redes</td></tr>
-</tbody></table></div>
-<div class="concept-box" style="margin-top:1rem"><h4>⚡ RSTP — Nuevos roles de puerto</h4>
-<div class="osi-table-wrap"><table class="osi-table"><thead><tr><th>Puerto RSTP</th><th>Equivalente 802.1D</th><th>Estado</th></tr></thead><tbody>
-<tr><td>Root Port</td><td>Root Port</td><td>Forwarding</td></tr>
-<tr><td>Designated Port</td><td>Designated Port</td><td>Forwarding</td></tr>
-<tr><td><strong>Alternate Port</strong></td><td>Non-Designated (Blocking)</td><td>Discarding — backup del Root Port</td></tr>
-<tr><td><strong>Backup Port</strong></td><td>Non-Designated (Blocking)</td><td>Discarding — backup del Designated Port</td></tr>
-</tbody></table></div></div>
-</div></div>
+
+  <div class="section">
+    <h2 class="section-title">⚡ RSTP — Rapid Spanning Tree Protocol (802.1w)</h2>
+    <p>RSTP mejora drásticamente la convergencia de STP usando un <strong>mecanismo de negociación propuesta/acuerdo</strong> (Proposal/Agreement) en lugar de esperar timers fijos.</p>
+
+    <div class="info-grid">
+      <div class="info-card">
+        <h4>⏱️ Convergencia</h4>
+        <p>RSTP converge en <strong>menos de 1 segundo</strong> en la mayoría de los casos, frente a los 50 segundos de 802.1D.</p>
+      </div>
+      <div class="info-card">
+        <h4>🔄 Retrocompatible</h4>
+        <p>RSTP es retrocompatible con 802.1D. Si detecta un switch 802.1D en el segmento, vuelve automáticamente al comportamiento lento.</p>
+      </div>
+      <div class="info-card">
+        <h4>🔌 Tipos de enlace</h4>
+        <p>P2P (full-duplex): negociación rápida. Shared (half-duplex): usa timers como 802.1D. Edge (PortFast): va directamente a Forwarding.</p>
+      </div>
+    </div>
+
+    <div class="section" style="margin-top:1.5rem">
+      <h2 class="section-title">🔌 Nuevos roles de puerto RSTP</h2>
+      <div class="osi-table-wrap">
+        <table class="osi-table">
+          <thead>
+            <tr><th>Rol RSTP</th><th>Equivalente 802.1D</th><th>Estado</th><th>Descripción</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Root Port</strong></td><td>Root Port</td><td>Forwarding</td><td>Igual que 802.1D</td></tr>
+            <tr><td><strong>Designated Port</strong></td><td>Designated Port</td><td>Forwarding</td><td>Igual que 802.1D</td></tr>
+            <tr><td><strong>Alternate Port</strong></td><td>Non-Designated (Blocking)</td><td>Discarding</td><td>Backup del Root Port. Se activa inmediatamente si el Root Port falla.</td></tr>
+            <tr><td><strong>Backup Port</strong></td><td>Non-Designated (Blocking)</td><td>Discarding</td><td>Backup del Designated Port. Solo en redes compartidas (half-duplex).</td></tr>
+            <tr><td><strong>Edge Port</strong></td><td>PortFast</td><td>Forwarding inmediato</td><td>Puerto conectado a host. No participa en RSTP.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="section" style="margin-top:1.5rem">
+      <h2 class="section-title">Estados RSTP — Simplificados</h2>
+      <div class="osi-table-wrap">
+        <table class="osi-table">
+          <thead>
+            <tr><th>Estado RSTP</th><th>Equivalente 802.1D</th><th>Reenvía frames</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Discarding</strong></td><td>Blocking + Listening + Disabled</td><td>No</td></tr>
+            <tr><td><strong>Learning</strong></td><td>Learning</td><td>No (aprende MACs)</td></tr>
+            <tr><td><strong>Forwarding</strong></td><td>Forwarding</td><td>Sí</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="concept-box" style="margin-top:1rem">
+        <h4>📌 RSTP reduce 5 estados a 3</h4>
+        <p>RSTP fusiona Blocking, Listening y Disabled en un único estado <strong>Discarding</strong>. El proceso de convergencia ya no depende de timers fijos sino de la negociación entre switches.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">🔀 PVST+ y Rapid PVST+</h2>
+    <p>Cisco extiende STP para tener <strong>una instancia por VLAN</strong>, permitiendo balanceo de carga entre VLANs.</p>
+
+    <div class="osi-table-wrap">
+      <table class="osi-table">
+        <thead>
+          <tr><th>Protocolo</th><th>Estándar</th><th>Convergencia</th><th>Instancias</th><th>Estado en Cisco</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>STP 802.1D</strong></td><td>IEEE</td><td>~50 segundos</td><td>1 para todas las VLANs</td><td>Obsoleto</td></tr>
+          <tr><td><strong>PVST+</strong></td><td>Cisco propietario</td><td>~50 segundos</td><td>1 por VLAN</td><td>Disponible</td></tr>
+          <tr><td><strong>RSTP 802.1w</strong></td><td>IEEE</td><td>&lt;1 segundo</td><td>1 para todas las VLANs</td><td>Estándar</td></tr>
+          <tr><td><strong>Rapid PVST+</strong></td><td>Cisco propietario</td><td>&lt;1 segundo</td><td>1 por VLAN</td><td>✅ Default en Cisco IOS</td></tr>
+          <tr><td><strong>MST 802.1s</strong></td><td>IEEE</td><td>&lt;1 segundo</td><td>VLANs agrupadas en instancias</td><td>Grandes redes</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="concept-box" style="margin-top:1.2rem">
+      <h4>🔀 Balanceo de carga con PVST+</h4>
+      <p>Con PVST+ se puede tener:</p>
+      <ul>
+        <li>SW1 = Root Bridge para VLAN 10 → el tráfico VLAN 10 usa el enlace de SW1</li>
+        <li>SW2 = Root Bridge para VLAN 20 → el tráfico VLAN 20 usa el enlace de SW2</li>
+      </ul>
+      <p>Esto distribuye la carga entre los enlaces físicos, aprovechando mejor la redundancia.</p>
+    </div>
+  </div>
+
+</div>
+</div>
+
+
+<!-- ══════════ TAB 5: CONFIGURACIÓN ══════════ -->
 <div class="tab-panel" id="tab-config">
 <div class="content">
-<div class="section"><h2 class="section-title">⚙️ Configuración STP</h2>
-<div class="lab-steps">
-<div class="lab-step"><h4>Verificar STP y Root Bridge actual</h4>
-<div class="cli-block" data-label="Verificación STP"><pre><code><span class="cmd">SW1# show spanning-tree</span>
+
+  <div class="section">
+    <h2 class="section-title">⚙️ Configuración STP en Cisco IOS</h2>
+
+    <div class="lab-steps">
+
+      <div class="lab-step">
+        <h4>Verificar el estado STP actual</h4>
+        <div class="cli-block" data-label="Verificación STP">
+          <pre><code><span class="cmd">SW1# show spanning-tree</span>
 <span class="out">VLAN0001
   Spanning tree enabled protocol rstp
-  Root ID    Priority    32769
-             Address     0001.647B.0001
+  Root ID    Priority    24577
+             Address     0001.6434.0D01
              This bridge is the root
-  Bridge ID  Priority    32769 (priority 32768 sys-id-ext 1)
-             Address     0001.647B.0001
-  Interface        Role  Sts  Cost  Prio.Nbr  Type
-  ---------------  ----  ---  ----  --------  ----
-  Fa0/1            Desg  FWD  19    128.1     P2p
-  Fa0/2            Desg  FWD  19    128.2     P2p</span>
-<span class="cmd">SW1# show spanning-tree vlan 10</span>
-<span class="cmd">SW1# show spanning-tree summary</span></code></pre></div></div>
-<div class="lab-step"><h4>Configurar Root Bridge primario y secundario</h4>
-<div class="cli-block" data-label="Root Bridge"><pre><code><span class="cmt">! Método 1: Macro — ajusta automáticamente la priority</span>
+             Hello Time  2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    24577 (priority 24576 sys-id-ext 1)
+             Address     0001.6434.0D01
+             Hello Time  2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time  300 sec
+
+Interface        Role Sts Cost      Prio.Nbr Type
+---------------- ---- --- --------- -------- ----
+Fa0/1            Desg FWD 19        128.1    P2p
+Fa0/2            Desg FWD 19        128.2    P2p
+Gi0/1            Desg FWD 4         128.25   P2p</span>
+
+<span class="cmd">SW2# show spanning-tree vlan 10</span>
+<span class="cmd">SW1# show spanning-tree summary</span>
+<span class="out">Switch is in rapid-pvst mode
+Root bridge for: VLAN0001, VLAN0010
+Extended system ID           is enabled
+Portfast Default             is disabled
+PortFast BPDU Guard Default  is disabled
+Portfast BPDU Filter Default is disabled
+Loopguard Default            is disabled</span></code></pre>
+        </div>
+      </div>
+
+      <div class="lab-step">
+        <h4>Configurar Root Bridge primario y secundario</h4>
+        <div class="cli-block" data-label="Root Bridge">
+          <pre><code><span class="cmt">! MÉTODO 1 — Macro (ajusta priority automáticamente)</span>
 <span class="cmd">SW1(config)# spanning-tree vlan 1 root primary</span>
-<span class="cmt">! Ajusta priority a 24576 (o menos si hay competidor)</span>
+<span class="cmt">! Cisco ajusta a 24576 (o menos si hay competidor con priority ≤ 24576)</span>
+
 <span class="cmd">SW2(config)# spanning-tree vlan 1 root secondary</span>
-<span class="cmt">! Ajusta priority a 28672</span>
-<span class="cmt">! Método 2: Manual — más control</span>
-<span class="cmd">SW1(config)# spanning-tree vlan 1 priority 4096</span></code></pre></div></div>
-<div class="lab-step"><h4>Cambiar costo de puerto</h4>
-<div class="cli-block" data-label="Costo STP"><pre><code><span class="cmt">! Influir en la elección del Root Port</span>
-<span class="cmd">SW2(config)# interface FastEthernet0/1</span>
-<span class="cmd">SW2(config-if)# spanning-tree cost 10</span></code></pre></div></div></div></div>
-</div></div>
-<div class="tab-panel" id="tab-lab">
-<div class="content">
-<div class="section"><h2 class="section-title">🧪 Laboratorio STP — 3 switches</h2>
-<div class="concept-box"><h4>📋 Topología: SW1─SW2─SW3 en triángulo (redundante)</h4></div>
-<div class="lab-steps">
-<div class="lab-step"><h4>Configurar Root Bridge y verificar convergencia</h4>
-<div class="cli-block" data-label="Lab STP"><pre><code><span class="cmt">! Forzar SW1 como Root Bridge para VLAN 1</span>
-<span class="cmd">SW1(config)# spanning-tree vlan 1 root primary</span>
-<span class="cmt">! SW2 como Root secundario</span>
-<span class="cmd">SW2(config)# spanning-tree vlan 1 root secondary</span>
-<span class="cmt">! Habilitar PortFast + BPDU Guard en puertos de acceso</span>
+<span class="cmt">! Cisco ajusta a 28672</span>
+
+<span class="cmt">! MÉTODO 2 — Manual (control total)</span>
+<span class="cmd">SW1(config)# spanning-tree vlan 1 priority 4096</span>
+<span class="cmd">SW2(config)# spanning-tree vlan 1 priority 8192</span>
+
+<span class="cmt">! Balanceo de carga: SW1=Root para VLAN10, SW2=Root para VLAN20</span>
+<span class="cmd">SW1(config)# spanning-tree vlan 10 root primary</span>
+<span class="cmd">SW1(config)# spanning-tree vlan 20 root secondary</span>
+<span class="cmd">SW2(config)# spanning-tree vlan 20 root primary</span>
+<span class="cmd">SW2(config)# spanning-tree vlan 10 root secondary</span></code></pre>
+        </div>
+      </div>
+
+      <div class="lab-step">
+        <h4>Modificar costo de puerto</h4>
+        <div class="cli-block" data-label="Costo de Puerto">
+          <pre><code><span class="cmt">! Forzar que un puerto sea Root Port reduciendo su costo</span>
+<span class="cmd">SW3(config)# interface FastEthernet0/1</span>
+<span class="cmd">SW3(config-if)# spanning-tree cost 10</span>
+<span class="cmt">! El puerto con menor costo hacia el Root Bridge será RP</span>
+
+<span class="cmt">! Modificar prioridad de puerto (desempate)</span>
+<span class="cmd">SW3(config-if)# spanning-tree port-priority 64</span>
+<span class="cmt">! Default = 128, rango 0-240 en múltiplos de 16</span></code></pre>
+        </div>
+      </div>
+
+      <div class="lab-step">
+        <h4>Configurar modo STP</h4>
+        <div class="cli-block" data-label="Modo STP">
+          <pre><code><span class="cmt">! Ver modo actual</span>
+<span class="cmd">SW1# show spanning-tree summary | include mode</span>
+<span class="out">Switch is in rapid-pvst mode</span>
+
+<span class="cmt">! Cambiar a MST (redes grandes)</span>
+<span class="cmd">SW1(config)# spanning-tree mode mst</span>
+
+<span class="cmt">! Volver a Rapid PVST+ (recomendado)</span>
+<span class="cmd">SW1(config)# spanning-tree mode rapid-pvst</span></code></pre>
+        </div>
+      </div>
+
+      <div class="lab-step">
+        <h4>PortFast + BPDU Guard — Configuración completa</h4>
+        <div class="cli-block" data-label="PortFast &amp; BPDU Guard">
+          <pre><code><span class="cmt">! Habilitar PortFast en puertos de acceso individuales</span>
+<span class="cmd">SW1(config)# interface range FastEthernet0/1-20</span>
+<span class="cmd">SW1(config-if-range)# spanning-tree portfast</span>
+<span class="cmd">SW1(config-if-range)# spanning-tree bpduguard enable</span>
+
+<span class="cmt">! O globalmente (aplica a todos los puertos en modo access)</span>
 <span class="cmd">SW1(config)# spanning-tree portfast default</span>
 <span class="cmd">SW1(config)# spanning-tree portfast bpduguard default</span>
-<span class="cmd">SW1# show spanning-tree vlan 1</span>
-<span class="out">  Root ID    Priority    24577
-             Address     0001.647B.0001
-             This bridge is the root
-  Interface    Role  Sts  Cost
-  Fa0/1        Desg  FWD  19
-  Fa0/2        Desg  FWD  19</span>
-<span class="cmd">SW3# show spanning-tree vlan 1</span>
-<span class="out">  Interface    Role  Sts  Cost
-  Fa0/1        Root  FWD  19   ← camino al Root
-  Fa0/2        Altn  BLK  19   ← bloqueado (evita bucle)</span></code></pre></div></div></div></div>
-</div></div>
+
+<span class="cmt">! Recuperación automática de err-disabled</span>
+<span class="cmd">SW1(config)# errdisable recovery cause bpduguard</span>
+<span class="cmd">SW1(config)# errdisable recovery interval 300</span>
+
+<span class="cmt">! Verificar BPDU Guard</span>
+<span class="cmd">SW1# show interfaces FastEthernet0/1 status</span>
+<span class="out">Port    Status     Vlan  Duplex  Speed
+Fa0/1   err-disabled 10   auto   auto   ← BPDU Guard activó err-disabled</span>
+
+<span class="cmd">SW1# show errdisable recovery</span>
+<span class="out">ErrDisable Reason    Timer Status
+--------------       --------------
+bpduguard            Enabled   (300 seconds)</span></code></pre>
+        </div>
+      </div>
+
+      <div class="lab-step">
+        <h4>BPDU Filter — Silenciar BPDUs en puertos de acceso</h4>
+        <div class="cli-block" data-label="BPDU Filter">
+          <pre><code><span class="cmt">! BPDU Filter: el puerto no envía NI recibe BPDUs</span>
+<span class="cmt">! En interfaz: el puerto se convierte en edge (no participa en STP)</span>
+<span class="cmd">SW1(config-if)# spanning-tree bpdufilter enable</span>
+<span class="cmt">! Global: el puerto envía algunos BPDUs al inicio; si recibe uno, desactiva el filtro</span>
+<span class="cmd">SW1(config)# spanning-tree portfast bpdufilter default</span></code></pre>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">🧪 Laboratorio — STP en red triangular</h2>
+    <div class="concept-box">
+      <h4>📋 Topología: SW1─SW2─SW3 en triángulo, todos con VLAN 10 y VLAN 20</h4>
+    </div>
+    <div class="lab-steps">
+      <div class="lab-step">
+        <h4>Configuración completa con balanceo de carga</h4>
+        <div class="cli-block" data-label="Lab STP Completo">
+          <pre><code><span class="cmt">! SW1 — Root primario VLAN 10, secundario VLAN 20</span>
+<span class="cmd">SW1(config)# spanning-tree mode rapid-pvst</span>
+<span class="cmd">SW1(config)# spanning-tree vlan 10 root primary</span>
+<span class="cmd">SW1(config)# spanning-tree vlan 20 root secondary</span>
+<span class="cmd">SW1(config)# spanning-tree portfast default</span>
+<span class="cmd">SW1(config)# spanning-tree portfast bpduguard default</span>
+
+<span class="cmt">! SW2 — Root primario VLAN 20, secundario VLAN 10</span>
+<span class="cmd">SW2(config)# spanning-tree mode rapid-pvst</span>
+<span class="cmd">SW2(config)# spanning-tree vlan 20 root primary</span>
+<span class="cmd">SW2(config)# spanning-tree vlan 10 root secondary</span>
+
+<span class="cmt">! Verificar</span>
+<span class="cmd">SW1# show spanning-tree vlan 10</span>
+<span class="out">VLAN0010
+  Root ID: This bridge is the root
+  Interface  Role  Sts  Cost
+  Fa0/1      Desg  FWD  19
+  Fa0/2      Desg  FWD  19</span>
+
+<span class="cmd">SW3# show spanning-tree vlan 10</span>
+<span class="out">  Interface  Role  Sts  Cost
+  Fa0/1      Root  FWD  19   ← hacia SW1 (Root Bridge VLAN10)
+  Fa0/2      Altn  BLK  19   ← bloqueado (evita bucle)</span></code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+
+<!-- ══════════ TAB 6: RESUMEN ══════════ -->
 <div class="tab-panel" id="tab-resumen">
 <div class="content">
-<div class="section"><h2 class="section-title">📋 Resumen STP</h2>
-<div class="concept-box"><h4>✅ Puntos críticos del examen</h4><ul>
-<li>STP evita bucles Capa 2 bloqueando puertos redundantes</li>
-<li>Root Bridge = menor Bridge ID (Priority + MAC). Priority default = 32768</li>
-<li>Priority se configura en múltiplos de 4096</li>
-<li>Convergencia 802.1D = 50 seg | RSTP/Rapid PVST+ = &lt;1 seg</li>
-<li>PortFast = salta Listening/Learning → solo en puertos de hosts</li>
-<li>BPDU Guard = err-disabled si PortFast recibe BPDU</li>
-<li>Cisco default: Rapid PVST+ (una instancia STP por VLAN)</li>
-<li>Costo: 10M=100, 100M=19, 1G=4, 10G=2</li>
-</ul></div>
-<div class="concept-box warning" style="margin-top:1rem"><h4>⚠️ Errores comunes</h4><ul>
-<li>Habilitar PortFast en puertos hacia otros switches → bucles</li>
-<li>No configurar BPDU Guard → vulnerabilidad de seguridad</li>
-<li>Olvidar que la priority debe ser múltiplo de 4096</li>
-</ul></div>
-<div style="margin-top:1.5rem"><div id="refTableContainer"></div></div></div>
-</div></div>
+
+  <div class="section">
+    <h2 class="section-title">📋 Resumen — STP para el examen CCNA</h2>
+
+    <div class="concept-box">
+      <h4>✅ Puntos críticos del examen</h4>
+      <ul>
+        <li>STP evita bucles Capa 2 bloqueando selectivamente puertos redundantes</li>
+        <li>Root Bridge = menor Bridge ID = menor Priority → menor MAC en empate</li>
+        <li>Priority default = <strong>32768</strong>, configurable en múltiplos de <strong>4096</strong></li>
+        <li>Root Port = puerto con menor costo hacia el Root Bridge (uno por switch no-Root)</li>
+        <li>Designated Port = mejor puerto en cada segmento (Forwarding)</li>
+        <li>Non-Designated Port = bloqueado (previene el bucle)</li>
+        <li>Costos 802.1D: 10M=100, 100M=<strong>19</strong>, 1G=<strong>4</strong>, 10G=2</li>
+        <li>Convergencia 802.1D = <strong>50 segundos</strong> (20+15+15)</li>
+        <li>RSTP = &lt;1 segundo, 3 estados (Discarding/Learning/Forwarding)</li>
+        <li>Default en Cisco IOS moderno = <strong>Rapid PVST+</strong></li>
+        <li>PortFast = salta directamente a Forwarding (solo en puertos de hosts)</li>
+        <li>BPDU Guard = err-disabled si PortFast recibe BPDU</li>
+        <li><code>spanning-tree vlan X root primary</code> = ajusta priority a 24576</li>
+        <li><code>spanning-tree vlan X root secondary</code> = ajusta priority a 28672</li>
+      </ul>
+    </div>
+
+    <div class="concept-box warning" style="margin-top:1rem">
+      <h4>⚠️ Errores comunes en el examen</h4>
+      <ul>
+        <li>Configurar priority con valores que no son múltiplo de 4096 (error de sintaxis)</li>
+        <li>Habilitar PortFast en puertos hacia otros switches → crea bucles</li>
+        <li>Confundir Root Port (mejor camino al Root) con Designated Port (mejor en el segmento)</li>
+        <li>Olvidar que el Root Bridge tiene TODOS sus puertos como Designated</li>
+        <li>Confundir PVST+ (lento, Cisco) con Rapid PVST+ (rápido, Cisco default)</li>
+        <li>Creer que BPDU Guard solo funciona con PortFast (también funciona sin él)</li>
+      </ul>
+    </div>
+
+    <div class="section" style="margin-top:1.5rem">
+      <h2 class="section-title">📊 Tabla de referencia de comandos</h2>
+      <div id="refTableContainer"></div>
+    </div>
+
+    <div class="concept-box info" style="margin-top:1.5rem">
+      <h4>📖 Referencias CCNA 200-301</h4>
+      <ul>
+        <li><em>CCNA 200-301 Official Cert Guide, Vol.1</em> — Wendell Odom, Capítulos 9–10</li>
+        <li><em>Redes Cisco: Curso práctico CCNA</em> — Daniel Pérez Torres</li>
+        <li>IEEE 802.1D (STP) · IEEE 802.1w (RSTP) · IEEE 802.1s (MST)</li>
+        <li><a href="https://www.cisco.com/site/us/en/learn/training-certifications/training/netacad/index.html" target="_blank" rel="noopener">Cisco Networking Academy ↗</a></li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+</div>
+
+
+<!-- ══════════ TAB 7: QUIZ ══════════ -->
 <div class="tab-panel" id="tab-quiz">
 <div class="content">
-<div class="section"><h2 class="section-title">✅ Quiz · STP — CCNA 200-301</h2>
-<div id="quiz-container"></div><div id="quiz-container-result"></div></div>
-</div></div>
+
+  <div class="section">
+    <h2 class="section-title">✅ Quiz · STP — Estilo Examen CCNA 200-301</h2>
+    <p>10 preguntas al nivel real del examen. Cubre elección, roles, estados, RSTP, PortFast y BPDU Guard.</p>
+    <div id="quiz-container"></div>
+    <div id="quiz-container-result"></div>
+  </div>
+
+</div>
+</div>
+
+
 <footer class="footer">
-  <p>CCNA Academy · Spanning Tree Protocol · Basado en CCNA 200-301 Official Cert Guide (Wendell Odom)</p>
+  <p>CCNA Academy · Spanning Tree Protocol · M3 · Switching</p>
+  <p style="margin-top:.3rem">Basado en <em>CCNA 200-301 Official Cert Guide</em> (Wendell Odom) · IEEE 802.1D · IEEE 802.1w (RSTP)</p>
   <p style="margin-top:.4rem"><a href="../index.html">← Volver al índice</a></p>
 </footer>
+
 <script src="../assets/main.js" defer></script>
 <script>
-function showTab(id,btn){document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active')});document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active')});var panel=document.getElementById('tab-'+id);if(panel)panel.classList.add('active');if(btn)btn.classList.add('active');window.scrollTo({top:90,behavior:'smooth'});}
-document.addEventListener('DOMContentLoaded',function(){
-  var refData=[
-  {Comando:'spanning-tree vlan X root primary',Modo:'config',Descripcion:'Hacer al switch Root Bridge primario'},
-  {Comando:'spanning-tree vlan X root secondary',Modo:'config',Descripcion:'Hacer al switch Root Bridge secundario'},
-  {Comando:'spanning-tree vlan X priority Y',Modo:'config',Descripcion:'Configurar priority manualmente (múltiplo de 4096)'},
-  {Comando:'spanning-tree portfast',Modo:'config-if',Descripcion:'Habilitar PortFast en un puerto de acceso'},
-  {Comando:'spanning-tree portfast default',Modo:'config',Descripcion:'PortFast en todos los puertos de acceso'},
-  {Comando:'spanning-tree bpduguard enable',Modo:'config-if',Descripcion:'BPDU Guard en un puerto específico'},
-  {Comando:'spanning-tree portfast bpduguard default',Modo:'config',Descripcion:'BPDU Guard global en todos los PortFast'},
-  {Comando:'spanning-tree cost X',Modo:'config-if',Descripcion:'Cambiar costo STP del puerto'},
-  {Comando:'show spanning-tree',Modo:'#',Descripcion:'Ver estado STP, Root Bridge, roles de puertos'},
-  {Comando:'show spanning-tree summary',Modo:'#',Descripcion:'Resumen de instancias STP activas'},
-];
-if(typeof buildRefTable==="function")buildRefTable(refData,"refTableContainer");
-  var preguntas=[
-  {pregunta:"¿Cuál es la prioridad STP por defecto en un switch Cisco?",opciones:["0","4096","32768","65535"],respuesta:2,explicacion:"La prioridad STP por defecto es 32768 (0x8000). El Bridge ID = Priority + MAC. La priority debe configurarse en múltiplos de 4096."},
-  {pregunta:"¿Cuánto tiempo tarda en converger STP 802.1D estándar?",opciones:["15 segundos","30 segundos","50 segundos","2 minutos"],respuesta:2,explicacion:"802.1D: Blocking(20s Max Age) + Listening(15s) + Learning(15s) = 50 segundos hasta Forwarding. RSTP reduce esto a menos de 1 segundo."},
-  {pregunta:"¿Qué hace PortFast cuando está habilitado en un puerto?",opciones:["Bloquea BPDUs","Omite los estados Listening y Learning pasando directamente a Forwarding","Aumenta la prioridad STP","Deshabilita STP en ese puerto"],respuesta:1,explicacion:"PortFast hace que un puerto pase inmediatamente a Forwarding sin esperar 30 segundos de Listening+Learning. Solo debe usarse en puertos conectados a hosts, nunca hacia switches."},
-  {pregunta:"¿Qué hace BPDU Guard si un puerto PortFast recibe un BPDU?",opciones:["Ignora el BPDU","Desactiva PortFast en ese puerto","Pone el puerto en err-disabled","Envía un BPDU de respuesta"],respuesta:2,explicacion:"BPDU Guard es una medida de seguridad: si un puerto PortFast recibe un BPDU (indicando que hay un switch conectado donde no debería), inmediatamente pone el puerto en err-disabled."},
-  {pregunta:"¿Cuál es el protocolo STP por defecto en switches Cisco modernos?",opciones:["STP 802.1D","PVST+","Rapid PVST+","MST 802.1s"],respuesta:2,explicacion:"Rapid PVST+ (Rapid Per-VLAN Spanning Tree Plus) es el default en Cisco IOS moderno. Combina la convergencia rápida de RSTP (802.1w) con una instancia STP por VLAN."},
-  {pregunta:"¿Cuál es el costo STP de un enlace GigabitEthernet en 802.1D?",opciones:["1","4","19","100"],respuesta:1,explicacion:"Costos 802.1D: 10 Mbps=100, 100 Mbps=19, 1 Gbps=4, 10 Gbps=2. Menor costo = mejor camino hacia el Root Bridge."},
-];
-if(typeof initQuiz==="function")initQuiz(preguntas,"quiz-container");
+function showTab(id, btn) {
+  document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+  var panel = document.getElementById('tab-' + id);
+  if (panel) panel.classList.add('active');
+  if (btn) btn.classList.add('active');
+  window.scrollTo({ top: 90, behavior: 'smooth' });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+
+  var refData = [
+    { Comando:'show spanning-tree',                    Modo:'#',         Descripcion:'Ver estado STP, Root Bridge, roles y estados de puertos' },
+    { Comando:'show spanning-tree vlan X',             Modo:'#',         Descripcion:'Ver STP para una VLAN específica' },
+    { Comando:'show spanning-tree summary',            Modo:'#',         Descripcion:'Resumen: modo STP, Root Bridges, PortFast, BPDU Guard' },
+    { Comando:'show spanning-tree interface X detail', Modo:'#',         Descripcion:'Detalle STP de una interfaz: costo, role, estado, timers' },
+    { Comando:'spanning-tree vlan X root primary',     Modo:'config',    Descripcion:'Hacer al switch Root Bridge primario (priority → 24576)' },
+    { Comando:'spanning-tree vlan X root secondary',   Modo:'config',    Descripcion:'Root Bridge secundario (priority → 28672)' },
+    { Comando:'spanning-tree vlan X priority Y',       Modo:'config',    Descripcion:'Configurar priority manualmente (múltiplo de 4096)' },
+    { Comando:'spanning-tree mode rapid-pvst',         Modo:'config',    Descripcion:'Configurar modo Rapid PVST+ (default en IOS moderno)' },
+    { Comando:'spanning-tree cost X',                  Modo:'config-if', Descripcion:'Cambiar costo STP del puerto para influir en Root Port' },
+    { Comando:'spanning-tree port-priority X',         Modo:'config-if', Descripcion:'Cambiar prioridad del puerto (múltiplo de 16, default 128)' },
+    { Comando:'spanning-tree portfast',                Modo:'config-if', Descripcion:'Habilitar PortFast en un puerto de acceso' },
+    { Comando:'spanning-tree portfast default',        Modo:'config',    Descripcion:'PortFast global en todos los puertos de acceso' },
+    { Comando:'spanning-tree bpduguard enable',        Modo:'config-if', Descripcion:'BPDU Guard en un puerto: err-disabled si recibe BPDU' },
+    { Comando:'spanning-tree portfast bpduguard default', Modo:'config', Descripcion:'BPDU Guard global en todos los puertos PortFast' },
+    { Comando:'errdisable recovery cause bpduguard',   Modo:'config',    Descripcion:'Recuperación automática de err-disabled por BPDU Guard' },
+  ];
+  if (typeof buildRefTable === 'function') {
+    buildRefTable(refData, 'refTableContainer');
+  }
+
+  var preguntas = [
+    {
+      pregunta: '¿Cuál es el criterio principal para elegir el Root Bridge en STP?',
+      opciones: [
+        'El switch con mayor número de puertos',
+        'El switch con el menor Bridge ID (menor Priority, luego menor MAC)',
+        'El switch con mayor velocidad de CPU',
+        'El switch configurado manualmente como root'
+      ],
+      respuesta: 1,
+      explicacion: 'El Root Bridge es el switch con el menor Bridge ID. El Bridge ID = Priority (2 bytes) + MAC (6 bytes). Primero se compara la priority (menor gana); en empate, gana el menor MAC address.'
+    },
+    {
+      pregunta: '¿Cuál es la prioridad STP por defecto en un switch Cisco?',
+      opciones: ['0', '4096', '32768', '65535'],
+      respuesta: 2,
+      explicacion: 'La prioridad STP por defecto es 32768 (0x8000). Solo se puede configurar en incrementos de 4096: 0, 4096, 8192, 12288... hasta 61440.'
+    },
+    {
+      pregunta: '¿Cuánto tiempo tarda en converger STP 802.1D estándar desde Blocking hasta Forwarding?',
+      opciones: ['15 segundos', '30 segundos', '50 segundos', '2 minutos'],
+      respuesta: 2,
+      explicacion: '802.1D: Blocking(20s Max Age) + Listening(15s Forward Delay) + Learning(15s Forward Delay) = 50 segundos hasta Forwarding. RSTP reduce esto a menos de 1 segundo.'
+    },
+    {
+      pregunta: '¿Cuál es el costo STP 802.1D de un enlace FastEthernet (100 Mbps)?',
+      opciones: ['4', '10', '19', '100'],
+      respuesta: 2,
+      explicacion: 'Costos 802.1D: 10 Mbps=100, 100 Mbps=19, 1 Gbps=4, 10 Gbps=2. Un enlace FastEthernet tiene costo 19. Menor costo = mejor camino hacia el Root Bridge.'
+    },
+    {
+      pregunta: '¿Qué rol de puerto STP está siempre en estado Forwarding y es el mejor camino de cada switch hacia el Root Bridge?',
+      opciones: ['Designated Port', 'Non-Designated Port', 'Root Port', 'Backup Port'],
+      respuesta: 2,
+      explicacion: 'El Root Port es el puerto de cada switch no-Root que tiene el menor costo acumulado hacia el Root Bridge. Siempre está en Forwarding. Hay exactamente uno por switch no-Root.'
+    },
+    {
+      pregunta: '¿Qué ocurre cuando un puerto PortFast recibe un BPDU con BPDU Guard habilitado?',
+      opciones: [
+        'El puerto ignora el BPDU',
+        'El switch se convierte en Root Bridge',
+        'El puerto entra en estado err-disabled',
+        'STP reinicia la topología'
+      ],
+      respuesta: 2,
+      explicacion: 'BPDU Guard es una medida de seguridad: si un puerto PortFast recibe un BPDU (lo que indica que hay un switch conectado donde no debería), inmediatamente el puerto entra en err-disabled para prevenir bucles.'
+    },
+    {
+      pregunta: '¿Cuál es el protocolo STP por defecto en switches Cisco IOS modernos?',
+      opciones: ['STP 802.1D', 'PVST+', 'Rapid PVST+', 'MST 802.1s'],
+      respuesta: 2,
+      explicacion: 'Rapid PVST+ es el protocolo STP por defecto en Cisco IOS moderno. Combina la convergencia rápida de RSTP (802.1w, <1 segundo) con una instancia STP por VLAN de PVST+.'
+    },
+    {
+      pregunta: '¿Qué comando convierte a un switch en Root Bridge primario para la VLAN 10?',
+      opciones: [
+        'spanning-tree vlan 10 priority 0',
+        'spanning-tree vlan 10 root primary',
+        'spanning-tree root vlan 10 primary',
+        'spanning-tree vlan 10 bridge-id primary'
+      ],
+      respuesta: 1,
+      explicacion: '"spanning-tree vlan X root primary" es el macro que ajusta automáticamente la priority a 24576 (o menos si hay competidor). También se puede hacer manualmente con "spanning-tree vlan X priority Y" usando múltiplos de 4096.'
+    },
+    {
+      pregunta: 'En RSTP, ¿qué nuevo rol de puerto actúa como backup inmediato del Root Port?',
+      opciones: ['Backup Port', 'Alternate Port', 'Edge Port', 'Discarding Port'],
+      respuesta: 1,
+      explicacion: 'El Alternate Port es el nuevo rol de RSTP que equivale al Non-Designated (Blocking) de 802.1D. Si el Root Port falla, el Alternate Port pasa inmediatamente a Forwarding sin esperar timers, logrando convergencia en <1 segundo.'
+    },
+    {
+      pregunta: 'Un administrador quiere que SW1 sea Root Bridge para VLAN 10 y SW2 para VLAN 20. ¿Cuál es el propósito?',
+      opciones: [
+        'Reducir el número de BPDUs en la red',
+        'Balanceo de carga: el tráfico de cada VLAN usa un enlace diferente',
+        'Aumentar la seguridad de la red',
+        'Reducir la convergencia STP'
+      ],
+      respuesta: 1,
+      explicacion: 'Usar diferentes Root Bridges por VLAN permite balanceo de carga. El tráfico VLAN 10 usa el enlace de SW1 y el tráfico VLAN 20 usa el enlace de SW2, aprovechando todos los enlaces físicos disponibles (PVST+).'
+    },
+  ];
+
+  if (typeof initQuiz === 'function') {
+    initQuiz(preguntas, 'quiz-container');
+  }
 });
 </script>
+
 </body>
 </html>
