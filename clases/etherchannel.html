@@ -1,764 +1,47 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EtherChannel — CCNA Academy | wdasoto</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
-<style>
-.page-content{
-  --bg: #050810;
-  --bg2: #080d1a;
-  --bg3: #0a1020;
-  --accent: #00f5ff;
-  --accent2: #ff6b00;
-  --accent3: #00ff88;
-  --gold: #ffd700;
-  --red: #ff3b5c;
-  --white: #e8f4ff;
-  --gray: #4a6080;
-  --gray2: #2a3550;
-  --border: rgba(0,245,255,0.15);
-  --mono: 'Share Tech Mono', monospace;
-  --display: 'Orbitron', sans-serif;
-  --body: 'Exo 2', sans-serif;
-  --glow: 0 0 20px rgba(0,245,255,0.3);
-  --glow2: 0 0 20px rgba(255,107,0,0.4);
-}
-
-.page-content{ margin:0; padding:0; box-sizing:border-box; }
-
-.page-content{
-  background: var(--bg);
-  color: var(--white);
-  font-family: var(--body);
-  overflow-x: hidden;
-  cursor: default;
-}
-
-/* Fondo animado */
-.page-content::before{
-  content:'';
-  position:fixed;
-  inset:0;
-  background: 
-    radial-gradient(ellipse 80% 50% at 20% 20%, rgba(0,245,255,0.04) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(255,107,0,0.04) 0%, transparent 60%);
-  pointer-events:none;
-  z-index:0;
-}
-
-/* Grid de fondo */
-.page-content::after{
-  content:'';
-  position:fixed;
-  inset:0;
-  background-image: 
-    linear-gradient(rgba(0,245,255,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,245,255,0.03) 1px, transparent 1px);
-  background-size: 50px 50px;
-  pointer-events:none;
-  z-index:0;
-}
-
-/* ===== HEADER ===== */
-.page-content header{
-  position: relative;
-  z-index: 10;
-  padding: 0 40px;
-  height: 70px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: 1px solid var(--border);
-  background: rgba(5,8,16,0.9);
-  backdrop-filter: blur(20px);
-}
-
-.page-content .logo{
-  font-family: var(--display);
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--accent);
-  letter-spacing: 3px;
-  text-shadow: var(--glow);
-}
-
-.page-content .logo span{ color: var(--accent2); }
-
-.page-content nav{ display: flex; gap: 30px; }
-.page-content nav a{
-  font-family: var(--mono);
-  font-size: 0.75rem;
-  color: var(--gray);
-  text-decoration: none;
-  letter-spacing: 2px;
-  transition: color 0.3s;
-}
-.page-content nav a:hover{ color: var(--accent); }
-.page-content nav a.active{ color: var(--accent); }
-
-.page-content .badge{
-  font-family: var(--mono);
-  font-size: 0.65rem;
-  background: rgba(0,245,255,0.1);
-  border: 1px solid var(--accent);
-  color: var(--accent);
-  padding: 4px 12px;
-  letter-spacing: 2px;
-}
-
-/* ===== HERO ===== */
-.page-content .hero{
-  position: relative;
-  z-index: 1;
-  padding: 80px 40px 60px;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.page-content .hero-label{
-  font-family: var(--mono);
-  font-size: 0.7rem;
-  color: var(--accent2);
-  letter-spacing: 4px;
-  margin-bottom: 20px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.page-content .hero-label::before{
-  content:'';
-  width:30px;
-  height:1px;
-  background: var(--accent2);
-}
-
-.page-content h1{
-  font-family: var(--display);
-  font-size: clamp(2.5rem, 6vw, 5rem);
-  font-weight: 900;
-  line-height: 1;
-  margin-bottom: 24px;
-  letter-spacing: -1px;
-}
-
-.page-content h1 .line1{ color: var(--white); }
-.page-content h1 .line2{
-  color: var(--accent);
-  text-shadow: var(--glow);
-  display: block;
-}
-
-.page-content .hero-desc{
-  font-size: 1.1rem;
-  color: rgba(232,244,255,0.6);
-  max-width: 600px;
-  line-height: 1.7;
-  margin-bottom: 40px;
-  font-weight: 300;
-}
-
-.page-content .hero-stats{
-  display: flex;
-  gap: 40px;
-  flex-wrap: wrap;
-}
-
-.page-content .stat{
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-.page-content .stat-num{
-  font-family: var(--display);
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: var(--accent);
-}
-.page-content .stat-label{
-  font-family: var(--mono);
-  font-size: 0.65rem;
-  color: var(--gray);
-  letter-spacing: 2px;
-}
-
-/* ===== CONTENIDO PRINCIPAL ===== */
-.page-content .main{
-  position: relative;
-  z-index: 1;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 40px 80px;
-  display: grid;
-  grid-template-columns: 1fr 300px;
-  gap: 40px;
-}
-
-/* ===== SIDEBAR / ÍNDICE ===== */
-.page-content .sidebar{
-  position: sticky;
-  top: 90px;
-  height: fit-content;
-}
-
-.page-content .sidebar-card{
-  background: rgba(8,13,26,0.8);
-  border: 1px solid var(--border);
-  padding: 24px;
-  backdrop-filter: blur(10px);
-}
-
-.page-content .sidebar-title{
-  font-family: var(--mono);
-  font-size: 0.65rem;
-  color: var(--accent2);
-  letter-spacing: 3px;
-  margin-bottom: 20px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--border);
-}
-
-.page-content .toc-item{
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 0;
-  border-bottom: 1px solid rgba(0,245,255,0.05);
-  cursor: pointer;
-  transition: all 0.3s;
-  text-decoration: none;
-  color: var(--gray);
-}
-.page-content .toc-item:hover{ color: var(--accent); }
-.page-content .toc-item.active{ color: var(--accent); }
-
-.page-content .toc-num{
-  font-family: var(--mono);
-  font-size: 0.65rem;
-  color: var(--accent2);
-  min-width: 24px;
-}
-.page-content .toc-text{ font-size: 0.82rem; font-weight: 400; }
-
-.page-content .progress-bar{
-  margin-top: 20px;
-  height: 3px;
-  background: var(--gray2);
-  position: relative;
-  overflow: hidden;
-}
-.page-content .progress-fill{
-  height: 100%;
-  background: linear-gradient(90deg, var(--accent), var(--accent2));
-  width: 0%;
-  transition: width 0.5s ease;
-}
-
-/* ===== SECCIONES ===== */
-.page-content .content{ display: flex; flex-direction: column; gap: 40px; }
-
-.page-content .section{
-  background: rgba(8,13,26,0.6);
-  border: 1px solid var(--border);
-  padding: 40px;
-  position: relative;
-  overflow: hidden;
-  animation: fadeIn 0.6s ease both;
-}
-
-.page-content .section::before{
-  content:'';
-  position:absolute;
-  top:0; left:0;
-  width:3px; height:100%;
-  background: linear-gradient(180deg, var(--accent), transparent);
-}
-
-@keyframes fadeIn {
-  from { opacity:0; transform: translateY(20px); }
-.page-content to{ opacity:1; transform: translateY(0); }
-}
-
-.page-content .section-header{
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 28px;
-}
-
-.page-content .section-icon{
-  width: 44px; height: 44px;
-  background: rgba(0,245,255,0.1);
-  border: 1px solid var(--accent);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.2rem;
-  flex-shrink: 0;
-}
-
-.page-content .section-num{
-  font-family: var(--mono);
-  font-size: 0.65rem;
-  color: var(--accent2);
-  letter-spacing: 3px;
-  display: block;
-  margin-bottom: 4px;
-}
-
-.page-content h2{
-  font-family: var(--display);
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: var(--white);
-  letter-spacing: 1px;
-}
-
-.page-content h3{
-  font-family: var(--display);
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--accent);
-  letter-spacing: 1px;
-  margin: 24px 0 12px;
-}
-
-.page-content p{
-  color: rgba(232,244,255,0.75);
-  line-height: 1.8;
-  font-size: 0.95rem;
-  margin-bottom: 16px;
-}
-
-/* ===== DIAGRAMA ETHERCHANNEL ===== */
-.page-content .diagram{
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  padding: 30px;
-  margin: 24px 0;
-  font-family: var(--mono);
-  font-size: 0.78rem;
-  color: var(--accent3);
-  overflow-x: auto;
-  position: relative;
-}
-
-.page-content .diagram::before{
-  content: 'TOPOLOGÍA';
-  position: absolute;
-  top: -1px; right: 20px;
-  background: var(--accent3);
-  color: var(--bg);
-  font-size: 0.6rem;
-  padding: 2px 8px;
-  letter-spacing: 2px;
-  font-weight: 700;
-}
-
-.page-content .diagram pre{
-  color: var(--accent3);
-  line-height: 1.6;
-}
-
-/* ===== INFO BOXES ===== */
-.page-content .info-grid{
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
-  margin: 20px 0;
-}
-
-.page-content .info-box{
-  background: rgba(0,245,255,0.04);
-  border: 1px solid rgba(0,245,255,0.15);
-  padding: 20px;
-  transition: all 0.3s;
-}
-.page-content .info-box:hover{
-  background: rgba(0,245,255,0.08);
-  border-color: var(--accent);
-  transform: translateY(-2px);
-}
-
-.page-content .info-box.orange{
-  background: rgba(255,107,0,0.04);
-  border-color: rgba(255,107,0,0.2);
-}
-.page-content .info-box.orange:hover{ border-color: var(--accent2); background: rgba(255,107,0,0.08); }
-
-.page-content .info-box.green{
-  background: rgba(0,255,136,0.04);
-  border-color: rgba(0,255,136,0.2);
-}
-
-.page-content .info-icon{ font-size: 1.5rem; margin-bottom: 10px; }
-.page-content .info-title{
-  font-family: var(--mono);
-  font-size: 0.7rem;
-  color: var(--accent);
-  letter-spacing: 2px;
-  margin-bottom: 8px;
-}
-.page-content .info-box.orange .info-title{ color: var(--accent2); }
-.page-content .info-box.green .info-title{ color: var(--accent3); }
-.page-content .info-desc{ font-size: 0.82rem; color: rgba(232,244,255,0.6); line-height: 1.5; }
-
-/* ===== TABLA COMPARATIVA ===== */
-.page-content .table-wrap{ overflow-x: auto; margin: 20px 0; }
-
-.page-content table{
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.85rem;
-}
-
-.page-content thead tr{
-  background: rgba(0,245,255,0.08);
-  border-bottom: 2px solid var(--accent);
-}
-
-.page-content th{
-  font-family: var(--mono);
-  font-size: 0.65rem;
-  letter-spacing: 2px;
-  color: var(--accent);
-  padding: 14px 16px;
-  text-align: left;
-}
-
-.page-content td{
-  padding: 12px 16px;
-  border-bottom: 1px solid rgba(0,245,255,0.06);
-  color: rgba(232,244,255,0.75);
-}
-
-.page-content tr:hover td{ background: rgba(0,245,255,0.03); }
-
-.page-content .tag{
-  display: inline-block;
-  padding: 3px 10px;
-  font-family: var(--mono);
-  font-size: 0.65rem;
-  letter-spacing: 1px;
-  border-radius: 2px;
-}
-.page-content .tag.lacp{ background: rgba(0,245,255,0.15); color: var(--accent); border: 1px solid var(--accent); }
-.page-content .tag.pagp{ background: rgba(255,107,0,0.15); color: var(--accent2); border: 1px solid var(--accent2); }
-.page-content .tag.static{ background: rgba(0,255,136,0.15); color: var(--accent3); border: 1px solid var(--accent3); }
-
-/* ===== CÓDIGO CLI ===== */
-.page-content .cli-block{
-  background: #020408;
-  border: 1px solid rgba(0,245,255,0.2);
-  margin: 20px 0;
-  position: relative;
-}
-
-.page-content .cli-header{
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 16px;
-  background: rgba(0,245,255,0.05);
-  border-bottom: 1px solid rgba(0,245,255,0.1);
-}
-
-.page-content .cli-title{
-  font-family: var(--mono);
-  font-size: 0.65rem;
-  color: var(--accent);
-  letter-spacing: 2px;
-}
-
-.page-content .cli-dots{ display: flex; gap: 6px; }
-.page-content .cli-dot{
-  width: 10px; height: 10px;
-  border-radius: 50%;
-}
-.page-content .cli-dot.red{ background: var(--red); }
-.page-content .cli-dot.yellow{ background: var(--gold); }
-.page-content .cli-dot.green{ background: var(--accent3); }
-
-.page-content .cli-body{
-  padding: 20px;
-  font-family: var(--mono);
-  font-size: 0.8rem;
-  line-height: 1.8;
-  overflow-x: auto;
-}
-
-.page-content .cli-prompt{ color: var(--accent3); }
-.page-content .cli-cmd{ color: var(--white); }
-.page-content .cli-comment{ color: var(--gray); }
-.page-content .cli-output{ color: rgba(232,244,255,0.5); }
-.page-content .cli-keyword{ color: var(--accent2); }
-.page-content .cli-value{ color: var(--gold); }
-
-/* ===== ALERTA / TIPS ===== */
-.page-content .alert{
-  display: flex;
-  gap: 16px;
-  padding: 20px;
-  margin: 20px 0;
-  border-left: 3px solid;
-}
-.page-content .alert.tip{ border-color: var(--accent3); background: rgba(0,255,136,0.05); }
-.page-content .alert.warning{ border-color: var(--gold); background: rgba(255,215,0,0.05); }
-.page-content .alert.danger{ border-color: var(--red); background: rgba(255,59,92,0.05); }
-.page-content .alert.exam{ border-color: var(--accent2); background: rgba(255,107,0,0.05); }
-
-.page-content .alert-icon{ font-size: 1.3rem; flex-shrink: 0; margin-top: 2px; }
-.page-content .alert-content{}
-.page-content .alert-title{
-  font-family: var(--mono);
-  font-size: 0.65rem;
-  letter-spacing: 2px;
-  margin-bottom: 6px;
-}
-.page-content .alert.tip .alert-title{ color: var(--accent3); }
-.page-content .alert.warning .alert-title{ color: var(--gold); }
-.page-content .alert.danger .alert-title{ color: var(--red); }
-.page-content .alert.exam .alert-title{ color: var(--accent2); }
-.page-content .alert-text{ font-size: 0.85rem; color: rgba(232,244,255,0.7); line-height: 1.6; }
-
-/* ===== QUIZ ===== */
-.page-content .quiz-section{
-  background: rgba(255,107,0,0.04);
-  border: 1px solid rgba(255,107,0,0.2);
-  padding: 32px;
-  position: relative;
-}
-.page-content .quiz-section::before{ background: linear-gradient(180deg, var(--accent2), transparent); }
-
-.page-content .quiz-q{
-  font-size: 0.95rem;
-  color: var(--white);
-  margin-bottom: 16px;
-  font-weight: 600;
-}
-
-.page-content .quiz-options{ display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
-
-.page-content .quiz-opt{
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.08);
-  cursor: pointer;
-  transition: all 0.2s;
-  font-size: 0.85rem;
-  color: rgba(232,244,255,0.75);
-}
-.page-content .quiz-opt:hover{ border-color: var(--accent2); background: rgba(255,107,0,0.08); color: var(--white); }
-.page-content .quiz-opt.correct{ border-color: var(--accent3); background: rgba(0,255,136,0.1); color: var(--accent3); }
-.page-content .quiz-opt.wrong{ border-color: var(--red); background: rgba(255,59,92,0.1); color: var(--red); }
-
-.page-content .quiz-letter{
-  font-family: var(--mono);
-  font-size: 0.7rem;
-  width: 24px; height: 24px;
-  border: 1px solid currentColor;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-}
-
-.page-content .quiz-feedback{
-  display: none;
-  padding: 12px 16px;
-  font-size: 0.85rem;
-  font-family: var(--mono);
-  letter-spacing: 1px;
-}
-.page-content .quiz-feedback.show{ display: block; }
-.page-content .quiz-feedback.correct{ color: var(--accent3); background: rgba(0,255,136,0.08); border: 1px solid var(--accent3); }
-.page-content .quiz-feedback.wrong{ color: var(--red); background: rgba(255,59,92,0.08); border: 1px solid var(--red); }
-
-/* ===== COMPARACIÓN MODOS ===== */
-.page-content .modes-grid{
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  margin: 20px 0;
-}
-
-.page-content .mode-card{
-  border: 1px solid var(--border);
-  padding: 20px;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-  transition: all 0.3s;
-}
-.page-content .mode-card:hover{ transform: translateY(-4px); }
-
-.page-content .mode-card.lacp-card{ border-color: rgba(0,245,255,0.3); background: rgba(0,245,255,0.03); }
-.page-content .mode-card.pagp-card{ border-color: rgba(255,107,0,0.3); background: rgba(255,107,0,0.03); }
-.page-content .mode-card.static-card{ border-color: rgba(0,255,136,0.3); background: rgba(0,255,136,0.03); }
-
-.page-content .mode-name{
-  font-family: var(--display);
-  font-size: 1.1rem;
-  font-weight: 700;
-  margin-bottom: 8px;
-}
-.page-content .lacp-card .mode-name{ color: var(--accent); }
-.page-content .pagp-card .mode-name{ color: var(--accent2); }
-.page-content .static-card .mode-name{ color: var(--accent3); }
-
-.page-content .mode-subtitle{
-  font-family: var(--mono);
-  font-size: 0.65rem;
-  letter-spacing: 2px;
-  color: var(--gray);
-  margin-bottom: 16px;
-}
-
-.page-content .mode-states{ display: flex; flex-direction: column; gap: 6px; }
-.page-content .mode-state{
-  font-size: 0.78rem;
-  padding: 6px;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.06);
-  color: rgba(232,244,255,0.6);
-}
-
-/* ===== FOOTER DE CLASE ===== */
-.page-content .class-footer{
-  position: relative;
-  z-index: 1;
-  border-top: 1px solid var(--border);
-  padding: 40px;
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-
-.page-content .footer-nav{ display: flex; gap: 16px; }
-
-.page-content .btn{
-  font-family: var(--mono);
-  font-size: 0.75rem;
-  letter-spacing: 2px;
-  padding: 12px 24px;
-  border: 1px solid;
-  cursor: pointer;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  transition: all 0.3s;
-}
-
-.page-content .btn-primary{
-  border-color: var(--accent);
-  color: var(--accent);
-  background: rgba(0,245,255,0.05);
-}
-.page-content .btn-primary:hover{
-  background: var(--accent);
-  color: var(--bg);
-}
-
-.page-content .btn-secondary{
-  border-color: var(--gray2);
-  color: var(--gray);
-  background: transparent;
-}
-.page-content .btn-secondary:hover{ border-color: var(--gray); color: var(--white); }
-
-/* ===== SCROLLBAR ===== */
-.page-content ::-webkit-scrollbar{ width: 6px; height: 6px; }
-.page-content ::-webkit-scrollbar-track{ background: var(--bg2); }
-.page-content ::-webkit-scrollbar-thumb{ background: var(--gray2); }
-.page-content ::-webkit-scrollbar-thumb:hover{ background: var(--accent); }
-
-/* ===== ANIMACIONES ===== */
-.page-content .section:nth-child(1){ animation-delay: 0.1s; }
-.page-content .section:nth-child(2){ animation-delay: 0.2s; }
-.page-content .section:nth-child(3){ animation-delay: 0.3s; }
-.page-content .section:nth-child(4){ animation-delay: 0.4s; }
-.page-content .section:nth-child(5){ animation-delay: 0.5s; }
-.page-content .section:nth-child(6){ animation-delay: 0.6s; }
-
-/* ===== RESPONSIVE ===== */
-@media (max-width: 900px) {
-    .page-content .main{ grid-template-columns: 1fr; }
-    .page-content .sidebar{ position: static; }
-    .page-content .modes-grid{ grid-template-columns: 1fr; }
-    .page-content header{ padding: 0 20px; }
-    .page-content .hero{ padding: 50px 20px 40px; }
-    .page-content .main{ padding: 0 20px 60px; }
-    .page-content nav{ display: none; }
-}
-</style>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EtherChannel — CCNA Academy</title>
+  <meta name="description" content="Clase magistral EtherChannel CCNA 200-301. LACP, PAgP, Port-Channel, verificación y laboratorio.">
   <link rel="stylesheet" href="../assets/style.css">
-  <script src="../assets/main.js" defer></script>
 </head>
 <body>
-
 <div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
-
 <nav class="ccna-drawer" id="ccnaDrawer">
-  <div class="drawer-header">
-    <h2>◈ NAVEGACIÓN</h2>
-    <button class="drawer-close" onclick="ccnaClose()">✕</button>
-  </div>
-  <div class="drawer-section">
-    <div class="drawer-section-title">General</div>
-    <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a>
-  </div>
-  <div class="drawer-section">
-    <div class="drawer-section-title">M1 · Fundamentos</div>
-    <a href="fundamentos.html"  class="drawer-link"><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
-    <a href="subnetting.html"   class="drawer-link"><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
-    <a href="calculadora.html"  class="drawer-link"><span class="dl-icon">🧮</span> Calculadora IP</a>
-    <a href="ipv6.html"         class="drawer-link"><span class="dl-icon">6️⃣</span> IPv6</a>
-  </div>
-  <div class="drawer-section">
-    <div class="drawer-section-title">M2 · Dispositivos Cisco</div>
-    <a href="router.html"          class="drawer-link"><span class="dl-icon">📡</span> Routers Cisco</a>
-    <a href="switches-cisco.html"  class="drawer-link"><span class="dl-icon">🔀</span> Switches Cisco</a>
-  </div>
-  <div class="drawer-section">
-    <div class="drawer-section-title">M3 · Switching</div>
-    <a href="vlan.html"                class="drawer-link"><span class="dl-icon">🏷️</span> VLANs</a>
-    <a href="inter-vlan-routing.html"  class="drawer-link"><span class="dl-icon">🔁</span> Inter-VLAN Routing</a>
-    <a href="stp.html"                 class="drawer-link"><span class="dl-icon">🌳</span> Spanning Tree Protocol</a>
-    <a href="etherchannel.html"        class="drawer-link active"><span class="dl-icon">🔗</span> EtherChannel</a>
-    <a href="port-security.html"       class="drawer-link"><span class="dl-icon">🔒</span> Port Security</a>
-    <a href="cdp-lldp.html"            class="drawer-link"><span class="dl-icon">🔍</span> CDP / LLDP</a>
-  </div>
-  <div class="drawer-section">
-    <div class="drawer-section-title">M4 · Routing</div>
-    <a href="routing.html"  class="drawer-link"><span class="dl-icon">🗺️</span> Routing Estático</a>
-    <a href="ospf.html"     class="drawer-link"><span class="dl-icon">⭕</span> OSPF</a>
-    <a href="eigrp.html"    class="drawer-link"><span class="dl-icon">⚡</span> EIGRP</a>
-  </div>
-  <div class="drawer-section">
-    <div class="drawer-section-title">M5 · Servicios IP</div>
-    <a href="dhcp.html"  class="drawer-link"><span class="dl-icon">📋</span> DHCP</a>
-    <a href="nat.html"   class="drawer-link"><span class="dl-icon">🔄</span> NAT / PAT</a>
-  </div>
-  <div class="drawer-section">
-    <div class="drawer-section-title">M6 · Seguridad</div>
-    <a href="acl.html"  class="drawer-link"><span class="dl-icon">🛡️</span> ACLs</a>
-  </div>
-  <div class="drawer-section">
-    <div class="drawer-section-title">M7 · WAN &amp; QoS</div>
-    <a href="wan.html"  class="drawer-link"><span class="dl-icon">🌍</span> WAN</a>
-    <a href="qos.html"  class="drawer-link"><span class="dl-icon">📊</span> QoS</a>
-  </div>
-  <div class="drawer-section">
-    <div class="drawer-section-title">Herramientas</div>
-    <a href="asistente.html"   class="drawer-link"><span class="dl-icon">🤖</span> Asistente IA</a>
+  <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
+  <div class="drawer-section"><div class="drawer-section-title">General</div><a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M1 · Fundamentos</div>
+    <a href="fundamentos.html" class="drawer-link"><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
+    <a href="subnetting.html" class="drawer-link"><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
     <a href="calculadora.html" class="drawer-link"><span class="dl-icon">🧮</span> Calculadora IP</a>
-  </div>
+    <a href="ipv6.html" class="drawer-link"><span class="dl-icon">6️⃣</span> IPv6</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M2 · Dispositivos Cisco</div>
+    <a href="router.html" class="drawer-link"><span class="dl-icon">📡</span> Routers Cisco</a>
+    <a href="switches-cisco.html" class="drawer-link"><span class="dl-icon">🔀</span> Switches Cisco</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M3 · Switching</div>
+    <a href="vlan.html" class="drawer-link"><span class="dl-icon">🏷️</span> VLANs</a>
+    <a href="inter-vlan-routing.html" class="drawer-link"><span class="dl-icon">🔁</span> Inter-VLAN Routing</a>
+    <a href="stp.html" class="drawer-link"><span class="dl-icon">🌳</span> Spanning Tree Protocol</a>
+    <a href="etherchannel.html" class="drawer-link active"><span class="dl-icon">🔗</span> EtherChannel</a>
+    <a href="port-security.html" class="drawer-link"><span class="dl-icon">🔒</span> Port Security</a>
+    <a href="cdp-lldp.html" class="drawer-link"><span class="dl-icon">🔍</span> CDP / LLDP</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M4 · Routing</div>
+    <a href="routing.html" class="drawer-link"><span class="dl-icon">🗺️</span> Routing Estático</a>
+    <a href="ospf.html" class="drawer-link"><span class="dl-icon">⭕</span> OSPF</a>
+    <a href="eigrp.html" class="drawer-link"><span class="dl-icon">⚡</span> EIGRP</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M5 · Servicios IP</div>
+    <a href="dhcp.html" class="drawer-link"><span class="dl-icon">📋</span> DHCP</a>
+    <a href="nat.html" class="drawer-link"><span class="dl-icon">🔄</span> NAT / PAT</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M6 · Seguridad</div>
+    <a href="acl.html" class="drawer-link"><span class="dl-icon">🛡️</span> ACLs</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M7 · WAN &amp; QoS</div>
+    <a href="wan.html" class="drawer-link"><span class="dl-icon">🌍</span> WAN</a>
+    <a href="qos.html" class="drawer-link"><span class="dl-icon">📊</span> QoS</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">Herramientas</div>
+    <a href="asistente.html" class="drawer-link"><span class="dl-icon">🤖</span> Asistente IA</a>
+    <a href="calculadora.html" class="drawer-link"><span class="dl-icon">🧮</span> Calculadora IP</a></div>
 </nav>
 
 <header class="navbar">
@@ -768,637 +51,176 @@
   <a href="../index.html" class="navbar-link">← Inicio</a>
 </header>
 <div class="nav-spacer"></div>
-<div class="page-content">
-<!-- HERO -->
-<div class="hero">
-  <div class="hero-label">SWITCHING AVANZADO · MÓDULO 04</div>
-  <h1>
-    <span class="line1">Agregación de</span>
-    <span class="line2">EtherChannel</span>
-  </h1>
-  <p class="hero-desc">
-    Domina la tecnología de agregación de enlaces para maximizar el ancho de banda, 
-    eliminar bucles y garantizar redundancia en redes empresariales Cisco.
-  </p>
-  <div class="hero-stats">
-    <div class="stat">
-      <span class="stat-num">8×</span>
-      <span class="stat-label">ANCHO DE BANDA</span>
-    </div>
-    <div class="stat">
-      <span class="stat-num">802.3ad</span>
-      <span class="stat-label">ESTÁNDAR IEEE</span>
-    </div>
-    <div class="stat">
-      <span class="stat-num">LACP</span>
-      <span class="stat-label">PROTOCOLO OPEN</span>
-    </div>
-    <div class="stat">
-      <span class="stat-num">PAgP</span>
-      <span class="stat-label">PROTOCOLO CISCO</span>
-    </div>
-  </div>
+<div class="page-header">
+  <div class="breadcrumb"><a href="../index.html">Inicio</a> › M3 · Switching › EtherChannel</div>
+  <h1>Ether<span class="accent"> Channel</span></h1>
+  <p class="page-subtitle">LACP · PAgP · Port-Channel · Agregación de Links · Redundancia</p>
+  <div class="badges"><span class="badge badge badge-teal">CCNA 200-301</span><span class="badge badge badge-blue">Módulo 3 · Switching</span><span class="badge badge badge-yellow">🔗 Agregación</span></div>
 </div>
-
-<!-- CONTENIDO -->
-<div class="main">
-
-  <!-- SIDEBAR -->
-  <aside class="sidebar" style="order:2">
-    <div class="sidebar-card">
-      <div class="sidebar-title">ÍNDICE DE CONTENIDO</div>
-      <a class="toc-item active" href="#s1">
-        <span class="toc-num">01</span>
-        <span class="toc-text">¿Qué es EtherChannel?</span>
-      </a>
-      <a class="toc-item" href="#s2">
-        <span class="toc-num">02</span>
-        <span class="toc-text">Protocolos LACP y PAgP</span>
-      </a>
-      <a class="toc-item" href="#s3">
-        <span class="toc-num">03</span>
-        <span class="toc-text">Modos de negociación</span>
-      </a>
-      <a class="toc-item" href="#s4">
-        <span class="toc-num">04</span>
-        <span class="toc-text">Configuración CLI</span>
-      </a>
-      <a class="toc-item" href="#s5">
-        <span class="toc-num">05</span>
-        <span class="toc-text">Verificación</span>
-      </a>
-      <a class="toc-item" href="#s6">
-        <span class="toc-num">06</span>
-        <span class="toc-text">Quiz CCNA</span>
-      </a>
-      <div class="progress-bar">
-        <div class="progress-fill" id="progressFill"></div>
-      </div>
-    </div>
-  </aside>
-
-  <!-- CONTENIDO PRINCIPAL -->
-  <div class="content" style="order:1">
-
-    <!-- SECCIÓN 1 -->
-    <div class="section" id="s1">
-      <div class="section-header">
-        <div class="section-icon">🔗</div>
-        <div>
-          <span class="section-num">SECCIÓN 01</span>
-          <h2>¿Qué es EtherChannel?</h2>
-        </div>
-      </div>
-
-      <p>
-        <strong style="color:var(--accent)">EtherChannel</strong> es una tecnología de agregación de enlaces que permite combinar múltiples 
-        interfaces físicas Ethernet en un único enlace lógico. El resultado es mayor ancho de banda, 
-        redundancia automática y balanceo de carga entre los enlaces físicos.
-      </p>
-
-      <p>
-        Sin EtherChannel, el protocolo STP bloquearía los enlaces redundantes para evitar bucles, 
-        desperdiciando capacidad. EtherChannel resuelve este problema presentando todos los enlaces 
-        como uno solo ante STP.
-      </p>
-
-      <div class="diagram">
-        <pre>
-  SIN ETHERCHANNEL:              CON ETHERCHANNEL:
-                                 
-  SW1 ──Fa0/1──► SW2             SW1 ══╦══Fa0/1══╦══► SW2
-      ──Fa0/2──X (STP)               ║  Fa0/2  ║
-      ──Fa0/3──X (STP)               ║  Fa0/3  ║
-      ──Fa0/4──X (STP)               ╚══Fa0/4══╝
-                                    Port-Channel1
-  Ancho de banda: 100 Mbps       Ancho de banda: 400 Mbps
-  Redundancia: ❌                 Redundancia: ✅
-  Balanceo: ❌                    Balanceo: ✅</pre>
-      </div>
-
-      <div class="info-grid">
-        <div class="info-box">
-          <div class="info-icon">⚡</div>
-          <div class="info-title">VELOCIDAD</div>
-          <div class="info-desc">Hasta 8 enlaces agregados. Con GigabitEthernet: 8 Gbps lógicos.</div>
-        </div>
-        <div class="info-box orange">
-          <div class="info-icon">🛡️</div>
-          <div class="info-title">REDUNDANCIA</div>
-          <div class="info-desc">Si falla un enlace físico, el tráfico se redistribuye automáticamente.</div>
-        </div>
-        <div class="info-box green">
-          <div class="info-icon">⚖️</div>
-          <div class="info-title">BALANCEO</div>
-          <div class="info-desc">Distribuye el tráfico por MAC, IP o puerto según configuración.</div>
-        </div>
-      </div>
-
-      <div class="alert tip">
-        <div class="alert-icon">💡</div>
-        <div class="alert-content">
-          <div class="alert-title">CONCEPTO CLAVE</div>
-          <div class="alert-text">EtherChannel crea una interfaz lógica llamada <strong>Port-Channel</strong>. 
-          STP ve un solo enlace, evitando bloqueos. Los switches físicos Cisco soportan hasta 6 EtherChannels 
-          con un máximo de 8 interfaces cada uno.</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- SECCIÓN 2 -->
-    <div class="section" id="s2">
-      <div class="section-header">
-        <div class="section-icon">📡</div>
-        <div>
-          <span class="section-num">SECCIÓN 02</span>
-          <h2>Protocolos: LACP vs PAgP</h2>
-        </div>
-      </div>
-
-      <p>Existen tres métodos para establecer un EtherChannel, dos con negociación automática y uno estático:</p>
-
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>PROTOCOLO</th>
-              <th>ESTÁNDAR</th>
-              <th>VENDOR</th>
-              <th>DESCRIPCIÓN</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><span class="tag lacp">LACP</span></td>
-              <td>IEEE 802.3ad</td>
-              <td>Abierto (Multi-vendor)</td>
-              <td>Link Aggregation Control Protocol — recomendado para entornos mixtos</td>
-            </tr>
-            <tr>
-              <td><span class="tag pagp">PAgP</span></td>
-              <td>Propietario Cisco</td>
-              <td>Solo Cisco</td>
-              <td>Port Aggregation Protocol — solo entre switches Cisco</td>
-            </tr>
-            <tr>
-              <td><span class="tag static">Static</span></td>
-              <td>N/A</td>
-              <td>Universal</td>
-              <td>Sin negociación — modo ON. Riesgo de bucles si hay errores.</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <h3>Diferencias Clave</h3>
-      <p>
-        <strong style="color:var(--accent)">LACP</strong> es el protocolo estándar IEEE 802.3ad (también llamado 802.1AX). 
-        Es la opción preferida en entornos modernos porque funciona con equipos de diferentes fabricantes. 
-        Envía PDUs llamadas <em>LACPDUs</em> para negociar y mantener el canal.
-      </p>
-      <p>
-        <strong style="color:var(--accent2)">PAgP</strong> es propietario de Cisco. Solo funciona entre 
-        switches Cisco. Envía <em>PAgP packets</em> para negociar el canal. Aunque funcional, LACP 
-        es más flexible y ampliamente adoptado.
-      </p>
-
-      <div class="alert warning">
-        <div class="alert-icon">⚠️</div>
-        <div class="alert-content">
-          <div class="alert-title">IMPORTANTE PARA EL EXAMEN</div>
-          <div class="alert-text">En el examen CCNA, recuerda: LACP = IEEE 802.3ad = multi-vendor. 
-          PAgP = Cisco propietario. No puedes mezclar LACP con PAgP en el mismo EtherChannel.</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- SECCIÓN 3 -->
-    <div class="section" id="s3">
-      <div class="section-header">
-        <div class="section-icon">🔄</div>
-        <div>
-          <span class="section-num">SECCIÓN 03</span>
-          <h2>Modos de Negociación</h2>
-        </div>
-      </div>
-
-      <p>Cada protocolo tiene sus propios modos. La combinación de modos en ambos extremos determina si el EtherChannel se forma:</p>
-
-      <div class="modes-grid">
-        <div class="mode-card lacp-card">
-          <div class="mode-name">LACP</div>
-          <div class="mode-subtitle">IEEE 802.3AD</div>
-          <div class="mode-states">
-            <div class="mode-state"><strong style="color:var(--accent)">active</strong> — Inicia negociación</div>
-            <div class="mode-state"><strong style="color:var(--accent)">passive</strong> — Espera negociación</div>
-          </div>
-        </div>
-        <div class="mode-card pagp-card">
-          <div class="mode-name">PAgP</div>
-          <div class="mode-subtitle">CISCO PROPIETARIO</div>
-          <div class="mode-states">
-            <div class="mode-state"><strong style="color:var(--accent2)">desirable</strong> — Inicia negociación</div>
-            <div class="mode-state"><strong style="color:var(--accent2)">auto</strong> — Espera negociación</div>
-          </div>
-        </div>
-        <div class="mode-card static-card">
-          <div class="mode-name">STATIC</div>
-          <div class="mode-subtitle">SIN NEGOCIACIÓN</div>
-          <div class="mode-states">
-            <div class="mode-state"><strong style="color:var(--accent3)">on</strong> — Forzado siempre</div>
-            <div class="mode-state" style="opacity:0.3">— N/A —</div>
-          </div>
-        </div>
-      </div>
-
-      <h3>Combinaciones Válidas</h3>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>SW1</th>
-              <th>SW2</th>
-              <th>PROTOCOLO</th>
-              <th>RESULTADO</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>active</td><td>active</td><td><span class="tag lacp">LACP</span></td>
-              <td style="color:var(--accent3)">✅ EtherChannel formado</td>
-            </tr>
-            <tr>
-              <td>active</td><td>passive</td><td><span class="tag lacp">LACP</span></td>
-              <td style="color:var(--accent3)">✅ EtherChannel formado</td>
-            </tr>
-            <tr>
-              <td>passive</td><td>passive</td><td><span class="tag lacp">LACP</span></td>
-              <td style="color:var(--red)">❌ NO se forma (ambos esperan)</td>
-            </tr>
-            <tr>
-              <td>desirable</td><td>desirable</td><td><span class="tag pagp">PAgP</span></td>
-              <td style="color:var(--accent3)">✅ EtherChannel formado</td>
-            </tr>
-            <tr>
-              <td>desirable</td><td>auto</td><td><span class="tag pagp">PAgP</span></td>
-              <td style="color:var(--accent3)">✅ EtherChannel formado</td>
-            </tr>
-            <tr>
-              <td>auto</td><td>auto</td><td><span class="tag pagp">PAgP</span></td>
-              <td style="color:var(--red)">❌ NO se forma (ambos esperan)</td>
-            </tr>
-            <tr>
-              <td>on</td><td>on</td><td><span class="tag static">Static</span></td>
-              <td style="color:var(--accent3)">✅ EtherChannel formado</td>
-            </tr>
-            <tr>
-              <td>on</td><td>active/passive</td><td>—</td>
-              <td style="color:var(--red)">❌ Error — NO mezclar</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- SECCIÓN 4 -->
-    <div class="section" id="s4">
-      <div class="section-header">
-        <div class="section-icon">⌨️</div>
-        <div>
-          <span class="section-num">SECCIÓN 04</span>
-          <h2>Configuración CLI Cisco</h2>
-        </div>
-      </div>
-
-      <h3>Configuración LACP (Recomendado)</h3>
-      <div class="cli-block">
-        <div class="cli-header">
-          <span class="cli-title">SW1 — ETHERCHANNEL CON LACP</span>
-          <div class="cli-dots">
-            <div class="cli-dot red"></div>
-            <div class="cli-dot yellow"></div>
-            <div class="cli-dot green"></div>
-          </div>
-        </div>
-        <div class="cli-body">
-<span class="cli-comment">! ── Paso 1: Seleccionar interfaces ──────────────────────────</span>
-<span class="cli-prompt">SW1# </span><span class="cli-cmd">configure terminal</span>
-<span class="cli-prompt">SW1(config)# </span><span class="cli-cmd">interface range <span class="cli-value">FastEthernet0/1 - 4</span></span>
-
-<span class="cli-comment">! ── Paso 2: Configurar parámetros iguales en todas ──────────</span>
-<span class="cli-prompt">SW1(config-if-range)# </span><span class="cli-cmd">switchport mode <span class="cli-keyword">trunk</span></span>
-<span class="cli-prompt">SW1(config-if-range)# </span><span class="cli-cmd">switchport trunk encapsulation <span class="cli-keyword">dot1q</span></span>
-
-<span class="cli-comment">! ── Paso 3: Crear EtherChannel con LACP ─────────────────────</span>
-<span class="cli-prompt">SW1(config-if-range)# </span><span class="cli-cmd">channel-group <span class="cli-value">1</span> mode <span class="cli-keyword">active</span></span>
-<span class="cli-output">Creating a port-channel interface Port-channel 1</span>
-<span class="cli-prompt">SW1(config-if-range)# </span><span class="cli-cmd">exit</span>
-
-<span class="cli-comment">! ── Paso 4: Configurar la interfaz lógica Port-Channel ───────</span>
-<span class="cli-prompt">SW1(config)# </span><span class="cli-cmd">interface <span class="cli-keyword">port-channel</span> <span class="cli-value">1</span></span>
-<span class="cli-prompt">SW1(config-if)# </span><span class="cli-cmd">switchport mode <span class="cli-keyword">trunk</span></span>
-<span class="cli-prompt">SW1(config-if)# </span><span class="cli-cmd">switchport trunk encapsulation <span class="cli-keyword">dot1q</span></span>
-<span class="cli-prompt">SW1(config-if)# </span><span class="cli-cmd">end</span>
-        </div>
-      </div>
-
-      <h3>Configuración PAgP</h3>
-      <div class="cli-block">
-        <div class="cli-header">
-          <span class="cli-title">SW1 — ETHERCHANNEL CON PAgP</span>
-          <div class="cli-dots">
-            <div class="cli-dot red"></div>
-            <div class="cli-dot yellow"></div>
-            <div class="cli-dot green"></div>
-          </div>
-        </div>
-        <div class="cli-body">
-<span class="cli-prompt">SW1(config)# </span><span class="cli-cmd">interface range <span class="cli-value">GigabitEthernet0/1 - 2</span></span>
-<span class="cli-prompt">SW1(config-if-range)# </span><span class="cli-cmd">switchport mode <span class="cli-keyword">trunk</span></span>
-<span class="cli-prompt">SW1(config-if-range)# </span><span class="cli-cmd">channel-group <span class="cli-value">1</span> mode <span class="cli-keyword">desirable</span></span>
-<span class="cli-output">Creating a port-channel interface Port-channel 1</span>
-        </div>
-      </div>
-
-      <div class="alert danger">
-        <div class="alert-icon">🚨</div>
-        <div class="alert-content">
-          <div class="alert-title">REQUISITO CRÍTICO</div>
-          <div class="alert-text">Todas las interfaces en el EtherChannel deben tener <strong>exactamente la misma configuración</strong>: 
-          misma velocidad, dúplex, modo switchport (access/trunk) y VLANs permitidas. 
-          Cualquier diferencia impedirá la formación del canal o causará problemas.</div>
-        </div>
-      </div>
-
-      <h3>Balanceo de Carga</h3>
-      <div class="cli-block">
-        <div class="cli-header">
-          <span class="cli-title">CONFIGURAR MÉTODO DE BALANCEO</span>
-          <div class="cli-dots">
-            <div class="cli-dot red"></div>
-            <div class="cli-dot yellow"></div>
-            <div class="cli-dot green"></div>
-          </div>
-        </div>
-        <div class="cli-body">
-<span class="cli-comment">! Opciones de balanceo de carga:</span>
-<span class="cli-prompt">SW1(config)# </span><span class="cli-cmd">port-channel load-balance <span class="cli-keyword">src-mac</span></span>
-<span class="cli-comment">!  src-mac      — Por MAC origen (default L2)</span>
-<span class="cli-comment">!  dst-mac      — Por MAC destino</span>
-<span class="cli-comment">!  src-dst-mac  — Por ambas MACs</span>
-<span class="cli-comment">!  src-ip       — Por IP origen (L3)</span>
-<span class="cli-comment">!  dst-ip       — Por IP destino</span>
-<span class="cli-comment">!  src-dst-ip   — Por ambas IPs (recomendado)</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- SECCIÓN 5 -->
-    <div class="section" id="s5">
-      <div class="section-header">
-        <div class="section-icon">🔍</div>
-        <div>
-          <span class="section-num">SECCIÓN 05</span>
-          <h2>Verificación y Troubleshooting</h2>
-        </div>
-      </div>
-
-      <div class="cli-block">
-        <div class="cli-header">
-          <span class="cli-title">COMANDOS DE VERIFICACIÓN</span>
-          <div class="cli-dots">
-            <div class="cli-dot red"></div>
-            <div class="cli-dot yellow"></div>
-            <div class="cli-dot green"></div>
-          </div>
-        </div>
-        <div class="cli-body">
-<span class="cli-comment">! ── Ver resumen de EtherChannels ─────────────────────────────</span>
-<span class="cli-prompt">SW1# </span><span class="cli-cmd">show etherchannel summary</span>
-<span class="cli-output">
-Flags:  D - down        P - bundled in port-channel
-        I - stand-alone s - suspended
-        H - Hot-standby (LACP only)
-        R - Layer3      S - Layer2
-        U - in use      N - not in use, no aggregation
-        f - failed to allocate aggregator
-
+<div class="tabs-wrapper"><div class="tabs">
+  <button class="tab-btn active" onclick="showTab('teoria',this)">📖 Teoría</button>
+  <button class="tab-btn" onclick="showTab('protocolos',this)">⚙️ LACP/PAgP</button>
+  <button class="tab-btn" onclick="showTab('config',this)">💻 Configuración</button>
+  <button class="tab-btn" onclick="showTab('verificacion',this)">🔍 Verificación</button>
+  <button class="tab-btn" onclick="showTab('lab',this)">🧪 Laboratorio</button>
+  <button class="tab-btn" onclick="showTab('resumen',this)">📋 Resumen</button>
+  <button class="tab-btn" onclick="showTab('quiz',this)">✅ Quiz</button>
+</div></div>
+<div class="tab-panel active" id="tab-teoria">
+<div class="content">
+<div class="section"><h2 class="section-title">🔗 ¿Qué es EtherChannel?</h2>
+<p>EtherChannel agrupa <strong>múltiples enlaces físicos</strong> entre switches en un único enlace lógico, multiplicando el ancho de banda y proveyendo redundancia automática.</p>
+<div class="info-grid">
+<div class="info-card"><h4>⚡ Ancho de banda</h4><p>Hasta <strong>8 puertos</strong> en un grupo. 8 × 1Gbps = 8 Gbps lógicos (carga balanceada).</p></div>
+<div class="info-card"><h4>♻️ Redundancia</h4><p>Si un enlace falla, el tráfico se redistribuye automáticamente entre los restantes sin interrupción.</p></div>
+<div class="info-card"><h4>🌳 STP</h4><p>STP ve el EtherChannel como <strong>un solo enlace</strong>, evitando que bloquee los puertos individuales.</p></div>
+</div>
+<div class="concept-box warning" style="margin-top:1.2rem"><h4>⚠️ Requisitos — Todos los puertos deben ser idénticos</h4><ul>
+<li>Misma velocidad y duplex</li><li>Mismo tipo (access/trunk)</li>
+<li>Misma VLAN o las mismas VLANs permitidas en trunk</li>
+<li>Mismo modo STP</li>
+</ul></div></div>
+</div></div>
+<div class="tab-panel" id="tab-protocolos">
+<div class="content">
+<div class="section"><h2 class="section-title">⚙️ Protocolos de Negociación</h2>
+<div class="osi-table-wrap"><table class="osi-table"><thead><tr><th>Protocolo</th><th>Estándar</th><th>Modo activo</th><th>Modo pasivo</th></tr></thead><tbody>
+<tr><td><strong>LACP</strong> (Link Aggregation Control Protocol)</td><td>IEEE 802.3ad / 802.1ax</td><td><code>active</code></td><td><code>passive</code></td></tr>
+<tr><td><strong>PAgP</strong> (Port Aggregation Protocol)</td><td>Cisco propietario</td><td><code>desirable</code></td><td><code>auto</code></td></tr>
+<tr><td><strong>Static / On</strong></td><td>—</td><td><code>on</code></td><td><code>on</code></td></tr>
+</tbody></table></div>
+<div class="concept-box" style="margin-top:1rem"><h4>📌 Combinaciones válidas</h4>
+<p>LACP: <code>active-active</code> ✔ | <code>active-passive</code> ✔ | <code>passive-passive</code> ✗</p>
+<p>PAgP: <code>desirable-desirable</code> ✔ | <code>desirable-auto</code> ✔ | <code>auto-auto</code> ✗</p>
+<p>Static: <code>on-on</code> ✔ (sin negociación, no recomendado en producción)</p></div>
+<div class="concept-box warning" style="margin-top:1rem"><h4>⚠️ No mezclar protocolos</h4><p>No se puede usar LACP en un extremo y PAgP en el otro. Ambos extremos deben usar el mismo protocolo.</p></div></div>
+</div></div>
+<div class="tab-panel" id="tab-config">
+<div class="content">
+<div class="section"><h2 class="section-title">💻 Configuración EtherChannel</h2>
+<div class="lab-steps">
+<div class="lab-step"><h4>EtherChannel con LACP (recomendado)</h4>
+<div class="cli-block" data-label="LACP EtherChannel">
+<pre><code><span class="cmt">! Configurar en SW1 (activo)</span>
+<span class="cmd">SW1(config)# interface range GigabitEthernet0/1-2</span>
+<span class="cmd">SW1(config-if-range)# channel-group 1 mode active</span>
+<span class="out">Creating a port-channel interface Port-channel 1</span>
+<span class="cmt">! Configurar la interfaz lógica Port-channel</span>
+<span class="cmd">SW1(config)# interface port-channel 1</span>
+<span class="cmd">SW1(config-if)# switchport mode trunk</span>
+<span class="cmd">SW1(config-if)# switchport trunk allowed vlan 10,20,30</span>
+<span class="cmt">! En SW2 (pasivo)</span>
+<span class="cmd">SW2(config)# interface range GigabitEthernet0/1-2</span>
+<span class="cmd">SW2(config-if-range)# channel-group 1 mode passive</span>
+<span class="cmd">SW2(config)# interface port-channel 1</span>
+<span class="cmd">SW2(config-if)# switchport mode trunk</span>
+<span class="cmd">SW2(config-if)# switchport trunk allowed vlan 10,20,30</span></code></pre>
+</div></div>
+<div class="lab-step"><h4>EtherChannel con PAgP</h4>
+<div class="cli-block" data-label="PAgP EtherChannel">
+<pre><code><span class="cmd">SW1(config)# interface range FastEthernet0/1-2</span>
+<span class="cmd">SW1(config-if-range)# channel-group 2 mode desirable</span>
+<span class="cmt">! Extremo pasivo en SW2</span>
+<span class="cmd">SW2(config)# interface range FastEthernet0/1-2</span>
+<span class="cmd">SW2(config-if-range)# channel-group 2 mode auto</span></code></pre>
+</div></div></div></div>
+</div></div>
+<div class="tab-panel" id="tab-verificacion">
+<div class="content">
+<div class="section"><h2 class="section-title">🔍 Verificación EtherChannel</h2>
+<div class="cli-block" data-label="Verificación">
+<pre><code><span class="cmd">SW1# show etherchannel summary</span>
+<span class="out">Flags: D - down, P - bundled in port-channel
+       I - stand-alone, s - suspended
+       H - Hot-standby (LACP only)
+       U - in use, N - not in use
+       M - not in use, minimum links not met
 Number of channel-groups in use: 1
 Number of aggregators:           1
 
-Group  Port-channel  Protocol    Ports
+Group Port-channel Protocol    Ports
 ------+-------------+-----------+-----------------------------------------------
-1      Po1(SU)         LACP      Fa0/1(P) Fa0/2(P) Fa0/3(P) Fa0/4(P)</span>
+1     Po1(SU)       LACP        Gi0/1(P) Gi0/2(P)</span>
 
-<span class="cli-comment">! ── Ver detalle del Port-Channel ─────────────────────────────</span>
-<span class="cli-prompt">SW1# </span><span class="cli-cmd">show etherchannel detail</span>
-
-<span class="cli-comment">! ── Ver estado de Port-Channel ───────────────────────────────</span>
-<span class="cli-prompt">SW1# </span><span class="cli-cmd">show interfaces port-channel 1</span>
-
-<span class="cli-comment">! ── Ver método de balanceo configurado ───────────────────────</span>
-<span class="cli-prompt">SW1# </span><span class="cli-cmd">show etherchannel load-balance</span>
-<span class="cli-output">EtherChannel Load-Balancing Configuration:
-        src-dst-ip</span>
-
-<span class="cli-comment">! ── Verificar trunk en Port-Channel ──────────────────────────</span>
-<span class="cli-prompt">SW1# </span><span class="cli-cmd">show interfaces trunk</span>
-        </div>
-      </div>
-
-      <h3>Interpretando el output: Flags clave</h3>
-      <div class="info-grid">
-        <div class="info-box green">
-          <div class="info-title">SU — OPERATIVO</div>
-          <div class="info-desc"><strong>S</strong> = Layer2, <strong>U</strong> = In use. El EtherChannel está funcionando correctamente.</div>
-        </div>
-        <div class="info-box orange">
-          <div class="info-title">P — BUNDLED</div>
-          <div class="info-desc">La interfaz física está <strong>activa y agregada</strong> al Port-Channel.</div>
-        </div>
-        <div class="info-box">
-          <div class="info-title">D — DOWN</div>
-          <div class="info-desc">La interfaz o el canal están <strong>caídos</strong>. Revisar físico y configuración.</div>
-        </div>
-      </div>
-
-      <div class="alert exam">
-        <div class="alert-icon">🎯</div>
-        <div class="alert-content">
-          <div class="alert-title">PUNTOS DE EXAMEN CCNA</div>
-          <div class="alert-text">
-            El examen CCNA 200-301 evalúa: (1) diferencia entre LACP y PAgP, 
-            (2) combinaciones de modos válidas, (3) requisitos de configuración idéntica en interfaces, 
-            (4) interpretación de <code style="color:var(--accent)">show etherchannel summary</code>.
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- SECCIÓN 6 — QUIZ -->
-    <div class="section quiz-section" id="s6">
-      <div class="section-header">
-        <div class="section-icon">🎯</div>
-        <div>
-          <span class="section-num">SECCIÓN 06</span>
-          <h2>Quiz de Verificación CCNA</h2>
-        </div>
-      </div>
-
-      <!-- Q1 -->
-      <div style="margin-bottom:32px">
-        <p class="quiz-q">1. ¿Qué protocolo de EtherChannel es un estándar IEEE compatible con múltiples fabricantes?</p>
-        <div class="quiz-options" id="q1">
-          <div class="quiz-opt" onclick="checkAnswer(this,'q1','A','B')">
-            <span class="quiz-letter">A</span> PAgP (Port Aggregation Protocol)
-          </div>
-          <div class="quiz-opt" onclick="checkAnswer(this,'q1','B','B')">
-            <span class="quiz-letter">B</span> LACP (Link Aggregation Control Protocol)
-          </div>
-          <div class="quiz-opt" onclick="checkAnswer(this,'q1','C','B')">
-            <span class="quiz-letter">C</span> STP (Spanning Tree Protocol)
-          </div>
-          <div class="quiz-opt" onclick="checkAnswer(this,'q1','D','B')">
-            <span class="quiz-letter">D</span> RSTP (Rapid STP)
-          </div>
-        </div>
-        <div class="quiz-feedback" id="fb-q1"></div>
-      </div>
-
-      <!-- Q2 -->
-      <div style="margin-bottom:32px">
-        <p class="quiz-q">2. Un switch está configurado con <code style="color:var(--accent)">channel-group 1 mode passive</code>. ¿Qué modo debe tener el switch del otro extremo para que se forme el EtherChannel?</p>
-        <div class="quiz-options" id="q2">
-          <div class="quiz-opt" onclick="checkAnswer(this,'q2','A','A')">
-            <span class="quiz-letter">A</span> active
-          </div>
-          <div class="quiz-opt" onclick="checkAnswer(this,'q2','B','A')">
-            <span class="quiz-letter">B</span> passive
-          </div>
-          <div class="quiz-opt" onclick="checkAnswer(this,'q2','C','A')">
-            <span class="quiz-letter">C</span> auto
-          </div>
-          <div class="quiz-opt" onclick="checkAnswer(this,'q2','D','A')">
-            <span class="quiz-letter">D</span> desirable
-          </div>
-        </div>
-        <div class="quiz-feedback" id="fb-q2"></div>
-      </div>
-
-      <!-- Q3 -->
-      <div style="margin-bottom:32px">
-        <p class="quiz-q">3. ¿Cuál es el número máximo de interfaces físicas que pueden agruparse en un solo EtherChannel en switches Cisco?</p>
-        <div class="quiz-options" id="q3">
-          <div class="quiz-opt" onclick="checkAnswer(this,'q3','A','C')">
-            <span class="quiz-letter">A</span> 4 interfaces
-          </div>
-          <div class="quiz-opt" onclick="checkAnswer(this,'q3','B','C')">
-            <span class="quiz-letter">B</span> 6 interfaces
-          </div>
-          <div class="quiz-opt" onclick="checkAnswer(this,'q3','C','C')">
-            <span class="quiz-letter">C</span> 8 interfaces
-          </div>
-          <div class="quiz-opt" onclick="checkAnswer(this,'q3','D','C')">
-            <span class="quiz-letter">D</span> 16 interfaces
-          </div>
-        </div>
-        <div class="quiz-feedback" id="fb-q3"></div>
-      </div>
-
-      <!-- Q4 -->
-      <div>
-        <p class="quiz-q">4. Al ejecutar <code style="color:var(--accent)">show etherchannel summary</code> ves el flag <strong>SU</strong> junto al Port-channel. ¿Qué indica?</p>
-        <div class="quiz-options" id="q4">
-          <div class="quiz-opt" onclick="checkAnswer(this,'q4','A','B')">
-            <span class="quiz-letter">A</span> El canal está configurado pero no activo todavía
-          </div>
-          <div class="quiz-opt" onclick="checkAnswer(this,'q4','B','B')">
-            <span class="quiz-letter">B</span> El canal es Layer2 y está operativo (in use)
-          </div>
-          <div class="quiz-opt" onclick="checkAnswer(this,'q4','C','B')">
-            <span class="quiz-letter">C</span> El canal está suspendido por error de configuración
-          </div>
-          <div class="quiz-opt" onclick="checkAnswer(this,'q4','D','B')">
-            <span class="quiz-letter">D</span> Solo un enlace está activo en el canal
-          </div>
-        </div>
-        <div class="quiz-feedback" id="fb-q4"></div>
-      </div>
-
-    </div>
-  </div>
-</div>
-
-<!-- FOOTER -->
-<div class="class-footer">
-  <div>
-    <div style="font-family:var(--mono);font-size:0.65rem;color:var(--gray);letter-spacing:2px;margin-bottom:6px">MÓDULO 04 — COMPLETADO</div>
-    <div style="font-size:0.85rem;color:rgba(232,244,255,0.5)">Próximo: STP — Spanning Tree Protocol</div>
-  </div>
-  <div class="footer-nav">
-    <a href="#" class="btn btn-secondary">← VLANs</a>
-    <a href="#" class="btn btn-primary">STP →</a>
-  </div>
-</div>
-
+<span class="cmd">SW1# show etherchannel port-channel</span>
+<span class="cmd">SW1# show interfaces port-channel 1</span>
+<span class="cmd">SW1# show lacp neighbor</span>
+<span class="out">Channel group 1 neighbors
+        Partner's information:
+          LACP port    Admin   Oper    Port    Port
+Port      Priority     Key     Key     Number  State
+Gi0/1     32768        0x1     0x1     0x102   0x3D</span></code></pre>
+</div></div>
+</div></div>
+<div class="tab-panel" id="tab-lab">
+<div class="content">
+<div class="section"><h2 class="section-title">🧪 Laboratorio EtherChannel LACP</h2>
+<div class="concept-box"><h4>📋 Topología: SW1 ═══ Po1 (Gi0/1+Gi0/2) ═══ SW2 con VLANs 10, 20</h4></div>
+<div class="lab-steps">
+<div class="lab-step"><h4>Configuración completa</h4>
+<div class="cli-block" data-label="Lab EtherChannel">
+<pre><code><span class="cmt">! SW1</span>
+<span class="cmd">SW1(config)# vlan 10</span>
+<span class="cmd">SW1(config-vlan)# name VENTAS</span>
+<span class="cmd">SW1(config)# vlan 20</span>
+<span class="cmd">SW1(config-vlan)# name IT</span>
+<span class="cmd">SW1(config)# interface range GigabitEthernet0/1-2</span>
+<span class="cmd">SW1(config-if-range)# no shutdown</span>
+<span class="cmd">SW1(config-if-range)# channel-group 1 mode active</span>
+<span class="cmd">SW1(config)# interface port-channel 1</span>
+<span class="cmd">SW1(config-if)# switchport mode trunk</span>
+<span class="cmd">SW1(config-if)# switchport trunk encapsulation dot1q</span>
+<span class="cmd">SW1(config-if)# switchport trunk allowed vlan 10,20</span>
+<span class="cmd">SW1# copy running-config startup-config</span></code></pre>
+</div></div></div></div>
+</div></div>
+<div class="tab-panel" id="tab-resumen">
+<div class="content">
+<div class="section"><h2 class="section-title">📋 Resumen EtherChannel</h2>
+<div class="concept-box"><h4>✅ Puntos críticos</h4><ul>
+<li>EtherChannel = múltiples físicos → 1 lógico (Port-Channel)</li>
+<li>LACP (802.3ad): active-active ✔ | active-passive ✔ | passive-passive ✗</li>
+<li>PAgP (Cisco): desirable-desirable ✔ | desirable-auto ✔ | auto-auto ✗</li>
+<li>Static: on-on (no negociación, riesgo de loops)</li>
+<li>Todos los puertos del grupo deben ser idénticos (velocidad, duplex, VLAN)</li>
+<li>STP ve el EtherChannel como un único enlace → no bloquea</li>
+<li><code>show etherchannel summary</code> → P = bundled (correcto), D = down</li>
+</ul></div>
+<div style="margin-top:1.5rem"><div id="refTableContainer"></div></div></div>
+</div></div>
+<div class="tab-panel" id="tab-quiz">
+<div class="content">
+<div class="section"><h2 class="section-title">✅ Quiz · EtherChannel — CCNA 200-301</h2>
+<div id="quiz-container"></div><div id="quiz-container-result"></div></div>
+</div></div>
+<footer class="footer">
+  <p>CCNA Academy · EtherChannel · Basado en CCNA 200-301 Official Cert Guide (Wendell Odom)</p>
+  <p style="margin-top:.4rem"><a href="../index.html">← Volver al índice</a></p>
+</footer>
+<script src="../assets/main.js" defer></script>
 <script>
-// Quiz
-function checkAnswer(el, qId, selected, correct) {
-  const container = document.getElementById(qId);
-  const opts = container.querySelectorAll('.quiz-opt');
-  const fb = document.getElementById('fb-' + qId);
-
-  // Deshabilitar clicks
-  opts.forEach(o => o.style.pointerEvents = 'none');
-
-  const letters = ['A','B','C','D'];
-  opts.forEach((o, i) => {
-    if (letters[i] === correct) o.classList.add('correct');
-    else if (letters[i] === selected && selected !== correct) o.classList.add('wrong');
-  });
-
-  fb.classList.add('show');
-  if (selected === correct) {
-    fb.classList.add('correct');
-    fb.textContent = '✅ CORRECTO — ' + getExplanation(qId);
-  } else {
-    fb.classList.add('wrong');
-    fb.textContent = '❌ INCORRECTO — La respuesta correcta es ' + correct + '. ' + getExplanation(qId);
-  }
-  updateProgress();
-}
-
-function getExplanation(qId) {
-  const exp = {
-    'q1': 'LACP es el estándar IEEE 802.3ad, compatible con múltiples fabricantes. PAgP es propietario de Cisco.',
-    'q2': 'Passive espera que el otro inicie. Solo active puede iniciar la negociación LACP. Passive + Passive NO forma EtherChannel.',
-    'q3': 'Los switches Cisco soportan hasta 8 interfaces físicas por EtherChannel, permitiendo hasta 8 Gbps con GigabitEthernet.',
-    'q4': 'SU = S (Layer2) + U (In use/operativo). Indica que el EtherChannel está funcionando correctamente en capa 2.'
-  };
-  return exp[qId] || '';
-}
-
-// Progress
-function updateProgress() {
-  const answered = document.querySelectorAll('.quiz-feedback.show').length;
-  document.getElementById('progressFill').style.width = (answered / 4 * 100) + '%';
-}
-
-// TOC activo al hacer scroll
-const sections = document.querySelectorAll('.section');
-const tocItems = document.querySelectorAll('.toc-item');
-
-window.addEventListener('scroll', () => {
-  let current = '';
-  sections.forEach(s => {
-    if (window.scrollY >= s.offsetTop - 150) current = s.id;
-  });
-  tocItems.forEach(t => {
-    t.classList.remove('active');
-    if (t.getAttribute('href') === '#' + current) t.classList.add('active');
-  });
+function showTab(id,btn){document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active')});document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active')});var panel=document.getElementById('tab-'+id);if(panel)panel.classList.add('active');if(btn)btn.classList.add('active');window.scrollTo({top:90,behavior:'smooth'});}
+document.addEventListener('DOMContentLoaded',function(){
+  var refData=[
+  {Comando:'channel-group X mode active',Modo:'config-if-range',Descripcion:'Crear EtherChannel con LACP activo'},
+  {Comando:'channel-group X mode passive',Modo:'config-if-range',Descripcion:'LACP pasivo (espera negociación)'},
+  {Comando:'channel-group X mode desirable',Modo:'config-if-range',Descripcion:'PAgP activo'},
+  {Comando:'channel-group X mode auto',Modo:'config-if-range',Descripcion:'PAgP pasivo'},
+  {Comando:'channel-group X mode on',Modo:'config-if-range',Descripcion:'EtherChannel estático sin protocolo'},
+  {Comando:'interface port-channel X',Modo:'config',Descripcion:'Configurar la interfaz lógica del EtherChannel'},
+  {Comando:'show etherchannel summary',Modo:'#',Descripcion:'Estado y protocolos de todos los EtherChannels'},
+  {Comando:'show lacp neighbor',Modo:'#',Descripcion:'Ver información del vecino LACP'},
+];
+if(typeof buildRefTable==="function")buildRefTable(refData,"refTableContainer");
+  var preguntas=[
+  {pregunta:"¿Cuál es la combinación LACP que NO forma un EtherChannel?",opciones:["active-active","active-passive","passive-passive","on-on"],respuesta:2,explicacion:"passive-passive no funciona porque ambos lados esperan que el otro inicie la negociación. Se necesita al menos un lado en 'active'."},
+  {pregunta:"¿Cuántos puertos físicos se pueden agrupar como máximo en un EtherChannel?",opciones:["2","4","8","16"],respuesta:2,explicacion:"EtherChannel soporta hasta 8 puertos físicos activos en un grupo (con hasta 8 adicionales en hot-standby con LACP)."},
+  {pregunta:"¿Qué protocolo de EtherChannel es estándar abierto IEEE?",opciones:["PAgP","ISL","LACP","RSTP"],respuesta:2,explicacion:"LACP (IEEE 802.3ad/802.1ax) es el estándar abierto. PAgP es propietario de Cisco."},
+  {pregunta:"Un EtherChannel entre dos switches tiene Gi0/1 en 'active' y Gi0/2 en 'passive'. ¿Funciona?",opciones:["No, ambos deben ser active","Sí, active-passive es válido en LACP","No, passive requiere desirable","Solo si son switches del mismo modelo"],respuesta:1,explicacion:"En LACP, active-passive es una combinación válida. El lado 'active' inicia la negociación y el 'passive' responde."},
+  {pregunta:"¿Qué muestra 'P' en la salida de 'show etherchannel summary'?",opciones:["Port down","Port bundled (funcionando en el channel)","PAgP mode","Port paused"],respuesta:1,explicacion:"La P indica que el puerto está 'bundled' — correctamente agrupado y funcionando como parte del EtherChannel."},
+];
+if(typeof initQuiz==="function")initQuiz(preguntas,"quiz-container");
 });
 </script>
-</div><!-- /.page-content -->
 </body>
 </html>

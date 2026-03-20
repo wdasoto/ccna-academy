@@ -1,70 +1,47 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Routing Estático — CCNA Academy</title>
-<link rel="stylesheet" href="../assets/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Routing Estático — CCNA Academy</title>
+  <meta name="description" content="Clase magistral Routing Estático CCNA 200-301. AD, longest match, rutas flotantes, default route y laboratorio.">
+  <link rel="stylesheet" href="../assets/style.css">
 </head>
-<body class="page-body">
-
+<body>
 <div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
-
 <nav class="ccna-drawer" id="ccnaDrawer">
-  <div class="drawer-header">
-    <h2>◈ NAVEGACIÓN</h2>
-    <button class="drawer-close" onclick="ccnaClose()">✕</button>
-  </div>
-  <div class="drawer-section">
-    <div class="drawer-section-title">General</div>
-    <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a>
-  </div>
-  <div class="drawer-section">
-    <div class="drawer-section-title">M1 · Fundamentos</div>
-    <a href="fundamentos.html"  class="drawer-link"><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
-    <a href="subnetting.html"   class="drawer-link"><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
-    <a href="calculadora.html"  class="drawer-link"><span class="dl-icon">🧮</span> Calculadora IP</a>
-    <a href="ipv6.html"         class="drawer-link"><span class="dl-icon">6️⃣</span> IPv6</a>
-  </div>
-  <div class="drawer-section">
-    <div class="drawer-section-title">M2 · Dispositivos Cisco</div>
-    <a href="router.html"          class="drawer-link"><span class="dl-icon">📡</span> Routers Cisco</a>
-    <a href="switches-cisco.html"  class="drawer-link"><span class="dl-icon">🔀</span> Switches Cisco</a>
-  </div>
-  <div class="drawer-section">
-    <div class="drawer-section-title">M3 · Switching</div>
-    <a href="vlan.html"                class="drawer-link"><span class="dl-icon">🏷️</span> VLANs</a>
-    <a href="inter-vlan-routing.html"  class="drawer-link"><span class="dl-icon">🔁</span> Inter-VLAN Routing</a>
-    <a href="stp.html"                 class="drawer-link"><span class="dl-icon">🌳</span> Spanning Tree Protocol</a>
-    <a href="etherchannel.html"        class="drawer-link"><span class="dl-icon">🔗</span> EtherChannel</a>
-    <a href="port-security.html"       class="drawer-link"><span class="dl-icon">🔒</span> Port Security</a>
-    <a href="cdp-lldp.html"            class="drawer-link"><span class="dl-icon">🔍</span> CDP / LLDP</a>
-  </div>
-  <div class="drawer-section">
-    <div class="drawer-section-title">M4 · Routing</div>
-    <a href="routing.html"  class="drawer-link active"><span class="dl-icon">🗺️</span> Routing Estático</a>
-    <a href="ospf.html"     class="drawer-link"><span class="dl-icon">⭕</span> OSPF</a>
-    <a href="eigrp.html"    class="drawer-link"><span class="dl-icon">⚡</span> EIGRP</a>
-  </div>
-  <div class="drawer-section">
-    <div class="drawer-section-title">M5 · Servicios IP</div>
-    <a href="dhcp.html"  class="drawer-link"><span class="dl-icon">📋</span> DHCP</a>
-    <a href="nat.html"   class="drawer-link"><span class="dl-icon">🔄</span> NAT / PAT</a>
-  </div>
-  <div class="drawer-section">
-    <div class="drawer-section-title">M6 · Seguridad</div>
-    <a href="acl.html"  class="drawer-link"><span class="dl-icon">🛡️</span> ACLs</a>
-  </div>
-  <div class="drawer-section">
-    <div class="drawer-section-title">M7 · WAN &amp; QoS</div>
-    <a href="wan.html"  class="drawer-link"><span class="dl-icon">🌍</span> WAN</a>
-    <a href="qos.html"  class="drawer-link"><span class="dl-icon">📊</span> QoS</a>
-  </div>
-  <div class="drawer-section">
-    <div class="drawer-section-title">Herramientas</div>
-    <a href="asistente.html"   class="drawer-link"><span class="dl-icon">🤖</span> Asistente IA</a>
+  <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
+  <div class="drawer-section"><div class="drawer-section-title">General</div><a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M1 · Fundamentos</div>
+    <a href="fundamentos.html" class="drawer-link"><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
+    <a href="subnetting.html" class="drawer-link"><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
     <a href="calculadora.html" class="drawer-link"><span class="dl-icon">🧮</span> Calculadora IP</a>
-  </div>
+    <a href="ipv6.html" class="drawer-link"><span class="dl-icon">6️⃣</span> IPv6</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M2 · Dispositivos Cisco</div>
+    <a href="router.html" class="drawer-link"><span class="dl-icon">📡</span> Routers Cisco</a>
+    <a href="switches-cisco.html" class="drawer-link"><span class="dl-icon">🔀</span> Switches Cisco</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M3 · Switching</div>
+    <a href="vlan.html" class="drawer-link"><span class="dl-icon">🏷️</span> VLANs</a>
+    <a href="inter-vlan-routing.html" class="drawer-link"><span class="dl-icon">🔁</span> Inter-VLAN Routing</a>
+    <a href="stp.html" class="drawer-link"><span class="dl-icon">🌳</span> Spanning Tree Protocol</a>
+    <a href="etherchannel.html" class="drawer-link"><span class="dl-icon">🔗</span> EtherChannel</a>
+    <a href="port-security.html" class="drawer-link"><span class="dl-icon">🔒</span> Port Security</a>
+    <a href="cdp-lldp.html" class="drawer-link"><span class="dl-icon">🔍</span> CDP / LLDP</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M4 · Routing</div>
+    <a href="routing.html" class="drawer-link active"><span class="dl-icon">🗺️</span> Routing Estático</a>
+    <a href="ospf.html" class="drawer-link"><span class="dl-icon">⭕</span> OSPF</a>
+    <a href="eigrp.html" class="drawer-link"><span class="dl-icon">⚡</span> EIGRP</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M5 · Servicios IP</div>
+    <a href="dhcp.html" class="drawer-link"><span class="dl-icon">📋</span> DHCP</a>
+    <a href="nat.html" class="drawer-link"><span class="dl-icon">🔄</span> NAT / PAT</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M6 · Seguridad</div>
+    <a href="acl.html" class="drawer-link"><span class="dl-icon">🛡️</span> ACLs</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M7 · WAN &amp; QoS</div>
+    <a href="wan.html" class="drawer-link"><span class="dl-icon">🌍</span> WAN</a>
+    <a href="qos.html" class="drawer-link"><span class="dl-icon">📊</span> QoS</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">Herramientas</div>
+    <a href="asistente.html" class="drawer-link"><span class="dl-icon">🤖</span> Asistente IA</a>
+    <a href="calculadora.html" class="drawer-link"><span class="dl-icon">🧮</span> Calculadora IP</a></div>
 </nav>
 
 <header class="navbar">
@@ -74,597 +51,190 @@
   <a href="../index.html" class="navbar-link">← Inicio</a>
 </header>
 <div class="nav-spacer"></div>
-<div class="page-content">
-  <div class="wrap">
-
-    <!-- ══════════════════════════════════════
-         SECCIÓN 1: TABLA DE ROUTING
-    ══════════════════════════════════════ -->
-    <div id="section-tabla" class="content-section">
-
-      <div class="content-card fade-up">
-        <h2>📋 ¿Qué es la Tabla de Routing?</h2>
-        <div class="def-box">
-          La <span class="hl">tabla de routing (RIB — Routing Information Base)</span> es la base de datos principal de un router. Contiene todas las rutas conocidas hacia redes destino. Cuando llega un paquete, el router <span class="hlg">consulta esta tabla y elige la mejor ruta</span> según la red destino, la distancia administrativa y la métrica.
-        </div>
-        <div class="info-box tip">
-          <div class="info-icon">✅</div>
-          <div>El comando <strong>show ip route</strong> muestra la tabla de routing completa. Es el comando más importante para verificar la conectividad en un router Cisco.</div>
-        </div>
-        <div class="info-box exam">
-          <div class="info-icon">🎯</div>
-          <div><strong>CCNA Examen:</strong> Debes saber leer e interpretar la salida de <strong>show ip route</strong>. Aparece en casi todos los exámenes de simulación.</div>
-        </div>
-      </div>
-
-      <div class="content-card fade-up fade-up-d1">
-        <h2>🔤 Códigos de la Tabla de Routing</h2>
-        <p>Cada ruta en la tabla tiene un código que indica su <span class="hl">origen</span> — cómo el router aprendió esa ruta:</p>
-        <table class="data-table">
-          <thead>
-            <tr><th>Código</th><th>Significado</th><th>Distancia Administrativa</th><th>Descripción</th></tr>
-          </thead>
-          <tbody>
-            <tr><td><span class="badge b-green">C</span></td><td>Connected</td><td>0</td><td>Red directamente conectada a una interfaz del router</td></tr>
-            <tr><td><span class="badge b-blue">L</span></td><td>Local</td><td>0</td><td>Dirección IP específica de la interfaz del router (/32)</td></tr>
-            <tr><td><span class="badge b-amber">S</span></td><td>Static</td><td>1</td><td>Ruta configurada manualmente por el administrador</td></tr>
-            <tr><td><span class="badge" style="background:rgba(139,92,246,0.15);border:1px solid #8b5cf6;color:#c4b5fd;">S*</span></td><td>Static Default</td><td>1</td><td>Ruta estática por defecto (gateway of last resort)</td></tr>
-            <tr><td><span class="badge b-red">R</span></td><td>RIP</td><td>120</td><td>Aprendida por el protocolo RIP</td></tr>
-            <tr><td><span class="badge b-blue">O</span></td><td>OSPF</td><td>110</td><td>Aprendida por el protocolo OSPF</td></tr>
-            <tr><td><span class="badge b-green">D</span></td><td>EIGRP</td><td>90</td><td>Aprendida por el protocolo EIGRP</td></tr>
-            <tr><td><span class="badge b-amber">B</span></td><td>BGP</td><td>20 (eBGP) / 200 (iBGP)</td><td>Aprendida por el protocolo BGP</td></tr>
-          </tbody>
-        </table>
-        <div class="info-box warn">
-          <div class="info-icon">⚠️</div>
-          <div><strong>Distancia Administrativa (AD):</strong> Cuando un router conoce la misma red por varios protocolos, elige la ruta con <span class="hlr">menor AD</span>. Connected (0) siempre gana sobre todo.</div>
-        </div>
-      </div>
-
-      <div class="content-card fade-up fade-up-d2">
-        <h2>🔍 Lectura de la Tabla de Routing</h2>
-        <p>Ejemplo de salida de <strong>show ip route</strong>:</p>
-        <div class="cmd-block">
-          <span class="cmd-label">SHOW IP ROUTE</span>
-          <span class="cl"><span class="cp">Router#</span> <span class="ck">show ip route</span></span>
-          <span class="cl" style="color:#6b8aa8;">Codes: C - connected, S - static, L - local, O - OSPF ...</span>
-          <span class="cl">&nbsp;</span>
-          <span class="cl" style="color:#6b8aa8;">Gateway of last resort is 10.0.0.1 to network 0.0.0.0</span>
-          <span class="cl">&nbsp;</span>
-          <span class="cl"><span class="cp">S*</span>  <span class="ck">0.0.0.0/0</span> <span class="cv">[1/0]</span> via 10.0.0.1     <span class="cc">! Ruta default</span></span>
-          <span class="cl"><span class="cp">C</span>   <span class="ck">10.0.0.0/30</span> is directly connected, <span class="cv">GigabitEthernet0/0</span></span>
-          <span class="cl"><span class="cp">L</span>   <span class="ck">10.0.0.2/32</span> is directly connected, <span class="cv">GigabitEthernet0/0</span></span>
-          <span class="cl"><span class="cp">C</span>   <span class="ck">192.168.1.0/24</span> is directly connected, <span class="cv">GigabitEthernet0/1</span></span>
-          <span class="cl"><span class="cp">L</span>   <span class="ck">192.168.1.1/32</span> is directly connected, <span class="cv">GigabitEthernet0/1</span></span>
-          <span class="cl"><span class="cp">S</span>   <span class="ck">172.16.0.0/24</span> <span class="cv">[1/0]</span> via 10.0.0.1      <span class="cc">! Ruta estática</span></span>
-        </div>
-        <table class="data-table">
-          <thead><tr><th>Campo</th><th>Valor ejemplo</th><th>Significado</th></tr></thead>
-          <tbody>
-            <tr><td><span class="badge b-green">Código</span></td><td>S</td><td>Origen de la ruta (S = estática)</td></tr>
-            <tr><td><span class="badge b-blue">Red destino</span></td><td>172.16.0.0/24</td><td>Red a la que se quiere llegar con su máscara</td></tr>
-            <tr><td><span class="badge b-amber">[AD/Métrica]</span></td><td>[1/0]</td><td>Distancia administrativa / Métrica (costo)</td></tr>
-            <tr><td><span class="badge b-green">via</span></td><td>10.0.0.1</td><td>Next-hop: IP del siguiente router hacia el destino</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-    </div><!-- /section-tabla -->
-
-    <!-- ══════════════════════════════════════
-         SECCIÓN 2: RUTAS ESTÁTICAS
-    ══════════════════════════════════════ -->
-    <div id="section-estaticas" class="content-section" style="display:none;">
-
-      <div class="content-card fade-up">
-        <h2>🗺️ ¿Qué es una Ruta Estática?</h2>
-        <div class="def-box">
-          Una <span class="hl">ruta estática</span> es una ruta configurada <span class="hlg">manualmente por el administrador</span> en la tabla de routing. No cambia automáticamente si la topología cambia — el administrador debe actualizarla. Son ideales para <span class="hl">redes pequeñas, rutas de respaldo o conexiones a ISP</span>.
-        </div>
-        <table class="data-table">
-          <thead><tr><th>Ventajas</th><th>Desventajas</th></tr></thead>
-          <tbody>
-            <tr><td>✅ No consume CPU ni ancho de banda</td><td>❌ No se adapta a cambios de topología</td></tr>
-            <tr><td>✅ Más seguro — control total del administrador</td><td>❌ No escala en redes grandes</td></tr>
-            <tr><td>✅ AD = 1 (muy confiable)</td><td>❌ Requiere configuración manual en cada router</td></tr>
-            <tr><td>✅ Fácil de troubleshoot</td><td>❌ Propenso a errores humanos</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="content-card fade-up fade-up-d1">
-        <h2>📝 Sintaxis del Comando ip route</h2>
-        <div class="def-box">
-          <strong style="color:var(--blue-b);">ip route</strong> <span class="hl">[red-destino]</span> <span class="hlg">[máscara]</span> <span style="color:var(--amber);">{next-hop-IP | interfaz-salida}</span> <span style="color:#94a3b8;">[distancia-administrativa]</span>
-        </div>
-        <table class="data-table">
-          <thead><tr><th>Parámetro</th><th>Descripción</th><th>Ejemplo</th></tr></thead>
-          <tbody>
-            <tr><td><span class="badge b-blue">red-destino</span></td><td>Dirección de red a la que quieres llegar</td><td>192.168.2.0</td></tr>
-            <tr><td><span class="badge b-green">máscara</span></td><td>Máscara de subred de la red destino</td><td>255.255.255.0</td></tr>
-            <tr><td><span class="badge b-amber">next-hop</span></td><td>IP del siguiente router (recomendado)</td><td>10.0.0.1</td></tr>
-            <tr><td><span class="badge b-amber">interfaz</span></td><td>Interfaz de salida (alternativo al next-hop)</td><td>GigabitEthernet0/0</td></tr>
-            <tr><td><span class="badge" style="background:rgba(100,116,139,0.15);border:1px solid #475569;color:#94a3b8;">AD</span></td><td>Distancia administrativa opcional (default: 1)</td><td>5, 10, 200...</td></tr>
-          </tbody>
-        </table>
-        <div class="info-box tip">
-          <div class="info-icon">✅</div>
-          <div><strong>Recomendación:</strong> Usar siempre <strong>next-hop IP</strong> en lugar de interfaz de salida. Con interfaz de salida en redes multi-acceso (Ethernet), el router debe resolver ARP por cada destino, lo que es ineficiente.</div>
-        </div>
-      </div>
-
-      <div class="content-card fade-up fade-up-d2">
-        <h2>🏗️ Tipos de Rutas Estáticas</h2>
-        <table class="data-table">
-          <thead><tr><th>Tipo</th><th>Descripción</th><th>Cuándo usar</th></tr></thead>
-          <tbody>
-            <tr>
-              <td><span class="badge b-blue">Estándar</span></td>
-              <td>Ruta hacia una red específica con next-hop o interfaz</td>
-              <td>Redes remotas conocidas y estables</td>
-            </tr>
-            <tr>
-              <td><span class="badge b-green">Default (0.0.0.0/0)</span></td>
-              <td>Captura todo el tráfico sin ruta específica</td>
-              <td>Conexión a Internet / ISP</td>
-            </tr>
-            <tr>
-              <td><span class="badge b-amber">Flotante</span></td>
-              <td>Ruta de respaldo con AD mayor que la ruta principal</td>
-              <td>Redundancia y failover</td>
-            </tr>
-            <tr>
-              <td><span class="badge b-red">Host (/32)</span></td>
-              <td>Ruta hacia un host específico con máscara /32</td>
-              <td>Acceso a servidores o dispositivos específicos</td>
-            </tr>
-            <tr>
-              <td><span class="badge" style="background:rgba(139,92,246,0.15);border:1px solid #8b5cf6;color:#c4b5fd;">Summarizada</span></td>
-              <td>Una ruta resume varias redes contiguas</td>
-              <td>Reducir entradas en la tabla de routing</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="content-card fade-up fade-up-d3">
-        <h2>🔗 Ruta Estática Flotante</h2>
-        <div class="def-box">
-          Una <span class="hl">ruta flotante</span> es una ruta estática con una <span class="hlg">distancia administrativa mayor</span> que la ruta principal. Permanece <strong style="color:var(--amber);">inactiva en la tabla</strong> mientras la ruta principal esté activa. Si la principal falla, la flotante aparece automáticamente.
-        </div>
-        <div class="cmd-block">
-          <span class="cmd-label">RUTA FLOTANTE</span>
-          <span class="cl"><span class="cc">! Ruta principal via OSPF (AD=110)</span></span>
-          <span class="cl"><span class="cp">Router(config)#</span> <span class="ck">router ospf</span> <span class="cv">1</span></span>
-          <span class="cl">&nbsp;</span>
-          <span class="cl"><span class="cc">! Ruta flotante — solo activa si OSPF falla (AD=200 > 110)</span></span>
-          <span class="cl"><span class="cp">Router(config)#</span> <span class="ck">ip route</span> <span class="cv">192.168.2.0 255.255.255.0 10.0.0.2</span> <span class="ck">200</span></span>
-        </div>
-        <div class="info-box exam">
-          <div class="info-icon">🎯</div>
-          <div><strong>CCNA Examen:</strong> La ruta flotante con AD=200 NO aparece en <strong>show ip route</strong> mientras la ruta OSPF (AD=110) esté activa. Solo aparece cuando la ruta con menor AD desaparece.</div>
-        </div>
-      </div>
-
-    </div><!-- /section-estaticas -->
-
-    <!-- ══════════════════════════════════════
-         SECCIÓN 3: RUTA DEFAULT
-    ══════════════════════════════════════ -->
-    <div id="section-default" class="content-section" style="display:none;">
-
-      <div class="content-card fade-up">
-        <h2>🌐 Ruta por Defecto — Gateway of Last Resort</h2>
-        <div class="def-box">
-          La <span class="hl">ruta por defecto</span> (default route) es la ruta <strong>0.0.0.0/0</strong>. Es la ruta de <span class="hlg">"último recurso"</span> — si el router no encuentra ninguna ruta más específica para un destino, usa esta ruta. Es esencial para la conexión a <span class="hl">Internet o a un ISP</span>.
-        </div>
-        <div class="info-box tip">
-          <div class="info-icon">✅</div>
-          <div>En la tabla de routing, cuando está configurada una ruta default verás: <strong style="color:var(--blue-b);">Gateway of last resort is X.X.X.X to network 0.0.0.0</strong></div>
-        </div>
-        <div class="info-box exam">
-          <div class="info-icon">🎯</div>
-          <div><strong>CCNA Examen:</strong> La ruta <strong>0.0.0.0/0</strong> usa el principio de <strong>longest prefix match</strong> — siempre pierde frente a cualquier ruta más específica. Es la ruta con el prefijo más corto posible.</div>
-        </div>
-      </div>
-
-      <div class="content-card fade-up fade-up-d1">
-        <h2>📐 Longest Prefix Match</h2>
-        <div class="def-box">
-          Cuando un router tiene múltiples rutas que coinciden con un destino, siempre elige la ruta con el <span class="hl">prefijo más largo (más específico)</span>. Una /24 gana a una /16, que gana a una /8, que gana a la /0 (default).
-        </div>
-        <div class="cmd-block">
-          <span class="cmd-label">EJEMPLO</span>
-          <span class="cl"><span class="cc">! Tabla de routing tiene estas rutas:</span></span>
-          <span class="cl"><span class="cp">S</span>   <span class="ck">10.0.0.0/8</span>     via 10.1.1.1   <span class="cc">! /8 — menos específica</span></span>
-          <span class="cl"><span class="cp">O</span>   <span class="ck">10.10.0.0/16</span>   via 10.1.1.2   <span class="cc">! /16 — más específica</span></span>
-          <span class="cl"><span class="cp">S</span>   <span class="ck">10.10.10.0/24</span>  via 10.1.1.3   <span class="cc">! /24 — aún más específica</span></span>
-          <span class="cl"><span class="cp">S*</span>  <span class="ck">0.0.0.0/0</span>      via 10.1.1.4   <span class="cc">! default — último recurso</span></span>
-          <span class="cl">&nbsp;</span>
-          <span class="cl"><span class="cc">! Para destino 10.10.10.5 → usa 10.10.10.0/24 (via 10.1.1.3) ✅</span></span>
-          <span class="cl"><span class="cc">! Para destino 10.10.20.5 → usa 10.10.0.0/16 (via 10.1.1.2)</span></span>
-          <span class="cl"><span class="cc">! Para destino 10.20.0.5  → usa 10.0.0.0/8  (via 10.1.1.1)</span></span>
-          <span class="cl"><span class="cc">! Para destino 8.8.8.8    → usa 0.0.0.0/0  (via 10.1.1.4)</span></span>
-        </div>
-      </div>
-
-    </div><!-- /section-default -->
-
-    <!-- ══════════════════════════════════════
-         SECCIÓN 4: CONFIGURACIÓN
-    ══════════════════════════════════════ -->
-    <div id="section-config" class="content-section" style="display:none;">
-
-      <div class="content-card fade-up">
-        <h2>🏗️ Topología de Laboratorio</h2>
-        <div class="def-box">
-          Laboratorio con <span class="hl">3 routers (R1, R2, R3)</span> y 3 redes LAN. El objetivo es que todas las redes se puedan comunicar usando <span class="hlg">solo rutas estáticas</span>.
-        </div>
-        <div class="cmd-block">
-          <span class="cmd-label">TOPOLOGÍA</span>
-          <span class="cl" style="color:#38d9ff;">PC1 (192.168.1.10)</span></span>
-          <span class="cl">   |</span>
-          <span class="cl"><span class="cp">[R1]</span> Gi0/0: 192.168.1.1/24  ←LAN1</span>
-          <span class="cl">     Gi0/1: 10.0.12.1/30    ←WAN R1-R2</span>
-          <span class="cl">          |</span>
-          <span class="cl"><span class="cp">[R2]</span> Gi0/0: 10.0.12.2/30    ←WAN R1-R2</span>
-          <span class="cl">     Gi0/1: 10.0.23.1/30    ←WAN R2-R3</span>
-          <span class="cl">     Gi0/2: 192.168.2.1/24  ←LAN2</span>
-          <span class="cl">          |</span>
-          <span class="cl"><span class="cp">[R3]</span> Gi0/0: 10.0.23.2/30    ←WAN R2-R3</span>
-          <span class="cl">     Gi0/1: 192.168.3.1/24  ←LAN3</span>
-          <span class="cl" style="color:#38d9ff;">PC3 (192.168.3.10)</span>
-        </div>
-      </div>
-
-      <div class="content-card fade-up fade-up-d1">
-        <h2>⌨️ Configuración R1</h2>
-        <div class="cmd-block">
-          <span class="cmd-label">R1 CONFIG</span>
-          <span class="cl"><span class="cp">R1(config)#</span> <span class="cc">! Ruta hacia LAN2 (R2)</span></span>
-          <span class="cl"><span class="cp">R1(config)#</span> <span class="ck">ip route</span> <span class="cv">192.168.2.0 255.255.255.0 10.0.12.2</span></span>
-          <span class="cl">&nbsp;</span>
-          <span class="cl"><span class="cp">R1(config)#</span> <span class="cc">! Ruta hacia LAN3 (R3) — via R2</span></span>
-          <span class="cl"><span class="cp">R1(config)#</span> <span class="ck">ip route</span> <span class="cv">192.168.3.0 255.255.255.0 10.0.12.2</span></span>
-          <span class="cl">&nbsp;</span>
-          <span class="cl"><span class="cp">R1(config)#</span> <span class="cc">! Ruta hacia WAN R2-R3</span></span>
-          <span class="cl"><span class="cp">R1(config)#</span> <span class="ck">ip route</span> <span class="cv">10.0.23.0 255.255.255.252 10.0.12.2</span></span>
-          <span class="cl">&nbsp;</span>
-          <span class="cl"><span class="cp">R1(config)#</span> <span class="cc">! Verificar</span></span>
-          <span class="cl"><span class="cp">R1#</span> <span class="ck">show ip route</span></span>
-        </div>
-      </div>
-
-      <div class="content-card fade-up fade-up-d2">
-        <h2>⌨️ Configuración R2</h2>
-        <div class="cmd-block">
-          <span class="cmd-label">R2 CONFIG</span>
-          <span class="cl"><span class="cp">R2(config)#</span> <span class="cc">! Ruta hacia LAN1 (R1)</span></span>
-          <span class="cl"><span class="cp">R2(config)#</span> <span class="ck">ip route</span> <span class="cv">192.168.1.0 255.255.255.0 10.0.12.1</span></span>
-          <span class="cl">&nbsp;</span>
-          <span class="cl"><span class="cp">R2(config)#</span> <span class="cc">! Ruta hacia LAN3 (R3)</span></span>
-          <span class="cl"><span class="cp">R2(config)#</span> <span class="ck">ip route</span> <span class="cv">192.168.3.0 255.255.255.0 10.0.23.2</span></span>
-          <span class="cl">&nbsp;</span>
-          <span class="cl"><span class="cc">! R2 ya conoce directamente: 10.0.12.0/30 y 10.0.23.0/30</span></span>
-        </div>
-      </div>
-
-      <div class="content-card fade-up fade-up-d3">
-        <h2>⌨️ Configuración R3</h2>
-        <div class="cmd-block">
-          <span class="cmd-label">R3 CONFIG</span>
-          <span class="cl"><span class="cp">R3(config)#</span> <span class="cc">! Ruta hacia LAN1 (R1) — via R2</span></span>
-          <span class="cl"><span class="cp">R3(config)#</span> <span class="ck">ip route</span> <span class="cv">192.168.1.0 255.255.255.0 10.0.23.1</span></span>
-          <span class="cl">&nbsp;</span>
-          <span class="cl"><span class="cp">R3(config)#</span> <span class="cc">! Ruta hacia LAN2 (R2)</span></span>
-          <span class="cl"><span class="cp">R3(config)#</span> <span class="ck">ip route</span> <span class="cv">192.168.2.0 255.255.255.0 10.0.23.1</span></span>
-          <span class="cl">&nbsp;</span>
-          <span class="cl"><span class="cp">R3(config)#</span> <span class="cc">! Ruta hacia WAN R1-R2</span></span>
-          <span class="cl"><span class="cp">R3(config)#</span> <span class="ck">ip route</span> <span class="cv">10.0.12.0 255.255.255.252 10.0.23.1</span></span>
-        </div>
-      </div>
-
-      <div class="content-card fade-up">
-        <h2>🌐 Configurar Ruta Default</h2>
-        <div class="cmd-block">
-          <span class="cmd-label">DEFAULT ROUTE</span>
-          <span class="cl"><span class="cc">! Método 1: ip route con next-hop</span></span>
-          <span class="cl"><span class="cp">Router(config)#</span> <span class="ck">ip route</span> <span class="cv">0.0.0.0 0.0.0.0 203.0.113.1</span></span>
-          <span class="cl">&nbsp;</span>
-          <span class="cl"><span class="cc">! Método 2: ip route con interfaz de salida</span></span>
-          <span class="cl"><span class="cp">Router(config)#</span> <span class="ck">ip route</span> <span class="cv">0.0.0.0 0.0.0.0 GigabitEthernet0/0</span></span>
-          <span class="cl">&nbsp;</span>
-          <span class="cl"><span class="cc">! Distribuir ruta default a vecinos OSPF</span></span>
-          <span class="cl"><span class="cp">Router(config-router)#</span> <span class="ck">default-information originate</span></span>
-          <span class="cl">&nbsp;</span>
-          <span class="cl"><span class="cc">! Verificar</span></span>
-          <span class="cl"><span class="cp">Router#</span> <span class="ck">show ip route</span> <span class="cv">0.0.0.0</span></span>
-        </div>
-      </div>
-
-      <div class="content-card fade-up fade-up-d1">
-        <h2>🗑️ Eliminar una Ruta Estática</h2>
-        <div class="cmd-block">
-          <span class="cmd-label">ELIMINAR RUTA</span>
-          <span class="cl"><span class="cc">! Agregar "no" al principio del comando ip route</span></span>
-          <span class="cl"><span class="cp">Router(config)#</span> <span class="ck">no ip route</span> <span class="cv">192.168.2.0 255.255.255.0 10.0.12.2</span></span>
-          <span class="cl">&nbsp;</span>
-          <span class="cl"><span class="cc">! Eliminar la ruta default</span></span>
-          <span class="cl"><span class="cp">Router(config)#</span> <span class="ck">no ip route</span> <span class="cv">0.0.0.0 0.0.0.0 203.0.113.1</span></span>
-        </div>
-        <div class="info-box warn">
-          <div class="info-icon">⚠️</div>
-          <div>Al eliminar una ruta, el router descarta inmediatamente los paquetes hacia esa red con un mensaje <strong>ICMP Unreachable</strong> hasta que se configure una nueva ruta.</div>
-        </div>
-      </div>
-
-    </div><!-- /section-config -->
-
-    <!-- ══════════════════════════════════════
-         SECCIÓN 5: TROUBLESHOOTING
-    ══════════════════════════════════════ -->
-    <div id="section-trouble" class="content-section" style="display:none;">
-
-      <div class="content-card fade-up">
-        <h2>🔧 Comandos de Verificación y Troubleshooting</h2>
-        <table class="data-table">
-          <thead><tr><th>Comando</th><th>Qué muestra</th><th>Cuándo usarlo</th></tr></thead>
-          <tbody>
-            <tr><td><span class="badge b-blue">show ip route</span></td><td>Tabla de routing completa</td><td>Ver todas las rutas instaladas</td></tr>
-            <tr><td><span class="badge b-blue">show ip route static</span></td><td>Solo rutas estáticas</td><td>Verificar rutas configuradas manualmente</td></tr>
-            <tr><td><span class="badge b-blue">show ip route 192.168.2.0</span></td><td>Detalle de una ruta específica</td><td>Ver cómo llegar a una red particular</td></tr>
-            <tr><td><span class="badge b-green">ping 192.168.2.1</span></td><td>Prueba de conectividad ICMP</td><td>Verificar alcanzabilidad básica</td></tr>
-            <tr><td><span class="badge b-green">ping 192.168.2.1 source 192.168.1.1</span></td><td>Ping con IP origen específica</td><td>Probar conectividad bidireccional</td></tr>
-            <tr><td><span class="badge b-amber">traceroute 192.168.3.10</span></td><td>Ruta hop a hop hasta el destino</td><td>Identificar dónde se rompe la conectividad</td></tr>
-            <tr><td><span class="badge b-amber">show ip interface brief</span></td><td>Estado de todas las interfaces</td><td>Verificar que las interfaces estén up/up</td></tr>
-            <tr><td><span class="badge b-red">debug ip routing</span></td><td>Cambios en la tabla de routing</td><td>Ver cuándo se instalan/eliminan rutas</td></tr>
-          </tbody>
-        </table>
-        <div class="info-box warn">
-          <div class="info-icon">⚠️</div>
-          <div><strong>debug ip routing</strong> genera mucha salida en producción. Usar <strong>undebug all</strong> para detener todos los debugs.</div>
-        </div>
-      </div>
-
-      <div class="content-card fade-up fade-up-d1">
-        <h2>🚨 Errores Comunes en Routing Estático</h2>
-
-        <div class="info-box warn">
-          <div class="info-icon">❌</div>
-          <div>
-            <strong>Error 1: Routing asimétrico</strong> — Configurar la ruta de ida pero olvidar la de vuelta.<br>
-            <span style="color:var(--gray);font-size:0.88rem;">Si R1 puede enviar a R3 pero R3 no tiene ruta hacia R1, el ping falla aunque el paquete llegue.</span>
-          </div>
-        </div>
-        <div class="info-box warn">
-          <div class="info-icon">❌</div>
-          <div>
-            <strong>Error 2: Next-hop incorrecto</strong> — Poner la IP de la interfaz propia en lugar del vecino.<br>
-            <span style="color:var(--gray);font-size:0.88rem;">ip route 192.168.2.0 255.255.255.0 <span class="hlr">10.0.12.1</span> ← (IP propia, no del vecino)</span>
-          </div>
-        </div>
-        <div class="info-box warn">
-          <div class="info-icon">❌</div>
-          <div>
-            <strong>Error 3: Máscara incorrecta</strong> — Poner la máscara del host en vez de la de la red.<br>
-            <span style="color:var(--gray);font-size:0.88rem;">ip route 192.168.2.0 <span class="hlr">255.255.255.255</span> 10.0.12.2 ← (/32 en vez de /24)</span>
-          </div>
-        </div>
-        <div class="info-box warn">
-          <div class="info-icon">❌</div>
-          <div>
-            <strong>Error 4: Interfaz down</strong> — La ruta aparece en la tabla pero la interfaz está apagada.<br>
-            <span style="color:var(--gray);font-size:0.88rem;">Verificar con <strong>show ip interface brief</strong> que el estado sea <span class="hlg">up/up</span>.</span>
-          </div>
-        </div>
-        <div class="info-box tip">
-          <div class="info-icon">✅</div>
-          <div><strong>Método sistemático:</strong> 1) Verificar interfaces up/up → 2) Verificar tabla de routing → 3) Ping con source → 4) Traceroute → 5) Debug si sigue fallando.</div>
-        </div>
-      </div>
-
-      <div class="content-card fade-up fade-up-d2">
-        <h2>📊 Resumen — Distancias Administrativas clave</h2>
-        <table class="data-table">
-          <thead><tr><th>Fuente de Ruta</th><th>AD</th><th>Confiabilidad</th></tr></thead>
-          <tbody>
-            <tr><td>Connected (C)</td><td><span class="badge b-green">0</span></td><td>Máxima — interfaz directamente conectada</td></tr>
-            <tr><td>Static (S)</td><td><span class="badge b-green">1</span></td><td>Muy alta — configurada manualmente</td></tr>
-            <tr><td>EIGRP Summary</td><td><span class="badge b-blue">5</span></td><td>Alta</td></tr>
-            <tr><td>BGP Externo (eBGP)</td><td><span class="badge b-blue">20</span></td><td>Alta</td></tr>
-            <tr><td>EIGRP Interno</td><td><span class="badge b-amber">90</span></td><td>Media-alta</td></tr>
-            <tr><td>OSPF</td><td><span class="badge b-amber">110</span></td><td>Media</td></tr>
-            <tr><td>IS-IS</td><td><span class="badge b-amber">115</span></td><td>Media</td></tr>
-            <tr><td>RIP</td><td><span class="badge b-red">120</span></td><td>Baja</td></tr>
-            <tr><td>BGP Interno (iBGP)</td><td><span class="badge b-red">200</span></td><td>Muy baja</td></tr>
-            <tr><td>Ruta no confiable</td><td><span class="badge b-red">255</span></td><td>No usada — descartada</td></tr>
-          </tbody>
-        </table>
-        <div class="info-box exam">
-          <div class="info-icon">🎯</div>
-          <div><strong>CCNA Examen:</strong> Memoriza las ADs de Connected (0), Static (1), EIGRP (90), OSPF (110), RIP (120). Son pregunta garantizada.</div>
-        </div>
-      </div>
-
-    </div><!-- /section-trouble -->
-
-    <!-- ══════════════════════════════════════
-         SECCIÓN 6: QUIZ
-    ══════════════════════════════════════ -->
-    <div id="section-quiz" class="content-section" style="display:none;">
-
-      <div class="content-card">
-        <h2>🎯 Quiz — Routing Estático (Estilo Examen CCNA 200-301)</h2>
-        <div class="info-box exam">
-          <div class="info-icon">📋</div>
-          <div>Preguntas estilo examen oficial Cisco CCNA 200-301. Responde con cuidado — explica tu razonamiento.</div>
-        </div>
-
-        <!-- PREGUNTA 1 -->
-        <div class="q-box" id="q1">
-          <div class="q-num">PREGUNTA 01 / 06</div>
-          <div class="q-text">Un administrador ejecuta <strong>show ip route</strong> y ve la entrada: <code style="background:rgba(0,188,235,0.1);padding:2px 6px;border-radius:4px;">S 192.168.5.0/24 [1/0] via 10.0.0.1</code>. ¿Qué significa el valor <strong>[1/0]</strong>?</div>
-          <div class="q-opts">
-            <div class="q-opt" onclick="CcnaQuiz.answer(1,'A','wrong','Incorrecto. El primer número NO es la métrica. En rutas estáticas, la métrica siempre es 0 por defecto y el primer número es la distancia administrativa.')"><div class="q-letter">A</div>Métrica = 1, Distancia Administrativa = 0</div>
-            <div class="q-opt" onclick="CcnaQuiz.answer(1,'B','correct','¡Correcto! El formato es [Distancia Administrativa / Métrica]. Para rutas estáticas, la AD por defecto es 1 y la métrica es 0. Esta es la sintaxis estándar de Cisco IOS.')"><div class="q-letter">B</div>Distancia Administrativa = 1, Métrica = 0</div>
-            <div class="q-opt" onclick="CcnaQuiz.answer(1,'C','wrong','Incorrecto. No representa número de saltos ni ancho de banda. El formato [AD/Métrica] es específico de Cisco IOS para rutas estáticas.')"><div class="q-letter">C</div>Número de saltos = 1, Ancho de banda = 0</div>
-            <div class="q-opt" onclick="CcnaQuiz.answer(1,'D','wrong','Incorrecto. El número de interfaces no aparece en este campo. [1/0] siempre representa [AD/Métrica] en la tabla de routing de Cisco.')"><div class="q-letter">D</div>Número de interfaces = 1, Costo = 0</div>
-          </div>
-          <div class="q-feedback" id="fb1"></div>
-        </div>
-
-        <!-- PREGUNTA 2 -->
-        <div class="q-box" id="q2">
-          <div class="q-num">PREGUNTA 02 / 06</div>
-          <div class="q-text">Un router tiene las siguientes rutas: <code style="background:rgba(0,188,235,0.1);padding:2px 6px;border-radius:4px;">O 10.0.0.0/8</code>, <code style="background:rgba(0,188,235,0.1);padding:2px 6px;border-radius:4px;">S 10.10.0.0/16</code>, <code style="background:rgba(0,188,235,0.1);padding:2px 6px;border-radius:4px;">C 10.10.10.0/24</code>. ¿Cuál ruta usa para un paquete con destino <strong>10.10.10.5</strong>?</div>
-          <div class="q-opts">
-            <div class="q-opt" onclick="CcnaQuiz.answer(2,'A','wrong','Incorrecto. Aunque /8 también coincide con 10.10.10.5, el principio de longest prefix match selecciona la ruta MÁS específica (prefijo más largo), no la menos específica.')"><div class="q-letter">A</div>O 10.0.0.0/8 — porque OSPF es más confiable que static</div>
-            <div class="q-opt" onclick="CcnaQuiz.answer(2,'B','wrong','Incorrecto. La ruta S 10.10.0.0/16 también coincide, pero no es la más específica. El /24 tiene un prefijo más largo y gana según longest prefix match.')"><div class="q-letter">B</div>S 10.10.0.0/16 — porque la AD de static es menor que OSPF</div>
-            <div class="q-opt" onclick="CcnaQuiz.answer(2,'C','correct','¡Correcto! El principio de Longest Prefix Match dice que el router siempre usa la ruta con el prefijo más largo (más específico). /24 es más específico que /16 que /8, sin importar la AD o el protocolo.')"><div class="q-letter">C</div>C 10.10.10.0/24 — porque es la ruta más específica (longest prefix match)</div>
-            <div class="q-opt" onclick="CcnaQuiz.answer(2,'D','wrong','Incorrecto. El router no descarta el paquete — tiene una ruta específica /24 que coincide perfectamente con el destino 10.10.10.5.')"><div class="q-letter">D</div>El router descarta el paquete porque hay rutas conflictivas</div>
-          </div>
-          <div class="q-feedback" id="fb2"></div>
-        </div>
-
-        <!-- PREGUNTA 3 -->
-        <div class="q-box" id="q3">
-          <div class="q-num">PREGUNTA 03 / 06</div>
-          <div class="q-text">¿Cuál comando configura una ruta estática flotante que sirva como respaldo de una ruta OSPF hacia la red <strong>172.16.0.0/24</strong>?</div>
-          <div class="q-opts">
-            <div class="q-opt" onclick="CcnaQuiz.answer(3,'A','wrong','Incorrecto. ip route sin AD explícita usa AD=1 por defecto, que es MENOR que OSPF (110). Esto haría que la ruta estática siempre tome precedencia sobre OSPF, no que sea un respaldo.')"><div class="q-letter">A</div>ip route 172.16.0.0 255.255.255.0 10.0.0.2</div>
-            <div class="q-opt" onclick="CcnaQuiz.answer(3,'B','wrong','Incorrecto. AD=100 sigue siendo MENOR que OSPF (110). La ruta estática flotante debe tener una AD MAYOR que 110 para que OSPF tenga preferencia.')"><div class="q-letter">B</div>ip route 172.16.0.0 255.255.255.0 10.0.0.2 100</div>
-            <div class="q-opt" onclick="CcnaQuiz.answer(3,'C','correct','¡Correcto! Con AD=200, que es mayor que OSPF (110), esta ruta estática flotante solo aparecerá en la tabla de routing cuando la ruta OSPF desaparezca (falla de enlace o vecino). Es la ruta de respaldo perfecta.')"><div class="q-letter">C</div>ip route 172.16.0.0 255.255.255.0 10.0.0.2 200</div>
-            <div class="q-opt" onclick="CcnaQuiz.answer(3,'D','wrong','Incorrecto. AD=255 hace que la ruta sea completamente ignorada y nunca se instale en la tabla de routing. Se usa para marcar rutas como inaccesibles, no como rutas de respaldo.')"><div class="q-letter">D</div>ip route 172.16.0.0 255.255.255.0 10.0.0.2 255</div>
-          </div>
-          <div class="q-feedback" id="fb3"></div>
-        </div>
-
-        <!-- PREGUNTA 4 -->
-        <div class="q-box" id="q4">
-          <div class="q-num">PREGUNTA 04 / 06</div>
-          <div class="q-text">Un técnico configura <code style="background:rgba(0,188,235,0.1);padding:2px 6px;border-radius:4px;">ip route 0.0.0.0 0.0.0.0 209.165.200.1</code>. ¿Qué tipo de ruta es esta y qué función cumple?</div>
-          <div class="q-opts">
-            <div class="q-opt" onclick="CcnaQuiz.answer(4,'A','wrong','Incorrecto. Una ruta host tiene máscara /32 (255.255.255.255) y apunta a un dispositivo específico. La máscara 0.0.0.0 representa "cualquier red" no un host específico.')"><div class="q-letter">A</div>Ruta de host — dirige tráfico hacia un servidor específico</div>
-            <div class="q-opt" onclick="CcnaQuiz.answer(4,'B','wrong','Incorrecto. Una ruta summarizada combina múltiples redes contiguas. 0.0.0.0/0 no es un resumen sino la ruta por defecto que coincide con CUALQUIER destino.')"><div class="q-letter">B</div>Ruta summarizada — resume todas las redes en una sola entrada</div>
-            <div class="q-opt" onclick="CcnaQuiz.answer(4,'C','correct','¡Correcto! 0.0.0.0/0 es la ruta por defecto o "default route". Actúa como Gateway of Last Resort — el router la usa para cualquier destino que no tenga una ruta más específica en la tabla. Esencial para la conexión a Internet.')"><div class="q-letter">C</div>Ruta por defecto — Gateway of Last Resort para destinos desconocidos</div>
-            <div class="q-opt" onclick="CcnaQuiz.answer(4,'D','wrong','Incorrecto. Una ruta flotante es una ruta estática con AD elevada para usarse como respaldo. Puede ser cualquier red, no necesariamente 0.0.0.0/0.')"><div class="q-letter">D</div>Ruta flotante — sirve como respaldo cuando la ruta principal falla</div>
-          </div>
-          <div class="q-feedback" id="fb4"></div>
-        </div>
-
-        <!-- PREGUNTA 5 -->
-        <div class="q-box" id="q5">
-          <div class="q-num">PREGUNTA 05 / 06</div>
-          <div class="q-text">R1 tiene configurada la ruta <code style="background:rgba(0,188,235,0.1);padding:2px 6px;border-radius:4px;">ip route 10.2.0.0 255.255.255.0 10.1.1.2</code> pero el ping hacia 10.2.0.1 falla. La interfaz de R1 está up/up. ¿Cuál es la causa más probable?</div>
-          <div class="q-opts">
-            <div class="q-opt" onclick="CcnaQuiz.answer(5,'A','wrong','Incorrecto. La AD de las rutas estáticas es 1 por defecto, lo que les da alta prioridad. Una AD alta NO causaría que el ping falle si la ruta está correctamente configurada.')"><div class="q-letter">A</div>La distancia administrativa de la ruta estática es demasiado alta</div>
-            <div class="q-opt" onclick="CcnaQuiz.answer(5,'B','correct','¡Correcto! El routing asimétrico es la causa más común de fallos de ping en routing estático. R1 envía el paquete a 10.2.0.1, pero si R2 no tiene configurada una ruta de regreso hacia 10.1.0.0 (la red de R1), la respuesta ICMP no puede regresar.')"><div class="q-letter">B</div>R2 no tiene ruta de regreso hacia la red origen de R1 (routing asimétrico)</div>
-            <div class="q-opt" onclick="CcnaQuiz.answer(5,'C','wrong','Incorrecto. La máscara /24 (255.255.255.0) es correcta para una red clase C. El problema no está en la máscara sino en la falta de ruta de retorno en el otro router.')"><div class="q-letter">C</div>La máscara 255.255.255.0 es incorrecta para esta configuración</div>
-            <div class="q-opt" onclick="CcnaQuiz.answer(5,'D','wrong','Incorrecto. Si la interfaz está up/up y la ruta está configurada correctamente, el problema no es la interfaz. El escenario más común es la falta de ruta de retorno.')"><div class="q-letter">D</div>La interfaz de R1 necesita ser reiniciada con shutdown / no shutdown</div>
-          </div>
-          <div class="q-feedback" id="fb5"></div>
-        </div>
-
-        <!-- PREGUNTA 6 -->
-        <div class="q-box" id="q6">
-          <div class="q-num">PREGUNTA 06 / 06</div>
-          <div class="q-text">¿Qué comando muestra SOLO las rutas estáticas configuradas en un router Cisco, sin mostrar rutas connected ni rutas de protocolos dinámicos?</div>
-          <div class="q-opts">
-            <div class="q-opt" onclick="CcnaQuiz.answer(6,'A','wrong','Incorrecto. show ip route muestra TODAS las rutas en la tabla: connected, local, static y dinámicas. No filtra solo las estáticas.')"><div class="q-letter">A</div>show ip route</div>
-            <div class="q-opt" onclick="CcnaQuiz.answer(6,'B','correct','¡Correcto! show ip route static filtra la tabla de routing y muestra únicamente las rutas de origen estático (código S y S*). Es el comando correcto para verificar solo rutas configuradas manualmente.')"><div class="q-letter">B</div>show ip route static</div>
-            <div class="q-opt" onclick="CcnaQuiz.answer(6,'C','wrong','Incorrecto. show running-config | include ip route muestra las líneas de configuración con ip route, pero no el estado de la tabla de routing ni si las rutas están activas.')"><div class="q-letter">C</div>show running-config | include ip route</div>
-            <div class="q-opt" onclick="CcnaQuiz.answer(6,'D','wrong','Incorrecto. show ip protocols muestra los protocolos de routing dinámico configurados (RIP, OSPF, EIGRP) y sus parámetros, no las rutas estáticas.')"><div class="q-letter">D</div>show ip protocols</div>
-          </div>
-          <div class="q-feedback" id="fb6"></div>
-        </div>
-
-        <!-- Score Box -->
-        <div id="scoreBox" style="display:none;" class="content-card">
-          <h2>🏆 Resultado Final</h2>
-          <div style="text-align:center;padding:20px;">
-            <div id="scoreTxt" style="font-family:var(--font-head);font-size:2.5rem;font-weight:900;margin-bottom:8px;"></div>
-            <div id="scoreMsg" style="color:var(--gray);"></div>
-          </div>
-        </div>
-
-      </div>
-    </div><!-- /section-quiz -->
-
-  </div><!-- /wrap -->
-</div><!-- /page-content -->
-
-<!-- FOOTER -->
-<footer class="site-footer">
-  <div class="wrap">
-    <div class="footer-grid">
-      <div class="footer-brand">
-        <div class="footer-logo">
-          <span class="logo-cisco">CISCO</span>
-          <span class="logo-text">Academy</span>
-        </div>
-        <p>Ruta completa de aprendizaje hacia las certificaciones Cisco CCNA, CCNP y CCIE.</p>
-      </div>
-      <div class="footer-links">
-        <h4>Módulo 3 — Routing</h4>
-        <a href="router.html">← Routers Cisco</a>
-        <a href="routing.html">📍 Routing Estático (aquí)</a>
-        <a href="ospf.html">→ OSPF (Próximo)</a>
-      </div>
-      <div class="footer-links">
-        <h4>Recursos CCNA</h4>
-        <a href="fundamentos.html">Fundamentos de Redes</a>
-        <a href="vlan.html">VLANs</a>
-        <a href="asistente.html">🤖 NetBot IA</a>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <span>Basado en el currículo oficial de Cisco Networking Academy · CCNA 200-301</span>
-    </div>
-  </div>
+<div class="page-header">
+  <div class="breadcrumb"><a href="../index.html">Inicio</a> › M4 · Routing › Routing Estático</div>
+  <h1>Routing<span class="accent"> Estático</span></h1>
+  <p class="page-subtitle">Tabla de Routing · AD · Longest Match · Ruta por Defecto · Rutas Flotantes · VLSM</p>
+  <div class="badges"><span class="badge badge badge-teal">CCNA 200-301</span><span class="badge badge badge-blue">Módulo 4 · Routing</span><span class="badge badge badge-yellow">🗺️ Capa 3</span></div>
+</div>
+<div class="tabs-wrapper"><div class="tabs">
+  <button class="tab-btn active" onclick="showTab('teoria',this)">📖 Teoría</button>
+  <button class="tab-btn" onclick="showTab('tipos',this)">🗺️ Tipos de Ruta</button>
+  <button class="tab-btn" onclick="showTab('config',this)">⚙️ Configuración</button>
+  <button class="tab-btn" onclick="showTab('flotante',this)">📌 Rutas Flotantes</button>
+  <button class="tab-btn" onclick="showTab('lab',this)">🧪 Laboratorio</button>
+  <button class="tab-btn" onclick="showTab('resumen',this)">📋 Resumen</button>
+  <button class="tab-btn" onclick="showTab('quiz',this)">✅ Quiz</button>
+</div></div>
+<div class="tab-panel active" id="tab-teoria">
+<div class="content">
+<div class="section"><h2 class="section-title">🗺️ ¿Qué es el Routing?</h2>
+<p>El routing es el proceso mediante el cual un router determina la <strong>mejor ruta</strong> para reenviar un paquete hacia su red destino. Usa la tabla de routing (RIB) para tomar cada decisión.</p>
+<div class="info-grid">
+<div class="info-card"><h4>📊 Tabla de Routing</h4><p>Lista de redes conocidas con su distancia administrativa, métrica y next-hop. El router busca la coincidencia más específica (longest match).</p></div>
+<div class="info-card"><h4>🔢 Distancia Administrativa (AD)</h4><p>Mide la <strong>confiabilidad</strong> de la fuente de la ruta. Menor AD = más confiable. Se usa para elegir entre rutas de distintas fuentes.</p></div>
+<div class="info-card"><h4>📏 Métrica</h4><p>Mide el <strong>costo</strong> del camino. Se usa para elegir entre múltiples rutas del mismo protocolo. Depende del protocolo: saltos (RIP), costo (OSPF), compuesto (EIGRP).</p></div>
+</div>
+<div class="osi-table-wrap" style="margin-top:1.2rem"><table class="osi-table"><thead><tr><th>Origen de la ruta</th><th>Código</th><th>AD</th></tr></thead><tbody>
+<tr><td>Connected (interfaz directa)</td><td>C</td><td>0</td></tr>
+<tr><td>Local (IP de la interfaz /32)</td><td>L</td><td>0</td></tr>
+<tr><td>Static route</td><td>S</td><td>1</td></tr>
+<tr><td>EIGRP summary</td><td>D EX</td><td>5</td></tr>
+<tr><td>eBGP</td><td>B</td><td>20</td></tr>
+<tr><td>EIGRP internal</td><td>D</td><td>90</td></tr>
+<tr><td>OSPF</td><td>O</td><td>110</td></tr>
+<tr><td>RIP</td><td>R</td><td>120</td></tr>
+<tr><td>EIGRP external</td><td>D EX</td><td>170</td></tr>
+<tr><td>iBGP</td><td>B</td><td>200</td></tr>
+</tbody></table></div></div>
+</div></div>
+<div class="tab-panel" id="tab-tipos">
+<div class="content">
+<div class="section"><h2 class="section-title">🗺️ Tipos de Rutas Estáticas</h2>
+<div class="osi-table-wrap"><table class="osi-table"><thead><tr><th>Tipo</th><th>Sintaxis</th><th>Uso</th></tr></thead><tbody>
+<tr><td><strong>Next-hop (IP)</strong></td><td><code>ip route RED MASK NEXT-HOP-IP</code></td><td>Más común. Se especifica la IP del router vecino.</td></tr>
+<tr><td><strong>Exit interface</strong></td><td><code>ip route RED MASK INTERFAZ</code></td><td>Se especifica la interfaz de salida. Solo recomendado en P2P serial.</td></tr>
+<tr><td><strong>Fully specified</strong></td><td><code>ip route RED MASK INTERFAZ NEXT-HOP-IP</code></td><td>Más precisa. Combina ambas formas. Recomendada en Ethernet.</td></tr>
+<tr><td><strong>Default route</strong></td><td><code>ip route 0.0.0.0 0.0.0.0 NEXT-HOP</code></td><td>Gateway de último recurso. Coincide con cualquier destino.</td></tr>
+<tr><td><strong>Summary route</strong></td><td><code>ip route 10.0.0.0 255.0.0.0 NEXT-HOP</code></td><td>Una ruta que resume múltiples redes específicas.</td></tr>
+<tr><td><strong>Host route</strong></td><td><code>ip route 192.168.1.100 255.255.255.255 NEXT-HOP</code></td><td>/32 apunta a un host específico.</td></tr>
+</tbody></table></div>
+<div class="concept-box" style="margin-top:1rem"><h4>📌 Longest Match — La regla más importante del routing</h4>
+<p>El router siempre elige la ruta <strong>más específica</strong> (prefijo más largo) que coincida con el destino.</p>
+<p>Destino: 10.1.1.5 → Tabla tiene: 10.0.0.0/8, 10.1.0.0/16, 10.1.1.0/24 → usa <strong>/24</strong></p></div></div>
+</div></div>
+<div class="tab-panel" id="tab-config">
+<div class="content">
+<div class="section"><h2 class="section-title">⚙️ Configuración Rutas Estáticas</h2>
+<div class="lab-steps">
+<div class="lab-step"><h4>Rutas estáticas básicas</h4>
+<div class="cli-block" data-label="Routing Estático">
+<pre><code><span class="cmt">! Red: R1(192.168.1.0/24) ─── 10.0.0.0/30 ─── R2(172.16.0.0/24)</span>
+<span class="cmt">! En R1: agregar ruta hacia red de R2</span>
+<span class="cmd">R1(config)# ip route 172.16.0.0 255.255.0.0 10.0.0.2</span>
+<span class="cmt">! En R2: agregar ruta hacia red de R1</span>
+<span class="cmd">R2(config)# ip route 192.168.1.0 255.255.255.0 10.0.0.1</span>
+<span class="cmt">! Ruta por defecto (gateway de último recurso)</span>
+<span class="cmd">R1(config)# ip route 0.0.0.0 0.0.0.0 203.0.113.1</span>
+<span class="cmt">! Verificar</span>
+<span class="cmd">R1# show ip route</span>
+<span class="out">S    172.16.0.0/16    [1/0] via 10.0.0.2
+C    10.0.0.0/30      directly connected, Se0/0/0
+C    192.168.1.0/24   directly connected, Gi0/0
+S*   0.0.0.0/0        [1/0] via 203.0.113.1</span></code></pre>
+</div></div>
+<div class="lab-step"><h4>Verificación y diagnóstico</h4>
+<div class="cli-block" data-label="Verificación">
+<pre><code><span class="cmd">R1# show ip route static</span>
+<span class="cmd">R1# show ip route 172.16.1.5</span>
+<span class="out">Routing entry for 172.16.0.0/16
+  Known via "static", distance 1, metric 0
+  Routing Descriptor Blocks:
+  * 10.0.0.2
+      Route metric is 0, traffic share count is 1</span>
+<span class="cmd">R1# ping 172.16.0.1 source 192.168.1.1</span>
+<span class="cmd">R1# traceroute 172.16.0.1</span></code></pre>
+</div></div></div></div>
+</div></div>
+<div class="tab-panel" id="tab-flotante">
+<div class="content">
+<div class="section"><h2 class="section-title">📌 Rutas Flotantes (Floating Static Routes)</h2>
+<p>Una ruta flotante es una ruta estática con <strong>AD mayor</strong> que la ruta principal, usada como backup. Solo aparece en la tabla de routing cuando la ruta principal desaparece.</p>
+<div class="concept-box"><h4>💡 Funcionamiento</h4>
+<p>Ruta principal: OSPF AD=110 → <code>172.16.0.0/24 via 10.0.0.2</code></p>
+<p>Ruta flotante: <code>ip route 172.16.0.0 255.255.0.0 10.1.1.2 <strong>200</strong></code> (AD=200)</p>
+<p>Si OSPF cae, la ruta con AD 200 activa automáticamente la ruta de backup.</p></div>
+<div class="cli-block" data-label="Ruta flotante">
+<pre><code><span class="cmt">! Ruta primaria (dinámica o estática con AD normal)</span>
+<span class="cmd">R1(config)# ip route 172.16.0.0 255.255.0.0 10.0.0.2</span>
+<span class="cmt">! Ruta flotante: misma red, distinto next-hop, AD mayor (150)</span>
+<span class="cmd">R1(config)# ip route 172.16.0.0 255.255.0.0 10.1.1.2 150</span>
+<span class="cmt">! La flotante NO aparece en show ip route mientras la principal esté activa</span>
+<span class="cmd">R1# show ip route 172.16.0.0</span>
+<span class="out">Routing entry for 172.16.0.0/16
+  Known via "static", distance 1, metric 0 (ruta principal)</span></code></pre>
+</div></div>
+</div></div>
+<div class="tab-panel" id="tab-lab">
+<div class="content">
+<div class="section"><h2 class="section-title">🧪 Laboratorio — Red con 3 routers</h2>
+<div class="concept-box"><h4>📋 Topología: PC-A─R1─Serial─R2─Serial─R3─PC-C</h4>
+<p>R1: LAN 192.168.1.0/24, Serial 10.0.0.0/30<br>R2: Serial 10.0.0.0/30 y 10.0.0.4/30<br>R3: LAN 192.168.3.0/24, Serial 10.0.0.4/30</p></div>
+<div class="lab-steps">
+<div class="lab-step"><h4>R1 — Configuración</h4>
+<div class="cli-block" data-label="R1">
+<pre><code><span class="cmd">R1(config)# interface GigabitEthernet0/0</span>
+<span class="cmd">R1(config-if)# ip address 192.168.1.1 255.255.255.0</span>
+<span class="cmd">R1(config-if)# no shutdown</span>
+<span class="cmd">R1(config)# interface Serial0/0/0</span>
+<span class="cmd">R1(config-if)# ip address 10.0.0.1 255.255.255.252</span>
+<span class="cmd">R1(config-if)# no shutdown</span>
+<span class="cmt">! Rutas estáticas</span>
+<span class="cmd">R1(config)# ip route 10.0.0.4 255.255.255.252 10.0.0.2</span>
+<span class="cmd">R1(config)# ip route 192.168.3.0 255.255.255.0 10.0.0.2</span></code></pre>
+</div></div>
+<div class="lab-step"><h4>R2 — Router intermedio (necesita rutas a ambos extremos)</h4>
+<div class="cli-block" data-label="R2">
+<pre><code><span class="cmd">R2(config)# ip route 192.168.1.0 255.255.255.0 10.0.0.1</span>
+<span class="cmd">R2(config)# ip route 192.168.3.0 255.255.255.0 10.0.0.6</span></code></pre>
+</div></div>
+<div class="lab-step"><h4>Verificación final</h4>
+<div class="cli-block" data-label="Verificación">
+<pre><code><span class="cmd">R1# ping 192.168.3.1 source 192.168.1.1</span>
+<span class="out">!!!!!  Success rate is 100 percent</span>
+<span class="cmd">R1# traceroute 192.168.3.1</span>
+<span class="out"> 1  10.0.0.2 (R2)
+ 2  10.0.0.6 (R3 serial)
+ 3  192.168.3.1 (PC-C)</span></code></pre>
+</div></div></div></div>
+</div></div>
+<div class="tab-panel" id="tab-resumen">
+<div class="content">
+<div class="section"><h2 class="section-title">📋 Resumen — Routing Estático</h2>
+<div class="concept-box"><h4>✅ Puntos críticos</h4><ul>
+<li>AD Static = 1 (segunda más confiable tras Connected=0)</li>
+<li>Longest match: el router siempre usa la ruta más específica</li>
+<li>Ruta por defecto: <code>ip route 0.0.0.0 0.0.0.0</code> → aparece como S*</li>
+<li>Ruta flotante: misma red con AD mayor → backup automático</li>
+<li>Las rutas estáticas no se adaptan a cambios de topología</li>
+<li><code>show ip route</code> → ver tabla completa | <code>show ip route static</code> → solo estáticas</li>
+</ul></div>
+<div style="margin-top:1.5rem"><div id="refTableContainer"></div></div></div>
+</div></div>
+<div class="tab-panel" id="tab-quiz">
+<div class="content">
+<div class="section"><h2 class="section-title">✅ Quiz · Routing Estático — CCNA 200-301</h2>
+<div id="quiz-container"></div><div id="quiz-container-result"></div></div>
+</div></div>
+<footer class="footer">
+  <p>CCNA Academy · Routing Estático · Basado en CCNA 200-301 Official Cert Guide (Wendell Odom)</p>
+  <p style="margin-top:.4rem"><a href="../index.html">← Volver al índice</a></p>
 </footer>
-
-<script src="../assets/main.js"></script>
+<script src="../assets/main.js" defer></script>
 <script>
-  if (typeof CcnaQuiz === 'undefined') {
-    window.CcnaQuiz = (function() {
-      let answers = {}, score = 0, total = 0;
-      function init(n) { answers = {}; score = 0; total = n; }
-      function answer(qNum, letter, result, explanation) {
-        if (answers[qNum]) return;
-        answers[qNum] = { letter, result };
-        document.querySelectorAll('#q' + qNum + ' .q-opt').forEach(opt => {
-          opt.style.pointerEvents = 'none';
-          const l = opt.querySelector('.q-letter');
-          if (l && l.textContent === letter) opt.classList.add(result === 'correct' ? 'correct' : 'wrong');
-          if (result === 'wrong' && (opt.getAttribute('onclick') || '').includes("'correct'")) opt.classList.add('correct');
-        });
-        const fb = document.getElementById('fb' + qNum);
-        if (fb) { fb.textContent = (result === 'correct' ? '✅ ' : '❌ ') + explanation; fb.className = 'q-feedback show ' + (result === 'correct' ? 'ok' : 'bad'); }
-        if (result === 'correct') score++;
-        if (Object.keys(answers).length === total) setTimeout(() => {
-          const box = document.getElementById('scoreBox'); if (!box) return;
-          box.style.display = 'block';
-          const pct = Math.round(score / total * 100);
-          const txt = document.getElementById('scoreTxt'); const msg = document.getElementById('scoreMsg');
-          if (txt) txt.textContent = score + ' / ' + total + ' — ' + pct + '%';
-          if (msg) { if (pct>=87){txt.style.color='var(--green)';msg.textContent='🏆 ¡Excelente! Listo para el examen CCNA.';}else if(pct>=62){txt.style.color='var(--amber)';msg.textContent='📚 Buen progreso. Repasa los temas donde fallaste.';}else{txt.style.color='var(--red)';msg.textContent='💪 Repasa el material completo antes de continuar.';} }
-          box.scrollIntoView({ behavior: 'smooth' });
-        }, 400);
-      }
-      return { init, answer };
-    })();
-  }
-  CcnaQuiz.init(6);
-  function showSection(id, btn) {
-    document.querySelectorAll('.content-section').forEach(s => s.style.display = 'none');
-    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
-    document.getElementById('section-' + id).style.display = 'block';
-    btn.classList.add('active');
-    window.scrollTo({ top: 200, behavior: 'smooth' });
-  }
+function showTab(id,btn){document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active')});document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active')});var panel=document.getElementById('tab-'+id);if(panel)panel.classList.add('active');if(btn)btn.classList.add('active');window.scrollTo({top:90,behavior:'smooth'});}
+document.addEventListener('DOMContentLoaded',function(){
+  var refData=[
+  {Comando:'ip route RED MASK NEXT-HOP',Modo:'config',Descripcion:'Ruta estática con IP del siguiente salto'},
+  {Comando:'ip route 0.0.0.0 0.0.0.0 NEXT-HOP',Modo:'config',Descripcion:'Ruta por defecto (gateway de último recurso)'},
+  {Comando:'ip route RED MASK NEXT-HOP AD',Modo:'config',Descripcion:'Ruta flotante con AD personalizada'},
+  {Comando:'no ip route RED MASK NEXT-HOP',Modo:'config',Descripcion:'Eliminar una ruta estática'},
+  {Comando:'show ip route',Modo:'#',Descripcion:'Ver tabla de routing completa'},
+  {Comando:'show ip route static',Modo:'#',Descripcion:'Ver solo rutas estáticas'},
+  {Comando:'show ip route RED',Modo:'#',Descripcion:'Ver ruta específica a una red'},
+  {Comando:'ping DEST source ORIGEN',Modo:'#',Descripcion:'Ping desde una interfaz específica'},
+  {Comando:'traceroute DEST',Modo:'#',Descripcion:'Rastrear la ruta hasta el destino'},
+];
+if(typeof buildRefTable==="function")buildRefTable(refData,"refTableContainer");
+  var preguntas=[
+  {pregunta:"¿Cuál es la Distancia Administrativa de una ruta estática?",opciones:["0","1","90","110"],respuesta:1,explicacion:"Las rutas estáticas tienen AD=1. Las Connected/Local tienen AD=0 (la más confiable). EIGRP=90, OSPF=110."},
+  {pregunta:"¿Cómo aparece la ruta por defecto en 'show ip route'?",opciones:["D*","C*","S*","O*"],respuesta:2,explicacion:"La ruta por defecto (0.0.0.0/0) aparece como S* donde S=static y el asterisco (*) indica que es el gateway of last resort."},
+  {pregunta:"El router tiene rutas a 10.0.0.0/8 y 10.1.1.0/24. ¿Cuál usa para alcanzar 10.1.1.5?",opciones:["10.0.0.0/8 por ser más general","10.1.1.0/24 por ser más específica (longest match)","La más antigua en la tabla","La con menor métrica"],respuesta:1,explicacion:"El routing usa 'longest match': siempre gana la ruta más específica (prefijo más largo). /24 es más específica que /8."},
+  {pregunta:"¿Para qué se usa una ruta flotante?",opciones:["Para reducir la tabla de routing","Como ruta de backup que se activa cuando la principal falla","Para balancear carga","Para anunciar rutas con OSPF"],respuesta:1,explicacion:"Una ruta flotante tiene AD mayor que la ruta principal. Solo aparece en la tabla de routing cuando la ruta principal desaparece, actuando como backup automático."},
+  {pregunta:"¿Qué comando verifica si hay conectividad desde una interfaz específica del router?",opciones:["ping DEST","ping DEST source INTERFAZ","traceroute DEST","show ip route DEST"],respuesta:1,explicacion:"'ping DEST source INTERFAZ' especifica la IP o interfaz de origen, simulando el tráfico desde esa subred. Útil para verificar rutas específicas."},
+];
+if(typeof initQuiz==="function")initQuiz(preguntas,"quiz-container");
+});
 </script>
-
-
-
 </body>
 </html>

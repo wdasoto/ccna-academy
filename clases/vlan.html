@@ -1,737 +1,47 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CCNA - Clase Magistral: VLANs</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;600;700&display=swap');
-
-  :root {
-    --cisco-blue: #00bceb;
-    --cisco-dark: #0a1628;
-    --cisco-mid: #0d2240;
-    --cisco-accent: #00e5ff;
-    --cisco-green: #00ff88;
-    --cisco-orange: #ff6b35;
-    --cisco-yellow: #ffd700;
-    --cisco-red: #ff3366;
-    --text-primary: #e8f4fd;
-    --text-secondary: #8ab4d0;
-    --card-bg: rgba(13, 34, 64, 0.85);
-    --border-glow: rgba(0, 188, 235, 0.4);
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    background: var(--cisco-dark);
-    color: var(--text-primary);
-    font-family: 'Exo 2', sans-serif;
-    overflow-x: hidden;
-    background-image: 
-      radial-gradient(ellipse at 20% 50%, rgba(0,188,235,0.05) 0%, transparent 50%),
-      radial-gradient(ellipse at 80% 20%, rgba(0,229,255,0.04) 0%, transparent 40%),
-      linear-gradient(180deg, #0a1628 0%, #050d1a 100%);
-  }
-
-  /* Grid animado de fondo */
-  body::before {
-    content: '';
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background-image: 
-      linear-gradient(rgba(0,188,235,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,188,235,0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 1; }
-
-  /* HEADER */
-  header {
-    background: linear-gradient(135deg, rgba(10,22,40,0.98) 0%, rgba(0,60,100,0.9) 100%);
-    border-bottom: 2px solid var(--cisco-blue);
-    padding: 20px 0;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: 0 4px 30px rgba(0,188,235,0.2);
-  }
-
-  .header-inner {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-    flex-wrap: wrap;
-  }
-
-  .logo-area {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-  }
-
-  .cisco-badge {
-    background: linear-gradient(135deg, var(--cisco-blue), var(--cisco-accent));
-    color: #000;
-    font-family: 'Orbitron', monospace;
-    font-weight: 900;
-    font-size: 1.1rem;
-    padding: 8px 16px;
-    border-radius: 4px;
-    letter-spacing: 2px;
-  }
-
-  .course-title {
-    font-family: 'Orbitron', monospace;
-    font-size: 0.7rem;
-    color: var(--cisco-blue);
-    letter-spacing: 3px;
-    text-transform: uppercase;
-  }
-
-  .lesson-badge {
-    background: rgba(0,188,235,0.1);
-    border: 1px solid var(--border-glow);
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    color: var(--cisco-accent);
-    font-family: 'Share Tech Mono', monospace;
-  }
-
-  /* HERO */
-  .hero {
-    padding: 60px 0 40px;
-    text-align: center;
-    position: relative;
-  }
-
-  .hero::after {
-    content: '';
-    position: absolute;
-    bottom: 0; left: 50%; transform: translateX(-50%);
-    width: 200px; height: 1px;
-    background: linear-gradient(90deg, transparent, var(--cisco-blue), transparent);
-  }
-
-  .hero h1 {
-    font-family: 'Orbitron', monospace;
-    font-size: clamp(2rem, 5vw, 3.5rem);
-    font-weight: 900;
-    background: linear-gradient(135deg, #fff 0%, var(--cisco-blue) 50%, var(--cisco-accent) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 16px;
-    line-height: 1.1;
-    animation: titleGlow 3s ease-in-out infinite alternate;
-  }
-
-  @keyframes titleGlow {
-    from { filter: drop-shadow(0 0 8px rgba(0,188,235,0.3)); }
-    to { filter: drop-shadow(0 0 20px rgba(0,188,235,0.7)); }
-  }
-
-  .hero-sub {
-    color: var(--text-secondary);
-    font-size: 1.1rem;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-bottom: 30px;
-  }
-
-  .objective-bar {
-    display: inline-flex;
-    gap: 20px;
-    flex-wrap: wrap;
-    justify-content: center;
-    background: rgba(0,188,235,0.05);
-    border: 1px solid var(--border-glow);
-    border-radius: 12px;
-    padding: 16px 30px;
-  }
-
-  .obj-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.85rem;
-    color: var(--cisco-accent);
-  }
-
-  .obj-dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: var(--cisco-green);
-    box-shadow: 0 0 8px var(--cisco-green);
-    animation: pulse 2s infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(0.8); }
-  }
-
-  /* NAVEGACIÓN DE SECCIONES */
-  .nav-tabs {
-    display: flex;
-    gap: 4px;
-    margin: 40px 0 30px;
-    background: rgba(13,34,64,0.8);
-    border: 1px solid var(--border-glow);
-    border-radius: 12px;
-    padding: 6px;
-    overflow-x: auto;
-    flex-wrap: wrap;
-  }
-
-  .tab-btn {
-    flex: 1;
-    min-width: 120px;
-    padding: 10px 16px;
-    background: transparent;
-    border: none;
-    color: var(--text-secondary);
-    font-family: 'Exo 2', sans-serif;
-    font-size: 0.8rem;
-    font-weight: 600;
-    cursor: pointer;
-    border-radius: 8px;
-    transition: all 0.3s;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    white-space: nowrap;
-  }
-
-  .tab-btn:hover { background: rgba(0,188,235,0.1); color: var(--cisco-blue); }
-  .tab-btn.active {
-    background: linear-gradient(135deg, rgba(0,188,235,0.3), rgba(0,100,160,0.4));
-    color: #fff;
-    border: 1px solid var(--cisco-blue);
-    box-shadow: 0 0 15px rgba(0,188,235,0.2);
-  }
-
-  /* SECTIONS */
-  .section { display: none; animation: fadeIn 0.4s ease; }
-  .section.active { display: block; }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  /* CARDS */
-  .card {
-    background: var(--card-bg);
-    border: 1px solid var(--border-glow);
-    border-radius: 16px;
-    padding: 30px;
-    margin-bottom: 24px;
-    position: relative;
-    overflow: hidden;
-    backdrop-filter: blur(10px);
-  }
-
-  .card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, var(--cisco-blue), var(--cisco-accent), var(--cisco-green));
-  }
-
-  .card-title {
-    font-family: 'Orbitron', monospace;
-    font-size: 1.1rem;
-    color: var(--cisco-blue);
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .card-icon {
-    width: 36px; height: 36px;
-    background: linear-gradient(135deg, rgba(0,188,235,0.3), rgba(0,100,160,0.4));
-    border: 1px solid var(--cisco-blue);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.1rem;
-  }
-
-  /* DEFINICION HERO */
-  .definition-box {
-    background: linear-gradient(135deg, rgba(0,188,235,0.08), rgba(0,60,100,0.15));
-    border: 1px solid var(--cisco-blue);
-    border-left: 4px solid var(--cisco-blue);
-    border-radius: 8px;
-    padding: 20px 24px;
-    margin: 20px 0;
-    font-size: 1.05rem;
-    line-height: 1.7;
-    color: var(--text-primary);
-  }
-
-  .highlight { color: var(--cisco-accent); font-weight: 700; }
-  .highlight-green { color: var(--cisco-green); font-weight: 700; }
-  .highlight-orange { color: var(--cisco-orange); font-weight: 700; }
-  .highlight-yellow { color: var(--cisco-yellow); font-weight: 700; }
-
-  /* DIAGRAMA VISUAL DE RED */
-  .network-diagram {
-    background: rgba(5,13,26,0.9);
-    border: 1px solid var(--border-glow);
-    border-radius: 12px;
-    padding: 30px;
-    margin: 20px 0;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .diagram-title {
-    text-align: center;
-    font-family: 'Share Tech Mono', monospace;
-    color: var(--cisco-blue);
-    font-size: 0.8rem;
-    letter-spacing: 2px;
-    margin-bottom: 20px;
-    text-transform: uppercase;
-  }
-
-  /* SVG Diagrams */
-  svg { max-width: 100%; height: auto; }
-
-  /* TABLA DE TIPOS */
-  .vlan-types-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 16px;
-    margin: 20px 0;
-  }
-
-  .vlan-type-card {
-    background: rgba(5,13,26,0.8);
-    border: 1px solid var(--border-glow);
-    border-radius: 12px;
-    padding: 20px;
-    text-align: center;
-    transition: all 0.3s;
-    cursor: default;
-  }
-
-  .vlan-type-card:hover {
-    border-color: var(--cisco-blue);
-    transform: translateY(-4px);
-    box-shadow: 0 8px 25px rgba(0,188,235,0.2);
-  }
-
-  .vlan-type-num {
-    font-family: 'Orbitron', monospace;
-    font-size: 1.8rem;
-    font-weight: 900;
-    margin-bottom: 8px;
-  }
-
-  .vlan-type-name {
-    font-weight: 700;
-    font-size: 0.9rem;
-    color: var(--cisco-accent);
-    margin-bottom: 8px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-
-  .vlan-type-desc {
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-    line-height: 1.5;
-  }
-
-  /* COMANDOS */
-  .cmd-block {
-    background: #020a14;
-    border: 1px solid rgba(0,255,136,0.3);
-    border-radius: 8px;
-    padding: 20px;
-    margin: 16px 0;
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 0.9rem;
-    position: relative;
-    overflow-x: auto;
-  }
-
-  .cmd-prompt { color: var(--cisco-green); }
-  .cmd-text { color: #e8e8e8; }
-  .cmd-comment { color: #666; font-style: italic; }
-  .cmd-keyword { color: var(--cisco-yellow); }
-  .cmd-value { color: var(--cisco-orange); }
-  .cmd-line { display: block; padding: 2px 0; }
-
-  .cmd-label {
-    position: absolute;
-    top: 8px; right: 12px;
-    font-size: 0.65rem;
-    color: var(--cisco-green);
-    background: rgba(0,255,136,0.1);
-    padding: 3px 8px;
-    border-radius: 4px;
-    letter-spacing: 1px;
-    font-family: 'Exo 2', sans-serif;
-    text-transform: uppercase;
-  }
-
-  .cmd-section-title {
-    font-family: 'Orbitron', monospace;
-    font-size: 0.75rem;
-    color: var(--cisco-yellow);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin: 24px 0 10px;
-    padding-left: 10px;
-    border-left: 3px solid var(--cisco-yellow);
-  }
-
-  /* INFO BOXES */
-  .info-box {
-    display: flex;
-    gap: 14px;
-    align-items: flex-start;
-    padding: 16px 20px;
-    border-radius: 10px;
-    margin: 16px 0;
-    font-size: 0.9rem;
-    line-height: 1.6;
-  }
-
-  .info-box.tip { background: rgba(0,255,136,0.08); border: 1px solid rgba(0,255,136,0.3); }
-  .info-box.warning { background: rgba(255,107,53,0.08); border: 1px solid rgba(255,107,53,0.3); }
-  .info-box.important { background: rgba(0,188,235,0.08); border: 1px solid rgba(0,188,235,0.3); }
-  .info-box.exam { background: rgba(255,215,0,0.08); border: 1px solid rgba(255,215,0,0.4); }
-
-  .info-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 2px; }
-
-  /* TABLAS */
-  .data-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 16px 0;
-    font-size: 0.88rem;
-  }
-
-  .data-table th {
-    background: rgba(0,188,235,0.15);
-    color: var(--cisco-blue);
-    font-family: 'Orbitron', monospace;
-    font-size: 0.7rem;
-    letter-spacing: 1px;
-    padding: 12px 16px;
-    text-align: left;
-    border-bottom: 2px solid var(--cisco-blue);
-    text-transform: uppercase;
-  }
-
-  .data-table td {
-    padding: 11px 16px;
-    border-bottom: 1px solid rgba(0,188,235,0.1);
-    color: var(--text-primary);
-    vertical-align: top;
-  }
-
-  .data-table tr:hover td { background: rgba(0,188,235,0.04); }
-
-  /* STEP BY STEP */
-  .steps {
-    counter-reset: step-counter;
-    list-style: none;
-  }
-
-  .step-item {
-    counter-increment: step-counter;
-    display: flex;
-    gap: 16px;
-    margin-bottom: 20px;
-    align-items: flex-start;
-  }
-
-  .step-num {
-    width: 36px; height: 36px;
-    background: linear-gradient(135deg, var(--cisco-blue), #005588);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Orbitron', monospace;
-    font-weight: 700;
-    font-size: 0.85rem;
-    flex-shrink: 0;
-    box-shadow: 0 0 12px rgba(0,188,235,0.3);
-  }
-
-  .step-num::before { content: counter(step-counter, decimal-leading-zero); }
-
-  .step-content { flex: 1; padding-top: 6px; }
-  .step-title { font-weight: 700; color: var(--cisco-accent); margin-bottom: 6px; }
-  .step-desc { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; }
-
-  /* QUIZ */
-  .quiz-container { margin: 20px 0; }
-
-  .quiz-q {
-    background: rgba(5,13,26,0.9);
-    border: 1px solid var(--border-glow);
-    border-radius: 12px;
-    padding: 24px;
-    margin-bottom: 20px;
-  }
-
-  .quiz-question {
-    font-weight: 600;
-    font-size: 1rem;
-    margin-bottom: 16px;
-    color: var(--text-primary);
-    line-height: 1.5;
-  }
-
-  .quiz-q-num {
-    font-family: 'Share Tech Mono', monospace;
-    color: var(--cisco-yellow);
-    font-size: 0.75rem;
-    margin-bottom: 8px;
-    letter-spacing: 1px;
-  }
-
-  .quiz-options { display: grid; gap: 8px; }
-
-  .quiz-opt {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
-    background: rgba(0,188,235,0.04);
-    border: 1px solid rgba(0,188,235,0.15);
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-size: 0.9rem;
-  }
-
-  .quiz-opt:hover { background: rgba(0,188,235,0.1); border-color: var(--cisco-blue); }
-  .quiz-opt.correct { background: rgba(0,255,136,0.15); border-color: var(--cisco-green); color: var(--cisco-green); }
-  .quiz-opt.wrong { background: rgba(255,51,102,0.1); border-color: var(--cisco-red); color: var(--cisco-red); }
-  .quiz-opt.selected { border-color: var(--cisco-yellow); }
-
-  .quiz-opt-letter {
-    width: 28px; height: 28px;
-    border-radius: 50%;
-    background: rgba(0,188,235,0.15);
-    border: 1px solid rgba(0,188,235,0.3);
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Orbitron', monospace;
-    font-size: 0.7rem;
-    font-weight: 700;
-    flex-shrink: 0;
-  }
-
-  .quiz-feedback {
-    display: none;
-    margin-top: 14px;
-    padding: 12px 16px;
-    border-radius: 8px;
-    font-size: 0.88rem;
-    line-height: 1.5;
-  }
-
-  .quiz-feedback.show { display: block; }
-  .quiz-feedback.correct-fb { background: rgba(0,255,136,0.1); border: 1px solid var(--cisco-green); color: var(--cisco-green); }
-  .quiz-feedback.wrong-fb { background: rgba(255,51,102,0.08); border: 1px solid var(--cisco-red); color: #ff8fa0; }
-
-  /* PROGRESS */
-  .progress-bar-wrap {
-    height: 6px;
-    background: rgba(0,188,235,0.1);
-    border-radius: 3px;
-    margin: 20px 0;
-    overflow: hidden;
-  }
-
-  .progress-bar-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--cisco-blue), var(--cisco-green));
-    border-radius: 3px;
-    transition: width 0.5s ease;
-    box-shadow: 0 0 10px rgba(0,229,255,0.5);
-  }
-
-  /* SCENARIO BOX */
-  .scenario {
-    background: linear-gradient(135deg, rgba(255,107,53,0.06), rgba(255,51,102,0.04));
-    border: 1px solid rgba(255,107,53,0.3);
-    border-radius: 12px;
-    padding: 24px;
-    margin: 20px 0;
-  }
-
-  .scenario-title {
-    font-family: 'Orbitron', monospace;
-    font-size: 0.8rem;
-    color: var(--cisco-orange);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-bottom: 12px;
-  }
-
-  /* BADGE / CHIPS */
-  .badge {
-    display: inline-block;
-    padding: 3px 10px;
-    border-radius: 20px;
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    margin: 2px;
-  }
-
-  .badge-blue { background: rgba(0,188,235,0.2); border: 1px solid var(--cisco-blue); color: var(--cisco-blue); }
-  .badge-green { background: rgba(0,255,136,0.15); border: 1px solid var(--cisco-green); color: var(--cisco-green); }
-  .badge-orange { background: rgba(255,107,53,0.15); border: 1px solid var(--cisco-orange); color: var(--cisco-orange); }
-  .badge-yellow { background: rgba(255,215,0,0.15); border: 1px solid var(--cisco-yellow); color: var(--cisco-yellow); }
-
-  /* RESUMEN FINAL */
-  .summary-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 16px;
-    margin: 20px 0;
-  }
-
-  .summary-item {
-    background: rgba(5,13,26,0.8);
-    border: 1px solid var(--border-glow);
-    border-radius: 12px;
-    padding: 20px;
-  }
-
-  .summary-item h4 {
-    color: var(--cisco-blue);
-    font-size: 0.85rem;
-    margin-bottom: 12px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-
-  .summary-item ul {
-    list-style: none;
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-  }
-
-  .summary-item ul li {
-    padding: 4px 0;
-    padding-left: 16px;
-    position: relative;
-  }
-
-  .summary-item ul li::before {
-    content: '▸';
-    position: absolute;
-    left: 0;
-    color: var(--cisco-blue);
-  }
-
-  /* FOOTER */
-  footer {
-    background: rgba(10,22,40,0.95);
-    border-top: 1px solid var(--border-glow);
-    padding: 30px 0;
-    margin-top: 60px;
-    text-align: center;
-  }
-
-  .footer-text { color: var(--text-secondary); font-size: 0.8rem; line-height: 1.8; }
-
-  /* SCROLLBAR */
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { background: var(--cisco-dark); }
-  ::-webkit-scrollbar-thumb { background: var(--cisco-blue); border-radius: 3px; }
-
-  /* Responsive */
-  @media (max-width: 600px) {
-    .hero h1 { font-size: 1.8rem; }
-    .card { padding: 20px; }
-    .cmd-block { font-size: 0.78rem; }
-  }
-</style>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VLANs — CCNA Academy</title>
+  <meta name="description" content="Clase magistral VLANs CCNA 200-301. Access, trunk, 802.1Q, nativa, configuración y laboratorio.">
   <link rel="stylesheet" href="../assets/style.css">
-  <script src="../assets/main.js" defer></script>
 </head>
 <body>
-
 <div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
-
 <nav class="ccna-drawer" id="ccnaDrawer">
-  <div class="drawer-header">
-    <h2>◈ NAVEGACIÓN</h2>
-    <button class="drawer-close" onclick="ccnaClose()">✕</button>
-  </div>
-  <div class="drawer-section">
-    <div class="drawer-section-title">General</div>
-    <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a>
-  </div>
-  <div class="drawer-section">
-    <div class="drawer-section-title">M1 · Fundamentos</div>
-    <a href="fundamentos.html"  class="drawer-link"><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
-    <a href="subnetting.html"   class="drawer-link"><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
-    <a href="calculadora.html"  class="drawer-link"><span class="dl-icon">🧮</span> Calculadora IP</a>
-    <a href="ipv6.html"         class="drawer-link"><span class="dl-icon">6️⃣</span> IPv6</a>
-  </div>
-  <div class="drawer-section">
-    <div class="drawer-section-title">M2 · Dispositivos Cisco</div>
-    <a href="router.html"          class="drawer-link"><span class="dl-icon">📡</span> Routers Cisco</a>
-    <a href="switches-cisco.html"  class="drawer-link"><span class="dl-icon">🔀</span> Switches Cisco</a>
-  </div>
-  <div class="drawer-section">
-    <div class="drawer-section-title">M3 · Switching</div>
-    <a href="vlan.html"                class="drawer-link active"><span class="dl-icon">🏷️</span> VLANs</a>
-    <a href="inter-vlan-routing.html"  class="drawer-link"><span class="dl-icon">🔁</span> Inter-VLAN Routing</a>
-    <a href="stp.html"                 class="drawer-link"><span class="dl-icon">🌳</span> Spanning Tree Protocol</a>
-    <a href="etherchannel.html"        class="drawer-link"><span class="dl-icon">🔗</span> EtherChannel</a>
-    <a href="port-security.html"       class="drawer-link"><span class="dl-icon">🔒</span> Port Security</a>
-    <a href="cdp-lldp.html"            class="drawer-link"><span class="dl-icon">🔍</span> CDP / LLDP</a>
-  </div>
-  <div class="drawer-section">
-    <div class="drawer-section-title">M4 · Routing</div>
-    <a href="routing.html"  class="drawer-link"><span class="dl-icon">🗺️</span> Routing Estático</a>
-    <a href="ospf.html"     class="drawer-link"><span class="dl-icon">⭕</span> OSPF</a>
-    <a href="eigrp.html"    class="drawer-link"><span class="dl-icon">⚡</span> EIGRP</a>
-  </div>
-  <div class="drawer-section">
-    <div class="drawer-section-title">M5 · Servicios IP</div>
-    <a href="dhcp.html"  class="drawer-link"><span class="dl-icon">📋</span> DHCP</a>
-    <a href="nat.html"   class="drawer-link"><span class="dl-icon">🔄</span> NAT / PAT</a>
-  </div>
-  <div class="drawer-section">
-    <div class="drawer-section-title">M6 · Seguridad</div>
-    <a href="acl.html"  class="drawer-link"><span class="dl-icon">🛡️</span> ACLs</a>
-  </div>
-  <div class="drawer-section">
-    <div class="drawer-section-title">M7 · WAN &amp; QoS</div>
-    <a href="wan.html"  class="drawer-link"><span class="dl-icon">🌍</span> WAN</a>
-    <a href="qos.html"  class="drawer-link"><span class="dl-icon">📊</span> QoS</a>
-  </div>
-  <div class="drawer-section">
-    <div class="drawer-section-title">Herramientas</div>
-    <a href="asistente.html"   class="drawer-link"><span class="dl-icon">🤖</span> Asistente IA</a>
+  <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
+  <div class="drawer-section"><div class="drawer-section-title">General</div><a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M1 · Fundamentos</div>
+    <a href="fundamentos.html" class="drawer-link"><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
+    <a href="subnetting.html" class="drawer-link"><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
     <a href="calculadora.html" class="drawer-link"><span class="dl-icon">🧮</span> Calculadora IP</a>
-  </div>
+    <a href="ipv6.html" class="drawer-link"><span class="dl-icon">6️⃣</span> IPv6</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M2 · Dispositivos Cisco</div>
+    <a href="router.html" class="drawer-link"><span class="dl-icon">📡</span> Routers Cisco</a>
+    <a href="switches-cisco.html" class="drawer-link"><span class="dl-icon">🔀</span> Switches Cisco</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M3 · Switching</div>
+    <a href="vlan.html" class="drawer-link active"><span class="dl-icon">🏷️</span> VLANs</a>
+    <a href="inter-vlan-routing.html" class="drawer-link"><span class="dl-icon">🔁</span> Inter-VLAN Routing</a>
+    <a href="stp.html" class="drawer-link"><span class="dl-icon">🌳</span> Spanning Tree Protocol</a>
+    <a href="etherchannel.html" class="drawer-link"><span class="dl-icon">🔗</span> EtherChannel</a>
+    <a href="port-security.html" class="drawer-link"><span class="dl-icon">🔒</span> Port Security</a>
+    <a href="cdp-lldp.html" class="drawer-link"><span class="dl-icon">🔍</span> CDP / LLDP</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M4 · Routing</div>
+    <a href="routing.html" class="drawer-link"><span class="dl-icon">🗺️</span> Routing Estático</a>
+    <a href="ospf.html" class="drawer-link"><span class="dl-icon">⭕</span> OSPF</a>
+    <a href="eigrp.html" class="drawer-link"><span class="dl-icon">⚡</span> EIGRP</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M5 · Servicios IP</div>
+    <a href="dhcp.html" class="drawer-link"><span class="dl-icon">📋</span> DHCP</a>
+    <a href="nat.html" class="drawer-link"><span class="dl-icon">🔄</span> NAT / PAT</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M6 · Seguridad</div>
+    <a href="acl.html" class="drawer-link"><span class="dl-icon">🛡️</span> ACLs</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M7 · WAN &amp; QoS</div>
+    <a href="wan.html" class="drawer-link"><span class="dl-icon">🌍</span> WAN</a>
+    <a href="qos.html" class="drawer-link"><span class="dl-icon">📊</span> QoS</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">Herramientas</div>
+    <a href="asistente.html" class="drawer-link"><span class="dl-icon">🤖</span> Asistente IA</a>
+    <a href="calculadora.html" class="drawer-link"><span class="dl-icon">🧮</span> Calculadora IP</a></div>
 </nav>
 
 <header class="navbar">
@@ -741,1068 +51,201 @@
   <a href="../index.html" class="navbar-link">← Inicio</a>
 </header>
 <div class="nav-spacer"></div>
-<!-- HERO -->
-  <div class="hero">
-    <h1>Virtual LAN (VLAN)</h1>
-    <div class="hero-sub">Segmentación Lógica de Redes · Trunking · Inter-VLAN Routing</div>
-    <div class="objective-bar">
-      <div class="obj-item"><div class="obj-dot"></div> Conceptos Fundamentales</div>
-      <div class="obj-item"><div class="obj-dot"></div> Tipos de VLAN</div>
-      <div class="obj-item"><div class="obj-dot"></div> Configuración en IOS</div>
-      <div class="obj-item"><div class="obj-dot"></div> Trunking 802.1Q</div>
-      <div class="obj-item"><div class="obj-dot"></div> Inter-VLAN Routing</div>
-      <div class="obj-item"><div class="obj-dot"></div> Quiz CCNA</div>
-    </div>
-  </div>
-
-  <!-- NAVEGACIÓN -->
-  <div class="nav-tabs">
-    <button class="tab-btn active" onclick="showTab('fundamentos')">📘 Fundamentos</button>
-    <button class="tab-btn" onclick="showTab('tipos')">🏷️ Tipos de VLAN</button>
-    <button class="tab-btn" onclick="showTab('trunking')">🔗 Trunking</button>
-    <button class="tab-btn" onclick="showTab('configuracion')">⌨️ Configuración</button>
-    <button class="tab-btn" onclick="showTab('intervlan')">🔀 Inter-VLAN</button>
-    <button class="tab-btn" onclick="showTab('quiz')">🎯 Quiz CCNA</button>
-  </div>
-
-  <!-- ================================================ -->
-  <!-- SECCIÓN 1: FUNDAMENTOS -->
-  <!-- ================================================ -->
-  <div id="fundamentos" class="section active">
-
-    <div class="card">
-      <div class="card-title">
-        <div class="card-icon">💡</div>
-        ¿Qué es una VLAN?
-      </div>
-      <div class="definition-box">
-        Una <span class="highlight">VLAN (Virtual Local Area Network)</span> es una <span class="highlight-green">red lógica</span> creada dentro de uno o varios switches físicos que permite agrupar dispositivos en <span class="highlight">dominios de broadcast separados</span>, independientemente de su ubicación física en la red.
-        <br><br>
-        Sin VLANs, <strong>todos los dispositivos conectados a un switch</strong> pertenecen al mismo dominio de broadcast. Con VLANs, podemos crear múltiples redes lógicas dentro del mismo hardware físico.
-      </div>
-
-      <div class="info-box important">
-        <div class="info-icon">📌</div>
-        <div><strong>Regla fundamental:</strong> Los dispositivos en diferentes VLANs NO pueden comunicarse entre sí directamente. Necesitan un dispositivo de Capa 3 (router o switch multilayer) para hacerlo. Las VLANs operan en la <strong>Capa 2 del modelo OSI</strong>.</div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">
-        <div class="card-icon">🏢</div>
-        ¿Por qué usar VLANs? — El Problema Sin VLANs
-      </div>
-
-      <div class="scenario">
-        <div class="scenario-title">🏢 Escenario Real — Empresa ACME Corp</div>
-        <p style="color:#ccc; font-size:0.9rem; line-height:1.7;">
-          Una empresa tiene 3 departamentos: <strong style="color:#00e5ff;">Ventas</strong>, <strong style="color:#00ff88;">TI</strong> y <strong style="color:#ffd700;">Contabilidad</strong>. Sin VLANs, todos comparten el mismo switch → <strong style="color:#ff6b35;">todos reciben los broadcasts de todos</strong>, Ventas puede ver el tráfico de Contabilidad, y un ataque en una PC afecta a toda la empresa.
-        </p>
-      </div>
-
-      <!-- Diagrama SVG SIN VLANs -->
-      <div class="network-diagram">
-        <div class="diagram-title">⚠️ Sin VLANs — Un solo dominio de broadcast</div>
-        <svg viewBox="0 0 700 280" xmlns="http://www.w3.org/2000/svg">
-          <!-- Switch central -->
-          <rect x="280" y="110" width="140" height="60" rx="8" fill="#0a2040" stroke="#00bceb" stroke-width="2"/>
-          <text x="350" y="135" text-anchor="middle" fill="#00bceb" font-family="Share Tech Mono" font-size="11">SWITCH</text>
-          <text x="350" y="152" text-anchor="middle" fill="#666" font-family="Share Tech Mono" font-size="9">Un dominio broadcast</text>
-
-          <!-- Broadcast rojo por todo el switch -->
-          <circle cx="350" cy="140" r="120" fill="none" stroke="#ff3366" stroke-width="1.5" stroke-dasharray="6,4" opacity="0.4"/>
-          <text x="350" y="40" text-anchor="middle" fill="#ff3366" font-family="Share Tech Mono" font-size="9">BROADCAST LLEGA A TODOS</text>
-
-          <!-- PCs Ventas -->
-          <rect x="30" y="50" width="90" height="40" rx="6" fill="#0d2240" stroke="#00e5ff" stroke-width="1.5"/>
-          <text x="75" y="65" text-anchor="middle" fill="#00e5ff" font-family="Share Tech Mono" font-size="9">PC Ventas 1</text>
-          <text x="75" y="78" text-anchor="middle" fill="#666" font-family="Share Tech Mono" font-size="8">192.168.1.10</text>
-
-          <rect x="30" y="120" width="90" height="40" rx="6" fill="#0d2240" stroke="#00e5ff" stroke-width="1.5"/>
-          <text x="75" y="135" text-anchor="middle" fill="#00e5ff" font-family="Share Tech Mono" font-size="9">PC Ventas 2</text>
-          <text x="75" y="148" text-anchor="middle" fill="#666" font-family="Share Tech Mono" font-size="8">192.168.1.11</text>
-
-          <!-- PCs TI -->
-          <rect x="305" y="220" width="90" height="40" rx="6" fill="#0d2240" stroke="#00ff88" stroke-width="1.5"/>
-          <text x="350" y="235" text-anchor="middle" fill="#00ff88" font-family="Share Tech Mono" font-size="9">PC TI 1</text>
-          <text x="350" y="248" text-anchor="middle" fill="#666" font-family="Share Tech Mono" font-size="8">192.168.1.20</text>
-
-          <!-- PCs Contabilidad -->
-          <rect x="580" y="50" width="100" height="40" rx="6" fill="#0d2240" stroke="#ffd700" stroke-width="1.5"/>
-          <text x="630" y="65" text-anchor="middle" fill="#ffd700" font-family="Share Tech Mono" font-size="9">PC Contab 1</text>
-          <text x="630" y="78" text-anchor="middle" fill="#666" font-family="Share Tech Mono" font-size="8">192.168.1.30</text>
-
-          <rect x="580" y="120" width="100" height="40" rx="6" fill="#0d2240" stroke="#ffd700" stroke-width="1.5"/>
-          <text x="630" y="135" text-anchor="middle" fill="#ffd700" font-family="Share Tech Mono" font-size="9">PC Contab 2</text>
-          <text x="630" y="148" text-anchor="middle" fill="#666" font-family="Share Tech Mono" font-size="8">192.168.1.31</text>
-
-          <!-- Cables -->
-          <line x1="120" y1="70" x2="280" y2="130" stroke="#ff3366" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.6"/>
-          <line x1="120" y1="140" x2="280" y2="150" stroke="#ff3366" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.6"/>
-          <line x1="350" y1="170" x2="350" y2="220" stroke="#ff3366" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.6"/>
-          <line x1="420" y1="130" x2="580" y2="70" stroke="#ff3366" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.6"/>
-          <line x1="420" y1="150" x2="580" y2="140" stroke="#ff3366" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.6"/>
-        </svg>
-      </div>
-
-      <!-- Diagrama CON VLANs -->
-      <div class="network-diagram">
-        <div class="diagram-title">✅ Con VLANs — Dominios de broadcast separados</div>
-        <svg viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg">
-          <!-- Switch central con VLANs -->
-          <rect x="260" y="110" width="180" height="80" rx="8" fill="#0a2040" stroke="#00bceb" stroke-width="2"/>
-          <text x="350" y="133" text-anchor="middle" fill="#00bceb" font-family="Share Tech Mono" font-size="11">SWITCH CISCO</text>
-          <!-- Divisiones internas del switch -->
-          <rect x="268" y="148" width="52" height="26" rx="4" fill="rgba(0,229,255,0.15)" stroke="#00e5ff" stroke-width="1"/>
-          <text x="294" y="164" text-anchor="middle" fill="#00e5ff" font-family="Share Tech Mono" font-size="8">VLAN 10</text>
-          <rect x="325" y="148" width="52" height="26" rx="4" fill="rgba(0,255,136,0.15)" stroke="#00ff88" stroke-width="1"/>
-          <text x="351" y="164" text-anchor="middle" fill="#00ff88" font-family="Share Tech Mono" font-size="8">VLAN 20</text>
-          <rect x="382" y="148" width="52" height="26" rx="4" fill="rgba(255,215,0,0.15)" stroke="#ffd700" stroke-width="1"/>
-          <text x="408" y="164" text-anchor="middle" fill="#ffd700" font-family="Share Tech Mono" font-size="8">VLAN 30</text>
-
-          <!-- Ventas VLAN 10 -->
-          <rect x="20" y="40" width="100" height="40" rx="6" fill="#0d2240" stroke="#00e5ff" stroke-width="2"/>
-          <text x="70" y="56" text-anchor="middle" fill="#00e5ff" font-family="Share Tech Mono" font-size="9">PC Ventas 1</text>
-          <text x="70" y="69" text-anchor="middle" fill="#00e5ff" font-family="Share Tech Mono" font-size="8">VLAN 10</text>
-
-          <rect x="20" y="120" width="100" height="40" rx="6" fill="#0d2240" stroke="#00e5ff" stroke-width="2"/>
-          <text x="70" y="136" text-anchor="middle" fill="#00e5ff" font-family="Share Tech Mono" font-size="9">PC Ventas 2</text>
-          <text x="70" y="149" text-anchor="middle" fill="#00e5ff" font-family="Share Tech Mono" font-size="8">VLAN 10</text>
-
-          <!-- Broadcast solo dentro VLAN 10 -->
-          <text x="70" y="20" text-anchor="middle" fill="#00e5ff" font-family="Share Tech Mono" font-size="8">↔ solo entre sí</text>
-
-          <!-- TI VLAN 20 -->
-          <rect x="305" y="240" width="90" height="40" rx="6" fill="#0d2240" stroke="#00ff88" stroke-width="2"/>
-          <text x="350" y="256" text-anchor="middle" fill="#00ff88" font-family="Share Tech Mono" font-size="9">PC TI</text>
-          <text x="350" y="269" text-anchor="middle" fill="#00ff88" font-family="Share Tech Mono" font-size="8">VLAN 20</text>
-
-          <!-- Contabilidad VLAN 30 -->
-          <rect x="580" y="40" width="105" height="40" rx="6" fill="#0d2240" stroke="#ffd700" stroke-width="2"/>
-          <text x="632" y="56" text-anchor="middle" fill="#ffd700" font-family="Share Tech Mono" font-size="9">PC Contab 1</text>
-          <text x="632" y="69" text-anchor="middle" fill="#ffd700" font-family="Share Tech Mono" font-size="8">VLAN 30</text>
-
-          <rect x="580" y="120" width="105" height="40" rx="6" fill="#0d2240" stroke="#ffd700" stroke-width="2"/>
-          <text x="632" y="136" text-anchor="middle" fill="#ffd700" font-family="Share Tech Mono" font-size="9">PC Contab 2</text>
-          <text x="632" y="149" text-anchor="middle" fill="#ffd700" font-family="Share Tech Mono" font-size="8">VLAN 30</text>
-
-          <text x="632" y="20" text-anchor="middle" fill="#ffd700" font-family="Share Tech Mono" font-size="8">↔ solo entre sí</text>
-
-          <!-- Cables de color por VLAN -->
-          <line x1="120" y1="60" x2="268" y2="155" stroke="#00e5ff" stroke-width="2" opacity="0.7"/>
-          <line x1="120" y1="140" x2="268" y2="163" stroke="#00e5ff" stroke-width="2" opacity="0.7"/>
-          <line x1="350" y1="190" x2="350" y2="240" stroke="#00ff88" stroke-width="2" opacity="0.7"/>
-          <line x1="434" y1="155" x2="580" y2="60" stroke="#ffd700" stroke-width="2" opacity="0.7"/>
-          <line x1="434" y1="163" x2="580" y2="140" stroke="#ffd700" stroke-width="2" opacity="0.7"/>
-
-          <!-- X entre VLANs diferentes -->
-          <line x1="150" y1="100" x2="320" y2="200" stroke="#ff3366" stroke-width="1.5" stroke-dasharray="5,4" opacity="0.4"/>
-          <text x="235" y="157" text-anchor="middle" fill="#ff3366" font-family="Share Tech Mono" font-size="10" transform="rotate(-35,235,157)">✗ BLOQUEADO</text>
-        </svg>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title"><div class="card-icon">🎯</div>Beneficios de las VLANs</div>
-      <div class="vlan-types-grid">
-        <div class="vlan-type-card">
-          <div class="vlan-type-num" style="color:#00e5ff;">🔒</div>
-          <div class="vlan-type-name">Seguridad</div>
-          <div class="vlan-type-desc">Aisla departamentos sensibles (RRHH, Finanzas) del resto de la red. Un atacante en VLAN Ventas no llega a VLAN Contabilidad.</div>
-        </div>
-        <div class="vlan-type-card">
-          <div class="vlan-type-num" style="color:#00ff88;">⚡</div>
-          <div class="vlan-type-name">Rendimiento</div>
-          <div class="vlan-type-desc">Reduce el dominio de broadcast. Menos tráfico innecesario = mejor rendimiento para todos los dispositivos.</div>
-        </div>
-        <div class="vlan-type-card">
-          <div class="vlan-type-num" style="color:#ffd700;">🏗️</div>
-          <div class="vlan-type-name">Flexibilidad</div>
-          <div class="vlan-type-desc">Reorganiza la red lógicamente sin mover cables físicos. Mueve un usuario entre VLANs solo cambiando configuración del switch.</div>
-        </div>
-        <div class="vlan-type-card">
-          <div class="vlan-type-num" style="color:#ff6b35;">💰</div>
-          <div class="vlan-type-name">Ahorro de costos</div>
-          <div class="vlan-type-desc">Un switch físico puede actuar como múltiples switches lógicos. Menor necesidad de hardware adicional.</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title"><div class="card-icon">📊</div>Rango de IDs de VLAN — Cisco IOS</div>
-      <table class="data-table">
-        <thead>
-          <tr><th>Rango</th><th>IDs</th><th>Uso</th><th>Aparece en show vlan</th></tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><span class="badge badge-green">Normal</span></td>
-            <td style="color:#00ff88; font-family:monospace;">1 – 1005</td>
-            <td>Redes estándar Ethernet, Token Ring, FDDI</td>
-            <td style="color:#00ff88;">✅ Sí</td>
-          </tr>
-          <tr>
-            <td><span class="badge badge-blue">Extendido</span></td>
-            <td style="color:#00e5ff; font-family:monospace;">1006 – 4094</td>
-            <td>ISPs y grandes empresas. Requiere modo VTP transparente o VTPv3</td>
-            <td style="color:#ffd700;">⚠️ Solo en running-config</td>
-          </tr>
-          <tr>
-            <td><span class="badge badge-orange">Reservadas</span></td>
-            <td style="color:#ff6b35; font-family:monospace;">1002 – 1005</td>
-            <td>Token Ring y FDDI — NO usarlas para Ethernet</td>
-            <td style="color:#ff3366;">🚫 Reservado</td>
-          </tr>
-          <tr>
-            <td><span class="badge badge-yellow">Default</span></td>
-            <td style="color:#ffd700; font-family:monospace;">1</td>
-            <td>VLAN nativa por defecto. Todos los puertos la pertenecen al inicio</td>
-            <td style="color:#ffd700;">✅ Sí (no borrable)</td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="info-box exam">
-        <div class="info-icon">🎯</div>
-        <div><strong>EXAMEN CCNA:</strong> Las VLANs 1, 1002–1005 son predeterminadas y <strong>NO se pueden eliminar</strong>. La VLAN 1 es la default y la native VLAN por defecto en los trunks. Recuerda siempre cambiar la native VLAN por seguridad.</div>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- ================================================ -->
-  <!-- SECCIÓN 2: TIPOS DE VLAN -->
-  <!-- ================================================ -->
-  <div id="tipos" class="section">
-
-    <div class="card">
-      <div class="card-title"><div class="card-icon">🏷️</div>Tipos de VLANs — Clasificación Cisco</div>
-      
-      <table class="data-table">
-        <thead>
-          <tr><th>Tipo</th><th>Nombre</th><th>Descripción</th><th>Ejemplo</th></tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><span class="badge badge-yellow">Default</span></td>
-            <td style="color:#ffd700; font-weight:700;">VLAN 1</td>
-            <td>Todos los puertos del switch la usan por defecto. Nunca se borra. <strong style="color:#ff3366;">Nunca usarla para datos de usuario</strong></td>
-            <td style="font-family:monospace; color:#666;">VLAN 1 – factory default</td>
-          </tr>
-          <tr>
-            <td><span class="badge badge-blue">Data</span></td>
-            <td style="color:#00e5ff; font-weight:700;">Data VLAN</td>
-            <td>Transporta tráfico de usuarios finales. Es lo que configuras para cada departamento</td>
-            <td style="font-family:monospace; color:#666;">VLAN 10 = Ventas<br>VLAN 20 = TI</td>
-          </tr>
-          <tr>
-            <td><span class="badge badge-green">Native</span></td>
-            <td style="color:#00ff88; font-weight:700;">Native VLAN</td>
-            <td>Tráfico sin etiquetar 802.1Q en trunk links. Por defecto es VLAN 1. <strong style="color:#00ff88;">Debe coincidir en ambos extremos del trunk</strong></td>
-            <td style="font-family:monospace; color:#666;">VLAN 99 (recomendado cambiarla)</td>
-          </tr>
-          <tr>
-            <td><span class="badge badge-orange">Management</span></td>
-            <td style="color:#ff6b35; font-weight:700;">Management VLAN</td>
-            <td>Acceso SSH/Telnet al switch. Se asigna a la SVI (interfaz virtual del switch). Se recomienda separar del tráfico de datos</td>
-            <td style="font-family:monospace; color:#666;">VLAN 99 o VLAN 10</td>
-          </tr>
-          <tr>
-            <td><span class="badge" style="background:rgba(138,75,255,0.15);border:1px solid #8a4bff;color:#8a4bff;">Voice</span></td>
-            <td style="color:#8a4bff; font-weight:700;">Voice VLAN</td>
-            <td>Separa tráfico VoIP del de datos. Los switches Cisco permiten tener una voz + una data VLAN por puerto</td>
-            <td style="font-family:monospace; color:#666;">VLAN 150 = VoIP</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="card">
-      <div class="card-title"><div class="card-icon">🗣️</div>Voice VLAN — Configuración Especial</div>
-      <div class="definition-box">
-        Los teléfonos IP Cisco tienen un <span class="highlight">switch de 3 puertos integrado</span>: uno hacia el switch de red, uno hacia la PC y uno interno. Esto permite conectar un teléfono y una PC al mismo puerto del switch, con <span class="highlight-green">dos VLANs distintas en el mismo cable</span>.
-      </div>
-
-      <div class="network-diagram">
-        <div class="diagram-title">Puerto del switch con Data VLAN + Voice VLAN</div>
-        <svg viewBox="0 0 600 200" xmlns="http://www.w3.org/2000/svg">
-          <!-- Switch port -->
-          <rect x="250" y="70" width="100" height="60" rx="6" fill="#0a2040" stroke="#00bceb" stroke-width="2"/>
-          <text x="300" y="92" text-anchor="middle" fill="#00bceb" font-family="Share Tech Mono" font-size="9">SWITCH PORT</text>
-          <rect x="260" y="100" width="40" height="18" rx="3" fill="rgba(0,229,255,0.2)" stroke="#00e5ff" stroke-width="1"/>
-          <text x="280" y="112" text-anchor="middle" fill="#00e5ff" font-family="Share Tech Mono" font-size="7">VLAN 10</text>
-          <rect x="305" y="100" width="40" height="18" rx="3" fill="rgba(138,75,255,0.2)" stroke="#8a4bff" stroke-width="1"/>
-          <text x="325" y="112" text-anchor="middle" fill="#8a4bff" font-family="Share Tech Mono" font-size="7">VLAN 150</text>
-
-          <!-- Teléfono IP -->
-          <rect x="80" y="60" width="100" height="80" rx="8" fill="#0d2240" stroke="#8a4bff" stroke-width="2"/>
-          <text x="130" y="85" text-anchor="middle" fill="#8a4bff" font-family="Share Tech Mono" font-size="9">📞 Teléfono IP</text>
-          <text x="130" y="100" text-anchor="middle" fill="#8a4bff" font-family="Share Tech Mono" font-size="8">VLAN 150</text>
-          <text x="130" y="115" text-anchor="middle" fill="#666" font-family="Share Tech Mono" font-size="7">Voice Traffic</text>
-          <text x="130" y="128" text-anchor="middle" fill="#666" font-family="Share Tech Mono" font-size="7">QoS Priority</text>
-
-          <!-- PC -->
-          <rect x="420" y="75" width="90" height="50" rx="6" fill="#0d2240" stroke="#00e5ff" stroke-width="2"/>
-          <text x="465" y="97" text-anchor="middle" fill="#00e5ff" font-family="Share Tech Mono" font-size="9">💻 PC</text>
-          <text x="465" y="112" text-anchor="middle" fill="#00e5ff" font-family="Share Tech Mono" font-size="8">VLAN 10</text>
-
-          <!-- Cables -->
-          <line x1="180" y1="100" x2="250" y2="100" stroke="#8a4bff" stroke-width="2"/>
-          <line x1="350" y1="100" x2="420" y2="100" stroke="#00e5ff" stroke-width="2" stroke-dasharray="5,3"/>
-          <text x="380" y="92" fill="#666" font-family="Share Tech Mono" font-size="7" text-anchor="middle">Pass-through</text>
-
-          <!-- Labels -->
-          <text x="215" y="90" fill="#8a4bff" font-family="Share Tech Mono" font-size="8">Voice</text>
-          <text x="215" y="115" fill="#00e5ff" font-family="Share Tech Mono" font-size="8">Data</text>
-        </svg>
-      </div>
-
-      <div class="cmd-section-title">Configuración Voice VLAN</div>
-      <div class="cmd-block">
-        <span class="cmd-label">IOS CONFIG</span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch(config)#</span> <span class="cmd-keyword">interface</span> <span class="cmd-value">fastEthernet 0/1</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch(config-if)#</span> <span class="cmd-keyword">switchport mode</span> <span class="cmd-value">access</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch(config-if)#</span> <span class="cmd-keyword">switchport access vlan</span> <span class="cmd-value">10</span>  <span class="cmd-comment">! VLAN de datos</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch(config-if)#</span> <span class="cmd-keyword">switchport voice vlan</span> <span class="cmd-value">150</span> <span class="cmd-comment">! VLAN de voz</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch(config-if)#</span> <span class="cmd-keyword">mls qos trust</span> <span class="cmd-value">cos</span>  <span class="cmd-comment">! QoS para VoIP</span></span>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- ================================================ -->
-  <!-- SECCIÓN 3: TRUNKING -->
-  <!-- ================================================ -->
-  <div id="trunking" class="section">
-
-    <div class="card">
-      <div class="card-title"><div class="card-icon">🔗</div>Trunk Links — IEEE 802.1Q</div>
-      <div class="definition-box">
-        Un <span class="highlight">trunk</span> es un enlace punto a punto entre dos switches (o switch y router) que transporta <span class="highlight-green">múltiples VLANs simultáneamente</span> en un solo cable. Usa el estándar <span class="highlight">IEEE 802.1Q</span> que inserta una <strong>etiqueta de 4 bytes</strong> en la trama Ethernet para identificar a qué VLAN pertenece.
-      </div>
-
-      <div class="network-diagram">
-        <div class="diagram-title">Etiqueta 802.1Q — Estructura de la trama</div>
-        <svg viewBox="0 0 700 160" xmlns="http://www.w3.org/2000/svg">
-          <!-- Trama original -->
-          <text x="350" y="20" text-anchor="middle" fill="#666" font-family="Share Tech Mono" font-size="9">TRAMA ETHERNET SIN ETIQUETAR → TRAMA 802.1Q ETIQUETADA</text>
-
-          <!-- Campos trama 802.1Q -->
-          <rect x="20" y="40" width="100" height="40" rx="4" fill="#0a2040" stroke="#00bceb" stroke-width="1.5"/>
-          <text x="70" y="57" text-anchor="middle" fill="#00bceb" font-family="Share Tech Mono" font-size="9">Dest MAC</text>
-          <text x="70" y="70" text-anchor="middle" fill="#666" font-family="Share Tech Mono" font-size="8">6 bytes</text>
-
-          <rect x="125" y="40" width="100" height="40" rx="4" fill="#0a2040" stroke="#00bceb" stroke-width="1.5"/>
-          <text x="175" y="57" text-anchor="middle" fill="#00bceb" font-family="Share Tech Mono" font-size="9">Src MAC</text>
-          <text x="175" y="70" text-anchor="middle" fill="#666" font-family="Share Tech Mono" font-size="8">6 bytes</text>
-
-          <!-- Etiqueta 802.1Q resaltada -->
-          <rect x="230" y="35" width="110" height="50" rx="4" fill="rgba(255,215,0,0.15)" stroke="#ffd700" stroke-width="2.5"/>
-          <text x="285" y="54" text-anchor="middle" fill="#ffd700" font-family="Share Tech Mono" font-size="8" font-weight="bold">802.1Q TAG</text>
-          <text x="285" y="65" text-anchor="middle" fill="#ffd700" font-family="Share Tech Mono" font-size="8">TPID + TCI</text>
-          <text x="285" y="76" text-anchor="middle" fill="#ffd700" font-family="Share Tech Mono" font-size="8">4 bytes</text>
-
-          <rect x="345" y="40" width="80" height="40" rx="4" fill="#0a2040" stroke="#00bceb" stroke-width="1.5"/>
-          <text x="385" y="57" text-anchor="middle" fill="#00bceb" font-family="Share Tech Mono" font-size="9">EtherType</text>
-          <text x="385" y="70" text-anchor="middle" fill="#666" font-family="Share Tech Mono" font-size="8">2 bytes</text>
-
-          <rect x="430" y="40" width="150" height="40" rx="4" fill="#0a2040" stroke="#00bceb" stroke-width="1.5"/>
-          <text x="505" y="57" text-anchor="middle" fill="#00bceb" font-family="Share Tech Mono" font-size="9">Payload (datos)</text>
-          <text x="505" y="70" text-anchor="middle" fill="#666" font-family="Share Tech Mono" font-size="8">46–1500 bytes</text>
-
-          <rect x="585" y="40" width="95" height="40" rx="4" fill="#0a2040" stroke="#00bceb" stroke-width="1.5"/>
-          <text x="632" y="57" text-anchor="middle" fill="#00bceb" font-family="Share Tech Mono" font-size="9">FCS</text>
-          <text x="632" y="70" text-anchor="middle" fill="#666" font-family="Share Tech Mono" font-size="8">4 bytes</text>
-
-          <!-- Detalle de la etiqueta -->
-          <text x="350" y="110" text-anchor="middle" fill="#ffd700" font-family="Share Tech Mono" font-size="8">▲ DESGLOSE ETIQUETA 802.1Q:</text>
-          <rect x="160" y="120" width="85" height="28" rx="3" fill="rgba(255,107,53,0.1)" stroke="#ff6b35" stroke-width="1"/>
-          <text x="202" y="132" text-anchor="middle" fill="#ff6b35" font-family="Share Tech Mono" font-size="7">TPID: 0x8100</text>
-          <text x="202" y="143" text-anchor="middle" fill="#666" font-family="Share Tech Mono" font-size="7">2 bytes</text>
-
-          <rect x="250" y="120" width="60" height="28" rx="3" fill="rgba(0,255,136,0.1)" stroke="#00ff88" stroke-width="1"/>
-          <text x="280" y="132" text-anchor="middle" fill="#00ff88" font-family="Share Tech Mono" font-size="7">PCP: QoS</text>
-          <text x="280" y="143" text-anchor="middle" fill="#666" font-family="Share Tech Mono" font-size="7">3 bits</text>
-
-          <rect x="315" y="120" width="55" height="28" rx="3" fill="rgba(138,75,255,0.1)" stroke="#8a4bff" stroke-width="1"/>
-          <text x="342" y="132" text-anchor="middle" fill="#8a4bff" font-family="Share Tech Mono" font-size="7">DEI</text>
-          <text x="342" y="143" text-anchor="middle" fill="#666" font-family="Share Tech Mono" font-size="7">1 bit</text>
-
-          <rect x="375" y="120" width="90" height="28" rx="3" fill="rgba(255,215,0,0.15)" stroke="#ffd700" stroke-width="1.5"/>
-          <text x="420" y="132" text-anchor="middle" fill="#ffd700" font-family="Share Tech Mono" font-size="7" font-weight="bold">VID: VLAN ID</text>
-          <text x="420" y="143" text-anchor="middle" fill="#ffd700" font-family="Share Tech Mono" font-size="7">12 bits → 1-4094</text>
-        </svg>
-      </div>
-
-      <div class="info-box important">
-        <div class="info-icon">📌</div>
-        <div><strong>Native VLAN:</strong> El tráfico de la <strong>native VLAN NO lleva etiqueta 802.1Q</strong> en el trunk. Por defecto es la VLAN 1. Por seguridad, se recomienda cambiarla a una VLAN sin uso (ej: VLAN 99) y no asignar puertos de usuarios a ella. Un mismatch en la native VLAN entre dos switches genera un error de CDP y puede causar problemas de seguridad (VLAN hopping).</div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title"><div class="card-icon">🤝</div>DTP — Dynamic Trunking Protocol</div>
-      <div class="definition-box">
-        <span class="highlight">DTP (Dynamic Trunking Protocol)</span> es un protocolo propietario de Cisco que negocia automáticamente la formación de trunks entre switches Cisco. Permite que un puerto "negocie" si va a ser trunk o access.
-      </div>
-      <table class="data-table">
-        <thead>
-          <tr><th>Modo</th><th>Comando</th><th>Comportamiento</th></tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><span class="badge badge-blue">access</span></td>
-            <td style="font-family:monospace; color:#ffd700;">switchport mode access</td>
-            <td>Puerto de acceso permanente. NO negocia trunk. Un dispositivo final aquí.</td>
-          </tr>
-          <tr>
-            <td><span class="badge badge-green">trunk</span></td>
-            <td style="font-family:monospace; color:#ffd700;">switchport mode trunk</td>
-            <td>Trunk permanente. Envía tramas DTP para mantener el trunk activo.</td>
-          </tr>
-          <tr>
-            <td><span class="badge badge-orange">dynamic desirable</span></td>
-            <td style="font-family:monospace; color:#ffd700;">switchport mode dynamic desirable</td>
-            <td>Intenta activamente convertirse en trunk. Inicia negociación DTP.</td>
-          </tr>
-          <tr>
-            <td><span class="badge badge-yellow">dynamic auto</span></td>
-            <td style="font-family:monospace; color:#ffd700;">switchport mode dynamic auto</td>
-            <td>Acepta convertirse en trunk si el otro extremo lo solicita. Pasivo. Default en muchos switches.</td>
-          </tr>
-          <tr>
-            <td><span class="badge" style="background:rgba(255,51,102,0.1);border:1px solid #ff3366;color:#ff3366;">nonegotiate</span></td>
-            <td style="font-family:monospace; color:#ffd700;">switchport nonegotiate</td>
-            <td>Desactiva DTP. Trunk sin negociación. Usar cuando conectas a dispositivos no-Cisco.</td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="info-box warning">
-        <div class="info-icon">⚠️</div>
-        <div><strong>Seguridad:</strong> Siempre configura los puertos de acceso con <code style="color:#ff6b35;">switchport mode access</code> y desactiva DTP con <code style="color:#ff6b35;">switchport nonegotiate</code> para prevenir ataques de VLAN hopping por negociación de trunk maliciosa.</div>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- ================================================ -->
-  <!-- SECCIÓN 4: CONFIGURACIÓN -->
-  <!-- ================================================ -->
-  <div id="configuracion" class="section">
-
-    <div class="card">
-      <div class="card-title"><div class="card-icon">⌨️</div>Configuración Completa de VLANs en Cisco IOS</div>
-
-      <div class="cmd-section-title">PASO 1 — Crear VLANs en el switch</div>
-      <div class="cmd-block">
-        <span class="cmd-label">GLOBAL CONFIG</span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch></span> <span class="cmd-keyword">enable</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch#</span> <span class="cmd-keyword">configure terminal</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch(config)#</span> <span class="cmd-keyword">vlan</span> <span class="cmd-value">10</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch(config-vlan)#</span> <span class="cmd-keyword">name</span> <span class="cmd-value">VENTAS</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch(config-vlan)#</span> <span class="cmd-keyword">exit</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch(config)#</span> <span class="cmd-keyword">vlan</span> <span class="cmd-value">20</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch(config-vlan)#</span> <span class="cmd-keyword">name</span> <span class="cmd-value">TECNOLOGIA</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch(config-vlan)#</span> <span class="cmd-keyword">exit</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch(config)#</span> <span class="cmd-keyword">vlan</span> <span class="cmd-value">30</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch(config-vlan)#</span> <span class="cmd-keyword">name</span> <span class="cmd-value">CONTABILIDAD</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch(config-vlan)#</span> <span class="cmd-keyword">exit</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch(config)#</span> <span class="cmd-keyword">vlan</span> <span class="cmd-value">99</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch(config-vlan)#</span> <span class="cmd-keyword">name</span> <span class="cmd-value">MANAGEMENT</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch(config-vlan)#</span> <span class="cmd-keyword">exit</span></span>
-      </div>
-
-      <div class="cmd-section-title">PASO 2 — Asignar puertos de acceso</div>
-      <div class="cmd-block">
-        <span class="cmd-label">INTERFACE CONFIG</span>
-        <span class="cmd-line"><span class="cmd-comment">! Asignar puerto Fa0/1 a VLAN 10 (Ventas)</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch(config)#</span> <span class="cmd-keyword">interface</span> <span class="cmd-value">fastEthernet 0/1</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch(config-if)#</span> <span class="cmd-keyword">switchport mode</span> <span class="cmd-value">access</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch(config-if)#</span> <span class="cmd-keyword">switchport access vlan</span> <span class="cmd-value">10</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch(config-if)#</span> <span class="cmd-keyword">no shutdown</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch(config-if)#</span> <span class="cmd-keyword">exit</span></span>
-        <span class="cmd-line"> </span>
-        <span class="cmd-line"><span class="cmd-comment">! Asignar rango de puertos a VLAN 20 (TI)</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch(config)#</span> <span class="cmd-keyword">interface range</span> <span class="cmd-value">fastEthernet 0/2 - 4</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch(config-if-range)#</span> <span class="cmd-keyword">switchport mode</span> <span class="cmd-value">access</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch(config-if-range)#</span> <span class="cmd-keyword">switchport access vlan</span> <span class="cmd-value">20</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch(config-if-range)#</span> <span class="cmd-keyword">no shutdown</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch(config-if-range)#</span> <span class="cmd-keyword">exit</span></span>
-      </div>
-
-      <div class="cmd-section-title">PASO 3 — Configurar puerto Trunk</div>
-      <div class="cmd-block">
-        <span class="cmd-label">TRUNK CONFIG</span>
-        <span class="cmd-line"><span class="cmd-comment">! Puerto GigabitEthernet como trunk hacia otro switch o router</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch(config)#</span> <span class="cmd-keyword">interface</span> <span class="cmd-value">gigabitEthernet 0/1</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch(config-if)#</span> <span class="cmd-keyword">switchport mode</span> <span class="cmd-value">trunk</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch(config-if)#</span> <span class="cmd-keyword">switchport trunk encapsulation</span> <span class="cmd-value">dot1q</span> <span class="cmd-comment">! Si el switch lo requiere</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch(config-if)#</span> <span class="cmd-keyword">switchport trunk native vlan</span> <span class="cmd-value">99</span> <span class="cmd-comment">! Cambiar native VLAN</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch(config-if)#</span> <span class="cmd-keyword">switchport trunk allowed vlan</span> <span class="cmd-value">10,20,30,99</span> <span class="cmd-comment">! Permitir solo VLANs necesarias</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch(config-if)#</span> <span class="cmd-keyword">switchport nonegotiate</span> <span class="cmd-comment">! Deshabilitar DTP</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch(config-if)#</span> <span class="cmd-keyword">no shutdown</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch(config-if)#</span> <span class="cmd-keyword">exit</span></span>
-      </div>
-
-      <div class="cmd-section-title">PASO 4 — Configurar SVI (Management)</div>
-      <div class="cmd-block">
-        <span class="cmd-label">SVI CONFIG</span>
-        <span class="cmd-line"><span class="cmd-comment">! SVI = Switch Virtual Interface para manejo del switch</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch(config)#</span> <span class="cmd-keyword">interface</span> <span class="cmd-value">vlan 99</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch(config-if)#</span> <span class="cmd-keyword">ip address</span> <span class="cmd-value">192.168.99.2 255.255.255.0</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch(config-if)#</span> <span class="cmd-keyword">no shutdown</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch(config-if)#</span> <span class="cmd-keyword">exit</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch(config)#</span> <span class="cmd-keyword">ip default-gateway</span> <span class="cmd-value">192.168.99.1</span></span>
-      </div>
-
-      <div class="cmd-section-title">PASO 5 — Verificación</div>
-      <div class="cmd-block">
-        <span class="cmd-label">VERIFICACIÓN</span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch#</span> <span class="cmd-keyword">show vlan brief</span>              <span class="cmd-comment">! Ver todas las VLANs y puertos</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch#</span> <span class="cmd-keyword">show vlan id</span> <span class="cmd-value">10</span>             <span class="cmd-comment">! Detalle de una VLAN específica</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch#</span> <span class="cmd-keyword">show interfaces trunk</span>         <span class="cmd-comment">! Ver puertos en modo trunk</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch#</span> <span class="cmd-keyword">show interfaces</span> <span class="cmd-value">fa0/1</span> <span class="cmd-keyword">switchport</span> <span class="cmd-comment">! Detalle de un puerto</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch#</span> <span class="cmd-keyword">show running-config</span>           <span class="cmd-comment">! Configuración activa</span></span>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title"><div class="card-icon">🗑️</div>Eliminar y Resetear VLANs</div>
-      <div class="cmd-block">
-        <span class="cmd-label">ELIMINAR VLANs</span>
-        <span class="cmd-line"><span class="cmd-comment">! Eliminar una VLAN específica</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch(config)#</span> <span class="cmd-keyword">no vlan</span> <span class="cmd-value">10</span></span>
-        <span class="cmd-line"> </span>
-        <span class="cmd-line"><span class="cmd-comment">! Quitar VLAN de un puerto (vuelve a VLAN 1)</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch(config-if)#</span> <span class="cmd-keyword">no switchport access vlan</span></span>
-        <span class="cmd-line"> </span>
-        <span class="cmd-line"><span class="cmd-comment">! Eliminar archivo vlan.dat completo (reset total)</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch#</span> <span class="cmd-keyword">delete</span> <span class="cmd-value">flash:vlan.dat</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch#</span> <span class="cmd-keyword">reload</span>  <span class="cmd-comment">! Después de delete vlan.dat, reiniciar</span></span>
-        <span class="cmd-line"> </span>
-        <span class="cmd-line"><span class="cmd-comment">! Quitar VLANs del trunk</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch(config-if)#</span> <span class="cmd-keyword">switchport trunk allowed vlan remove</span> <span class="cmd-value">30</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Switch(config-if)#</span> <span class="cmd-keyword">switchport trunk allowed vlan add</span> <span class="cmd-value">40</span></span>
-      </div>
-      <div class="info-box warning">
-        <div class="info-icon">⚠️</div>
-        <div><strong>Importante:</strong> Las VLANs en Cisco se guardan en el archivo <code style="color:#ff6b35;">flash:vlan.dat</code>, NO solo en el running-config. Si haces <code>write memory</code> pero no guardas vlan.dat, las VLANs sobreviven igual al reinicio. Para borrarlas completamente debes hacer <code>delete flash:vlan.dat</code>.</div>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- ================================================ -->
-  <!-- SECCIÓN 5: INTER-VLAN ROUTING -->
-  <!-- ================================================ -->
-  <div id="intervlan" class="section">
-
-    <div class="card">
-      <div class="card-title"><div class="card-icon">🔀</div>Inter-VLAN Routing — Comunicación entre VLANs</div>
-      <div class="definition-box">
-        Como las VLANs están en dominios de broadcast separados, para que <span class="highlight">VLAN 10 se comunique con VLAN 20</span> necesitamos un <span class="highlight-green">dispositivo de Capa 3</span>. Existen 3 métodos:
-      </div>
-
-      <div class="vlan-types-grid">
-        <div class="vlan-type-card">
-          <div class="vlan-type-num" style="color:#ff6b35; font-size:1.2rem;">Método 1</div>
-          <div class="vlan-type-name">Router con interfaces físicas</div>
-          <div class="vlan-type-desc">Un puerto físico del router por cada VLAN. Costoso e ineficiente. Ya no se usa en producción.</div>
-        </div>
-        <div class="vlan-type-card" style="border-color: rgba(0,188,235,0.5);">
-          <div class="vlan-type-num" style="color:#00e5ff; font-size:1.2rem;">Método 2</div>
-          <div class="vlan-type-name">Router-on-a-Stick (ROAS)</div>
-          <div class="vlan-type-desc">Un solo enlace trunk del switch al router. El router usa subinterfaces 802.1Q. Económico para redes pequeñas.</div>
-        </div>
-        <div class="vlan-type-card">
-          <div class="vlan-type-num" style="color:#00ff88; font-size:1.2rem;">Método 3</div>
-          <div class="vlan-type-name">Switch Multilayer (L3)</div>
-          <div class="vlan-type-desc">El propio switch enruta entre VLANs con SVIs. La solución más eficiente y escalable para empresas.</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title"><div class="card-icon">🥩</div>Método 2: Router-on-a-Stick (ROAS)</div>
-
-      <div class="network-diagram">
-        <div class="diagram-title">Topología Router-on-a-Stick</div>
-        <svg viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg">
-          <!-- Router -->
-          <circle cx="300" cy="50" r="35" fill="#0a2040" stroke="#00bceb" stroke-width="2"/>
-          <text x="300" y="45" text-anchor="middle" fill="#00bceb" font-family="Share Tech Mono" font-size="9">ROUTER</text>
-          <text x="300" y="58" text-anchor="middle" fill="#666" font-family="Share Tech Mono" font-size="8">Cisco ISR</text>
-          <!-- Subinterfaces del router -->
-          <text x="190" y="30" fill="#00e5ff" font-family="Share Tech Mono" font-size="8">G0/0.10</text>
-          <text x="190" y="42" fill="#00e5ff" font-family="Share Tech Mono" font-size="7">192.168.10.1</text>
-          <text x="390" y="30" fill="#00ff88" font-family="Share Tech Mono" font-size="8">G0/0.20</text>
-          <text x="390" y="42" fill="#00ff88" font-family="Share Tech Mono" font-size="7">192.168.20.1</text>
-          <text x="390" y="54" fill="#ffd700" font-family="Share Tech Mono" font-size="8">G0/0.30</text>
-          <text x="390" y="66" fill="#ffd700" font-family="Share Tech Mono" font-size="7">192.168.30.1</text>
-
-          <!-- Trunk link -->
-          <line x1="300" y1="85" x2="300" y2="130" stroke="#ffd700" stroke-width="3"/>
-          <text x="315" y="110" fill="#ffd700" font-family="Share Tech Mono" font-size="8">TRUNK 802.1Q</text>
-          <text x="315" y="120" fill="#666" font-family="Share Tech Mono" font-size="7">VLANs 10,20,30,99</text>
-
-          <!-- Switch -->
-          <rect x="220" y="130" width="160" height="50" rx="8" fill="#0a2040" stroke="#00bceb" stroke-width="2"/>
-          <text x="300" y="152" text-anchor="middle" fill="#00bceb" font-family="Share Tech Mono" font-size="10">SWITCH CISCO</text>
-          <text x="300" y="167" text-anchor="middle" fill="#666" font-family="Share Tech Mono" font-size="8">Catalyst 2960</text>
-
-          <!-- PCs -->
-          <rect x="50" y="210" width="80" height="35" rx="5" fill="#0d2240" stroke="#00e5ff" stroke-width="1.5"/>
-          <text x="90" y="225" text-anchor="middle" fill="#00e5ff" font-family="Share Tech Mono" font-size="8">PC-VENTAS</text>
-          <text x="90" y="237" text-anchor="middle" fill="#666" font-family="Share Tech Mono" font-size="7">192.168.10.10</text>
-
-          <rect x="260" y="210" width="80" height="35" rx="5" fill="#0d2240" stroke="#00ff88" stroke-width="1.5"/>
-          <text x="300" y="225" text-anchor="middle" fill="#00ff88" font-family="Share Tech Mono" font-size="8">PC-TI</text>
-          <text x="300" y="237" text-anchor="middle" fill="#666" font-family="Share Tech Mono" font-size="7">192.168.20.10</text>
-
-          <rect x="470" y="210" width="100" height="35" rx="5" fill="#0d2240" stroke="#ffd700" stroke-width="1.5"/>
-          <text x="520" y="225" text-anchor="middle" fill="#ffd700" font-family="Share Tech Mono" font-size="8">PC-CONTAB</text>
-          <text x="520" y="237" text-anchor="middle" fill="#666" font-family="Share Tech Mono" font-size="7">192.168.30.10</text>
-
-          <!-- Cables access -->
-          <line x1="90" y1="210" x2="240" y2="180" stroke="#00e5ff" stroke-width="1.5"/>
-          <line x1="300" y1="210" x2="300" y2="180" stroke="#00ff88" stroke-width="1.5"/>
-          <line x1="520" y1="210" x2="360" y2="180" stroke="#ffd700" stroke-width="1.5"/>
-        </svg>
-      </div>
-
-      <div class="cmd-section-title">Configuración ROAS en el Router</div>
-      <div class="cmd-block">
-        <span class="cmd-label">ROUTER CONFIG</span>
-        <span class="cmd-line"><span class="cmd-prompt">Router(config)#</span> <span class="cmd-keyword">interface</span> <span class="cmd-value">GigabitEthernet0/0</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Router(config-if)#</span> <span class="cmd-keyword">no shutdown</span>  <span class="cmd-comment">! Activar la interfaz física</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Router(config-if)#</span> <span class="cmd-keyword">no ip address</span>  <span class="cmd-comment">! Sin IP en la física</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Router(config-if)#</span> <span class="cmd-keyword">exit</span></span>
-        <span class="cmd-line"> </span>
-        <span class="cmd-line"><span class="cmd-comment">! Subinterfaz para VLAN 10</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Router(config)#</span> <span class="cmd-keyword">interface</span> <span class="cmd-value">GigabitEthernet0/0.10</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Router(config-subif)#</span> <span class="cmd-keyword">encapsulation dot1Q</span> <span class="cmd-value">10</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Router(config-subif)#</span> <span class="cmd-keyword">ip address</span> <span class="cmd-value">192.168.10.1 255.255.255.0</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Router(config-subif)#</span> <span class="cmd-keyword">exit</span></span>
-        <span class="cmd-line"> </span>
-        <span class="cmd-line"><span class="cmd-comment">! Subinterfaz para VLAN 20</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Router(config)#</span> <span class="cmd-keyword">interface</span> <span class="cmd-value">GigabitEthernet0/0.20</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Router(config-subif)#</span> <span class="cmd-keyword">encapsulation dot1Q</span> <span class="cmd-value">20</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Router(config-subif)#</span> <span class="cmd-keyword">ip address</span> <span class="cmd-value">192.168.20.1 255.255.255.0</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Router(config-subif)#</span> <span class="cmd-keyword">exit</span></span>
-        <span class="cmd-line"> </span>
-        <span class="cmd-line"><span class="cmd-comment">! Subinterfaz para VLAN 99 (native)</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Router(config)#</span> <span class="cmd-keyword">interface</span> <span class="cmd-value">GigabitEthernet0/0.99</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Router(config-subif)#</span> <span class="cmd-keyword">encapsulation dot1Q</span> <span class="cmd-value">99 native</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">Router(config-subif)#</span> <span class="cmd-keyword">ip address</span> <span class="cmd-value">192.168.99.1 255.255.255.0</span></span>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title"><div class="card-icon">⚡</div>Método 3: Switch Multilayer (L3) — La Mejor Opción</div>
-
-      <div class="cmd-section-title">Configuración Inter-VLAN en Switch Multilayer (Catalyst 3560/3750)</div>
-      <div class="cmd-block">
-        <span class="cmd-label">MULTILAYER SWITCH</span>
-        <span class="cmd-line"><span class="cmd-comment">! Habilitar routing en el switch</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">MLS(config)#</span> <span class="cmd-keyword">ip routing</span></span>
-        <span class="cmd-line"> </span>
-        <span class="cmd-line"><span class="cmd-comment">! Crear SVIs para cada VLAN</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">MLS(config)#</span> <span class="cmd-keyword">interface vlan</span> <span class="cmd-value">10</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">MLS(config-if)#</span> <span class="cmd-keyword">ip address</span> <span class="cmd-value">192.168.10.1 255.255.255.0</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">MLS(config-if)#</span> <span class="cmd-keyword">no shutdown</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">MLS(config-if)#</span> <span class="cmd-keyword">exit</span></span>
-        <span class="cmd-line"> </span>
-        <span class="cmd-line"><span class="cmd-prompt">MLS(config)#</span> <span class="cmd-keyword">interface vlan</span> <span class="cmd-value">20</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">MLS(config-if)#</span> <span class="cmd-keyword">ip address</span> <span class="cmd-value">192.168.20.1 255.255.255.0</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">MLS(config-if)#</span> <span class="cmd-keyword">no shutdown</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">MLS(config-if)#</span> <span class="cmd-keyword">exit</span></span>
-        <span class="cmd-line"> </span>
-        <span class="cmd-line"><span class="cmd-comment">! Convertir un puerto físico en puerto routed (sin switchport)</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">MLS(config)#</span> <span class="cmd-keyword">interface</span> <span class="cmd-value">GigabitEthernet0/1</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">MLS(config-if)#</span> <span class="cmd-keyword">no switchport</span>  <span class="cmd-comment">! Convierte a L3</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">MLS(config-if)#</span> <span class="cmd-keyword">ip address</span> <span class="cmd-value">10.0.0.1 255.255.255.252</span></span>
-        <span class="cmd-line"><span class="cmd-prompt">MLS(config-if)#</span> <span class="cmd-keyword">no shutdown</span></span>
-      </div>
-
-      <div class="info-box tip">
-        <div class="info-icon">✅</div>
-        <div><strong>¿Cuándo usar cada método?</strong><br>
-        • <strong>ROAS:</strong> Redes pequeñas/laboratorio, bajo presupuesto, pocos usuarios por VLAN.<br>
-        • <strong>Multilayer Switch:</strong> Redes empresariales, alto tráfico inter-VLAN, mejor rendimiento (hardware routing vs software routing del router).</div>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- ================================================ -->
-  <!-- SECCIÓN 6: QUIZ -->
-  <!-- ================================================ -->
-  <div id="quiz" class="section">
-
-    <div class="card">
-      <div class="card-title"><div class="card-icon">🎯</div>Quiz CCNA — VLANs (Estilo Examen Real)</div>
-      <div class="info-box exam">
-        <div class="info-icon">📋</div>
-        <div>Estas preguntas son del estilo del examen oficial <strong>Cisco CCNA 200-301</strong>. Lee cada pregunta con cuidado, selecciona tu respuesta y recibirás explicación detallada.</div>
-      </div>
-
-      <div class="quiz-container" id="quizContainer">
-
-        <!-- Pregunta 1 -->
-        <div class="quiz-q" id="q1">
-          <div class="quiz-q-num">PREGUNTA 01 / 08</div>
-          <div class="quiz-question">¿Cuál es el rango de IDs de VLAN en el rango normal que se puede usar en redes Ethernet?</div>
-          <div class="quiz-options">
-            <div class="quiz-opt" onclick="answer(1,'A','wrong','La VLAN 0 es reservada y no puede usarse. El rango normal de VLANs Ethernet va del 1 al 1005.')">
-              <div class="quiz-opt-letter">A</div>0 – 1005
-            </div>
-            <div class="quiz-opt" onclick="answer(1,'B','correct','¡Correcto! El rango normal de VLANs es 1-1005. Sin embargo, las VLANs 1002-1005 están reservadas para Token Ring y FDDI. Las VLANs 1006-4094 son el rango extendido.')">
-              <div class="quiz-opt-letter">B</div>1 – 1005
-            </div>
-            <div class="quiz-opt" onclick="answer(1,'C','wrong','1-4094 es el rango total incluyendo extendido. El rango NORMAL (almacenado en vlan.dat) va de 1 a 1005.')">
-              <div class="quiz-opt-letter">C</div>1 – 4094
-            </div>
-            <div class="quiz-opt" onclick="answer(1,'D','wrong','1006-4094 es el rango EXTENDIDO, no el normal. Requiere VTP transparente o VTPv3.')">
-              <div class="quiz-opt-letter">D</div>1006 – 4094
-            </div>
-          </div>
-          <div class="quiz-feedback" id="fb1"></div>
-        </div>
-
-        <!-- Pregunta 2 -->
-        <div class="quiz-q" id="q2">
-          <div class="quiz-q-num">PREGUNTA 02 / 08</div>
-          <div class="quiz-question">Un switch tiene dos puertos: Fa0/1 en VLAN 10 y Fa0/2 en VLAN 20. ¿Qué necesitan los dispositivos conectados en esos puertos para comunicarse entre sí?</div>
-          <div class="quiz-options">
-            <div class="quiz-opt" onclick="answer(2,'A','wrong','Un hub opera en capa 1 y no entiende VLANs. No puede enrutar tráfico entre ellas.')">
-              <div class="quiz-opt-letter">A</div>Un hub de capa 1
-            </div>
-            <div class="quiz-opt" onclick="answer(2,'B','wrong','Agregar más puertos al switch no resuelve el problema de enrutamiento entre VLANs. Las VLANs son dominios de broadcast separados independientemente del número de puertos.')">
-              <div class="quiz-opt-letter">B</div>Más puertos en el switch
-            </div>
-            <div class="quiz-opt" onclick="answer(2,'C','correct','¡Correcto! Las VLANs son dominios de broadcast separados. Para comunicarlos se necesita un dispositivo de Capa 3 (router o switch multilayer) que enrute el tráfico entre las subredes de cada VLAN.')">
-              <div class="quiz-opt-letter">C</div>Un dispositivo de Capa 3 (router o switch L3)
-            </div>
-            <div class="quiz-opt" onclick="answer(2,'D','wrong','No se necesita cambiar las VLANs. La solución es agregar enrutamiento entre ellas con un dispositivo L3.')">
-              <div class="quiz-opt-letter">D</div>Poner ambos en la misma VLAN
-            </div>
-          </div>
-          <div class="quiz-feedback" id="fb2"></div>
-        </div>
-
-        <!-- Pregunta 3 -->
-        <div class="quiz-q" id="q3">
-          <div class="quiz-q-num">PREGUNTA 03 / 08</div>
-          <div class="quiz-question">¿Qué ocurre con el tráfico de la Native VLAN en un enlace trunk 802.1Q?</div>
-          <div class="quiz-options">
-            <div class="quiz-opt" onclick="answer(3,'A','correct','¡Correcto! El tráfico de la Native VLAN se envía SIN etiqueta 802.1Q en el trunk. Por eso debe coincidir en ambos extremos. Si no coincide, hay un mismatch que puede causar vulnerabilidades de seguridad (VLAN hopping).')">
-              <div class="quiz-opt-letter">A</div>Se envía sin etiqueta 802.1Q
-            </div>
-            <div class="quiz-opt" onclick="answer(3,'B','wrong','Solo la Native VLAN viaja sin etiqueta. Todas las demás VLANs sí llevan su etiqueta 802.1Q con el VLAN ID.')">
-              <div class="quiz-opt-letter">B</div>Se etiqueta con ID 0
-            </div>
-            <div class="quiz-opt" onclick="answer(3,'C','wrong','La Native VLAN SÍ puede cruzar el trunk, es precisamente su característica: viaja sin etiquetar.')">
-              <div class="quiz-opt-letter">C</div>Se bloquea y no puede cruzar el trunk
-            </div>
-            <div class="quiz-opt" onclick="answer(3,'D','wrong','La Native VLAN se etiqueta con un valor especial de prioridad 7 no es correcto. Simplemente viaja sin etiqueta 802.1Q.')">
-              <div class="quiz-opt-letter">D</div>Se etiqueta con prioridad 7
-            </div>
-          </div>
-          <div class="quiz-feedback" id="fb3"></div>
-        </div>
-
-        <!-- Pregunta 4 -->
-        <div class="quiz-q" id="q4">
-          <div class="quiz-q-num">PREGUNTA 04 / 08</div>
-          <div class="quiz-question">¿Cuál de los siguientes comandos verifica qué VLANs están permitidas en un enlace trunk?</div>
-          <div class="quiz-options">
-            <div class="quiz-opt" onclick="answer(4,'A','wrong','show vlan brief muestra las VLANs y sus puertos de acceso, pero NO muestra información de trunks.')">
-              <div class="quiz-opt-letter">A</div>show vlan brief
-            </div>
-            <div class="quiz-opt" onclick="answer(4,'B','correct','¡Correcto! El comando show interfaces trunk muestra: los puertos en modo trunk, el protocolo de encapsulación, la native VLAN, y las VLANs permitidas/activas/en STP forwarding en cada trunk.')">
-              <div class="quiz-opt-letter">B</div>show interfaces trunk
-            </div>
-            <div class="quiz-opt" onclick="answer(4,'C','wrong','show ip interface brief muestra el estado de las interfaces IP pero no información de trunking ni VLANs.')">
-              <div class="quiz-opt-letter">C</div>show ip interface brief
-            </div>
-            <div class="quiz-opt" onclick="answer(4,'D','wrong','show interfaces status muestra el estado de los puertos (connected/notconnect) y la VLAN asignada, pero no los detalles completos del trunk.')">
-              <div class="quiz-opt-letter">D</div>show interfaces status
-            </div>
-          </div>
-          <div class="quiz-feedback" id="fb4"></div>
-        </div>
-
-        <!-- Pregunta 5 -->
-        <div class="quiz-q" id="q5">
-          <div class="quiz-q-num">PREGUNTA 05 / 08</div>
-          <div class="quiz-question">Un administrador ejecuta: <code style="color:#ffd700;background:rgba(255,215,0,0.1);padding:2px 6px;border-radius:4px;">switchport trunk allowed vlan 10,20,30</code>. ¿Qué sucede con las VLANs que NO están en esa lista?</div>
-          <div class="quiz-options">
-            <div class="quiz-opt" onclick="answer(5,'A','correct','¡Correcto! El comando switchport trunk allowed vlan [lista] REEMPLAZA completamente la lista actual. Solo las VLANs 10, 20 y 30 pasarán por el trunk. Para agregar sin reemplazar, usa: switchport trunk allowed vlan ADD [vlan].')">
-              <div class="quiz-opt-letter">A</div>Son eliminadas del trunk, solo pasan VLAN 10, 20 y 30
-            </div>
-            <div class="quiz-opt" onclick="answer(5,'B','wrong','No es correcto. El comando reemplaza la lista completa, no agrega. Las VLANs no listadas quedan bloqueadas en el trunk.')">
-              <div class="quiz-opt-letter">B</div>Se agregan todas las VLANs existentes más las listadas
-            </div>
-            <div class="quiz-opt" onclick="answer(5,'C','wrong','No hay error. El switch acepta el comando y aplica la lista restrictiva. Solo pasan las VLANs especificadas.')">
-              <div class="quiz-opt-letter">C</div>El switch genera un error de configuración
-            </div>
-            <div class="quiz-opt" onclick="answer(5,'D','wrong','Las VLANs no listadas NO pueden pasar por ese trunk link. Están efectivamente bloqueadas aunque existan en el switch.')">
-              <div class="quiz-opt-letter">D</div>Las otras VLANs pueden pasar igual aunque no estén listadas
-            </div>
-          </div>
-          <div class="quiz-feedback" id="fb5"></div>
-        </div>
-
-        <!-- Pregunta 6 -->
-        <div class="quiz-q" id="q6">
-          <div class="quiz-q-num">PREGUNTA 06 / 08</div>
-          <div class="quiz-question">¿Cuál de estos modos DTP hace que un puerto intente activamente formar un trunk con el otro extremo?</div>
-          <div class="quiz-options">
-            <div class="quiz-opt" onclick="answer(6,'A','wrong','Dynamic auto espera que el otro extremo inicie la negociación. Es pasivo: acepta ser trunk si el otro lo pide, pero no lo inicia.')">
-              <div class="quiz-opt-letter">A</div>dynamic auto
-            </div>
-            <div class="quiz-opt" onclick="answer(6,'B','correct','¡Correcto! Dynamic desirable envía activamente mensajes DTP para intentar convertir el enlace en trunk. Si el otro extremo es dynamic auto, dynamic desirable o trunk, el enlace se convierte en trunk.')">
-              <div class="quiz-opt-letter">B</div>dynamic desirable
-            </div>
-            <div class="quiz-opt" onclick="answer(6,'C','wrong','Access fuerza el puerto como puerto de acceso. NO negocia trunk y NO intenta formar un trunk de ninguna manera.')">
-              <div class="quiz-opt-letter">C</div>access
-            </div>
-            <div class="quiz-opt" onclick="answer(6,'D','wrong','nonegotiate deshabilita DTP completamente. El puerto es trunk pero no envía mensajes DTP. Se usa cuando el otro extremo es un dispositivo no-Cisco.')">
-              <div class="quiz-opt-letter">D</div>nonegotiate
-            </div>
-          </div>
-          <div class="quiz-feedback" id="fb6"></div>
-        </div>
-
-        <!-- Pregunta 7 -->
-        <div class="quiz-q" id="q7">
-          <div class="quiz-q-num">PREGUNTA 07 / 08</div>
-          <div class="quiz-question">En una configuración Router-on-a-Stick, ¿qué comando es OBLIGATORIO en la subinterfaz del router para que funcione el inter-VLAN routing?</div>
-          <div class="quiz-options">
-            <div class="quiz-opt" onclick="answer(7,'A','wrong','ip routing se usa en switches multilayer para habilitar el enrutamiento L3. En routers, el routing ya está habilitado por defecto.')">
-              <div class="quiz-opt-letter">A</div>ip routing
-            </div>
-            <div class="quiz-opt" onclick="answer(7,'B','wrong','switchport trunk encapsulation dot1q es un comando del switch, NO del router. Las interfaces del router no son switchports.')">
-              <div class="quiz-opt-letter">B</div>switchport trunk encapsulation dot1q
-            </div>
-            <div class="quiz-opt" onclick="answer(7,'C','correct','¡Correcto! El comando encapsulation dot1Q [vlan-id] es OBLIGATORIO en cada subinterfaz del router. Le indica al router qué etiqueta de VLAN debe procesar en esa subinterfaz. Sin este comando, la subinterfaz no puede distinguir entre tramas de diferentes VLANs.')">
-              <div class="quiz-opt-letter">C</div>encapsulation dot1Q [vlan-id]
-            </div>
-            <div class="quiz-opt" onclick="answer(7,'D','wrong','no switchport convierte un puerto de switch multilayer en puerto routed L3. No aplica a interfaces de routers que ya son L3 por naturaleza.')">
-              <div class="quiz-opt-letter">D</div>no switchport
-            </div>
-          </div>
-          <div class="quiz-feedback" id="fb7"></div>
-        </div>
-
-        <!-- Pregunta 8 -->
-        <div class="quiz-q" id="q8">
-          <div class="quiz-q-num">PREGUNTA 08 / 08</div>
-          <div class="quiz-question">¿Dónde almacena Cisco IOS la información de las VLANs (nombres, IDs) además del running-config?</div>
-          <div class="quiz-options">
-            <div class="quiz-opt" onclick="answer(8,'A','wrong','La NVRAM almacena el startup-config, NO la información de VLANs directamente.')">
-              <div class="quiz-opt-letter">A</div>NVRAM (startup-config)
-            </div>
-            <div class="quiz-opt" onclick="answer(8,'B','correct','¡Correcto! Las VLANs del rango normal se almacenan en flash:vlan.dat, independientemente del startup-config. Por eso, para borrar completamente las VLANs debes ejecutar delete flash:vlan.dat y luego reload, además de borrar la running-config.')">
-              <div class="quiz-opt-letter">B</div>flash:vlan.dat
-            </div>
-            <div class="quiz-opt" onclick="answer(8,'C','wrong','La RAM contiene el running-config (configuración activa) pero es volátil. Al reiniciar, el running-config se pierde, pero vlan.dat en flash persiste.')">
-              <div class="quiz-opt-letter">C</div>RAM (running-config)
-            </div>
-            <div class="quiz-opt" onclick="answer(8,'D','wrong','El servidor VTP puede tener información de VLANs si usas VTP server/client, pero localmente Cisco guarda las VLANs en flash:vlan.dat.')">
-              <div class="quiz-opt-letter">D</div>Servidor VTP remoto
-            </div>
-          </div>
-          <div class="quiz-feedback" id="fb8"></div>
-        </div>
-
-      </div>
-
-      <!-- Score -->
-      <div id="scoreArea" style="display:none;" class="card" style="margin-top:20px;">
-        <div class="card-title"><div class="card-icon">🏆</div>Resultado del Quiz</div>
-        <div style="text-align:center; padding:20px;">
-          <div id="scoreText" style="font-family:'Orbitron',monospace; font-size:2.5rem; font-weight:900; margin-bottom:10px;"></div>
-          <div id="scoreMsg" style="color:var(--text-secondary); font-size:0.95rem;"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- TAREA -->
-    <div class="card">
-      <div class="card-title"><div class="card-icon">📝</div>Tarea Práctica — Lab VLAN Completo</div>
-      <div class="scenario">
-        <div class="scenario-title">🏢 ESCENARIO: Empresa TechCorp</div>
-        <p style="color:#ccc; font-size:0.9rem; line-height:1.8;">
-          Tienes 2 switches Cisco (SW1 y SW2) y 1 router. Debes implementar:<br>
-          • <strong style="color:#00e5ff;">VLAN 10 — RRHH</strong>: 192.168.10.0/24 → 3 PCs<br>
-          • <strong style="color:#00ff88;">VLAN 20 — VENTAS</strong>: 192.168.20.0/24 → 3 PCs<br>
-          • <strong style="color:#ffd700;">VLAN 30 — GERENCIA</strong>: 192.168.30.0/24 → 2 PCs<br>
-          • <strong style="color:#ff6b35;">VLAN 99 — MGMT</strong>: 192.168.99.0/24 → SVI de ambos switches<br>
-          • Trunk entre SW1 y SW2, Trunk de SW1 al Router<br>
-          • Inter-VLAN routing via Router-on-a-Stick
-        </p>
-      </div>
-      <ol class="steps">
-        <li class="step-item">
-          <div class="step-num"></div>
-          <div class="step-content">
-            <div class="step-title">Configura las VLANs en SW1 y SW2</div>
-            <div class="step-desc">Crea las VLANs 10, 20, 30 y 99 con sus nombres en ambos switches. Asigna los puertos de acceso a cada departamento.</div>
-          </div>
-        </li>
-        <li class="step-item">
-          <div class="step-num"></div>
-          <div class="step-content">
-            <div class="step-title">Configura el trunk entre SW1 y SW2</div>
-            <div class="step-desc">Puerto Gi0/1 de cada switch como trunk 802.1Q. Native VLAN 99. Permitir solo VLANs 10, 20, 30, 99.</div>
-          </div>
-        </li>
-        <li class="step-item">
-          <div class="step-num"></div>
-          <div class="step-content">
-            <div class="step-title">Configura el trunk de SW1 al Router</div>
-            <div class="step-desc">Puerto Gi0/2 de SW1 hacia el router en modo trunk. Mismas VLANs permitidas.</div>
-          </div>
-        </li>
-        <li class="step-item">
-          <div class="step-num"></div>
-          <div class="step-content">
-            <div class="step-title">Configura las subinterfaces en el Router</div>
-            <div class="step-desc">Crea G0/0.10, G0/0.20, G0/0.30, G0/0.99 con encapsulation dot1Q y sus IPs gateway.</div>
-          </div>
-        </li>
-        <li class="step-item">
-          <div class="step-num"></div>
-          <div class="step-content">
-            <div class="step-title">Verifica conectividad</div>
-            <div class="step-desc">Desde PC-RRHH (192.168.10.10) haz ping a PC-VENTAS (192.168.20.10). Debe funcionar vía router. Verifica con show vlan brief y show interfaces trunk.</div>
-          </div>
-        </li>
-      </ol>
-    </div>
-
-  </div>
-
-  <!-- RESUMEN -->
-  <div class="card" style="margin-top:10px;">
-    <div class="card-title"><div class="card-icon">📋</div>Resumen de Comandos Esenciales — CCNA</div>
-    <div class="summary-grid">
-      <div class="summary-item">
-        <h4>🏗️ Crear VLANs</h4>
-        <ul>
-          <li>vlan [id]</li>
-          <li>name [nombre]</li>
-          <li>show vlan brief</li>
-          <li>no vlan [id]</li>
-          <li>delete flash:vlan.dat</li>
-        </ul>
-      </div>
-      <div class="summary-item">
-        <h4>🔌 Puertos Access</h4>
-        <ul>
-          <li>switchport mode access</li>
-          <li>switchport access vlan [id]</li>
-          <li>switchport voice vlan [id]</li>
-          <li>no switchport access vlan</li>
-          <li>show interfaces fa0/1 switchport</li>
-        </ul>
-      </div>
-      <div class="summary-item">
-        <h4>🔗 Trunking</h4>
-        <ul>
-          <li>switchport mode trunk</li>
-          <li>switchport trunk encapsulation dot1q</li>
-          <li>switchport trunk native vlan [id]</li>
-          <li>switchport trunk allowed vlan [lista]</li>
-          <li>show interfaces trunk</li>
-        </ul>
-      </div>
-      <div class="summary-item">
-        <h4>🔀 Inter-VLAN</h4>
-        <ul>
-          <li>interface vlan [id] (SVI)</li>
-          <li>ip routing (L3 switch)</li>
-          <li>encapsulation dot1Q [id] (ROAS)</li>
-          <li>no switchport (L3 port)</li>
-          <li>show ip route</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-</div><!-- end container -->
-
-<footer>
-  <div class="container">
-    <div class="footer-text">
-      <strong style="color:var(--cisco-blue);">CISCO CCNA 200-301</strong> — Clase Magistral: VLANs<br>
-      Ruta: CCNA → CCNP → CCIE · Capa 2 - Switching · IEEE 802.1Q · Cisco IOS<br>
-      <span style="color:rgba(255,255,255,0.3);">Próxima clase: STP (Spanning Tree Protocol) — Prevención de bucles</span>
-    </div>
-  </div>
+<div class="page-header">
+  <div class="breadcrumb"><a href="../index.html">Inicio</a> › M3 · Switching › VLANs</div>
+  <h1>VLAN<span class="accent"> s</span></h1>
+  <p class="page-subtitle">Virtual LAN · Access · Trunk · 802.1Q · VLAN Nativa · Inter-VLAN</p>
+  <div class="badges"><span class="badge badge badge-teal">CCNA 200-301</span><span class="badge badge badge-blue">Módulo 3 · Switching</span><span class="badge badge badge-yellow">🏷️ Segmentación</span></div>
+</div>
+<div class="tabs-wrapper"><div class="tabs">
+  <button class="tab-btn active" onclick="showTab('teoria',this)">📖 Teoría</button>
+  <button class="tab-btn" onclick="showTab('tipos',this)">🏷️ Tipos de Puerto</button>
+  <button class="tab-btn" onclick="showTab('config',this)">⚙️ Configuración</button>
+  <button class="tab-btn" onclick="showTab('trunk',this)">🔗 Trunk</button>
+  <button class="tab-btn" onclick="showTab('lab',this)">🧪 Laboratorio</button>
+  <button class="tab-btn" onclick="showTab('resumen',this)">📋 Resumen</button>
+  <button class="tab-btn" onclick="showTab('quiz',this)">✅ Quiz</button>
+</div></div>
+<div class="tab-panel active" id="tab-teoria">
+<div class="content">
+<div class="section"><h2 class="section-title">🏷️ ¿Qué es una VLAN?</h2>
+<p>Una VLAN (Virtual Local Area Network) es una <strong>segmentación lógica</strong> de una red LAN que permite dividir un switch físico en múltiples redes virtuales independientes, cada una con su propio dominio de broadcast.</p>
+<div class="info-grid">
+<div class="info-card"><h4>🔒 Seguridad</h4><p>Dispositivos en VLANs diferentes no se pueden comunicar directamente sin pasar por un router (o switch capa 3).</p></div>
+<div class="info-card"><h4>⚡ Rendimiento</h4><p>Reduce el tamaño del dominio de broadcast, disminuyendo el tráfico innecesario en cada segmento.</p></div>
+<div class="info-card"><h4>🏗️ Flexibilidad</h4><p>Agrupa usuarios por función (Ventas, IT, RRHH) sin importar su ubicación física en la red.</p></div>
+</div>
+<div class="concept-box" style="margin-top:1.2rem"><h4>📌 VLANs reservadas por defecto en Cisco</h4>
+<ul>
+<li><strong>VLAN 1</strong> — VLAN nativa por defecto. Todos los puertos la usan por defecto. No eliminar.</li>
+<li><strong>VLAN 1002–1005</strong> — Reservadas para Token Ring y FDDI. No se pueden usar ni eliminar.</li>
+<li><strong>VLAN 1006–4094</strong> — VLANs extendidas (requieren VTP transparent o off).</li>
+</ul></div></div>
+</div></div>
+<div class="tab-panel" id="tab-tipos">
+<div class="content">
+<div class="section"><h2 class="section-title">🔌 Tipos de Puerto en un Switch</h2>
+<div class="osi-table-wrap"><table class="osi-table"><thead><tr><th>Tipo</th><th>Descripción</th><th>Tráfico</th><th>Uso típico</th></tr></thead><tbody>
+<tr><td><strong>Access Port</strong></td><td>Pertenece a una sola VLAN. El dispositivo NO conoce las VLANs.</td><td>Sin etiqueta 802.1Q</td><td>PCs, impresoras, servidores</td></tr>
+<tr><td><strong>Trunk Port</strong></td><td>Transporta tráfico de <strong>múltiples VLANs</strong> simultáneamente usando etiquetas 802.1Q.</td><td>Con etiqueta 802.1Q</td><td>Uplinks switch↔switch, switch↔router</td></tr>
+<tr><td><strong>Native VLAN</strong></td><td>En un trunk, el tráfico de la VLAN nativa se envía <strong>sin etiqueta</strong>.</td><td>Sin etiqueta</td><td>Por defecto VLAN 1</td></tr>
+</tbody></table></div>
+<div class="concept-box warning" style="margin-top:1rem"><h4>⚠️ 802.1Q — Encapsulación de trunk</h4><p>El estándar 802.1Q agrega un campo de <strong>4 bytes</strong> al frame Ethernet con el ID de VLAN (12 bits → hasta 4094 VLANs). ISL es el protocolo propietario de Cisco (obsoleto). El CCNA solo cubre 802.1Q.</p></div></div>
+</div></div>
+<div class="tab-panel" id="tab-config">
+<div class="content">
+<div class="section"><h2 class="section-title">⚙️ Configuración de VLANs</h2>
+<div class="lab-steps">
+<div class="lab-step"><h4>Crear VLANs y asignar puertos access</h4>
+<div class="cli-block" data-label="Switch — VLANs">
+<pre><code><span class="cmt">! Crear VLANs</span>
+<span class="cmd">SW1(config)# vlan 10</span>
+<span class="cmd">SW1(config-vlan)# name VENTAS</span>
+<span class="cmd">SW1(config-vlan)# exit</span>
+<span class="cmd">SW1(config)# vlan 20</span>
+<span class="cmd">SW1(config-vlan)# name IT</span>
+<span class="cmd">SW1(config-vlan)# exit</span>
+<span class="cmd">SW1(config)# vlan 30</span>
+<span class="cmd">SW1(config-vlan)# name RRHH</span>
+<span class="cmd">SW1(config-vlan)# exit</span>
+<span class="cmt">! Asignar puertos a VLANs (modo access)</span>
+<span class="cmd">SW1(config)# interface FastEthernet0/1</span>
+<span class="cmd">SW1(config-if)# switchport mode access</span>
+<span class="cmd">SW1(config-if)# switchport access vlan 10</span>
+<span class="cmd">SW1(config)# interface range FastEthernet0/2-5</span>
+<span class="cmd">SW1(config-if-range)# switchport mode access</span>
+<span class="cmd">SW1(config-if-range)# switchport access vlan 20</span></code></pre>
+</div></div>
+<div class="lab-step"><h4>Verificar VLANs</h4>
+<div class="cli-block" data-label="Verificación VLANs">
+<pre><code><span class="cmd">SW1# show vlan brief</span>
+<span class="out">VLAN Name                Status    Ports
+---- -------------------- --------- ---------------------------
+1    default              active    Fa0/6, Fa0/7, Fa0/8
+10   VENTAS               active    Fa0/1
+20   IT                   active    Fa0/2, Fa0/3, Fa0/4, Fa0/5
+30   RRHH                 active
+1002 fddi-default         act/unsup
+1003 token-ring-default   act/unsup</span>
+<span class="cmd">SW1# show interfaces FastEthernet0/1 switchport</span>
+<span class="out">Name: Fa0/1
+Switchport: Enabled
+Administrative Mode: static access
+Operational Mode: static access
+Access Mode VLAN: 10 (VENTAS)</span></code></pre>
+</div></div></div></div>
+</div></div>
+<div class="tab-panel" id="tab-trunk">
+<div class="content">
+<div class="section"><h2 class="section-title">🔗 Configuración Trunk 802.1Q</h2>
+<div class="lab-steps">
+<div class="lab-step"><h4>Configurar enlace trunk entre switches</h4>
+<div class="cli-block" data-label="Trunk 802.1Q">
+<pre><code><span class="cmt">! En el puerto de uplink hacia otro switch o router</span>
+<span class="cmd">SW1(config)# interface GigabitEthernet0/1</span>
+<span class="cmd">SW1(config-if)# switchport mode trunk</span>
+<span class="cmd">SW1(config-if)# switchport trunk encapsulation dot1q</span>
+<span class="cmt">! Especificar qué VLANs se permiten en el trunk</span>
+<span class="cmd">SW1(config-if)# switchport trunk allowed vlan 10,20,30</span>
+<span class="cmt">! Cambiar la VLAN nativa (por seguridad, no usar VLAN 1)</span>
+<span class="cmd">SW1(config-if)# switchport trunk native vlan 99</span></code></pre>
+</div></div>
+<div class="lab-step"><h4>Verificar trunk</h4>
+<div class="cli-block" data-label="Verificación Trunk">
+<pre><code><span class="cmd">SW1# show interfaces trunk</span>
+<span class="out">Port      Mode  Encapsulation  Status    Native vlan
+Gi0/1     on    802.1q         trunking  99
+
+Port      Vlans allowed on trunk
+Gi0/1     10,20,30
+
+Port      Vlans in spanning tree forwarding state
+Gi0/1     10,20,30</span></code></pre>
+</div></div></div>
+<div class="concept-box warning" style="margin-top:1rem"><h4>⚠️ VLAN nativa — Riesgo de seguridad</h4><p>Si dos switches tienen distinta VLAN nativa en un trunk, los frames se <strong>envían sin etiqueta a VLANs distintas</strong> (VLAN hopping attack). Siempre sincronizar la VLAN nativa y cambiarla de la VLAN 1.</p></div></div>
+</div></div>
+<div class="tab-panel" id="tab-lab">
+<div class="content">
+<div class="section"><h2 class="section-title">🧪 Laboratorio VLANs completo</h2>
+<div class="concept-box"><h4>📋 Topología: SW1 ─── trunk ─── SW2, cada uno con Ventas (10) e IT (20)</h4></div>
+<div class="lab-steps">
+<div class="lab-step"><h4>SW1 y SW2 — Configuración completa</h4>
+<div class="cli-block" data-label="SW1 y SW2">
+<pre><code><span class="cmt">! En ambos switches — crear las VLANs</span>
+<span class="cmd">SW(config)# vlan 10</span>
+<span class="cmd">SW(config-vlan)# name VENTAS</span>
+<span class="cmd">SW(config)# vlan 20</span>
+<span class="cmd">SW(config-vlan)# name IT</span>
+<span class="cmt">! Puertos de acceso</span>
+<span class="cmd">SW(config)# interface FastEthernet0/1</span>
+<span class="cmd">SW(config-if)# switchport mode access</span>
+<span class="cmd">SW(config-if)# switchport access vlan 10</span>
+<span class="cmd">SW(config)# interface FastEthernet0/2</span>
+<span class="cmd">SW(config-if)# switchport mode access</span>
+<span class="cmd">SW(config-if)# switchport access vlan 20</span>
+<span class="cmt">! Puerto trunk entre SW1 y SW2</span>
+<span class="cmd">SW(config)# interface GigabitEthernet0/1</span>
+<span class="cmd">SW(config-if)# switchport mode trunk</span>
+<span class="cmd">SW(config-if)# switchport trunk allowed vlan 10,20</span>
+<span class="cmd">SW(config-if)# switchport trunk native vlan 99</span>
+<span class="cmd">SW# copy running-config startup-config</span></code></pre>
+</div></div></div></div>
+</div></div>
+<div class="tab-panel" id="tab-resumen">
+<div class="content">
+<div class="section"><h2 class="section-title">📋 Resumen — VLANs para el CCNA</h2>
+<div class="concept-box"><h4>✅ Puntos críticos</h4><ul>
+<li>VLAN = segmentación lógica → cada VLAN es un dominio de broadcast separado</li>
+<li>Access port = 1 VLAN, sin etiqueta | Trunk = múltiples VLANs con etiqueta 802.1Q</li>
+<li>VLAN 1 = nativa y por defecto. No eliminar pero sí cambiar para seguridad</li>
+<li>VLANs 1002-1005 = reservadas, no usar</li>
+<li>Trunk nativa debe coincidir en ambos lados → si no, hay VLAN hopping</li>
+<li><code>switchport trunk allowed vlan</code> controla qué VLANs pasan por el trunk</li>
+<li><code>show vlan brief</code> = resumen de VLANs y puertos | <code>show interfaces trunk</code> = ver trunks</li>
+</ul></div>
+<div class="concept-box warning" style="margin-top:1rem"><h4>⚠️ Errores comunes</h4><ul>
+<li>Crear una VLAN sin asignarla a ningún puerto (existe pero no tiene tráfico)</li>
+<li>No agregar la VLAN al trunk → el tráfico de esa VLAN no pasa</li>
+<li>VLAN nativa diferente en cada extremo del trunk</li>
+</ul></div>
+<div style="margin-top:1.5rem"><div id="refTableContainer"></div></div></div>
+</div></div>
+<div class="tab-panel" id="tab-quiz">
+<div class="content">
+<div class="section"><h2 class="section-title">✅ Quiz · VLANs — CCNA 200-301</h2>
+<div id="quiz-container"></div><div id="quiz-container-result"></div></div>
+</div></div>
+<footer class="footer">
+  <p>CCNA Academy · VLANs · Basado en CCNA 200-301 Official Cert Guide (Wendell Odom)</p>
+  <p style="margin-top:.4rem"><a href="../index.html">← Volver al índice</a></p>
 </footer>
-
+<script src="../assets/main.js" defer></script>
 <script>
-  function showTab(tabId) {
-    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById(tabId).classList.add('active');
-    event.target.classList.add('active');
-    window.scrollTo({top: 200, behavior: 'smooth'});
-  }
-
-  let answers = {};
-  let score = 0;
-
-  function answer(qNum, letter, result, explanation) {
-    if (answers[qNum]) return; // Already answered
-    answers[qNum] = { letter, result };
-
-    const opts = document.querySelectorAll(`#q${qNum} .quiz-opt`);
-    opts.forEach(opt => {
-      opt.style.pointerEvents = 'none';
-      if (opt.querySelector('.quiz-opt-letter').textContent === letter) {
-        opt.classList.add(result === 'correct' ? 'correct' : 'wrong');
-      }
-      if (result === 'wrong' && opt.getAttribute('onclick').includes("'correct'")) {
-        opt.classList.add('correct');
-      }
-    });
-
-    const fb = document.getElementById(`fb${qNum}`);
-    fb.textContent = (result === 'correct' ? '✅ ' : '❌ ') + explanation;
-    fb.className = `quiz-feedback show ${result === 'correct' ? 'correct-fb' : 'wrong-fb'}`;
-
-    if (result === 'correct') score++;
-
-    if (Object.keys(answers).length === 8) {
-      showScore();
-    }
-  }
-
-  function showScore() {
-    const area = document.getElementById('scoreArea');
-    area.style.display = 'block';
-    const scoreText = document.getElementById('scoreText');
-    const scoreMsg = document.getElementById('scoreMsg');
-    const pct = Math.round((score / 8) * 100);
-    
-    scoreText.textContent = `${score} / 8 — ${pct}%`;
-    
-    if (pct >= 87) {
-      scoreText.style.color = 'var(--cisco-green)';
-      scoreMsg.textContent = '🏆 ¡Excelente! Estás listo para el nivel CCNA en VLANs. Sigue practicando con labs en Packet Tracer o GNS3.';
-    } else if (pct >= 62) {
-      scoreText.style.color = 'var(--cisco-yellow)';
-      scoreMsg.textContent = '📚 Buen progreso. Repasa los temas donde fallaste y vuelve a intentarlo. La práctica hace al maestro.';
-    } else {
-      scoreText.style.color = 'var(--cisco-red)';
-      scoreMsg.textContent = '💪 Necesitas repasar el material. Vuelve a leer las secciones de Fundamentos, Trunking y Configuración antes de reintentar.';
-    }
-    
-    area.scrollIntoView({ behavior: 'smooth' });
-  }
+function showTab(id,btn){document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active')});document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active')});var panel=document.getElementById('tab-'+id);if(panel)panel.classList.add('active');if(btn)btn.classList.add('active');window.scrollTo({top:90,behavior:'smooth'});}
+document.addEventListener('DOMContentLoaded',function(){
+  var refData=[
+  {Comando:'vlan X',Modo:'config',Descripcion:'Crear VLAN X'},
+  {Comando:'name NOMBRE',Modo:'config-vlan',Descripcion:'Asignar nombre a la VLAN'},
+  {Comando:'switchport mode access',Modo:'config-if',Descripcion:'Poner puerto en modo access'},
+  {Comando:'switchport access vlan X',Modo:'config-if',Descripcion:'Asignar VLAN al puerto access'},
+  {Comando:'switchport mode trunk',Modo:'config-if',Descripcion:'Poner puerto en modo trunk'},
+  {Comando:'switchport trunk encapsulation dot1q',Modo:'config-if',Descripcion:'Usar encapsulación 802.1Q'},
+  {Comando:'switchport trunk allowed vlan X,Y',Modo:'config-if',Descripcion:'Permitir VLANs específicas en el trunk'},
+  {Comando:'switchport trunk native vlan X',Modo:'config-if',Descripcion:'Cambiar VLAN nativa del trunk'},
+  {Comando:'show vlan brief',Modo:'#',Descripcion:'Resumen de VLANs y puertos asignados'},
+  {Comando:'show interfaces trunk',Modo:'#',Descripcion:'Ver puertos trunk y VLANs permitidas'},
+];
+if(typeof buildRefTable==="function")buildRefTable(refData,"refTableContainer");
+  var preguntas=[
+  {pregunta:"¿Qué encapsulación usa Cisco para los puertos trunk?",opciones:["ISL","802.1Q","802.3","PPP"],respuesta:1,explicacion:"802.1Q es el estándar abierto (IEEE) que agrega 4 bytes al frame con el VLAN ID. ISL es propietario de Cisco y está obsoleto."},
+  {pregunta:"Un puerto access configurado en VLAN 20 recibe un frame. ¿Cómo lo envía hacia la red?",opciones:["Con etiqueta 802.1Q VLAN 20","Sin etiqueta","Con etiqueta ISL","Con dos etiquetas"],respuesta:1,explicacion:"Los puertos access eliminan/no agregan etiqueta 802.1Q. El dispositivo conectado no conoce la VLAN."},
+  {pregunta:"¿Qué rango de VLANs está reservado y NO puede ser usado en Cisco?",opciones:["1-9","1002-1005","2000-2005","3000-4000"],respuesta:1,explicacion:"Las VLANs 1002-1005 están reservadas para Token Ring y FDDI. No se pueden crear, modificar ni eliminar."},
+  {pregunta:"¿Qué ocurre si la VLAN nativa es diferente en cada extremo de un trunk?",opciones:["El trunk no funciona","El tráfico de la VLAN nativa se mezcla incorrectamente (VLAN hopping)","No hay impacto","Los puertos se desactivan"],respuesta:1,explicacion:"Una VLAN nativa diferente en cada extremo provoca que los frames sin etiqueta lleguen a la VLAN incorrecta, creando un riesgo de seguridad (VLAN hopping)."},
+  {pregunta:"¿Qué comando muestra las VLANs y sus puertos asignados en un switch?",opciones:["show vlan","show interfaces trunk","show vlan brief","show switchport"],respuesta:2,explicacion:"'show vlan brief' muestra una tabla resumida con VLAN ID, nombre, estado y puertos asignados."},
+  {pregunta:"Se quiere que los puertos Fa0/1 al Fa0/10 estén en VLAN 30. ¿Cuál es el comando más eficiente?",opciones:["Configurar cada puerto individualmente","interface range FastEthernet0/1-10 + switchport access vlan 30","vlan range 1-10","switchport vlan 30 all"],respuesta:1,explicacion:"'interface range' permite configurar múltiples puertos simultáneamente, lo que es más eficiente que configurar uno por uno."},
+];
+if(typeof initQuiz==="function")initQuiz(preguntas,"quiz-container");
+});
 </script>
-
 </body>
 </html>
