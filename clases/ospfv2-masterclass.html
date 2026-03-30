@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OSPFv2 Single-Area Masterclass — CCNA Academy</title>
+  <meta name="description" content="Masterclass OSPFv2 Single-Area CCNA 200-301. Fundamentos profundos, estados de adyacencia, LSDB, SPF, configuración completa, troubleshooting y Packet Tracer.">
+  <link rel="stylesheet" href="../assets/style.css">
+  <style>
+    .mastery-badge{display:inline-flex;align-items:center;gap:.5rem;background:linear-gradient(135deg,#1a1a2e,#16213e);border:2px solid #00d4aa;border-radius:12px;padding:.6rem 1.2rem;font-family:'Orbitron',sans-serif;font-size:.78rem;color:#00d4aa;letter-spacing:.08em;margin:.3rem .2rem}
+    .mastery-badge .mb-icon{font-size:1.1rem}
+    .scenario-box{background:linear-gradient(135deg,rgba(0,212,170,.08),rgba(0,100,200,.06));border:1px solid rgba(0,212,170,.3);border-left:4px solid #00d4aa;border-radius:10px;padding:1.4rem;margin:1.2rem 0}
+    .scenario-box h4{color:#00d4aa;font-family:'Orbitron',sans-serif;font-size:.85rem;margin-bottom:.8rem;letter-spacing:.05em}
+    .trouble-box{background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.3);border-left:4px solid #ef4444;border-radius:10px;padding:1.2rem;margin:1rem 0}
+    .trouble-box h4{color:#ef4444;font-family:'Orbitron',sans-serif;font-size:.82rem;margin-bottom:.7rem}
+    .challenge-box{background:linear-gradient(135deg,rgba(251,191,36,.07),rgba(245,158,11,.04));border:1px solid rgba(251,191,36,.35);border-left:4px solid #fbbf24;border-radius:10px;padding:1.3rem;margin:1.2rem 0}
+    .challenge-box h4{color:#fbbf24;font-family:'Orbitron',sans-serif;font-size:.85rem;margin-bottom:.8rem}
+    .topo-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1rem;margin:1.2rem 0}
+    .topo-card{background:rgba(0,212,170,.05);border:1px solid rgba(0,212,170,.2);border-radius:8px;padding:1rem}
+    .topo-card h5{color:#00d4aa;font-size:.82rem;font-family:'Orbitron',sans-serif;margin-bottom:.5rem}
+    .state-timeline{display:flex;flex-wrap:wrap;gap:.5rem;margin:1rem 0}
+    .state-step{background:rgba(0,212,170,.08);border:1px solid rgba(0,212,170,.25);border-radius:6px;padding:.5rem .9rem;font-family:'Share Tech Mono',monospace;font-size:.8rem;color:#e2e8f0;position:relative}
+    .state-step.active-state{border-color:#00d4aa;background:rgba(0,212,170,.18);color:#00d4aa}
+    .state-arrow{color:#00d4aa;font-size:1.1rem;align-self:center}
+    .step-number{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;background:#00d4aa;color:#0a0a1a;border-radius:50%;font-weight:700;font-size:.82rem;margin-right:.5rem;flex-shrink:0}
+    .config-phase{background:rgba(15,23,42,.6);border:1px solid rgba(0,212,170,.15);border-radius:10px;padding:1.2rem;margin:.8rem 0}
+    .config-phase-title{display:flex;align-items:center;gap:.6rem;font-family:'Orbitron',sans-serif;font-size:.82rem;color:#00d4aa;margin-bottom:1rem;padding-bottom:.6rem;border-bottom:1px solid rgba(0,212,170,.15)}
+  </style>
+</head>
+<body>
+<div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
+<nav class="ccna-drawer" id="ccnaDrawer">
+  <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
+  <div class="drawer-section"><div class="drawer-section-title">General</div>
+    <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M1 · Fundamentos</div>
+    <a href="fundamentos.html"  class="drawer-link"><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
+    <a href="subnetting.html"   class="drawer-link"><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
+    <a href="ipv6.html"         class="drawer-link"><span class="dl-icon">6️⃣</span> IPv6</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M2 · Dispositivos Cisco</div>
+    <a href="router.html"         class="drawer-link"><span class="dl-icon">📡</span> Routers Cisco</a>
+    <a href="switches-cisco.html" class="drawer-link"><span class="dl-icon">🔀</span> Switches Cisco</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M3 · Switching</div>
+    <a href="vlan.html"               class="drawer-link"><span class="dl-icon">🏷️</span> VLANs</a>
+    <a href="stp.html"                class="drawer-link"><span class="dl-icon">🌳</span> Spanning Tree</a>
+    <a href="etherchannel.html"       class="drawer-link"><span class="dl-icon">🔗</span> EtherChannel</a>
+    <a href="port-security.html"      class="drawer-link"><span class="dl-icon">🔒</span> Port Security</a>
+    <a href="cdp-lldp.html"           class="drawer-link"><span class="dl-icon">🔍</span> CDP / LLDP</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M4 · Routing</div>
+    <a href="routing.html" class="drawer-link"><span class="dl-icon">🗺️</span> Routing Estático</a>
+    <a href="ospf.html"    class="drawer-link"><span class="dl-icon">⭕</span> OSPF</a>
+    <a href="eigrp.html"   class="drawer-link"><span class="dl-icon">⚡</span> EIGRP</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M5 · Servicios IP</div>
+    <a href="dhcp.html" class="drawer-link"><span class="dl-icon">📋</span> DHCP</a>
+    <a href="nat.html"  class="drawer-link"><span class="dl-icon">🔄</span> NAT / PAT</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M6 · Seguridad</div>
+    <a href="acl.html" class="drawer-link"><span class="dl-icon">🛡️</span> ACLs</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M7 · WAN &amp; QoS</div>
+    <a href="wan.html" class="drawer-link"><span class="dl-icon">🌍</span> WAN</a>
+    <a href="qos.html" class="drawer-link"><span class="dl-icon">📊</span> QoS</a></div>
+  <div class="drawer-section"><div class="drawer-section-title" style="color:#fbbf24;font-weight:700">🏆 M8 · Mastery Zone</div>
+    <a href="ospfv2-masterclass.html" class="drawer-link active" style="border-left:2px solid #fbbf24"><span class="dl-icon">⭕</span> OSPFv2 Masterclass</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">Herramientas</div>
+    <a href="asistente.html"   class="drawer-link"><span class="dl-icon">🤖</span> NetBot IA</a>
+    <a href="calculadora.html" class="drawer-link"><span class="dl-icon">🧮</span> Calculadora IP</a></div>
+</nav>
+<header class="navbar">
+  <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
+  <a href="../index.html" class="navbar-brand">CISCO<span> ACADEMY</span></a>
+  <div class="navbar-spacer"></div>
+  <a href="../index.html" class="navbar-link">← Inicio</a>
+</header>
+<div class="nav-spacer"></div>
+<div class="page-header" style="border-bottom:2px solid #fbbf24">
+  <div class="breadcrumb"><a href="../index.html">Inicio</a> › M8 · Mastery Zone › OSPFv2 Single-Area</div>
+  <div style="margin-bottom:.5rem">
+    <span class="mastery-badge"><span class="mb-icon">🏆</span> MASTERY ZONE</span>
+    <span class="mastery-badge" style="border-color:#fbbf24;color:#fbbf24"><span class="mb-icon">⭕</span> OSPF EXPERT</span>
+    <span class="mastery-badge" style="border-color:#818cf8;color:#818cf8"><span class="mb-icon">🖥️</span> PACKET TRACER</span>
+  </div>
+  <h1>OSPFv2 Single-Area <span class="accent">Masterclass</span></h1>
+  <p class="page-subtitle">Arquitectura de Enrutamiento · Estados de Adyacencia · LSDB · Algoritmo SPF · Hardening · Troubleshooting Avanzado · Packet Tracer</p>
+  <div class="badges">
+    <span class="badge badge-teal">CCNA 200-301</span>
+    <span class="badge badge-blue">Módulo 8 · Mastery Zone</span>
+    <span class="badge badge-yellow">⭐ Nivel Avanzado</span>
+  </div>
+</div>
+<div class="tabs-wrapper"><div class="tabs">
+  <button class="tab-btn active" onclick="showTab('teoria',     this)">📚 Fundamentos Profundos</button>
+  <button class="tab-btn"        onclick="showTab('topologia',  this)">🗺️ Topología VLSM</button>
+  <button class="tab-btn"        onclick="showTab('hardening',  this)">🔒 Hardening &amp; Base</button>
+  <button class="tab-btn"        onclick="showTab('config',     this)">⚙️ Configuración OSPF</button>
+  <button class="tab-btn"        onclick="showTab('verifica',   this)">🔍 Verificación</button>
+  <button class="tab-btn"        onclick="showTab('trouble',    this)">🚨 Troubleshooting</button>
+  <button class="tab-btn"        onclick="showTab('desafio',    this)">🏆 Desafío</button>
+  <button class="tab-btn"        onclick="showTab('lab',        this)">🧪 Laboratorio</button>
+  <button class="tab-btn"        onclick="showTab('resumen',    this)">📋 Resumen</button>
+  <button class="tab-btn"        onclick="showTab('quiz',       this)">✅ Quiz</button>
+</div></div>
+<!-- ══════ TAB 1 · FUNDAMENTOS PROFUNDOS ══════ -->
+<div class="tab-panel active" id="tab-teoria"><div class="content">
+  <div class="section">
+    <h2 class="section-title">📚 La Lógica Profunda de OSPF — Por qué funciona como funciona</h2>
+    <p>OSPFv2 (Open Shortest Path First v2, RFC 2328) es un protocolo de routing de <strong>estado de enlace (link-state)</strong>. La clave para comprender OSPF profundamente no es memorizar comandos, sino entender su filosofía: <em>cada router construye un mapa completo de la red y calcula el camino óptimo de forma independiente</em>. Esto lo hace fundamentalmente diferente de los protocolos distance-vector como RIP o EIGRP.</p>
+    <div class="scenario-box">
+      <h4>⭕ La Analogía del Mapa de la Ciudad</h4>
+      <p>Imagina que eres un taxista. En un sistema <strong>distance-vector</strong> (RIP), solo conoces los tiempos de viaje que te dicen tus vecinos — no sabes los detalles del mapa. En <strong>OSPF</strong>, tienes el mapa completo de toda la ciudad. Conoces cada calle, cada semáforo (costo de enlace). Puedes calcular tú mismo la ruta más corta sin depender de lo que te digan los vecinos. Esto elimina los bucles de routing y converge mucho más rápido.</p>
+    </div>
+  </div>
+  <div class="section">
+    <h2 class="section-title">🔄 Los 7 Estados de Adyacencia — La Máquina de Estados de OSPF</h2>
+    <p>Cuando dos routers OSPF se "conocen", no forman la adyacencia instantáneamente. Pasan por una secuencia de estados definida en el RFC 2328. Comprender cada estado permite diagnosticar con precisión dónde falla una adyacencia OSPF.</p>
+    <div class="state-timeline">
+      <div class="state-step">1. DOWN</div>
+      <div class="state-arrow">→</div>
+      <div class="state-step">2. ATTEMPT</div>
+      <div class="state-arrow">→</div>
+      <div class="state-step">3. INIT</div>
+      <div class="state-arrow">→</div>
+      <div class="state-step">4. 2-WAY</div>
+      <div class="state-arrow">→</div>
+      <div class="state-step">5. EXSTART</div>
+      <div class="state-arrow">→</div>
+      <div class="state-step">6. EXCHANGE</div>
+      <div class="state-arrow">→</div>
+      <div class="state-step">7. LOADING</div>
+      <div class="state-arrow">→</div>
+      <div class="state-step active-state">✅ FULL</div>
+    </div>
+    <div class="osi-table-wrap"><table class="osi-table">
+      <thead><tr><th>Estado</th><th>Disparador</th><th>¿Qué ocurre internamente?</th><th>¿Problema si se queda aquí?</th></tr></thead>
+      <tbody>
+        <tr><td><strong>DOWN</strong></td><td>Proceso OSPF iniciado</td><td>No se han recibido Hello packets. Es el estado inicial antes de cualquier comunicación.</td><td>Normal al inicio. Si persiste: interfaz down, OSPF no activo en la interfaz, o el vecino no tiene OSPF.</td></tr>
+        <tr><td><strong>ATTEMPT</strong></td><td>Solo en redes NBMA</td><td>El router envía Hello unicast hacia vecinos NBMA configurados manualmente. No se usa en Ethernet ni Serial P2P.</td><td>Solo relevante en Frame Relay o ATM legacy.</td></tr>
+        <tr><td><strong>INIT</strong></td><td>Hello recibido del vecino</td><td>Se recibió un Hello del vecino, pero nuestro Router ID NO aparece en la lista de vecinos de ese Hello. Comunicación unidireccional detectada.</td><td>Sí. Indica capa 2 funciona pero hay asimetría. Causas: ACL bloqueando en un solo sentido, interfaz en distinto segmento.</td></tr>
+        <tr><td><strong>2-WAY</strong></td><td>Nuestro RID en el Hello del vecino</td><td>Comunicación bidireccional confirmada. Aquí se produce la <strong>elección de DR/BDR</strong> en redes broadcast. En P2P se salta directo a ExStart.</td><td>Si un DROther ve a otro DROther en 2-WAY, es normal. Si el proceso se estanca entre dos routers que deberían ser FULL, hay problema.</td></tr>
+        <tr><td><strong>EXSTART</strong></td><td>Decisión post 2-WAY</td><td>Se negocia el rol Master/Slave entre los dos routers. El router con el <strong>mayor Router ID se convierte en Master</strong>. El Master establece el número de secuencia inicial de los DBD packets.</td><td>Sí. Si se queda aquí indefinidamente: MTU mismatch entre las interfaces (causa muy frecuente).</td></tr>
+        <tr><td><strong>EXCHANGE</strong></td><td>Acuerdo Master/Slave</td><td>Los routers se intercambian paquetes DBD (Database Description). Son resúmenes de la LSDB: "yo tengo estos LSAs con estas secuencias". El vecino identifica qué LSAs le faltan.</td><td>Sí. Puede indicar inestabilidad de la adyacencia o problemas de MTU no detectados en ExStart.</td></tr>
+        <tr><td><strong>LOADING</strong></td><td>Fin del Exchange</td><td>El router envía LSR (Link-State Requests) para pedir los LSAs que le faltan. El vecino responde con LSU (Link-State Updates). El receptor confirma con LSAck.</td><td>Si es transitorio, es normal. Si persiste: LSA corrupto, pérdida de paquetes, o problema de confiabilidad del enlace.</td></tr>
+        <tr><td><strong>FULL</strong></td><td>LSDBs sincronizadas</td><td>✅ Las bases de datos LSDB son idénticas. El algoritmo SPF puede ejecutarse. Las rutas se instalan en la RIB. La adyacencia está completamente establecida.</td><td>N/A — este es el estado deseado.</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+  <div class="section">
+    <h2 class="section-title">🧮 El Algoritmo SPF de Dijkstra — Cómo OSPF elige la mejor ruta</h2>
+    <div class="scenario-box">
+      <h4>📌 El Proceso SPF Paso a Paso</h4>
+      <ol style="padding-left:1.5rem;line-height:2.4">
+        <li><strong>Punto de partida</strong>: el propio router es la raíz del árbol SPF. Costo hacia sí mismo = 0.</li>
+        <li><strong>Poblar el árbol</strong>: OSPF examina la LSDB y añade todos los vecinos directos al árbol con su costo de enlace correspondiente.</li>
+        <li><strong>Selección del nodo de menor costo</strong>: de todos los nodos pendientes, se selecciona el de menor costo acumulado desde la raíz.</li>
+        <li><strong>Expansión</strong>: se examinan los vecinos del nodo seleccionado. Si el costo acumulado hasta un vecino a través de este nodo es menor que el conocido actualmente, se actualiza.</li>
+        <li><strong>Repetición</strong>: se repite hasta que todos los nodos de la red estén en el árbol SPF.</li>
+        <li><strong>Resultado</strong>: el árbol SPF define la ruta de menor costo hacia cada red. Estas rutas se instalan en la tabla de routing como entradas tipo "O".</li>
+      </ol>
+    </div>
+    <div class="concept-box">
+      <h4>📌 Costo OSPF — La Métrica que Importa</h4>
+      <p>El costo OSPF se calcula como: <strong>Costo = 100,000,000 / Bandwidth(bps)</strong></p>
+      <p>El costo es <strong>acumulativo</strong> a lo largo del camino — se suman los costos de todos los enlaces hacia el destino.</p>
+      <div class="osi-table-wrap"><table class="osi-table">
+        <thead><tr><th>Interfaz</th><th>BW</th><th>Costo (ref=100M)</th><th>Costo (ref=1G)</th><th>Costo (ref=10G)</th></tr></thead>
+        <tbody>
+          <tr><td>Serial T1</td><td>1.544 Mbps</td><td><strong>64</strong></td><td>647</td><td>6476</td></tr>
+          <tr><td>Ethernet 10M</td><td>10 Mbps</td><td><strong>10</strong></td><td>100</td><td>1000</td></tr>
+          <tr><td>FastEthernet</td><td>100 Mbps</td><td><strong>1</strong></td><td>10</td><td>100</td></tr>
+          <tr><td>GigabitEthernet</td><td>1000 Mbps</td><td><strong>1 ← problema</strong></td><td>1</td><td>10</td></tr>
+          <tr><td>10GigabitEthernet</td><td>10,000 Mbps</td><td><strong>1 ← igual que GE</strong></td><td>1</td><td>1</td></tr>
+        </tbody>
+      </table></div>
+      <div class="concept-box warning" style="margin-top:.8rem">
+        <h4>⚠️ El Problema del Reference Bandwidth por Defecto</h4>
+        <p>Con el reference bandwidth por defecto (100 Mbps), FastEthernet, GigabitEthernet y 10GE tienen todos costo 1. OSPF no puede distinguir entre ellos y puede elegir un camino subóptimo. <strong>Solución profesional:</strong> ajustar el reference bandwidth a 10 Gbps o superior en TODOS los routers del dominio OSPF.</p>
+      </div>
+    </div>
+  </div>
+  <div class="section">
+    <h2 class="section-title">📦 Tipos de LSA y la LSDB — El Mapa Compartido</h2>
+    <div class="osi-table-wrap"><table class="osi-table">
+      <thead><tr><th>Tipo LSA</th><th>Nombre</th><th>Generado por</th><th>Alcance</th><th>Contenido clave</th></tr></thead>
+      <tbody>
+        <tr><td><strong>1</strong></td><td>Router LSA</td><td>Todos los routers</td><td>Solo su área</td><td>Describe todos los enlaces del router: IPs, costos, estado, vecinos OSPF.</td></tr>
+        <tr><td><strong>2</strong></td><td>Network LSA</td><td>Designated Router (DR)</td><td>Solo su área</td><td>Describe el segmento broadcast multiaccess: lista de routers conectados al segmento.</td></tr>
+        <tr><td><strong>3</strong></td><td>Summary LSA</td><td>ABR</td><td>Toda la red</td><td>Resumen de rutas entre áreas. No aplica en single-area (solo hay área 0).</td></tr>
+        <tr><td><strong>5</strong></td><td>AS External LSA</td><td>ASBR</td><td>Toda la red</td><td>Rutas externas redistribuidas de otros protocolos. Genera rutas O E1 u O E2.</td></tr>
+      </tbody>
+    </table></div>
+    <div class="scenario-box" style="margin-top:1rem">
+      <h4>📌 En OSPFv2 Single-Area — Solo LSAs Tipo 1 y 2</h4>
+      <p>En una topología single-area (solo Área 0), solo existen LSAs Tipo 1 (Router LSA de cada router) y Tipo 2 (Network LSA del DR en cada segmento Ethernet). Todos los routers del área tienen <strong>exactamente la misma LSDB</strong>. Si dos routers tienen LSDBs diferentes, hay un problema grave de convergencia.</p>
+    </div>
+  </div>
+</div></div>
+<!-- ══════ TAB 2 · TOPOLOGÍA VLSM ══════ -->
+<div class="tab-panel" id="tab-topologia"><div class="content">
+  <div class="section">
+    <h2 class="section-title">🗺️ Diseño de Topología — Red Empresarial con OSPFv2 Single-Area</h2>
+    <div class="scenario-box">
+      <h4>📋 Escenario: Red Corporativa "TECNOCORP" — 4 Routers, 3 Switches, 4 LANs</h4>
+      <p>TecnoCorp necesita interconectar 4 sedes con routing dinámico OSPFv2. Se requiere VLSM, hardening completo, DR/BDR controlado y convergencia rápida. El diseño debe soportar crecimiento futuro.</p>
+    </div>
+  </div>
+  <div class="section">
+    <h2 class="section-title">🔌 Inventario de Dispositivos — Packet Tracer</h2>
+    <div class="topo-grid">
+      <div class="topo-card"><h5>📡 R1 — Router Core</h5><p>Cisco 2911 (o 4321)<br>Gi0/0 → SW-HQ<br>Gi0/1 → Enlace WAN R1-R2<br>Gi0/2 → Enlace WAN R1-R4<br>Lo0 → Router ID</p></div>
+      <div class="topo-card"><h5>📡 R2 — Router Sucursal Norte</h5><p>Cisco 2911<br>Gi0/0 → SW-NORTE<br>Gi0/1 → Enlace WAN R1-R2<br>Gi0/2 → Enlace WAN R2-R3<br>Lo0 → Router ID</p></div>
+      <div class="topo-card"><h5>📡 R3 — Router Sucursal Sur</h5><p>Cisco 2911<br>Gi0/0 → SW-SUR<br>Gi0/1 → Enlace WAN R2-R3<br>Gi0/2 → Enlace WAN R3-R4<br>Lo0 → Router ID</p></div>
+      <div class="topo-card"><h5>📡 R4 — Router Datacenter</h5><p>Cisco 2911<br>Gi0/0 → SW-DC<br>Gi0/1 → Enlace WAN R1-R4<br>Gi0/2 → Enlace WAN R3-R4<br>Lo0 → Router ID</p></div>
+      <div class="topo-card"><h5>🔀 SW-HQ / SW-NORTE / SW-SUR / SW-DC</h5><p>Cisco 2960 (4 switches)<br>Puertos de acceso para PCs<br>Puerto troncal hacia router<br>VLAN default para este lab</p></div>
+      <div class="topo-card"><h5>💻 PCs — Clientes finales</h5><p>PC-HQ-1, PC-HQ-2<br>PC-NORTE-1, PC-NORTE-2<br>PC-SUR-1, PC-SUR-2<br>PC-DC-1, PC-DC-2</p></div>
+    </div>
+  </div>
+  <div class="section">
+    <h2 class="section-title">📐 Esquema de Direccionamiento VLSM — Red base: 10.10.0.0/16</h2>
+    <div class="osi-table-wrap"><table class="osi-table">
+      <thead><tr><th>Segmento</th><th>Dispositivo</th><th>Hosts req.</th><th>Red VLSM</th><th>Máscara</th><th>Gateway (int. router)</th><th>Broadcast</th><th>Rango hosts</th></tr></thead>
+      <tbody>
+        <tr><td><strong>LAN HQ</strong></td><td>R1 Gi0/0</td><td>100</td><td>10.10.1.0</td><td>/25 (255.255.255.128)</td><td>10.10.1.1</td><td>10.10.1.127</td><td>.2 – .126</td></tr>
+        <tr><td><strong>LAN Norte</strong></td><td>R2 Gi0/0</td><td>50</td><td>10.10.2.0</td><td>/26 (255.255.255.192)</td><td>10.10.2.1</td><td>10.10.2.63</td><td>.2 – .62</td></tr>
+        <tr><td><strong>LAN Sur</strong></td><td>R3 Gi0/0</td><td>25</td><td>10.10.3.0</td><td>/27 (255.255.255.224)</td><td>10.10.3.1</td><td>10.10.3.31</td><td>.2 – .30</td></tr>
+        <tr><td><strong>LAN Datacenter</strong></td><td>R4 Gi0/0</td><td>14</td><td>10.10.4.0</td><td>/28 (255.255.255.240)</td><td>10.10.4.1</td><td>10.10.4.15</td><td>.2 – .14</td></tr>
+        <tr><td><strong>WAN R1–R2</strong></td><td>R1 Gi0/1 · R2 Gi0/1</td><td>2</td><td>10.10.10.0</td><td>/30 (255.255.255.252)</td><td>10.10.10.1 (R1)</td><td>10.10.10.3</td><td>.1 – .2</td></tr>
+        <tr><td><strong>WAN R2–R3</strong></td><td>R2 Gi0/2 · R3 Gi0/1</td><td>2</td><td>10.10.10.4</td><td>/30 (255.255.255.252)</td><td>10.10.10.5 (R2)</td><td>10.10.10.7</td><td>.5 – .6</td></tr>
+        <tr><td><strong>WAN R3–R4</strong></td><td>R3 Gi0/2 · R4 Gi0/2</td><td>2</td><td>10.10.10.8</td><td>/30 (255.255.255.252)</td><td>10.10.10.9 (R3)</td><td>10.10.10.11</td><td>.9 – .10</td></tr>
+        <tr><td><strong>WAN R1–R4</strong></td><td>R1 Gi0/2 · R4 Gi0/1</td><td>2</td><td>10.10.10.12</td><td>/30 (255.255.255.252)</td><td>10.10.10.13 (R1)</td><td>10.10.10.15</td><td>.13 – .14</td></tr>
+        <tr><td><strong>Loopback R1</strong></td><td>R1 Lo0</td><td>—</td><td>1.1.1.1</td><td>/32</td><td>1.1.1.1</td><td>—</td><td>Router ID OSPF</td></tr>
+        <tr><td><strong>Loopback R2</strong></td><td>R2 Lo0</td><td>—</td><td>2.2.2.2</td><td>/32</td><td>2.2.2.2</td><td>—</td><td>Router ID OSPF</td></tr>
+        <tr><td><strong>Loopback R3</strong></td><td>R3 Lo0</td><td>—</td><td>3.3.3.3</td><td>/32</td><td>3.3.3.3</td><td>—</td><td>Router ID OSPF</td></tr>
+        <tr><td><strong>Loopback R4</strong></td><td>R4 Lo0</td><td>—</td><td>4.4.4.4</td><td>/32</td><td>4.4.4.4</td><td>—</td><td>Router ID OSPF</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+  <div class="section">
+    <h2 class="section-title">🔗 Tabla de Conectividad Física — Cables en Packet Tracer</h2>
+    <div class="osi-table-wrap"><table class="osi-table">
+      <thead><tr><th>Origen</th><th>Puerto</th><th>Destino</th><th>Puerto</th><th>Tipo cable</th><th>Propósito</th></tr></thead>
+      <tbody>
+        <tr><td>R1</td><td>Gi0/0</td><td>SW-HQ</td><td>Fa0/24</td><td>Directo (cobre)</td><td>LAN Sede Central</td></tr>
+        <tr><td>R2</td><td>Gi0/0</td><td>SW-NORTE</td><td>Fa0/24</td><td>Directo (cobre)</td><td>LAN Norte</td></tr>
+        <tr><td>R3</td><td>Gi0/0</td><td>SW-SUR</td><td>Fa0/24</td><td>Directo (cobre)</td><td>LAN Sur</td></tr>
+        <tr><td>R4</td><td>Gi0/0</td><td>SW-DC</td><td>Fa0/24</td><td>Directo (cobre)</td><td>LAN Datacenter</td></tr>
+        <tr><td>R1</td><td>Gi0/1</td><td>R2</td><td>Gi0/1</td><td>Cruzado (cobre) o DCE/DTE</td><td>WAN R1–R2</td></tr>
+        <tr><td>R2</td><td>Gi0/2</td><td>R3</td><td>Gi0/1</td><td>Cruzado (cobre)</td><td>WAN R2–R3</td></tr>
+        <tr><td>R3</td><td>Gi0/2</td><td>R4</td><td>Gi0/2</td><td>Cruzado (cobre)</td><td>WAN R3–R4</td></tr>
+        <tr><td>R1</td><td>Gi0/2</td><td>R4</td><td>Gi0/1</td><td>Cruzado (cobre)</td><td>WAN R1–R4 (redundancia)</td></tr>
+        <tr><td>SW-HQ</td><td>Fa0/1–22</td><td>PC-HQ-x</td><td>Fa0</td><td>Directo (cobre)</td><td>Hosts LAN HQ</td></tr>
+      </tbody>
+    </table></div>
+    <div class="concept-box" style="margin-top:1rem">
+      <h4>📌 Topología Lógica — Diseño en Malla Parcial</h4>
+      <p>La topología forma un <strong>anillo con diagonal</strong>: R1-R2-R3-R4 en anillo, más el enlace R1-R4 adicional. Esto proporciona <strong>redundancia</strong>: si cae el enlace R1-R2, el tráfico puede fluir por R1-R4-R3-R2. OSPFv2 detecta la caída y recalcula el árbol SPF en segundos.</p>
+      <pre style="font-family:'Share Tech Mono',monospace;font-size:.8rem;background:rgba(0,212,170,.04);padding:.8rem;border-radius:6px;line-height:2;">
+    [LAN-HQ]          [LAN-Norte]
+       |                  |
+      R1 ←—10.10.10.0/30—R2
+      |  \               |
+  10.10.10.12/30    10.10.10.4/30
+      |      \          |
+      |       \        R3——[LAN-Sur]
+      |        \       |
+   10.10.10.8/30 \  10.10.10.8/30
+      |             \ |
+      R4 ←————————— R3·R4
+      |
+   [LAN-DC]
+      </pre>
+    </div>
+  </div>
+</div></div>
+<!-- ══════ TAB 3 · HARDENING & BASE ══════ -->
+<div class="tab-panel" id="tab-hardening"><div class="content">
+  <div class="section">
+    <h2 class="section-title">🔒 Hardening Empresarial — Configuración Base Segura</h2>
+    <p>Antes de configurar OSPF, cada router debe tener una <strong>configuración base segura</strong>. En producción, un router sin hardening es una vulnerabilidad crítica. Estos pasos son la primera línea de defensa y una buena práctica que el CCNA evalúa.</p>
+    <div class="config-phase">
+      <div class="config-phase-title"><span class="step-number">1</span> R1 — Configuración Base Completa con Hardening</div>
+      <div class="cli-block" data-label="R1 — Hardening Completo"><pre><code><span class="cmt">! ══════════════════════════════════════════
+! R1 — CONFIGURACIÓN BASE CON HARDENING
+! TecnoCorp — Router Sede Central
+! ══════════════════════════════════════════</span>
+
+<span class="cmt">! ─── IDENTIDAD Y SEGURIDAD GLOBAL ────────────────────</span>
+<span class="cmd">Router(config)# hostname R1-CENTRAL</span>
+<span class="cmd">R1-CENTRAL(config)# banner motd ^</span>
+<span class="cmd">**********************************************</span>
+<span class="cmd">*   ACCESO RESTRINGIDO — TECNOCORP S.A.      *</span>
+<span class="cmd">*   Solo personal autorizado. Actividad     *</span>
+<span class="cmd">*   monitoreada y registrada.               *</span>
+<span class="cmd">**********************************************</span>
+<span class="cmd">^</span>
+<span class="cmt">! El banner MOTD se muestra ANTES del login — disuade acceso no autorizado</span>
+
+<span class="cmt">! ─── PROTECCIÓN DE CONTRASEÑAS ──────────────────────</span>
+<span class="cmd">R1-CENTRAL(config)# enable algorithm-type sha256 secret Admin@TecnoCorp2024!</span>
+<span class="cmt">! SHA256 es más seguro que MD5 (enable secret estándar)</span>
+<span class="cmt">! En IOS 15.3+ se recomienda algorithm-type sha256 o scrypt</span>
+
+<span class="cmd">R1-CENTRAL(config)# username admin privilege 15 algorithm-type sha256 secret Cisco@Admin2024!</span>
+<span class="cmt">! Usuario local con privilege 15 (acceso completo) para SSH</span>
+<span class="cmt">! Sin este usuario, SSH no puede autenticar localmente</span>
+
+<span class="cmd">R1-CENTRAL(config)# service password-encryption</span>
+<span class="cmt">! Cifra contraseñas tipo 7 en la running-config (protección básica, no criptográfica)</span>
+<span class="cmt">! Las contraseñas SHA256 ya están protegidas — este comando protege otras</span>
+
+<span class="cmd">R1-CENTRAL(config)# no enable password</span>
+<span class="cmt">! Eliminar enable password si existe — usar solo enable secret</span>
+
+<span class="cmt">! ─── PROTECCIÓN DE LÍNEAS DE CONSOLA ────────────────</span>
+<span class="cmd">R1-CENTRAL(config)# line console 0</span>
+<span class="cmd">R1-CENTRAL(config-line)# login local</span>
+<span class="cmt">! Autenticación local con username/password</span>
+<span class="cmd">R1-CENTRAL(config-line)# exec-timeout 5 0</span>
+<span class="cmt">! Desconectar consola inactiva a los 5 minutos</span>
+<span class="cmd">R1-CENTRAL(config-line)# logging synchronous</span>
+<span class="cmt">! Evita que los mensajes de log interrumpan la escritura de comandos</span>
+
+<span class="cmt">! ─── CONFIGURACIÓN SSH SEGURA ───────────────────────</span>
+<span class="cmd">R1-CENTRAL(config)# ip domain-name tecnocorp.local</span>
+<span class="cmt">! Dominio requerido para generar claves RSA</span>
+<span class="cmd">R1-CENTRAL(config)# crypto key generate rsa modulus 2048</span>
+<span class="cmt">! 2048 bits = estándar de seguridad actual (mínimo recomendado)</span>
+<span class="cmt">! Claves &lt; 1024 bits son vulnerables — nunca usar 512 ni 1024</span>
+<span class="cmd">R1-CENTRAL(config)# ip ssh version 2</span>
+<span class="cmt">! SSHv2 es obligatorio — SSHv1 tiene vulnerabilidades conocidas</span>
+<span class="cmd">R1-CENTRAL(config)# ip ssh authentication-retries 3</span>
+<span class="cmt">! Máximo 3 intentos antes de bloquear la sesión SSH</span>
+<span class="cmd">R1-CENTRAL(config)# ip ssh time-out 60</span>
+<span class="cmt">! Timeout de 60 segundos para completar el login SSH</span>
+
+<span class="cmt">! ─── LÍNEAS VTY — SOLO SSH ──────────────────────────</span>
+<span class="cmd">R1-CENTRAL(config)# line vty 0 4</span>
+<span class="cmd">R1-CENTRAL(config-line)# login local</span>
+<span class="cmd">R1-CENTRAL(config-line)# transport input ssh</span>
+<span class="cmt">! Solo SSHv2 permitido — Telnet BLOQUEADO (texto plano)</span>
+<span class="cmd">R1-CENTRAL(config-line)# exec-timeout 10 0</span>
+<span class="cmt">! Sesión VTY inactiva: desconectar a los 10 minutos</span>
+
+<span class="cmt">! ─── PROTECCIÓN ADICIONAL ───────────────────────────</span>
+<span class="cmd">R1-CENTRAL(config)# no ip http server</span>
+<span class="cmd">R1-CENTRAL(config)# no ip http secure-server</span>
+<span class="cmt">! Deshabilitar servidor HTTP/HTTPS embebido (no necesario para routing)</span>
+<span class="cmd">R1-CENTRAL(config)# no cdp run</span>
+<span class="cmt">! Deshabilitar CDP globalmente si no se usa (evita revelar información del dispositivo)</span>
+<span class="cmt">! Alternativa: deshabilitarlo solo en interfaces hacia el exterior</span>
+<span class="cmd">R1-CENTRAL(config)# no ip domain-lookup</span>
+<span class="cmt">! Evita que el router intente resolver DNS comandos mal escritos (tarda en fallar)</span></code></pre></div>
+    </div>
+    <div class="config-phase">
+      <div class="config-phase-title"><span class="step-number">2</span> Configuración de Interfaces — R1</div>
+      <div class="cli-block" data-label="R1 — Interfaces con descripción y seguridad"><pre><code><span class="cmt">! ─── LOOPBACK0 — Router ID Estable ──────────────────</span>
+<span class="cmd">R1-CENTRAL(config)# interface Loopback0</span>
+<span class="cmd">R1-CENTRAL(config-if)# description ROUTER-ID-OSPF-R1</span>
+<span class="cmd">R1-CENTRAL(config-if)# ip address 1.1.1.1 255.255.255.255</span>
+<span class="cmt">! /32 en Loopback: no desperdicia IPs, siempre up/up, RID estable</span>
+
+<span class="cmt">! ─── LAN HQ — Interfaz hacia usuarios ───────────────</span>
+<span class="cmd">R1-CENTRAL(config)# interface GigabitEthernet0/0</span>
+<span class="cmd">R1-CENTRAL(config-if)# description LAN-HQ-SEDE-CENTRAL</span>
+<span class="cmd">R1-CENTRAL(config-if)# ip address 10.10.1.1 255.255.255.128</span>
+<span class="cmt">! /25 para LAN HQ — 126 hosts usables (100 requeridos + margen)</span>
+<span class="cmd">R1-CENTRAL(config-if)# no shutdown</span>
+
+<span class="cmt">! ─── WAN R1-R2 ────────────────────────────────────</span>
+<span class="cmd">R1-CENTRAL(config)# interface GigabitEthernet0/1</span>
+<span class="cmd">R1-CENTRAL(config-if)# description WAN-ENLACE-R1-R2-NORTE</span>
+<span class="cmd">R1-CENTRAL(config-if)# ip address 10.10.10.1 255.255.255.252</span>
+<span class="cmt">! /30 para enlace P2P — exactamente 2 hosts usables</span>
+<span class="cmd">R1-CENTRAL(config-if)# no shutdown</span>
+
+<span class="cmt">! ─── WAN R1-R4 ─────────────────────────────────────</span>
+<span class="cmd">R1-CENTRAL(config)# interface GigabitEthernet0/2</span>
+<span class="cmd">R1-CENTRAL(config-if)# description WAN-ENLACE-R1-R4-DATACENTER</span>
+<span class="cmd">R1-CENTRAL(config-if)# ip address 10.10.10.13 255.255.255.252</span>
+<span class="cmd">R1-CENTRAL(config-if)# no shutdown</span>
+
+<span class="cmt">! ─── Guardar configuración ──────────────────────────</span>
+<span class="cmd">R1-CENTRAL(config)# end</span>
+<span class="cmd">R1-CENTRAL# copy running-config startup-config</span>
+<span class="out">Building configuration... [OK]</span>
+
+<span class="cmt">! ─── Repetir para R2, R3, R4 con sus IPs respectivas ─</span>
+<span class="cmt">! R2: Lo0=2.2.2.2/32, Gi0/0=10.10.2.1/26, Gi0/1=10.10.10.2/30, Gi0/2=10.10.10.5/30</span>
+<span class="cmt">! R3: Lo0=3.3.3.3/32, Gi0/0=10.10.3.1/27, Gi0/1=10.10.10.6/30, Gi0/2=10.10.10.9/30</span>
+<span class="cmt">! R4: Lo0=4.4.4.4/32, Gi0/0=10.10.4.1/28, Gi0/1=10.10.10.14/30, Gi0/2=10.10.10.10/30</span></code></pre></div>
+    </div>
+  </div>
+</div></div>
+<!-- ══════ TAB 4 · CONFIGURACIÓN OSPF ══════ -->
+<div class="tab-panel" id="tab-config"><div class="content">
+  <div class="section">
+    <h2 class="section-title">⚙️ Configuración OSPFv2 — Paso a Paso con Justificación</h2>
+    <div class="config-phase">
+      <div class="config-phase-title"><span class="step-number">1</span> R1 — Proceso OSPF Completo con Mejores Prácticas</div>
+      <div class="cli-block" data-label="R1 — OSPFv2 Single-Area Configuración Completa"><pre><code><span class="cmt">! ══════════════════════════════════════════
+! FASE OSPF — R1-CENTRAL
+! ══════════════════════════════════════════</span>
+
+<span class="cmd">R1-CENTRAL(config)# router ospf 1</span>
+<span class="cmt">! Process ID = 1 (local al router — NO necesita coincidir con vecinos)</span>
+<span class="cmt">! Rango válido: 1-65535. Usar el mismo en todos para coherencia administrativa.</span>
+
+<span class="cmd">R1-CENTRAL(config-router)# router-id 1.1.1.1</span>
+<span class="cmt">! *** CRÍTICO: Configurar Router ID MANUALMENTE siempre ***</span>
+<span class="cmt">! Si no se configura: IOS usa la IP más alta de Loopback o interfaz activa</span>
+<span class="cmt">! Un cambio inesperado de RID reinicia TODAS las adyacencias OSPF</span>
+<span class="cmt">! Convención: RID = IP de Loopback = 1.1.1.1 para R1</span>
+
+<span class="cmd">R1-CENTRAL(config-router)# auto-cost reference-bandwidth 10000</span>
+<span class="cmt">! Ajustar el bandwidth de referencia a 10 Gbps</span>
+<span class="cmt">! *** OBLIGATORIO en todos los routers del área ***</span>
+<span class="cmt">! Con el default (100 Mbps): GigabitEthernet y FastEthernet tienen costo 1</span>
+<span class="cmt">! Con 10000 Mbps: GigabitEthernet=10, FastEthernet=100 (diferencia real)</span>
+<span class="cmt">! Si no se configura igual en todos, el SPF calcula rutas incorrectas</span>
+
+<span class="cmt">! ─── Anunciar redes en OSPFv2 ───────────────────────</span>
+<span class="cmd">R1-CENTRAL(config-router)# network 1.1.1.1 0.0.0.0 area 0</span>
+<span class="cmt">! Anunciar la Loopback0 en OSPF — RID y ruta de gestión</span>
+<span class="cmt">! Wildcard 0.0.0.0 = solo esa IP exacta</span>
+
+<span class="cmd">R1-CENTRAL(config-router)# network 10.10.1.0 0.0.0.127 area 0</span>
+<span class="cmt">! LAN HQ /25: wildcard = 255.255.255.255 - 255.255.255.128 = 0.0.0.127</span>
+
+<span class="cmd">R1-CENTRAL(config-router)# network 10.10.10.0 0.0.0.3 area 0</span>
+<span class="cmt">! WAN R1-R2 /30: wildcard = 0.0.0.3</span>
+
+<span class="cmd">R1-CENTRAL(config-router)# network 10.10.10.12 0.0.0.3 area 0</span>
+<span class="cmt">! WAN R1-R4 /30: inicia en .12</span>
+
+<span class="cmt">! ─── Passive-Interface — Mejores Prácticas ───────────</span>
+<span class="cmd">R1-CENTRAL(config-router)# passive-interface default</span>
+<span class="cmt">! Poner TODAS las interfaces en modo pasivo primero</span>
+<span class="cmt">! Passive-interface: la red se anuncia en OSPF pero NO se envían Hellos</span>
+<span class="cmt">! Esto previene que el router intente formar adyacencias en la LAN de usuarios</span>
+
+<span class="cmd">R1-CENTRAL(config-router)# no passive-interface GigabitEthernet0/1</span>
+<span class="cmt">! Activar Hellos SOLO en la interfaz WAN hacia R2</span>
+<span class="cmd">R1-CENTRAL(config-router)# no passive-interface GigabitEthernet0/2</span>
+<span class="cmt">! Activar Hellos en la interfaz WAN hacia R4</span>
+<span class="cmt">! Gi0/0 (LAN HQ) permanece pasiva — no hay routers OSPF en la LAN de usuarios</span>
+
+<span class="cmt">! ─── Ajuste de Timers para Convergencia Rápida ──────</span>
+<span class="cmd">R1-CENTRAL(config-router)# timers throttle spf 50 100 5000</span>
+<span class="cmt">! Ajuste agresivo del timer SPF para convergencia rápida:</span>
+<span class="cmt">! 50 ms  = delay inicial antes de ejecutar SPF</span>
+<span class="cmt">! 100 ms = delay mínimo entre ejecuciones SPF consecutivas</span>
+<span class="cmt">! 5000 ms = delay máximo (backoff exponencial)</span>
+
+<span class="cmt">! ─── Prioridad DR/BDR en Interfaces WAN ──────────────</span>
+<span class="cmt">! En interfaces P2P el DR/BDR no aplica, pero en Ethernet sí:</span>
+<span class="cmd">R1-CENTRAL(config-router)# end</span>
+<span class="cmd">R1-CENTRAL(config)# interface GigabitEthernet0/1</span>
+<span class="cmd">R1-CENTRAL(config-if)# ip ospf priority 255</span>
+<span class="cmt">! Máxima prioridad → R1 siempre será DR en este segmento</span>
+<span class="cmt">! Prioridad 255 = candidato preferido siempre</span>
+<span class="cmt">! Prioridad 0 = nunca participa en la elección DR/BDR</span>
+
+<span class="cmd">R1-CENTRAL(config-if)# ip ospf hello-interval 5</span>
+<span class="cmt">! Hello cada 5 segundos (default Ethernet = 10s)</span>
+<span class="cmt">! *** Ambos extremos del enlace deben tener el mismo timer ***</span>
+<span class="cmd">R1-CENTRAL(config-if)# ip ospf dead-interval 20</span>
+<span class="cmt">! Dead interval = 4x Hello (20s). Si no hay Hello en 20s → vecino caído</span>
+<span class="cmt">! *** Debe coincidir exactamente con el vecino ***</span>
+
+<span class="cmt">! ─── Autenticación MD5 en los enlaces OSPF ───────────</span>
+<span class="cmd">R1-CENTRAL(config-if)# ip ospf authentication message-digest</span>
+<span class="cmd">R1-CENTRAL(config-if)# ip ospf message-digest-key 1 md5 OspfKey@TC2024</span>
+<span class="cmt">! MD5 autentica los paquetes OSPF — previene routers no autorizados</span>
+<span class="cmt">! Key ID (1) y contraseña DEBEN coincidir en ambos extremos del enlace</span>
+<span class="cmt">! Sin autenticación: cualquier router OSPF puede inyectar rutas falsas</span>
+
+<span class="cmd">R1-CENTRAL(config)# interface GigabitEthernet0/2</span>
+<span class="cmd">R1-CENTRAL(config-if)# ip ospf priority 255</span>
+<span class="cmd">R1-CENTRAL(config-if)# ip ospf hello-interval 5</span>
+<span class="cmd">R1-CENTRAL(config-if)# ip ospf dead-interval 20</span>
+<span class="cmd">R1-CENTRAL(config-if)# ip ospf authentication message-digest</span>
+<span class="cmd">R1-CENTRAL(config-if)# ip ospf message-digest-key 1 md5 OspfKey@TC2024</span></code></pre></div>
+    </div>
+    <div class="config-phase">
+      <div class="config-phase-title"><span class="step-number">2</span> R2, R3, R4 — Configuración OSPF (Resumen)</div>
+      <div class="cli-block" data-label="R2 R3 R4 — OSPFv2 Configuración"><pre><code><span class="cmt">! ─── R2-NORTE ────────────────────────────────────────</span>
+<span class="cmd">R2-NORTE(config)# router ospf 1</span>
+<span class="cmd">R2-NORTE(config-router)# router-id 2.2.2.2</span>
+<span class="cmd">R2-NORTE(config-router)# auto-cost reference-bandwidth 10000</span>
+<span class="cmd">R2-NORTE(config-router)# network 2.2.2.2 0.0.0.0 area 0</span>
+<span class="cmd">R2-NORTE(config-router)# network 10.10.2.0 0.0.0.63 area 0</span>
+<span class="cmt">! /26: wildcard = 0.0.0.63</span>
+<span class="cmd">R2-NORTE(config-router)# network 10.10.10.0 0.0.0.3 area 0</span>
+<span class="cmd">R2-NORTE(config-router)# network 10.10.10.4 0.0.0.3 area 0</span>
+<span class="cmd">R2-NORTE(config-router)# passive-interface default</span>
+<span class="cmd">R2-NORTE(config-router)# no passive-interface GigabitEthernet0/1</span>
+<span class="cmd">R2-NORTE(config-router)# no passive-interface GigabitEthernet0/2</span>
+
+<span class="cmt">! Autenticación en interfaces activas</span>
+<span class="cmd">R2-NORTE(config)# interface GigabitEthernet0/1</span>
+<span class="cmd">R2-NORTE(config-if)# ip ospf hello-interval 5</span>
+<span class="cmd">R2-NORTE(config-if)# ip ospf dead-interval 20</span>
+<span class="cmd">R2-NORTE(config-if)# ip ospf authentication message-digest</span>
+<span class="cmd">R2-NORTE(config-if)# ip ospf message-digest-key 1 md5 OspfKey@TC2024</span>
+<span class="cmt">! Repetir para Gi0/2</span>
+
+<span class="cmt">! ─── R3-SUR ──────────────────────────────────────────</span>
+<span class="cmd">R3-SUR(config)# router ospf 1</span>
+<span class="cmd">R3-SUR(config-router)# router-id 3.3.3.3</span>
+<span class="cmd">R3-SUR(config-router)# auto-cost reference-bandwidth 10000</span>
+<span class="cmd">R3-SUR(config-router)# network 3.3.3.3 0.0.0.0 area 0</span>
+<span class="cmd">R3-SUR(config-router)# network 10.10.3.0 0.0.0.31 area 0</span>
+<span class="cmt">! /27: wildcard = 0.0.0.31</span>
+<span class="cmd">R3-SUR(config-router)# network 10.10.10.4 0.0.0.3 area 0</span>
+<span class="cmd">R3-SUR(config-router)# network 10.10.10.8 0.0.0.3 area 0</span>
+<span class="cmd">R3-SUR(config-router)# passive-interface default</span>
+<span class="cmd">R3-SUR(config-router)# no passive-interface GigabitEthernet0/1</span>
+<span class="cmd">R3-SUR(config-router)# no passive-interface GigabitEthernet0/2</span>
+
+<span class="cmt">! ─── R4-DATACENTER ───────────────────────────────────</span>
+<span class="cmd">R4-DC(config)# router ospf 1</span>
+<span class="cmd">R4-DC(config-router)# router-id 4.4.4.4</span>
+<span class="cmd">R4-DC(config-router)# auto-cost reference-bandwidth 10000</span>
+<span class="cmd">R4-DC(config-router)# network 4.4.4.4 0.0.0.0 area 0</span>
+<span class="cmd">R4-DC(config-router)# network 10.10.4.0 0.0.0.15 area 0</span>
+<span class="cmt">! /28: wildcard = 0.0.0.15</span>
+<span class="cmd">R4-DC(config-router)# network 10.10.10.12 0.0.0.3 area 0</span>
+<span class="cmd">R4-DC(config-router)# network 10.10.10.8 0.0.0.3 area 0</span>
+<span class="cmd">R4-DC(config-router)# passive-interface default</span>
+<span class="cmd">R4-DC(config-router)# no passive-interface GigabitEthernet0/1</span>
+<span class="cmd">R4-DC(config-router)# no passive-interface GigabitEthernet0/2</span></code></pre></div>
+    </div>
+  </div>
+</div></div>
+<!-- ══════ TAB 5 · VERIFICACIÓN ══════ -->
+<div class="tab-panel" id="tab-verifica"><div class="content">
+  <div class="section">
+    <h2 class="section-title">🔍 Verificación Sistemática — De la Adyacencia a la Conectividad</h2>
+    <p>Un ingeniero de redes profesional no asume que la configuración funcionó — <strong>verifica metódicamente</strong> cada capa, desde el estado de las adyacencias OSPF hasta la conectividad extremo a extremo entre los hosts.</p>
+    <div class="config-phase">
+      <div class="config-phase-title"><span class="step-number">1</span> Verificar Adyacencias OSPF</div>
+      <div class="cli-block" data-label="Verificación — Adyacencias y Router ID"><pre><code><span class="cmt">! ─── Verificación fundamental: estado de adyacencias ─</span>
+<span class="cmd">R1-CENTRAL# show ip ospf neighbor</span>
+<span class="out">Neighbor ID     Pri   State           Dead Time   Address         Interface
+2.2.2.2           1   FULL/DR         00:00:18    10.10.10.2      Gi0/1
+4.4.4.4           1   FULL/DR         00:00:15    10.10.10.14     Gi0/2</span>
+<span class="cmt">! Estado FULL = adyacencia completamente establecida ✅</span>
+<span class="cmt">! "FULL/DR" = el vecino es el DR en ese segmento</span>
+<span class="cmt">! "FULL/BDR" = el vecino es el BDR</span>
+<span class="cmt">! "FULL/-" = enlace punto a punto (sin DR/BDR)</span>
+<span class="cmt">! Dead Time decrementando = los Hellos llegan correctamente</span>
+
+<span class="cmt">! Ver detalles completos de una adyacencia específica</span>
+<span class="cmd">R1-CENTRAL# show ip ospf neighbor detail</span>
+<span class="out"> Neighbor 2.2.2.2, interface address 10.10.10.2
+    In the area 0 via interface GigabitEthernet0/1
+    Neighbor priority is 1, State is FULL, 6 state changes
+    DR is 10.10.10.2 BDR is 10.10.10.1
+    Options is 0x12 in Hello (E-bit, L-bit)
+    LLS Options is 0x1 (LR)
+    Dead timer due in 00:00:18
+    Neighbor is up for 00:02:34
+    Index 1/1/1, retransmission queue length 0, number of retransmission 0
+    First 0x0(0)/0x0(0)/0x0(0) Next 0x0(0)/0x0(0)/0x0(0)
+    Last retransmission scan length is 0, maximum is 0
+    Last retransmission scan time is 0 msec, maximum is 0 msec</span>
+<span class="cmt">! "State is FULL" = adyacencia completa</span>
+<span class="cmt">! "6 state changes" = cuántas veces cambió el estado (alto = inestabilidad)</span>
+<span class="cmt">! "Neighbor is up for 00:02:34" = tiempo de la adyacencia</span></code></pre></div>
+    </div>
+    <div class="config-phase">
+      <div class="config-phase-title"><span class="step-number">2</span> Verificar la LSDB — El Mapa de la Red</div>
+      <div class="cli-block" data-label="Verificación — LSDB"><pre><code><span class="cmt">! Ver la LSDB completa del área 0</span>
+<span class="cmd">R1-CENTRAL# show ip ospf database</span>
+<span class="out">            OSPF Router with ID (1.1.1.1) (Process ID 1)
+
+                Router Link States (Area 0)
+Link ID         ADV Router      Age  Seq#       Checksum Link count
+1.1.1.1         1.1.1.1         45   0x80000006  0x00A1B2  4
+2.2.2.2         2.2.2.2         43   0x80000005  0x00B3C4  4
+3.3.3.3         3.3.3.3         41   0x80000004  0x00C5D6  4
+4.4.4.4         4.4.4.4         39   0x80000003  0x00D7E8  4
+
+                Net Link States (Area 0)
+Link ID         ADV Router      Age  Seq#       Checksum
+10.10.10.1      1.1.1.1         45   0x80000002  0x00E9F0
+10.10.10.5      2.2.2.2         43   0x80000002  0x00F102</span>
+<span class="cmt">! Router Link States (Tipo 1): un LSA por router</span>
+<span class="cmt">! Net Link States (Tipo 2): uno por segmento con DR</span>
+<span class="cmt">! Todos los routers deben tener la misma LSDB (mismos LSAs)</span>
+<span class="cmt">! "Age" creciente = normal. Si llega a 3600s → LSA se elimina</span>
+<span class="cmt">! "Seq#" creciente = el LSA fue actualizado (cambio de topología)</span>
+
+<span class="cmt">! Ver un Router LSA específico (el de R1)</span>
+<span class="cmd">R1-CENTRAL# show ip ospf database router 1.1.1.1</span></code></pre></div>
+    </div>
+    <div class="config-phase">
+      <div class="config-phase-title"><span class="step-number">3</span> Verificar la Tabla de Routing OSPF</div>
+      <div class="cli-block" data-label="Verificación — Tabla de routing"><pre><code><span class="cmt">! Ver solo rutas OSPF</span>
+<span class="cmd">R1-CENTRAL# show ip route ospf</span>
+<span class="out">O    2.2.2.2/32 [110/1010] via 10.10.10.2, 00:03:15, GigabitEthernet0/1
+O    3.3.3.3/32 [110/2010] via 10.10.10.2, 00:03:10, GigabitEthernet0/1
+O    4.4.4.4/32 [110/1010] via 10.10.10.14, 00:02:45, GigabitEthernet0/2
+O    10.10.2.0/26 [110/1010] via 10.10.10.2, 00:03:15, GigabitEthernet0/1
+O    10.10.3.0/27 [110/2010] via 10.10.10.2, 00:03:10, GigabitEthernet0/1
+O    10.10.4.0/28 [110/1010] via 10.10.10.14, 00:02:45, GigabitEthernet0/2
+O    10.10.10.4/30 [110/1010] via 10.10.10.2, 00:03:15, GigabitEthernet0/1
+O    10.10.10.8/30 [110/2010] via 10.10.10.2, 00:03:10, GigabitEthernet0/1</span>
+<span class="cmt">! [110/1010] = [AD=110 / Costo=1010]</span>
+<span class="cmt">! Costo 1010 = 1000 (GigE con ref=10G) + 10 (salto siguiente)</span>
+<span class="cmt">! Rutas hacia R4 van por Gi0/2 (directo) → menor costo</span>
+<span class="cmt">! Rutas hacia R3 van por R2 (2 saltos) → costo mayor</span></code></pre></div>
+    </div>
+    <div class="config-phase">
+      <div class="config-phase-title"><span class="step-number">4</span> Verificar el Proceso OSPF y Convergencia</div>
+      <div class="cli-block" data-label="Verificación — show ip ospf completo"><pre><code><span class="cmd">R1-CENTRAL# show ip ospf</span>
+<span class="out"> Routing Process "ospf 1" with ID 1.1.1.1
+ Start time: 00:00:01.000, Time elapsed: 00:10:23.456
+ Supports only single TOS(TOS0) routes
+ Supports opaque LSA
+ Reference bandwidth unit is 10000 mbps     ← 10G configurado ✅
+ Initial SPF schedule delay 50 msecs        ← Timer agresivo ✅
+ Minimum hold time between two consecutive SPFs 100 msecs
+ Maximum wait time between two consecutive SPFs 5000 msecs
+ SPF algorithm last executed 00:03:15.000 ago
+ SPF algorithm executed 3 times              ← Pocos recálculos = estable
+ Number of areas in this router is 1. 1 normal 0 stub 0 nssa
+ Area BACKBONE(0)
+    Number of interfaces in this area is 4
+    Area has message digest authentication  ← Auth MD5 activa ✅
+    SPF algorithm executed 3 times
+    Number of LSA 8. Checksum Sum 0x0AB1C2
+    Number of opaque link LSA 0</span>
+<span class="cmt">! "Reference bandwidth unit is 10000 mbps" → configurado correctamente</span>
+<span class="cmt">! "Area has message digest authentication" → MD5 activo</span>
+<span class="cmt">! "SPF algorithm executed 3 times" → pocas re-convergencias (red estable)</span>
+
+<span class="cmt">! Verificar el Process ID y el Router ID</span>
+<span class="cmd">R1-CENTRAL# show ip ospf | include Router ID</span>
+<span class="out"> Routing Process "ospf 1" with ID 1.1.1.1</span>
+
+<span class="cmt">! Verificar interfaces activas en OSPF</span>
+<span class="cmd">R1-CENTRAL# show ip ospf interface brief</span>
+<span class="out">Interface    PID   Area    IP Addr/Mask    Cost  State  Nbrs F/C
+Lo0            1     0     1.1.1.1/32         1  LOOP   0/0
+Gi0/0          1     0     10.10.1.1/25      10  DR     0/0
+Gi0/1          1     0     10.10.10.1/30     10  DR     1/1
+Gi0/2          1     0     10.10.10.13/30    10  DR     1/1</span>
+<span class="cmt">! Cost=10 → GigabitEthernet con ref-bw=10000 → correcto</span>
+<span class="cmt">! State DR → R1 es Designated Router (prioridad 255)</span>
+<span class="cmt">! Nbrs F/C = vecinos FULL / vecinos en convergencia</span>
+<span class="cmt">! Gi0/0 tiene 0 vecinos → passive-interface funciona ✅</span></code></pre></div>
+    </div>
+  </div>
+</div></div>
+<!-- ══════ TAB 6 · TROUBLESHOOTING ══════ -->
+<div class="tab-panel" id="tab-trouble"><div class="content">
+  <div class="section">
+    <h2 class="section-title">🚨 Troubleshooting Avanzado — Escenarios Reales</h2>
+    <p>El troubleshooting de OSPF requiere un <strong>método sistemático</strong>. No se puede resolver un problema de OSPF al azar — hay que seguir la jerarquía: conectividad física → adyacencia → LSDB → routing table → conectividad extremo a extremo.</p>
+    <div class="trouble-box">
+      <h4>⚠️ Escenario 1: La Adyacencia Nunca Pasa de INIT — ¿Por Qué?</h4>
+      <p><strong>Síntoma:</strong> <code>show ip ospf neighbor</code> muestra al vecino en estado INIT permanente.</p>
+      <p><strong>Causa:</strong> Comunicación unidireccional — R1 ve los Hellos de R2 pero R2 no ve los de R1 (o viceversa).</p>
+      <div class="cli-block" data-label="Debug OSPF — Diagnóstico estado INIT"><pre><code><span class="cmt">! Paso 1: Verificar que los Hellos llegan</span>
+<span class="cmd">R1-CENTRAL# debug ip ospf hello</span>
+<span class="out">OSPF-1 HELLO Gi0/1: Rcv hello from 2.2.2.2 area 0 10.10.10.2
+OSPF-1 HELLO Gi0/1: Rcv hello from 2.2.2.2 area 0 10.10.10.2</span>
+<span class="cmt">! Si se reciben Hellos pero el estado sigue en INIT:</span>
+<span class="cmt">! R1 NO aparece en la lista de vecinos del Hello de R2</span>
+<span class="cmt">! → R2 no está recibiendo los Hellos de R1</span>
+
+<span class="cmt">! Paso 2: Verificar que R1 SÍ envía Hellos</span>
+<span class="cmd">R1-CENTRAL# debug ip ospf packet</span>
+<span class="out">OSPF-1 PAK  Gi0/1: Send with youngest Key 1</span>
+<span class="cmt">! Hellos se envían → el problema está en que R2 los descarta</span>
+
+<span class="cmt">! Paso 3: Verificar posibles causas</span>
+<span class="cmd">R1-CENTRAL# show ip ospf interface GigabitEthernet0/1</span>
+<span class="cmt">! Buscar: Cryptographic authentication enabled? Key ID? Area?</span>
+<span class="cmt">! Si hay ACL bloqueando en la interfaz de R2 → los Hellos de R1 no llegan</span>
+
+<span class="cmt">! *** SIEMPRE apagar debug después ***</span>
+<span class="cmd">R1-CENTRAL# undebug all</span></code></pre></div>
+      <p><strong>Soluciones posibles:</strong> ACL bloqueando tráfico multicast 224.0.0.5 en un sentido, IPs en subredes diferentes, interfaz de R2 no configurada con OSPF.</p>
+    </div>
+    <div class="trouble-box">
+      <h4>⚠️ Escenario 2: Adyacencia en EXSTART/EXCHANGE — MTU Mismatch</h4>
+      <p><strong>Síntoma:</strong> La adyacencia oscila entre EXSTART y EXCHANGE, nunca llega a FULL.</p>
+      <div class="cli-block" data-label="Diagnóstico MTU Mismatch"><pre><code><span class="cmt">! Síntoma en show ip ospf neighbor</span>
+<span class="cmd">R1-CENTRAL# show ip ospf neighbor</span>
+<span class="out">Neighbor ID  Pri  State      Dead Time  Address      Interface
+2.2.2.2       1   EXSTART/-  00:00:35   10.10.10.2   Gi0/1</span>
+<span class="cmt">! Estado EXSTART = negociación Master/Slave y secuencias</span>
+<span class="cmt">! Si no avanza a EXCHANGE → MTU mismatch es la causa más común</span>
+
+<span class="cmt">! Verificar el MTU de las interfaces en ambos routers</span>
+<span class="cmd">R1-CENTRAL# show interfaces GigabitEthernet0/1 | include MTU</span>
+<span class="out">  MTU 1500 bytes</span>
+<span class="cmd">R2-NORTE# show interfaces GigabitEthernet0/1 | include MTU</span>
+<span class="out">  MTU 1480 bytes   ← MTU diferente → causa del EXSTART</span>
+
+<span class="cmt">! Solución 1: Igualar el MTU</span>
+<span class="cmd">R2-NORTE(config)# interface GigabitEthernet0/1</span>
+<span class="cmd">R2-NORTE(config-if)# mtu 1500</span>
+
+<span class="cmt">! Solución 2 (parche, no recomendado): ignorar el MTU en OSPF</span>
+<span class="cmd">R2-NORTE(config-if)# ip ospf mtu-ignore</span>
+<span class="cmt">! ip ospf mtu-ignore: OSPF ignora el MTU durante el intercambio DBD</span>
+<span class="cmt">! Solo usar si no puedes cambiar el MTU (GRE tunnels, por ejemplo)</span></code></pre></div>
+    </div>
+    <div class="trouble-box">
+      <h4>⚠️ Escenario 3: Adyacencia FULL pero Faltan Rutas — Router ID Duplicado</h4>
+      <p><strong>Síntoma:</strong> Las adyacencias están en FULL pero la tabla de routing de algún router tiene rutas incorrectas o faltan destinos.</p>
+      <div class="cli-block" data-label="Diagnóstico Router ID Duplicado"><pre><code><span class="cmt">! Detectar Router ID duplicado</span>
+<span class="cmd">R1-CENTRAL# show ip ospf</span>
+<span class="out"> Routing Process "ospf 1" with ID 1.1.1.1</span>
+<span class="cmd">R3-SUR# show ip ospf</span>
+<span class="out"> Routing Process "ospf 1" with ID 1.1.1.1   ← DUPLICADO ← PROBLEMA</span>
+
+<span class="cmt">! En el log de R1 aparecerá:</span>
+<span class="out">%OSPF-4-DUP_RTRID: Detected router with duplicate router ID 1.1.1.1</span>
+
+<span class="cmt">! Solución: cambiar el Router ID y reiniciar el proceso</span>
+<span class="cmd">R3-SUR(config)# router ospf 1</span>
+<span class="cmd">R3-SUR(config-router)# router-id 3.3.3.3</span>
+<span class="cmd">R3-SUR(config-router)# end</span>
+<span class="cmd">R3-SUR# clear ip ospf process</span>
+<span class="out">Reset OSPF processes? [no]: yes</span>
+<span class="cmt">! ⚠️ clear ip ospf process reinicia TODAS las adyacencias de ese router</span>
+<span class="cmt">! En producción: coordinar con el equipo antes de ejecutar</span></code></pre></div>
+    </div>
+    <div class="trouble-box">
+      <h4>⚠️ Escenario 4: Timers Hello/Dead No Coinciden</h4>
+      <div class="cli-block" data-label="Diagnóstico Timer Mismatch"><pre><code><span class="cmt">! show ip ospf interface revela los timers configurados</span>
+<span class="cmd">R1-CENTRAL# show ip ospf interface GigabitEthernet0/1</span>
+<span class="out">  Timer intervals configured, Hello 5, Dead 20</span>
+<span class="cmd">R2-NORTE# show ip ospf interface GigabitEthernet0/1</span>
+<span class="out">  Timer intervals configured, Hello 10, Dead 40   ← Diferente</span>
+<span class="cmt">! OSPF no forma adyacencia si Hello o Dead timers difieren</span>
+<span class="cmt">! En el debug: "Dead timer mismatch" en los logs</span>
+
+<span class="cmt">! Solución: igualar timers en ambos extremos</span>
+<span class="cmd">R2-NORTE(config)# interface GigabitEthernet0/1</span>
+<span class="cmd">R2-NORTE(config-if)# ip ospf hello-interval 5</span>
+<span class="cmd">R2-NORTE(config-if)# ip ospf dead-interval 20</span></code></pre></div>
+    </div>
+    <div class="trouble-box">
+      <h4>⚠️ Escenario 5: Autenticación Falla — Adyacencia No Se Establece</h4>
+      <div class="cli-block" data-label="Diagnóstico Auth Failure"><pre><code><span class="cmt">! El debug muestra rechazos de autenticación</span>
+<span class="cmd">R1-CENTRAL# debug ip ospf adj</span>
+<span class="out">OSPF-1 ADJ Gi0/1: Rcv DBD from 2.2.2.2 with invalid auth
+OSPF-1 ADJ Gi0/1: Drop due to auth error</span>
+
+<span class="cmt">! Verificar la configuración de autenticación</span>
+<span class="cmd">R1-CENTRAL# show ip ospf interface GigabitEthernet0/1 | include auth</span>
+<span class="out">  Message digest authentication enabled</span>
+<span class="out">    Youngest key id is 1</span>
+<span class="cmd">R2-NORTE# show ip ospf interface GigabitEthernet0/1 | include auth</span>
+<span class="out">  Simple password authentication enabled   ← Tipo de auth diferente</span>
+<span class="cmt">! R1 usa MD5, R2 usa simple password → incompatibles</span>
+
+<span class="cmt">! Solución: igualar tipo y contraseña</span>
+<span class="cmd">R2-NORTE(config)# interface GigabitEthernet0/1</span>
+<span class="cmd">R2-NORTE(config-if)# no ip ospf authentication</span>
+<span class="cmd">R2-NORTE(config-if)# ip ospf authentication message-digest</span>
+<span class="cmd">R2-NORTE(config-if)# ip ospf message-digest-key 1 md5 OspfKey@TC2024</span>
+<span class="cmd">R2-NORTE(config-if)# end</span>
+<span class="cmd">R1-CENTRAL# undebug all</span></code></pre></div>
+    </div>
+    <div class="scenario-box" style="margin-top:1.5rem">
+      <h4>📌 Tabla Maestra de Troubleshooting OSPF</h4>
+      <div class="osi-table-wrap"><table class="osi-table">
+        <thead><tr><th>Síntoma</th><th>Causa más probable</th><th>Comando de diagnóstico</th><th>Solución</th></tr></thead>
+        <tbody>
+          <tr><td>Estado DOWN permanente</td><td>Interfaz down, OSPF no configurado en interfaz</td><td><code>show ip int brief</code>, <code>show ip ospf int</code></td><td><code>no shutdown</code>, revisar <code>network</code></td></tr>
+          <tr><td>Estado INIT permanente</td><td>ACL bloqueando, subredes diferentes, OSPF unidireccional</td><td><code>debug ip ospf hello</code></td><td>Revisar ACLs, verificar IPs misma subred</td></tr>
+          <tr><td>EXSTART/EXCHANGE oscilante</td><td>MTU mismatch entre interfaces</td><td><code>show interfaces | include MTU</code></td><td>Igualar MTU o <code>ip ospf mtu-ignore</code></td></tr>
+          <tr><td>FULL pero rutas incorrectas</td><td>Router ID duplicado</td><td><code>show ip ospf | include ID</code></td><td>Cambiar RID + <code>clear ip ospf process</code></td></tr>
+          <tr><td>Adyacencia no forma</td><td>Timer mismatch (Hello/Dead)</td><td><code>show ip ospf interface</code></td><td>Igualar <code>hello-interval</code> y <code>dead-interval</code></td></tr>
+          <tr><td>Auth failure en logs</td><td>MD5 key ID o contraseña diferente</td><td><code>debug ip ospf adj</code></td><td>Igualar <code>message-digest-key</code></td></tr>
+          <tr><td>Rutas inestables</td><td>Oscilación del enlace (flapping)</td><td><code>show ip ospf neighbor</code> — State changes alto</td><td>Revisar el enlace físico, usar BFD</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+</div></div>
+<!-- ══════ TAB 7 · DESAFÍO ══════ -->
+<div class="tab-panel" id="tab-desafio"><div class="content">
+  <div class="section">
+    <h2 class="section-title">🏆 Desafío de Consolidación — Extiende la Red TecnoCorp</h2>
+    <div class="challenge-box">
+      <h4>🎯 Misión: Integrar R5 como Router de Internet con Default Route OSPF</h4>
+      <p>TecnoCorp ha contratado un ISP. Debes integrar un nuevo router R5 conectado a R1, configurarlo como ASBR (AS Boundary Router), inyectar la default route hacia OSPF y verificar que todos los routers internos puedan llegar a "Internet" (simulado por Loopback8.8.8.8 en R5).</p>
+    </div>
+  </div>
+  <div class="section">
+    <h2 class="section-title">📋 Escenario del Desafío</h2>
+    <div class="topo-grid">
+      <div class="topo-card"><h5>📡 R5 — Router ISP/ASBR</h5><p>Cisco 2911<br>Gi0/0 → Enlace R1-R5 WAN<br>Lo0 = 5.5.5.5/32 (RID)<br>Lo8 = 8.8.8.8/32 (simula Internet)</p></div>
+      <div class="topo-card"><h5>🔗 Nuevo Enlace WAN</h5><p>R1 Gi0/3 ↔ R5 Gi0/0<br>Red: 10.10.10.16/30<br>R1 = .17 (ASBR interno)<br>R5 = .18 (Router ISP)</p></div>
+      <div class="topo-card"><h5>🎯 Objetivo de Verificación</h5><p>ping 8.8.8.8 desde PC-HQ ✅<br>ping 8.8.8.8 desde PC-NORTE ✅<br>ping 8.8.8.8 desde PC-DC ✅<br>Ruta O*E2 en todos ✅</p></div>
+    </div>
+  </div>
+  <div class="section">
+    <h2 class="section-title">⚙️ Solución del Desafío — Paso a Paso</h2>
+    <div class="config-phase">
+      <div class="config-phase-title"><span class="step-number">1</span> Configurar R5 como Router ISP</div>
+      <div class="cli-block" data-label="R5 — Configuración ISP"><pre><code><span class="cmt">! R5 NO participará en OSPF — es el "ISP externo"</span>
+<span class="cmd">R5-ISP(config)# hostname R5-ISP</span>
+<span class="cmd">R5-ISP(config)# interface Loopback0</span>
+<span class="cmd">R5-ISP(config-if)# ip address 5.5.5.5 255.255.255.255</span>
+<span class="cmd">R5-ISP(config)# interface Loopback8</span>
+<span class="cmd">R5-ISP(config-if)# ip address 8.8.8.8 255.255.255.255</span>
+<span class="cmt">! Simula el servidor DNS de Google — objetivo del desafío</span>
+<span class="cmd">R5-ISP(config)# interface GigabitEthernet0/0</span>
+<span class="cmd">R5-ISP(config-if)# description ENLACE-HACIA-R1-TECNOCORP</span>
+<span class="cmd">R5-ISP(config-if)# ip address 10.10.10.18 255.255.255.252</span>
+<span class="cmd">R5-ISP(config-if)# no shutdown</span>
+
+<span class="cmt">! R5 necesita ruta de retorno hacia la red interna de TecnoCorp</span>
+<span class="cmt">! (o bien una ruta resumen, o una default route dirigida a R1)</span>
+<span class="cmd">R5-ISP(config)# ip route 10.10.0.0 255.255.0.0 10.10.10.17</span>
+<span class="cmt">! Ruta resumida hacia toda la red 10.10.0.0/16 de TecnoCorp vía R1</span></code></pre></div>
+    </div>
+    <div class="config-phase">
+      <div class="config-phase-title"><span class="step-number">2</span> Configurar R1 como ASBR — Inyectar Default Route en OSPF</div>
+      <div class="cli-block" data-label="R1 — ASBR y default route OSPF"><pre><code><span class="cmt">! Nueva interfaz hacia R5 (ISP)</span>
+<span class="cmd">R1-CENTRAL(config)# interface GigabitEthernet0/3</span>
+<span class="cmd">R1-CENTRAL(config-if)# description ENLACE-ISP-R5</span>
+<span class="cmd">R1-CENTRAL(config-if)# ip address 10.10.10.17 255.255.255.252</span>
+<span class="cmd">R1-CENTRAL(config-if)# no shutdown</span>
+
+<span class="cmt">! Configurar la default route hacia el ISP</span>
+<span class="cmd">R1-CENTRAL(config)# ip route 0.0.0.0 0.0.0.0 10.10.10.18</span>
+<span class="cmt">! 10.10.10.18 = IP de R5 (ISP gateway)</span>
+
+<span class="cmt">! *** La clave del desafío: propagar la default route en OSPF ***</span>
+<span class="cmd">R1-CENTRAL(config)# router ospf 1</span>
+<span class="cmd">R1-CENTRAL(config-router)# default-information originate</span>
+<span class="cmt">! Este comando convierte a R1 en ASBR (AS Boundary Router)</span>
+<span class="cmt">! R1 genera un LSA Tipo 5 con la ruta 0.0.0.0/0</span>
+<span class="cmt">! Todos los routers del área aprenden la default route como O*E2</span>
+<span class="cmt">!</span>
+<span class="cmt">! Variante con "always":</span>
+<span class="cmd">R1-CENTRAL(config-router)# default-information originate always</span>
+<span class="cmt">! "always" = propagar aunque R1 no tenga la default route en su tabla</span>
+<span class="cmt">! Sin "always": si cae el enlace con ISP, R1 deja de propagar → convergencia</span>
+<span class="cmt">! Con "always": R1 siempre propaga (puede enviar tráfico a un enlace caído)</span>
+<span class="cmt">! En este desafío: usar sin "always" para comportamiento correcto</span></code></pre></div>
+    </div>
+    <div class="config-phase">
+      <div class="config-phase-title"><span class="step-number">3</span> Verificación del Desafío</div>
+      <div class="cli-block" data-label="Verificación del Desafío ASBR"><pre><code><span class="cmt">! En R2 (y todos los demás routers) verificar la default route OSPF</span>
+<span class="cmd">R2-NORTE# show ip route | include 0.0.0.0</span>
+<span class="out">Gateway of last resort is 10.10.10.1 to network 0.0.0.0
+O*E2  0.0.0.0/0 [110/1] via 10.10.10.1, 00:01:23, GigabitEthernet0/1</span>
+<span class="cmt">! O*E2 = OSPF External Type 2 (candidata a default route)</span>
+<span class="cmt">! Gateway of last resort = 10.10.10.1 (R1) ✅</span>
+<span class="cmt">! Métrica E2 = siempre es la del ASBR (no acumulativa)</span>
+
+<span class="cmt">! Verificar que R1 tiene el LSA Tipo 5</span>
+<span class="cmd">R1-CENTRAL# show ip ospf database external</span>
+<span class="out">            OSPF Router with ID (1.1.1.1) (Process ID 1)
+                Type-5 AS External Link States
+Link ID         ADV Router    Age  Seq#      Checksum Tag
+0.0.0.0         1.1.1.1        45  0x80000001  0x00AB12  1</span>
+<span class="cmt">! LSA Tipo 5 con Link ID 0.0.0.0 = la default route</span>
+<span class="cmt">! Advertised by 1.1.1.1 = R1 es el ASBR que la origina</span>
+
+<span class="cmt">! Ping de verificación extremo a extremo</span>
+<span class="cmd">R3-SUR# ping 8.8.8.8 source 10.10.3.1</span>
+<span class="out">!!!!!   Success rate is 100 percent (5/5)</span>
+<span class="cmt">! R3 alcanza 8.8.8.8 (Loopback de R5) a través de R1 ✅</span>
+<span class="cmt">! Ruta: R3→R2→R1→R5→8.8.8.8 (o R3→R4→R1→R5→8.8.8.8 según SPF)</span>
+
+<span class="cmt">! Traceroute para verificar el camino</span>
+<span class="cmd">R3-SUR# traceroute 8.8.8.8 source 10.10.3.1</span>
+<span class="out">  1  10.10.10.5 (R2 Gi0/2)   20 ms
+  2  10.10.10.1 (R1 Gi0/1)   28 ms
+  3  10.10.10.18 (R5 Gi0/0)  36 ms
+  4  8.8.8.8                 44 ms</span></code></pre></div>
+    </div>
+  </div>
+</div></div>
+<!-- ══════ TAB 8 · LABORATORIO PACKET TRACER ══════ -->
+<div class="tab-panel" id="tab-lab"><div class="content">
+  <div class="section">
+    <h2 class="section-title">🧪 Guía Completa para Packet Tracer</h2>
+    <div class="scenario-box">
+      <h4>📋 Objetivo del Laboratorio</h4>
+      <p>Construir desde cero la red TecnoCorp en Cisco Packet Tracer, aplicar toda la configuración de esta Masterclass, verificar la convergencia OSPF, simular fallos de enlace y observar la reconvergencia automática.</p>
+    </div>
+    <div class="lab-steps">
+      <div class="lab-step">
+        <h4>Paso 1 — Construir la Topología en Packet Tracer</h4>
+        <div class="concept-box">
+          <h4>📌 Instrucciones visuales para PT</h4>
+          <ol style="padding-left:1.5rem;line-height:2.3">
+            <li>Abrir Packet Tracer → New → guardar como <strong>TecnoCorp-OSPFv2.pkt</strong></li>
+            <li>Agregar 4 routers modelo <strong>Cisco 2911</strong> (o 4321). Renombrar en Properties: R1, R2, R3, R4</li>
+            <li>Agregar 4 switches <strong>Cisco 2960</strong>. Renombrar: SW-HQ, SW-NORTE, SW-SUR, SW-DC</li>
+            <li>Agregar 8 PCs genéricas. Nombrar: PC-HQ-1, PC-HQ-2, PC-NORTE-1, etc.</li>
+            <li>Conectar routers a switches con <strong>cable de cobre directo</strong></li>
+            <li>Conectar routers entre sí con <strong>cable de cobre cruzado</strong> (o automático)</li>
+            <li>Conectar PCs a switches con <strong>cable de cobre directo</strong></li>
+          </ol>
+        </div>
+      </div>
+      <div class="lab-step">
+        <h4>Paso 2 — Configurar PCs con Direcciones IP</h4>
+        <div class="cli-block" data-label="Configuración de PCs — LAN HQ"><pre><code><span class="cmt">! PC-HQ-1: Desktop → IP Configuration</span>
+<span class="cmt">! IP Address:   10.10.1.2</span>
+<span class="cmt">! Subnet Mask:  255.255.255.128  (/25)</span>
+<span class="cmt">! Default GW:   10.10.1.1  (R1 Gi0/0)</span>
+<span class="cmt">! DNS Server:   8.8.8.8 (para el desafío)</span>
+
+<span class="cmt">! PC-HQ-2:</span>
+<span class="cmt">! IP: 10.10.1.3  Mask: 255.255.255.128  GW: 10.10.1.1</span>
+
+<span class="cmt">! PC-NORTE-1:</span>
+<span class="cmt">! IP: 10.10.2.2  Mask: 255.255.255.192  GW: 10.10.2.1</span>
+
+<span class="cmt">! PC-SUR-1:</span>
+<span class="cmt">! IP: 10.10.3.2  Mask: 255.255.255.224  GW: 10.10.3.1</span>
+
+<span class="cmt">! PC-DC-1:</span>
+<span class="cmt">! IP: 10.10.4.2  Mask: 255.255.255.240  GW: 10.10.4.1</span></code></pre></div>
+      </div>
+      <div class="lab-step">
+        <h4>Paso 3 — Aplicar toda la configuración de los tabs anteriores</h4>
+        <div class="concept-box">
+          <h4>📌 Orden recomendado de configuración</h4>
+          <ol style="padding-left:1.5rem;line-height:2.3">
+            <li>Hardening base en R1, R2, R3, R4 (Tab 3)</li>
+            <li>Configurar todas las interfaces con IPs correctas (Tab 3)</li>
+            <li>Verificar conectividad directa: ping entre interfaces adyacentes</li>
+            <li>Configurar OSPF en todos los routers (Tab 4)</li>
+            <li>Verificar adyacencias: todos en estado FULL</li>
+            <li>Verificar la tabla de routing: rutas hacia todas las redes</li>
+            <li>Ping extremo a extremo: PC-HQ-1 → PC-DC-1</li>
+          </ol>
+        </div>
+      </div>
+      <div class="lab-step">
+        <h4>Paso 4 — Simulación de Fallo de Enlace (La Prueba Real)</h4>
+        <div class="cli-block" data-label="Simulación de Fallo — Reconvergencia OSPF"><pre><code><span class="cmt">! ─── Escenario de Reconvergencia ─────────────────────</span>
+<span class="cmt">! 1. Verificar la ruta actual de PC-HQ hacia LAN Sur</span>
+<span class="cmd">R1-CENTRAL# traceroute 10.10.3.1</span>
+<span class="out">  1  10.10.10.2  (R2)  20ms
+  2  10.10.10.6  (R3)  35ms
+  3  10.10.3.1   (R3 LAN)  42ms</span>
+<span class="cmt">! Ruta actual: R1→R2→R3 (pasando por R2)</span>
+
+<span class="cmt">! 2. Simular fallo del enlace R1-R2</span>
+<span class="cmd">R1-CENTRAL(config)# interface GigabitEthernet0/1</span>
+<span class="cmd">R1-CENTRAL(config-if)# shutdown</span>
+<span class="out">%OSPF-5-ADJCHG: Process 1, Nbr 2.2.2.2 on GigabitEthernet0/1 from FULL to DOWN</span>
+<span class="cmt">! El mensaje de log confirma la caída de la adyacencia</span>
+
+<span class="cmt">! 3. Esperar la reconvergencia (segundos con timers agresivos)</span>
+<span class="cmt">! 4. Verificar la nueva ruta — OSPF recalculó el SPF</span>
+<span class="cmd">R1-CENTRAL# traceroute 10.10.3.1</span>
+<span class="out">  1  10.10.10.14 (R4)  18ms
+  2  10.10.10.10 (R3)  25ms
+  3  10.10.3.1   (R3 LAN)  32ms</span>
+<span class="cmt">! Nueva ruta: R1→R4→R3 — OSPF encontró el camino alternativo ✅</span>
+<span class="cmt">! La redundancia del enlace R1-R4 funcionó perfectamente</span>
+
+<span class="cmt">! 5. Restaurar el enlace</span>
+<span class="cmd">R1-CENTRAL(config)# interface GigabitEthernet0/1</span>
+<span class="cmd">R1-CENTRAL(config-if)# no shutdown</span>
+<span class="out">%OSPF-5-ADJCHG: Process 1, Nbr 2.2.2.2 on GigabitEthernet0/1 from LOADING to FULL</span>
+<span class="cmt">! La adyacencia se restableció — la ruta original puede volver</span>
+<span class="cmt">! Depende del costo: si ambas tienen el mismo costo → ECMP (load balancing)</span></code></pre></div>
+      </div>
+    </div>
+  </div>
+</div></div>
+<!-- ══════ TAB 9 · RESUMEN ══════ -->
+<div class="tab-panel" id="tab-resumen"><div class="content">
+  <div class="section">
+    <h2 class="section-title">📋 Resumen Masterclass — OSPFv2 Single-Area Expert</h2>
+    <div class="concept-box">
+      <h4>✅ Los 30 Puntos Maestros — Nivel Expert</h4>
+      <ol style="padding-left:1.5rem;line-height:2.3">
+        <li>OSPFv2 es un protocolo <strong>link-state</strong> (RFC 2328). Cada router tiene el <strong>mapa completo</strong> de la topología (LSDB). No hay bucles de routing posibles.</li>
+        <li>El <strong>algoritmo SPF de Dijkstra</strong> calcula el árbol de caminos de menor costo desde el router local hacia todos los destinos.</li>
+        <li>Costo OSPF = 100,000,000 / BW(bps). Costo es <strong>acumulativo</strong>. Siempre ajustar <code>auto-cost reference-bandwidth 10000</code> en todos los routers.</li>
+        <li>Los <strong>7 estados de adyacencia</strong>: DOWN → ATTEMPT → INIT → 2-WAY → EXSTART → EXCHANGE → LOADING → <strong>FULL</strong>.</li>
+        <li>Estado <strong>INIT</strong> = comunicación unidireccional. Estado <strong>2-WAY</strong> = bidireccional. Estado <strong>FULL</strong> = LSDBs sincronizadas ✅.</li>
+        <li>En <strong>EXSTART</strong>: el router con mayor RID se convierte en Master y establece el número de secuencia de los DBDs.</li>
+        <li><strong>MTU mismatch</strong> causa que la adyacencia se quede en EXSTART/EXCHANGE. Solución: <code>ip ospf mtu-ignore</code> o igualar MTU.</li>
+        <li>El <strong>Router ID</strong> siempre debe configurarse manualmente con <code>router-id X.X.X.X</code>. Usar la IP de Loopback.</li>
+        <li>Un cambio de Router ID requiere <code>clear ip ospf process</code> para aplicarse (reinicia todas las adyacencias).</li>
+        <li>El <strong>Process ID</strong> de OSPF es <strong>local al router</strong> — no necesita coincidir entre vecinos.</li>
+        <li>Los <strong>Hello/Dead timers</strong> deben coincidir exactamente entre vecinos. Hello default Ethernet = 10s, Dead = 40s.</li>
+        <li><strong>LSA Tipo 1</strong> (Router LSA): generado por todos los routers. <strong>Tipo 2</strong> (Network LSA): generado por el DR. <strong>Tipo 5</strong>: externas del ASBR.</li>
+        <li>En single-area solo existen LSAs Tipo 1 y 2. La LSDB debe ser idéntica en todos los routers del área.</li>
+        <li>El <strong>DR/BDR</strong> se elige en redes broadcast. Elección: mayor prioridad → mayor Router ID. Prioridad 0 = nunca DR.</li>
+        <li>La elección DR/BDR es <strong>NO apropiativa</strong>: un nuevo router con mayor prioridad no desplaza al DR actual.</li>
+        <li><code>passive-interface default</code> + <code>no passive-interface IFACE</code>: la mejor práctica para controlar dónde se forman adyacencias.</li>
+        <li>La <strong>autenticación MD5</strong> en OSPF previene routers maliciosos de inyectar rutas falsas. Configurar en cada interfaz OSPF.</li>
+        <li><code>default-information originate</code>: convierte al router en ASBR y propaga la default route como LSA Tipo 5 (O*E2).</li>
+        <li>La variante <code>default-information originate always</code> propaga la default aunque no esté en la tabla local.</li>
+        <li>Hardening OSPF: autenticación MD5, passive-interface en LAN, deshabilitar HTTP, SSH v2, contraseñas SHA256.</li>
+        <li><code>show ip ospf neighbor</code>: verificación principal. <code>show ip ospf database</code>: ver la LSDB.</li>
+        <li><code>show ip ospf interface brief</code>: ver costo, estado DR/BDR y vecinos por interfaz.</li>
+        <li><code>debug ip ospf hello</code>: verificar recepción/envío de Hellos. <code>debug ip ospf adj</code>: ver el proceso de adyacencia.</li>
+        <li>Siempre ejecutar <code>undebug all</code> después de cualquier debug en producción.</li>
+        <li>Router ID duplicado genera <code>%OSPF-4-DUP_RTRID</code> en el log. Solución: cambiar RID + clear ospf process.</li>
+        <li>El <strong>SPF timer</strong> controla la rapidez de convergencia: <code>timers throttle spf 50 100 5000</code> para convergencia agresiva.</li>
+        <li>OSPF multicast 224.0.0.5 = AllSPFRouters. 224.0.0.6 = AllDRouters (solo DR y BDR).</li>
+        <li>IP número de protocolo OSPF = <strong>89</strong> (directo sobre IP, no TCP ni UDP).</li>
+        <li>VLSM con /30 para enlaces WAN, /25-/28 para LANs según tamaño, /32 para Loopbacks de Router ID.</li>
+        <li>En Packet Tracer: simular fallo con <code>shutdown</code> → observar log de adyacencia caída → verificar nueva ruta SPF → <code>no shutdown</code> → verificar reconvergencia.</li>
+      </ol>
+    </div>
+    <div class="concept-box warning" style="margin-top:1.5rem">
+      <h4>⚠️ Los 10 Errores Críticos que Arruinan el Examen</h4>
+      <ol style="padding-left:1.5rem;line-height:2.1">
+        <li>No configurar <code>auto-cost reference-bandwidth</code> igual en todos los routers — costos inconsistentes</li>
+        <li>Confundir Process ID con AS Number — el Process ID es local, no necesita coincidir</li>
+        <li>Olvidar <code>passive-interface</code> en interfaces LAN — intenta formar adyacencias con los PCs</li>
+        <li>No usar <code>router-id</code> manual — un cambio inesperado de IP reinicia todas las adyacencias</li>
+        <li>Creer que la elección DR/BDR es apropiativa — el DR no cambia cuando llega uno con mayor prioridad</li>
+        <li>Olvidar que <code>clear ip ospf process</code> es necesario después de cambiar el Router ID</li>
+        <li>Usar <code>default-information originate always</code> cuando el ISP link puede caer — sigue enviando tráfico al vacío</li>
+        <li>No igualar Hello/Dead timers en ambos extremos del enlace — la adyacencia no se forma</li>
+        <li>Diferente key ID en la autenticación MD5 — OSPF descarta los paquetes sin mostrar error obvio</li>
+        <li>No verificar el MTU cuando la adyacencia se queda en EXSTART — causa muy frecuente y difícil de diagnosticar</li>
+      </ol>
+    </div>
+    <div class="section" style="margin-top:1.5rem">
+      <h2 class="section-title">📊 Tabla de Referencia de Comandos</h2>
+      <div id="refTableContainer"></div>
+    </div>
+    <div class="concept-box info" style="margin-top:1.5rem">
+      <h4>📖 Referencias Técnicas</h4>
+      <ul>
+        <li><em>CCNA 200-301 Official Cert Guide, Vol.2</em> — Wendell Odom, Capítulos 20–22</li>
+        <li><em>Redes Cisco: Curso práctico CCNA</em> — Daniel Pérez Torres, Capítulos OSPF</li>
+        <li>RFC 2328 — OSPF Version 2 · RFC 3101 — OSPF NSSA · RFC 3137 — OSPF Stub Router</li>
+        <li><a href="https://www.cisco.com/site/us/en/learn/training-certifications/training/netacad/index.html" target="_blank" rel="noopener">Cisco Networking Academy ↗</a></li>
+        <li><a href="https://www.cisco.com/c/en/us/support/docs/ip/open-shortest-path-first-ospf/7039-1.html" target="_blank" rel="noopener">Cisco OSPF Design Guide ↗</a></li>
+      </ul>
+    </div>
+  </div>
+</div></div>
+
+<!-- ══════ TAB 10 · QUIZ ══════ -->
+<div class="tab-panel" id="tab-quiz"><div class="content">
+  <div class="section">
+    <h2 class="section-title">✅ Quiz Masterclass · OSPFv2 Single-Area — Nivel Expert</h2>
+    <p>12 preguntas de nivel experto. Cubre estados de adyacencia, LSDB, SPF, DR/BDR, costos, troubleshooting y diseño profesional.</p>
+    <div id="quiz-container"></div>
+    <div id="quiz-container-result"></div>
+  </div>
+</div></div>
+
+<footer class="footer" style="border-top:1px solid rgba(251,191,36,.3)">
+  <p>CCNA Academy · <span style="color:#fbbf24">🏆 M8 Mastery Zone</span> · OSPFv2 Single-Area Masterclass</p>
+  <p style="margin-top:.3rem">Basado en RFC 2328 · <em>CCNA 200-301 Official Cert Guide</em> · Cisco Netacad</p>
+  <p style="margin-top:.4rem"><a href="../index.html">← Volver al índice</a></p>
+</footer>
+
+<script src="../assets/main.js" defer></script>
+<script>
+function showTab(id,btn){
+  document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
+  var p=document.getElementById('tab-'+id);
+  if(p)p.classList.add('active');
+  if(btn)btn.classList.add('active');
+  window.scrollTo({top:90,behavior:'smooth'});
+}
+document.addEventListener('DOMContentLoaded',function(){
+  var refData=[
+    {Comando:'router ospf PROCESS-ID',                         Modo:'config',     Descripcion:'Iniciar proceso OSPFv2 (Process ID local — no necesita coincidir)'},
+    {Comando:'router-id X.X.X.X',                              Modo:'router-ospf',Descripcion:'Configurar Router ID manualmente — SIEMPRE hacerlo para estabilidad'},
+    {Comando:'auto-cost reference-bandwidth MBPS',             Modo:'router-ospf',Descripcion:'Ajustar BW referencia (en todos los routers) — 10000 para redes GigE modernas'},
+    {Comando:'network RED WILDCARD area ÁREA',                 Modo:'router-ospf',Descripcion:'Anunciar red en OSPF y asignarla al área especificada'},
+    {Comando:'passive-interface default',                      Modo:'router-ospf',Descripcion:'Hacer TODAS las interfaces pasivas — luego activar solo las necesarias'},
+    {Comando:'no passive-interface IFACE',                     Modo:'router-ospf',Descripcion:'Activar Hellos OSPF en la interfaz específica'},
+    {Comando:'default-information originate',                  Modo:'router-ospf',Descripcion:'Propagar default route en OSPF — convierte al router en ASBR (LSA Tipo 5)'},
+    {Comando:'default-information originate always',           Modo:'router-ospf',Descripcion:'Propagar default route aunque no esté en la tabla local del router'},
+    {Comando:'timers throttle spf D1 D2 DMAX',                Modo:'router-ospf',Descripcion:'Ajustar timers SPF para convergencia rápida (ej: 50 100 5000 ms)'},
+    {Comando:'ip ospf priority VALOR',                         Modo:'config-if',  Descripcion:'Prioridad DR/BDR (0=nunca DR, 255=siempre candidato principal)'},
+    {Comando:'ip ospf hello-interval SEG',                     Modo:'config-if',  Descripcion:'Intervalo de envío de Hello (debe coincidir con el vecino)'},
+    {Comando:'ip ospf dead-interval SEG',                      Modo:'config-if',  Descripcion:'Tiempo sin Hello para declarar vecino caído (debe coincidir)'},
+    {Comando:'ip ospf authentication message-digest',          Modo:'config-if',  Descripcion:'Habilitar autenticación MD5 en la interfaz OSPF'},
+    {Comando:'ip ospf message-digest-key ID md5 PASSWORD',     Modo:'config-if',  Descripcion:'Configurar la clave MD5 (ID y contraseña deben coincidir en ambos extremos)'},
+    {Comando:'ip ospf mtu-ignore',                             Modo:'config-if',  Descripcion:'Ignorar MTU durante intercambio DBD — soluciona MTU mismatch'},
+    {Comando:'ip ospf cost VALOR',                             Modo:'config-if',  Descripcion:'Asignar costo OSPF manual a la interfaz (override del calculado)'},
+    {Comando:'show ip ospf neighbor',                          Modo:'#',          Descripcion:'Estado de adyacencias: Neighbor ID, prioridad, estado, Dead timer, interfaz'},
+    {Comando:'show ip ospf neighbor detail',                   Modo:'#',          Descripcion:'Detalle completo: dead timer, uptime, state changes, opciones'},
+    {Comando:'show ip ospf',                                   Modo:'#',          Descripcion:'Estado del proceso: Router ID, ref-bandwidth, timers SPF, LSAs, áreas'},
+    {Comando:'show ip ospf interface brief',                   Modo:'#',          Descripcion:'Resumen interfaces: PID, área, IP, costo, estado, vecinos FULL/total'},
+    {Comando:'show ip ospf interface IFACE',                   Modo:'#',          Descripcion:'Detalle de interfaz: DR/BDR IDs, timers, autenticación, state changes'},
+    {Comando:'show ip ospf database',                          Modo:'#',          Descripcion:'LSDB completa por tipo LSA: Router, Network, Summary, External'},
+    {Comando:'show ip ospf database router ADV-RID',           Modo:'#',          Descripcion:'Ver el Router LSA (tipo 1) de un router específico'},
+    {Comando:'show ip ospf database external',                 Modo:'#',          Descripcion:'Ver LSAs tipo 5 (rutas externas del ASBR)'},
+    {Comando:'show ip route ospf',                             Modo:'#',          Descripcion:'Solo rutas OSPF: O (intra-área), O IA (inter-área), O*E2 (external)'},
+    {Comando:'clear ip ospf process',                          Modo:'#',          Descripcion:'Reiniciar el proceso OSPF — aplica cambios de RID (impacto en producción)'},
+    {Comando:'debug ip ospf hello',                            Modo:'#',          Descripcion:'Ver envío/recepción de Hellos en tiempo real'},
+    {Comando:'debug ip ospf adj',                              Modo:'#',          Descripcion:'Ver el proceso de formación/caída de adyacencias'},
+    {Comando:'debug ip ospf events',                           Modo:'#',          Descripcion:'Ver eventos OSPF: LSA recibidos, SPF ejecutado, cambios de estado'},
+    {Comando:'undebug all',                                    Modo:'#',          Descripcion:'Deshabilitar TODOS los debugs activos — ejecutar siempre al terminar'},
+  ];
+  if(typeof buildRefTable==='function') buildRefTable(refData,'refTableContainer');
+
+  var preguntas=[
+    {
+      pregunta:'Durante el diagnóstico de OSPF encuentras que "show ip ospf neighbor" muestra a un vecino en estado INIT permanente. ¿Cuál es la causa más probable?',
+      opciones:['El Process ID de OSPF no coincide entre los routers','El MTU de las interfaces es diferente','Los Hellos llegan al router local pero el router remoto no recibe los Hellos del local (comunicación unidireccional)','El Router ID es incorrecto'],
+      respuesta:2,
+      explicacion:'El estado INIT significa que el router local recibió un Hello del vecino (por eso lo ve), pero su propio Router ID no aparece en la lista de vecinos del Hello recibido. Esto indica comunicación unidireccional: el router local envía Hellos pero el remoto no los recibe (o los descarta). Causas: ACL bloqueando en un solo sentido, interfaz del vecino con OSPF en subred diferente, o problema de capa 2 asimétrico.'
+    },
+    {
+      pregunta:'¿Por qué una adyacencia OSPF puede quedar atascada en el estado EXSTART?',
+      opciones:['Los Router IDs son idénticos en ambos routers','Los Hello/Dead timers no coinciden','El MTU de las interfaces difiere entre vecinos, impidiendo el intercambio correcto de DBD packets','La autenticación MD5 está mal configurada'],
+      respuesta:2,
+      explicacion:'EXSTART es donde se negocian el rol Master/Slave y el número de secuencia inicial usando paquetes DBD (Database Description). Si los MTUs difieren, los paquetes DBD pueden fragmentarse o descartarse, impidiendo completar la negociación. OSPF verifica el MTU durante este estado y no avanza si detecta discrepancia. Solución: igualar MTU o usar "ip ospf mtu-ignore".'
+    },
+    {
+      pregunta:'Se configuró "auto-cost reference-bandwidth 10000" en R1 pero se olvidó en R2. ¿Cuál es el impacto?',
+      opciones:['Las adyacencias OSPF no se forman','El costo hacia los destinos remotos es asimétrico — R1 calcula costos diferentes a los que R2 calcula para las mismas rutas, pudiendo elegir caminos subóptimos','Solo afecta la velocidad de convergencia','No hay impacto — el reference-bandwidth es solo informativo'],
+      respuesta:1,
+      explicacion:'El reference-bandwidth afecta el cálculo del costo (costo = ref-bw / BW). Si R1 usa 10000 Mbps y R2 usa 100 Mbps (default), un GigabitEthernet tiene costo 10 en R1 pero costo 1 en R2. El SPF de cada router calculará costos totales diferentes, pudiendo elegir rutas diferentes. En escenarios con múltiples caminos, esto puede causar que R1 elija el camino A→B→C mientras R2 elige C→B→A para el mismo flujo, causando inconsistencias y potencial black holing.'
+    },
+    {
+      pregunta:'¿Qué ocurre cuando se ejecuta "passive-interface default" seguido de "no passive-interface GigabitEthernet0/1" en el proceso OSPF?',
+      opciones:['Se desactiva OSPF en todas las interfaces excepto Gi0/1','Todas las interfaces dejan de anunciar redes en OSPF; solo Gi0/1 continúa','Todas las interfaces pasan a modo pasivo (no envían Hellos) excepto Gi0/1, que sí enviará Hellos para formar adyacencias','Solo Gi0/1 anuncia su red en OSPF'],
+      respuesta:2,
+      explicacion:'"passive-interface default" pone TODAS las interfaces en modo pasivo: las redes siguen siendo anunciadas en OSPF (aparecen en la LSDB) pero no se envían ni aceptan Hello packets (no se forman adyacencias). "no passive-interface Gi0/1" revierte solo esa interfaz al comportamiento normal — sí envía Hellos y puede formar adyacencias. Es la mejor práctica: evita intentos de adyacencia hacia hosts de usuario y solo activa OSPF donde hay vecinos reales.'
+    },
+    {
+      pregunta:'Un router muestra en su tabla de routing "O*E2 0.0.0.0/0 [110/1] via 10.10.10.1". ¿Qué información proporciona cada elemento?',
+      opciones:['O*E2: ruta estática de OSPF, [110/1]: AD y métrica, via 10.10.10.1: gateway de último recurso','O*E2: ruta OSPF externa tipo 2 y candidata a default, [110/1]: AD=110 y costo=1 (métrica del ASBR sin acumular), via 10.10.10.1: next-hop hacia el ASBR (R1)','O: OSPF, *: default, E2: área 2, [110/1]: OSPF Process ID 110, versión 1','O*E2 significa que la ruta viene de un router externo al dominio OSPF via RIP'],
+      respuesta:1,
+      explicacion:'"O" = OSPF. "*" = candidata a default route (Gateway of Last Resort). "E2" = External Type 2 — la métrica NO se acumula a lo largo del camino (siempre es la del ASBR que la originó). "[110/1]" = AD=110 (OSPF) y costo=1 (el costo que configuró el ASBR al redistribuir). Esta ruta fue generada por "default-information originate" en el ASBR y propagada como LSA Tipo 5 hacia todos los routers del área.'
+    },
+    {
+      pregunta:'¿Por qué es importante configurar el Router ID manualmente en lugar de dejar que OSPF lo seleccione automáticamente?',
+      opciones:['El Router ID automático siempre elige la IP más baja, que puede ser incorrecta','Si la IP de la interfaz que fue elegida como RID cambia o cae, OSPF reiniciará todas las adyacencias. Un RID manual y estable (Loopback /32) garantiza que el RID nunca cambia','El Router ID manual mejora el rendimiento del algoritmo SPF','IOS requiere configuración manual del RID para OSPFv2'],
+      respuesta:1,
+      explicacion:'Si OSPF selecciona automáticamente el RID basándose en la IP más alta de una interfaz activa, y esa interfaz posteriormente cae, OSPF necesita seleccionar un nuevo RID. Este cambio causa que el router reinicie TODAS sus adyacencias OSPF, causando una convergencia completa innecesaria. Una Loopback /32 es siempre up/up (nunca cae mientras el proceso OSPF esté activo), garantizando un RID estable. Además, un RID manual con convención clara (1.1.1.1=R1) facilita el troubleshooting.'
+    },
+    {
+      pregunta:'¿Cuál es la función específica del Designated Router (DR) en un segmento Ethernet multiaccess?',
+      opciones:['El DR hace routing entre VLANs en ese segmento','El DR genera el LSA Tipo 2 (Network LSA) que describe el segmento, y actúa como punto central para recibir y redistribuir actualizaciones LSA, reduciendo el número de adyacencias FULL de N×(N-1)/2 a N-1','El DR selecciona qué rutas se instalan en la tabla de routing','El DR maneja la autenticación OSPF para todos los routers del segmento'],
+      respuesta:1,
+      explicacion:'En un segmento Ethernet con N routers, sin DR/BDR habría N×(N-1)/2 adyacencias FULL (con 5 routers = 10 adyacencias). El DR optimiza esto: todos forman adyacencia FULL solo con el DR y BDR (N-1 adyacencias). El DR genera el LSA Tipo 2 que describe todos los routers conectados al segmento. Cuando un router actualiza su LSA Tipo 1, lo envía al DR (224.0.0.6), y el DR lo redistribuye a todos (224.0.0.5). El BDR monitorea al DR para asumir su rol si cae.'
+    },
+    {
+      pregunta:'Se configura autenticación MD5 en R1 con key ID=1 y en R2 con key ID=2 (misma contraseña). ¿Se formará la adyacencia?',
+      opciones:['Sí — la contraseña es igual, por lo tanto la autenticación funciona','No — OSPF requiere que tanto el key ID como la contraseña sean idénticos en ambos extremos','Sí — el key ID es solo un identificador local','Solo si se usa SHA256 en lugar de MD5'],
+      respuesta:1,
+      explicacion:'En la autenticación MD5 de OSPF, el router verifica DOS cosas: el Key ID y el hash MD5 calculado con la contraseña de ese Key ID. Si R1 usa Key ID=1 y R2 usa Key ID=2, R1 enviará sus Hellos con Key ID=1. R2 buscará su propio Key ID=1 para verificar — como no lo tiene, rechaza el paquete (autenticación falla). Para que funcione: ambos routers deben usar el mismo Key ID con la misma contraseña. Se pueden configurar múltiples claves para rotación de contraseñas.'
+    },
+    {
+      pregunta:'¿Qué información puedes obtener de "show ip ospf interface brief" que no aparece en "show ip ospf neighbor"?',
+      opciones:['El estado de las adyacencias (FULL, 2-WAY, etc.)','El Router ID del vecino','El costo OSPF de cada interfaz, el estado DR/BDR del router local y si la interfaz está en modo pasivo','El tiempo que lleva activa cada adyacencia'],
+      respuesta:2,
+      explicacion:'"show ip ospf interface brief" muestra el costo de cada interfaz (columna Cost), el estado del router local en ese segmento (DR, BDR, DROTHER, LOOP para loopback, POINT_TO_POINT), y el número de vecinos F/C (FULL/total). Esta información es crucial para verificar: 1) que el costo es correcto (reference-bandwidth configurado bien), 2) que el router es el DR donde se espera, 3) que las interfaces pasivas tienen 0 vecinos.'
+    },
+    {
+      pregunta:'¿Cuál es el efecto de ejecutar "timers throttle spf 50 100 5000" en el proceso OSPF?',
+      opciones:['Configura los Hello timers para convergencia rápida','Establece que el SPF se ejecuta 50 veces por segundo con un máximo de 5000 ejecuciones','Configura el backoff exponencial del SPF: 50ms de delay inicial, 100ms mínimo entre ejecuciones consecutivas, y 5000ms de delay máximo','Limita el número de LSAs que se pueden enviar a 50 por segundo'],
+      respuesta:2,
+      explicacion:'Los timers del SPF controlan cuándo y con qué frecuencia se ejecuta el algoritmo Dijkstra tras un cambio de topología. El primer valor (50ms) es el delay inicial antes de la primera ejecución SPF tras un cambio — evita ejecutar SPF por cada LSA si llegan muchos juntos. El segundo (100ms) es el mínimo entre ejecuciones consecutivas. El tercero (5000ms) es el delay máximo que puede alcanzar el backoff exponencial si hay cambios frecuentes. Valores bajos = convergencia rápida pero mayor carga de CPU.'
+    },
+    {
+      pregunta:'Un aprendiz configura "ip route 0.0.0.0 0.0.0.0 10.10.10.18" y "default-information originate always" en R1. ¿Cuál es el riesgo de usar "always"?',
+      opciones:['La default route se propagará con métrica incorrecta','Con "always", R1 continúa propagando la default route incluso si el enlace hacia el ISP (10.10.10.18) está caído, causando que todos los routers OSPF envíen tráfico de Internet a través de R1 hacia un enlace inexistente (black hole)','"always" solo funciona en redes multi-área','No hay riesgo — "always" es siempre la opción recomendada'],
+      respuesta:1,
+      explicacion:'Sin "always": si el enlace hacia el ISP cae y R1 elimina la ruta 0.0.0.0/0 de su tabla, OSPF deja de propagar la default route. Los demás routers eliminan su O*E2 0.0.0.0/0 y el tráfico de Internet se descarta localmente en cada router (comportamiento correcto). Con "always": R1 siempre propaga la default route aunque no tenga camino al ISP. El tráfico de Internet de toda la red llega a R1, que lo descarta (black hole). Solo usar "always" si hay un mecanismo externo que garantice que el enlace ISP está activo.'
+    },
+    {
+      pregunta:'¿Qué comando usarías para verificar que R1 está generando correctamente la default route como ASBR y que los demás routers la recibieron?',
+      opciones:['show ip route 0.0.0.0 en todos los routers','show ip ospf database external en R1 para ver el LSA Tipo 5, y show ip route ospf en los demás routers para ver O*E2 0.0.0.0/0','show ip ospf neighbor detail','show ip protocols'],
+      respuesta:1,
+      explicacion:'La verificación del ASBR requiere dos checks: 1) En el ASBR (R1): "show ip ospf database external" confirma que se generó un LSA Tipo 5 con Link ID 0.0.0.0 (la default route) anunciado por el Router ID de R1 (1.1.1.1). 2) En los demás routers: "show ip route ospf" (o "show ip route | include O\\*E2") confirma que recibieron la default route como "O*E2 0.0.0.0/0 [110/X] via IP-R1". También verificar que "Gateway of last resort" apunta a R1.'
+    }
+  ];
+  if(typeof initQuiz==='function') initQuiz(preguntas,'quiz-container');
+});
+</script>
+</body>
+</html>
