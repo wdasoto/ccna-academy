@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RIP — Routing Information Protocol | CCNA Academy</title>
+  <meta name="description" content="Clase magistral RIP v1 y v2: Routing Information Protocol. Distance Vector, métricas, convergencia, configuración Cisco IOS, limitaciones y troubleshooting.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+
+<div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
+<nav class="ccna-drawer" id="ccnaDrawer">
+  <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
+  <div class="drawer-section"><div class="drawer-section-title">General</div>
+    <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M1 · Fundamentos</div>
+    <a href="fundamentos.html"  class="drawer-link"><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
+    <a href="subnetting.html"   class="drawer-link"><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
+    <a href="calculadora.html"  class="drawer-link"><span class="dl-icon">🧮</span> Calculadora IP</a>
+    <a href="ipv6.html"         class="drawer-link"><span class="dl-icon">6️⃣</span> IPv6</a>
+    <a href="arp.html"          class="drawer-link"><span class="dl-icon">📡</span> ARP</a>
+    <a href="rip.html"          class="drawer-link active"><span class="dl-icon">🔄</span> RIP</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M2 · Dispositivos Cisco</div>
+    <a href="router.html"         class="drawer-link"><span class="dl-icon">📡</span> Routers Cisco</a>
+    <a href="switches-cisco.html" class="drawer-link"><span class="dl-icon">🔀</span> Switches Cisco</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M3 · Switching</div>
+    <a href="vlan.html"               class="drawer-link"><span class="dl-icon">🏷️</span> VLANs</a>
+    <a href="inter-vlan-routing.html" class="drawer-link"><span class="dl-icon">🔁</span> Inter-VLAN Routing</a>
+    <a href="stp.html"                class="drawer-link"><span class="dl-icon">🌳</span> STP</a>
+    <a href="etherchannel.html"       class="drawer-link"><span class="dl-icon">🔗</span> EtherChannel</a>
+    <a href="port-security.html"      class="drawer-link"><span class="dl-icon">🔒</span> Port Security</a>
+    <a href="cdp-lldp.html"           class="drawer-link"><span class="dl-icon">🔍</span> CDP / LLDP</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M4 · Routing</div>
+    <a href="routing.html"            class="drawer-link"><span class="dl-icon">🗺️</span> Routing Estático</a>
+    <a href="ospf.html"               class="drawer-link"><span class="dl-icon">⭕</span> OSPF</a>
+    <a href="eigrp.html"              class="drawer-link"><span class="dl-icon">⚡</span> EIGRP</a>
+    <a href="ospfv2-masterclass.html" class="drawer-link"><span class="dl-icon">🎯</span> OSPFv2 Masterclass</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M5 · Servicios IP</div>
+    <a href="dhcp.html" class="drawer-link"><span class="dl-icon">📋</span> DHCP</a>
+    <a href="nat.html"  class="drawer-link"><span class="dl-icon">🔄</span> NAT / PAT</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M6 · Seguridad</div>
+    <a href="acl.html" class="drawer-link"><span class="dl-icon">🛡️</span> ACLs</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M7 · WAN &amp; QoS</div>
+    <a href="wan.html" class="drawer-link"><span class="dl-icon">🌍</span> WAN</a>
+    <a href="qos.html" class="drawer-link"><span class="dl-icon">📊</span> QoS</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">⚡ Herramientas</div>
+    <a href="asistente.html"   class="drawer-link"><span class="dl-icon">🤖</span> Asistente IA</a>
+    <a href="netbot.html"      class="drawer-link"><span class="dl-icon">⚙️</span> NetBot Config</a>
+    <a href="calculadora.html" class="drawer-link"><span class="dl-icon">🧮</span> Calculadora IP</a></div>
+</nav>
+<header class="navbar">
+  <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
+  <a href="../index.html" class="navbar-brand">CISCO<span> ACADEMY</span></a>
+  <div class="navbar-spacer"></div>
+  <a href="../index.html" class="navbar-link">← Inicio</a>
+</header>
+<script src="../assets/main.js" defer></script>
+<div class="nav-spacer"></div>
+
+<!-- HERO -->
+<section class="class-hero">
+  <div class="class-hero-inner">
+    <div class="class-badge">M1 · FUNDAMENTOS · PROTOCOLO DISTANCE VECTOR</div>
+    <h1 class="class-title">RIP <span class="class-title-accent">Routing Information Protocol</span></h1>
+    <p class="class-subtitle">El protocolo de routing dinámico más antiguo aún relevante para el CCNA. Comprenderlo profundamente enseña los fundamentos de todos los protocolos Distance Vector: Bellman-Ford, actualizaciones periódicas, conteo al infinito y mecanismos anti-bucle.</p>
+    <div class="class-meta">
+      <span class="meta-item">📋 RFC 1058 (v1) · RFC 2453 (v2)</span>
+      <span class="meta-item">🎯 CCNA 200-301 Exam Topic 3.1</span>
+      <span class="meta-item">⏱ ~70 min lectura</span>
+      <span class="meta-item">🧪 Lab incluido</span>
+    </div>
+  </div>
+</section>
+
+<!-- TABS -->
+<div class="tabs-wrap">
+  <div class="tabs-bar">
+    <button class="tab-btn active" onclick="showTab('teoria',this)">📖 Teoría</button>
+    <button class="tab-btn" onclick="showTab('algoritmo',this)">🧮 Algoritmo</button>
+    <button class="tab-btn" onclick="showTab('v1vsv2',this)">📊 RIPv1 vs v2</button>
+    <button class="tab-btn" onclick="showTab('bucles',this)">⚠️ Bucles &amp; Fixes</button>
+    <button class="tab-btn" onclick="showTab('cli',this)">💻 CLI Cisco</button>
+    <button class="tab-btn" onclick="showTab('lab',this)">🧪 Laboratorio</button>
+    <button class="tab-btn" onclick="showTab('tabla',this)">📊 Referencia</button>
+    <button class="tab-btn" onclick="showTab('trouble',this)">🔧 Troubleshooting</button>
+    <button class="tab-btn" onclick="showTab('quiz',this)">🎯 Quiz</button>
+  </div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 1 — TEORÍA
+══════════════════════════════════════════════ -->
+<div id="tab-teoria" class="tab-content active">
+<div class="content-block">
+  <h2 class="section-title">Historia y contexto de RIP</h2>
+  <p>RIP es el protocolo de routing dinámico más antiguo que sigue siendo parte del temario CCNA. Nació en los años 70 en Xerox PARC como parte del protocolo XEROX Network Systems (XNS). Fue estandarizado para IP en la <strong>RFC 1058 en 1988</strong> (RIPv1) y mejorado en la <strong>RFC 2453 en 1998</strong> (RIPv2).</p>
+  <p>Aunque en producción moderna RIP ha sido casi completamente reemplazado por OSPF y EIGRP, su estudio es fundamental porque:</p>
+  <ul>
+    <li>Enseña los conceptos base de <strong>Distance Vector routing</strong></li>
+    <li>Ilustra el problema del <strong>conteo al infinito</strong> y cómo resolverlo</li>
+    <li>Es referencia para entender por qué OSPF y EIGRP son superiores</li>
+    <li>Sigue siendo el protocolo más fácil de configurar en escenarios simples</li>
+    <li>Aparece en exámenes CCNA como protocolo de comparación y troubleshooting</li>
+  </ul>
+
+  <h2 class="section-title">Clasificación de RIP</h2>
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">📏</div>
+      <h3>Tipo: Distance Vector</h3>
+      <p>Cada router conoce solo la distancia (métrica) y la dirección (siguiente salto) hacia cada red. NO tiene visión completa de la topología. Usa el algoritmo de <strong>Bellman-Ford</strong>.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">📊</div>
+      <h3>Métrica: Hop Count</h3>
+      <p>La métrica de RIP es el <strong>número de saltos</strong> (routers) entre el origen y la red destino. Sin importar el ancho de banda ni la latencia — solo cuenta routers.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🔢</div>
+      <h3>Máximo: 15 hops</h3>
+      <p>RIP tiene un límite de <strong>15 saltos</strong>. La métrica 16 se considera infinito (inalcanzable). Esto limita severamente el tamaño de la red donde puede usarse.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">⏱</div>
+      <h3>Actualizaciones: 30 seg</h3>
+      <p>RIP envía su tabla de routing completa cada <strong>30 segundos</strong> a sus vecinos, independientemente de si hubo cambios. Esto genera tráfico constante incluso en redes estables.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🏷️</div>
+      <h3>AD: 120</h3>
+      <p>La <strong>Distancia Administrativa</strong> de RIP es 120. Es la más alta entre los protocolos IGP comunes (EIGRP=90, OSPF=110). Si existe ruta estática o por otro protocolo, RIP pierde.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">📡</div>
+      <h3>Transporte: UDP 520</h3>
+      <p>RIP usa <strong>UDP puerto 520</strong> para enviar sus actualizaciones. RIPv1 usa broadcast 255.255.255.255. RIPv2 usa multicast 224.0.0.9.</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">Cómo construye RIP su tabla de routing</h2>
+  <p>RIP usa un proceso simple basado en "escuchar a los vecinos":</p>
+  <ol>
+    <li><strong>Al arrancar</strong>: El router agrega a su tabla las redes directamente conectadas (hop count = 0)</li>
+    <li><strong>Cada 30 segundos</strong>: Envía su tabla completa a todos sus vecinos RIP</li>
+    <li><strong>Al recibir actualización</strong>: Para cada ruta recibida, agrega 1 al hop count y compara con su tabla actual</li>
+    <li><strong>Principio de Bellman-Ford</strong>: Si la nueva métrica es menor que la existente, reemplaza la ruta</li>
+    <li><strong>Convergencia</strong>: Después de varias rondas de actualizaciones, todos los routers tienen tablas consistentes</li>
+  </ol>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Regla fundamental de RIP</div>
+    <p>Un router RIP <strong>siempre elige la ruta con MENOR hop count</strong>. Si hay dos rutas a la misma red con el mismo hop count, RIP hace <strong>load balancing</strong> (hasta 4 rutas por defecto, configurable hasta 16 con <code>maximum-paths</code>).</p>
+  </div>
+
+  <h2 class="section-title">Timers de RIP — Los 4 temporizadores</h2>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead><tr><th>Timer</th><th>Valor Default</th><th>Función</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Update Timer</strong></td><td>30 segundos</td><td>Frecuencia de envío de actualizaciones periódicas completas</td></tr>
+        <tr><td><strong>Invalid Timer</strong></td><td>180 segundos</td><td>Si no se recibe actualización para una ruta en 180s, se marca como inválida (métrica=16)</td></tr>
+        <tr><td><strong>Holddown Timer</strong></td><td>180 segundos</td><td>Período en que se ignoran actualizaciones con métricas peores para una ruta marcada como caída</td></tr>
+        <tr><td><strong>Flush Timer</strong></td><td>240 segundos</td><td>Tiempo después del cual la ruta inválida se elimina completamente de la tabla</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚠️ Convergencia lenta</div>
+    <p>La convergencia de RIP puede tardar hasta <strong>180+ segundos</strong> en detectar una falla (Invalid Timer) más el tiempo de propagación entre routers. En una red de 15 saltos, la convergencia completa puede superar los 5 minutos. OSPF y EIGRP convergen en segundos.</p>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 2 — ALGORITMO
+══════════════════════════════════════════════ -->
+<div id="tab-algoritmo" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Algoritmo de Bellman-Ford en RIP</h2>
+  <p>RIP implementa el algoritmo de <strong>Bellman-Ford distribuido</strong>. A diferencia de Dijkstra (usado por OSPF), Bellman-Ford no requiere conocer la topología completa — cada nodo solo necesita la información de sus vecinos directos.</p>
+
+  <div class="diagram-box">
+    <div class="diagram-title">Topología de ejemplo — 4 routers</div>
+    <svg viewBox="0 0 700 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:700px;">
+      <!-- Routers -->
+      <rect x="30"  y="70" width="90" height="55" rx="8" fill="#0d1220" stroke="#00d4aa" stroke-width="1.5"/>
+      <text x="75"  y="95"  text-anchor="middle" fill="#00d4aa" font-size="12" font-family="Share Tech Mono">R1</text>
+      <text x="75"  y="113" text-anchor="middle" fill="#6b7a9a" font-size="9"  font-family="Share Tech Mono">10.0.1.0/24</text>
+      <rect x="200" y="70" width="90" height="55" rx="8" fill="#0d1220" stroke="#38bdf8" stroke-width="1.5"/>
+      <text x="245" y="95"  text-anchor="middle" fill="#38bdf8" font-size="12" font-family="Share Tech Mono">R2</text>
+      <text x="245" y="113" text-anchor="middle" fill="#6b7a9a" font-size="9"  font-family="Share Tech Mono">10.0.2.0/24</text>
+      <rect x="370" y="70" width="90" height="55" rx="8" fill="#0d1220" stroke="#a78bfa" stroke-width="1.5"/>
+      <text x="415" y="95"  text-anchor="middle" fill="#a78bfa" font-size="12" font-family="Share Tech Mono">R3</text>
+      <text x="415" y="113" text-anchor="middle" fill="#6b7a9a" font-size="9"  font-family="Share Tech Mono">10.0.3.0/24</text>
+      <rect x="540" y="70" width="90" height="55" rx="8" fill="#0d1220" stroke="#fbbf24" stroke-width="1.5"/>
+      <text x="585" y="95"  text-anchor="middle" fill="#fbbf24" font-size="12" font-family="Share Tech Mono">R4</text>
+      <text x="585" y="113" text-anchor="middle" fill="#6b7a9a" font-size="9"  font-family="Share Tech Mono">10.0.4.0/24</text>
+      <!-- Links -->
+      <line x1="120" y1="97" x2="200" y2="97" stroke="#4a5780" stroke-width="2"/>
+      <line x1="290" y1="97" x2="370" y2="97" stroke="#4a5780" stroke-width="2"/>
+      <line x1="460" y1="97" x2="540" y2="97" stroke="#4a5780" stroke-width="2"/>
+      <text x="160" y="88" text-anchor="middle" fill="#374060" font-size="9" font-family="Share Tech Mono">10.0.12.0</text>
+      <text x="330" y="88" text-anchor="middle" fill="#374060" font-size="9" font-family="Share Tech Mono">10.0.23.0</text>
+      <text x="500" y="88" text-anchor="middle" fill="#374060" font-size="9" font-family="Share Tech Mono">10.0.34.0</text>
+      <!-- Hop labels -->
+      <text x="245" y="170" text-anchor="middle" fill="#38bdf8" font-size="9" font-family="Share Tech Mono">R2 → 10.0.1.0: 1 hop</text>
+      <text x="415" y="170" text-anchor="middle" fill="#a78bfa" font-size="9" font-family="Share Tech Mono">R3 → 10.0.1.0: 2 hops</text>
+      <text x="585" y="170" text-anchor="middle" fill="#fbbf24" font-size="9" font-family="Share Tech Mono">R4 → 10.0.1.0: 3 hops</text>
+    </svg>
+  </div>
+
+  <h3 class="sub-title">Proceso de convergencia paso a paso</h3>
+  <div class="process-steps">
+    <div class="process-step">
+      <div class="step-num">T=0</div>
+      <div class="step-content">
+        <div class="step-title">Estado inicial — solo redes conectadas</div>
+        <div class="table-wrap" style="margin-top:8px;">
+          <table class="ref-table">
+            <thead><tr><th>Router</th><th>Conoce</th><th>Hop Count</th></tr></thead>
+            <tbody>
+              <tr><td>R1</td><td>10.0.1.0, 10.0.12.0</td><td>0</td></tr>
+              <tr><td>R2</td><td>10.0.2.0, 10.0.12.0, 10.0.23.0</td><td>0</td></tr>
+              <tr><td>R3</td><td>10.0.3.0, 10.0.23.0, 10.0.34.0</td><td>0</td></tr>
+              <tr><td>R4</td><td>10.0.4.0, 10.0.34.0</td><td>0</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="process-step">
+      <div class="step-num">T=30s</div>
+      <div class="step-content">
+        <div class="step-title">Primera ronda de actualizaciones</div>
+        <p>R1 envía su tabla a R2. R2 agrega 1 y aprende 10.0.1.0 con metric=1. R2 envía su tabla a R1 y R3. R3 aprende redes de R2 con metric=1. R3 envía a R4. Y así sucesivamente.</p>
+        <p>Después de la primera ronda: cada router conoce las redes de sus vecinos directos con metric=1.</p>
+      </div>
+    </div>
+    <div class="process-step">
+      <div class="step-num">T=60s</div>
+      <div class="step-content">
+        <div class="step-title">Segunda ronda — propagación continúa</div>
+        <p>Ahora R1 sabe de las redes de R3 (via R2, metric=2). R4 sabe de las redes de R2 (via R3, metric=2). La información se propaga un "salto" más por ronda.</p>
+      </div>
+    </div>
+    <div class="process-step">
+      <div class="step-num">T=90s</div>
+      <div class="step-content">
+        <div class="step-title">Convergencia completa</div>
+        <p>Todos los routers conocen todas las redes. R1 sabe que 10.0.4.0 está a 3 hops via R2. R4 sabe que 10.0.1.0 está a 3 hops via R3. La red convergió — tardó 3 rondas × 30 segundos = 90 segundos.</p>
+        <div class="info-box tip" style="margin-top:8px;">
+          <div class="info-box-title">Regla de convergencia</div>
+          <p>En una cadena lineal de N routers, RIP necesita <strong>N-1 rondas de actualización</strong> para converger completamente. Con el timer de 30s: convergencia inicial = (N-1) × 30 segundos.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 3 — RIPv1 vs RIPv2
+══════════════════════════════════════════════ -->
+<div id="tab-v1vsv2" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">RIPv1 vs RIPv2 — Diferencias críticas</h2>
+
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead><tr><th>Característica</th><th>RIPv1</th><th>RIPv2</th></tr></thead>
+      <tbody>
+        <tr><td><strong>RFC</strong></td><td>RFC 1058 (1988)</td><td>RFC 2453 (1998)</td></tr>
+        <tr><td><strong>Clasless/Classful</strong></td><td>Classful — NO incluye máscara</td><td>Classless — SÍ incluye máscara</td></tr>
+        <tr><td><strong>Soporte VLSM</strong></td><td>❌ NO soporta VLSM</td><td>✅ SÍ soporta VLSM</td></tr>
+        <tr><td><strong>Envío de actualizaciones</strong></td><td>Broadcast 255.255.255.255</td><td>Multicast 224.0.0.9</td></tr>
+        <tr><td><strong>Autenticación</strong></td><td>❌ Ninguna</td><td>✅ MD5 y texto plano</td></tr>
+        <tr><td><strong>Summarization automática</strong></td><td>Siempre (no desactivable)</td><td>Por defecto ON, se puede desactivar</td></tr>
+        <tr><td><strong>Next-hop field</strong></td><td>❌ No incluye</td><td>✅ Incluye next-hop en actualización</td></tr>
+        <tr><td><strong>Route tag</strong></td><td>❌ No soporta</td><td>✅ Permite etiquetar rutas externas</td></tr>
+        <tr><td><strong>Métrica máxima</strong></td><td>15 hops</td><td>15 hops (igual)</td></tr>
+        <tr><td><strong>AD</strong></td><td>120</td><td>120 (igual)</td></tr>
+        <tr><td><strong>UDP Puerto</strong></td><td>520</td><td>520 (igual)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="section-title">El problema del Classful Routing en RIPv1</h2>
+  <p>RIPv1 no incluye la máscara de subred en sus actualizaciones. Esto causa el comportamiento <strong>classful</strong>:</p>
+  <ul>
+    <li>Cuando una actualización cruza una frontera de red classful, el receptor aplica la máscara de clase predeterminada</li>
+    <li>Si la subred usa la misma máscara que la red classful que la contiene y están en la misma interfaz, se resume automáticamente</li>
+    <li><strong>Consecuencia:</strong> Subredes discontinuas y VLSM son imposibles con RIPv1</li>
+  </ul>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚠️ Ejemplo de problema Classful</div>
+    <p>Si tienes 10.1.1.0/25 y 10.1.1.128/25, RIPv1 las resume ambas como 10.0.0.0/8 al cruzar la frontera de red. Los routers del otro lado solo ven 10.0.0.0/8, perdiendo la información de las subredes. Con RIPv2 y <code>no auto-summary</code>, ambas subredes se anuncian con sus máscaras correctas.</p>
+  </div>
+
+  <h2 class="section-title">Auto-Summary en RIPv2</h2>
+  <p>RIPv2 hereda la auto-summarization de RIPv1 y la tiene habilitada por defecto. Debe desactivarse en casi todos los escenarios modernos:</p>
+  <div class="code-block">
+    <div class="code-label">Deshabilitar auto-summary en RIPv2</div>
+    <pre><code>Router(config)# router rip
+Router(config-router)# version 2
+Router(config-router)# no auto-summary
+<span class="cmd-comment">! CRÍTICO: sin "no auto-summary", RIPv2 resume a límites classful</span>
+<span class="cmd-comment">! Con "no auto-summary", anuncia subredes con sus máscaras exactas</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Autenticación en RIPv2</h2>
+  <div class="code-block">
+    <div class="code-label">Configurar autenticación MD5 en RIPv2</div>
+    <pre><code><span class="cmd-comment">! Paso 1: Crear key chain</span>
+Router(config)# key chain RIP-AUTH
+Router(config-keychain)# key 1
+Router(config-keychain-key)# key-string Mi$ecreto123
+
+<span class="cmd-comment">! Paso 2: Aplicar en la interfaz</span>
+Router(config)# interface GigabitEthernet0/0
+Router(config-if)# ip rip authentication mode md5
+Router(config-if)# ip rip authentication key-chain RIP-AUTH
+
+<span class="cmd-comment">! Verificar autenticación</span>
+Router# show ip rip database
+Router# debug ip rip</code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 4 — BUCLES Y FIXES
+══════════════════════════════════════════════ -->
+<div id="tab-bucles" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">El problema del Conteo al Infinito</h2>
+  <p>El mayor problema de los protocolos Distance Vector como RIP es el <strong>conteo al infinito (counting to infinity)</strong>. Ocurre cuando una red deja de ser alcanzable y los routers se informan circularmente rutas incorrectas.</p>
+
+  <div class="attack-diagram" style="border-color:rgba(251,191,36,0.2);">
+    <div class="diagram-title" style="color:#fbbf24;">⚠️ Escenario: Red 10.1.0.0 se cae</div>
+    <div class="attack-steps">
+      <div class="attack-step">
+        <span class="attack-num" style="border-color:#fbbf24;color:#fbbf24;background:rgba(251,191,36,0.1);">1</span>
+        <span style="color:#8294b8;">Red 10.1.0.0 directamente conectada a R1 falla. R1 marca la ruta como inválida (metric=16)</span>
+      </div>
+      <div class="attack-step">
+        <span class="attack-num" style="border-color:#fbbf24;color:#fbbf24;background:rgba(251,191,36,0.1);">2</span>
+        <span style="color:#8294b8;">Antes de que R1 envíe su actualización, R2 envía su tabla: "Yo llego a 10.1.0.0 en 2 hops"</span>
+      </div>
+      <div class="attack-step">
+        <span class="attack-num" style="border-color:#fbbf24;color:#fbbf24;background:rgba(251,191,36,0.1);">3</span>
+        <span style="color:#8294b8;">R1 recibe la actualización de R2 y piensa: "R2 llega a 10.1.0.0 — yo llego via R2 en 3 hops"</span>
+      </div>
+      <div class="attack-step">
+        <span class="attack-num" style="border-color:#fbbf24;color:#fbbf24;background:rgba(251,191,36,0.1);">4</span>
+        <span style="color:#8294b8;">R1 anuncia 10.1.0.0 en 3 hops a R2. R2 actualiza a 4 hops. R1 actualiza a 5. El conteo sube hasta 16...</span>
+      </div>
+      <div class="attack-step">
+        <span class="attack-num" style="border-color:#fbbf24;color:#fbbf24;background:rgba(251,191,36,0.1);">5</span>
+        <span style="color:#8294b8;">Solo cuando la métrica llega a 16 (infinito) ambos routers eliminan la ruta. Mientras tanto, los paquetes forman bucles</span>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="section-title">Mecanismos anti-bucle de RIP</h2>
+  <p>RIP implementa varios mecanismos para mitigar (no eliminar completamente) el problema del conteo al infinito:</p>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">🔢</div>
+      <h3>Máximo de 15 Hops</h3>
+      <p>Al definir 16 como infinito, el conteo al infinito termina en 16 iteraciones máximo, no puede ir al infinito real. Limita el daño aunque no lo previene.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🔄</div>
+      <h3>Split Horizon</h3>
+      <p>Un router <strong>NO anuncia de vuelta</strong> una ruta por la misma interfaz por la que la aprendió. Si R2 aprendió 10.1.0.0 de R1, no se lo anuncia de vuelta a R1. Previene bucles de 2 routers.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">☠️</div>
+      <h3>Route Poisoning</h3>
+      <p>Cuando una red falla, el router la anuncia inmediatamente con <strong>métrica = 16</strong> (veneno). Así los vecinos saben que la ruta está muerta, sin esperar el Invalid Timer.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🔙</div>
+      <h3>Poison Reverse</h3>
+      <p>Combinación de Split Horizon + Route Poisoning. Cuando R2 aprende que 10.1.0.0 está muerta (metric=16), le anuncia de vuelta a R1 con metric=16. <strong>Garantiza que R1 no use esa ruta.</strong></p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">⏸</div>
+      <h3>Holddown Timer</h3>
+      <p>Cuando una ruta se marca como inválida, el router <strong>ignora actualizaciones con peores métricas</strong> por 180 segundos. Evita que información incorrecta de routers lentos sobrescriba la info correcta.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">⚡</div>
+      <h3>Triggered Updates</h3>
+      <p>Cuando hay un cambio de topología, el router envía una <strong>actualización inmediata</strong> sin esperar el timer de 30 segundos. Acelera la convergencia ante fallas.</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">Split Horizon — Configuración</h2>
+  <div class="code-block">
+    <div class="code-label">Split Horizon en Cisco IOS</div>
+    <pre><code><span class="cmd-comment">! Split Horizon está habilitado por defecto en todas las interfaces</span>
+<span class="cmd-comment">! Verificar estado</span>
+Router# show ip interface GigabitEthernet0/0 | include Split
+<span class="cmd-output">  Split horizon is enabled</span>
+
+<span class="cmd-comment">! Deshabilitar Split Horizon (necesario en Hub-and-Spoke Frame Relay)</span>
+Router(config)# interface Serial0/0
+Router(config-if)# no ip split-horizon
+
+<span class="cmd-comment">! Rehabilitar</span>
+Router(config-if)# ip split-horizon
+
+<span class="cmd-comment">! NOTA: En Frame Relay con subinterfaces point-to-point,</span>
+<span class="cmd-comment">! Split Horizon funciona correctamente y debe mantenerse habilitado</span></code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 5 — CLI CISCO
+══════════════════════════════════════════════ -->
+<div id="tab-cli" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Configuración completa de RIPv2 en Cisco IOS</h2>
+
+  <div class="code-block">
+    <div class="code-label">Configuración básica RIPv2</div>
+    <pre><code><span class="cmd-comment">! Paso 1: Entrar al proceso RIP</span>
+Router(config)# router rip
+
+<span class="cmd-comment">! Paso 2: Especificar versión 2 (CRÍTICO)</span>
+Router(config-router)# version 2
+
+<span class="cmd-comment">! Paso 3: Deshabilitar auto-summary (SIEMPRE en RIPv2)</span>
+Router(config-router)# no auto-summary
+
+<span class="cmd-comment">! Paso 4: Anunciar redes directamente conectadas</span>
+<span class="cmd-comment">! IMPORTANTE: Se usa la dirección de red CLASSFUL, no la subred</span>
+Router(config-router)# network 192.168.1.0
+Router(config-router)# network 10.0.0.0
+Router(config-router)# network 172.16.0.0
+
+<span class="cmd-comment">! Paso 5: Interfaces pasivas (no enviar RIP pero sí procesar)</span>
+Router(config-router)# passive-interface GigabitEthernet0/1
+<span class="cmd-comment">! Usar en interfaces hacia hosts, no hacia otros routers</span>
+
+<span class="cmd-comment">! Paso 6 (opcional): Default route a través de RIP</span>
+Router(config-router)# default-information originate</code></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">Comandos de verificación esenciales</div>
+    <pre><code><span class="cmd-comment">! Ver tabla de routing — buscar rutas "R" (RIP)</span>
+Router# show ip route
+<span class="cmd-output">Codes: C - connected, S - static, R - RIP, ...
+       [120/1] via 10.0.0.2, 00:00:14, GigabitEthernet0/0
+R     192.168.2.0/24 [120/1] via 10.0.0.2, 00:00:14, Gi0/0
+R     192.168.3.0/24 [120/2] via 10.0.0.2, 00:00:14, Gi0/0</span>
+<span class="cmd-comment">! [120/X] = [AD/metric] → AD=120 siempre para RIP, X = hop count</span>
+
+<span class="cmd-comment">! Ver solo rutas RIP</span>
+Router# show ip route rip
+
+<span class="cmd-comment">! Ver base de datos RIP</span>
+Router# show ip rip database
+<span class="cmd-output">192.168.1.0/24    auto-summary
+192.168.1.0/24
+    [1] via 10.0.0.1, 00:00:07, GigabitEthernet0/0
+192.168.2.0/24
+    directly connected, GigabitEthernet0/1</span>
+
+<span class="cmd-comment">! Ver configuración del proceso RIP</span>
+Router# show running-config | section router rip
+<span class="cmd-output">router rip
+ version 2
+ no auto-summary
+ network 10.0.0.0
+ network 192.168.2.0
+ passive-interface GigabitEthernet0/1</span>
+
+<span class="cmd-comment">! Ver protocolos de routing activos</span>
+Router# show ip protocols
+<span class="cmd-output">Routing Protocol is "rip"
+  Outgoing update filter list for all interfaces is not set
+  Incoming update filter list for all interfaces is not set
+  Sending updates every 30 seconds, next due in 12 seconds
+  Invalid after 180 seconds, hold down 180, flushed after 240
+  Redistributing: rip
+  Default version control: send version 2, receive version 2
+    Interface        Send  Recv  Triggered RIP  Key-chain
+    GigabitEthernet0/0  2     2
+  Automatic network summarization is not in effect
+  Maximum path: 4
+  Routing for Networks:
+    10.0.0.0
+    192.168.2.0
+  Passive Interface(s):
+    GigabitEthernet0/1
+  Routing Information Sources:
+    Gateway    Distance  Last Update
+    10.0.0.1   120       00:00:14</span></code></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">Debug RIP — análisis en tiempo real</div>
+    <pre><code><span class="cmd-comment">! Ver actualizaciones RIP enviadas y recibidas</span>
+Router# debug ip rip
+<span class="cmd-output">RIP: sending  v2 update to 224.0.0.9 via GigabitEthernet0/0 (10.0.0.1)
+RIP: build update entries
+      192.168.2.0/24 via 0.0.0.0, metric 1, tag 0
+RIP: received v2 update from 10.0.0.2 on GigabitEthernet0/0
+      192.168.3.0/24 via 0.0.0.0 in 1 hops
+      192.168.4.0/24 via 0.0.0.0 in 2 hops</span>
+
+<span class="cmd-comment">! Ver eventos RIP (fallas, convergencia)</span>
+Router# debug ip rip events
+
+<span class="cmd-comment">! Desactivar debug</span>
+Router# undebug all</code></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">Ajuste de timers RIP</div>
+    <pre><code><span class="cmd-comment">! Modificar timers (update invalid holddown flush)</span>
+Router(config-router)# timers basic 30 180 180 240
+<span class="cmd-comment">! Ejemplo con convergencia más rápida (lab):</span>
+Router(config-router)# timers basic 5 15 15 30
+
+<span class="cmd-comment">! IMPORTANTE: Los timers deben ser IDÉNTICOS en todos los routers RIP</span>
+<span class="cmd-comment">! Si difieren, puede haber problemas de routing intermitente</span>
+
+<span class="cmd-comment">! Load balancing — máximo de rutas de igual costo (default: 4)</span>
+Router(config-router)# maximum-paths 8
+<span class="cmd-comment">! Rango: 1-16 en IOS moderno</span></code></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">Redistribución con RIP</div>
+    <pre><code><span class="cmd-comment">! Redistribuir rutas estáticas a RIP</span>
+Router(config-router)# redistribute static metric 5
+<span class="cmd-comment">! metric 5 = hop count que se asigna a las rutas redistribuidas</span>
+
+<span class="cmd-comment">! Redistribuir rutas conectadas</span>
+Router(config-router)# redistribute connected metric 1
+
+<span class="cmd-comment">! Inyectar ruta default (0.0.0.0/0) en RIP</span>
+Router(config)# ip route 0.0.0.0 0.0.0.0 [next-hop o interfaz]
+Router(config)# router rip
+Router(config-router)# default-information originate</code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 6 — LABORATORIO
+══════════════════════════════════════════════ -->
+<div id="tab-lab" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">🧪 Laboratorio RIPv2 — Packet Tracer</h2>
+
+  <div class="lab-topology">
+    <div class="diagram-title">Topología del Laboratorio — 3 routers</div>
+    <svg viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:700px;">
+      <!-- R1 -->
+      <rect x="30" y="110" width="130" height="75" rx="8" fill="#0d1220" stroke="#00d4aa" stroke-width="1.5"/>
+      <text x="95" y="135" text-anchor="middle" fill="#00d4aa" font-size="12" font-family="Share Tech Mono">R1</text>
+      <text x="95" y="153" text-anchor="middle" fill="#6b7a9a" font-size="9" font-family="Share Tech Mono">Gi0/0: 192.168.1.1</text>
+      <text x="95" y="166" text-anchor="middle" fill="#6b7a9a" font-size="9" font-family="Share Tech Mono">Gi0/1: 10.0.12.1</text>
+      <text x="95" y="179" text-anchor="middle" fill="#374060" font-size="8" font-family="Share Tech Mono">LAN: 192.168.1.0/24</text>
+      <!-- R2 -->
+      <rect x="270" y="110" width="145" height="75" rx="8" fill="#0d1220" stroke="#38bdf8" stroke-width="1.5"/>
+      <text x="343" y="135" text-anchor="middle" fill="#38bdf8" font-size="12" font-family="Share Tech Mono">R2</text>
+      <text x="343" y="153" text-anchor="middle" fill="#6b7a9a" font-size="9" font-family="Share Tech Mono">Gi0/0: 10.0.12.2</text>
+      <text x="343" y="166" text-anchor="middle" fill="#6b7a9a" font-size="9" font-family="Share Tech Mono">Gi0/1: 10.0.23.1</text>
+      <text x="343" y="179" text-anchor="middle" fill="#374060" font-size="8" font-family="Share Tech Mono">LAN: 192.168.2.0/24</text>
+      <!-- R3 -->
+      <rect x="530" y="110" width="140" height="75" rx="8" fill="#0d1220" stroke="#a78bfa" stroke-width="1.5"/>
+      <text x="600" y="135" text-anchor="middle" fill="#a78bfa" font-size="12" font-family="Share Tech Mono">R3</text>
+      <text x="600" y="153" text-anchor="middle" fill="#6b7a9a" font-size="9" font-family="Share Tech Mono">Gi0/0: 10.0.23.2</text>
+      <text x="600" y="166" text-anchor="middle" fill="#6b7a9a" font-size="9" font-family="Share Tech Mono">Gi0/1: 192.168.3.1</text>
+      <text x="600" y="179" text-anchor="middle" fill="#374060" font-size="8" font-family="Share Tech Mono">LAN: 192.168.3.0/24</text>
+      <!-- PC LAN1 -->
+      <rect x="30" y="230" width="130" height="45" rx="6" fill="#090d1a" stroke="#374060" stroke-width="1"/>
+      <text x="95" y="252" text-anchor="middle" fill="#6b7a9a" font-size="10" font-family="Share Tech Mono">PC-A</text>
+      <text x="95" y="267" text-anchor="middle" fill="#374060" font-size="8" font-family="Share Tech Mono">192.168.1.10/24</text>
+      <!-- PC LAN3 -->
+      <rect x="530" y="230" width="140" height="45" rx="6" fill="#090d1a" stroke="#374060" stroke-width="1"/>
+      <text x="600" y="252" text-anchor="middle" fill="#6b7a9a" font-size="10" font-family="Share Tech Mono">PC-C</text>
+      <text x="600" y="267" text-anchor="middle" fill="#374060" font-size="8" font-family="Share Tech Mono">192.168.3.10/24</text>
+      <!-- Links -->
+      <line x1="160" y1="148" x2="270" y2="148" stroke="#4a5780" stroke-width="2"/>
+      <line x1="415" y1="148" x2="530" y2="148" stroke="#4a5780" stroke-width="2"/>
+      <line x1="95"  y1="185" x2="95"  y2="230" stroke="#374060" stroke-width="1.5"/>
+      <line x1="600" y1="185" x2="600" y2="230" stroke="#374060" stroke-width="1.5"/>
+      <!-- Link labels -->
+      <text x="215" y="140" text-anchor="middle" fill="#4a5780" font-size="8" font-family="Share Tech Mono">10.0.12.0/30</text>
+      <text x="473" y="140" text-anchor="middle" fill="#4a5780" font-size="8" font-family="Share Tech Mono">10.0.23.0/30</text>
+      <!-- RIP label -->
+      <text x="350" y="40" text-anchor="middle" fill="#00d4aa" font-size="11" font-family="Orbitron">RIPv2</text>
+      <text x="350" y="58" text-anchor="middle" fill="#374060" font-size="9" font-family="Share Tech Mono">no auto-summary · AD 120 · max 15 hops</text>
+      <line x1="160" y1="70" x2="530" y2="70" stroke="rgba(0,212,170,0.2)" stroke-width="1" stroke-dasharray="4,3"/>
+      <line x1="160" y1="70" x2="160" y2="110" stroke="rgba(0,212,170,0.2)" stroke-width="1" stroke-dasharray="4,3"/>
+      <line x1="530" y1="70" x2="530" y2="110" stroke="rgba(0,212,170,0.2)" stroke-width="1" stroke-dasharray="4,3"/>
+    </svg>
+  </div>
+
+  <h3 class="sub-title">Tabla de Direccionamiento</h3>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead><tr><th>Dispositivo</th><th>Interfaz</th><th>IP / Máscara</th><th>Gateway</th></tr></thead>
+      <tbody>
+        <tr><td>R1</td><td>GigabitEthernet0/0</td><td>192.168.1.1 /24</td><td>—</td></tr>
+        <tr><td>R1</td><td>GigabitEthernet0/1</td><td>10.0.12.1 /30</td><td>—</td></tr>
+        <tr><td>R2</td><td>GigabitEthernet0/0</td><td>10.0.12.2 /30</td><td>—</td></tr>
+        <tr><td>R2</td><td>GigabitEthernet0/1</td><td>10.0.23.1 /30</td><td>—</td></tr>
+        <tr><td>R3</td><td>GigabitEthernet0/0</td><td>10.0.23.2 /30</td><td>—</td></tr>
+        <tr><td>R3</td><td>GigabitEthernet0/1</td><td>192.168.3.1 /24</td><td>—</td></tr>
+        <tr><td>PC-A</td><td>NIC</td><td>192.168.1.10 /24</td><td>192.168.1.1</td></tr>
+        <tr><td>PC-C</td><td>NIC</td><td>192.168.3.10 /24</td><td>192.168.3.1</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="sub-title">Configuración paso a paso</h3>
+  <div class="lab-steps">
+    <div class="lab-step">
+      <div class="lab-step-num">Parte 1</div>
+      <div class="lab-step-title">Configurar R1</div>
+      <div class="code-block" style="margin-top:8px;">
+        <pre><code>Router> enable
+Router# configure terminal
+Router(config)# hostname R1
+R1(config)# interface GigabitEthernet0/0
+R1(config-if)# ip address 192.168.1.1 255.255.255.0
+R1(config-if)# no shutdown
+R1(config-if)# interface GigabitEthernet0/1
+R1(config-if)# ip address 10.0.12.1 255.255.255.252
+R1(config-if)# no shutdown
+R1(config-if)# exit
+R1(config)# router rip
+R1(config-router)# version 2
+R1(config-router)# no auto-summary
+R1(config-router)# network 192.168.1.0
+R1(config-router)# network 10.0.0.0
+R1(config-router)# passive-interface GigabitEthernet0/0
+R1(config-router)# end</code></pre>
+      </div>
+    </div>
+    <div class="lab-step">
+      <div class="lab-step-num">Parte 2</div>
+      <div class="lab-step-title">Configurar R2</div>
+      <div class="code-block" style="margin-top:8px;">
+        <pre><code>Router(config)# hostname R2
+R2(config)# interface GigabitEthernet0/0
+R2(config-if)# ip address 10.0.12.2 255.255.255.252
+R2(config-if)# no shutdown
+R2(config-if)# interface GigabitEthernet0/1
+R2(config-if)# ip address 10.0.23.1 255.255.255.252
+R2(config-if)# no shutdown
+R2(config-if)# exit
+R2(config)# router rip
+R2(config-router)# version 2
+R2(config-router)# no auto-summary
+R2(config-router)# network 10.0.0.0
+R2(config-router)# end</code></pre>
+      </div>
+    </div>
+    <div class="lab-step">
+      <div class="lab-step-num">Parte 3</div>
+      <div class="lab-step-title">Configurar R3</div>
+      <div class="code-block" style="margin-top:8px;">
+        <pre><code>Router(config)# hostname R3
+R3(config)# interface GigabitEthernet0/0
+R3(config-if)# ip address 10.0.23.2 255.255.255.252
+R3(config-if)# no shutdown
+R3(config-if)# interface GigabitEthernet0/1
+R3(config-if)# ip address 192.168.3.1 255.255.255.0
+R3(config-if)# no shutdown
+R3(config-if)# exit
+R3(config)# router rip
+R3(config-router)# version 2
+R3(config-router)# no auto-summary
+R3(config-router)# network 10.0.0.0
+R3(config-router)# network 192.168.3.0
+R3(config-router)# passive-interface GigabitEthernet0/1
+R3(config-router)# end</code></pre>
+      </div>
+    </div>
+    <div class="lab-step">
+      <div class="lab-step-num">Parte 4</div>
+      <div class="lab-step-title">Verificar convergencia</div>
+      <div class="code-block" style="margin-top:8px;">
+        <pre><code><span class="cmd-comment">! En R1 — esperar ~60-90 segundos y verificar</span>
+R1# show ip route rip
+<span class="cmd-output">R     10.0.23.0/30 [120/1] via 10.0.12.2, 00:00:15, GigabitEthernet0/1
+R     192.168.3.0/24 [120/2] via 10.0.12.2, 00:00:15, GigabitEthernet0/1</span>
+
+R1# show ip protocols
+<span class="cmd-comment">! Verificar: version 2, no auto-summary, networks correctas</span>
+
+<span class="cmd-comment">! Prueba de conectividad extremo a extremo</span>
+R1# ping 192.168.3.10 source 192.168.1.1
+<span class="cmd-output">Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 192.168.3.10, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5)</span></code></pre>
+      </div>
+    </div>
+    <div class="lab-step">
+      <div class="lab-step-num">Parte 5</div>
+      <div class="lab-step-title">Simular falla y observar convergencia</div>
+      <div class="code-block" style="margin-top:8px;">
+        <pre><code><span class="cmd-comment">! Apagar la interfaz entre R2 y R3</span>
+R2(config)# interface GigabitEthernet0/1
+R2(config-if)# shutdown
+
+<span class="cmd-comment">! Observar en R1 cómo la ruta 192.168.3.0/24 desaparece</span>
+R1# show ip route rip
+<span class="cmd-comment">! Puede tardar hasta 180 segundos (Invalid Timer)</span>
+<span class="cmd-comment">! Con debug: ver el proceso de route poisoning</span>
+
+R1# debug ip rip
+<span class="cmd-comment">! Verás que R2 anuncia 192.168.3.0/24 con metric=16</span>
+<span class="cmd-comment">! Luego R1 elimina la ruta</span></code></pre>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 7 — REFERENCIA
+══════════════════════════════════════════════ -->
+<div id="tab-tabla" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Tabla de Referencia RIP Completa</h2>
+  <div id="refTableRIP"></div>
+
+  <h2 class="section-title" style="margin-top:32px;">Comparativa RIP vs OSPF vs EIGRP</h2>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead><tr><th>Característica</th><th>RIP v2</th><th>OSPF</th><th>EIGRP</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Tipo</strong></td><td>Distance Vector</td><td>Link-State</td><td>Advanced Distance Vector</td></tr>
+        <tr><td><strong>Algoritmo</strong></td><td>Bellman-Ford</td><td>Dijkstra (SPF)</td><td>DUAL</td></tr>
+        <tr><td><strong>AD</strong></td><td>120</td><td>110</td><td>90 (internal)</td></tr>
+        <tr><td><strong>Métrica</strong></td><td>Hop count</td><td>Costo (basado en BW)</td><td>Compuesta (BW, delay, etc.)</td></tr>
+        <tr><td><strong>Máx. hops</strong></td><td>15</td><td>Sin límite práctico</td><td>100 (ajustable a 255)</td></tr>
+        <tr><td><strong>Convergencia</strong></td><td>Lenta (minutos)</td><td>Rápida (segundos)</td><td>Muy rápida (milisegundos)</td></tr>
+        <tr><td><strong>Updates</strong></td><td>Periódicas (30s) completas</td><td>Solo ante cambios (LSA)</td><td>Solo ante cambios (partial)</td></tr>
+        <tr><td><strong>Multicast</strong></td><td>224.0.0.9</td><td>224.0.0.5 / 224.0.0.6</td><td>224.0.0.10</td></tr>
+        <tr><td><strong>Autenticación</strong></td><td>MD5 / texto</td><td>MD5 / SHA</td><td>MD5</td></tr>
+        <tr><td><strong>VLSM</strong></td><td>✅ (v2)</td><td>✅</td><td>✅</td></tr>
+        <tr><td><strong>Summarization</strong></td><td>Manual / auto</td><td>Manual por área</td><td>Manual / auto</td></tr>
+        <tr><td><strong>Topología completa</strong></td><td>❌</td><td>✅ LSDB</td><td>Parcial (topología tabla)</td></tr>
+        <tr><td><strong>Propietario</strong></td><td>Estándar (abierto)</td><td>Estándar (abierto)</td><td>Cisco (propietario)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 8 — TROUBLESHOOTING
+══════════════════════════════════════════════ -->
+<div id="tab-trouble" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Problemas comunes en RIP</h2>
+
+  <div class="trouble-list">
+    <div class="trouble-item">
+      <div class="trouble-symptom">❌ No se forman adyacencias RIP — no aparecen rutas "R"</div>
+      <div class="trouble-cause">Causas: versiones incompatibles (v1 vs v2), comando network faltante o incorrecto, passive-interface en la interfaz WAN, ACL bloqueando UDP 520.</div>
+      <div class="trouble-solution">✅ Verificar: <code>show ip protocols</code> (versión y networks), <code>debug ip rip</code> (ver si se envían/reciben updates), <code>show ip interface brief</code> (interfaces up/up).</div>
+    </div>
+    <div class="trouble-item">
+      <div class="trouble-symptom">❌ Rutas RIP aparecen pero con métrica incorrecta</div>
+      <div class="trouble-cause">Auto-summary habilitado enviando rutas resumidas en lugar de las subredes reales, o redistribución con métrica incorrecta.</div>
+      <div class="trouble-solution">✅ Verificar <code>show ip rip database</code> — si ves redes classful (10.0.0.0/8) en vez de subredes, ejecutar <code>no auto-summary</code>.</div>
+    </div>
+    <div class="trouble-item">
+      <div class="trouble-symptom">❌ Rutas aparecen y desaparecen intermitentemente</div>
+      <div class="trouble-cause">Los timers RIP difieren entre routers, o hay inestabilidad en el enlace causando flapping que activa holddown timers constantemente.</div>
+      <div class="trouble-solution">✅ Verificar <code>show ip protocols</code> en todos los routers — los timers deben ser idénticos. Si hay flapping, investigar la causa física del enlace.</div>
+    </div>
+    <div class="trouble-item">
+      <div class="trouble-symptom">❌ RIPv2 envía como v1 o viceversa</div>
+      <div class="trouble-cause">El comando <code>version</code> no fue configurado, o se configuró de forma inconsistente entre routers.</div>
+      <div class="trouble-solution">✅ <code>show ip protocols</code> muestra "send version X, receive version X". Verificar que todos tengan <code>version 2</code>. También puede haber configuración por interfaz con <code>ip rip send version</code>.</div>
+    </div>
+    <div class="trouble-item">
+      <div class="trouble-symptom">❌ Red de destino no aparece en la tabla de routing</div>
+      <div class="trouble-cause">El comando <code>network</code> no incluye la red correcta, o passive-interface está configurado en la interfaz hacia el vecino RIP, o la métrica supera 15.</div>
+      <div class="trouble-solution">✅ Verificar la secuencia: <code>show ip protocols</code> → <code>show ip rip database</code> → <code>debug ip rip</code>. Confirmar que <code>network</code> usa la dirección classful de la red conectada.</div>
+    </div>
+  </div>
+
+  <h2 class="section-title">Metodología completa de diagnóstico RIP</h2>
+  <div class="code-block">
+    <div class="code-label">Secuencia de troubleshooting RIP</div>
+    <pre><code><span class="cmd-comment">! 1. Verificar interfaces up/up</span>
+Router# show ip interface brief
+
+<span class="cmd-comment">! 2. Verificar configuración RIP</span>
+Router# show ip protocols
+Router# show running-config | section router rip
+
+<span class="cmd-comment">! 3. Ver tabla de routing — buscar rutas R</span>
+Router# show ip route
+Router# show ip route rip
+
+<span class="cmd-comment">! 4. Ver database RIP interna</span>
+Router# show ip rip database
+
+<span class="cmd-comment">! 5. Debug — ver actualizaciones en tiempo real</span>
+Router# debug ip rip
+<span class="cmd-comment">! Esperar 30 segundos para ver el ciclo completo</span>
+
+Router# debug ip rip events
+<span class="cmd-comment">! Menos verboso que debug ip rip</span>
+
+<span class="cmd-comment">! 6. Verificar conectividad básica</span>
+Router# ping [vecino-directo]
+Router# traceroute [destino-final]
+
+<span class="cmd-comment">! 7. Apagar debug</span>
+Router# undebug all</code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 9 — QUIZ
+══════════════════════════════════════════════ -->
+<div id="tab-quiz" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Quiz RIP — Estilo CCNA 200-301</h2>
+  <div id="quizContainerRIP"></div>
+</div>
+</div>
+
+</div><!-- /.tabs-wrap -->
+
+<style>
+.class-hero { background: linear-gradient(135deg, #06080f 0%, #0d1220 60%, #101830 100%); padding: 56px 24px 48px; border-bottom: 1px solid rgba(0,212,170,0.12); position: relative; overflow: hidden; }
+.class-hero::before { content:''; position:absolute; top:-60px; right:-80px; width:400px; height:400px; border-radius:50%; background:radial-gradient(circle, rgba(56,189,248,0.06) 0%, transparent 70%); }
+.class-hero-inner { max-width: 900px; margin: 0 auto; position: relative; z-index: 1; }
+.class-badge { font-family:'Share Tech Mono',monospace; font-size:0.65rem; color:#38bdf8; letter-spacing:3px; text-transform:uppercase; margin-bottom:14px; }
+.class-title { font-family:'Orbitron',sans-serif; font-size:clamp(1.8rem,4vw,2.8rem); font-weight:900; letter-spacing:3px; color:#c2d0e8; line-height:1.1; margin-bottom:12px; }
+.class-title-accent { background:linear-gradient(135deg,#38bdf8,#a78bfa); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; display:block; font-size:0.65em; margin-top:4px; letter-spacing:2px; }
+.class-subtitle { font-size:1rem; color:#6b7a9a; line-height:1.7; margin-bottom:20px; max-width:720px; }
+.class-meta { display:flex; gap:16px; flex-wrap:wrap; }
+.meta-item { font-family:'Share Tech Mono',monospace; font-size:0.72rem; color:#374060; padding:4px 10px; border:1px solid rgba(56,189,248,0.1); border-radius:4px; }
+.tabs-wrap { max-width: 1100px; margin: 0 auto; padding: 0 16px 40px; }
+.tabs-bar { display:flex; gap:4px; padding:20px 0 0; flex-wrap:wrap; border-bottom:1px solid rgba(0,212,170,0.1); }
+.tab-btn { padding:8px 14px; border-radius:8px 8px 0 0; font-family:'Share Tech Mono',monospace; font-size:0.72rem; color:#4a5780; background:none; border:1px solid transparent; cursor:pointer; transition:all 0.18s; white-space:nowrap; border-bottom:none; }
+.tab-btn:hover { color:#c2d0e8; background:rgba(0,212,170,0.05); }
+.tab-btn.active { color:#38bdf8; background:#0d1220; border-color:rgba(56,189,248,0.2); border-bottom:1px solid #0d1220; }
+.tab-content { display:none; background:#0d1220; border:1px solid rgba(0,212,170,0.1); border-top:none; border-radius:0 0 12px 12px; padding:32px; }
+.tab-content.active { display:block; }
+.content-block { max-width: 860px; }
+.section-title { font-family:'Orbitron',sans-serif; font-size:1rem; color:#38bdf8; letter-spacing:2px; margin:28px 0 14px; padding-bottom:8px; border-bottom:1px solid rgba(56,189,248,0.12); }
+.section-title:first-child { margin-top:0; }
+.sub-title { font-family:'Share Tech Mono',monospace; font-size:0.85rem; color:#00d4aa; margin:24px 0 10px; }
+p { color:#8294b8; line-height:1.75; margin-bottom:14px; font-size:0.9rem; }
+ul, ol { color:#8294b8; padding-left:1.4rem; margin-bottom:14px; font-size:0.9rem; }
+li { margin-bottom:5px; line-height:1.65; }
+strong { color:#c2d0e8; }
+code { font-family:'Share Tech Mono',monospace; font-size:0.82rem; background:rgba(56,189,248,0.08); color:#38bdf8; padding:1px 6px; border-radius:4px; border:1px solid rgba(56,189,248,0.15); }
+.info-box { border-radius:8px; padding:14px 18px; margin:18px 0; border-left:3px solid; }
+.info-box.tip { background:rgba(0,212,170,0.05); border-color:#00d4aa; }
+.info-box.warning { background:rgba(251,191,36,0.05); border-color:#fbbf24; }
+.info-box-title { font-family:'Share Tech Mono',monospace; font-size:0.75rem; color:#00d4aa; margin-bottom:8px; }
+.info-box.warning .info-box-title { color:#fbbf24; }
+.diagram-box { background:#050810; border:1px solid rgba(56,189,248,0.12); border-radius:10px; padding:20px; margin:18px 0; }
+.diagram-title { font-family:'Share Tech Mono',monospace; font-size:0.68rem; color:#4a5780; letter-spacing:2px; text-transform:uppercase; margin-bottom:14px; }
+.table-wrap { overflow-x:auto; margin:16px 0; }
+.ref-table { width:100%; border-collapse:collapse; font-size:0.82rem; }
+.ref-table th { background:#090d1a; color:#38bdf8; font-family:'Share Tech Mono',monospace; font-size:0.7rem; padding:10px 12px; text-align:left; border:1px solid rgba(56,189,248,0.1); letter-spacing:1px; }
+.ref-table td { padding:9px 12px; border:1px solid rgba(255,255,255,0.04); color:#8294b8; }
+.ref-table tr:hover td { background:rgba(56,189,248,0.03); }
+.code-block { background:#050810; border:1px solid rgba(56,189,248,0.12); border-left:3px solid #38bdf8; border-radius:8px; padding:0; margin:16px 0; overflow:hidden; }
+.code-label { background:rgba(56,189,248,0.06); padding:8px 16px; font-family:'Share Tech Mono',monospace; font-size:0.65rem; color:#4a5780; letter-spacing:2px; text-transform:uppercase; border-bottom:1px solid rgba(56,189,248,0.08); }
+.code-block pre { margin:0; padding:16px; overflow-x:auto; }
+.code-block code { background:none; border:none; padding:0; color:#a8b4c8; font-size:0.8rem; line-height:1.7; display:block; }
+.cmd-comment { color:#374060; font-style:italic; }
+.cmd-output  { color:#6b7a9a; }
+.concept-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:12px; margin:16px 0; }
+.concept-card { background:#090d1a; border:1px solid rgba(56,189,248,0.1); border-radius:10px; padding:16px; }
+.concept-icon { font-size:1.8rem; margin-bottom:8px; }
+.concept-card h3 { font-family:'Share Tech Mono',monospace; font-size:0.78rem; color:#38bdf8; margin-bottom:8px; }
+.concept-card p { font-size:0.8rem; margin:0; }
+.process-steps { display:flex; flex-direction:column; gap:12px; margin:16px 0; }
+.process-step { display:flex; gap:16px; align-items:flex-start; background:#090d1a; border:1px solid rgba(56,189,248,0.08); border-radius:10px; padding:16px; }
+.step-num { width:50px; height:36px; border-radius:8px; background:rgba(56,189,248,0.1); border:1px solid rgba(56,189,248,0.2); display:flex; align-items:center; justify-content:center; font-family:'Share Tech Mono',monospace; font-size:0.68rem; color:#38bdf8; font-weight:700; flex-shrink:0; }
+.step-content { flex:1; }
+.step-title { font-family:'Share Tech Mono',monospace; font-size:0.82rem; color:#c2d0e8; margin-bottom:6px; }
+.attack-diagram { background:#0a0810; border:1px solid rgba(248,113,113,0.15); border-radius:10px; padding:16px; margin:16px 0; }
+.attack-steps { display:flex; flex-direction:column; gap:8px; margin-top:10px; }
+.attack-step { display:flex; gap:12px; align-items:flex-start; }
+.attack-num { width:24px; height:24px; border-radius:50%; background:rgba(248,113,113,0.2); border:1px solid #f87171; display:flex; align-items:center; justify-content:center; font-family:'Share Tech Mono',monospace; font-size:0.7rem; color:#f87171; flex-shrink:0; }
+.lab-topology { background:#050810; border:1px solid rgba(56,189,248,0.1); border-radius:10px; padding:16px; margin:16px 0; }
+.lab-steps { display:flex; flex-direction:column; gap:16px; margin:16px 0; }
+.lab-step { background:#090d1a; border:1px solid rgba(56,189,248,0.08); border-radius:10px; padding:16px; }
+.lab-step-num { font-family:'Share Tech Mono',monospace; font-size:0.6rem; color:#38bdf8; letter-spacing:2px; text-transform:uppercase; margin-bottom:4px; }
+.lab-step-title { font-family:'Orbitron',sans-serif; font-size:0.8rem; color:#c2d0e8; margin-bottom:8px; }
+.trouble-list { display:flex; flex-direction:column; gap:12px; margin:16px 0; }
+.trouble-item { background:#090d1a; border:1px solid rgba(56,189,248,0.08); border-radius:10px; padding:16px; }
+.trouble-symptom { font-family:'Share Tech Mono',monospace; font-size:0.8rem; color:#f87171; margin-bottom:6px; }
+.trouble-cause { font-size:0.82rem; color:#6b7a9a; margin-bottom:6px; }
+.trouble-solution { font-size:0.82rem; color:#34d399; }
+.quiz-question { background:#090d1a; border:1px solid rgba(56,189,248,0.1); border-radius:10px; padding:20px; margin-bottom:16px; }
+.quiz-q-num { font-family:'Share Tech Mono',monospace; font-size:0.62rem; color:#4a5780; margin-bottom:8px; }
+.quiz-q-text { font-size:0.9rem; color:#c2d0e8; margin-bottom:14px; line-height:1.6; }
+.quiz-opts { display:flex; flex-direction:column; gap:7px; }
+.quiz-opt { padding:9px 14px; border-radius:7px; border:1px solid rgba(56,189,248,0.1); background:#0d1220; color:#6b7a9a; cursor:pointer; font-size:0.85rem; text-align:left; transition:all 0.15s; }
+.quiz-opt:hover:not(:disabled) { border-color:rgba(56,189,248,0.3); color:#c2d0e8; }
+.quiz-opt.correct { border-color:#34d399; background:rgba(52,211,153,0.08); color:#34d399; }
+.quiz-opt.wrong   { border-color:#f87171; background:rgba(248,113,113,0.08); color:#f87171; }
+.quiz-explanation { margin-top:10px; padding:10px 14px; background:rgba(167,139,250,0.06); border-left:3px solid #a78bfa; border-radius:6px; font-size:0.82rem; color:#a0aec0; line-height:1.6; }
+@media(max-width:680px) { .tab-btn{font-size:0.65rem;padding:6px 10px;} .tab-content{padding:20px 14px;} .concept-grid{grid-template-columns:1fr;} }
+</style>
+
+<script>
+function showTab(id, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  if (btn) btn.classList.add('active');
+}
+
+function buildRefTable() {
+  const data = [
+    ['Versión actual recomendada', 'RIPv2', 'Classless, VLSM, multicast, autenticación MD5'],
+    ['Distancia Administrativa', '120', 'Mayor que OSPF(110) y EIGRP(90) — menos preferido'],
+    ['Métrica', 'Hop Count', 'Número de routers entre origen y destino'],
+    ['Métrica máxima', '15 hops', '16 = infinito (red inalcanzable)'],
+    ['Dirección multicast', '224.0.0.9', 'RIPv2. RIPv1 usa broadcast 255.255.255.255'],
+    ['Puerto UDP', '520', 'Transporte de actualizaciones RIP'],
+    ['Update Timer', '30 segundos', 'Frecuencia de envío de tabla completa'],
+    ['Invalid Timer', '180 segundos', 'Tiempo antes de marcar ruta como inválida'],
+    ['Holddown Timer', '180 segundos', 'Período de ignorar peores métricas para ruta caída'],
+    ['Flush Timer', '240 segundos', 'Tiempo antes de eliminar ruta inválida de la tabla'],
+    ['Load Balancing', 'Hasta 4 rutas (ajustable)', 'maximum-paths permite hasta 16'],
+    ['Comando clave 1', 'no auto-summary', 'SIEMPRE en RIPv2 para soportar VLSM'],
+    ['Comando clave 2', 'passive-interface', 'Evita enviar updates a interfaces de hosts'],
+    ['Comando clave 3', 'show ip protocols', 'Verificar configuración y vecinos RIP'],
+    ['Anti-bucle principal', 'Split Horizon', 'No anunciar ruta por la misma interfaz que se aprendió'],
+  ];
+  const headers = ['Parámetro', 'Valor', 'Descripción'];
+  let html = '<div class="table-wrap"><table class="ref-table"><thead><tr>';
+  headers.forEach(h => html += `<th>${h}</th>`);
+  html += '</tr></thead><tbody>';
+  data.forEach(row => {
+    html += '<tr>' + row.map(c => `<td>${c}</td>`).join('') + '</tr>';
+  });
+  html += '</tbody></table></div>';
+  document.getElementById('refTableRIP').innerHTML = html;
+}
+
+function initQuiz() {
+  const questions = [
+    {
+      q: '¿Cuál es la Distancia Administrativa (AD) de RIP?',
+      opts: ['90','110','120','150'],
+      ans: 2,
+      exp: 'La AD de RIP es 120. Para comparar: EIGRP internal = 90, OSPF = 110, RIP = 120, External EIGRP = 170. A menor AD, más confiable. Si OSPF y RIP anuncian la misma ruta, OSPF gana (110 < 120). La AD solo importa cuando dos protocolos diferentes anuncian la misma red.'
+    },
+    {
+      q: 'Un router RIP recibe una actualización con una ruta a 192.168.5.0/24 con métrica = 15. ¿Puede este router llegar a esa red y propagarla a sus vecinos?',
+      opts: ['Sí, puede llegar y propagar normalmente','Sí puede llegar, pero NO puede propagarla (métrica sería 16 = infinito)','No puede llegar — métrica 15 es el límite','No — RIP no soporta más de 10 hops'],
+      ans: 1,
+      exp: 'Métrica 15 significa que hay 15 routers entre el origen y la red. El router SÍ puede agregar la ruta a su tabla (15 ≤ 15). Pero cuando intente propagarla a sus vecinos, la métrica sería 15+1=16, que equivale a infinito. Por lo tanto, NO propaga rutas con métrica 15 — esas redes quedan aisladas en ese router. El límite práctico de alcance en RIP es 15 hops.'
+    },
+    {
+      q: '¿Cuál es la diferencia fundamental entre RIPv1 y RIPv2?',
+      opts: ['RIPv2 tiene AD de 100 vs AD de 120 en v1','RIPv2 incluye la máscara de subred en sus actualizaciones, soportando VLSM y classless routing','RIPv2 usa TCP en vez de UDP','RIPv2 limita a 30 hops vs 15 en v1'],
+      ans: 1,
+      exp: 'La diferencia crítica es que RIPv2 es CLASSLESS — incluye la máscara de subred (/24, /30, etc.) en cada entrada de su actualización. RIPv1 no incluye máscara y asume rutas classful (clase A=/8, B=/16, C=/24). Esto hace que RIPv2 soporte VLSM, subredes discontinuas y redes modernas. Ambas versiones usan UDP 520, AD 120 y límite de 15 hops.'
+    },
+    {
+      q: '¿Qué comando es CRÍTICO configurar en RIPv2 para evitar que envíe rutas resumidas en lugar de subredes?',
+      opts: ['ip classless','no classful','no auto-summary','ip subnet-zero'],
+      ans: 2,
+      exp: '"no auto-summary" es el comando esencial en RIPv2. Sin él, RIPv2 resume automáticamente las redes a sus límites classful cuando cruzan fronteras de red. Por ejemplo, 192.168.1.0/26 y 192.168.1.128/26 se resumirían como 192.168.1.0/24, perdiendo la información de las subredes. Con "no auto-summary", cada subred se anuncia con su máscara exacta.'
+    },
+    {
+      q: '¿Cuál es el propósito del Holddown Timer en RIP?',
+      opts: ['Determina cuándo enviar la próxima actualización periódica','Previene que información incorrecta de rutas caídas sobrescriba la tabla durante el período de convergencia','Controla cuánto tiempo esperar antes de eliminar una ruta de la tabla','Define el tiempo máximo de espera para un ARP Reply'],
+      ans: 1,
+      exp: 'El Holddown Timer (180s) protege la estabilidad durante la convergencia. Cuando una ruta se marca como inválida (caída), el router ignora cualquier actualización que anuncie esa ruta con una métrica PEOR. Esto previene el problema de "counting to infinity" donde routers con información obsoleta podrían reinstalar rutas incorrectas antes de que la red converja correctamente.'
+    },
+    {
+      q: '¿Qué mecanismo anti-bucle evita que un router anuncie una ruta de vuelta por la misma interfaz por la que la aprendió?',
+      opts: ['Holddown Timer','Route Poisoning','Split Horizon','Maximum Hop Count'],
+      ans: 2,
+      exp: 'Split Horizon es el mecanismo que dice: "no anunciar una ruta por la misma interfaz por la que se aprendió". Si R2 aprendió la ruta a 10.1.0.0 de R1 (via interfaz Gi0/0), con Split Horizon R2 NO incluye 10.1.0.0 en sus actualizaciones enviadas por Gi0/0 hacia R1. Esto elimina los bucles simples entre 2 routers. Para casos más complejos se combina con Poison Reverse.'
+    },
+    {
+      q: '¿A qué dirección envía sus actualizaciones RIPv2 por defecto?',
+      opts: ['255.255.255.255 (broadcast)','224.0.0.5 (OSPF)','224.0.0.9 (multicast RIPv2)','224.0.0.10 (EIGRP)'],
+      ans: 2,
+      exp: '224.0.0.9 es la dirección multicast de RIPv2. Solo los dispositivos que escuchan en ese grupo (routers con RIPv2 activo) procesan las actualizaciones. RIPv1 usaba broadcast 255.255.255.255, lo que causaba que TODOS los hosts del segmento procesaran los paquetes RIP innecesariamente. El multicast de v2 es más eficiente. 224.0.0.5/6 son de OSPF, 224.0.0.10 de EIGRP.'
+    },
+    {
+      q: 'Al configurar RIP, el administrador ejecuta "network 192.168.10.0". ¿Qué interfaces anunciará RIP?',
+      opts: ['Solo la interfaz con IP exactamente 192.168.10.0','Solo interfaces con IPs en la subred 192.168.10.0/24','Todas las interfaces cuya IP pertenece a la red CLASSFUL 192.168.10.0/24','Solo la interfaz con la máscara /24'],
+      ans: 2,
+      exp: 'El comando "network" en RIP usa lógica CLASSFUL. "network 192.168.10.0" activa RIP en todas las interfaces cuya dirección IP pertenece a la red classful 192.168.10.0/24 (clase C). Si tienes interfaces con 192.168.10.1/26 y 192.168.10.130/26, ambas serán activadas porque ambas caen dentro de 192.168.10.0/24. No se especifica máscara en el comando network de RIP.'
+    },
+    {
+      q: '¿Cuándo usarías "passive-interface" en la configuración de RIP?',
+      opts: ['En interfaces WAN hacia otros routers para no enviar demasiadas actualizaciones','En interfaces LAN hacia hosts, para que no envíen actualizaciones RIP pero sí procesen las recibidas','En cualquier interfaz para desactivar RIP completamente','En interfaces loopback solamente'],
+      ans: 1,
+      exp: 'passive-interface se usa en interfaces que están conectadas a redes de hosts (LANs), NO a otros routers RIP. Con passive-interface, la interfaz NO envía actualizaciones RIP (ahorrando ancho de banda y seguridad), pero SÍ aprende rutas de actualizaciones entrantes y SÍ anuncia las redes de esa interfaz en las actualizaciones que salen por otras interfaces. Es una buena práctica de seguridad.'
+    },
+    {
+      q: 'Un ingeniero ve en "show ip route": "R 172.16.0.0/16 [120/3] via 10.0.0.2". ¿Qué significa [120/3]?',
+      opts: ['Velocidad de 120 Mbps y 3 ms de latencia','AD = 120 (RIP) y métrica = 3 hops hacia esa red','Prioridad 120 y cost 3','Timeout 120s y 3 reintentos'],
+      ans: 1,
+      exp: 'En Cisco IOS, el formato [AD/métrica] siempre aparece en "show ip route". [120/3] significa: AD = 120 (confirmando que es RIP, ya que esa es su AD) y métrica = 3 (hay 3 routers entre este router y la red 172.16.0.0/16). El next-hop es 10.0.0.2. Si la misma red estuviera en OSPF como [110/30], OSPF ganaría por tener menor AD (110 < 120).'
+    }
+  ];
+
+  const container = document.getElementById('quizContainerRIP');
+  let html = '';
+  questions.forEach((q, i) => {
+    html += `<div class="quiz-question" id="qqr${i}">
+      <div class="quiz-q-num">PREGUNTA ${i+1} DE ${questions.length}</div>
+      <div class="quiz-q-text">${q.q}</div>
+      <div class="quiz-opts">
+        ${q.opts.map((o,j) => `<button class="quiz-opt" onclick="answerQR(${i},${j},${q.ans},\`${q.exp.replace(/`/g,"'")}\`)">${o}</button>`).join('')}
+      </div>
+    </div>`;
+  });
+  container.innerHTML = html;
+}
+
+function answerQR(qi, sel, correct, exp) {
+  const qDiv = document.getElementById('qqr' + qi);
+  const btns = qDiv.querySelectorAll('.quiz-opt');
+  btns.forEach(b => b.disabled = true);
+  btns[sel].classList.add(sel === correct ? 'correct' : 'wrong');
+  if (sel !== correct) btns[correct].classList.add('correct');
+  const expDiv = document.createElement('div');
+  expDiv.className = 'quiz-explanation';
+  expDiv.innerHTML = `<strong>${sel===correct?'✅ Correcto!':'❌ Incorrecto.'}</strong> ${exp}`;
+  qDiv.appendChild(expDiv);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  buildRefTable();
+  initQuiz();
+});
+</script>
+</body>
+</html>
