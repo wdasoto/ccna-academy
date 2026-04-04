@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Protocolos de Internet | CCNA Academy</title>
+  <meta name="description" content="Clase magistral: TCP, UDP, IP, ICMP, HTTP/S, DNS, FTP, SSH, SNMP, NTP. Suite de protocolos TCP/IP completa para CCNA 200-301.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+
+<div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
+<nav class="ccna-drawer" id="ccnaDrawer">
+  <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
+  <div class="drawer-section"><div class="drawer-section-title">General</div>
+    <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M1 · Fundamentos</div>
+    <a href="fundamentos.html"       class="drawer-link"><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
+    <a href="subnetting.html"        class="drawer-link"><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
+    <a href="calculadora.html"       class="drawer-link"><span class="dl-icon">🧮</span> Calculadora IP</a>
+    <a href="ipv6.html"              class="drawer-link"><span class="dl-icon">6️⃣</span> IPv6</a>
+    <a href="arp.html"               class="drawer-link"><span class="dl-icon">📡</span> ARP</a>
+    <a href="rip.html"               class="drawer-link"><span class="dl-icon">🔄</span> RIP</a>
+    <a href="protocolos-internet.html" class="drawer-link active"><span class="dl-icon">🌍</span> Protocolos Internet</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M2 · Dispositivos Cisco</div>
+    <a href="router.html"            class="drawer-link"><span class="dl-icon">📡</span> Routers Cisco</a>
+    <a href="switches-cisco.html"    class="drawer-link"><span class="dl-icon">🔀</span> Switches Cisco</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M3 · Switching</div>
+    <a href="vlan.html"              class="drawer-link"><span class="dl-icon">🏷️</span> VLANs</a>
+    <a href="inter-vlan-routing.html" class="drawer-link"><span class="dl-icon">🔁</span> Inter-VLAN Routing</a>
+    <a href="stp.html"               class="drawer-link"><span class="dl-icon">🌳</span> STP</a>
+    <a href="etherchannel.html"      class="drawer-link"><span class="dl-icon">🔗</span> EtherChannel</a>
+    <a href="port-security.html"     class="drawer-link"><span class="dl-icon">🔒</span> Port Security</a>
+    <a href="cdp-lldp.html"          class="drawer-link"><span class="dl-icon">🔍</span> CDP / LLDP</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M4 · Routing</div>
+    <a href="routing.html"           class="drawer-link"><span class="dl-icon">🗺️</span> Routing Estático</a>
+    <a href="ospf.html"              class="drawer-link"><span class="dl-icon">⭕</span> OSPF</a>
+    <a href="eigrp.html"             class="drawer-link"><span class="dl-icon">⚡</span> EIGRP</a>
+    <a href="ospfv2-masterclass.html" class="drawer-link"><span class="dl-icon">🎯</span> OSPFv2 Masterclass</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M5 · Servicios IP</div>
+    <a href="dhcp.html"              class="drawer-link"><span class="dl-icon">📋</span> DHCP</a>
+    <a href="nat.html"               class="drawer-link"><span class="dl-icon">🔄</span> NAT / PAT</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M6 · Seguridad</div>
+    <a href="acl.html"               class="drawer-link"><span class="dl-icon">🛡️</span> ACLs</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M7 · WAN &amp; QoS</div>
+    <a href="wan.html"               class="drawer-link"><span class="dl-icon">🌍</span> WAN</a>
+    <a href="qos.html"               class="drawer-link"><span class="dl-icon">📊</span> QoS</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">⚡ Herramientas</div>
+    <a href="asistente.html"         class="drawer-link"><span class="dl-icon">🤖</span> Asistente IA</a>
+    <a href="netbot.html"            class="drawer-link"><span class="dl-icon">⚙️</span> NetBot Config</a>
+    <a href="calculadora.html"       class="drawer-link"><span class="dl-icon">🧮</span> Calculadora IP</a></div>
+</nav>
+<header class="navbar">
+  <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
+  <a href="../index.html" class="navbar-brand">CISCO<span> ACADEMY</span></a>
+  <div class="navbar-spacer"></div>
+  <a href="../index.html" class="navbar-link">← Inicio</a>
+</header>
+<script src="../assets/main.js" defer></script>
+<div class="nav-spacer"></div>
+
+<section class="pi-hero">
+  <div class="pi-hero-inner">
+    <div class="pi-badge">M1 · FUNDAMENTOS · SUITE TCP/IP COMPLETA</div>
+    <h1 class="pi-title">PROTOCOLOS <span class="pi-title-accent">DE INTERNET</span></h1>
+    <p class="pi-subtitle">La suite completa de protocolos que hace funcionar Internet. Desde IP y TCP/UDP hasta HTTP, DNS, SSH, SNMP y NTP. Cada byte que viaja por la red obedece estas reglas.</p>
+    <div class="pi-meta">
+      <span class="pi-meta-item">📋 RFC 791 · 793 · 768 · 792</span>
+      <span class="pi-meta-item">🎯 CCNA 200-301 Topics 1.1 · 1.3 · 4.6</span>
+      <span class="pi-meta-item">⏱ ~80 min lectura</span>
+      <span class="pi-meta-item">🌐 12 protocolos cubiertos</span>
+    </div>
+  </div>
+</section>
+
+<div class="pi-tabs-wrap">
+  <div class="pi-tabs-bar">
+    <button class="pi-tab active" onclick="showTab('suite',this)">🌐 Suite TCP/IP</button>
+    <button class="pi-tab" onclick="showTab('ip',this)">📦 IP</button>
+    <button class="pi-tab" onclick="showTab('tcp',this)">🔗 TCP</button>
+    <button class="pi-tab" onclick="showTab('udp',this)">⚡ UDP</button>
+    <button class="pi-tab" onclick="showTab('icmp',this)">🔔 ICMP</button>
+    <button class="pi-tab" onclick="showTab('app',this)">📱 Aplicación</button>
+    <button class="pi-tab" onclick="showTab('puertos',this)">🔌 Puertos</button>
+    <button class="pi-tab" onclick="showTab('cisco',this)">💻 Cisco IOS</button>
+    <button class="pi-tab" onclick="showTab('tabla',this)">📊 Referencia</button>
+    <button class="pi-tab" onclick="showTab('quiz',this)">🎯 Quiz</button>
+  </div>
+
+<div id="tab-suite" class="pi-tab-content active">
+<div class="pi-content">
+  <h2 class="pi-section-title">La Suite de Protocolos TCP/IP</h2>
+  <p>Internet funciona gracias a una <strong>suite de protocolos complementarios</strong>, cada uno responsable de una función específica. Esta suite se organiza en capas donde cada capa usa los servicios de la inferior y provee servicios a la superior.</p>
+
+  <div class="pi-model-diagram">
+    <div class="pi-model-title">Modelo TCP/IP — 4 capas y sus protocolos</div>
+    <div class="pi-layers-list">
+      <div class="pi-layer-row" style="border-color:#f87171;background:rgba(248,113,113,0.06);">
+        <div class="pi-layer-badge" style="background:rgba(248,113,113,0.2);color:#f87171;">4 · APLICACIÓN</div>
+        <div class="pi-layer-protos">HTTP/S · FTP · SSH · Telnet · DNS · SMTP · POP3 · IMAP · SNMP · NTP · TFTP · DHCP</div>
+      </div>
+      <div class="pi-layer-row" style="border-color:#fbbf24;background:rgba(251,191,36,0.06);">
+        <div class="pi-layer-badge" style="background:rgba(251,191,36,0.2);color:#fbbf24;">3 · TRANSPORTE</div>
+        <div class="pi-layer-protos">TCP (confiable, orientado a conexión) · UDP (rápido, sin conexión)</div>
+      </div>
+      <div class="pi-layer-row" style="border-color:#a78bfa;background:rgba(167,139,250,0.06);">
+        <div class="pi-layer-badge" style="background:rgba(167,139,250,0.2);color:#a78bfa;">2 · INTERNET</div>
+        <div class="pi-layer-protos">IP (IPv4/IPv6) · ICMP · ARP · OSPF · EIGRP · BGP</div>
+      </div>
+      <div class="pi-layer-row" style="border-color:#38bdf8;background:rgba(56,189,248,0.06);">
+        <div class="pi-layer-badge" style="background:rgba(56,189,248,0.2);color:#38bdf8;">1 · ACCESO RED</div>
+        <div class="pi-layer-protos">Ethernet · Wi-Fi (802.11) · PPP · HDLC · Frame Relay</div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="pi-section-title">Encapsulación — El proceso de empaquetado</h2>
+  <p>Al enviar datos, cada capa <strong>agrega su propio encabezado</strong>. El receptor hace el proceso inverso (desencapsulación). Cada capa tiene su propio nombre para el bloque de datos:</p>
+
+  <div class="pi-encap-diagram">
+    <div class="pi-encap-row">
+      <div class="pi-encap-label">Aplicación</div>
+      <div class="pi-encap-data app-data">DATOS DE LA APLICACIÓN</div>
+      <div class="pi-encap-pdu">PDU: Datos</div>
+    </div>
+    <div class="pi-encap-row">
+      <div class="pi-encap-label">Transporte</div>
+      <div class="pi-encap-hdr tcp-hdr">TCP/UDP</div>
+      <div class="pi-encap-data app-data">DATOS</div>
+      <div class="pi-encap-pdu">PDU: Segmento/Datagrama</div>
+    </div>
+    <div class="pi-encap-row">
+      <div class="pi-encap-label">Internet</div>
+      <div class="pi-encap-hdr ip-hdr">IP HDR</div>
+      <div class="pi-encap-hdr tcp-hdr">TCP/UDP</div>
+      <div class="pi-encap-data app-data">DATOS</div>
+      <div class="pi-encap-pdu">PDU: Paquete</div>
+    </div>
+    <div class="pi-encap-row">
+      <div class="pi-encap-label">Acceso Red</div>
+      <div class="pi-encap-hdr eth-hdr">ETH HDR</div>
+      <div class="pi-encap-hdr ip-hdr">IP</div>
+      <div class="pi-encap-hdr tcp-hdr">TCP</div>
+      <div class="pi-encap-data app-data">DATOS</div>
+      <div class="pi-encap-hdr eth-fcs">FCS</div>
+      <div class="pi-encap-pdu">PDU: Frame</div>
+    </div>
+  </div>
+
+  <div class="pi-info tip">
+    <div class="pi-info-title">💡 Regla de oro — ¿Qué cambia en cada salto?</div>
+    <p>Cuando un router reenvía un paquete: las <strong>IPs de origen y destino NO cambian</strong> (permanecen las de los extremos finales). Las <strong>MACs SÍ cambian</strong> en cada salto (se actualizan con las del segmento local). El TTL se decrementa en 1.</p>
+  </div>
+</div>
+</div>
+
+<div id="tab-ip" class="pi-tab-content">
+<div class="pi-content">
+  <h2 class="pi-section-title">IP — Internet Protocol (RFC 791)</h2>
+  <p>IP es el protocolo de capa 3 que provee entrega de paquetes de extremo a extremo. Características esenciales:</p>
+  <div class="pi-concept-grid">
+    <div class="pi-card"><div class="pi-card-icon">🔀</div><h3>Sin Conexión</h3><p>Cada paquete se enruta independientemente. No hay circuito previo. Pueden llegar desordenados.</p></div>
+    <div class="pi-card"><div class="pi-card-icon">⚡</div><h3>Best-Effort</h3><p>IP no garantiza entrega, orden ni tiempo. La fiabilidad es responsabilidad de TCP (capa 4).</p></div>
+    <div class="pi-card"><div class="pi-card-icon">🌐</div><h3>Direccionamiento Lógico</h3><p>Direcciones de 32 bits (IPv4) identifican origen y destino de forma única y jerárquica.</p></div>
+    <div class="pi-card"><div class="pi-card-icon">✂️</div><h3>Fragmentación</h3><p>Si el paquete supera el MTU (1500B en Ethernet), IP lo fragmenta. Se reensambla en el destino.</p></div>
+  </div>
+
+  <h2 class="pi-section-title">Cabecera IP — Campos críticos para CCNA</h2>
+  <div class="pi-table-wrap">
+    <table class="pi-table">
+      <thead><tr><th>Campo</th><th>Bits</th><th>Descripción</th><th>Valor típico</th></tr></thead>
+      <tbody>
+        <tr><td><code>Version</code></td><td>4</td><td>Versión IP: 4 o 6</td><td>0100 (IPv4)</td></tr>
+        <tr><td><code>IHL</code></td><td>4</td><td>Longitud header en palabras de 32 bits</td><td>5 = 20 bytes</td></tr>
+        <tr><td><code>DSCP</code></td><td>6</td><td>Differentiated Services — QoS marking</td><td>0x00 best-effort</td></tr>
+        <tr><td><code>Total Length</code></td><td>16</td><td>Longitud total paquete. Máx: 65535 bytes</td><td>Variable</td></tr>
+        <tr><td><code>Flags</code></td><td>3</td><td>DF = Don't Fragment · MF = More Fragments</td><td>010 = DF activo</td></tr>
+        <tr><td><code>TTL</code></td><td>8</td><td>Time To Live. -1 por cada router. 0 = descarte + ICMP Time Exceeded</td><td>64(Linux) 128(Win) 255(Cisco)</td></tr>
+        <tr><td><code>Protocol</code></td><td>8</td><td>Protocolo encapsulado: 1=ICMP, 6=TCP, 17=UDP, 89=OSPF</td><td>6 o 17</td></tr>
+        <tr><td><code>Src IP / Dst IP</code></td><td>32 c/u</td><td>IPs de origen y destino — NO cambian en tránsito</td><td>192.168.1.10 / 8.8.8.8</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pi-info tip">
+    <div class="pi-info-title">💡 TTL en troubleshooting</div>
+    <p>El TTL es clave para troubleshooting. <code>traceroute</code> envía paquetes con TTL=1,2,3... — cada router responde con ICMP "Time Exceeded", revelando la ruta completa. El TTL del reply revela cuántos hops hay en el retorno. Cisco IOS usa TTL=255 por defecto.</p>
+  </div>
+
+  <h2 class="pi-section-title">Números de Protocolo IP más importantes</h2>
+  <div class="pi-table-wrap">
+    <table class="pi-table">
+      <thead><tr><th>Número</th><th>Protocolo</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr><td><code>1</code></td><td>ICMP</td><td>Internet Control Message Protocol — ping, traceroute, errores</td></tr>
+        <tr><td><code>6</code></td><td>TCP</td><td>Transmission Control Protocol — transporte confiable</td></tr>
+        <tr><td><code>17</code></td><td>UDP</td><td>User Datagram Protocol — transporte rápido</td></tr>
+        <tr><td><code>47</code></td><td>GRE</td><td>Generic Routing Encapsulation — tunneling</td></tr>
+        <tr><td><code>50</code></td><td>ESP</td><td>Encapsulating Security Payload — IPSec</td></tr>
+        <tr><td><code>89</code></td><td>OSPF</td><td>Open Shortest Path First — routing</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</div>
+
+<div id="tab-tcp" class="pi-tab-content">
+<div class="pi-content">
+  <h2 class="pi-section-title">TCP — Transmission Control Protocol (RFC 793)</h2>
+  <p>TCP es el protocolo de transporte <strong>orientado a conexión</strong> que garantiza entrega confiable, ordenada y sin errores.</p>
+  <div class="pi-concept-grid">
+    <div class="pi-card"><div class="pi-card-icon">🤝</div><h3>Orientado a conexión</h3><p>Establece sesión con 3-Way Handshake antes de enviar datos. Ambos extremos sincronizan números de secuencia.</p></div>
+    <div class="pi-card"><div class="pi-card-icon">✅</div><h3>Entrega confiable</h3><p>Usa números de secuencia y ACKs. Retransmite segmentos no confirmados automáticamente.</p></div>
+    <div class="pi-card"><div class="pi-card-icon">📋</div><h3>Entrega ordenada</h3><p>Reordena segmentos que llegan fuera de orden usando números de secuencia.</p></div>
+    <div class="pi-card"><div class="pi-card-icon">🌊</div><h3>Control de flujo</h3><p>Window Size — el receptor anuncia cuántos bytes puede aceptar. El emisor no excede ese límite.</p></div>
+  </div>
+
+  <h2 class="pi-section-title">El 3-Way Handshake</h2>
+  <div class="pi-handshake">
+    <div class="pi-hs-step">
+      <div class="pi-hs-badge syn">1. SYN</div>
+      <div class="pi-hs-dir">Cliente → Servidor</div>
+      <div class="pi-hs-desc">SYN=1, Seq=100 · "Quiero conectarme. Mi secuencia inicial es 100"</div>
+    </div>
+    <div class="pi-hs-step">
+      <div class="pi-hs-badge synack">2. SYN-ACK</div>
+      <div class="pi-hs-dir">Servidor → Cliente</div>
+      <div class="pi-hs-desc">SYN=1, ACK=1, Seq=300, Ack=101 · "Acepto. Mi seq es 300. Espero tu byte 101"</div>
+    </div>
+    <div class="pi-hs-step">
+      <div class="pi-hs-badge ack">3. ACK</div>
+      <div class="pi-hs-dir">Cliente → Servidor</div>
+      <div class="pi-hs-desc">ACK=1, Seq=101, Ack=301 · "Confirmado. ✅ Conexión establecida — datos pueden fluir"</div>
+    </div>
+  </div>
+
+  <h2 class="pi-section-title">Flags TCP — Los 6 bits de control</h2>
+  <div class="pi-flags-grid">
+    <div class="pi-flag"><span class="pi-flag-name">SYN</span><span class="pi-flag-desc">Synchronize. Inicia conexión. Solo en primeros mensajes del handshake.</span></div>
+    <div class="pi-flag"><span class="pi-flag-name">ACK</span><span class="pi-flag-desc">Acknowledge. Confirma recepción. Presente en casi todos los segmentos.</span></div>
+    <div class="pi-flag"><span class="pi-flag-name">FIN</span><span class="pi-flag-desc">Finish. Cierre ordenado. El extremo no enviará más datos.</span></div>
+    <div class="pi-flag"><span class="pi-flag-name">RST</span><span class="pi-flag-desc">Reset. Cierre abrupto. Indica error o conexión inválida.</span></div>
+    <div class="pi-flag"><span class="pi-flag-name">PSH</span><span class="pi-flag-desc">Push. Entrega inmediata a la aplicación sin esperar llenar buffer.</span></div>
+    <div class="pi-flag"><span class="pi-flag-name">URG</span><span class="pi-flag-desc">Urgent. Datos prioritarios apuntados por Urgent Pointer.</span></div>
+  </div>
+
+  <h2 class="pi-section-title">Cabecera TCP — 20 bytes mínimo</h2>
+  <div class="pi-table-wrap">
+    <table class="pi-table">
+      <thead><tr><th>Campo</th><th>Bits</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr><td><code>Source Port</code></td><td>16</td><td>Puerto origen (efímero en clientes: 49152–65535)</td></tr>
+        <tr><td><code>Destination Port</code></td><td>16</td><td>Puerto destino (well-known en servidores: 0–1023)</td></tr>
+        <tr><td><code>Sequence Number</code></td><td>32</td><td>Número del primer byte en este segmento</td></tr>
+        <tr><td><code>Acknowledgment</code></td><td>32</td><td>Siguiente byte esperado del remitente</td></tr>
+        <tr><td><code>Flags</code></td><td>6</td><td>URG, ACK, PSH, RST, SYN, FIN</td></tr>
+        <tr><td><code>Window Size</code></td><td>16</td><td>Bytes que el receptor puede aceptar (control de flujo)</td></tr>
+        <tr><td><code>Checksum</code></td><td>16</td><td>Verificación de integridad de header y datos</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</div>
+
+<div id="tab-udp" class="pi-tab-content">
+<div class="pi-content">
+  <h2 class="pi-section-title">UDP — User Datagram Protocol (RFC 768)</h2>
+  <p>UDP es el protocolo de transporte <strong>sin conexión</strong>. Sin handshake, sin ACKs, sin orden garantizado. Solo 8 bytes de header. Ideal donde la velocidad importa más que la perfección.</p>
+
+  <h2 class="pi-section-title">TCP vs UDP — Comparativa definitiva</h2>
+  <div class="pi-table-wrap">
+    <table class="pi-table">
+      <thead><tr><th>Característica</th><th>TCP</th><th>UDP</th></tr></thead>
+      <tbody>
+        <tr><td>Conexión</td><td>✅ Orientado a conexión (3-Way HS)</td><td>❌ Sin conexión</td></tr>
+        <tr><td>Fiabilidad</td><td>✅ Garantiza entrega</td><td>❌ Best-effort</td></tr>
+        <tr><td>Orden</td><td>✅ Reordena segmentos</td><td>❌ Entrega en orden de llegada</td></tr>
+        <tr><td>Control flujo</td><td>✅ Window Size</td><td>❌ Ninguno</td></tr>
+        <tr><td>Control congestión</td><td>✅ Slow Start, AIMD</td><td>❌ Ninguno</td></tr>
+        <tr><td>Overhead header</td><td>20 bytes mínimo</td><td>Solo 8 bytes</td></tr>
+        <tr><td>Velocidad</td><td>Más lento</td><td>Más rápido</td></tr>
+        <tr><td>Protocolos</td><td>HTTP/S, SSH, FTP, SMTP, Telnet, BGP</td><td>DNS, DHCP, TFTP, SNMP, NTP, RIP, VoIP</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pi-info tip">
+    <div class="pi-info-title">💡 ¿Por qué VoIP usa UDP?</div>
+    <p>En voz IP, una retransmisión TCP llegaría <strong>demasiado tarde</strong> para ser audible. Es mejor perder un paquete (pequeño glitch de 20ms) que retransmitir y causar retraso. UDP permite latencia constante y baja, que es exactamente lo que requiere la voz humana para ser inteligible.</p>
+  </div>
+
+  <h2 class="pi-section-title">Cabecera UDP — Solo 8 bytes</h2>
+  <div class="pi-table-wrap">
+    <table class="pi-table">
+      <thead><tr><th>Campo</th><th>Bits</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr><td><code>Source Port</code></td><td>16</td><td>Puerto origen (opcional — puede ser 0)</td></tr>
+        <tr><td><code>Destination Port</code></td><td>16</td><td>Puerto destino del servicio</td></tr>
+        <tr><td><code>Length</code></td><td>16</td><td>Longitud total datagrama (header + datos). Mínimo: 8</td></tr>
+        <tr><td><code>Checksum</code></td><td>16</td><td>Integridad opcional en IPv4, obligatorio en IPv6</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</div>
+
+<div id="tab-icmp" class="pi-tab-content">
+<div class="pi-content">
+  <h2 class="pi-section-title">ICMP — Internet Control Message Protocol (RFC 792)</h2>
+  <p>ICMP transporta <strong>mensajes de control y error</strong> sobre el funcionamiento de IP. Viaja encapsulado en IP (Protocol=1) pero conceptualmente es capa 3. No transporta datos de usuario.</p>
+
+  <h2 class="pi-section-title">Mensajes ICMP críticos para CCNA</h2>
+  <div class="pi-table-wrap">
+    <table class="pi-table">
+      <thead><tr><th>Tipo</th><th>Código</th><th>Nombre</th><th>Disparado por</th></tr></thead>
+      <tbody>
+        <tr><td>0</td><td>0</td><td>Echo Reply</td><td>Respuesta a ping exitoso</td></tr>
+        <tr><td>3</td><td>0</td><td>Network Unreachable</td><td>Router sin ruta al destino</td></tr>
+        <tr><td>3</td><td>1</td><td>Host Unreachable</td><td>Router sabe la red pero no el host</td></tr>
+        <tr><td>3</td><td>3</td><td>Port Unreachable</td><td>Host rechaza en puerto destino (UDP)</td></tr>
+        <tr><td>3</td><td>4</td><td>Fragmentation Needed</td><td>DF=1 pero paquete supera MTU</td></tr>
+        <tr><td>5</td><td>0</td><td>Redirect</td><td>Router informa camino mejor</td></tr>
+        <tr><td>8</td><td>0</td><td>Echo Request</td><td>Solicitud ping — enviada por origen</td></tr>
+        <tr><td>11</td><td>0</td><td>TTL Exceeded in Transit</td><td>Router decrementa TTL a 0 — traceroute</td></tr>
+        <tr><td>11</td><td>1</td><td>TTL Exceeded Reassembly</td><td>Timeout de reensamblaje de fragmentos</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="pi-section-title">ping y traceroute — Herramientas ICMP</h2>
+  <div class="pi-code-block">
+    <div class="pi-code-label">Cómo funciona ping internamente</div>
+    <pre><code><span class="pi-comment">ping 8.8.8.8 desde 192.168.1.10:</span>
+
+→ Envía: IP[src=192.168.1.10, dst=8.8.8.8, proto=1, TTL=128]
+         ICMP[Type=8 Echo Request, ID=1234, Seq=1]
+
+← Recibe: IP[src=8.8.8.8, dst=192.168.1.10]
+          ICMP[Type=0 Echo Reply, ID=1234, Seq=1]
+
+Resultado: Reply from 8.8.8.8: bytes=32 time=12ms TTL=118
+<span class="pi-comment">TTL=118 → 128(inicial) - 10(hops retorno) = 118 → hay ~10 routers de retorno</span></code></pre>
+  </div>
+
+  <div class="pi-code-block">
+    <div class="pi-code-label">Cómo traceroute usa el TTL</div>
+    <pre><code><span class="pi-comment">traceroute 8.8.8.8 — envía paquetes con TTL incremental:</span>
+
+TTL=1: Router1 decrementa a 0 → ICMP Type=11 (Time Exceeded) → IP de R1
+TTL=2: R1 reenvía, R2 decrementa a 0 → ICMP Time Exceeded → IP de R2
+TTL=N: Paquete llega a 8.8.8.8 → ICMP Type=0 (Echo Reply) → FIN
+
+Output:
+  1  192.168.1.1    1ms    ← Gateway local
+  2  10.100.0.1     5ms    ← ISP router
+  3  * * *                 ← Filtra ICMP TTL Exceeded (normal)
+  4  8.8.8.8        12ms   ← Destino alcanzado</code></pre>
+  </div>
+
+  <div class="pi-info warning">
+    <div class="pi-info-title">⚠️ Seguridad ICMP — No bloquear todo</div>
+    <p>Bloquear todo ICMP rompe funcionalidad: sin Type 3 Code 4 falla Path MTU Discovery y las conexiones TCP se cuelgan. Lo correcto es filtrar selectivamente: bloquear Echo Request desde Internet pero permitir TTL Exceeded, Unreachable y Fragmentation Needed.</p>
+  </div>
+</div>
+</div>
+
+<div id="tab-app" class="pi-tab-content">
+<div class="pi-content">
+  <h2 class="pi-section-title">Protocolos de Capa de Aplicación</h2>
+
+  <div class="pi-proto-list">
+    <div class="pi-proto-item">
+      <div class="pi-proto-hdr" style="border-color:#38bdf8;">
+        <span class="pi-proto-icon">🌐</span>
+        <div><div class="pi-proto-name">HTTP / HTTPS</div><div class="pi-proto-port">TCP 80 / TCP 443</div></div>
+      </div>
+      <div class="pi-proto-body">
+        <p><strong>HyperText Transfer Protocol</strong> — el protocolo de la Web. Petición/respuesta.</p>
+        <ul>
+          <li><strong>HTTP</strong>: Puerto 80, texto plano — inseguro para datos sensibles</li>
+          <li><strong>HTTPS</strong>: Puerto 443, HTTP sobre TLS/SSL — todo cifrado</li>
+          <li>Métodos: GET · POST · PUT · DELETE · HEAD · OPTIONS</li>
+          <li>Códigos: 200 OK · 301/302 Redirect · 404 Not Found · 500 Server Error</li>
+          <li>HTTP/2: Multiplexación múltiples peticiones en una sola conexión TCP</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="pi-proto-item">
+      <div class="pi-proto-hdr" style="border-color:#00d4aa;">
+        <span class="pi-proto-icon">🌐</span>
+        <div><div class="pi-proto-name">DNS</div><div class="pi-proto-port">UDP 53 / TCP 53</div></div>
+      </div>
+      <div class="pi-proto-body">
+        <p><strong>Domain Name System</strong> — traduce nombres a IPs. Indispensable para Internet.</p>
+        <ul>
+          <li><strong>Resolución</strong>: Cache local → Servidor DNS local → Root servers → TLD → Authoritative DNS</li>
+          <li><strong>Registros</strong>: A (IPv4) · AAAA (IPv6) · MX (mail) · CNAME (alias) · PTR (reverse) · NS · SOA</li>
+          <li>UDP para consultas normales, TCP para transferencias de zona (AXFR)</li>
+          <li>Cisco: <code>ip name-server 8.8.8.8</code> · <code>ip domain-name empresa.com</code></li>
+          <li>Sin DNS, deben usarse IPs — por eso DNS es crítico en SSH (necesita domain-name para RSA)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="pi-proto-item">
+      <div class="pi-proto-hdr" style="border-color:#a78bfa;">
+        <span class="pi-proto-icon">📁</span>
+        <div><div class="pi-proto-name">FTP / SFTP / TFTP</div><div class="pi-proto-port">TCP 20/21 · TCP 22 · UDP 69</div></div>
+      </div>
+      <div class="pi-proto-body">
+        <p><strong>Protocolos de transferencia de archivos</strong> — cada uno con diferente propósito.</p>
+        <ul>
+          <li><strong>FTP</strong>: Puerto 21 (control) + 20 (datos en modo activo). Sin cifrado. Obsoleto en producción.</li>
+          <li><strong>FTP Pasivo</strong>: Cliente inicia ambas conexiones. Mejor con NAT/firewalls.</li>
+          <li><strong>SFTP</strong>: FTP sobre SSH. Puerto 22. Cifrado completo. Estándar moderno.</li>
+          <li><strong>TFTP</strong>: UDP 69. Sin autenticación, sin listado. Usado para boot de dispositivos, imágenes IOS Cisco, configs de red.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="pi-proto-item">
+      <div class="pi-proto-hdr" style="border-color:#fbbf24;">
+        <span class="pi-proto-icon">🔐</span>
+        <div><div class="pi-proto-name">SSH / Telnet</div><div class="pi-proto-port">TCP 22 / TCP 23</div></div>
+      </div>
+      <div class="pi-proto-body">
+        <p><strong>Acceso remoto CLI</strong> a dispositivos de red.</p>
+        <ul>
+          <li><strong>Telnet</strong>: TCP 23. Todo en texto plano — contraseñas visibles. SOLO para labs aislados.</li>
+          <li><strong>SSH v2</strong>: TCP 22. Cifrado asimétrico para intercambio de clave + simétrico para datos.</li>
+          <li>Cisco: <code>transport input ssh</code> prohíbe Telnet. <code>ip ssh version 2</code> fuerza v2.</li>
+          <li>Requiere: hostname, ip domain-name, crypto key generate rsa, login local</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="pi-proto-item">
+      <div class="pi-proto-hdr" style="border-color:#f87171;">
+        <span class="pi-proto-icon">⚙️</span>
+        <div><div class="pi-proto-name">SNMP</div><div class="pi-proto-port">UDP 161 (agente) · 162 (trap)</div></div>
+      </div>
+      <div class="pi-proto-body">
+        <p><strong>Simple Network Management Protocol</strong> — gestión centralizada de dispositivos.</p>
+        <ul>
+          <li><strong>Componentes</strong>: Manager (NMS) · Agent (dispositivo) · MIB (base de objetos)</li>
+          <li><strong>Operaciones</strong>: GET (leer) · SET (modificar) · TRAP (alerta proactiva sin solicitud)</li>
+          <li><strong>v1/v2c</strong>: Community string en texto plano — inseguro</li>
+          <li><strong>v3</strong>: Autenticación MD5/SHA + cifrado AES — estándar recomendado</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="pi-proto-item">
+      <div class="pi-proto-hdr" style="border-color:#34d399;">
+        <span class="pi-proto-icon">⏰</span>
+        <div><div class="pi-proto-name">NTP</div><div class="pi-proto-port">UDP 123</div></div>
+      </div>
+      <div class="pi-proto-body">
+        <p><strong>Network Time Protocol</strong> — sincronización de relojes precisa en la red.</p>
+        <ul>
+          <li><strong>Stratum</strong>: Nivel de precisión. Stratum 0 = reloj atómico. Stratum 1 = conectado a stratum 0. Stratum 15 = máximo útil.</li>
+          <li>Precisión: ±1-50ms en LAN, ±50-100ms en Internet</li>
+          <li>Crítico para: logs forenses, certificados TLS, Kerberos, HSRP</li>
+          <li>Cisco: <code>ntp server 216.239.35.0</code> · <code>show ntp status</code> · <code>show ntp associations</code></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="pi-proto-item">
+      <div class="pi-proto-hdr" style="border-color:#38bdf8;">
+        <span class="pi-proto-icon">📋</span>
+        <div><div class="pi-proto-name">DHCP</div><div class="pi-proto-port">UDP 67 (servidor) · 68 (cliente)</div></div>
+      </div>
+      <div class="pi-proto-body">
+        <p><strong>Dynamic Host Configuration Protocol</strong> — asignación automática de parámetros IP.</p>
+        <ul>
+          <li><strong>DORA</strong>: Discover (broadcast) → Offer → Request → Acknowledge</li>
+          <li>Asigna: IP · Máscara · Gateway · DNS · Lease time</li>
+          <li><code>ip helper-address</code>: Reenvía DHCP Discover hacia servidores en otras redes</li>
+          <li>DHCP Snooping: protege contra servidores DHCP falsos (base de DAI)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="pi-proto-item">
+      <div class="pi-proto-hdr" style="border-color:#4a5780;">
+        <span class="pi-proto-icon">📝</span>
+        <div><div class="pi-proto-name">Syslog</div><div class="pi-proto-port">UDP 514</div></div>
+      </div>
+      <div class="pi-proto-body">
+        <p><strong>Protocolo de logs</strong> — centraliza mensajes de eventos de dispositivos de red.</p>
+        <ul>
+          <li><strong>Niveles de severidad (0-7)</strong>: 0=Emergency · 1=Alert · 2=Critical · 3=Error · 4=Warning · 5=Notice · 6=Informational · 7=Debug</li>
+          <li>Cisco: <code>logging host 192.168.1.200</code> · <code>logging trap informational</code></li>
+          <li><code>service timestamps log datetime msec localtime</code>: timestamps en los logs</li>
+          <li>Por defecto, Cisco envía logs a la consola (nivel 7) y al buffer interno</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div id="tab-puertos" class="pi-tab-content">
+<div class="pi-content">
+  <h2 class="pi-section-title">Puertos TCP/UDP — Tabla completa CCNA</h2>
+  <p>Los puertos son identificadores de 16 bits (0–65535) que permiten multiplexar múltiples servicios sobre una misma IP. Rangos:</p>
+  <div class="pi-concept-grid">
+    <div class="pi-card"><div class="pi-card-icon">🏛️</div><h3>Well-Known (0–1023)</h3><p>Reservados para servicios estándar. Requieren privilegios de administrador.</p></div>
+    <div class="pi-card"><div class="pi-card-icon">📋</div><h3>Registered (1024–49151)</h3><p>Registrados por aplicaciones específicas con IANA. RDP=3389, MySQL=3306.</p></div>
+    <div class="pi-card"><div class="pi-card-icon">🔀</div><h3>Ephemeral (49152–65535)</h3><p>Dinámicos. Los clientes los usan aleatoriamente como puerto de origen.</p></div>
+  </div>
+
+  <h2 class="pi-section-title">Puertos que DEBES memorizar para CCNA</h2>
+  <div id="portTableDiv"></div>
+
+  <h2 class="pi-section-title">El concepto de Socket</h2>
+  <p>Un <strong>socket</strong> = IP + Puerto + Protocolo. Una conexión TCP se identifica por la 4-tupla única: (IP origen, Puerto origen, IP destino, Puerto destino).</p>
+  <div class="pi-code-block">
+    <div class="pi-code-label">Ejemplo de socket TCP</div>
+    <pre><code><span class="pi-comment">Conexión HTTPS cliente→servidor:</span>
+Cliente: 192.168.1.10:54321 (TCP)
+Servidor: 93.184.216.34:443 (TCP)
+
+4-tupla única: (192.168.1.10, 54321, 93.184.216.34, 443, TCP)
+<span class="pi-comment">Permite identificar esta sesión específica entre millones simultáneas</span></code></pre>
+  </div>
+</div>
+</div>
+
+<div id="tab-cisco" class="pi-tab-content">
+<div class="pi-content">
+  <h2 class="pi-section-title">Configuración de protocolos en Cisco IOS</h2>
+  <div class="pi-code-block">
+    <div class="pi-code-label">DNS en Cisco IOS</div>
+    <pre><code><span class="pi-comment">! Configurar servidores DNS</span>
+Router(config)# ip name-server 8.8.8.8 8.8.4.4
+Router(config)# ip domain-name empresa.com
+<span class="pi-comment">! Deshabilitar DNS lookup (evitar esperas en typos de comandos)</span>
+Router(config)# no ip domain-lookup
+<span class="pi-comment">! Verificar</span>
+Router# show hosts</code></pre>
+  </div>
+
+  <div class="pi-code-block">
+    <div class="pi-code-label">NTP en Cisco IOS</div>
+    <pre><code><span class="pi-comment">! Sincronizar con servidor NTP externo</span>
+Router(config)# ntp server 216.239.35.0 prefer
+Router(config)# ntp server 216.239.35.4
+Router(config)# clock timezone COT -5
+<span class="pi-comment">! Este router como servidor NTP para otros dispositivos</span>
+Router(config)# ntp master 3
+<span class="pi-comment">! Verificar</span>
+Router# show ntp status
+Router# show ntp associations
+Router# show clock</code></pre>
+  </div>
+
+  <div class="pi-code-block">
+    <div class="pi-code-label">SSH — Configuración segura completa</div>
+    <pre><code><span class="pi-comment">! Prerrequisitos obligatorios</span>
+R1(config)# hostname R1
+R1(config)# ip domain-name empresa.com
+<span class="pi-comment">! Generar par de claves RSA (mínimo 1024, recomendado 2048)</span>
+R1(config)# crypto key generate rsa modulus 2048
+<span class="pi-comment">! Forzar SSHv2 únicamente</span>
+R1(config)# ip ssh version 2
+R1(config)# ip ssh time-out 60
+R1(config)# ip ssh authentication-retries 3
+<span class="pi-comment">! Crear usuario local</span>
+R1(config)# username admin privilege 15 secret Cisco@2024
+<span class="pi-comment">! Configurar VTY para SSH solamente</span>
+R1(config)# line vty 0 4
+R1(config-line)# login local
+R1(config-line)# transport input ssh
+R1(config-line)# exec-timeout 10 0
+<span class="pi-comment">! Verificar</span>
+R1# show ip ssh
+R1# show ssh</code></pre>
+  </div>
+
+  <div class="pi-code-block">
+    <div class="pi-code-label">SNMP y Syslog en Cisco IOS</div>
+    <pre><code><span class="pi-comment">! SNMP v2c (básico)</span>
+Router(config)# snmp-server community PUBLIC ro
+Router(config)# snmp-server host 192.168.1.100 version 2c PUBLIC
+Router(config)# snmp-server enable traps
+Router(config)# snmp-server location "Datacenter Piso 3"
+
+<span class="pi-comment">! SNMP v3 (recomendado — autenticado y cifrado)</span>
+Router(config)# snmp-server group ADMINGROUP v3 priv
+Router(config)# snmp-server user ADMINUSER ADMINGROUP v3 auth sha AuthPass priv aes 128 PrivPass
+
+<span class="pi-comment">! Syslog</span>
+Router(config)# logging host 192.168.1.200
+Router(config)# logging trap informational
+Router(config)# service timestamps log datetime msec localtime
+Router(config)# logging buffered 16384 informational
+Router# show logging</code></pre>
+  </div>
+
+  <div class="pi-code-block">
+    <div class="pi-code-label">Verificación general de protocolos</div>
+    <pre><code><span class="pi-comment">! Ver conexiones TCP activas</span>
+Router# show tcp brief
+<span class="pi-comment">! Ver conexiones UDP</span>
+Router# show udp
+<span class="pi-comment">! Ver tabla de hosts (DNS cache)</span>
+Router# show hosts
+<span class="pi-comment">! Ver reloj y NTP</span>
+Router# show clock
+Router# show ntp status
+<span class="pi-comment">! Ver usuarios conectados por SSH/Telnet</span>
+Router# show users
+<span class="pi-comment">! ICMP — ping avanzado Cisco</span>
+Router# ping 8.8.8.8 source Loopback0 repeat 100 size 1500
+Router# traceroute 8.8.8.8 source 192.168.1.1</code></pre>
+  </div>
+</div>
+</div>
+
+<div id="tab-tabla" class="pi-tab-content">
+<div class="pi-content">
+  <h2 class="pi-section-title">Tabla Maestra — Todos los Protocolos TCP/IP</h2>
+  <div id="refTableDiv"></div>
+</div>
+</div>
+
+<div id="tab-quiz" class="pi-tab-content">
+<div class="pi-content">
+  <h2 class="pi-section-title">Quiz — Protocolos de Internet · Estilo CCNA 200-301</h2>
+  <div id="quizContainerPI"></div>
+</div>
+</div>
+
+</div><!-- /.pi-tabs-wrap -->
+
+<style>
+.pi-hero{background:linear-gradient(135deg,#06080f 0%,#0c1020 60%,#0e1628 100%);padding:56px 24px 48px;border-bottom:1px solid rgba(167,139,250,0.12);position:relative;overflow:hidden;}
+.pi-hero::before{content:'';position:absolute;top:-80px;left:-80px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(167,139,250,0.05) 0%,transparent 70%);pointer-events:none;}
+.pi-hero-inner{max-width:900px;margin:0 auto;position:relative;z-index:1;}
+.pi-badge{font-family:'Share Tech Mono',monospace;font-size:0.65rem;color:#a78bfa;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;}
+.pi-title{font-family:'Orbitron',sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:900;letter-spacing:3px;color:#c2d0e8;line-height:1.1;margin-bottom:12px;}
+.pi-title-accent{background:linear-gradient(135deg,#a78bfa,#38bdf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.pi-subtitle{font-size:1rem;color:#6b7a9a;line-height:1.7;margin-bottom:20px;max-width:720px;}
+.pi-meta{display:flex;gap:16px;flex-wrap:wrap;}
+.pi-meta-item{font-family:'Share Tech Mono',monospace;font-size:0.72rem;color:#374060;padding:4px 10px;border:1px solid rgba(167,139,250,0.1);border-radius:4px;}
+.pi-tabs-wrap{max-width:1100px;margin:0 auto;padding:0 16px 40px;}
+.pi-tabs-bar{display:flex;gap:4px;padding:20px 0 0;flex-wrap:wrap;border-bottom:1px solid rgba(167,139,250,0.1);}
+.pi-tab{padding:8px 14px;border-radius:8px 8px 0 0;font-family:'Share Tech Mono',monospace;font-size:0.72rem;color:#4a5780;background:none;border:1px solid transparent;cursor:pointer;transition:all 0.18s;white-space:nowrap;border-bottom:none;}
+.pi-tab:hover{color:#c2d0e8;background:rgba(167,139,250,0.05);}
+.pi-tab.active{color:#a78bfa;background:#0d1220;border-color:rgba(167,139,250,0.2);border-bottom:1px solid #0d1220;}
+.pi-tab-content{display:none;background:#0d1220;border:1px solid rgba(167,139,250,0.1);border-top:none;border-radius:0 0 12px 12px;padding:32px;}
+.pi-tab-content.active{display:block;}
+.pi-content{max-width:860px;}
+.pi-section-title{font-family:'Orbitron',sans-serif;font-size:1rem;color:#a78bfa;letter-spacing:2px;margin:28px 0 14px;padding-bottom:8px;border-bottom:1px solid rgba(167,139,250,0.12);}
+.pi-section-title:first-child{margin-top:0;}
+p{color:#8294b8;line-height:1.75;margin-bottom:14px;font-size:0.9rem;}
+ul,ol{color:#8294b8;padding-left:1.4rem;margin-bottom:14px;font-size:0.9rem;}
+li{margin-bottom:5px;line-height:1.65;}
+strong{color:#c2d0e8;}
+code{font-family:'Share Tech Mono',monospace;font-size:0.82rem;background:rgba(167,139,250,0.08);color:#a78bfa;padding:1px 6px;border-radius:4px;border:1px solid rgba(167,139,250,0.15);}
+.pi-info{border-radius:8px;padding:14px 18px;margin:18px 0;border-left:3px solid;}
+.pi-info.tip{background:rgba(0,212,170,0.05);border-color:#00d4aa;}
+.pi-info.warning{background:rgba(251,191,36,0.05);border-color:#fbbf24;}
+.pi-info-title{font-family:'Share Tech Mono',monospace;font-size:0.75rem;color:#00d4aa;margin-bottom:8px;}
+.pi-info.warning .pi-info-title{color:#fbbf24;}
+.pi-model-diagram{background:#050810;border:1px solid rgba(167,139,250,0.12);border-radius:10px;padding:20px;margin:18px 0;}
+.pi-model-title{font-family:'Share Tech Mono',monospace;font-size:0.68rem;color:#4a5780;letter-spacing:2px;text-transform:uppercase;margin-bottom:14px;}
+.pi-layers-list{display:flex;flex-direction:column;gap:6px;}
+.pi-layer-row{display:flex;align-items:center;gap:16px;border:1px solid;border-radius:8px;padding:12px 16px;}
+.pi-layer-badge{font-family:'Share Tech Mono',monospace;font-size:0.68rem;padding:4px 10px;border-radius:5px;white-space:nowrap;letter-spacing:1px;flex-shrink:0;}
+.pi-layer-protos{font-family:'Share Tech Mono',monospace;font-size:0.75rem;color:#6b7a9a;}
+.pi-encap-diagram{display:flex;flex-direction:column;gap:8px;margin:18px 0;background:#050810;border:1px solid rgba(167,139,250,0.1);border-radius:10px;padding:16px;}
+.pi-encap-row{display:flex;align-items:center;gap:4px;flex-wrap:wrap;}
+.pi-encap-label{font-family:'Share Tech Mono',monospace;font-size:0.7rem;color:#4a5780;width:90px;flex-shrink:0;}
+.pi-encap-hdr,.pi-encap-data{padding:7px 10px;border-radius:4px;font-family:'Share Tech Mono',monospace;font-size:0.68rem;border:1px solid;white-space:nowrap;}
+.eth-hdr{background:rgba(56,189,248,0.1);border-color:#38bdf8;color:#38bdf8;}
+.ip-hdr{background:rgba(167,139,250,0.1);border-color:#a78bfa;color:#a78bfa;}
+.tcp-hdr{background:rgba(251,191,36,0.1);border-color:#fbbf24;color:#fbbf24;}
+.app-data{background:rgba(248,113,113,0.08);border-color:rgba(248,113,113,0.3);color:#f87171;flex:1;}
+.eth-fcs{background:rgba(56,189,248,0.06);border-color:rgba(56,189,248,0.2);color:#38bdf8;}
+.pi-encap-pdu{font-family:'Share Tech Mono',monospace;font-size:0.62rem;color:#374060;margin-left:8px;white-space:nowrap;}
+.pi-concept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin:16px 0;}
+.pi-card{background:#090d1a;border:1px solid rgba(167,139,250,0.1);border-radius:10px;padding:16px;}
+.pi-card-icon{font-size:1.8rem;margin-bottom:8px;}
+.pi-card h3{font-family:'Share Tech Mono',monospace;font-size:0.78rem;color:#a78bfa;margin-bottom:8px;}
+.pi-card p{font-size:0.8rem;margin:0;}
+.pi-table-wrap{overflow-x:auto;margin:16px 0;}
+.pi-table{width:100%;border-collapse:collapse;font-size:0.82rem;}
+.pi-table th{background:#090d1a;color:#a78bfa;font-family:'Share Tech Mono',monospace;font-size:0.7rem;padding:10px 12px;text-align:left;border:1px solid rgba(167,139,250,0.1);letter-spacing:1px;}
+.pi-table td{padding:9px 12px;border:1px solid rgba(255,255,255,0.04);color:#8294b8;}
+.pi-table tr:hover td{background:rgba(167,139,250,0.03);}
+.pi-code-block{background:#050810;border:1px solid rgba(167,139,250,0.12);border-left:3px solid #a78bfa;border-radius:8px;padding:0;margin:16px 0;overflow:hidden;}
+.pi-code-label{background:rgba(167,139,250,0.06);padding:8px 16px;font-family:'Share Tech Mono',monospace;font-size:0.65rem;color:#4a5780;letter-spacing:2px;text-transform:uppercase;border-bottom:1px solid rgba(167,139,250,0.08);}
+.pi-code-block pre{margin:0;padding:16px;overflow-x:auto;}
+.pi-code-block code{background:none;border:none;padding:0;color:#a8b4c8;font-size:0.8rem;line-height:1.7;display:block;}
+.pi-comment{color:#374060;font-style:italic;}
+.pi-output{color:#6b7a9a;}
+.pi-handshake{display:flex;flex-direction:column;gap:10px;margin:16px 0;}
+.pi-hs-step{display:flex;align-items:flex-start;gap:14px;background:#090d1a;border:1px solid rgba(167,139,250,0.1);border-radius:10px;padding:14px;}
+.pi-hs-badge{padding:4px 12px;border-radius:5px;font-family:'Share Tech Mono',monospace;font-size:0.75rem;font-weight:700;flex-shrink:0;}
+.pi-hs-badge.syn{background:rgba(56,189,248,0.15);color:#38bdf8;border:1px solid rgba(56,189,248,0.3);}
+.pi-hs-badge.synack{background:rgba(0,212,170,0.15);color:#00d4aa;border:1px solid rgba(0,212,170,0.3);}
+.pi-hs-badge.ack{background:rgba(167,139,250,0.15);color:#a78bfa;border:1px solid rgba(167,139,250,0.3);}
+.pi-hs-dir{font-family:'Share Tech Mono',monospace;font-size:0.68rem;color:#374060;flex-shrink:0;padding-top:4px;width:140px;}
+.pi-hs-desc{font-size:0.82rem;color:#6b7a9a;line-height:1.5;}
+.pi-flags-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;margin:16px 0;}
+.pi-flag{background:#090d1a;border:1px solid rgba(167,139,250,0.1);border-radius:8px;padding:12px 14px;display:flex;flex-direction:column;gap:4px;}
+.pi-flag-name{font-family:'Share Tech Mono',monospace;font-size:0.82rem;color:#a78bfa;font-weight:700;}
+.pi-flag-desc{font-size:0.78rem;color:#6b7a9a;line-height:1.5;}
+.pi-proto-list{display:flex;flex-direction:column;gap:14px;}
+.pi-proto-item{background:#090d1a;border:1px solid rgba(167,139,250,0.08);border-radius:12px;overflow:hidden;}
+.pi-proto-hdr{display:flex;align-items:center;gap:14px;padding:12px 16px;border-bottom:1px solid;}
+.pi-proto-icon{font-size:1.5rem;flex-shrink:0;}
+.pi-proto-name{font-family:'Orbitron',sans-serif;font-size:0.8rem;color:#c2d0e8;letter-spacing:1px;}
+.pi-proto-port{font-family:'Share Tech Mono',monospace;font-size:0.65rem;color:#4a5780;margin-top:2px;}
+.pi-proto-body{padding:12px 16px;}
+.pi-proto-body p{margin-bottom:6px;}
+.pi-proto-body ul{margin:0;}
+.pi-quiz-q{background:#090d1a;border:1px solid rgba(167,139,250,0.1);border-radius:10px;padding:20px;margin-bottom:16px;}
+.pi-quiz-num{font-family:'Share Tech Mono',monospace;font-size:0.62rem;color:#4a5780;margin-bottom:8px;}
+.pi-quiz-text{font-size:0.9rem;color:#c2d0e8;margin-bottom:14px;line-height:1.6;}
+.pi-quiz-opts{display:flex;flex-direction:column;gap:7px;}
+.pi-quiz-opt{padding:9px 14px;border-radius:7px;border:1px solid rgba(167,139,250,0.1);background:#0d1220;color:#6b7a9a;cursor:pointer;font-size:0.85rem;text-align:left;transition:all 0.15s;}
+.pi-quiz-opt:hover:not(:disabled){border-color:rgba(167,139,250,0.3);color:#c2d0e8;}
+.pi-quiz-opt.correct{border-color:#34d399;background:rgba(52,211,153,0.08);color:#34d399;}
+.pi-quiz-opt.wrong{border-color:#f87171;background:rgba(248,113,113,0.08);color:#f87171;}
+.pi-quiz-exp{margin-top:10px;padding:10px 14px;background:rgba(167,139,250,0.06);border-left:3px solid #a78bfa;border-radius:6px;font-size:0.82rem;color:#a0aec0;line-height:1.6;}
+@media(max-width:680px){.pi-tab{font-size:0.65rem;padding:6px 10px;}.pi-tab-content{padding:20px 14px;}.pi-concept-grid{grid-template-columns:1fr;}.pi-flags-grid{grid-template-columns:1fr;}.pi-hs-step{flex-direction:column;gap:6px;}.pi-hs-dir{width:auto;}.pi-encap-row{gap:2px;}.pi-encap-label{width:70px;font-size:0.6rem;}}
+</style>
+
+<script>
+function showTab(id, btn) {
+  document.querySelectorAll('.pi-tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.pi-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  if (btn) btn.classList.add('active');
+}
+
+function buildPortsTable() {
+  const ports = [
+    ['FTP datos','20','TCP','Canal de datos FTP en modo activo'],
+    ['FTP control','21','TCP','Canal de control FTP — comandos y autenticación'],
+    ['SSH','22','TCP','Secure Shell — reemplaza Telnet. Siempre usar v2.'],
+    ['Telnet','23','TCP','Acceso remoto en texto plano — INSEGURO'],
+    ['SMTP','25','TCP','Envío de correo entre servidores de mail'],
+    ['DNS','53','UDP/TCP','Consultas (UDP) · Transferencia de zona (TCP)'],
+    ['DHCP servidor','67','UDP','DHCP server escucha en puerto 67'],
+    ['DHCP cliente','68','UDP','DHCP client usa puerto 68 de origen'],
+    ['TFTP','69','UDP','Transferencia simple sin autenticación — IOS Cisco'],
+    ['HTTP','80','TCP','Web sin cifrar — no usar para datos sensibles'],
+    ['POP3','110','TCP','Descarga de correo del servidor'],
+    ['NTP','123','UDP','Sincronización de relojes — Stratum 0-15'],
+    ['IMAP','143','TCP','Correo sincronizado entre dispositivos'],
+    ['SNMP agente','161','UDP','Polling y configuración SNMP'],
+    ['SNMP trap','162','UDP','Alertas proactivas del agente al manager'],
+    ['BGP','179','TCP','Border Gateway Protocol — routing entre AS'],
+    ['HTTPS','443','TCP','HTTP sobre TLS — estándar actual para web'],
+    ['SMTPS','465','TCP','SMTP sobre TLS'],
+    ['Syslog','514','UDP','Logs centralizados a servidor externo'],
+    ['IMAPS','993','TCP','IMAP sobre TLS'],
+    ['POP3S','995','TCP','POP3 sobre TLS'],
+    ['RIP','520','UDP','Routing Information Protocol — actualizaciones'],
+    ['RDP','3389','TCP','Remote Desktop Protocol — Windows'],
+  ];
+  const hdrs = ['Protocolo','Puerto','Transporte','Descripción'];
+  let h = '<div class="pi-table-wrap"><table class="pi-table"><thead><tr>';
+  hdrs.forEach(x => h += `<th>${x}</th>`);
+  h += '</tr></thead><tbody>';
+  ports.forEach(r => { h += '<tr>' + r.map(c => `<td>${c}</td>`).join('') + '</tr>'; });
+  h += '</tbody></table></div>';
+  document.getElementById('portTableDiv').innerHTML = h;
+}
+
+function buildRefTable() {
+  const data = [
+    ['IP','—','Capa 3','Protocolo=variable','Sin conexión, best-effort, TTL, fragmentación, direccionamiento lógico (32 bits)'],
+    ['ICMP','—','Capa 3','Protocolo=1','Mensajes de control/error. Type 8/0 = ping. Type 11 = traceroute. Type 3 = unreachable.'],
+    ['TCP','—','Capa 4','Protocolo=6','Confiable, ordenado, orientado a conexión. 3-Way HS. Window size. Retransmisión automática.'],
+    ['UDP','—','Capa 4','Protocolo=17','Sin conexión, rápido, 8 bytes header. Para tiempo real y servicios petición/respuesta.'],
+    ['HTTP','80','TCP','Aplicación','Web sin cifrar. GET/POST/PUT/DELETE. Códigos 2xx/3xx/4xx/5xx.'],
+    ['HTTPS','443','TCP','Aplicación','HTTP sobre TLS/SSL. Cifrado completo. Estándar actual para toda web.'],
+    ['DNS','53','UDP/TCP','Aplicación','Nombres→IP. UDP para consultas, TCP para zonas. Registros A/AAAA/MX/CNAME/PTR.'],
+    ['FTP','20/21','TCP','Aplicación','Puerto 21=control, 20=datos. Modo pasivo: cliente inicia ambas conexiones. Sin cifrado.'],
+    ['TFTP','69','UDP','Aplicación','Sin autenticación. Para IOS de Cisco, configs, boot PXE. No lista directorios.'],
+    ['SSH','22','TCP','Aplicación','Cifrado RSA+AES. v2 obligatorio en CCNA. Requiere: hostname, domain, crypto key, login local.'],
+    ['Telnet','23','TCP','Aplicación','Texto plano — INSEGURO. Solo labs. Reemplazado completamente por SSH.'],
+    ['SMTP','25','TCP','Aplicación','Envío de correo. Puerto 587 para clientes autenticados. SMTPS=465 (TLS).'],
+    ['DHCP','67/68','UDP','Aplicación','DORA. Asigna IP/Máscara/GW/DNS. ip helper-address para relay. DHCP Snooping para seguridad.'],
+    ['SNMP','161/162','UDP','Aplicación','GET/SET/TRAP. v3 recomendado (auth+cifrado). MIB = base de objetos gestionables.'],
+    ['NTP','123','UDP','Aplicación','Stratum 0-15. ±1-50ms LAN. Crítico para logs, TLS, Kerberos, HSRP. ntp master en Cisco.'],
+    ['Syslog','514','UDP','Aplicación','Niveles 0-7. logging host [IP]. service timestamps log datetime msec.'],
+    ['RIP','520','UDP','Aplicación','AD=120. Máx 15 hops. v2 classless. Multicast 224.0.0.9. 30s updates.'],
+  ];
+  const hdrs = ['Protocolo','Puerto','Transporte','Capa','Puntos clave CCNA'];
+  let h = '<div class="pi-table-wrap"><table class="pi-table"><thead><tr>';
+  hdrs.forEach(x => h += `<th>${x}</th>`);
+  h += '</tr></thead><tbody>';
+  data.forEach(r => { h += '<tr>' + r.map(c => `<td>${c}</td>`).join('') + '</tr>'; });
+  h += '</tbody></table></div>';
+  document.getElementById('refTableDiv').innerHTML = h;
+}
+
+function initQuiz() {
+  const Qs = [
+    {q:'¿Cuál es la diferencia fundamental entre TCP y UDP?',opts:['TCP usa IPv4 y UDP usa IPv6','TCP garantiza entrega ordenada con conexión; UDP es sin conexión y sin garantías','TCP es más rápido que UDP en todo','UDP usa más ancho de banda que TCP'],ans:1,exp:'TCP es orientado a conexión (3-Way Handshake), garantiza entrega, orden, tiene control de flujo y congestión — ideal para HTTP, SSH, FTP. UDP es sin conexión, sin garantías, con solo 8 bytes de header — ideal para DNS, VoIP, DHCP, SNMP donde la velocidad y latencia baja importan más que la perfección.'},
+    {q:'¿Qué campo del header IP previene que los paquetes circulen indefinidamente en bucles?',opts:['Checksum','Identification','TTL — Time To Live','DF flag'],ans:2,exp:'El TTL se decrementa en 1 por cada router. Cuando llega a 0, el router descarta el paquete y envía ICMP Type 11 "Time Exceeded" al origen. Esto previene bucles. Traceroute explota este mecanismo enviando paquetes con TTL=1,2,3... revelando cada router en el camino. Cisco IOS usa TTL=255 por defecto en sus pings.'},
+    {q:'¿Qué mensajes ICMP se intercambian en un ping exitoso?',opts:['ICMP Type 3 y Type 4','ICMP Type 8 (Echo Request) → ICMP Type 0 (Echo Reply)','ICMP Type 11 en ambos sentidos','ICMP Type 5 (Redirect)'],ans:1,exp:'Ping envía ICMP Type 8 (Echo Request) y el destino responde con ICMP Type 0 (Echo Reply). Otros tipos: Type 3 = destino inalcanzable (múltiples códigos: 0=red, 1=host, 3=puerto, 4=fragmentación), Type 11 = TTL agotado (traceroute), Type 5 = redirección de ruta mejor.'},
+    {q:'¿Por qué DNS usa UDP en lugar de TCP para consultas normales?',opts:['UDP es más seguro','Las consultas son pequeñas y el modelo petición/respuesta hace innecesario el overhead del 3-Way Handshake','DNS no puede usar TCP','UDP provee cifrado'],ans:1,exp:'Una consulta DNS típica es menor a 512 bytes. TCP requeriría 3 mensajes del handshake antes de la consulta — triplicando el tráfico para algo tan simple. UDP permite petición+respuesta en 2 mensajes. DNS sí usa TCP para transferencias de zona (AXFR) donde la respuesta supera 512 bytes.'},
+    {q:'¿Cuál es el propósito del campo Window Size en la cabecera TCP?',opts:['Define el MTU del enlace','Control de flujo — el receptor indica cuántos bytes puede aceptar sin ACK','Define el número de segmentos máximo','Tiempo antes de retransmitir'],ans:1,exp:'Window Size es el mecanismo de control de flujo de TCP. El receptor anuncia cuántos bytes puede aceptar en su buffer. El emisor no puede enviar más de ese límite. Si el receptor procesa lento, reduce Window Size para que el emisor frene. Previene desbordamiento de buffers del receptor.'},
+    {q:'Un administrador configura "ip ssh version 2" en Cisco IOS. ¿Qué otros comandos son OBLIGATORIOS antes de que SSH funcione?',opts:['Solo "login local" en VTY','hostname, ip domain-name, y crypto key generate rsa — sin ellos SSH no puede iniciarse','Solo "transport input ssh" en VTY','ip ssh authentication-retries'],ans:1,exp:'SSH requiere mínimo: 1) hostname distinto de "Router" (la key RSA usa el nombre), 2) ip domain-name (forma el FQDN para la key), 3) crypto key generate rsa modulus 2048 (genera el par de claves), 4) username con secret (para login local), 5) login local + transport input ssh en VTY. Sin el hostname y domain-name, el comando crypto key falla.'},
+    {q:'¿Qué protocolo usa UDP puerto 69 y para qué se usa en redes Cisco?',opts:['Telnet — acceso remoto','FTP — transferencia de archivos segura','TFTP — transferencia de imágenes IOS y archivos de configuración sin autenticación','SNMP — gestión de dispositivos'],ans:2,exp:'TFTP (Trivial File Transfer Protocol) usa UDP 69. No tiene autenticación, no permite listar directorios — solo GET y PUT de archivos específicos. En redes Cisco se usa para: copiar imágenes IOS entre routers/switches y servidores TFTP, guardar/restaurar configuraciones, boot de dispositivos sin disco local (PXE). La falta de seguridad lo hace adecuado solo en redes de gestión aisladas.'},
+    {q:'¿Cuál es el número de protocolo IP de TCP?',opts:['1','6','17','89'],ans:1,exp:'El campo Protocol en el header IP identifica el protocolo encapsulado: 1=ICMP, 6=TCP, 17=UDP, 47=GRE, 50=ESP (IPSec), 89=OSPF. Cuando un router recibe un paquete IP, usa este campo para saber a qué módulo de capa 4 entregar el payload. En Wireshark se ve como "Protocol: TCP (6)" en el header IP.'},
+    {q:'¿Qué flag TCP indica que un extremo no enviará más datos en esa dirección?',opts:['RST','SYN','FIN','ACK'],ans:2,exp:'FIN (Finish) indica cierre ordenado de la conexión. El extremo que envía FIN declara que no enviará más datos. TCP usa un cierre de 4 pasos (4-Way FIN): FIN→ACK→FIN→ACK. Ambos extremos deben enviar su propio FIN para cerrar completamente. RST en cambio es cierre abrupto — indica error y termina la conexión inmediatamente sin el proceso de 4 pasos.'},
+    {q:'¿Qué versión de SNMP proporciona autenticación y cifrado?',opts:['SNMPv1','SNMPv2c','SNMPv3','Todas las versiones tienen cifrado'],ans:2,exp:'SNMPv3 es la única versión con seguridad real: autenticación (MD5 o SHA) + privacidad/cifrado (DES o AES). SNMPv1 y v2c usan community strings en texto plano — cualquiera que capture el tráfico puede ver la contraseña y potencialmente modificar configuraciones. Para el examen CCNA, SNMPv3 es el estándar recomendado para entornos de producción.'},
+  ];
+  const c = document.getElementById('quizContainerPI');
+  let h = '';
+  Qs.forEach((q,i) => {
+    h += `<div class="pi-quiz-q" id="piq${i}">
+      <div class="pi-quiz-num">PREGUNTA ${i+1} DE ${Qs.length}</div>
+      <div class="pi-quiz-text">${q.q}</div>
+      <div class="pi-quiz-opts">${q.opts.map((o,j)=>`<button class="pi-quiz-opt" onclick="answerPI(${i},${j},${q.ans},\`${q.exp.replace(/`/g,"'")}\`)">${o}</button>`).join('')}</div>
+    </div>`;
+  });
+  c.innerHTML = h;
+}
+function answerPI(qi,sel,correct,exp){
+  const qDiv=document.getElementById('piq'+qi);
+  const btns=qDiv.querySelectorAll('.pi-quiz-opt');
+  btns.forEach(b=>b.disabled=true);
+  btns[sel].classList.add(sel===correct?'correct':'wrong');
+  if(sel!==correct)btns[correct].classList.add('correct');
+  const e=document.createElement('div');
+  e.className='pi-quiz-exp';
+  e.innerHTML=`<strong>${sel===correct?'✅ Correcto!':'❌ Incorrecto.'}</strong> ${exp}`;
+  qDiv.appendChild(e);
+}
+document.addEventListener('DOMContentLoaded',function(){buildPortsTable();buildRefTable();initQuiz();});
+</script>
+</body>
+</html>
