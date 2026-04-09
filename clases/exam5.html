@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Examen 5: EIGRP & OSPFv2 Avanzado | CCNA Academy</title>
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/main.css">
+    <style>
+        .exam-container {
+            max-width: 900px;
+            margin: 80px auto 40px;
+            padding: 30px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(0,212,170,0.2);
+            border-radius: 12px;
+        }
+        .exam-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #00d4aa;
+        }
+        .exam-header h1 {
+            font-family: 'Orbitron', monospace;
+            font-size: 2.2rem;
+            color: #00d4aa;
+            margin-bottom: 10px;
+        }
+        .exam-meta {
+            font-family: 'Share Tech Mono', monospace;
+            color: #a0a0a0;
+            font-size: 0.95rem;
+        }
+        .question-block {
+            background: rgba(0,0,0,0.3);
+            border-left: 4px solid #00d4aa;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+        }
+        .question-number {
+            font-family: 'Orbitron', monospace;
+            color: #00d4aa;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        .question-text {
+            font-family: 'Exo 2', sans-serif;
+            font-size: 1.1rem;
+            color: #e0e0e0;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .option {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 15px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Exo 2', sans-serif;
+            color: #c0c0c0;
+        }
+        .option:hover {
+            background: rgba(0,212,170,0.1);
+            border-color: #00d4aa;
+            transform: translateX(5px);
+        }
+        .option.selected {
+            background: rgba(0,212,170,0.15);
+            border-color: #00d4aa;
+            color: #fff;
+        }
+        .option.correct {
+            background: rgba(0,255,100,0.15);
+            border-color: #00ff64;
+        }
+        .option.incorrect {
+            background: rgba(255,50,50,0.15);
+            border-color: #ff3232;
+        }
+        .explanation {
+            display: none;
+            background: rgba(0,212,170,0.05);
+            border: 1px solid rgba(0,212,170,0.3);
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 6px;
+            font-family: 'Exo 2', sans-serif;
+            color: #e0e0e0;
+            line-height: 1.7;
+        }
+        .explanation.show {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        .explanation strong {
+            color: #00d4aa;
+        }
+        .submit-btn {
+            background: linear-gradient(135deg, #00d4aa 0%, #008866 100%);
+            color: #000;
+            border: none;
+            padding: 15px 40px;
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            font-size: 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            display: block;
+            margin: 40px auto;
+            transition: all 0.3s;
+        }
+        .submit-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(0,212,170,0.5);
+        }
+        .score-display {
+            display: none;
+            text-align: center;
+            background: rgba(0,212,170,0.1);
+            border: 2px solid #00d4aa;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 30px 0;
+            font-family: 'Orbitron', monospace;
+        }
+        .score-display.show {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        .score-number {
+            font-size: 3rem;
+            color: #00d4aa;
+            font-weight: 900;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="nav-content">
+            <button class="drawer-btn" onclick="ccnaToggle()" aria-label="Abrir menú">☰</button>
+            <div class="nav-logo">
+                <a href="../index.html">CCNA ACADEMY</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- DRAWER -->
+    <div id="ccnaDrawer" class="drawer">
+        <div class="drawer-header">
+            <h2>NAVEGACIÓN</h2>
+            <button class="close-drawer" onclick="ccnaClose()" aria-label="Cerrar menú">×</button>
+        </div>
+        <div class="drawer-content">
+            <!-- General -->
+            <div class="drawer-section">
+                <div class="drawer-section-title">GENERAL</div>
+                <a href="../index.html" class="drawer-link">🏠 Inicio</a>
+            </div>
+
+            <!-- M1 Fundamentos -->
+            <div class="drawer-section">
+                <div class="drawer-section-title">M1 — FUNDAMENTOS</div>
+                <a href="fundamentos.html" class="drawer-link">Fundamentos de Redes</a>
+                <a href="subnetting.html" class="drawer-link">Subnetting & VLSM</a>
+                <a href="ipv6.html" class="drawer-link">IPv6</a>
+                <a href="arp.html" class="drawer-link">ARP Masterclass</a>
+                <a href="rip.html" class="drawer-link">RIP Masterclass</a>
+                <a href="protocolos-internet.html" class="drawer-link">Protocolos Internet</a>
+            </div>
+
+            <!-- M2 Dispositivos Cisco -->
+            <div class="drawer-section">
+                <div class="drawer-section-title">M2 — DISPOSITIVOS CISCO</div>
+                <a href="dispositivos.html" class="drawer-link">Dispositivos de Red</a>
+                <a href="ios-comandos.html" class="drawer-link">CLI & Comandos IOS</a>
+            </div>
+
+            <!-- M3 Switching -->
+            <div class="drawer-section">
+                <div class="drawer-section-title">M3 — SWITCHING</div>
+                <a href="switching.html" class="drawer-link">Switching Básico</a>
+                <a href="vlan.html" class="drawer-link">VLANs & Trunking</a>
+                <a href="stp.html" class="drawer-link">STP</a>
+                <a href="etherchannel.html" class="drawer-link">EtherChannel</a>
+            </div>
+
+            <!-- M4 Routing -->
+            <div class="drawer-section">
+                <div class="drawer-section-title">M4 — ROUTING</div>
+                <a href="routing.html" class="drawer-link">Routing Básico</a>
+                <a href="routing-estatico.html" class="drawer-link">Routing Estático</a>
+                <a href="routing-dinamico.html" class="drawer-link">Routing Dinámico</a>
+                <a href="eigrp.html" class="drawer-link">EIGRP</a>
+                <a href="ospf.html" class="drawer-link">OSPF Básico</a>
+                <a href="ospfv2.html" class="drawer-link">OSPFv2 Masterclass</a>
+            </div>
+
+            <!-- M5 Servicios IP -->
+            <div class="drawer-section">
+                <div class="drawer-section-title">M5 — SERVICIOS IP</div>
+                <a href="dhcp.html" class="drawer-link">DHCP</a>
+                <a href="nat.html" class="drawer-link">NAT & PAT</a>
+                <a href="acl.html" class="drawer-link">ACLs</a>
+            </div>
+
+            <!-- M6 Seguridad -->
+            <div class="drawer-section">
+                <div class="drawer-section-title">M6 — SEGURIDAD</div>
+                <a href="seguridad.html" class="drawer-link">Seguridad de Red</a>
+                <a href="port-security.html" class="drawer-link">Port Security</a>
+            </div>
+
+            <!-- M7 WAN & QoS -->
+            <div class="drawer-section">
+                <div class="drawer-section-title">M7 — WAN & QoS</div>
+                <a href="wan.html" class="drawer-link">WAN Technologies</a>
+                <a href="qos.html" class="drawer-link">QoS</a>
+            </div>
+
+            <!-- M8 Mastery Zone -->
+            <div class="drawer-section">
+                <div class="drawer-section-title">M8 — MASTERY ZONE</div>
+                <a href="cdp-lldp.html" class="drawer-link">CDP & LLDP</a>
+            </div>
+
+            <!-- Herramientas -->
+            <div class="drawer-section">
+                <div class="drawer-section-title">HERRAMIENTAS</div>
+                <a href="asistente.html" class="drawer-link">🤖 Asistente IA</a>
+                <a href="netbot.html" class="drawer-link">⚙️ NetBot Config</a>
+                <a href="calculadora.html" class="drawer-link">🧮 Calculadora IP</a>
+                <a href="banco-preguntas.html" class="drawer-link active">📝 Banco de Preguntas</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- EXAM CONTAINER -->
+    <div class="exam-container">
+        <div class="exam-header">
+            <h1>Examen 5: EIGRP & OSPFv2 Avanzado</h1>
+            <div class="exam-meta">30 preguntas | Nivel: Avanzado | CCNA 200-301</div>
+        </div>
+
+        <!-- SCORE DISPLAY -->
+        <div id="scoreDisplay" class="score-display">
+            <div class="score-number" id="scoreNumber">0/30</div>
+            <p style="color: #a0a0a0; margin-top: 10px;">Calificación: <span id="scorePercent">0%</span></p>
+        </div>
+
+        <!-- QUESTIONS -->
+        <div id="questionsContainer"></div>
+
+        <button class="submit-btn" onclick="submitExam()">CALIFICAR EXAMEN</button>
+    </div>
+
+    <script src="../assets/main.js"></script>
+    <script>
+        const examQuestions = [
+            {
+                question: "¿Cuál es la métrica por defecto que utiliza EIGRP para calcular la mejor ruta?",
+                options: [
+                    "Bandwidth y Delay",
+                    "Bandwidth, Delay, Reliability y Load",
+                    "Hop count",
+                    "Cost basado en bandwidth"
+                ],
+                correct: 0,
+                explanation: "<strong>Respuesta correcta: Bandwidth y Delay</strong><br><br>Aunque EIGRP puede utilizar hasta 5 métricas (Bandwidth, Delay, Reliability, Load y MTU), <strong>por defecto solo usa Bandwidth y Delay</strong>. La fórmula de métrica compuesta es:<br><br><code>Metric = 256 * (K1*BW + (K2*BW)/(256-Load) + K3*Delay) * (K5/(Reliability+K4))</code><br><br>Los valores K por defecto son: K1=1, K2=0, K3=1, K4=0, K5=0. Esto simplifica la fórmula a:<br><br><code>Metric = 256 * (Bandwidth + Delay)</code><br><br>Donde Bandwidth se calcula como <code>10^7 / BW_mínimo</code> en Kbps, y Delay es la suma acumulada en decenas de microsegundos."
+            },
+            {
+                question: "En OSPF, ¿qué tipo de LSA se genera cuando un ASBR redistribuye rutas externas dentro de un área NSSA?",
+                options: [
+                    "Type 5 LSA",
+                    "Type 7 LSA",
+                    "Type 4 LSA",
+                    "Type 3 LSA"
+                ],
+                correct: 1,
+                explanation: "<strong>Respuesta correcta: Type 7 LSA</strong><br><br>En un área <strong>NSSA (Not-So-Stubby Area)</strong>, las rutas externas se representan mediante <strong>Type 7 LSA</strong>, generados por el ASBR dentro del NSSA.<br><br>Cuando estos LSAs llegan al ABR del NSSA, este los convierte en <strong>Type 5 LSA</strong> antes de propagarlos al área backbone (Area 0).<br><br><strong>Comparación de LSAs externos:</strong><br>• <strong>Type 5</strong>: Rutas externas en áreas normales<br>• <strong>Type 7</strong>: Rutas externas en áreas NSSA<br>• <strong>Type 4</strong>: Identifica la ubicación del ASBR (no contiene rutas)"
+            },
+            {
+                question: "¿Cuál es el administrative distance (AD) por defecto de EIGRP para rutas internas?",
+                options: [
+                    "90",
+                    "100",
+                    "110",
+                    "170"
+                ],
+                correct: 0,
+                explanation: "<strong>Respuesta correcta: 90</strong><br><br>EIGRP utiliza dos valores de AD diferentes:<br><br>• <strong>AD 90</strong>: Rutas internas EIGRP (aprendidas de vecinos dentro del mismo AS)<br>• <strong>AD 170</strong>: Rutas externas EIGRP (redistribuidas desde otros protocolos)<br><br><strong>Comparación de ADs comunes:</strong><br>• Rutas conectadas: 0<br>• Rutas estáticas: 1<br>• EIGRP (summary): 5<br>• EIGRP (internal): 90<br>• OSPF: 110<br>• RIP: 120<br>• EIGRP (external): 170<br><br>El AD más bajo gana cuando múltiples protocolos ofrecen rutas al mismo destino."
+            },
+            {
+                question: "En OSPF, ¿qué comando configura un área como Totally Stubby?",
+                options: [
+                    "area 10 stub",
+                    "area 10 stub no-summary",
+                    "area 10 nssa",
+                    "area 10 nssa no-summary"
+                ],
+                correct: 1,
+                explanation: "<strong>Respuesta correcta: area 10 stub no-summary</strong><br><br>Un <strong>Totally Stubby Area</strong> bloquea tanto LSAs Type 5 (rutas externas) como Type 3 (rutas inter-área), excepto la ruta por defecto.<br><br><strong>Configuración en el ABR:</strong><br><code>router ospf 1<br> area 10 stub no-summary</code><br><br><strong>Configuración en routers internos del área:</strong><br><code>router ospf 1<br> area 10 stub</code><br><br><strong>Comparación de tipos de área:</strong><br>• <strong>Stub</strong>: Bloquea Type 5 (externas)<br>• <strong>Totally Stub</strong>: Bloquea Type 3 y Type 5<br>• <strong>NSSA</strong>: Permite redistribución limitada vía Type 7<br>• <strong>Totally NSSA</strong>: NSSA + bloqueo de Type 3"
+            },
+            {
+                question: "¿Qué mecanismo utiliza EIGRP para garantizar entregas confiables de paquetes de actualización?",
+                options: [
+                    "TCP",
+                    "RTP (Reliable Transport Protocol)",
+                    "UDP con acknowledgment",
+                    "Multicast confiable"
+                ],
+                correct: 1,
+                explanation: "<strong>Respuesta correcta: RTP (Reliable Transport Protocol)</strong><br><br>EIGRP utiliza su propio protocolo de transporte llamado <strong>RTP (Reliable Transport Protocol)</strong>, que opera directamente sobre IP (protocolo 88).<br><br><strong>Características de RTP:</strong><br>• Envía paquetes multicast (224.0.0.10) con ACK requerido<br>• Retransmite unicast si no recibe ACK en 16 segundos<br>• Utiliza números de secuencia para garantizar orden<br>• Soporta tanto entrega confiable como no confiable<br><br><strong>Tipos de paquetes EIGRP:</strong><br>• <strong>Confiables</strong>: Update, Query, Reply (requieren ACK)<br>• <strong>No confiables</strong>: Hello, ACK (no requieren ACK)"
+            },
+            {
+                question: "En OSPF, ¿cuál es el propósito del Type 2 LSA (Network LSA)?",
+                options: [
+                    "Describir routers en un área",
+                    "Describir redes multi-acceso y qué routers están conectados",
+                    "Describir rutas inter-área",
+                    "Describir rutas externas"
+                ],
+                correct: 1,
+                explanation: "<strong>Respuesta correcta: Describir redes multi-acceso y qué routers están conectados</strong><br><br>El <strong>Type 2 LSA (Network LSA)</strong> es generado por el <strong>DR (Designated Router)</strong> en redes multi-acceso (Ethernet, FDDI).<br><br><strong>Contenido del Type 2 LSA:</strong><br>• Dirección IP de la red<br>• Máscara de subred<br>• Lista de todos los routers conectados al segmento<br><br><strong>Dónde se genera:</strong><br>• Solo en redes multi-acceso (Broadcast/NBMA)<br>• NO se genera en enlaces point-to-point<br>• El DR es el único que lo origina<br><br><strong>Flujo de información:</strong><br>1. DR recopila info de todos los routers del segmento<br>2. Genera Type 2 LSA<br>3. Lo inunda dentro del área"
+            },
+            {
+                question: "¿Cuál es la función del comando 'variance' en EIGRP?",
+                options: [
+                    "Cambiar la métrica de bandwidth",
+                    "Habilitar load balancing desigual",
+                    "Modificar el hello timer",
+                    "Configurar autenticación"
+                ],
+                correct: 1,
+                explanation: "<strong>Respuesta correcta: Habilitar load balancing desigual</strong><br><br>El comando <strong>variance</strong> permite a EIGRP realizar <strong>load balancing desigual</strong> (unequal-cost load balancing) entre múltiples rutas.<br><br><strong>Sintaxis:</strong><br><code>router eigrp 100<br> variance 2</code><br><br><strong>Funcionamiento:</strong><br>• Valor por defecto: 1 (solo equal-cost load balancing)<br>• Rango: 1-128<br>• Una ruta se usa si: <code>Métrica ≤ (Mejor_Métrica × Variance)</code><br><br><strong>Ejemplo:</strong><br>Si la mejor ruta tiene métrica 1000 y variance=2:<br>• Ruta con métrica 1500: ✅ Se usa (1500 ≤ 2000)<br>• Ruta con métrica 2500: ❌ No se usa (2500 > 2000)<br><br><strong>Requisito:</strong> La ruta debe cumplir la <strong>feasibility condition</strong> (ser libre de loops)."
+            },
+            {
+                question: "En OSPF, ¿qué significa el estado 'EXSTART' durante la formación de adyacencia?",
+                options: [
+                    "Los routers intercambian DBDs completos",
+                    "Los routers negocian quién será master/slave",
+                    "Los routers están sincronizando sus LSDBs",
+                    "Los routers envían LSRs"
+                ],
+                correct: 1,
+                explanation: "<strong>Respuesta correcta: Los routers negocian quién será master/slave</strong><br><br>El estado <strong>EXSTART</strong> es el tercer estado en la formación de adyacencia OSPF.<br><br><strong>Proceso de formación completo:</strong><br>1. <strong>DOWN</strong>: No se han recibido Hellos<br>2. <strong>INIT</strong>: Se recibió Hello del vecino<br>3. <strong>2-WAY</strong>: Comunicación bidireccional establecida<br>4. <strong>EXSTART</strong>: Negociación master/slave (router con RID mayor = master)<br>5. <strong>EXCHANGE</strong>: Intercambio de DBDs (Database Descriptions)<br>6. <strong>LOADING</strong>: Solicitud de LSAs faltantes vía LSR/LSU<br>7. <strong>FULL</strong>: LSDBs completamente sincronizadas<br><br><strong>En EXSTART:</strong><br>• Se determina el master (inicia el intercambio)<br>• Se establece el número de secuencia inicial<br>• Se envían DBDs vacíos para negociación"
+            },
+            {
+                question: "¿Qué condición debe cumplirse para que una ruta sea considerada 'Feasible Successor' en EIGRP?",
+                options: [
+                    "Reported Distance < Feasible Distance",
+                    "Feasible Distance < Reported Distance",
+                    "Advertised Distance = Feasible Distance",
+                    "Hop count < 15"
+                ],
+                correct: 0,
+                explanation: "<strong>Respuesta correcta: Reported Distance < Feasible Distance</strong><br><br>La <strong>Feasibility Condition</strong> garantiza rutas libres de loops en EIGRP.<br><br><strong>Términos clave:</strong><br>• <strong>FD (Feasible Distance)</strong>: Métrica de la mejor ruta actual<br>• <strong>RD (Reported Distance)</strong>: Métrica que anuncia el vecino hacia el destino<br>• <strong>Successor</strong>: Mejor ruta (menor FD)<br>• <strong>Feasible Successor (FS)</strong>: Ruta de respaldo que cumple: <code>RD < FD</code><br><br><strong>Ejemplo:</strong><br>Ruta A (Successor): FD = 1000<br>Ruta B: RD = 800 ✅ Es FS (800 < 1000)<br>Ruta C: RD = 1200 ❌ No es FS (1200 > 1000)<br><br><strong>Beneficio:</strong><br>Si el Successor falla, EIGRP usa el FS inmediatamente sin ejecutar DUAL (convergencia instantánea)."
+            },
+            {
+                question: "¿Cuál es el intervalo de Hello por defecto en OSPF para redes Ethernet?",
+                options: [
+                    "5 segundos",
+                    "10 segundos",
+                    "30 segundos",
+                    "40 segundos"
+                ],
+                correct: 1,
+                explanation: "<strong>Respuesta correcta: 10 segundos</strong><br><br>OSPF utiliza diferentes timers según el tipo de red:<br><br><strong>Redes Broadcast y Point-to-Point (Ethernet, Serial):</strong><br>• Hello interval: <strong>10 segundos</strong><br>• Dead interval: <strong>40 segundos</strong> (4× Hello)<br><br><strong>Redes NBMA (Frame Relay, ATM):</strong><br>• Hello interval: <strong>30 segundos</strong><br>• Dead interval: <strong>120 segundos</strong> (4× Hello)<br><br><strong>Comandos de verificación:</strong><br><code>show ip ospf interface</code><br><code>show ip ospf neighbor</code><br><br><strong>Modificar timers:</strong><br><code>interface GigabitEthernet0/0<br> ip ospf hello-interval 5<br> ip ospf dead-interval 20</code><br><br><strong>IMPORTANTE:</strong> Los timers deben coincidir en ambos extremos para formar adyacencia."
+            },
+            {
+                question: "¿Qué tipo de área OSPF permite redistribución de rutas externas pero bloquea Type 5 LSAs?",
+                options: [
+                    "Stub Area",
+                    "Totally Stubby Area",
+                    "NSSA (Not-So-Stubby Area)",
+                    "Backbone Area"
+                ],
+                correct: 2,
+                explanation: "<strong>Respuesta correcta: NSSA (Not-So-Stubby Area)</strong><br><br>Un <strong>NSSA</strong> es un área especial que permite redistribución de rutas externas de manera limitada.<br><br><strong>Características de NSSA:</strong><br>• Bloquea Type 5 LSAs (rutas externas normales)<br>• Permite Type 7 LSAs (generados por ASBR en el NSSA)<br>• El ABR convierte Type 7 → Type 5 al salir del NSSA<br>• Permite ASBRs dentro del área stub<br><br><strong>Configuración:</strong><br><code>router ospf 1<br> area 10 nssa</code><br><br><strong>Caso de uso:</strong><br>Oficinas remotas que necesitan redistribuir rutas de otro protocolo (ej. RIP) pero que también se benefician de las ventajas de un área stub (menor LSDB).<br><br><strong>Variante:</strong> <code>area 10 nssa no-summary</code> crea un <strong>Totally NSSA</strong>."
+            },
+            {
+                question: "En EIGRP, ¿qué comando muestra las rutas almacenadas en la tabla de topología pero que no están en la tabla de routing?",
+                options: [
+                    "show ip eigrp neighbors",
+                    "show ip eigrp topology",
+                    "show ip eigrp topology all-links",
+                    "show ip route eigrp"
+                ],
+                correct: 2,
+                explanation: "<strong>Respuesta correcta: show ip eigrp topology all-links</strong><br><br>EIGRP mantiene diferentes estructuras de datos:<br><br><strong>Tablas EIGRP:</strong><br>• <strong>Neighbor Table</strong>: Vecinos activos<br>• <strong>Topology Table</strong>: Todas las rutas conocidas<br>• <strong>Routing Table</strong>: Solo Successors (mejores rutas)<br><br><strong>Comandos de visualización:</strong><br>• <code>show ip eigrp topology</code>: Solo Successors y Feasible Successors<br>• <code>show ip eigrp topology all-links</code>: TODAS las rutas, incluyendo las que no cumplen feasibility condition<br>• <code>show ip route eigrp</code>: Solo rutas en tabla de routing<br><br><strong>Información revelada por all-links:</strong><br>• Rutas con RD > FD (no son FS)<br>• Métricas de todas las rutas posibles<br>• Útil para troubleshooting y entender por qué una ruta no se eligió"
+            },
+            {
+                question: "¿Cuál es el propósito del Type 3 LSA (Summary LSA) en OSPF?",
+                options: [
+                    "Describir rutas externas",
+                    "Describir rutas inter-área generadas por el ABR",
+                    "Describir redes dentro de un área",
+                    "Identificar la ubicación del ASBR"
+                ],
+                correct: 1,
+                explanation: "<strong>Respuesta correcta: Describir rutas inter-área generadas por el ABR</strong><br><br>El <strong>Type 3 LSA (Summary LSA)</strong> es generado por el <strong>ABR (Area Border Router)</strong> para anunciar rutas de un área a otra.<br><br><strong>Funcionamiento:</strong><br>1. ABR recibe Type 1 y Type 2 LSAs en un área<br>2. Calcula las rutas óptimas<br>3. Genera Type 3 LSAs para anunciar esas rutas a otras áreas<br>4. El Type 3 LSA cruza el área backbone (Area 0)<br><br><strong>Contenido del Type 3 LSA:</strong><br>• Prefijo de red y máscara<br>• Métrica hacia el destino<br>• Router ID del ABR que lo generó<br><br><strong>IMPORTANTE:</strong><br>• Type 3 NO contiene información topológica detallada<br>• Cada área mantiene su propia topología completa<br>• Areas stub bloquean Type 5, totally stub bloquean Type 3 y Type 5"
+            },
+            {
+                question: "En EIGRP, ¿qué sucede cuando se pierde el Successor y no existe un Feasible Successor?",
+                options: [
+                    "El router usa la última ruta conocida",
+                    "El router ejecuta el algoritmo DUAL para recalcular",
+                    "El router espera 180 segundos antes de recalcular",
+                    "El router instala una ruta por defecto automáticamente"
+                ],
+                correct: 1,
+                explanation: "<strong>Respuesta correcta: El router ejecuta el algoritmo DUAL para recalcular</strong><br><br>Cuando se pierde el Successor y no hay Feasible Successor, EIGRP entra en estado <strong>Active</strong> y ejecuta <strong>DUAL (Diffusing Update Algorithm)</strong>.<br><br><strong>Proceso DUAL:</strong><br>1. Router marca la ruta como <strong>Active</strong><br>2. Envía <strong>Query</strong> a todos los vecinos preguntando por la red<br>3. Los vecinos responden con <strong>Reply</strong> (tienen ruta o no)<br>4. Router espera respuestas de TODOS los vecinos<br>5. Calcula nueva ruta óptima<br>6. Marca la ruta como <strong>Passive</strong> (estable)<br><br><strong>Problema potencial: SIA (Stuck-In-Active)</strong><br>• Si un vecino no responde en 3 minutos (180 seg)<br>• El router declara el vecino como SIA<br>• Rompe la adyacencia con ese vecino<br><br><strong>Con Feasible Successor:</strong><br>✅ Convergencia instantánea (sin DUAL)"
+            },
+            {
+                question: "¿Qué comando OSPF configura autenticación MD5 en una interfaz?",
+                options: [
+                    "ip ospf authentication message-digest",
+                    "ip ospf authentication",
+                    "ip ospf auth md5",
+                    "ospf authentication md5"
+                ],
+                correct: 0,
+                explanation: "<strong>Respuesta correcta: ip ospf authentication message-digest</strong><br><br>OSPF soporta tres tipos de autenticación:<br><br><strong>1. Null (sin autenticación)</strong><br>• Por defecto<br>• No requiere configuración<br><br><strong>2. Clear Text (tipo 1)</strong><br><code>interface GigabitEthernet0/0<br> ip ospf authentication<br> ip ospf authentication-key CISCO123</code><br><br><strong>3. MD5 (tipo 2) - RECOMENDADO</strong><br><code>interface GigabitEthernet0/0<br> ip ospf authentication message-digest<br> ip ospf message-digest-key 1 md5 SECRET_KEY</code><br><br><strong>Configuración por área (alternativa):</strong><br><code>router ospf 1<br> area 0 authentication message-digest<br><br>interface GigabitEthernet0/0<br> ip ospf message-digest-key 1 md5 SECRET_KEY</code><br><br><strong>Verificación:</strong><br><code>show ip ospf interface</code>"
+            },
+            {
+                question: "¿Cuál es la dirección multicast utilizada por EIGRP para enviar actualizaciones?",
+                options: [
+                    "224.0.0.5",
+                    "224.0.0.6",
+                    "224.0.0.9",
+                    "224.0.0.10"
+                ],
+                correct: 3,
+                explanation: "<strong>Respuesta correcta: 224.0.0.10</strong><br><br>EIGRP utiliza <strong>224.0.0.10</strong> como dirección multicast para comunicarse con vecinos.<br><br><strong>Direcciones multicast de protocolos de routing:</strong><br>• <strong>EIGRP</strong>: 224.0.0.10<br>• <strong>OSPF (All Routers)</strong>: 224.0.0.5<br>• <strong>OSPF (DR/BDR)</strong>: 224.0.0.6<br>• <strong>RIPv2</strong>: 224.0.0.9<br>• <strong>HSRP</strong>: 224.0.0.2<br>• <strong>VRRP</strong>: 224.0.0.18<br><br><strong>Ventajas del multicast en EIGRP:</strong><br>• Reduce carga de CPU en routers que no ejecutan EIGRP<br>• Más eficiente que broadcast<br>• Permite comunicación uno-a-muchos<br><br><strong>Protocolo IP:</strong><br>EIGRP usa protocolo número <strong>88</strong> (no TCP ni UDP)<br><br><strong>Dirección MAC multicast correspondiente:</strong><br><code>01:00:5E:00:00:0A</code>"
+            },
+            {
+                question: "En OSPF, ¿qué router se elige como DR (Designated Router) en un segmento multi-acceso?",
+                options: [
+                    "El router con la IP más alta",
+                    "El router con el Router ID más alto",
+                    "El router con la prioridad OSPF más alta; en empate, el Router ID más alto",
+                    "El primer router en enviar un Hello"
+                ],
+                correct: 2,
+                explanation: "<strong>Respuesta correcta: El router con la prioridad OSPF más alta; en empate, el Router ID más alto</strong><br><br><strong>Proceso de elección DR/BDR:</strong><br>1. Se elige el router con <strong>prioridad OSPF más alta</strong><br>2. Si hay empate, gana el <strong>Router ID más alto</strong><br>3. Prioridad por defecto: <strong>1</strong><br>4. Rango de prioridad: <strong>0-255</strong><br>5. Prioridad 0 = router NO puede ser DR/BDR<br><br><strong>Configurar prioridad:</strong><br><code>interface GigabitEthernet0/0<br> ip ospf priority 100</code><br><br><strong>Importante - Elección NO es preemptiva:</strong><br>• Si llega un router con mayor prioridad/RID después de la elección<br>• NO desplaza al DR/BDR actual<br>• Solo se re-elige si DR/BDR falla<br><br><strong>Verificación:</strong><br><code>show ip ospf neighbor<br>show ip ospf interface</code>"
+            },
+            {
+                question: "¿Qué tipo de paquete EIGRP se utiliza para confirmar la recepción de actualizaciones confiables?",
+                options: [
+                    "Hello",
+                    "Update",
+                    "ACK",
+                    "Query"
+                ],
+                correct: 2,
+                explanation: "<strong>Respuesta correcta: ACK</strong><br><br>EIGRP utiliza 5 tipos de paquetes:<br><br><strong>1. Hello</strong><br>• Descubrimiento y mantenimiento de vecinos<br>• Multicast 224.0.0.10<br>• No requiere ACK (no confiable)<br><br><strong>2. Update</strong><br>• Envía información de rutas<br>• Requiere ACK (confiable)<br>• Puede ser multicast o unicast<br><br><strong>3. Query</strong><br>• Solicita información sobre una ruta (DUAL activo)<br>• Requiere ACK (confiable)<br>• Multicast<br><br><strong>4. Reply</strong><br>• Responde a un Query<br>• Requiere ACK (confiable)<br>• Unicast<br><br><strong>5. ACK (Acknowledgment)</strong><br>• Confirma recepción de Update, Query o Reply<br>• Es un Hello vacío enviado unicast<br>• No requiere ACK (no confiable)<br><br><strong>Verificación de paquetes:</strong><br><code>show ip eigrp traffic</code>"
+            },
+            {
+                question: "¿Cuál es el máximo número de rutas de equal-cost que OSPF puede instalar en la tabla de routing por defecto?",
+                options: [
+                    "2",
+                    "4",
+                    "6",
+                    "16"
+                ],
+                correct: 1,
+                explanation: "<strong>Respuesta correcta: 4</strong><br><br>Por defecto, OSPF permite <strong>4 rutas de equal-cost</strong> (mismo costo) para load balancing.<br><br><strong>Modificar el límite:</strong><br><code>router ospf 1<br> maximum-paths 8</code><br><br><strong>Rango permitido:</strong><br>• Mínimo: <strong>1</strong> (desactiva load balancing)<br>• Máximo: <strong>32</strong> (IOS moderno)<br>• Default: <strong>4</strong><br><br><strong>Comparación con EIGRP:</strong><br>• EIGRP también default 4, máximo 32<br>• EIGRP permite <strong>unequal-cost load balancing</strong> con <code>variance</code><br>• OSPF solo equal-cost load balancing<br><br><strong>Verificación:</strong><br><code>show ip route ospf</code><br>(Las rutas con load balancing se muestran con múltiples next-hops)<br><br><strong>Algoritmo de reparto:</strong><br>• Per-destination (basado en IP destino)<br>• CEF (Cisco Express Forwarding) por defecto"
+            },
+            {
+                question: "En EIGRP, ¿qué significa el término 'Split Horizon'?",
+                options: [
+                    "Un router no anuncia rutas de vuelta por la interfaz donde las aprendió",
+                    "Un router divide las rutas en múltiples anuncios",
+                    "Un router solo anuncia rutas cada 30 segundos",
+                    "Un router anuncia rutas con métrica infinita"
+                ],
+                correct: 0,
+                explanation: "<strong>Respuesta correcta: Un router no anuncia rutas de vuelta por la interfaz donde las aprendió</strong><br><br><strong>Split Horizon</strong> es una técnica anti-loop fundamental en protocolos de vector distancia (RIP, EIGRP).<br><br><strong>Regla:</strong><br>Si un router aprende una ruta por la interfaz X, NO la anuncia de vuelta por la interfaz X.<br><br><strong>Ejemplo:</strong><br>R1 -- [Fa0/0] -- R2 -- [Fa0/1] -- R3<br><br>• R2 aprende 10.0.0.0/8 desde R1 vía Fa0/0<br>• R2 anuncia 10.0.0.0/8 a R3 vía Fa0/1 ✅<br>• R2 NO anuncia 10.0.0.0/8 de vuelta a R1 vía Fa0/0 ❌<br><br><strong>Variante: Split Horizon with Poison Reverse</strong><br>• Anuncia la ruta de vuelta, pero con métrica infinita<br>• En EIGRP: métrica = 4,294,967,295 (2^32 - 1)<br><br><strong>Desactivar (solo si es necesario):</strong><br><code>interface Serial0/0<br> no ip split-horizon eigrp 100</code>"
+            },
+            {
+                question: "¿Qué comando OSPF suma rutas en un ABR para reducir el tamaño de la LSDB?",
+                options: [
+                    "ip ospf summary-address",
+                    "area 10 range 192.168.0.0 255.255.252.0",
+                    "summary-address 192.168.0.0 255.255.252.0",
+                    "redistribute summary"
+                ],
+                correct: 1,
+                explanation: "<strong>Respuesta correcta: area 10 range 192.168.0.0 255.255.252.0</strong><br><br>OSPF permite dos tipos de sumarización:<br><br><strong>1. Sumarización Inter-Área (en ABR)</strong><br><code>router ospf 1<br> area 10 range 192.168.0.0 255.255.252.0</code><br><br>• Resume Type 1/2 LSAs de un área en Type 3 LSAs<br>• Reduce LSAs propagados a otras áreas<br>• Se aplica en el ABR<br><br><strong>2. Sumarización de Rutas Externas (en ASBR)</strong><br><code>router ospf 1<br> summary-address 10.0.0.0 255.0.0.0</code><br><br>• Resume Type 5 LSAs (rutas redistribuidas)<br>• Se aplica en el ASBR<br><br><strong>Beneficios:</strong><br>• Reduce tamaño de LSDB<br>• Reduce CPU y memoria<br>• Mejora estabilidad (los flaps internos no se propagan)<br><br><strong>Auto-generación de ruta null:</strong><br>El router crea automáticamente <code>Null0</code> para la ruta resumen (prevenir loops)."
+            },
+            {
+                question: "¿Cuál es el rango de números AS (Autonomous System) válidos para EIGRP?",
+                options: [
+                    "1-65535",
+                    "1-255",
+                    "1-4294967295",
+                    "0-65535"
+                ],
+                correct: 0,
+                explanation: "<strong>Respuesta correcta: 1-65535</strong><br><br>EIGRP utiliza números de <strong>Autonomous System (AS)</strong> para identificar procesos de routing.<br><br><strong>Rango válido:</strong><br>• Mínimo: <strong>1</strong><br>• Máximo: <strong>65535</strong> (16 bits)<br><br><strong>Configuración:</strong><br><code>router eigrp 100</code><br><br>• El número AS debe coincidir entre vecinos<br>• Routers con diferentes AS no formarán adyacencia<br>• Un router puede ejecutar múltiples procesos EIGRP<br><br><strong>Comparación con BGP:</strong><br>• BGP AS públicos: 1-64511<br>• BGP AS privados: 64512-65535<br>• BGP AS extendidos: 1-4294967295 (32 bits)<br><br><strong>Named EIGRP (IOS 15+):</strong><br><code>router eigrp CAMPUS<br> address-family ipv4 autonomous-system 100<br>  network 10.0.0.0</code><br><br>Permite configuración más modular."
+            },
+            {
+                question: "En OSPF, ¿qué campo del paquete Hello debe coincidir para formar adyacencia (además del área)?",
+                options: [
+                    "Router ID",
+                    "Hello/Dead intervals, subnet, autenticación",
+                    "Cost de la interfaz",
+                    "Priority"
+                ],
+                correct: 1,
+                explanation: "<strong>Respuesta correcta: Hello/Dead intervals, subnet, autenticación</strong><br><br>Para formar adyacencia OSPF, los siguientes parámetros <strong>DEBEN coincidir</strong>:<br><br><strong>1. Area ID</strong><br>• Deben estar en la misma área<br><br><strong>2. Hello y Dead intervals</strong><br>• Default: 10s Hello, 40s Dead (broadcast/p2p)<br>• Default: 30s Hello, 120s Dead (NBMA)<br><br><strong>3. Subnet y máscara</strong><br>• Deben estar en la misma subred<br>• Excepto en enlaces point-to-point<br><br><strong>4. Autenticación</strong><br>• Tipo (null, clear text, MD5)<br>• Clave (password o MD5 key)<br><br><strong>5. Stub area flag</strong><br>• Ambos stub o ambos no-stub<br><br><strong>NO necesitan coincidir:</strong><br>• Router ID (debe ser único)<br>• Priority (solo afecta elección DR/BDR)<br>• Cost de interfaz<br><br><strong>Troubleshooting:</strong><br><code>debug ip ospf adj</code>"
+            },
+            {
+                question: "¿Qué comando EIGRP configura una ruta por defecto y la propaga a todos los vecinos?",
+                options: [
+                    "ip default-network 0.0.0.0",
+                    "ip route 0.0.0.0 0.0.0.0 null0 + redistribute static",
+                    "default-information originate",
+                    "network 0.0.0.0"
+                ],
+                correct: 1,
+                explanation: "<strong>Respuesta correcta: ip route 0.0.0.0 0.0.0.0 null0 + redistribute static</strong><br><br>EIGRP puede propagar una ruta por defecto de varias formas:<br><br><strong>Método 1: Ruta estática + Redistribución</strong><br><code>ip route 0.0.0.0 0.0.0.0 10.1.1.1<br>router eigrp 100<br> redistribute static</code><br><br><strong>Método 2: Network statement (menos recomendado)</strong><br><code>ip route 0.0.0.0 0.0.0.0 10.1.1.1<br>router eigrp 100<br> network 0.0.0.0</code><br><br><strong>Método 3: ip default-network (legacy)</strong><br><code>ip default-network 192.168.1.0<br>router eigrp 100<br> network 192.168.1.0</code><br><br><strong>IMPORTANTE:</strong><br>• <code>default-information originate</code> es para OSPF, NO EIGRP<br>• La ruta por defecto se marca como EX (externa) en vecinos<br>• AD = 170 (ruta externa EIGRP)<br><br><strong>Verificación:</strong><br><code>show ip route 0.0.0.0</code>"
+            },
+            {
+                question: "¿Cuál es el propósito del Type 4 LSA en OSPF?",
+                options: [
+                    "Anunciar rutas externas",
+                    "Indicar cómo alcanzar el ASBR",
+                    "Describir la topología de un área",
+                    "Sumarizar rutas inter-área"
+                ],
+                correct: 1,
+                explanation: "<strong>Respuesta correcta: Indicar cómo alcanzar el ASBR</strong><br><br>El <strong>Type 4 LSA (ASBR Summary LSA)</strong> es generado por el <strong>ABR</strong> para informar a otras áreas cómo alcanzar un <strong>ASBR (Autonomous System Boundary Router)</strong>.<br><br><strong>Flujo de información:</strong><br>1. ASBR redistribuye rutas externas → genera Type 5 LSAs<br>2. ABR recibe Type 5 LSAs en su área<br>3. ABR genera Type 4 LSA para anunciar la ubicación del ASBR<br>4. Type 4 LSA se propaga a otras áreas vía backbone<br>5. Routers en otras áreas usan Type 4 para calcular ruta al ASBR<br>6. Luego combinan esa ruta con Type 5 para calcular costo total<br><br><strong>Contenido del Type 4 LSA:</strong><br>• Router ID del ASBR<br>• Métrica para alcanzar el ASBR<br><br><strong>Visualización:</strong><br><code>show ip ospf database asbr-summary</code><br><br><strong>Nota:</strong> Type 4 NO contiene rutas, solo dice dónde está el ASBR."
+            },
+            {
+                question: "En EIGRP, ¿qué tabla almacena todas las rutas conocidas, incluyendo Successors y Feasible Successors?",
+                options: [
+                    "Routing Table",
+                    "Neighbor Table",
+                    "Topology Table",
+                    "ARP Table"
+                ],
+                correct: 2,
+                explanation: "<strong>Respuesta correcta: Topology Table</strong><br><br>EIGRP mantiene tres tablas de datos:<br><br><strong>1. Neighbor Table</strong><br>• Lista de vecinos EIGRP directamente conectados<br>• Dirección IP del vecino<br>• Interfaz local<br>• Hold time (tiempo antes de declarar vecino caído)<br>• Comando: <code>show ip eigrp neighbors</code><br><br><strong>2. Topology Table</strong><br>• TODAS las rutas conocidas hacia cada red<br>• Successor (mejor ruta)<br>• Feasible Successors (rutas de respaldo)<br>• Rutas que no cumplen feasibility condition<br>• FD, RD, métricas<br>• Comando: <code>show ip eigrp topology</code><br>• Comando completo: <code>show ip eigrp topology all-links</code><br><br><strong>3. Routing Table (IP)</strong><br>• Solo las mejores rutas (Successors)<br>• Compartida con otros protocolos<br>• Comando: <code>show ip route eigrp</code>"
+            },
+            {
+                question: "¿Qué tipo de red OSPF NO requiere la elección de DR/BDR?",
+                options: [
+                    "Broadcast",
+                    "Point-to-Point",
+                    "NBMA",
+                    "Broadcast Multi-access"
+                ],
+                correct: 1,
+                explanation: "<strong>Respuesta correcta: Point-to-Point</strong><br><br>OSPF clasifica las redes en diferentes tipos según su topología:<br><br><strong>1. Broadcast (Ethernet)</strong><br>• Requiere DR/BDR ✅<br>• Multicast habilitado<br>• Hello: 10s, Dead: 40s<br><br><strong>2. Point-to-Point (Serial PPP/HDLC)</strong><br>• NO requiere DR/BDR ❌<br>• Solo 2 routers en el segmento<br>• Hello: 10s, Dead: 40s<br>• Forma adyacencia directa (estado FULL)<br><br><strong>3. NBMA (Frame Relay, ATM)</strong><br>• Requiere DR/BDR ✅<br>• Sin multicast nativo<br>• Hello: 30s, Dead: 120s<br>• Requiere configuración de vecinos estáticos<br><br><strong>4. Point-to-Multipoint</strong><br>• NO requiere DR/BDR ❌<br>• Trata NBMA como colección de enlaces P2P<br><br><strong>Configurar tipo de red:</strong><br><code>interface Serial0/0<br> ip ospf network point-to-point</code>"
+            },
+            {
+                question: "¿Cuál es el comando para mostrar el Router ID actual de OSPF?",
+                options: [
+                    "show ip ospf",
+                    "show ip ospf interface",
+                    "show ip protocols",
+                    "show ip ospf database"
+                ],
+                correct: 0,
+                explanation: "<strong>Respuesta correcta: show ip ospf</strong><br><br>El comando <code>show ip ospf</code> muestra información general del proceso OSPF, incluyendo:<br><br><strong>Información mostrada:</strong><br>• <strong>Router ID</strong><br>• Process ID<br>• Áreas configuradas<br>• Número de interfaces activas<br>• Tipo de router (ABR, ASBR, internal)<br>• SPF statistics (ejecuciones del algoritmo)<br>• LSA counts por tipo<br><br><strong>Ejemplo de salida:</strong><br><code>Router# show ip ospf<br> Routing Process \"ospf 1\" with ID 10.1.1.1<br> Process ID 1<br> Router is an ABR<br> Number of areas in this router is 2<br> Area BACKBONE(0)<br>   Number of interfaces in this area is 1<br>   SPF algorithm executed 3 times</code><br><br><strong>Otros comandos útiles:</strong><br>• <code>show ip protocols</code>: También muestra RID<br>• <code>show ip ospf interface</code>: RID + info de interfaces<br>• <code>show ip ospf neighbor</code>: RID de vecinos"
+            },
+            {
+                question: "En EIGRP, ¿qué valor K por defecto está habilitado en la fórmula de métrica compuesta?",
+                options: [
+                    "K1 y K2",
+                    "K1 y K3",
+                    "K3 y K5",
+                    "Todos están habilitados"
+                ],
+                correct: 1,
+                explanation: "<strong>Respuesta correcta: K1 y K3</strong><br><br>EIGRP utiliza la siguiente fórmula de métrica compuesta:<br><br><code>Metric = 256 × [(K1×BW + (K2×BW)/(256-Load) + K3×Delay) × (K5/(Reliability+K4))]</code><br><br><strong>Valores K por defecto:</strong><br>• <strong>K1 = 1</strong> (Bandwidth habilitado)<br>• <strong>K2 = 0</strong> (Bandwidth/Load deshabilitado)<br>• <strong>K3 = 1</strong> (Delay habilitado)<br>• <strong>K4 = 0</strong> (Reliability deshabilitado)<br>• <strong>K5 = 0</strong> (Reliability deshabilitado)<br><br><strong>Esto simplifica la fórmula a:</strong><br><code>Metric = 256 × (Bandwidth + Delay)</code><br><br><strong>Modificar valores K (NO RECOMENDADO):</strong><br><code>router eigrp 100<br> metric weights 0 1 0 1 0 0<br>   (tos k1 k2 k3 k4 k5)</code><br><br><strong>IMPORTANTE:</strong><br>• Los valores K DEBEN coincidir entre vecinos<br>• Si no coinciden, no se forma adyacencia<br>• Cambiar valores K puede desestabilizar la red"
+            },
+            {
+                question: "¿Qué comando OSPF permite ajustar el costo (métrica) de una interfaz manualmente?",
+                options: [
+                    "ip ospf cost 50",
+                    "ospf cost 50",
+                    "ip cost 50",
+                    "bandwidth 100000"
+                ],
+                correct: 0,
+                explanation: "<strong>Respuesta correcta: ip ospf cost 50</strong><br><br><strong>Cálculo de costo OSPF:</strong><br><code>Cost = Reference_Bandwidth / Interface_Bandwidth</code><br><br><strong>Reference Bandwidth por defecto:</strong><br>• <strong>100 Mbps</strong> (100,000,000 bps)<br>• Problema: FastEthernet (100Mbps) y GigabitEthernet (1Gbps) tienen cost = 1<br><br><strong>Modificar Reference Bandwidth (recomendado):</strong><br><code>router ospf 1<br> auto-cost reference-bandwidth 10000  ! 10 Gbps</code><br><br><strong>Modificar Cost manualmente (por interfaz):</strong><br><code>interface GigabitEthernet0/0<br> ip ospf cost 50</code><br><br><strong>Ejemplos de costos con ref-bw default (100 Mbps):</strong><br>• 10 Mbps: cost = 10<br>• 100 Mbps (FastEthernet): cost = 1<br>• 1 Gbps (GigabitEthernet): cost = 1 ❌<br>• 10 Gbps: cost = 1 ❌<br><br><strong>Verificación:</strong><br><code>show ip ospf interface</code>"
+            },
+            {
+                question: "En EIGRP, ¿cuál es el hold time por defecto antes de que un vecino sea declarado caído?",
+                options: [
+                    "5 segundos",
+                    "10 segundos",
+                    "15 segundos",
+                    "180 segundos"
+                ],
+                correct: 2,
+                explanation: "<strong>Respuesta correcta: 15 segundos</strong><br><br><strong>Timers EIGRP por defecto:</strong><br>• <strong>Hello interval</strong>: 5 segundos (redes de alta velocidad)<br>• <strong>Hold time</strong>: 15 segundos (3× Hello interval)<br><br><strong>Redes de baja velocidad (≤1.544 Mbps):</strong><br>• Hello interval: 60 segundos<br>• Hold time: 180 segundos<br><br><strong>Funcionamiento:</strong><br>1. Router envía Hello cada 5 segundos<br>2. Vecino reinicia hold timer cada vez que recibe Hello<br>3. Si hold timer expira (15s sin Hellos), vecino declarado caído<br>4. Se eliminan todas las rutas aprendidas de ese vecino<br><br><strong>Modificar timers (por interfaz):</strong><br><code>interface GigabitEthernet0/0<br> ip hello-interval eigrp 100 3<br> ip hold-time eigrp 100 9</code><br><br><strong>IMPORTANTE:</strong><br>• Timers NO necesitan coincidir entre vecinos<br>• Cada router usa su propio hold time<br><br><strong>Verificación:</strong><br><code>show ip eigrp neighbors</code>"
+            }
+        ];
+
+        let userAnswers = {};
+        let examSubmitted = false;
+
+        function renderQuestions() {
+            const container = document.getElementById('questionsContainer');
+            examQuestions.forEach((q, idx) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'question-block';
+                qDiv.innerHTML = `
+                    <div class="question-number">Pregunta ${idx + 1}</div>
+                    <div class="question-text">${q.question}</div>
+                    <div class="options">
+                        ${q.options.map((opt, optIdx) => `
+                            <div class="option" data-question="${idx}" data-option="${optIdx}" onclick="selectOption(${idx}, ${optIdx})">
+                                ${String.fromCharCode(65 + optIdx)}. ${opt}
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="explanation" id="explanation-${idx}">
+                        ${q.explanation}
+                    </div>
+                `;
+                container.appendChild(qDiv);
+            });
+        }
+
+        function selectOption(questionIdx, optionIdx) {
+            if (examSubmitted) return;
+            
+            userAnswers[questionIdx] = optionIdx;
+            
+            const questionBlock = document.querySelectorAll('.question-block')[questionIdx];
+            const options = questionBlock.querySelectorAll('.option');
+            
+            options.forEach(opt => opt.classList.remove('selected'));
+            options[optionIdx].classList.add('selected');
+        }
+
+        function submitExam() {
+            if (examSubmitted) return;
+            
+            examSubmitted = true;
+            let correctCount = 0;
+            
+            examQuestions.forEach((q, idx) => {
+                const questionBlock = document.querySelectorAll('.question-block')[idx];
+                const options = questionBlock.querySelectorAll('.option');
+                const explanation = document.getElementById(`explanation-${idx}`);
+                
+                options.forEach((opt, optIdx) => {
+                    if (optIdx === q.correct) {
+                        opt.classList.add('correct');
+                    }
+                    if (userAnswers[idx] === optIdx && optIdx !== q.correct) {
+                        opt.classList.add('incorrect');
+                    }
+                });
+                
+                explanation.classList.add('show');
+                
+                if (userAnswers[idx] === q.correct) {
+                    correctCount++;
+                }
+            });
+            
+            const percentage = Math.round((correctCount / examQuestions.length) * 100);
+            document.getElementById('scoreNumber').textContent = `${correctCount}/${examQuestions.length}`;
+            document.getElementById('scorePercent').textContent = `${percentage}%`;
+            document.getElementById('scoreDisplay').classList.add('show');
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        renderQuestions();
+    </script>
+</body>
+</html>

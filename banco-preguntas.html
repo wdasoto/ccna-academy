@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banco de Preguntas CCNA 200-301 | CCNA Academy</title>
+    <link rel="stylesheet" href="assets/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        .banco-container {
+            max-width: 1200px;
+            margin: 80px auto 40px;
+            padding: 30px;
+        }
+        .banco-header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding: 40px;
+            background: linear-gradient(135deg, rgba(0,212,170,0.1), rgba(0,168,133,0.05));
+            border: 2px solid #00d4aa;
+            border-radius: 12px;
+        }
+        .banco-header h1 {
+            font-family: 'Orbitron', monospace;
+            font-size: 2.8em;
+            color: #00d4aa;
+            margin-bottom: 15px;
+            text-shadow: 0 0 20px rgba(0,212,170,0.5);
+        }
+        .banco-subtitle {
+            font-family: 'Exo 2', sans-serif;
+            font-size: 1.3em;
+            color: #aaa;
+            margin-top: 15px;
+        }
+        .banco-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+        .stat-item {
+            font-family: 'Share Tech Mono', monospace;
+            color: #00d4aa;
+            font-size: 1.1em;
+        }
+        .stat-item span {
+            font-size: 1.8em;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .exams-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+        .exam-card {
+            background: rgba(0,0,0,0.3);
+            border: 2px solid rgba(0,212,170,0.3);
+            border-radius: 12px;
+            padding: 30px;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .exam-card:hover {
+            transform: translateY(-5px);
+            border-color: #00d4aa;
+            box-shadow: 0 10px 30px rgba(0,212,170,0.3);
+            background: rgba(0,212,170,0.05);
+        }
+        .exam-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(180deg, #00d4aa, #00a885);
+        }
+        .exam-number {
+            font-family: 'Orbitron', monospace;
+            font-size: 3em;
+            font-weight: 900;
+            color: rgba(0,212,170,0.2);
+            position: absolute;
+            top: 10px;
+            right: 20px;
+        }
+        .exam-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.4em;
+            color: #00d4aa;
+            margin-bottom: 15px;
+        }
+        .exam-description {
+            font-family: 'Exo 2', sans-serif;
+            color: #ddd;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        .exam-meta {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(0,212,170,0.2);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.9em;
+            color: #aaa;
+        }
+        .exam-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .final-exam {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, rgba(0,212,170,0.15), rgba(0,168,133,0.05));
+            border: 3px solid #00d4aa;
+        }
+        .final-badge {
+            display: inline-block;
+            background: #00d4aa;
+            color: #000;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.9em;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        .info-section {
+            background: rgba(0,212,170,0.05);
+            border: 1px solid rgba(0,212,170,0.2);
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 50px;
+        }
+        .info-section h2 {
+            font-family: 'Orbitron', monospace;
+            color: #00d4aa;
+            margin-bottom: 20px;
+        }
+        .info-section ul {
+            font-family: 'Exo 2', sans-serif;
+            color: #ddd;
+            line-height: 2;
+            list-style: none;
+            padding: 0;
+        }
+        .info-section ul li:before {
+            content: "▹ ";
+            color: #00d4aa;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        @media (max-width: 768px) {
+            .exams-grid {
+                grid-template-columns: 1fr;
+            }
+            .banco-header h1 {
+                font-size: 2em;
+            }
+            .banco-stats {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-brand" onclick="window.location.href='index.html'">
+            <span class="nav-logo">⬡</span>
+            <span class="nav-title">CCNA ACADEMY</span>
+        </div>
+        <div class="nav-actions">
+            <button class="nav-icon" onclick="ccnaToggle()" aria-label="Abrir menú">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Drawer Navigation -->
+    <div id="ccnaDrawer" class="drawer">
+        <div class="drawer-header">
+            <h3>NAVEGACIÓN</h3>
+            <button class="drawer-close" onclick="ccnaClose()">&times;</button>
+        </div>
+        <div class="drawer-content">
+            <div class="drawer-section">
+                <div class="drawer-section-title">GENERAL</div>
+                <a href="index.html" class="drawer-link">⬡ Inicio</a>
+            </div>
+            <div class="drawer-section">
+                <div class="drawer-section-title">HERRAMIENTAS</div>
+                <a href="clases/asistente.html" class="drawer-link">⚡ Asistente IA</a>
+                <a href="clases/netbot.html" class="drawer-link">🤖 NetBot Config</a>
+                <a href="clases/calculadora.html" class="drawer-link">🧮 Calculadora IP</a>
+                <a href="banco-preguntas.html" class="drawer-link active">📝 Banco de Preguntas</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="banco-container">
+        <div class="banco-header">
+            <h1>📝 BANCO DE PREGUNTAS CCNA 200-301</h1>
+            <p class="banco-subtitle">Sistema completo de preparación para la certificación Cisco CCNA</p>
+            <div class="banco-stats">
+                <div class="stat-item">
+                    <span>10</span>
+                    Exámenes Temáticos
+                </div>
+                <div class="stat-item">
+                    <span>311</span>
+                    Preguntas Técnicas
+                </div>
+                <div class="stat-item">
+                    <span>100%</span>
+                    Cobertura CCNA 200-301
+                </div>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h2>ℹ️ Información del Banco de Preguntas</h2>
+            <ul>
+                <li><strong>Actualizado:</strong> Marzo 2026 — Contenido alineado con CCNA 200-301 vigente</li>
+                <li><strong>Metodología:</strong> Cada pregunta incluye explicación técnica detallada</li>
+                <li><strong>Progresión:</strong> Exámenes 1-9 por tema específico, Examen 10 simulacro final completo</li>
+                <li><strong>Autoevaluación:</strong> Sistema de calificación automática con feedback inmediato</li>
+                <li><strong>Sin límite de tiempo:</strong> Repite los exámenes cuantas veces necesites</li>
+                <li><strong>Puntuación oficial CCNA:</strong> 825/1000 puntos mínimo para aprobar (82.5%)</li>
+            </ul>
+        </div>
+
+        <div class="exams-grid">
+            <!-- Examen 1 -->
+            <div class="exam-card" onclick="window.location.href='clases/exam1.html'">
+                <div class="exam-number">01</div>
+                <div class="exam-title">Fundamentos de Redes</div>
+                <div class="exam-description">
+                    Modelos OSI/TCP-IP, direccionamiento IP, protocolos básicos, arquitectura de red y conceptos fundamentales de networking.
+                </div>
+                <div class="exam-meta">
+                    <span>📝 31 preguntas</span>
+                    <span>⏱️ ~45 min</span>
+                    <span>🎯 Básico</span>
+                </div>
+            </div>
+
+            <!-- Examen 2 -->
+            <div class="exam-card" onclick="window.location.href='clases/exam2.html'">
+                <div class="exam-number">02</div>
+                <div class="exam-title">Subnetting IPv4 & VLSM</div>
+                <div class="exam-description">
+                    Cálculo de subredes, máscaras de longitud variable, supernetting, agregación de rutas y optimización de direccionamiento.
+                </div>
+                <div class="exam-meta">
+                    <span>📝 30 preguntas</span>
+                    <span>⏱️ ~50 min</span>
+                    <span>🎯 Intermedio</span>
+                </div>
+            </div>
+
+            <!-- Examen 3 -->
+            <div class="exam-card" onclick="window.location.href='clases/exam3.html'">
+                <div class="exam-number">03</div>
+                <div class="exam-title">Switching Avanzado</div>
+                <div class="exam-description">
+                    VLANs, trunking, STP/RSTP, EtherChannel, Port Security, DHCP Snooping, Dynamic ARP Inspection y seguridad Layer 2.
+                </div>
+                <div class="exam-meta">
+                    <span>📝 30 preguntas</span>
+                    <span>⏱️ ~45 min</span>
+                    <span>🎯 Intermedio</span>
+                </div>
+            </div>
+
+            <!-- Examen 4 -->
+            <div class="exam-card" onclick="window.location.href='clases/exam4.html'">
+                <div class="exam-number">04</div>
+                <div class="exam-title">Routing IP</div>
+                <div class="exam-description">
+                    Routing estático, rutas por defecto, rutas flotantes, redistribución básica y fundamentos de routing dinámico.
+                </div>
+                <div class="exam-meta">
+                    <span>📝 30 preguntas</span>
+                    <span>⏱️ ~45 min</span>
+                    <span>🎯 Intermedio</span>
+                </div>
+            </div>
+
+            <!-- Examen 5 -->
+            <div class="exam-card" onclick="window.location.href='clases/exam5.html'">
+                <div class="exam-number">05</div>
+                <div class="exam-title">EIGRP & OSPFv2 Avanzado</div>
+                <div class="exam-description">
+                    Algoritmo DUAL, métricas EIGRP, áreas OSPF, LSA types, DR/BDR election, sumarización, autenticación y troubleshooting.
+                </div>
+                <div class="exam-meta">
+                    <span>📝 30 preguntas</span>
+                    <span>⏱️ ~50 min</span>
+                    <span>🎯 Avanzado</span>
+                </div>
+            </div>
+
+            <!-- Examen 6 -->
+            <div class="exam-card" onclick="window.location.href='clases/exam6.html'">
+                <div class="exam-number">06</div>
+                <div class="exam-title">Servicios IP</div>
+                <div class="exam-description">
+                    DHCP, NAT/PAT, ACL estándar y extendida, DNS, NTP, Syslog, SNMP y servicios de infraestructura de red.
+                </div>
+                <div class="exam-meta">
+                    <span>📝 30 preguntas</span>
+                    <span>⏱️ ~45 min</span>
+                    <span>🎯 Intermedio</span>
+                </div>
+            </div>
+
+            <!-- Examen 7 -->
+            <div class="exam-card" onclick="window.location.href='clases/exam7.html'">
+                <div class="exam-number">07</div>
+                <div class="exam-title">Seguridad de Redes</div>
+                <div class="exam-description">
+                    Port Security, AAA, RADIUS/TACACS+, VPN, IPsec, seguridad wireless WPA2/WPA3, 802.1X y mejores prácticas de seguridad.
+                </div>
+                <div class="exam-meta">
+                    <span>📝 30 preguntas</span>
+                    <span>⏱️ ~45 min</span>
+                    <span>🎯 Intermedio</span>
+                </div>
+            </div>
+
+            <!-- Examen 8 -->
+            <div class="exam-card" onclick="window.location.href='clases/exam8.html'">
+                <div class="exam-number">08</div>
+                <div class="exam-title">IPv6, WAN & QoS</div>
+                <div class="exam-description">
+                    Direccionamiento IPv6, NDP, SLAAC, DHCPv6, tecnologías WAN (MPLS, PPP, GRE), QoS (DiffServ, DSCP, queuing).
+                </div>
+                <div class="exam-meta">
+                    <span>📝 30 preguntas</span>
+                    <span>⏱️ ~50 min</span>
+                    <span>🎯 Avanzado</span>
+                </div>
+            </div>
+
+            <!-- Examen 9 -->
+            <div class="exam-card" onclick="window.location.href='clases/exam9.html'">
+                <div class="exam-number">09</div>
+                <div class="exam-title">Wireless & Automatización</div>
+                <div class="exam-description">
+                    802.11 standards, WLC, CAPWAP, REST APIs, JSON, NETCONF, YANG, Ansible, SDN, DNA Center y programabilidad de red.
+                </div>
+                <div class="exam-meta">
+                    <span>📝 30 preguntas</span>
+                    <span>⏱️ ~45 min</span>
+                    <span>🎯 Avanzado</span>
+                </div>
+            </div>
+
+            <!-- Examen 10 - FINAL -->
+            <div class="exam-card final-exam" onclick="window.location.href='clases/exam10.html'">
+                <div class="final-badge">⭐ SIMULACRO OFICIAL</div>
+                <div class="exam-number">10</div>
+                <div class="exam-title">Simulacro Final CCNA 200-301</div>
+                <div class="exam-description">
+                    <strong>Examen completo que simula el CCNA oficial.</strong> Preguntas mixtas de todos los temas, distribución de dificultad realista, y sistema de puntuación oficial (825/1000 para aprobar). Recomendado realizar después de completar exámenes 1-9.
+                </div>
+                <div class="exam-meta">
+                    <span>📝 50 preguntas</span>
+                    <span>⏱️ 120 min</span>
+                    <span>🎯 Nivel Certificación</span>
+                    <span style="color: #00d4aa;">✅ 82.5% requerido</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h2>📚 Consejos de Estudio</h2>
+            <ul>
+                <li><strong>Progresión ordenada:</strong> Completa exámenes 1-9 en orden antes del simulacro final</li>
+                <li><strong>Repite hasta dominar:</strong> Meta 90%+ en cada examen temático</li>
+                <li><strong>Lee las explicaciones:</strong> Aprende de los errores, no solo memorices respuestas</li>
+                <li><strong>Laboratorios prácticos:</strong> Combina teoría con práctica en Packet Tracer/GNS3</li>
+                <li><strong>Simula condiciones reales:</strong> En el examen 10, usa temporizador de 120 minutos</li>
+                <li><strong>Revisa módulos débiles:</strong> Si fallas un tema, vuelve a la clase magistral correspondiente</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="assets/main.js"></script>
+</body>
+</html>
