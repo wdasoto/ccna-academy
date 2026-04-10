@@ -1150,6 +1150,585 @@
                     DHCP Options: <strong>3</strong>=default-router (gateway), 1=subnet-mask, 6=dns-server, 15=domain-name, 42=ntp-server, 66=tftp-server, 150=tftp-server (Cisco). En config pool: <code>default-router 192.168.1.1</code>.
                 </div>
             </div>
+	    <div class="question-block">
+                <div class="question-number">Pregunta 31</div>
+                <div class="question-text">
+                    ¿Cuál es el nivel de severidad en Syslog para un mensaje de tipo "Critical"?
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q31" value="a" id="q31a">
+                        <label for="q31a">Nivel 1</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q31" value="b" id="q31b">
+                        <label for="q31b">Nivel 2</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q31" value="c" id="q31c">
+                        <label for="q31c">Nivel 3</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q31" value="d" id="q31d">
+                        <label for="q31d">Nivel 4</label>
+                    </div>
+                </div>
+                <div class="explanation" data-answer="b">
+                    <div class="explanation-title">✓ Respuesta Correcta: B</div>
+                    Los niveles de Syslog van de 0 (Emergency) a 7 (Debugging). El nivel **2** corresponde a **Critical**. (Nemotecnia: Every Awesome Cisco Engineer Will Need Icecream Daily).
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">Pregunta 32</div>
+                <div class="question-text">
+                    ¿Qué comando se utiliza para excluir las primeras 10 direcciones IP de un pool DHCP en un router Cisco?
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q32" value="a" id="q32a">
+                        <label for="q32a">ip dhcp exclude 192.168.1.1 192.168.1.10</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q32" value="b" id="q32b">
+                        <label for="q32b">ip dhcp excluded-address 192.168.1.1 192.168.1.10</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q32" value="c" id="q32c">
+                        <label for="q32c">no dhcp address 192.168.1.1 192.168.1.10</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q32" value="d" id="q32d">
+                        <label for="q32d">deny ip dhcp 192.168.1.1 10</label>
+                    </div>
+                </div>
+                <div class="explanation" data-answer="b">
+                    <div class="explanation-title">✓ Respuesta Correcta: B</div>
+                    El comando correcto es **ip dhcp excluded-address** seguido de la IP inicial y la IP final. Este comando se configura en el modo de configuración global, no dentro del pool.
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">Pregunta 33</div>
+                <div class="question-text">
+                    ¿Cuál es el rango de números para las Listas de Acceso (ACL) Estándar en Cisco IOS?
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q33" value="a" id="q33a">
+                        <label for="q33a">1-99 y 1300-1999</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q33" value="b" id="q33b">
+                        <label for="q33b">100-199 y 2000-2699</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q33" value="c" id="q33c">
+                        <label for="q33c">1-100</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q33" value="d" id="q33d">
+                        <label for="q33d">100-500</label>
+                    </div>
+                </div>
+                <div class="explanation" data-answer="a">
+                    <div class="explanation-title">✓ Respuesta Correcta: A</div>
+                    Las ACL estándar usan los rangos **1-99** y el rango expandido **1300-1999**. Solo filtran por dirección IP de origen.
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">Pregunta 34</div>
+                <div class="question-text">
+                    En una ACL extendida, ¿qué palabra clave se utiliza para permitir el tráfico web (HTTP)?
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q34" value="a" id="q34a">
+                        <label for="q34a">eq 21</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q34" value="b" id="q34b">
+                        <label for="q34b">eq 443</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q34" value="c" id="q34c">
+                        <label for="q34c">eq 80</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q34" value="d" id="q34d">
+                        <label for="q34d">eq 53</label>
+                    </div>
+                </div>
+                <div class="explanation" data-answer="c">
+                    <div class="explanation-title">✓ Respuesta Correcta: C</div>
+                    El protocolo HTTP utiliza el puerto TCP **80**. El puerto 443 es para HTTPS, el 21 para FTP y el 53 para DNS.
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">Pregunta 35</div>
+                <div class="question-text">
+                    ¿Qué comando NAT se requiere para permitir que el tráfico de retorno de Internet sea redirigido al host interno correcto cuando se usa PAT?
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q35" value="a" id="q35a">
+                        <label for="q35a">ip nat inside source static</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q35" value="b" id="q35b">
+                        <label for="q35b">No se requiere comando adicional; PAT usa la tabla de traducción y puertos.</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q35" value="c" id="q35c">
+                        <label for="q35c">ip nat outside source pool</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q35" value="d" id="q35d">
+                        <label for="q35d">ip nat helper-address</label>
+                    </div>
+                </div>
+                <div class="explanation" data-answer="b">
+                    <div class="explanation-title">✓ Respuesta Correcta: B</div>
+                    PAT funciona de forma dinámica. Cuando un host sale, se crea una entrada en la tabla de traducciones con el número de puerto. Al volver, el router consulta esa tabla para saber a qué IP interna entregar el paquete.
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">Pregunta 36</div>
+                <div class="question-text">
+                    ¿Cuál es el estrato (stratum) de un servidor NTP que está conectado directamente a un reloj atómico?
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q36" value="a" id="q36a">
+                        <label for="q36a">Stratum 0</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q36" value="b" id="q36b">
+                        <label for="q36b">Stratum 1</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q36" value="c" id="q36c">
+                        <label for="q36c">Stratum 2</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q36" value="d" id="q36d">
+                        <label for="q36d">Stratum 15</label>
+                    </div>
+                </div>
+                <div class="explanation" data-answer="b">
+                    <div class="explanation-title">✓ Respuesta Correcta: B</div>
+                    El reloj atómico o GPS es **Stratum 0**. El servidor que está conectado directamente a él es **Stratum 1**. A medida que nos alejamos de la fuente, el número de estrato aumenta.
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">Pregunta 37</div>
+                <div class="question-text">
+                    ¿Qué registro DNS se utiliza para mapear un nombre de dominio a una dirección IPv6?
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q37" value="a" id="q37a">
+                        <label for="q37a">Registro A</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q37" value="b" id="q37b">
+                        <label for="q37b">Registro MX</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q37" value="c" id="q37c">
+                        <label for="q37c">Registro AAAA</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q37" value="d" id="q37d">
+                        <label for="q37d">Registro CNAME</label>
+                    </div>
+                </div>
+                <div class="explanation" data-answer="c">
+                    <div class="explanation-title">✓ Respuesta Correcta: C</div>
+                    El registro **AAAA** (Quad-A) es el equivalente de IPv6 al registro A de IPv4.
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">Pregunta 38</div>
+                <div class="question-text">
+                    ¿Cuál es el propósito del comando "ip helper-address" en una interfaz de router?
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q38" value="a" id="q38a">
+                        <label for="q38a">Permitir que el router asigne IPs a otros routers.</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q38" value="b" id="q38b">
+                        <label for="q38b">Reenviar solicitudes de broadcast de clientes DHCP a un servidor en otra subred.</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q38" value="c" id="q38c">
+                        <label for="q38c">Configurar una dirección IP secundaria en la interfaz.</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q38" value="d" id="q38d">
+                        <label for="q38d">Activar NAT dinámico automáticamente.</label>
+                    </div>
+                </div>
+                <div class="explanation" data-answer="b">
+                    <div class="explanation-title">✓ Respuesta Correcta: B</div>
+                    Como los routers no reenvían broadcasts, el **ip helper-address** convierte el broadcast del cliente DHCP en un unicast dirigido al servidor DHCP que está en una red diferente.
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">Pregunta 39</div>
+                <div class="question-text">
+                    Al configurar NAT, ¿qué comando define el pool de direcciones públicas disponibles?
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q39" value="a" id="q39a">
+                        <label for="q39a">ip nat inside source static</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q39" value="b" id="q39b">
+                        <label for="q39b">ip nat pool [nombre] [inicio] [fin] netmask [máscara]</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q39" value="c" id="q39c">
+                        <label for="q39c">ip nat inside destination</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q39" value="d" id="q39d">
+                        <label for="q39d">access-list 1 permit any</label>
+                    </div>
+                </div>
+                <div class="explanation" data-answer="b">
+                    <div class="explanation-title">✓ Respuesta Correcta: B</div>
+                    El comando **ip nat pool** define el conjunto de direcciones globales (públicas) que se usarán para las traducciones dinámicas.
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">Pregunta 40</div>
+                <div class="question-text">
+                    ¿En qué dirección se aplican las ACL para filtrar el tráfico que ingresa al router desde la red local?
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q40" value="a" id="q40a">
+                        <label for="q40a">Outbound (Salida)</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q40" value="b" id="q40b">
+                        <label for="q40b">Inbound (Entrada)</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q40" value="c" id="q40c">
+                        <label for="q40c">Both (Ambas simultáneamente)</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q40" value="d" id="q40d">
+                        <label for="q40d">Forwarding</label>
+                    </div>
+                </div>
+                <div class="explanation" data-answer="b">
+                    <div class="explanation-title">✓ Respuesta Correcta: B</div>
+                    El tráfico que "entra" a la interfaz del router desde una red se filtra con el parámetro **in**. Es la mejor práctica para ACL estándar (colocarlas lo más cerca del origen posible).
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">Pregunta 41</div>
+                <div class="question-text">
+                    ¿Qué sucede si un paquete no coincide con ninguna línea de una ACL configurada?
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q41" value="a" id="q41a">
+                        <label for="q41a">El router lo permite por defecto.</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q41" value="b" id="q41b">
+                        <label for="q41b">El router lo reenvía a la puerta de enlace predeterminada.</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q41" value="c" id="q41c">
+                        <label for="q41c">El paquete se descarta debido al "Implicit Deny" al final de la ACL.</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q41" value="d" id="q41d">
+                        <label for="q41d">El router solicita al administrador una decisión.</label>
+                    </div>
+                </div>
+                <div class="explanation" data-answer="c">
+                    <div class="explanation-title">✓ Respuesta Correcta: C</div>
+                    Todas las ACL de Cisco terminan con un **deny ip any any** invisible. Si no hay una coincidencia previa que permita el tráfico, el paquete será descartado.
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">Pregunta 42</div>
+                <div class="question-text">
+                    En DHCP, ¿qué mensaje envía el cliente para aceptar formalmente una dirección IP ofrecida por el servidor?
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q42" value="a" id="q42a">
+                        <label for="q42a">DHCP Discover</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q42" value="b" id="q42b">
+                        <label for="q42b">DHCP Offer</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q42" value="c" id="q42c">
+                        <label for="q42c">DHCP Request</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q42" value="d" id="q42d">
+                        <label for="q42d">DHCP Ack</label>
+                    </div>
+                </div>
+                <div class="explanation" data-answer="c">
+                    <div class="explanation-title">✓ Respuesta Correcta: C</div>
+                    El proceso DORA es: Discover (Cliente), Offer (Servidor), **Request** (Cliente acepta), Ack (Servidor confirma).
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">Pregunta 43</div>
+                <div class="question-text">
+                    ¿Qué comando verifica las traducciones activas de NAT en un router?
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q43" value="a" id="q43a">
+                        <label for="q43a">show ip nat statistics</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q43" value="b" id="q43b">
+                        <label for="q43b">show ip nat translations</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q43" value="c" id="q43c">
+                        <label for="q43c">show running-config</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q43" value="d" id="q43d">
+                        <label for="q43d">debug ip nat</label>
+                    </div>
+                </div>
+                <div class="explanation" data-answer="b">
+                    <div class="explanation-title">✓ Respuesta Correcta: B</div>
+                    Este comando muestra la tabla dinámica con las direcciones Inside Local, Inside Global, Outside Local y Outside Global.
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">Pregunta 44</div>
+                <div class="question-text">
+                    ¿Cuál es la Wildcard Mask equivalente para una máscara de subred /28 (255.255.255.240)?
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q44" value="a" id="q44a">
+                        <label for="q44a">0.0.0.255</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q44" value="b" id="q44b">
+                        <label for="q44b">0.0.0.15</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q44" value="c" id="q44c">
+                        <label for="q44c">0.0.0.31</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q44" value="d" id="q44d">
+                        <label for="q44d">0.0.0.7</label>
+                    </div>
+                </div>
+                <div class="explanation" data-answer="b">
+                    <div class="explanation-title">✓ Respuesta Correcta: B</div>
+                    Para calcular la Wildcard, restamos cada octeto de 255: (255-255).(255-255).(255-255).(255-240) = **0.0.0.15**.
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">Pregunta 45</div>
+                <div class="question-text">
+                    ¿Qué comando permite a un router sincronizar su hora con un servidor NTP externo?
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q45" value="a" id="q45a">
+                        <label for="q45a">ntp master 1</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q45" value="b" id="q45b">
+                        <label for="q45b">clock set 12:00:00</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q45" value="c" id="q45c">
+                        <label for="q45c">ntp server [IP_del_servidor]</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q45" value="d" id="q45d">
+                        <label for="q45d">service ntp enable</label>
+                    </div>
+                </div>
+                <div class="explanation" data-answer="c">
+                    <div class="explanation-title">✓ Respuesta Correcta: C</div>
+                    El comando **ntp server** pone al router en modo cliente para recibir la hora de una fuente externa confiable.
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">Pregunta 46</div>
+                <div class="question-text">
+                    ¿Qué puerto utiliza Syslog por defecto para enviar sus logs a un servidor externo?
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q46" value="a" id="q46a">
+                        <label for="q46a">TCP 514</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q46" value="b" id="q46b">
+                        <label for="q46b">UDP 514</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q46" value="c" id="q46c">
+                        <label for="q46c">UDP 161</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q46" value="d" id="q46d">
+                        <label for="q46d">TCP 23</label>
+                    </div>
+                </div>
+                <div class="explanation" data-answer="b">
+                    <div class="explanation-title">✓ Respuesta Correcta: B</div>
+                    Syslog utiliza tradicionalmente el puerto **UDP 514** para el envío de mensajes a colectores de logs.
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">Pregunta 47</div>
+                <div class="question-text">
+                    ¿Cuál es la principal diferencia entre una ACL Estándar y una ACL Extendida?
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q47" value="a" id="q47a">
+                        <label for="q47a">La estándar puede filtrar por puerto TCP.</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q47" value="b" id="q47b">
+                        <label for="q47b">La extendida solo permite direcciones de destino.</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q47" value="c" id="q47c">
+                        <label for="q47c">La extendida puede filtrar por origen, destino, protocolo y puerto.</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q47" value="d" id="q47d">
+                        <label for="q47d">No hay diferencia, son nombres antiguos.</label>
+                    </div>
+                </div>
+                <div class="explanation" data-answer="c">
+                    <div class="explanation-title">✓ Respuesta Correcta: C</div>
+                    Las ACL **estándar** solo ven la IP de origen. Las **extendidas** son mucho más granulares y permiten filtrar basándose en IP origen/destino y puertos de capa 4.
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">Pregunta 48</div>
+                <div class="question-text">
+                    ¿Qué comando NAT se usaría para "mapear" permanentemente un servidor web interno (192.168.1.50) a una IP pública (200.1.1.5)?
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q48" value="a" id="q48a">
+                        <label for="q48a">ip nat pool WEBSERVER 200.1.1.5 200.1.1.5 netmask 255.255.255.252</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q48" value="b" id="q48b">
+                        <label for="q48b">ip nat inside source static 192.168.1.50 200.1.1.5</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q48" value="c" id="q48c">
+                        <label for="q48c">ip nat outside static 200.1.1.5 192.168.1.50</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q48" value="d" id="q48d">
+                        <label for="q48d">ip nat inside source dynamic 192.168.1.50 interface FastEthernet0/0</label>
+                    </div>
+                </div>
+                <div class="explanation" data-answer="b">
+                    <div class="explanation-title">✓ Respuesta Correcta: B</div>
+                    Se requiere **Static NAT** para servidores internos que necesitan ser accesibles desde fuera. La sintaxis es: `ip nat inside source static [IP_interna] [IP_externa]`.
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">Pregunta 49</div>
+                <div class="question-text">
+                    ¿En una ACL extendida, para qué sirve la palabra clave "established"?
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q49" value="a" id="q49a">
+                        <label for="q49a">Para permitir solo tráfico UDP.</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q49" value="b" id="q49b">
+                        <label for="q49b">Para permitir el tráfico TCP que es respuesta a una sesión ya iniciada internamente (bit ACK o RST activo).</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q49" value="c" id="q49c">
+                        <label for="q49c">Para bloquear todas las conexiones nuevas.</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q49" value="d" id="q49d">
+                        <label for="q49d">Para establecer una prioridad alta en el tráfico.</label>
+                    </div>
+                </div>
+                <div class="explanation" data-answer="b">
+                    <div class="explanation-title">✓ Respuesta Correcta: B</div>
+                    La palabra clave **established** filtra segmentos TCP que forman parte de una sesión existente (evita que atacantes inicien sesiones desde fuera hacia dentro).
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">Pregunta 50</div>
+                <div class="question-text">
+                    Al configurar DHCP en un router, ¿qué comando define la puerta de enlace que recibirán los clientes?
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q50" value="a" id="q50a">
+                        <label for="q50a">ip default-gateway [IP]</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q50" value="b" id="q50b">
+                        <label for="q50b">default-router [IP]</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q50" value="c" id="q50c">
+                        <label for="q50c">gateway-address [IP]</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q50" value="d" id="q50d">
+                        <label for="q50d">option 3 ip [IP]</label>
+                    </div>
+                </div>
+                <div class="explanation" data-answer="b">
+                    <div class="explanation-title">✓ Respuesta Correcta: B</div>
+                    Dentro del modo de configuración `ip dhcp pool`, el comando para especificar el Gateway es **default-router**.
+                </div>
+            </div>
 
             <button type="button" class="submit-btn" onclick="gradeExam()">Calificar Examen</button>
         </form>
