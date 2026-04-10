@@ -19,12 +19,12 @@
         <div class="drawer-section">
             <div class="drawer-section-title">General</div>
             <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a>
-            <a href="banco.html" class="drawer-link active-bank"><span class="dl-icon">📚</span> BANCO DE PREGUNTAS</a>
+            <a href="banco.html" class="drawer-link active-bank" style="color: #00d4aa; font-weight: bold;"><span class="dl-icon">📚</span> BANCO DE PREGUNTAS</a>
         </div>
 
         <div class="drawer-section">
             <div class="drawer-section-title">M1 · Fundamentos</div>
-            <a href="exam1.html" class="drawer-link active">Examen 1: Capa Física</a>
+            <a href="exam1.html" class="drawer-link active">Examen 1: Fundamentos</a>
             <a href="exam2.html" class="drawer-link">Examen 2: Ethernet</a>
             <a href="exam3.html" class="drawer-link">Examen 3: IPv4</a>
             <a href="exam4.html" class="drawer-link">Examen 4: IPv6</a>
@@ -46,7 +46,7 @@
 
         <div class="drawer-section">
             <div class="drawer-section-title">M3 · Conectividad</div>
-            <a href="#" class="drawer-link">Examen 15: Enrutamiento Estático</a>
+            <a href="#" class="drawer-link">Examen 15: Static Routing</a>
             <a href="#" class="drawer-link">Examen 16: OSPFv2</a>
             <a href="#" class="drawer-link">Examen 17: OSPF multi-área</a>
             <a href="#" class="drawer-link">Examen 18: FHRP/HSRP</a>
@@ -77,47 +77,36 @@
         <div class="exam-container">
             <div class="exam-header">
                 <h1>MODULO 1: FUNDAMENTOS DE RED</h1>
-                <div class="exam-meta">
-                    <span><i class="icon">⏱</i> 50 Preguntas</span>
-                    <span><i class="icon">🎯</i> Certificación CCNA</span>
-                    <a href="banco.html" class="btn-bank-pointer">BANCO DE PREGUNTAS →</a>
+                <div class="exam-info" style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
+                    <div><span>50 PREGUNTAS</span> • <span>CCNA 200-301</span></div>
+                    <a href="banco.html" class="btn-bank-pointer" style="padding: 8px 15px; border: 1px solid #00d4aa; border-radius: 4px; color: #00d4aa; text-decoration: none; font-family: 'Share Tech Mono';">BANCO DE PREGUNTAS →</a>
                 </div>
             </div>
 
             <form id="quizForm">
-                <div id="questionsContainer">
-                    </div>
-                <button type="button" class="btn-submit" onclick="checkAnswers()">FINALIZAR EVALUACIÓN</button>
+                <div id="questionsContainer"></div>
+                <button type="button" class="btn-submit" onclick="checkAnswers()" style="width: 100%; padding: 18px; background: #00d4aa; color: #050a0f; border: none; font-family: 'Orbitron'; font-weight: bold; cursor: pointer; margin-top: 30px; border-radius: 5px; font-size: 1.1em;">FINALIZAR Y VALIDAR EXAMEN</button>
             </form>
 
-            <div id="results" class="results-container">
-                <div class="results-content">
-                    <h2>PUNTUACIÓN FINAL</h2>
-                    <span class="score-display" id="score">0%</span>
-                    <p id="resultsText"></p>
-                    <button class="btn-retry" onclick="location.reload()">REINTENTAR</button>
-                </div>
+            <div id="results" class="results-box" style="display: none; margin-top: 40px; padding: 30px; border: 2px solid #00d4aa; text-align: center; background: rgba(0,212,170,0.05); border-radius: 10px;">
+                <h2 style="font-family: 'Orbitron'; color: #00d4aa;">PUNTUACIÓN OBTENIDA</h2>
+                <span id="score" style="font-size: 4em; color: #fff; font-family: 'Orbitron'; display: block; margin: 10px 0;">0%</span>
+                <p id="resultsText" style="margin-bottom: 20px; font-size: 1.2em;"></p>
+                <button onclick="location.reload()" style="background: #00d4aa; color: #050a0f; border: none; padding: 12px 30px; cursor: pointer; font-family: 'Orbitron'; font-weight: bold; border-radius: 4px;">REINTENTAR</button>
             </div>
         </div>
     </main>
 
-    <div class="netbot-floating">
-        <button class="netbot-trigger" title="NetBot AI">🤖</button>
+    <div class="netbot-container" style="position: fixed; bottom: 30px; right: 30px; z-index: 1000;">
+        <button class="netbot-trigger" style="background: rgba(0,212,170,0.1); border: 2px solid #00d4aa; width: 60px; height: 60px; border-radius: 50%; font-size: 2em; cursor: pointer; color: #00d4aa; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 15px rgba(0,212,170,0.3);">🤖</button>
     </div>
 
     <script>
-        // Funciones de navegación
-        function ccnaOpen() {
-            document.getElementById('ccnaDrawer').classList.add('open');
-            document.getElementById('ccnaOverlay').classList.add('active');
-        }
-        function ccnaClose() {
-            document.getElementById('ccnaDrawer').classList.remove('open');
-            document.getElementById('ccnaOverlay').classList.remove('active');
-        }
+        function ccnaOpen() { document.getElementById('ccnaDrawer').classList.add('open'); document.getElementById('ccnaOverlay').classList.add('active'); }
+        function ccnaClose() { document.getElementById('ccnaDrawer').classList.remove('open'); document.getElementById('ccnaOverlay').classList.remove('active'); }
 
         const questions = [
-           { n: 1, q: "¿Qué capa del modelo OSI es responsable de determinar la mejor ruta para enviar paquetes a través de la red?", a: "c", ex: "La Capa 3 (Red) se encarga del direccionamiento lógico y el enrutamiento.", opts: { a: "Capa 2", b: "Capa 4", c: "Capa 3", d: "Capa 7" }},
+            { n: 1, q: "¿Qué capa del modelo OSI es responsable de determinar la mejor ruta para enviar paquetes a través de la red?", a: "c", ex: "La Capa 3 (Red) se encarga del direccionamiento lógico y el enrutamiento.", opts: { a: "Capa 2", b: "Capa 4", c: "Capa 3", d: "Capa 7" }},
             { n: 2, q: "¿Cuál es la unidad de datos (PDU) de la Capa 2 del modelo OSI?", a: "b", ex: "En la Capa 2 (Enlace de datos), la PDU se denomina Trama (Frame).", opts: { a: "Paquete", b: "Trama", c: "Segmento", d: "Bit" }},
             { n: 3, q: "¿Qué protocolo de la capa de transporte garantiza la entrega de datos mediante el uso de acuses de recibo (ACK)?", a: "a", ex: "TCP es orientado a la conexión y garantiza la entrega, a diferencia de UDP.", opts: { a: "TCP", b: "UDP", c: "IP", d: "ICMP" }},
             { n: 4, q: "¿Qué tipo de cable se utiliza para conectar una PC directamente a un puerto de consola de un router Cisco?", a: "d", ex: "El cable Rollover se utiliza para la gestión de dispositivos Cisco mediante el puerto de consola.", opts: { a: "Crossover", b: "Straight-through", c: "Fiber Optic", d: "Rollover" }},
@@ -140,86 +129,17 @@
             { n: 21, q: "¿Cuál es la función del campo TTL en un paquete IP?", a: "d", ex: "El TTL evita que un paquete circule infinitamente en bucles de red.", opts: { a: "Acelerar el enrutamiento", b: "Identificar el protocolo superior", c: "Fragmentar el paquete", d: "Evitar bucles infinitos de Capa 3" }},
             { n: 22, q: "¿Qué tipo de tráfico es enviado a todos los hosts de una subred específica?", a: "b", ex: "Un tráfico de Broadcast se dirige a todos los nodos de la red.", opts: { a: "Unicast", b: "Broadcast", c: "Multicast", d: "Anycast" }},
             { n: 23, q: "¿Qué puerto utiliza el protocolo HTTP?", a: "a", ex: "HTTP usa el puerto 80 por defecto.", opts: { a: "80", b: "443", c: "22", d: "23" }},
-            { n: 24, q: "¿Qué comando en un router Cisco permite ver la tabla de direcciones MAC?", a: "c", ex: "Aunque los routers no suelen tenerla como los switches, el comando 'show mac address-table' es el estándar en equipos Cisco L2.", opts: { a: "show ip route", b: "show arp", c: "show mac address-table", d: "show interfaces" }},
+            { n: 24, q: "¿Qué comando en un router Cisco permite ver la tabla de direcciones MAC?", a: "c", ex: "En equipos Cisco el comando 'show mac address-table' es el estándar.", opts: { a: "show ip route", b: "show arp", c: "show mac address-table", d: "show interfaces" }},
             { n: 25, q: "¿Cuál es la dirección de loopback estándar en IPv4?", a: "b", ex: "127.0.0.1 se usa para probar el stack TCP/IP local.", opts: { a: "192.168.1.1", b: "127.0.0.1", c: "255.255.255.255", d: "0.0.0.0" }},
             { n: 26, q: "¿Qué capa OSI se encarga del cifrado y la compresión de datos?", a: "c", ex: "La Capa 6 (Presentación) maneja el formato y sintaxis de los datos.", opts: { a: "Aplicación", b: "Sesión", c: "Presentación", d: "Transporte" }},
             { n: 27, q: "¿Qué tecnología permite a varios dispositivos compartir una única dirección IP pública?", a: "a", ex: "NAT (Network Address Translation) permite esto.", opts: { a: "NAT", b: "VLAN", c: "STP", d: "VTP" }},
-            { n: 28, q: "¿Cuál es el máximo número de hosts útiles en una subred /29?", a: "b", ex: "2^3 - 2 = 6 hosts (8 totales menos red y broadcast).", opts: { a: "8", b: "6", c: "14", d: "30" }},
+            { n: 28, q: "¿Cuál es el máximo número de hosts útiles en una subred /29?", a: "b", ex: "2^3 - 2 = 6 hosts.", opts: { a: "8", b: "6", c: "14", d: "30" }},
             { n: 29, q: "¿Qué protocolo usa el puerto 22?", a: "d", ex: "SSH utiliza el puerto 22 para conexiones seguras.", opts: { a: "Telnet", b: "FTP", c: "TFTP", d: "SSH" }},
-            { n: 30, q: "¿Qué es un dominio de colisión?", a: "a", ex: "Un área donde las tramas pueden chocar. Cada puerto de un switch es un dominio de colisión independiente.", opts: { a: "Área donde las tramas pueden chocar", b: "Área donde se envían los broadcasts", c: "Una red lógica separada", d: "Un grupo de routers" }},
+            { n: 30, q: "¿Qué es un dominio de colisión?", a: "a", ex: "Un área donde las tramas pueden chocar.", opts: { a: "Área donde las tramas pueden chocar", b: "Área donde se envían los broadcasts", c: "Una red lógica separada", d: "Un grupo de routers" }},
             { n: 31, q: "¿Qué valor en el encabezado IP indica si es TCP o UDP?", a: "c", ex: "El campo 'Protocolo' identifica el protocolo de la capa superior.", opts: { a: "Versión", b: "IHL", c: "Protocolo", d: "Flags" }},
-            { n: 32, q: "¿Qué tipo de dirección es 224.0.0.5?", a: "b", ex: "Es una dirección Multicast (Clase D), usada específicamente por OSPF.", opts: { a: "Unicast", b: "Multicast", c: "Broadcast", d: "Loopback" }},
+            { n: 32, q: "¿Qué tipo de dirección es 224.0.0.5?", a: "b", ex: "Es una dirección Multicast usada por OSPF.", opts: { a: "Unicast", b: "Multicast", c: "Broadcast", d: "Loopback" }},
             { n: 33, q: "¿Qué significa que un medio de red sea Half-Duplex?", a: "c", ex: "Solo un dispositivo puede transmitir a la vez.", opts: { a: "No puede transmitir", b: "Transmite y recibe a la vez", c: "Solo uno transmite a la vez", d: "Usa dos cables diferentes" }},
-            { n: 34, q: "¿Qué componente de hardware almacena el archivo de configuración de inicio (startup-config) en un router Cisco?", a: "b", ex: "La NVRAM mantiene la configuración incluso sin energía.", opts: { a: "RAM", b: "NVRAM", c: "Flash", d: "ROM" }},
-            { n: 35, q: "¿Qué protocolo se utiliza para enviar correos electrónicos?", a: "a", ex: "SMTP (Simple Mail Transfer Protocol) se usa para el envío.", opts: { a: "SMTP", b: "POP3", c: "IMAP", d: "SNMP" }},
-            { n: 36, q: "¿Cuál es el propósito del Gateway por defecto?", a: "d", ex: "Es la salida de los paquetes hacia otras redes.", opts: { a: "Acelerar el internet", b: "Asignar IPs", c: "Cifrar la red local", d: "Ruta para salir a redes externas" }},
-            { n: 37, q: "¿Qué capa OSI maneja el diálogo entre aplicaciones?", a: "b", ex: "La Capa 5 (Sesión) establece, gestiona y finaliza las sesiones.", opts: { a: "Transporte", b: "Sesión", c: "Red", d: "Enlace de Datos" }},
-            { n: 38, q: "¿Qué puerto usa Telnet?", a: "c", ex: "Telnet usa el puerto 23 (no es seguro).", opts: { a: "20", b: "21", c: "23", d: "25" }},
-            { n: 39, q: "¿Cuál es el primer octeto de una dirección Clase B?", a: "b", ex: "El rango de Clase B es 128 a 191.", opts: { a: "1-126", b: "128-191", c: "192-223", d: "224-239" }},
-            { n: 40, q: "¿Qué campo de TCP permite el control de flujo?", a: "a", ex: "El tamaño de ventana (Window Size) regula cuántos datos enviar antes de un ACK.", opts: { a: "Window Size", b: "Sequence Number", c: "Checksum", d: "Urgent Pointer" }},
-            { n: 41, q: "¿Qué comando guarda la configuración de la RAM a la NVRAM?", a: "c", ex: "'copy running-config startup-config' realiza el guardado.", opts: { a: "save config", b: "write memory", c: "copy run start", d: "store config" }},
-            { n: 42, q: "¿Qué es una PDU de Capa 1?", a: "d", ex: "En la capa física, los datos son simplemente bits.", opts: { a: "Segmento", b: "Paquete", c: "Trama", d: "Bit" }},
-            { n: 43, q: "¿Qué tipo de topología conecta cada nodo con todos los demás?", a: "b", ex: "La topología de Malla (Mesh) ofrece la mayor redundancia.", opts: { a: "Estrella", b: "Malla", c: "Bus", d: "Anillo" }},
-            { n: 44, q: "¿Qué protocolo usa el puerto 53?", a: "a", ex: "DNS usa el puerto 53 (UDP para consultas, TCP para transferencias de zona).", opts: { a: "DNS", b: "DHCP", c: "FTP", d: "HTTP" }},
-            { n: 45, q: "¿Cuál es la longitud de una dirección MAC?", a: "c", ex: "Las direcciones MAC tienen 48 bits (6 octetos).", opts: { a: "32 bits", b: "64 bits", c: "48 bits", d: "128 bits" }},
-            { n: 46, q: "¿Qué dispositivo separa dominios de broadcast?", a: "b", ex: "Los routers no reenvían broadcasts de forma predeterminada.", opts: { a: "Hub", b: "Router", c: "Switch", d: "Repetidor" }},
-            { n: 47, q: "¿Qué protocolo se usa para la transferencia de archivos de forma no segura y rápida?", a: "d", ex: "TFTP usa UDP y no requiere autenticación.", opts: { a: "FTP", b: "SSH", c: "HTTPS", d: "TFTP" }},
-            { n: 48, q: "¿Qué estándar define el Power over Ethernet (PoE)?", a: "a", ex: "IEEE 802.3af define PoE.", opts: { a: "802.3af", b: "802.1Q", c: "802.1X", d: "802.11" }},
-            { n: 49, q: "¿Qué mensaje DHCP envía el servidor para ofrecer una IP?", a: "b", ex: "El proceso es DORA: Discover, Offer, Request, Acknowledgment.", opts: { a: "DHCP Discover", b: "DHCP Offer", c: "DHCP Request", d: "DHCP ACK" }},
-            { n: 50, q: "¿Qué puerto usa HTTPS?", a: "c", ex: "HTTPS (seguro) usa el puerto 443.", opts: { a: "80", b: "22", c: "443", d: "8080" }}
-        ];
-
-        function renderQuestions() {
-            const container = document.getElementById('questionsContainer');
-            questions.forEach(q => {
-                const block = document.createElement('div');
-                block.className = 'question-block';
-                block.innerHTML = `
-                    <div class="q-number">PREGUNTA ${q.n}</div>
-                    <div class="q-text">${q.q}</div>
-                    <div class="options-grid">
-                        ${Object.entries(q.opts).map(([key, val]) => `
-                            <label class="option-item">
-                                <input type="radio" name="q${q.n}" value="${key}">
-                                <span class="opt-label">${key.toUpperCase()}</span>
-                                <span class="opt-val">${val}</span>
-                            </label>
-                        `).join('')}
-                    </div>
-                    <div class="explanation-pane" id="exp${q.n}">
-                        <strong>Respuesta Correcta: ${q.a.toUpperCase()}</strong>
-                        <p>${q.ex}</p>
-                    </div>
-                `;
-                container.appendChild(block);
-            });
-        }
-
-        function checkAnswers() {
-            let correct = 0;
-            questions.forEach(q => {
-                const selected = document.querySelector(`input[name="q${q.n}"]:checked`);
-                const exp = document.getElementById(`exp${q.n}`);
-                const options = document.querySelectorAll(`input[name="q${q.n}"]`);
-                
-                options.forEach(opt => {
-                    const parent = opt.parentElement;
-                    if (opt.value === q.a) parent.classList.add('correct-opt');
-                    else if (opt.checked) parent.classList.add('incorrect-opt');
-                });
-
-                if (selected && selected.value === q.a) correct++;
-                exp.classList.add('show');
-            });
-
-            const percent = Math.round((correct / questions.length) * 100);
-            document.getElementById('score').textContent = percent + '%';
-            document.getElementById('resultsText').textContent = `Has obtenido ${correct} de ${questions.length} respuestas correctas.`;
-            document.getElementById('results').classList.add('active');
-            window.scrollTo({ top: document.getElementById('results').offsetTop - 100, behavior: 'smooth' });
-        }
-
-        window.onload = renderQuestions;
-    </script>
-</body>
-</html>
+            { n: 34, q: "¿Qué componente de hardware almacena el archivo de configuración de inicio (startup-config)?", a: "b", ex: "La NVRAM mantiene la configuración sin energía.", opts: { a: "RAM", b: "NVRAM", c: "Flash", d: "ROM" }},
+            { n: 35, q: "¿Qué protocolo se utiliza para enviar correos electrónicos?", a: "a", ex: "SMTP se usa para el envío.", opts: { a: "SMTP", b: "POP3", c: "IMAP", d: "SNMP" }},
+            { n: 36, q: "¿Cuál es el propósito del Gateway por defecto?", a: "d", ex: "Es la ruta para salir hacia otras redes.", opts: { a: "Acelerar el internet", b: "Asignar IPs", c: "Cifrar la red local", d: "Ruta para salir a redes externas" }},
+            { n: 37, q: "¿Qué capa OSI maneja el diálogo entre
