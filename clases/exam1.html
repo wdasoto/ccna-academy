@@ -6,87 +6,117 @@
     <title>Examen 1: Fundamentos de Redes | CCNA Academy</title>
     <link rel="stylesheet" href="../assets/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
-    <style>
-        .exam-container { max-width: 900px; margin: 80px auto 40px; padding: 30px; background: rgba(255,255,255,0.03); border: 1px solid rgba(0,212,170,0.2); border-radius: 8px; }
-        .exam-header { text-align: center; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 2px solid #00d4aa; }
-        .exam-header h1 { font-family: 'Orbitron', monospace; color: #00d4aa; font-size: 2.2em; margin-bottom: 10px; }
-        .question-block { margin-bottom: 30px; padding: 20px; background: rgba(255,255,255,0.02); border-left: 4px solid #00d4aa; border-radius: 4px; }
-        .question-number { font-family: 'Share Tech Mono', monospace; color: #00d4aa; font-size: 0.9em; margin-bottom: 10px; }
-        .question-text { font-size: 1.1em; margin-bottom: 15px; line-height: 1.5; color: #fff; }
-        .options { display: grid; gap: 10px; }
-        .option { display: flex; align-items: center; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 5px; cursor: pointer; transition: 0.3s; color: #ccc; }
-        .option:hover { background: rgba(0,212,170,0.1); }
-        .option input { margin-right: 15px; accent-color: #00d4aa; }
-        .explanation { display: none; margin-top: 15px; padding: 15px; background: rgba(0,212,170,0.1); border-radius: 5px; font-size: 0.95em; line-height: 1.4; border-left: 3px solid #00d4aa; color: #fff; }
-        .explanation.show { display: block; }
-        .explanation-title { color: #00d4aa; font-weight: bold; margin-bottom: 5px; display: block; }
-        .option.correct { border-color: #00d4aa; background: rgba(0,212,170,0.2); color: #fff; }
-        .option.incorrect { border-color: #ff4444; background: rgba(255,68,68,0.1); color: #fff; }
-        .btn-submit { display: block; width: 100%; padding: 15px; background: #00d4aa; color: #050a0f; border: none; border-radius: 5px; font-family: 'Orbitron', sans-serif; font-weight: bold; cursor: pointer; font-size: 1.1em; transition: 0.3s; margin-top: 30px; }
-        .btn-submit:hover { background: #00f2c3; box-shadow: 0 0 20px rgba(0,212,170,0.4); }
-        #results { display: none; margin-top: 30px; padding: 25px; background: rgba(0,212,170,0.1); border: 2px solid #00d4aa; border-radius: 8px; text-align: center; }
-        #results.show { display: block; }
-        .score-big { font-size: 3em; font-family: 'Orbitron', sans-serif; color: #00d4aa; display: block; margin: 10px 0; }
-    </style>
 </head>
-<body>
+<body class="exam-page">
     <div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
+    
     <nav class="ccna-drawer" id="ccnaDrawer">
-        <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
+        <div class="drawer-header">
+            <h2>◈ NAVEGACIÓN</h2>
+            <button class="drawer-close" onclick="ccnaClose()">✕</button>
+        </div>
+        
         <div class="drawer-section">
             <div class="drawer-section-title">General</div>
             <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a>
             <a href="banco.html" class="drawer-link"><span class="dl-icon">📚</span> Banco de Preguntas</a>
         </div>
+
         <div class="drawer-section">
-            <div class="drawer-section-title">Exámenes</div>
-            <a href="exam1.html" class="drawer-link active"><span class="dl-icon">📝</span> Examen 1: Fundamentos</a>
-            <a href="exam6.html" class="drawer-link"><span class="dl-icon">📝</span> Examen 6: Servicios IP</a>
+            <div class="drawer-section-title">M1 · Fundamentos</div>
+            <a href="exam1.html" class="drawer-link active"><span class="dl-icon">📝</span> Examen 1: Capa Física</a>
+            <a href="exam2.html" class="drawer-link"><span class="dl-icon">📝</span> Examen 2: Ethernet</a>
+            <a href="exam3.html" class="drawer-link"><span class="dl-icon">📝</span> Examen 3: IPv4</a>
+            <a href="exam4.html" class="drawer-link"><span class="dl-icon">📝</span> Examen 4: IPv6</a>
+            <a href="#" class="drawer-link"><span class="dl-icon">📝</span> Examen 5: ICMP</a>
+            <a href="#" class="drawer-link"><span class="dl-icon">📝</span> Examen 6: ARP</a>
+            <a href="#" class="drawer-link"><span class="dl-icon">📝</span> Examen 7: Capa Transporte</a>
+        </div>
+
+        <div class="drawer-section">
+            <div class="drawer-section-title">M2 · Acceso a Red</div>
+            <a href="#" class="drawer-link"><span class="dl-icon">📝</span> Examen 8: VLANs</a>
+            <a href="#" class="drawer-link"><span class="dl-icon">📝</span> Examen 9: Trunking</a>
+            <a href="#" class="drawer-link"><span class="dl-icon">📝</span> Examen 10: STP</a>
+            <a href="#" class="drawer-link"><span class="dl-icon">📝</span> Examen 11: EtherChannel</a>
+            <a href="#" class="drawer-link"><span class="dl-icon">📝</span> Examen 12: Wireless</a>
+            <a href="#" class="drawer-link"><span class="dl-icon">📝</span> Examen 13: CDP/LLDP</a>
+            <a href="#" class="drawer-link"><span class="dl-icon">📝</span> Examen 14: L2 Security</a>
+        </div>
+
+        <div class="drawer-section">
+            <div class="drawer-section-title">M3 · Enrutamiento</div>
+            <a href="#" class="drawer-link"><span class="dl-icon">📝</span> Examen 15: Static Routing</a>
+            <a href="#" class="drawer-link"><span class="dl-icon">📝</span> Examen 16: OSPFv2</a>
+            <a href="#" class="drawer-link"><span class="dl-icon">📝</span> Examen 17: OSPF multi-área</a>
+            <a href="#" class="drawer-link"><span class="dl-icon">📝</span> Examen 18: FHRP/HSRP</a>
+            <a href="#" class="drawer-link"><span class="dl-icon">📝</span> Examen 19: WAN Concepts</a>
+            <a href="#" class="drawer-link"><span class="dl-icon">📝</span> Examen 20: VPN/IPsec</a>
+            <a href="#" class="drawer-link"><span class="dl-icon">📝</span> Examen 21: QoS</a>
+        </div>
+
+        <div class="drawer-section">
+            <div class="drawer-section-title">M4 · Servicios e IP</div>
+            <a href="exam5.html" class="drawer-link"><span class="dl-icon">📝</span> Examen 22: DHCP</a>
+            <a href="exam6.html" class="drawer-link"><span class="dl-icon">📝</span> Examen 23: NAT</a>
+            <a href="#" class="drawer-link"><span class="dl-icon">📝</span> Examen 24: ACLs</a>
+            <a href="#" class="drawer-link"><span class="dl-icon">📝</span> Examen 25: SNMP/Syslog</a>
+            <a href="#" class="drawer-link"><span class="dl-icon">📝</span> Examen 26: Automation</a>
+            <a href="#" class="drawer-link"><span class="dl-icon">📝</span> Examen 27: SD-Access</a>
+            <a href="#" class="drawer-link"><span class="dl-icon">📝</span> Examen 28: Security Final</a>
         </div>
     </nav>
 
     <header class="ccna-header">
         <button class="menu-trigger" onclick="ccnaOpen()">☰ MENU</button>
         <div class="header-logo">CCNA ACADEMY</div>
-        <div class="header-status">MODO: AUTOEVALUACIÓN</div>
+        <div class="header-status">MÓDULO: FUNDAMENTOS</div>
     </header>
 
-    <div class="exam-container">
-        <div class="exam-header">
-            <h1>EXAMEN 1: FUNDAMENTOS</h1>
-            <p>Modelos OSI/TCP-IP, Medios y Capa 2</p>
+    <main class="ccna-main-content">
+        <div class="exam-container">
+            <div class="exam-header">
+                <h1>EXAMEN 1: FUNDAMENTOS DE RED</h1>
+                <div class="exam-info">
+                    <span>50 PREGUNTAS</span>
+                    <span>30 MINUTOS Sugerido</span>
+                    <a href="banco.html" class="bank-link">Ir al Banco de Preguntas</a>
+                </div>
+            </div>
+
+            <form id="quizForm">
+                <div id="questionsContainer"></div>
+                <button type="button" class="btn-submit" onclick="checkAnswers()">VALIDAR RESPUESTAS</button>
+            </form>
+
+            <div id="results" class="results-box">
+                <h2>PUNTUACIÓN OBTENIDA</h2>
+                <span class="score-big" id="score">0%</span>
+                <p id="resultsText"></p>
+                <button class="btn-retry" onclick="location.reload()">REINTENTAR EXAMEN</button>
+            </div>
         </div>
+    </main>
 
-        <form id="quizForm">
-            <div id="questionsContainer"></div>
-            <button type="button" class="btn-submit" onclick="checkAnswers()">FINALIZAR EXAMEN Y VER RESULTADOS</button>
-        </form>
-
-        <div id="results">
-            <h2>RESULTADO FINAL</h2>
-            <span class="score-big" id="score">0%</span>
-            <p id="resultsText"></p>
-            <button class="btn-submit" onclick="location.reload()" style="background: transparent; border: 1px solid #00d4aa; color: #00d4aa; width: auto; padding: 10px 30px; margin: 20px auto 0;">REINTENTAR</button>
-        </div>
-    </div>
-
-    <div class="netbot-container">
-        <button class="netbot-trigger" title="Asistente NetBot">🤖</button>
+    <div class="netbot-floating">
+        <button class="netbot-btn" title="Asistente NetBot">🤖</button>
     </div>
 
     <script>
-        // Funciones del Menú
+        // Lógica del Drawer
         function ccnaOpen() {
             document.getElementById('ccnaDrawer').classList.add('open');
             document.getElementById('ccnaOverlay').classList.add('active');
+            document.body.classList.add('drawer-active');
         }
         function ccnaClose() {
             document.getElementById('ccnaDrawer').classList.remove('open');
             document.getElementById('ccnaOverlay').classList.remove('active');
+            document.body.classList.remove('drawer-active');
         }
 
         const questions = [
-                     { n: 1, q: "¿Qué capa del modelo OSI es responsable de determinar la mejor ruta para enviar paquetes a través de la red?", a: "c", ex: "La Capa 3 (Red) se encarga del direccionamiento lógico y el enrutamiento.", opts: { a: "Capa 2", b: "Capa 4", c: "Capa 3", d: "Capa 7" }},
+           { n: 1, q: "¿Qué capa del modelo OSI es responsable de determinar la mejor ruta para enviar paquetes a través de la red?", a: "c", ex: "La Capa 3 (Red) se encarga del direccionamiento lógico y el enrutamiento.", opts: { a: "Capa 2", b: "Capa 4", c: "Capa 3", d: "Capa 7" }},
             { n: 2, q: "¿Cuál es la unidad de datos (PDU) de la Capa 2 del modelo OSI?", a: "b", ex: "En la Capa 2 (Enlace de datos), la PDU se denomina Trama (Frame).", opts: { a: "Paquete", b: "Trama", c: "Segmento", d: "Bit" }},
             { n: 3, q: "¿Qué protocolo de la capa de transporte garantiza la entrega de datos mediante el uso de acuses de recibo (ACK)?", a: "a", ex: "TCP es orientado a la conexión y garantiza la entrega, a diferencia de UDP.", opts: { a: "TCP", b: "UDP", c: "IP", d: "ICMP" }},
             { n: 4, q: "¿Qué tipo de cable se utiliza para conectar una PC directamente a un puerto de consola de un router Cisco?", a: "d", ex: "El cable Rollover se utiliza para la gestión de dispositivos Cisco mediante el puerto de consola.", opts: { a: "Crossover", b: "Straight-through", c: "Fiber Optic", d: "Rollover" }},
@@ -144,17 +174,20 @@
                 const block = document.createElement('div');
                 block.className = 'question-block';
                 block.innerHTML = `
-                    <div class="question-number">Pregunta ${q.n}</div>
+                    <div class="question-number">PREGUNTA ${q.n}</div>
                     <div class="question-text">${q.q}</div>
-                    <div class="options">
-                        <label class="option"><input type="radio" name="q${q.n}" value="a"> A) ${q.opts.a}</label>
-                        <label class="option"><input type="radio" name="q${q.n}" value="b"> B) ${q.opts.b}</label>
-                        <label class="option"><input type="radio" name="q${q.n}" value="c"> C) ${q.opts.c}</label>
-                        <label class="option"><input type="radio" name="q${q.n}" value="d"> D) ${q.opts.d}</label>
+                    <div class="options-grid">
+                        ${Object.entries(q.opts).map(([key, val]) => `
+                            <label class="option-card">
+                                <input type="radio" name="q${q.n}" value="${key}">
+                                <span class="opt-indicator">${key.toUpperCase()}</span>
+                                <span class="opt-text">${val}</span>
+                            </label>
+                        `).join('')}
                     </div>
-                    <div class="explanation" id="exp${q.n}">
-                        <span class="explanation-title">✓ Respuesta: ${q.a.toUpperCase()}</span>
-                        ${q.ex}
+                    <div class="explanation-box" id="exp${q.n}">
+                        <strong>✓ RESPUESTA CORRECTA: ${q.a.toUpperCase()}</strong>
+                        <p>${q.ex}</p>
                     </div>
                 `;
                 container.appendChild(block);
@@ -162,32 +195,27 @@
         }
 
         function checkAnswers() {
-            let correctCount = 0;
+            let correct = 0;
             questions.forEach(q => {
                 const selected = document.querySelector(`input[name="q${q.n}"]:checked`);
-                const explanation = document.getElementById(`exp${q.n}`);
+                const exp = document.getElementById(`exp${q.n}`);
                 const options = document.querySelectorAll(`input[name="q${q.n}"]`);
                 
-                options.forEach(optInput => {
-                    const label = optInput.parentElement;
-                    if (optInput.value === q.a) {
-                        label.classList.add('correct');
-                    } else if (optInput.checked && optInput.value !== q.a) {
-                        label.classList.add('incorrect');
-                    }
+                options.forEach(opt => {
+                    const label = opt.parentElement;
+                    if (opt.value === q.a) label.classList.add('correct');
+                    else if (opt.checked) label.classList.add('incorrect');
                 });
 
-                if (selected && selected.value === q.a) {
-                    correctCount++;
-                }
-                explanation.classList.add('show');
+                if (selected && selected.value === q.a) correct++;
+                exp.classList.add('show');
             });
 
-            const score = Math.round((correctCount / questions.length) * 100);
-            document.getElementById('score').textContent = score + '%';
-            document.getElementById('resultsText').textContent = `Has acertado ${correctCount} de ${questions.length} preguntas.`;
+            const percent = Math.round((correct / questions.length) * 100);
+            document.getElementById('score').textContent = percent + '%';
+            document.getElementById('resultsText').textContent = `Resultado: ${correct} de ${questions.length} correctas.`;
             document.getElementById('results').classList.add('show');
-            window.scrollTo({ top: document.getElementById('results').offsetTop - 100, behavior: 'smooth' });
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
         }
 
         window.onload = renderQuestions;
