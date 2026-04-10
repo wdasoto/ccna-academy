@@ -3,101 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Examen 10: Simulacro Final CCNA | CCNA Academy</title>
+    <title>Examen 10: Simulacro Final CCNA 200-301 | CCNA Academy</title>
     <link rel="stylesheet" href="../assets/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        .exam-container {
-            max-width: 900px;
-            margin: 80px auto 40px;
-            padding: 30px;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(0,212,170,0.2);
-            border-radius: 8px;
-        }
-        .exam-header {
-            text-align: center;
-            margin-bottom: 40px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid #00d4aa;
-        }
-        .exam-header h1 {
-            font-family: 'Orbitron', monospace;
-            color: #00d4aa;
-            font-size: 2.2em;
-            margin-bottom: 10px;
-        }
-        .exam-info {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin-top: 15px;
-            font-family: 'Share Tech Mono', monospace;
-            color: #aaa;
-        }
-        .question-block {
-            background: rgba(0,0,0,0.3);
-            padding: 25px;
-            margin-bottom: 25px;
-            border-left: 4px solid #00d4aa;
-            border-radius: 6px;
-        }
-        .question-number {
-            font-family: 'Orbitron', monospace;
-            color: #00d4aa;
-            font-weight: 700;
-            margin-bottom: 12px;
-            font-size: 1.1em;
-        }
-        .question-text {
-            font-family: 'Exo 2', sans-serif;
-            color: #fff;
-            font-size: 1.1em;
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-        .options {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .option {
-            display: flex;
-            align-items: flex-start;
-            padding: 15px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-family: 'Exo 2', sans-serif;
-        }
+        /* Estilos base del examen para mantener consistencia con el 6 */
+        .exam-container { max-width: 900px; margin: 80px auto 40px; padding: 30px; background: rgba(255,255,255,0.03); border: 1px solid rgba(0,212,170,0.2); border-radius: 8px; }
+        .exam-header { text-align: center; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 2px solid #00d4aa; }
+        .exam-header h1 { font-family: 'Orbitron', monospace; color: #00d4aa; font-size: 2.2em; text-transform: uppercase; }
+        .exam-info { display: flex; justify-content: center; gap: 30px; margin-top: 15px; font-family: 'Share Tech Mono', monospace; color: #aaa; }
+        .question-block { background: rgba(0,0,0,0.3); padding: 25px; margin-bottom: 25px; border-left: 4px solid #00d4aa; border-radius: 6px; }
+        .question-number { font-family: 'Orbitron', monospace; color: #00d4aa; font-weight: 700; margin-bottom: 12px; }
+        .question-text { font-family: 'Exo 2', sans-serif; color: #fff; font-size: 1.1em; line-height: 1.6; margin-bottom: 20px; }
+        .options { display: flex; flex-direction: column; gap: 12px; }
+        .option { display: flex; align-items: flex-start; padding: 15px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; cursor: pointer; transition: 0.3s; }
         .option:hover { background: rgba(0,212,170,0.1); border-color: #00d4aa; }
-        .option input { margin-right: 12px; margin-top: 3px; accent-color: #00d4aa; }
-        .option label { cursor: pointer; flex: 1; color: #ddd; }
         .option.correct { background: rgba(0,212,170,0.15); border-color: #00d4aa; }
         .option.incorrect { background: rgba(255,68,68,0.15); border-color: #ff4444; }
-        .explanation {
-            display: none;
-            margin-top: 20px;
-            padding: 20px;
-            background: rgba(0,212,170,0.1);
-            border-left: 4px solid #00d4aa;
-            border-radius: 6px;
-            font-family: 'Exo 2', sans-serif;
-            color: #ddd;
-        }
+        .explanation { display: none; margin-top: 20px; padding: 20px; background: rgba(0,212,170,0.1); border-left: 4px solid #00d4aa; border-radius: 6px; }
         .explanation.show { display: block; }
-        .explanation-title { color: #00d4aa; font-weight: 600; margin-bottom: 10px; font-family: 'Orbitron', monospace; }
-        .submit-btn {
-            display: block; width: 100%; max-width: 300px; margin: 40px auto; padding: 15px 30px;
-            background: linear-gradient(135deg, #00d4aa, #00a885); color: #000; border: none;
-            border-radius: 6px; font-family: 'Orbitron', monospace; font-size: 1.1em; font-weight: 700; cursor: pointer;
-        }
-        .results {
-            display: none; text-align: center; padding: 30px; background: rgba(0,212,170,0.1);
-            border: 2px solid #00d4aa; border-radius: 8px; margin: 30px 0;
-        }
+        .submit-btn { display: block; width: 100%; max-width: 300px; margin: 40px auto; padding: 15px 30px; background: linear-gradient(135deg, #00d4aa, #00a885); color: #000; border: none; border-radius: 6px; font-family: 'Orbitron', monospace; font-weight: 700; cursor: pointer; text-transform: uppercase; }
+        .results { display: none; text-align: center; padding: 30px; background: rgba(0,212,170,0.1); border: 2px solid #00d4aa; border-radius: 8px; margin: 30px 0; }
         .results.show { display: block; }
         .score { font-family: 'Orbitron', monospace; font-size: 3em; color: #00d4aa; margin: 20px 0; }
     </style>
@@ -127,27 +53,27 @@
 <div class="exam-container">
     <div class="exam-header">
         <h1>EXAMEN 10</h1>
-        <p style="color: #aaa; font-size: 1.1em; margin-top: 10px;">Simulacro Final CCNA 200-301</p>
+        <p style="color: #aaa; margin-top: 10px;">Simulacro Final CCNA 200-301</p>
         <div class="exam-info">
-            <span>⏱️ 120 minutos</span>
+            <span>⏱️ 120 min</span>
             <span>📝 100 preguntas</span>
-            <span>✅ Nivel Certificación</span>
+            <span>🎯 Nivel Expert</span>
         </div>
     </div>
 
     <form id="examForm">
         <div class="question-block">
             <div class="question-number">Pregunta 1</div>
-            <div class="question-text">¿Qué valor de distancia administrativa tiene una ruta estática configurada con una interfaz de salida?</div>
+            <div class="question-text">¿Cuál es la Distancia Administrativa (AD) de una ruta estática?</div>
             <div class="options">
                 <div class="option"><input type="radio" name="q1" value="a" id="q1a"><label for="q1a">0</label></div>
                 <div class="option"><input type="radio" name="q1" value="b" id="q1b"><label for="q1b">1</label></div>
-                <div class="option"><input type="radio" name="q1" value="c" id="q1c"><label for="q1c">5</label></div>
-                <div class="option"><input type="radio" name="q1" value="d" id="q1d"><label for="q1d">90</label></div>
+                <div class="option"><input type="radio" name="q1" value="c" id="q1c"><label for="q1c">90</label></div>
+                <div class="option"><input type="radio" name="q1" value="d" id="q1d"><label for="q1d">110</label></div>
             </div>
             <div class="explanation" data-answer="b">
-                <div class="explanation-title">✓ Respuesta: B</div>
-                Las rutas estáticas tienen una <strong>Distancia Administrativa (AD) de 1</strong>. Las conectadas directamente tienen AD de 0.
+                <div class="explanation-title" style="color:#00d4aa; font-weight:700;">✓ RESPUESTA: B</div>
+                Las rutas estáticas tienen una AD de 1 por defecto.
             </div>
         </div>
 
@@ -155,9 +81,9 @@
     </form>
 
     <div class="results" id="results">
-        <h2 style="color: #00d4aa; font-family: 'Orbitron', monospace;">Tu Puntaje Final</h2>
+        <h2 style="font-family:'Orbitron'; color:#00d4aa;">RESULTADO</h2>
         <div class="score" id="score">0%</div>
-        <p id="resultsText"></p>
+        <p id="resultsText" style="color:#ddd; font-family:'Exo 2';"></p>
     </div>
 </div>
 
@@ -174,9 +100,7 @@
             const options = q.querySelectorAll('.option');
             const selected = q.querySelector('input:checked');
 
-            if (selected && selected.value === correctAnswer) {
-                correct++;
-            }
+            if (selected && selected.value === correctAnswer) correct++;
 
             options.forEach(opt => {
                 const input = opt.querySelector('input');
@@ -188,7 +112,7 @@
 
         const percentage = Math.round((correct / total) * 100);
         document.getElementById('score').textContent = percentage + '%';
-        document.getElementById('resultsText').textContent = `Has acertado ${correct} de ${total} preguntas clave.`;
+        document.getElementById('resultsText').textContent = `Has obtenido ${correct} de ${total} respuestas correctas.`;
         document.getElementById('results').classList.add('show');
         document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
     }
