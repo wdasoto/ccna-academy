@@ -9,7 +9,7 @@
     <style>
         .exam-container { max-width: 900px; margin: 80px auto 40px; padding: 30px; background: rgba(255,255,255,0.03); border: 1px solid rgba(0,212,170,0.2); border-radius: 8px; }
         .exam-header { text-align: center; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 2px solid #00d4aa; }
-        .exam-header h1 { font-family: 'Orbitron', monospace; color: #00d4aa; font-size: 2.2em; margin-bottom: 10px; }
+        .exam-header h1 { font-family: 'Orbitron', monospace; color: #00d4aa; font-size: 2.2em; text-transform: uppercase; }
         .exam-info { display: flex; justify-content: center; gap: 30px; margin-top: 15px; font-family: 'Share Tech Mono', monospace; color: #aaa; }
         .question-block { background: rgba(0,0,0,0.3); padding: 25px; margin-bottom: 25px; border-left: 4px solid #00d4aa; border-radius: 6px; }
         .question-number { font-family: 'Orbitron', monospace; color: #00d4aa; font-weight: 700; margin-bottom: 12px; }
@@ -23,7 +23,7 @@
         .option.incorrect { background: rgba(255,68,68,0.15); border-color: #ff4444; }
         .explanation { display: none; margin-top: 20px; padding: 20px; background: rgba(0,212,170,0.1); border-left: 4px solid #00d4aa; border-radius: 6px; }
         .explanation.show { display: block; }
-        .submit-btn { display: block; width: 100%; max-width: 300px; margin: 40px auto; padding: 15px 30px; background: linear-gradient(135deg, #00d4aa, #00a885); color: #000; border: none; border-radius: 6px; font-family: 'Orbitron', monospace; font-weight: 700; cursor: pointer; }
+        .submit-btn { display: block; width: 100%; max-width: 300px; margin: 40px auto; padding: 15px 30px; background: linear-gradient(135deg, #00d4aa, #00a885); color: #000; border: none; border-radius: 6px; font-family: 'Orbitron', monospace; font-weight: 700; cursor: pointer; text-transform: uppercase; }
         .results { display: none; text-align: center; padding: 30px; background: rgba(0,212,170,0.1); border: 2px solid #00d4aa; border-radius: 8px; margin: 30px 0; }
         .results.show { display: block; }
         .score { font-family: 'Orbitron', monospace; font-size: 3em; color: #00d4aa; margin: 20px 0; }
@@ -32,55 +32,48 @@
 <body style="background-color: #0a0a0a; color: #fff;">
 
 <div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
-
 <nav class="ccna-drawer" id="ccnaDrawer">
-    <div class="drawer-header">
-        <h2>◈ NAVEGACIÓN</h2>
-        <button class="drawer-close" onclick="ccnaClose()">✕</button>
-    </div>
-    <div class="drawer-section">
-        <div class="drawer-section-title">General</div>
-        <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a>
-    </div>
-    <div class="drawer-section">
-        <div class="drawer-section-title">Módulos</div>
-        <a href="fundamentos.html" class="drawer-link"><span class="dl-icon">🌐</span> Fundamentos</a>
-        <a href="subnetting.html" class="drawer-link"><span class="dl-icon">🔢</span> Subnetting</a>
-        <a href="routing.html" class="drawer-link"><span class="dl-icon">🗺️</span> Routing</a>
-        <a href="switching.html" class="drawer-link"><span class="dl-icon">🔀</span> Switching</a>
-    </div>
-    <div class="drawer-section">
-        <div class="drawer-section-title">⚡ Herramientas</div>
-        <a href="asistente.html" class="drawer-link"><span class="dl-icon">🤖</span> Asistente IA</a>
-        <a href="netbot.html" class="drawer-link"><span class="dl-icon">⚙️</span> NetBot Config</a>
-        <a href="../banco-preguntas.html" class="drawer-link active"><span class="dl-icon">📝</span> Banco de Preguntas</a>
-    </div>
+  <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
+  <div class="drawer-section"><div class="drawer-section-title">General</div>
+    <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M1 · Fundamentos</div>
+    <a href="fundamentos.html" class="drawer-link"><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
+    <a href="ipv6.html" class="drawer-link"><span class="dl-icon">6️⃣</span> IPv6</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M2 · Dispositivos</div>
+    <a href="router.html" class="drawer-link"><span class="dl-icon">📡</span> Routers Cisco</a>
+    <a href="switches-cisco.html" class="drawer-link"><span class="dl-icon">🔀</span> Switches Cisco</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M3 · Switching</div>
+    <a href="vlan.html" class="drawer-link"><span class="dl-icon">🏷️</span> VLANs</a>
+    <a href="stp.html" class="drawer-link"><span class="dl-icon">🌳</span> STP</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M4 · Routing</div>
+    <a href="ospf.html" class="drawer-link"><span class="dl-icon">⭕</span> OSPF</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">⚡ Herramientas</div>
+    <a href="asistente.html" class="drawer-link"><span class="dl-icon">🤖</span> Asistente IA</a>
+    <a href="netbot.html" class="drawer-link"><span class="dl-icon">⚙️</span> NetBot Config</a>
+    <a href="../banco-preguntas.html" class="drawer-link active"><span class="dl-icon">📝</span> Banco de Preguntas</a></div>
 </nav>
 
 <header class="navbar">
-    <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
-    <a href="../index.html" class="navbar-brand">CISCO<span> ACADEMY</span></a>
-    <div class="navbar-spacer"></div>
-    <a href="../banco-preguntas.html" class="navbar-link">← Banco Preguntas</a>
+  <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
+  <a href="../index.html" class="navbar-brand">CISCO<span> ACADEMY</span></a>
+  <div class="navbar-spacer"></div>
+  <a href="../banco-preguntas.html" class="navbar-link">← Banco Preguntas</a>
 </header>
 
 <script src="../assets/main.js" defer></script>
 <div class="nav-spacer"></div>
+
 <div class="exam-container">
     <div class="exam-header">
         <h1>EXAMEN 10</h1>
-        <p style="color: #aaa; font-size: 1.1em; margin-top: 10px;">Simulacro Final CCNA 200-301</p>
-        <div class="exam-info">
-            <span>⏱️ 120 min</span>
-            <span>📝 100 preguntas</span>
-            <span>✅ Certificación</span>
-        </div>
+        <p style="color: #aaa; margin-top: 10px;">Simulacro Final CCNA 200-301</p>
+        <div class="exam-info"><span>⏱️ 120 min</span><span>📝 100 preg.</span><span>🎯 Nivel Expert</span></div>
     </div>
 
     <form id="examForm">
         <div class="question-block">
             <div class="question-number">Pregunta 1</div>
-            <div class="question-text">¿Qué valor de distancia administrativa tiene una ruta estática configurada con una dirección IP de siguiente salto?</div>
+            <div class="question-text">¿Cuál es la Distancia Administrativa (AD) de una ruta estática?</div>
             <div class="options">
                 <div class="option"><input type="radio" name="q1" value="a" id="q1a"><label for="q1a">0</label></div>
                 <div class="option"><input type="radio" name="q1" value="b" id="q1b"><label for="q1b">1</label></div>
@@ -88,18 +81,17 @@
                 <div class="option"><input type="radio" name="q1" value="d" id="q1d"><label for="q1d">110</label></div>
             </div>
             <div class="explanation" data-answer="b">
-                <div class="explanation-title" style="color: #00d4aa; font-weight: bold;">✓ Respuesta: B</div>
-                Las rutas estáticas tienen una Distancia Administrativa de 1 por defecto.
+                <div class="explanation-title" style="color:#00d4aa; font-weight:700;">✓ RESPUESTA: B</div>
+                Las rutas estáticas tienen una AD de 1 por defecto.
             </div>
         </div>
-
         <button type="button" class="submit-btn" onclick="gradeExam()">Calificar Simulacro</button>
     </form>
 
     <div class="results" id="results">
-        <h2 style="color: #00d4aa; font-family: 'Orbitron', monospace;">Tu Puntaje Final</h2>
+        <h2 style="font-family:'Orbitron'; color:#00d4aa;">RESULTADO FINAL</h2>
         <div class="score" id="score">0%</div>
-        <p id="resultsText" style="font-family: 'Exo 2'; color: #ddd;"></p>
+        <p id="resultsText" style="color:#ddd; font-family:'Exo 2';"></p>
     </div>
 </div>
 
@@ -109,15 +101,12 @@
         const questions = form.querySelectorAll('.question-block');
         let correct = 0;
         const total = questions.length;
-
         questions.forEach(q => {
             const explanation = q.querySelector('.explanation');
             const correctAnswer = explanation.dataset.answer;
             const options = q.querySelectorAll('.option');
             const selected = q.querySelector('input:checked');
-
             if (selected && selected.value === correctAnswer) correct++;
-
             options.forEach(opt => {
                 const input = opt.querySelector('input');
                 if (input.value === correctAnswer) opt.classList.add('correct');
@@ -125,14 +114,12 @@
             });
             explanation.classList.add('show');
         });
-
         const percentage = Math.round((correct / total) * 100);
         document.getElementById('score').textContent = percentage + '%';
-        document.getElementById('resultsText').textContent = `Has acertado ${correct} de ${total} preguntas.`;
+        document.getElementById('resultsText').textContent = `Has acertado ${correct} de ${total} preguntas correctamente.`;
         document.getElementById('results').classList.add('show');
         document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
     }
 </script>
-
 </body>
 </html>
