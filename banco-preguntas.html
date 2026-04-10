@@ -174,41 +174,55 @@
     </style>
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar">
-        <div class="nav-brand" onclick="window.location.href='index.html'">
-            <span class="nav-logo">⬡</span>
-            <span class="nav-title">CCNA ACADEMY</span>
-        </div>
-        <div class="nav-actions">
-            <button class="nav-icon" onclick="ccnaToggle()" aria-label="Abrir menú">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-        </div>
+    <!-- ═══════════ NAVBAR Y DRAWER ESTILIZADO (igual que dhcp.html) ═══════════ -->
+    <div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
+    <nav class="ccna-drawer" id="ccnaDrawer">
+      <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
+      <div class="drawer-section"><div class="drawer-section-title">General</div>
+        <a href="index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
+      <div class="drawer-section"><div class="drawer-section-title">M1 · Fundamentos</div>
+        <a href="clases/fundamentos.html"       class="drawer-link "><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
+        <a href="clases/subnetting.html"        class="drawer-link "><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
+        <a href="clases/ipv6.html"              class="drawer-link "><span class="dl-icon">6️⃣</span> IPv6</a>
+        <a href="clases/arp.html"               class="drawer-link "><span class="dl-icon">📡</span> ARP</a>
+        <a href="clases/rip.html"               class="drawer-link "><span class="dl-icon">🔄</span> RIP</a>
+        <a href="clases/protocolos-internet.html" class="drawer-link "><span class="dl-icon">🌍</span> Protocolos Internet</a></div>
+      <div class="drawer-section"><div class="drawer-section-title">M2 · Dispositivos Cisco</div>
+        <a href="clases/router.html"            class="drawer-link "><span class="dl-icon">📡</span> Routers Cisco</a>
+        <a href="clases/switches-cisco.html"    class="drawer-link "><span class="dl-icon">🔀</span> Switches Cisco</a></div>
+      <div class="drawer-section"><div class="drawer-section-title">M3 · Switching</div>
+        <a href="clases/vlan.html"              class="drawer-link "><span class="dl-icon">🏷️</span> VLANs</a>
+        <a href="clases/inter-vlan-routing.html" class="drawer-link "><span class="dl-icon">🔁</span> Inter-VLAN Routing</a>
+        <a href="clases/stp.html"               class="drawer-link "><span class="dl-icon">🌳</span> STP</a>
+        <a href="clases/etherchannel.html"      class="drawer-link "><span class="dl-icon">🔗</span> EtherChannel</a>
+        <a href="clases/port-security.html"     class="drawer-link "><span class="dl-icon">🔒</span> Port Security</a>
+        <a href="clases/cdp-lldp.html"          class="drawer-link "><span class="dl-icon">🔍</span> CDP / LLDP</a></div>
+      <div class="drawer-section"><div class="drawer-section-title">M4 · Routing</div>
+        <a href="clases/routing.html"           class="drawer-link "><span class="dl-icon">🗺️</span> Routing Estático</a>
+        <a href="clases/ospf.html"              class="drawer-link "><span class="dl-icon">⭕</span> OSPF</a>
+        <a href="clases/eigrp.html"             class="drawer-link "><span class="dl-icon">⚡</span> EIGRP</a>
+        <a href="clases/ospfv2.html"            class="drawer-link "><span class="dl-icon">🎯</span> OSPFv2 Masterclass</a></div>
+      <div class="drawer-section"><div class="drawer-section-title">M5 · Servicios IP</div>
+        <a href="clases/dhcp.html"              class="drawer-link "><span class="dl-icon">📋</span> DHCP</a>
+        <a href="clases/nat.html"               class="drawer-link "><span class="dl-icon">🔄</span> NAT / PAT</a></div>
+      <div class="drawer-section"><div class="drawer-section-title">M6 · Seguridad</div>
+        <a href="clases/acl.html"               class="drawer-link "><span class="dl-icon">🛡️</span> ACLs</a></div>
+      <div class="drawer-section"><div class="drawer-section-title">M7 · WAN &amp; QoS</div>
+        <a href="clases/wan.html"               class="drawer-link "><span class="dl-icon">🌍</span> WAN</a>
+        <a href="clases/qos.html"               class="drawer-link "><span class="dl-icon">📊</span> QoS</a></div>
+      <div class="drawer-section"><div class="drawer-section-title">⚡ Herramientas</div>
+        <a href="clases/asistente.html"         class="drawer-link "><span class="dl-icon">🤖</span> Asistente IA</a>
+        <a href="clases/netbot.html"            class="drawer-link "><span class="dl-icon">⚙️</span> NetBot Config</a>
+        <a href="clases/calculadora.html"       class="drawer-link "><span class="dl-icon">🧮</span> Calculadora IP</a>
+        <a href="banco-preguntas.html" class="drawer-link active"><span class="dl-icon">📝</span> Banco de Preguntas</a></div>
     </nav>
-
-    <!-- Drawer Navigation -->
-    <div id="ccnaDrawer" class="drawer">
-        <div class="drawer-header">
-            <h3>NAVEGACIÓN</h3>
-            <button class="drawer-close" onclick="ccnaClose()">&times;</button>
-        </div>
-        <div class="drawer-content">
-            <div class="drawer-section">
-                <div class="drawer-section-title">GENERAL</div>
-                <a href="index.html" class="drawer-link">⬡ Inicio</a>
-            </div>
-            <div class="drawer-section">
-                <div class="drawer-section-title">HERRAMIENTAS</div>
-                <a href="clases/asistente.html" class="drawer-link">⚡ Asistente IA</a>
-                <a href="clases/netbot.html" class="drawer-link">🤖 NetBot Config</a>
-                <a href="clases/calculadora.html" class="drawer-link">🧮 Calculadora IP</a>
-                <a href="banco-preguntas.html" class="drawer-link active">📝 Banco de Preguntas</a>
-            </div>
-        </div>
-    </div>
+    <header class="navbar">
+      <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
+      <a href="index.html" class="navbar-brand">CISCO<span> ACADEMY</span></a>
+      <div class="navbar-spacer"></div>
+      <a href="index.html" class="navbar-link">← Inicio</a>
+    </header>
+    <div class="nav-spacer"></div>
 
     <!-- Main Content -->
     <div class="banco-container">
