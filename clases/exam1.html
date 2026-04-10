@@ -12,16 +12,16 @@
         .exam-header h1 { font-family: 'Orbitron', monospace; color: #00d4aa; font-size: 2.2em; margin-bottom: 10px; }
         .question-block { margin-bottom: 30px; padding: 20px; background: rgba(255,255,255,0.02); border-left: 4px solid #00d4aa; border-radius: 4px; }
         .question-number { font-family: 'Share Tech Mono', monospace; color: #00d4aa; font-size: 0.9em; margin-bottom: 10px; }
-        .question-text { font-size: 1.1em; margin-bottom: 15px; line-height: 1.5; }
+        .question-text { font-size: 1.1em; margin-bottom: 15px; line-height: 1.5; color: #fff; }
         .options { display: grid; gap: 10px; }
-        .option { display: flex; align-items: center; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 5px; cursor: pointer; transition: 0.3s; }
+        .option { display: flex; align-items: center; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 5px; cursor: pointer; transition: 0.3s; color: #ccc; }
         .option:hover { background: rgba(0,212,170,0.1); }
         .option input { margin-right: 15px; accent-color: #00d4aa; }
-        .explanation { display: none; margin-top: 15px; padding: 15px; background: rgba(0,212,170,0.1); border-radius: 5px; font-size: 0.95em; line-height: 1.4; border-left: 3px solid #00d4aa; }
+        .explanation { display: none; margin-top: 15px; padding: 15px; background: rgba(0,212,170,0.1); border-radius: 5px; font-size: 0.95em; line-height: 1.4; border-left: 3px solid #00d4aa; color: #fff; }
         .explanation.show { display: block; }
         .explanation-title { color: #00d4aa; font-weight: bold; margin-bottom: 5px; display: block; }
-        .option.correct { border-color: #00d4aa; background: rgba(0,212,170,0.2); }
-        .option.incorrect { border-color: #ff4444; background: rgba(255,68,68,0.1); }
+        .option.correct { border-color: #00d4aa; background: rgba(0,212,170,0.2); color: #fff; }
+        .option.incorrect { border-color: #ff4444; background: rgba(255,68,68,0.1); color: #fff; }
         .btn-submit { display: block; width: 100%; padding: 15px; background: #00d4aa; color: #050a0f; border: none; border-radius: 5px; font-family: 'Orbitron', sans-serif; font-weight: bold; cursor: pointer; font-size: 1.1em; transition: 0.3s; margin-top: 30px; }
         .btn-submit:hover { background: #00f2c3; box-shadow: 0 0 20px rgba(0,212,170,0.4); }
         #results { display: none; margin-top: 30px; padding: 25px; background: rgba(0,212,170,0.1); border: 2px solid #00d4aa; border-radius: 8px; text-align: center; }
@@ -30,10 +30,31 @@
     </style>
 </head>
 <body>
+    <div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
+    <nav class="ccna-drawer" id="ccnaDrawer">
+        <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
+        <div class="drawer-section">
+            <div class="drawer-section-title">General</div>
+            <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a>
+            <a href="banco.html" class="drawer-link"><span class="dl-icon">📚</span> Banco de Preguntas</a>
+        </div>
+        <div class="drawer-section">
+            <div class="drawer-section-title">Exámenes</div>
+            <a href="exam1.html" class="drawer-link active"><span class="dl-icon">📝</span> Examen 1: Fundamentos</a>
+            <a href="exam6.html" class="drawer-link"><span class="dl-icon">📝</span> Examen 6: Servicios IP</a>
+        </div>
+    </nav>
+
+    <header class="ccna-header">
+        <button class="menu-trigger" onclick="ccnaOpen()">☰ MENU</button>
+        <div class="header-logo">CCNA ACADEMY</div>
+        <div class="header-status">MODO: AUTOEVALUACIÓN</div>
+    </header>
+
     <div class="exam-container">
         <div class="exam-header">
             <h1>EXAMEN 1: FUNDAMENTOS</h1>
-            <p>Modelos OSI/TCP-IP, Cableado, Topologías y Capa 2</p>
+            <p>Modelos OSI/TCP-IP, Medios y Capa 2</p>
         </div>
 
         <form id="quizForm">
@@ -49,9 +70,23 @@
         </div>
     </div>
 
+    <div class="netbot-container">
+        <button class="netbot-trigger" title="Asistente NetBot">🤖</button>
+    </div>
+
     <script>
+        // Funciones del Menú
+        function ccnaOpen() {
+            document.getElementById('ccnaDrawer').classList.add('open');
+            document.getElementById('ccnaOverlay').classList.add('active');
+        }
+        function ccnaClose() {
+            document.getElementById('ccnaDrawer').classList.remove('open');
+            document.getElementById('ccnaOverlay').classList.remove('active');
+        }
+
         const questions = [
-            { n: 1, q: "¿Qué capa del modelo OSI es responsable de determinar la mejor ruta para enviar paquetes a través de la red?", a: "c", ex: "La Capa 3 (Red) se encarga del direccionamiento lógico y el enrutamiento.", opts: { a: "Capa 2", b: "Capa 4", c: "Capa 3", d: "Capa 7" }},
+                     { n: 1, q: "¿Qué capa del modelo OSI es responsable de determinar la mejor ruta para enviar paquetes a través de la red?", a: "c", ex: "La Capa 3 (Red) se encarga del direccionamiento lógico y el enrutamiento.", opts: { a: "Capa 2", b: "Capa 4", c: "Capa 3", d: "Capa 7" }},
             { n: 2, q: "¿Cuál es la unidad de datos (PDU) de la Capa 2 del modelo OSI?", a: "b", ex: "En la Capa 2 (Enlace de datos), la PDU se denomina Trama (Frame).", opts: { a: "Paquete", b: "Trama", c: "Segmento", d: "Bit" }},
             { n: 3, q: "¿Qué protocolo de la capa de transporte garantiza la entrega de datos mediante el uso de acuses de recibo (ACK)?", a: "a", ex: "TCP es orientado a la conexión y garantiza la entrega, a diferencia de UDP.", opts: { a: "TCP", b: "UDP", c: "IP", d: "ICMP" }},
             { n: 4, q: "¿Qué tipo de cable se utiliza para conectar una PC directamente a un puerto de consola de un router Cisco?", a: "d", ex: "El cable Rollover se utiliza para la gestión de dispositivos Cisco mediante el puerto de consola.", opts: { a: "Crossover", b: "Straight-through", c: "Fiber Optic", d: "Rollover" }},
