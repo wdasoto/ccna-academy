@@ -7,339 +7,180 @@
     <link rel="stylesheet" href="../assets/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        .exam-container { max-width: 900px; margin: 80px auto 40px; padding: 30px; background: rgba(255,255,255,0.03); border: 1px solid rgba(0,212,170,0.2); border-radius: 8px; }
-        .exam-header { text-align: center; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 2px solid #00d4aa; }
-        .exam-header h1 { font-family: 'Orbitron', monospace; color: #00d4aa; font-size: 2.2em; }
-        .exam-info { display: flex; justify-content: center; gap: 30px; margin-top: 15px; font-family: 'Share Tech Mono', monospace; color: #aaa; }
-        .question-block { background: rgba(0,0,0,0.3); padding: 25px; margin-bottom: 25px; border-left: 4px solid #00d4aa; border-radius: 6px; }
-        .question-number { font-family: 'Orbitron', monospace; color: #00d4aa; font-weight: 700; margin-bottom: 12px; }
-        .question-text { font-family: 'Exo 2', sans-serif; color: #fff; font-size: 1.1em; line-height: 1.6; margin-bottom: 20px; }
-        .options { display: flex; flex-direction: column; gap: 12px; }
-        .option { display: flex; align-items: flex-start; padding: 15px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; cursor: pointer; transition: all 0.3s; }
-        .option:hover { background: rgba(0,212,170,0.1); border-color: #00d4aa; }
-        .option input { margin-right: 12px; margin-top: 3px; cursor: pointer; accent-color: #00d4aa; }
-        .option label { cursor: pointer; flex: 1; color: #ddd; }
-        .option.correct { background: rgba(0,212,170,0.15); border-color: #00d4aa; }
-        .option.incorrect { background: rgba(255,68,68,0.15); border-color: #ff4444; }
-        .explanation { display: none; margin-top: 20px; padding: 20px; background: rgba(0,212,170,0.1); border-left: 4px solid #00d4aa; border-radius: 6px; color: #ddd; line-height: 1.6; }
+        /* Estilos sincronizados con la estética del Examen 6 */
+        .exam-container {
+            max-width: 900px;
+            margin: 80px auto 40px;
+            padding: 30px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(0,212,170,0.2);
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+        }
+        .exam-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #00d4aa;
+        }
+        .exam-header h1 {
+            font-family: 'Orbitron', monospace;
+            color: #00d4aa;
+            font-size: 2.2em;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+        .exam-info {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            font-family: 'Share Tech Mono', monospace;
+            color: #888;
+            font-size: 0.9em;
+        }
+        .question {
+            background: rgba(0,0,0,0.2);
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border-left: 4px solid #00d4aa;
+        }
+        .question h3 {
+            font-family: 'Exo 2', sans-serif;
+            margin-bottom: 20px;
+            color: #e0e0e0;
+            line-height: 1.4;
+        }
+        .options { display: grid; gap: 10px; }
+        .option {
+            padding: 12px 15px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+        .option:hover {
+            background: rgba(0,212,170,0.1);
+            border-color: #00d4aa;
+        }
+        .option input { margin-right: 15px; accent-color: #00d4aa; }
+        .option.correct { background: rgba(46, 204, 113, 0.2) !important; border-color: #2ecc71 !important; color: #2ecc71; }
+        .option.incorrect { background: rgba(231, 76, 60, 0.2) !important; border-color: #e74c3c !important; color: #e74c3c; }
+        .explanation {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(0,212,170,0.05);
+            border-radius: 6px;
+            display: none;
+            color: #00d4aa;
+            font-style: italic;
+            font-family: 'Exo 2', sans-serif;
+        }
         .explanation.show { display: block; }
-        .explanation-title { color: #00d4aa; font-weight: 600; margin-bottom: 10px; font-family: 'Orbitron', monospace; }
-        .submit-btn { display: block; width: 100%; max-width: 300px; margin: 40px auto; padding: 15px 30px; background: linear-gradient(135deg, #00d4aa, #00a885); color: #000; border: none; border-radius: 6px; font-family: 'Orbitron', monospace; font-size: 1.1em; font-weight: 700; cursor: pointer; }
-        .results { display: none; text-align: center; padding: 30px; background: rgba(0,212,170,0.1); border: 2px solid #00d4aa; border-radius: 8px; margin: 30px 0; }
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: transparent;
+            border: 2px solid #00d4aa;
+            color: #00d4aa;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: 0.3s;
+            text-transform: uppercase;
+        }
+        .submit-btn:hover { background: #00d4aa; color: #000; box-shadow: 0 0 15px #00d4aa; }
+        .results {
+            margin-top: 30px;
+            padding: 25px;
+            text-align: center;
+            background: rgba(0,212,170,0.1);
+            border-radius: 8px;
+            display: none;
+        }
         .results.show { display: block; }
-        .score { font-family: 'Orbitron', monospace; font-size: 3em; color: #00d4aa; margin: 20px 0; }
-        code { background: rgba(0,0,0,0.5); padding: 2px 6px; border-radius: 3px; color: #00d4aa; font-family: 'Share Tech Mono', monospace; }
     </style>
 </head>
-<body>
-<div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
-<nav class="ccna-drawer" id="ccnaDrawer">
-  <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
-  <div class="drawer-section"><div class="drawer-section-title">General</div>
-    <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
-  <div class="drawer-section"><div class="drawer-section-title">M1 · Fundamentos</div>
-    <a href="fundamentos.html"       class="drawer-link "><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
-    <a href="subnetting.html"        class="drawer-link "><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
-    <a href="ipv6.html"              class="drawer-link "><span class="dl-icon">6️⃣</span> IPv6</a>
-    <a href="arp.html"               class="drawer-link "><span class="dl-icon">📡</span> ARP</a>
-    <a href="rip.html"               class="drawer-link "><span class="dl-icon">🔄</span> RIP</a>
-    <a href="protocolos-internet.html" class="drawer-link "><span class="dl-icon">🌍</span> Protocolos Internet</a></div>
-  <div class="drawer-section"><div class="drawer-section-title">M2 · Dispositivos Cisco</div>
-    <a href="router.html"            class="drawer-link "><span class="dl-icon">📡</span> Routers Cisco</a>
-    <a href="switches-cisco.html"    class="drawer-link "><span class="dl-icon">🔀</span> Switches Cisco</a></div>
-  <div class="drawer-section"><div class="drawer-section-title">M3 · Switching</div>
-    <a href="vlan.html"              class="drawer-link "><span class="dl-icon">🏷️</span> VLANs</a>
-    <a href="inter-vlan-routing.html" class="drawer-link "><span class="dl-icon">🔁</span> Inter-VLAN Routing</a>
-    <a href="stp.html"               class="drawer-link "><span class="dl-icon">🌳</span> STP</a>
-    <a href="etherchannel.html"      class="drawer-link "><span class="dl-icon">🔗</span> EtherChannel</a>
-    <a href="port-security.html"     class="drawer-link "><span class="dl-icon">🔒</span> Port Security</a>
-    <a href="cdp-lldp.html"          class="drawer-link "><span class="dl-icon">🔍</span> CDP / LLDP</a></div>
-  <div class="drawer-section"><div class="drawer-section-title">M4 · Routing</div>
-    <a href="routing.html"           class="drawer-link "><span class="dl-icon">🗺️</span> Routing Estático</a>
-    <a href="ospf.html"              class="drawer-link "><span class="dl-icon">⭕</span> OSPF</a>
-    <a href="eigrp.html"             class="drawer-link "><span class="dl-icon">⚡</span> EIGRP</a>
-    <a href="ospfv2.html"            class="drawer-link "><span class="dl-icon">🎯</span> OSPFv2 Masterclass</a></div>
-  <div class="drawer-section"><div class="drawer-section-title">M5 · Servicios IP</div>
-    <a href="dhcp.html"              class="drawer-link "><span class="dl-icon">📋</span> DHCP</a>
-    <a href="nat.html"               class="drawer-link "><span class="dl-icon">🔄</span> NAT / PAT</a></div>
-  <div class="drawer-section"><div class="drawer-section-title">M6 · Seguridad</div>
-    <a href="acl.html"               class="drawer-link "><span class="dl-icon">🛡️</span> ACLs</a></div>
-  <div class="drawer-section"><div class="drawer-section-title">M7 · WAN &amp; QoS</div>
-    <a href="wan.html"               class="drawer-link "><span class="dl-icon">🌍</span> WAN</a>
-    <a href="qos.html"               class="drawer-link "><span class="dl-icon">📊</span> QoS</a></div>
-  <div class="drawer-section"><div class="drawer-section-title">⚡ Herramientas</div>
-    <a href="asistente.html"         class="drawer-link "><span class="dl-icon">🤖</span> Asistente IA</a>
-    <a href="netbot.html"            class="drawer-link "><span class="dl-icon">⚙️</span> NetBot Config</a>
-    <a href="calculadora.html"       class="drawer-link "><span class="dl-icon">🧮</span> Calculadora IP</a>
-    <a href="../banco-preguntas.html" class="drawer-link active"><span class="dl-icon">📝</span> Banco de Preguntas</a></div>
-</nav>
-<header class="navbar">
-  <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
-  <a href="../index.html" class="navbar-brand">CISCO<span> ACADEMY</span></a>
-  <div class="navbar-spacer"></div>
-  <a href="../index.html" class="navbar-link">← Inicio</a>
-</header>
-<script src="../assets/main.js" defer></script>
-<div class="nav-spacer"></div>
-
-    <nav class="navbar">
-        <div class="nav-brand" onclick="window.location.href='../index.html'"><span class="nav-logo">⬡</span><span class="nav-title">CCNA ACADEMY</span></div>
-        <div class="nav-actions"><button class="nav-icon" onclick="ccnaToggle()"><span></span><span></span><span></span></button></div>
-    </nav>
-
-    <div id="ccnaDrawer" class="drawer">
-        <div class="drawer-header"><h3>NAVEGACIÓN</h3><button class="drawer-close" onclick="ccnaClose()">&times;</button></div>
-        <div class="drawer-content">
-            <div class="drawer-section"><div class="drawer-section-title">GENERAL</div><a href="../index.html" class="drawer-link">⬡ Inicio</a></div>
-            <div class="drawer-section"><div class="drawer-section-title">HERRAMIENTAS</div>
-                <a href="asistente.html" class="drawer-link">⚡ Asistente IA</a>
-                <a href="netbot.html" class="drawer-link">🤖 NetBot Config</a>
-                <a href="calculadora.html" class="drawer-link">🧮 Calculadora IP</a>
-                <a href="../banco-preguntas.html" class="drawer-link active">📝 Banco de Preguntas</a>
-            </div>
-        </div>
-    </div>
+<body style="background-color: #0a0a0a; color: #fff;">
 
     <div class="exam-container">
-        <div class="exam-header">
+        <header class="exam-header">
             <h1>EXAMEN 9</h1>
-            <p style="color: #aaa; font-size: 1.1em; margin-top: 10px;">Wireless & Automatización de Redes</p>
-            <div class="exam-info"><span>⏱️ Sin límite</span><span>📝 30 preguntas</span></div>
-        </div>
+            <p style="color: #aaa; margin-top: 5px;">Wireless & Automatización de Redes</p>
+            <div class="exam-info">
+                <span>⏱️ Sin límite</span>
+                <span>📝 10 Preguntas</span>
+                <span>✅ CCNA 200-301</span>
+            </div>
+        </header>
 
-        <form id="examForm">
-            <div class="question-block">
-                <div class="question-number">Pregunta 1</div>
-                <div class="question-text">¿Qué estándar 802.11 opera en la banda de 5 GHz y alcanza hasta 1.3 Gbps?</div>
+        <form id="quizForm">
+            <div class="question" data-answer="['A']">
+                <h3>1. ¿Cuál es el propósito de CAPWAP en una arquitectura de red inalámbrica?</h3>
                 <div class="options">
-                    <div class="option"><input type="radio" name="q1" value="a" id="q1a"><label for="q1a">802.11b</label></div>
-                    <div class="option"><input type="radio" name="q1" value="b" id="q1b"><label for="q1b">802.11g</label></div>
-                    <div class="option"><input type="radio" name="q1" value="c" id="q1c"><label for="q1c">802.11n</label></div>
-                    <div class="option"><input type="radio" name="q1" value="d" id="q1d"><label for="q1d">802.11ac</label></div>
+                    <label class="option"><input type="radio" name="q1" value="A"> Proporcionar comunicación y gestión entre el WLC y los APs ligeros.</label>
+                    <label class="option"><input type="radio" name="q1" value="B"> Encriptar el tráfico de datos entre el cliente y el AP.</label>
+                    <label class="option"><input type="radio" name="q1" value="C"> Gestionar las direcciones IP de los clientes inalámbricos.</label>
+                    <label class="option"><input type="radio" name="q1" value="D"> Autenticar usuarios a través de un servidor RADIUS.</label>
                 </div>
-                <div class="explanation" data-answer="d">
-                    <div class="explanation-title">✓ Respuesta: D</div>
-                    <strong>802.11ac</strong> (Wi-Fi 5): 5 GHz, hasta 1.3 Gbps (MU-MIMO, 80/160 MHz). 802.11n=600 Mbps (2.4/5 GHz), 802.11ax (Wi-Fi 6)=9.6 Gbps.
-                </div>
+                <div class="explanation">CAPWAP es el estándar que permite al controlador (WLC) gestionar los Access Points.</div>
             </div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 2</div>
-                <div class="question-text">¿Qué protocolo de gestión de configuración usa modelo declarativo y playbooks YAML?</div>
+            <div class="question" data-answer="['B']">
+                <h3>2. En SDN, ¿cuál es la función del "Plano de Control"?</h3>
                 <div class="options">
-                    <div class="option"><input type="radio" name="q2" value="a" id="q2a"><label for="q2a">Puppet</label></div>
-                    <div class="option"><input type="radio" name="q2" value="b" id="q2b"><label for="q2b">Chef</label></div>
-                    <div class="option"><input type="radio" name="q2" value="c" id="q2c"><label for="q2c">Ansible</label></div>
-                    <div class="option"><input type="radio" name="q2" value="d" id="q2d"><label for="q2d">SaltStack</label></div>
+                    <label class="option"><input type="radio" name="q2" value="B"> Tomar decisiones sobre el enrutamiento y flujo del tráfico.</label>
+                    <label class="option"><input type="radio" name="q2" value="A"> Reenviar los paquetes físicamente por los puertos del switch.</label>
+                    <label class="option"><input type="radio" name="q2" value="C"> Ejecutar aplicaciones de monitoreo de red.</label>
+                    <label class="option"><input type="radio" name="q2" value="D"> Almacenar la configuración de las VLANs.</label>
                 </div>
-                <div class="explanation" data-answer="c">
-                    <div class="explanation-title">✓ Respuesta: C</div>
-                    <strong>Ansible</strong>: agentless, YAML playbooks, push model, SSH. Puppet/Chef=agent-based, pull model. Ansible es el más usado para redes.
-                </div>
+                <div class="explanation">El Plano de Control es el cerebro que decide hacia dónde se deben enviar los datos.</div>
             </div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 3</div>
-                <div class="question-text">¿Qué modo de deployment wireless centraliza todas las funciones en el WLC (Wireless LAN Controller)?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q3" value="a" id="q3a"><label for="q3a">Autonomous AP</label></div>
-                    <div class="option"><input type="radio" name="q3" value="b" id="q3b"><label for="q3b">Lightweight AP (FlexConnect)</label></div>
-                    <div class="option"><input type="radio" name="q3" value="c" id="q3c"><label for="q3c">Cloud-managed</label></div>
-                    <div class="option"><input type="radio" name="q3" value="d" id="q3d"><label for="q3d">Mesh</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    <strong>Lightweight AP</strong> con WLC: APs "tontos" (CAPWAP tunnel al WLC), gestión centralizada. Autonomous=standalone, FlexConnect=local switching en sucursales.
-                </div>
-            </div>
-
-            <div class="question-block">
-                <div class="question-number">Pregunta 4</div>
-                <div class="question-text">¿Qué formato de datos se usa comúnmente en REST APIs para configuración de red?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q4" value="a" id="q4a"><label for="q4a">XML</label></div>
-                    <div class="option"><input type="radio" name="q4" value="b" id="q4b"><label for="q4b">JSON</label></div>
-                    <div class="option"><input type="radio" name="q4" value="c" id="q4c"><label for="q4c">YAML</label></div>
-                    <div class="option"><input type="radio" name="q4" value="d" id="q4d"><label for="q4d">Ambas A y B</label></div>
-                </div>
-                <div class="explanation" data-answer="d">
-                    <div class="explanation-title">✓ Respuesta: D</div>
-                    REST APIs usan <strong>JSON</strong> (más común, liviano) o <strong>XML</strong>. NETCONF usa XML. YAML se usa en Ansible playbooks.
-                </div>
-            </div>
-
-            <div class="question-block">
-                <div class="question-number">Pregunta 5</div>
-                <div class="question-text">¿Qué protocolo permite configuración programática de dispositivos de red sobre SSH?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q5" value="a" id="q5a"><label for="q5a">SNMP</label></div>
-                    <div class="option"><input type="radio" name="q5" value="b" id="q5b"><label for="q5b">NETCONF</label></div>
-                    <div class="option"><input type="radio" name="q5" value="c" id="q5c"><label for="q5c">REST API</label></div>
-                    <div class="option"><input type="radio" name="q5" value="d" id="q5d"><label for="q5d">Telnet</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    <strong>NETCONF</strong> (RFC 6241): protocolo sobre SSH/TLS, usa XML, modelo YANG, transaccional. Puerto 830. RESTCONF es alternativa sobre HTTPS.
-                </div>
-            </div>
-
-            <div class="question-block">
-                <div class="question-number">Pregunta 6</div>
-                <div class="question-text">¿Qué canal wireless de 2.4 GHz NO se superpone con canal 1 y 6?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q6" value="a" id="q6a"><label for="q6a">Canal 3</label></div>
-                    <div class="option"><input type="radio" name="q6" value="b" id="q6b"><label for="q6b">Canal 11</label></div>
-                    <div class="option"><input type="radio" name="q6" value="c" id="q6c"><label for="q6c">Canal 8</label></div>
-                    <div class="option"><input type="radio" name="q6" value="d" id="q6d"><label for="q6d">Canal 14</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    2.4 GHz: solo 3 canales no-solapados: <strong>1, 6, 11</strong> (22 MHz de ancho c/u). 5 GHz tiene 24 canales no-solapados (20/40/80/160 MHz).
-                </div>
-            </div>
-
-            <div class="question-block">
-                <div class="question-number">Pregunta 7</div>
-                <div class="question-text">¿Qué modelo de red SDN separa plano de control del plano de datos?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q7" value="a" id="q7a"><label for="q7a">Modelo tradicional distribuido</label></div>
-                    <div class="option"><input type="radio" name="q7" value="b" id="q7b"><label for="q7b">Modelo centralizado SDN con controlador</label></div>
-                    <div class="option"><input type="radio" name="q7" value="c" id="q7c"><label for="q7c">Modelo híbrido</label></div>
-                    <div class="option"><input type="radio" name="q7" value="d" id="q7d"><label for="q7d">Modelo peer-to-peer</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    <strong>SDN</strong>: controlador centralizado (plano control), switches/routers solo forwarding (plano datos). OpenFlow, Cisco ACI, DNA Center son ejemplos.
-                </div>
-            </div>
-
-            <div class="question-block">
-                <div class="question-number">Pregunta 8</div>
-                <div class="question-text">¿Qué protocolo usa CAPWAP para túneles entre AP y WLC?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q8" value="a" id="q8a"><label for="q8a">TCP</label></div>
-                    <div class="option"><input type="radio" name="q8" value="b" id="q8b"><label for="q8b">UDP</label></div>
-                    <div class="option"><input type="radio" name="q8" value="c" id="q8c"><label for="q8c">GRE</label></div>
-                    <div class="option"><input type="radio" name="q8" value="d" id="q8d"><label for="q8d">IPsec</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    <strong>CAPWAP</strong> (Control And Provisioning of Wireless Access Points): UDP/5246 (control) y UDP/5247 (data). Reemplazó LWAPP.
-                </div>
-            </div>
-
-            <div class="question-block">
-                <div class="question-number">Pregunta 9</div>
-                <div class="question-text">¿Qué herramienta de Cisco usa intención (intent-based networking) para automatizar red?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q9" value="a" id="q9a"><label for="q9a">Cisco DNA Center</label></div>
-                    <div class="option"><input type="radio" name="q9" value="b" id="q9b"><label for="q9b">Cisco Prime Infrastructure</label></div>
-                    <div class="option"><input type="radio" name="q9" value="c" id="q9c"><label for="q9c">Cisco vManage</label></div>
-                    <div class="option"><input type="radio" name="q9" value="d" id="q9d"><label for="q9d">Cisco APIC</label></div>
-                </div>
-                <div class="explanation" data-answer="a">
-                    <div class="explanation-title">✓ Respuesta: A</div>
-                    <strong>DNA Center</strong>: IBN (Intent-Based Networking), automatización campus/branch, telemetría, segmentación, políticas. APIC=data center (ACI).
-                </div>
-            </div>
-
-            <div class="question-block">
-                <div class="question-number">Pregunta 10</div>
-                <div class="question-text">¿Qué método HTTP REST se usa para crear un nuevo recurso?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q10" value="a" id="q10a"><label for="q10a">GET</label></div>
-                    <div class="option"><input type="radio" name="q10" value="b" id="q10b"><label for="q10b">POST</label></div>
-                    <div class="option"><input type="radio" name="q10" value="c" id="q10c"><label for="q10c">PUT</label></div>
-                    <div class="option"><input type="radio" name="q10" value="d" id="q10d"><label for="q10d">DELETE</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    CRUD REST: <strong>POST</strong>=Create, GET=Read, PUT/PATCH=Update, DELETE=Delete. POST crea recurso nuevo, PUT actualiza existente.
-                </div>
-            </div>
-
-            <!-- Preguntas 11-30 continúan con wireless/automatización -->
-            <div class="question-block">
-                <div class="question-number">Pregunta 11</div>
-                <div class="question-text">¿Qué tipo de BSS (Basic Service Set) usa múltiples APs con mismo SSID?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q11" value="a" id="q11a"><label for="q11a">IBSS (Ad-hoc)</label></div>
-                    <div class="option"><input type="radio" name="q11" value="b" id="q11b"><label for="q11b">ESS (Extended Service Set)</label></div>
-                    <div class="option"><input type="radio" name="q11" value="c" id="q11c"><label for="q11c">MBSS (Mesh BSS)</label></div>
-                    <div class="option"><input type="radio" name="q11" value="d" id="q11d"><label for="q11d">Infrastructure BSS</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    <strong>ESS</strong> = múltiples APs + mismo SSID = roaming transparente. BSS = 1 AP. IBSS = peer-to-peer sin AP.
-                </div>
-            </div>
-
-            <div class="question-block">
-                <div class="question-number">Pregunta 30</div>
-                <div class="question-text">¿Qué lenguaje de modelado de datos se usa con NETCONF/RESTCONF?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q30" value="a" id="q30a"><label for="q30a">XML</label></div>
-                    <div class="option"><input type="radio" name="q30" value="b" id="q30b"><label for="q30b">JSON</label></div>
-                    <div class="option"><input type="radio" name="q30" value="c" id="q30c"><label for="q30c">YANG</label></div>
-                    <div class="option"><input type="radio" name="q30" value="d" id="q30d"><label for="q30d">Python</label></div>
-                </div>
-                <div class="explanation" data-answer="c">
-                    <div class="explanation-title">✓ Respuesta: C</div>
-                    <strong>YANG</strong> (Yet Another Next Generation) define modelos de datos. NETCONF transporta XML según schema YANG. RESTCONF puede usar JSON/XML.
-                </div>
-            </div>
-
-            <button type="button" class="submit-btn" onclick="gradeExam()">Calificar Examen</button>
+            <button type="button" class="submit-btn" onclick="checkAnswers()">Evaluar Examen</button>
         </form>
 
-        <div class="results" id="results">
-            <h2 style="color: #00d4aa; font-family: 'Orbitron', monospace;">Resultados</h2>
-            <div class="score" id="score">0%</div>
-            <p class="results-text" id="resultsText"></p>
+        <div id="results" class="results">
+            <h2 style="font-family: 'Orbitron', sans-serif; color: #00d4aa;">Puntuación: <span id="score">0%</span></h2>
+            <p id="resultsText"></p>
         </div>
     </div>
 
-    <script src="../assets/main.js"></script>
     <script>
-        function gradeExam() {
-            const form = document.getElementById('examForm');
-            const questions = form.querySelectorAll('.question-block');
+        function checkAnswers() {
+            const questions = document.querySelectorAll('.question');
             let correct = 0;
-            const total = 30;
+            const total = questions.length;
 
-            questions.forEach(q => {
-                const explanation = q.querySelector('.explanation');
-                const correctAnswer = explanation.dataset.answer.split(',');
+            questions.forEach((q, index) => {
+                const correctAnswer = JSON.parse(q.getAttribute('data-answer').replace(/'/g, '"'));
                 const options = q.querySelectorAll('.option');
-                const isCheckbox = q.querySelector('input[type="checkbox"]') !== null;
-                
-                if (isCheckbox) {
-                    const selected = Array.from(q.querySelectorAll('input:checked')).map(inp => inp.value);
-                    if (correctAnswer.length === selected.length && correctAnswer.every(ans => selected.includes(ans))) correct++;
-                    options.forEach(opt => {
-                        const input = opt.querySelector('input');
-                        if (correctAnswer.includes(input.value)) opt.classList.add('correct');
-                        else if (input.checked) opt.classList.add('incorrect');
-                    });
-                } else {
-                    const selected = q.querySelector('input:checked');
-                    if (selected && selected.value === correctAnswer[0]) correct++;
-                    options.forEach(opt => {
-                        const input = opt.querySelector('input');
-                        if (input.value === correctAnswer[0]) opt.classList.add('correct');
-                        else if (input.checked) opt.classList.add('incorrect');
-                    });
+                const explanation = q.querySelector('.explanation');
+                const selected = q.querySelector('input:checked');
+
+                options.forEach(opt => {
+                    const input = opt.querySelector('input');
+                    if (correctAnswer.includes(input.value)) {
+                        opt.classList.add('correct');
+                    } else if (input.checked) {
+                        opt.classList.add('incorrect');
+                    }
+                });
+
+                if (selected && correctAnswer.includes(selected.value)) {
+                    correct++;
                 }
                 explanation.classList.add('show');
             });
 
             const percentage = Math.round((correct / total) * 100);
             document.getElementById('score').textContent = percentage + '%';
-            let message = percentage >= 90 ? `¡Excelente! (${correct}/${total})` :
-                         percentage >= 75 ? `Muy bien (${correct}/${total})` :
-                         percentage >= 60 ? `Aprobado (${correct}/${total})` :
-                         `Estudia Wireless, APIs, SDN (${correct}/${total})`;
-            document.getElementById('resultsText').textContent = message;
+            document.getElementById('resultsText').textContent = `Resultado: ${correct} de ${total} correctas.`;
             document.getElementById('results').classList.add('show');
             document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
         }
