@@ -1,1814 +1,222 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Examen 6: Servicios IP | CCNA Academy</title>
-    <link rel="stylesheet" href="../assets/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
-    <style>
-        .exam-container {
-            max-width: 900px;
-            margin: 80px auto 40px;
-            padding: 30px;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(0,212,170,0.2);
-            border-radius: 8px;
-        }
-        .exam-header {
-            text-align: center;
-            margin-bottom: 40px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid #00d4aa;
-        }
-        .exam-header h1 {
-            font-family: 'Orbitron', monospace;
-            color: #00d4aa;
-            font-size: 2.2em;
-            margin-bottom: 10px;
-        }
-        .exam-info {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin-top: 15px;
-            font-family: 'Share Tech Mono', monospace;
-            color: #aaa;
-        }
-        .exam-info span {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .question-block {
-            background: rgba(0,0,0,0.3);
-            padding: 25px;
-            margin-bottom: 25px;
-            border-left: 4px solid #00d4aa;
-            border-radius: 6px;
-        }
-        .question-number {
-            font-family: 'Orbitron', monospace;
-            color: #00d4aa;
-            font-weight: 700;
-            margin-bottom: 12px;
-            font-size: 1.1em;
-        }
-        .question-text {
-            font-family: 'Exo 2', sans-serif;
-            color: #fff;
-            font-size: 1.1em;
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-        .options {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .option {
-            display: flex;
-            align-items: flex-start;
-            padding: 15px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-family: 'Exo 2', sans-serif;
-        }
-        .option:hover {
-            background: rgba(0,212,170,0.1);
-            border-color: #00d4aa;
-        }
-        .option input[type="radio"],
-        .option input[type="checkbox"] {
-            margin-right: 12px;
-            margin-top: 3px;
-            cursor: pointer;
-            accent-color: #00d4aa;
-        }
-        .option label {
-            cursor: pointer;
-            flex: 1;
-            color: #ddd;
-        }
-        .option.correct {
-            background: rgba(0,212,170,0.15);
-            border-color: #00d4aa;
-        }
-        .option.incorrect {
-            background: rgba(255,68,68,0.15);
-            border-color: #ff4444;
-        }
-        .explanation {
-            display: none;
-            margin-top: 20px;
-            padding: 20px;
-            background: rgba(0,212,170,0.1);
-            border-left: 4px solid #00d4aa;
-            border-radius: 6px;
-            font-family: 'Exo 2', sans-serif;
-            color: #ddd;
-            line-height: 1.6;
-        }
-        .explanation.show {
-            display: block;
-        }
-        .explanation-title {
-            color: #00d4aa;
-            font-weight: 600;
-            margin-bottom: 10px;
-            font-family: 'Orbitron', monospace;
-        }
-        .submit-btn {
-            display: block;
-            width: 100%;
-            max-width: 300px;
-            margin: 40px auto;
-            padding: 15px 30px;
-            background: linear-gradient(135deg, #00d4aa, #00a885);
-            color: #000;
-            border: none;
-            border-radius: 6px;
-            font-family: 'Orbitron', monospace;
-            font-size: 1.1em;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(0,212,170,0.4);
-        }
-        .results {
-            display: none;
-            text-align: center;
-            padding: 30px;
-            background: rgba(0,212,170,0.1);
-            border: 2px solid #00d4aa;
-            border-radius: 8px;
-            margin: 30px 0;
-        }
-        .results.show {
-            display: block;
-        }
-        .score {
-            font-family: 'Orbitron', monospace;
-            font-size: 3em;
-            color: #00d4aa;
-            margin: 20px 0;
-        }
-        .results-text {
-            font-family: 'Exo 2', sans-serif;
-            color: #ddd;
-            font-size: 1.2em;
-        }
-        code {
-            background: rgba(0,0,0,0.5);
-            padding: 2px 6px;
-            border-radius: 3px;
-            color: #00d4aa;
-            font-family: 'Share Tech Mono', monospace;
-        }
-        pre {
-            background: rgba(0,0,0,0.5);
-            padding: 15px;
-            border-radius: 6px;
-            border-left: 3px solid #00d4aa;
-            overflow-x: auto;
-            margin: 15px 0;
-        }
-        pre code {
-            background: none;
-            padding: 0;
-            color: #fff;
-        }
-    </style>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Examen 06: Servicios IP | CCNA Academy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
 </head>
 <body>
-<!-- ═══════════ NAVBAR Y DRAWER ESTILIZADO (igual que exam5) ═══════════ -->
 <div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
 <nav class="ccna-drawer" id="ccnaDrawer">
   <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
   <div class="drawer-section"><div class="drawer-section-title">General</div>
     <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
-  <div class="drawer-section"><div class="drawer-section-title">M1 · Fundamentos</div>
-    <a href="fundamentos.html"       class="drawer-link "><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
-    <a href="subnetting.html"        class="drawer-link "><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
-    <a href="ipv6.html"              class="drawer-link "><span class="dl-icon">6️⃣</span> IPv6</a>
-    <a href="arp.html"               class="drawer-link "><span class="dl-icon">📡</span> ARP</a>
-    <a href="rip.html"               class="drawer-link "><span class="dl-icon">🔄</span> RIP</a>
-    <a href="protocolos-internet.html" class="drawer-link "><span class="dl-icon">🌍</span> Protocolos Internet</a></div>
-  <div class="drawer-section"><div class="drawer-section-title">M2 · Dispositivos Cisco</div>
-    <a href="router.html"            class="drawer-link "><span class="dl-icon">📡</span> Routers Cisco</a>
-    <a href="switches-cisco.html"    class="drawer-link "><span class="dl-icon">🔀</span> Switches Cisco</a></div>
-  <div class="drawer-section"><div class="drawer-section-title">M3 · Switching</div>
-    <a href="vlan.html"              class="drawer-link "><span class="dl-icon">🏷️</span> VLANs</a>
-    <a href="inter-vlan-routing.html" class="drawer-link "><span class="dl-icon">🔁</span> Inter-VLAN Routing</a>
-    <a href="stp.html"               class="drawer-link "><span class="dl-icon">🌳</span> STP</a>
-    <a href="etherchannel.html"      class="drawer-link "><span class="dl-icon">🔗</span> EtherChannel</a>
-    <a href="port-security.html"     class="drawer-link "><span class="dl-icon">🔒</span> Port Security</a>
-    <a href="cdp-lldp.html"          class="drawer-link "><span class="dl-icon">🔍</span> CDP / LLDP</a></div>
-  <div class="drawer-section"><div class="drawer-section-title">M4 · Routing</div>
-    <a href="routing.html"           class="drawer-link "><span class="dl-icon">🗺️</span> Routing Estático</a>
-    <a href="ospf.html"              class="drawer-link "><span class="dl-icon">⭕</span> OSPF</a>
-    <a href="eigrp.html"             class="drawer-link "><span class="dl-icon">⚡</span> EIGRP</a>
-    <a href="ospfv2.html"            class="drawer-link "><span class="dl-icon">🎯</span> OSPFv2 Masterclass</a></div>
   <div class="drawer-section"><div class="drawer-section-title">M5 · Servicios IP</div>
-    <a href="dhcp.html"              class="drawer-link "><span class="dl-icon">📋</span> DHCP</a>
-    <a href="nat.html"               class="drawer-link "><span class="dl-icon">🔄</span> NAT / PAT</a></div>
-  <div class="drawer-section"><div class="drawer-section-title">M6 · Seguridad</div>
-    <a href="acl.html"               class="drawer-link "><span class="dl-icon">🛡️</span> ACLs</a></div>
-  <div class="drawer-section"><div class="drawer-section-title">M7 · WAN &amp; QoS</div>
-    <a href="wan.html"               class="drawer-link "><span class="dl-icon">🌍</span> WAN</a>
-    <a href="qos.html"               class="drawer-link "><span class="dl-icon">📊</span> QoS</a></div>
-  <div class="drawer-section"><div class="drawer-section-title">⚡ Herramientas</div>
-    <a href="asistente.html"         class="drawer-link "><span class="dl-icon">🤖</span> Asistente IA</a>
-    <a href="netbot.html"            class="drawer-link "><span class="dl-icon">⚙️</span> NetBot Config</a>
-    <a href="calculadora.html"       class="drawer-link "><span class="dl-icon">🧮</span> Calculadora IP</a>
-    <a href="../banco-preguntas.html" class="drawer-link active"><span class="dl-icon">📝</span> Banco de Preguntas</a></div>
+    <a href="dhcp.html" class="drawer-link"><span class="dl-icon">📋</span> DHCP</a>
+    <a href="nat.html" class="drawer-link"><span class="dl-icon">🔄</span> NAT/PAT</a>
+    <a href="../banco.html" class="drawer-link"><span class="dl-icon">📝</span> Banco de Preguntas</a></div>
 </nav>
 <header class="navbar">
   <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
   <a href="../index.html" class="navbar-brand">CISCO<span> ACADEMY</span></a>
   <div class="navbar-spacer"></div>
-  <a href="../banco-preguntas.html" class="navbar-link">← Banco Preguntas</a>
+  <a href="../banco.html" class="navbar-link">← Banco</a>
 </header>
 <script src="../assets/main.js" defer></script>
 <div class="nav-spacer"></div>
 
-    <!-- Main Content -->
-    <div class="exam-container">
-        <div class="exam-header">
-            <h1>EXAMEN 6</h1>
-            <p style="color: #aaa; font-size: 1.1em; margin-top: 10px;">Servicios IP (DHCP, NAT/PAT, ACL, DNS, NTP, Syslog)</p>
-            <div class="exam-info">
-                <span>⏱️ Sin límite de tiempo</span>
-                <span>📝 30 preguntas</span>
-                <span>✅ Respuestas múltiples permitidas</span>
-            </div>
-        </div>
+<section class="ex-hero">
+<div class="ex-hero-inner">
+<div class="ex-badge">BANCO DE PREGUNTAS · EXAMEN 06 DE 10</div>
+<h1 class="ex-title">EXAMEN 06 — <span>Servicios IP</span></h1>
+<p class="ex-sub">Configuración y troubleshooting de DHCP, NAT (Estático, Dinámico, PAT) y Listas de Control de Acceso (ACL).</p>
+<div class="ex-meta">
+<span class="ex-meta-item">📋 10 preguntas</span>
+<span class="ex-meta-item">🎯 DHCP · NAT · PAT · ACLs</span>
+<span class="ex-meta-item">📅 Actualizado abr 2026</span>
+</div></div></section>
 
-        <form id="examForm">
-            <!-- Pregunta 1 -->
-            <div class="question-block">
-                <div class="question-number">Pregunta 1</div>
-                <div class="question-text">
-                    ¿Qué puerto UDP utiliza DHCP para la comunicación cliente→servidor?
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q1" value="a" id="q1a">
-                        <label for="q1a">67 → 68</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q1" value="b" id="q1b">
-                        <label for="q1b">68 → 67</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q1" value="c" id="q1c">
-                        <label for="q1c">69 → 69</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q1" value="d" id="q1d">
-                        <label for="q1d">161 → 162</label>
-                    </div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta Correcta: B</div>
-                    El cliente DHCP usa puerto UDP <strong>68</strong> y el servidor usa <strong>67</strong>. Cliente envía DHCPDISCOVER desde :68 → :67. Servidor responde DHCPOFFER desde :67 → :68.
-                </div>
-            </div>
+<style>
+body{font-family:"Exo 2",sans-serif;background:#07090f;color:#e2e8f0;}
+.ex-hero{background:linear-gradient(135deg,#06080f,#0c1020 60%,#0e1428);padding:44px 24px 36px;border-bottom:1px solid rgba(0,212,170,.12);position:relative;overflow:hidden;}
+.ex-hero-inner{max-width:860px;margin:0 auto;position:relative;z-index:1;}
+.ex-badge{font-family:"Share Tech Mono",monospace;font-size:.62rem;color:#00d4aa;letter-spacing:3px;text-transform:uppercase;margin-bottom:12px;}
+.ex-title{font-family:"Orbitron",sans-serif;font-size:clamp(1.5rem,4vw,2.4rem);font-weight:900;letter-spacing:3px;color:#c2d0e8;margin-bottom:8px;line-height:1.1;}
+.ex-title span{background:linear-gradient(135deg,#00d4aa,#008a6e);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.ex-sub{font-size:.9rem;color:#6b7a9a;line-height:1.65;margin-bottom:18px;max-width:680px;}
+.ex-meta{display:flex;gap:12px;flex-wrap:wrap;}
+.ex-meta-item{font-family:"Share Tech Mono",monospace;font-size:.68rem;color:#374060;padding:4px 10px;border:1px solid rgba(0,212,170,.1);border-radius:4px;}
+.ex-wrap{max-width:940px;margin:0 auto;padding:28px 20px 60px;}
+.ex-score-bar{background:#090d1a;border:1px solid rgba(0,212,170,.15);border-radius:12px;padding:16px 22px;margin-bottom:24px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;}
+.ex-score-num{font-family:"Orbitron",sans-serif;font-size:1.8rem;font-weight:900;color:#00d4aa;min-width:56px;}
+.ex-score-track{flex:1;height:7px;background:#0d1220;border-radius:4px;overflow:hidden;min-width:100px;}
+.ex-score-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#00d4aa,#008a6e);transition:width .5s ease;width:0%;}
+.ex-score-label{font-family:"Share Tech Mono",monospace;font-size:.68rem;color:#4a5780;}
+.ex-score-btn{padding:7px 16px;background:rgba(0,212,170,.1);border:1px solid rgba(0,212,170,.25);border-radius:7px;color:#00d4aa;font-family:"Share Tech Mono",monospace;font-size:.68rem;cursor:pointer;margin-left:auto;}
+.ex-q{background:#0d1220;border:1px solid rgba(255,255,255,.05);border-radius:12px;padding:20px;margin-bottom:16px;}
+.ex-q.answered{border-color:rgba(0,212,170,.08);}
+.ex-qmeta{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.ex-qnum{font-family:"Share Tech Mono",monospace;font-size:.6rem;color:#374060;letter-spacing:2px;}
+.ex-qtype{font-family:"Share Tech Mono",monospace;font-size:.58rem;padding:2px 8px;border-radius:3px;background:rgba(0,212,170,.08);border:1px solid rgba(0,212,170,.2);color:#00d4aa;}
+.ex-qtext{font-size:.9rem;color:#c2d0e8;line-height:1.65;margin-bottom:14px;}
+.ex-opts{display:flex;flex-direction:column;gap:7px;}
+.ex-opt{padding:10px 14px;border-radius:8px;border:1px solid rgba(255,255,255,.06);background:#090d1a;color:#6b7a9a;cursor:pointer;font-size:.86rem;text-align:left;transition:all .15s;}
+.ex-opt:hover:not(:disabled){border-color:rgba(0,212,170,.3);color:#c2d0e8;background:rgba(0,212,170,.04);}
+.ex-opt.correct{border-color:#34d399;background:rgba(52,211,153,.08);color:#34d399;}
+.ex-opt.wrong{border-color:#f87171;background:rgba(248,113,113,.08);color:#f87171;}
+.ex-exp{margin-top:12px;padding:12px 16px;background:rgba(0,212,170,.04);border-left:3px solid #00d4aa;border-radius:6px;font-size:.83rem;color:#a0aec0;}
+.ex-result{background:rgba(0,212,170,.05);border:1px solid rgba(0,212,170,.2);border-radius:16px;padding:32px;text-align:center;margin-top:32px;display:none;}
+.ex-result-pct{font-family:"Orbitron",sans-serif;font-size:3rem;font-weight:900;color:#00d4aa;margin-bottom:8px;}
+</style>
 
-            <!-- Pregunta 2 -->
-            <div class="question-block">
-                <div class="question-number">Pregunta 2</div>
-                <div class="question-text">
-                    ¿Cuál es el orden correcto del proceso DHCP?
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q2" value="a" id="q2a">
-                        <label for="q2a">Discover → Offer → Request → Acknowledge</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q2" value="b" id="q2b">
-                        <label for="q2b">Request → Offer → Discover → Acknowledge</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q2" value="c" id="q2c">
-                        <label for="q2c">Offer → Discover → Acknowledge → Request</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q2" value="d" id="q2d">
-                        <label for="q2d">Discover → Request → Offer → Acknowledge</label>
-                    </div>
-                </div>
-                <div class="explanation" data-answer="a">
-                    <div class="explanation-title">✓ Respuesta Correcta: A</div>
-                    Proceso DORA: <strong>Discover → Offer → Request → Acknowledge</strong>. Cliente envía broadcast Discover, servidor(es) responden Offer, cliente selecciona uno con Request broadcast, servidor confirma con Acknowledge unicast.
-                </div>
-            </div>
+<div class="ex-wrap">
+  <div class="ex-score-bar">
+    <div class="ex-score-num" id="snum">0/10</div>
+    <div class="ex-score-track"><div class="ex-score-fill" id="sfill"></div></div>
+    <div class="ex-score-label" id="slbl">0 respondidas · 0% correcto</div>
+    <button class="ex-score-btn" onclick="resetEx()">🔄 Reiniciar</button>
+  </div>
 
-            <!-- Pregunta 3 -->
-            <div class="question-block">
-                <div class="question-number">Pregunta 3</div>
-                <div class="question-text">
-                    ¿Qué tipo de NAT permite que múltiples hosts internos compartan una sola IP pública usando puertos?
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q3" value="a" id="q3a">
-                        <label for="q3a">Static NAT</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q3" value="b" id="q3b">
-                        <label for="q3b">Dynamic NAT</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q3" value="c" id="q3c">
-                        <label for="q3c">PAT (NAT overload)</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q3" value="d" id="q3d">
-                        <label for="q3d">Policy-based NAT</label>
-                    </div>
-                </div>
-                <div class="explanation" data-answer="c">
-                    <div class="explanation-title">✓ Respuesta Correcta: C</div>
-                    <strong>PAT</strong> (Port Address Translation) o NAT overload usa una IP pública con múltiples puertos para mapear muchos hosts internos. Static NAT = 1:1, Dynamic NAT = N:M (pool), PAT = N:1 con puertos.
-                </div>
-            </div>
-
-            <!-- Pregunta 4 -->
-            <div class="question-block">
-                <div class="question-number">Pregunta 4</div>
-                <div class="question-text">
-                    ¿Qué comando configura un router Cisco como DHCP Relay Agent?
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q4" value="a" id="q4a">
-                        <label for="q4a"><code>ip dhcp pool SERVER</code></label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q4" value="b" id="q4b">
-                        <label for="q4b"><code>ip helper-address 192.168.1.1</code> (en interfaz)</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q4" value="c" id="q4c">
-                        <label for="q4c"><code>service dhcp</code></label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q4" value="d" id="q4d">
-                        <label for="q4d"><code>ip dhcp relay source-interface</code></label>
-                    </div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta Correcta: B</div>
-                    <code>ip helper-address [IP_servidor_DHCP]</code> convierte broadcast DHCP en unicast dirigido al servidor remoto. Se configura en la interfaz donde llegan los DHCPDISCOVER de clientes.
-                </div>
-            </div>
-
-            <!-- Pregunta 5 -->
-            <div class="question-block">
-                <div class="question-number">Pregunta 5</div>
-                <div class="question-text">
-                    En ACL, ¿qué significa una wildcard mask de 0.0.0.255?
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q5" value="a" id="q5a">
-                        <label for="q5a">Coincide con cualquier dirección</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q5" value="b" id="q5b">
-                        <label for="q5b">Coincide con un host específico</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q5" value="c" id="q5c">
-                        <label for="q5c">Coincide con los primeros 3 octetos, cualquier valor en el 4to</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q5" value="d" id="q5d">
-                        <label for="q5d">Coincide solo con redes /24</label>
-                    </div>
-                </div>
-                <div class="explanation" data-answer="c">
-                    <div class="explanation-title">✓ Respuesta Correcta: C</div>
-                    Wildcard 0.0.0.255: <strong>0 = debe coincidir, 1 = ignorar</strong>. Los primeros 3 octetos deben coincidir exactamente, el 4to puede ser cualquier valor (0-255). Ejemplo: <code>10.1.1.0 0.0.0.255</code> = toda la red 10.1.1.0/24.
-                </div>
-            </div>
-
-            <!-- Pregunta 6 -->
-            <div class="question-block">
-                <div class="question-number">Pregunta 6</div>
-                <div class="question-text">
-                    ¿Cuál es la diferencia principal entre ACL estándar y ACL extendida?
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q6" value="a" id="q6a">
-                        <label for="q6a">ACL estándar filtra por IP origen; extendida puede filtrar por IP origen/destino, protocolo y puertos</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q6" value="b" id="q6b">
-                        <label for="q6b">ACL estándar usa números 1-99; extendida usa 100-199</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q6" value="c" id="q6c">
-                        <label for="q6c">ACL extendida es más rápida</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q6" value="d" id="q6d">
-                        <label for="q6d">No hay diferencia funcional</label>
-                    </div>
-                </div>
-                <div class="explanation" data-answer="a">
-                    <div class="explanation-title">✓ Respuesta Correcta: A</div>
-                    <strong>ACL Estándar</strong> (1-99, 1300-1999): filtra solo por IP origen. <strong>ACL Extendida</strong> (100-199, 2000-2699): filtra por origen, destino, protocolo (TCP/UDP/ICMP), puertos, flags TCP, etc. La B es correcta pero A es más completa.
-                </div>
-            </div>
-
-            <!-- Pregunta 7 -->
-            <div class="question-block">
-                <div class="question-number">Pregunta 7</div>
-                <div class="question-text">
-                    ¿Qué función realiza DNS?
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q7" value="a" id="q7a">
-                        <label for="q7a">Asignar direcciones IP automáticamente</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q7" value="b" id="q7b">
-                        <label for="q7b">Traducir nombres de dominio a direcciones IP</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q7" value="c" id="q7c">
-                        <label for="q7c">Sincronizar relojes de red</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q7" value="d" id="q7d">
-                        <label for="q7d">Enrutar paquetes entre redes</label>
-                    </div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta Correcta: B</div>
-                    DNS (Domain Name System) <strong>resuelve nombres → IPs</strong>. Usa UDP/53 para queries normales, TCP/53 para transferencias de zona. Jerarquía: Root (.) → TLD (.com) → Authoritative (google.com).
-                </div>
-            </div>
-
-            <!-- Pregunta 8 -->
-            <div class="question-block">
-                <div class="question-number">Pregunta 8</div>
-                <div class="question-text">
-                    ¿Qué puerto y protocolo usa NTP?
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q8" value="a" id="q8a">
-                        <label for="q8a">TCP 123</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q8" value="b" id="q8b">
-                        <label for="q8b">UDP 123</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q8" value="c" id="q8c">
-                        <label for="q8c">TCP 161</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q8" value="d" id="q8d">
-                        <label for="q8d">UDP 514</label>
-                    </div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta Correcta: B</div>
-                    NTP (Network Time Protocol) usa <strong>UDP/123</strong>. Sincroniza relojes con precisión de milisegundos. Niveles (stratum): 0=reloj atómico, 1=servidor primario, 2-15=secundarios. SNMP=161, Syslog=514.
-                </div>
-            </div>
-
-            <!-- Pregunta 9 -->
-            <div class="question-block">
-                <div class="question-number">Pregunta 9</div>
-                <div class="question-text">
-                    ¿Dónde se recomienda aplicar una ACL estándar?
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q9" value="a" id="q9a">
-                        <label for="q9a">Lo más cerca posible del origen</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q9" value="b" id="q9b">
-                        <label for="q9b">Lo más cerca posible del destino</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q9" value="c" id="q9c">
-                        <label for="q9c">En el core de la red</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q9" value="d" id="q9d">
-                        <label for="q9d">No importa la ubicación</label>
-                    </div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta Correcta: B</div>
-                    <strong>Estándar: cerca del destino</strong> (filtra solo origen, aplicarla cerca del origen bloquearía todo tráfico de esa fuente). <strong>Extendida: cerca del origen</strong> (granular, evita tráfico innecesario en la red).
-                </div>
-            </div>
-
-            <!-- Pregunta 10 -->
-            <div class="question-block">
-                <div class="question-number">Pregunta 10</div>
-                <div class="question-text">
-                    ¿Qué comando aplica una ACL a una interfaz para filtrar tráfico entrante?
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q10" value="a" id="q10a">
-                        <label for="q10a"><code>ip access-group 10 out</code></label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q10" value="b" id="q10b">
-                        <label for="q10b"><code>ip access-group 10 in</code></label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q10" value="c" id="q10c">
-                        <label for="q10c"><code>access-list 10 permit any</code></label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q10" value="d" id="q10d">
-                        <label for="q10d"><code>ip access-class 10 in</code></label>
-                    </div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta Correcta: B</div>
-                    <code>ip access-group [ACL] {in|out}</code> aplica ACL en interfaz. <strong>in</strong>=filtra paquetes entrantes (antes de routing), <strong>out</strong>=filtra salientes (después de routing). <code>access-class</code> es para VTY lines.
-                </div>
-            </div>
-
-            <!-- Pregunta 11 -->
-            <div class="question-block">
-                <div class="question-number">Pregunta 11</div>
-                <div class="question-text">
-                    En NAT, ¿qué dirección se considera "inside local"?
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q11" value="a" id="q11a">
-                        <label for="q11a">IP privada del host interno antes de traducción</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q11" value="b" id="q11b">
-                        <label for="q11b">IP pública después de traducción</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q11" value="c" id="q11c">
-                        <label for="q11c">IP del host externo</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q11" value="d" id="q11d">
-                        <label for="q11d">IP de la interfaz NAT</label>
-                    </div>
-                </div>
-                <div class="explanation" data-answer="a">
-                    <div class="explanation-title">✓ Respuesta Correcta: A</div>
-                    Terminología NAT: <strong>Inside Local</strong>=IP privada original, <strong>Inside Global</strong>=IP pública traducida, <strong>Outside Local</strong>=IP externa vista desde inside, <strong>Outside Global</strong>=IP real externa.
-                </div>
-            </div>
-
-            <!-- Pregunta 12 -->
-            <div class="question-block">
-                <div class="question-number">Pregunta 12</div>
-                <div class="question-text">
-                    ¿Qué protocolo permite enviar mensajes de log desde dispositivos de red a un servidor centralizado?
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q12" value="a" id="q12a">
-                        <label for="q12a">SNMP</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q12" value="b" id="q12b">
-                        <label for="q12b">Syslog</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q12" value="c" id="q12c">
-                        <label for="q12c">NTP</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q12" value="d" id="q12d">
-                        <label for="q12d">NetFlow</label>
-                    </div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta Correcta: B</div>
-                    <strong>Syslog</strong> (UDP/514) envía mensajes de eventos/logs a servidor centralizado. Niveles: 0=Emergency, 1=Alert, 2=Critical, 3=Error, 4=Warning, 5=Notice, 6=Informational, 7=Debug. SNMP=monitoreo/gestión.
-                </div>
-            </div>
-
-            <!-- Pregunta 13 -->
-            <div class="question-block">
-                <div class="question-number">Pregunta 13</div>
-                <div class="question-text">
-                    ¿Qué ACL entry permite todo el tráfico ICMP?
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q13" value="a" id="q13a">
-                        <label for="q13a"><code>access-list 100 permit tcp any any</code></label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q13" value="b" id="q13b">
-                        <label for="q13b"><code>access-list 100 permit icmp any any</code></label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q13" value="c" id="q13c">
-                        <label for="q13c"><code>access-list 100 permit ip any any icmp</code></label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q13" value="d" id="q13d">
-                        <label for="q13d"><code>permit icmp 0.0.0.0 255.255.255.255</code></label>
-                    </div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta Correcta: B</div>
-                    Sintaxis ACL extendida: <code>access-list [100-199] {permit|deny} [protocolo] [origen] [destino]</code>. Para ICMP específico: agregar tipo (ej. <code>echo</code>, <code>echo-reply</code>, <code>unreachable</code>).
-                </div>
-            </div>
-
-            <!-- Pregunta 14 -->
-            <div class="question-block">
-                <div class="question-number">Pregunta 14</div>
-                <div class="question-text">
-                    ¿Cuál de los siguientes NO es un mensaje DHCP válido?
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q14" value="a" id="q14a">
-                        <label for="q14a">DHCPDISCOVER</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q14" value="b" id="q14b">
-                        <label for="q14b">DHCPACK</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q14" value="c" id="q14c">
-                        <label for="q14c">DHCPRELEASE</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q14" value="d" id="q14d">
-                        <label for="q14d">DHCPCONFIRM</label>
-                    </div>
-                </div>
-                <div class="explanation" data-answer="d">
-                    <div class="explanation-title">✓ Respuesta Correcta: D</div>
-                    Mensajes DHCP válidos: DISCOVER, OFFER, REQUEST, ACK (DORA), DECLINE, RELEASE, INFORM, NAK. <strong>DHCPCONFIRM no existe</strong> en DHCPv4 (existe en DHCPv6).
-                </div>
-            </div>
-
-            <!-- Pregunta 15 -->
-            <div class="question-block">
-                <div class="question-number">Pregunta 15</div>
-                <div class="question-text">
-                    ¿Qué comando configura NAT estático (1:1)?
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q15" value="a" id="q15a">
-                        <label for="q15a"><code>ip nat inside source static 192.168.1.10 203.0.113.5</code></label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q15" value="b" id="q15b">
-                        <label for="q15b"><code>ip nat pool PUBLIC 203.0.113.1 203.0.113.10</code></label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q15" value="c" id="q15c">
-                        <label for="q15c"><code>ip nat inside source list 1 interface g0/1 overload</code></label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q15" value="d" id="q15d">
-                        <label for="q15d"><code>ip nat translation timeout 300</code></label>
-                    </div>
-                </div>
-                <div class="explanation" data-answer="a">
-                    <div class="explanation-title">✓ Respuesta Correcta: A</div>
-                    NAT estático: <code>ip nat inside source static [IP_local] [IP_global]</code>. B=pool para dynamic NAT. C=PAT con overload. Recordar: marcar interfaces con <code>ip nat {inside|outside}</code>.
-                </div>
-            </div>
-
-            <!-- Pregunta 16 -->
-            <div class="question-block">
-                <div class="question-number">Pregunta 16</div>
-                <div class="question-text">
-                    En ACL, ¿qué efecto tiene la regla implícita al final?
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q16" value="a" id="q16a">
-                        <label for="q16a">Permite todo el tráfico no especificado</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q16" value="b" id="q16b">
-                        <label for="q16b">Niega todo el tráfico no especificado (implicit deny any)</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q16" value="c" id="q16c">
-                        <label for="q16c">Log de todo el tráfico</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q16" value="d" id="q16d">
-                        <label for="q16d">No tiene efecto</label>
-                    </div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta Correcta: B</div>
-                    Todas las ACL terminan con <strong>implicit deny any</strong> invisible. Si un paquete no coincide con ninguna entrada, es denegado. Best practice: agregar <code>permit ip any any log</code> explícito al final para debugging.
-                </div>
-            </div>
-
-            <!-- Pregunta 17 -->
-            <div class="question-block">
-                <div class="question-number">Pregunta 17</div>
-                <div class="question-text">
-                    ¿Qué stratum tiene un dispositivo NTP directamente conectado a un reloj atómico GPS?
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q17" value="a" id="q17a">
-                        <label for="q17a">Stratum 0</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q17" value="b" id="q17b">
-                        <label for="q17b">Stratum 1</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q17" value="c" id="q17c">
-                        <label for="q17c">Stratum 2</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q17" value="d" id="q17d">
-                        <label for="q17d">Stratum 15</label>
-                    </div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta Correcta: B</div>
-                    <strong>Stratum 0</strong>=reloj de referencia (GPS, atómico) no conectado a red. <strong>Stratum 1</strong>=servidor NTP directamente conectado a stratum 0. Stratum 2=sincronizado desde stratum 1, etc. Máximo=15 (16=unsynchronized).
-                </div>
-            </div>
-
-            <!-- Pregunta 18 -->
-            <div class="question-block">
-                <div class="question-number">Pregunta 18</div>
-                <div class="question-text">
-                    ¿Qué parámetro DHCP excluye un rango de IPs del pool de asignación?
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q18" value="a" id="q18a">
-                        <label for="q18a"><code>ip dhcp excluded-address 192.168.1.1 192.168.1.10</code></label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q18" value="b" id="q18b">
-                        <label for="q18b"><code>network 192.168.1.0 255.255.255.0 exclude 1-10</code></label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q18" value="c" id="q18c">
-                        <label for="q18c"><code>ip dhcp pool reserved</code></label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q18" value="d" id="q18d">
-                        <label for="q18d"><code>deny 192.168.1.1 192.168.1.10</code></label>
-                    </div>
-                </div>
-                <div class="explanation" data-answer="a">
-                    <div class="explanation-title">✓ Respuesta Correcta: A</div>
-                    <code>ip dhcp excluded-address [inicio] [fin]</code> (modo config global) excluye IPs de asignación dinámica. Típicamente usado para gateway, servidores DNS, impresoras. Se configura ANTES de definir el pool.
-                </div>
-            </div>
-
-            <!-- Pregunta 19 -->
-            <div class="question-block">
-                <div class="question-number">Pregunta 19</div>
-                <div class="question-text">
-                    ¿Qué puerto TCP usa DNS para transferencias de zona?
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q19" value="a" id="q19a">
-                        <label for="q19a">UDP 53</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q19" value="b" id="q19b">
-                        <label for="q19b">TCP 53</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q19" value="c" id="q19c">
-                        <label for="q19c">TCP 80</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q19" value="d" id="q19d">
-                        <label for="q19d">TCP 443</label>
-                    </div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta Correcta: B</div>
-                    DNS usa <strong>UDP/53</strong> para queries normales (rápido, sin conexión). <strong>TCP/53</strong> se usa para: transferencias de zona (AXFR/IXFR), respuestas >512 bytes, y comunicación entre servidores autoritativos.
-                </div>
-            </div>
-
-            <!-- Pregunta 20 -->
-            <div class="question-block">
-                <div class="question-number">Pregunta 20</div>
-                <div class="question-text">
-                    ¿Qué comando verifica las traducciones NAT activas?
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q20" value="a" id="q20a">
-                        <label for="q20a"><code>show ip nat statistics</code></label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q20" value="b" id="q20b">
-                        <label for="q20b"><code>show ip nat translations</code></label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q20" value="c" id="q20c">
-                        <label for="q20c"><code>show ip route nat</code></label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q20" value="d" id="q20d">
-                        <label for="q20d"><code>debug ip nat</code></label>
-                    </div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta Correcta: B</div>
-                    <code>show ip nat translations</code> muestra tabla de traducciones activas: Inside local/global, Outside local/global. <code>show ip nat statistics</code> muestra contadores y configuración. <code>clear ip nat translation *</code> limpia tabla.
-                </div>
-            </div>
-
-            <!-- Pregunta 21 -->
-            <div class="question-block">
-                <div class="question-number">Pregunta 21</div>
-                <div class="question-text">
-                    ¿Qué nivel de severidad Syslog representa mensajes de "Error"?
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q21" value="a" id="q21a">
-                        <label for="q21a">Nivel 0</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q21" value="b" id="q21b">
-                        <label for="q21b">Nivel 3</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q21" value="c" id="q21c">
-                        <label for="q21c">Nivel 5</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q21" value="d" id="q21d">
-                        <label for="q21d">Nivel 7</label>
-                    </div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta Correcta: B</div>
-                    Syslog levels: 0=Emergency, 1=Alert, 2=Critical, <strong>3=Error</strong>, 4=Warning, 5=Notice, 6=Informational, 7=Debug. <code>logging trap [level]</code> configura qué enviar al servidor.
-                </div>
-            </div>
-
-            <!-- Pregunta 22 -->
-            <div class="question-block">
-                <div class="question-number">Pregunta 22</div>
-                <div class="question-text">
-                    ¿Qué ACL extendida permite HTTP (puerto 80) desde cualquier origen a 10.0.0.5?
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q22" value="a" id="q22a">
-                        <label for="q22a"><code>access-list 100 permit tcp any host 10.0.0.5 eq 80</code></label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q22" value="b" id="q22b">
-                        <label for="q22b"><code>access-list 100 permit tcp any host 10.0.0.5 eq www</code></label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q22" value="c" id="q22c">
-                        <label for="q22c">Ambas A y B son correctas</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q22" value="d" id="q22d">
-                        <label for="q22d"><code>access-list 100 permit http any 10.0.0.5</code></label>
-                    </div>
-                </div>
-                <div class="explanation" data-answer="c">
-                    <div class="explanation-title">✓ Respuesta Correcta: C</div>
-                    Ambas sintaxis son válidas: <code>eq 80</code> o <code>eq www</code> (nombre de servicio). <code>host 10.0.0.5</code> equivale a <code>10.0.0.5 0.0.0.0</code>. Otros: <code>eq 443 / eq https</code>, <code>eq 22 / eq ssh</code>.
-                </div>
-            </div>
-
-            <!-- Pregunta 23 -->
-            <div class="question-block">
-                <div class="question-number">Pregunta 23</div>
-                <div class="question-text">
-                    ¿Qué opción DHCP configura el lease time (tiempo de arrendamiento)?
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q23" value="a" id="q23a">
-                        <label for="q23a"><code>lease {días} {horas} {minutos}</code></label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q23" value="b" id="q23b">
-                        <label for="q23b"><code>lease infinite</code></label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q23" value="c" id="q23c">
-                        <label for="q23c">Ambas A y B son válidas</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q23" value="d" id="q23d">
-                        <label for="q23d"><code>duration 86400</code></label>
-                    </div>
-                </div>
-                <div class="explanation" data-answer="c">
-                    <div class="explanation-title">✓ Respuesta Correcta: C</div>
-                    Dentro del pool DHCP: <code>lease [días] [horas] [minutos]</code> o <code>lease infinite</code> para lease permanente. Default=1 día. Cliente intenta renovar al 50% del lease (T1), luego al 87.5% (T2).
-                </div>
-            </div>
-
-            <!-- Pregunta 24 -->
-            <div class="question-block">
-                <div class="question-number">Pregunta 24</div>
-                <div class="question-text">
-                    ¿Qué hace el comando <code>debug ip nat</code>?
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q24" value="a" id="q24a">
-                        <label for="q24a">Muestra traducciones NAT en tiempo real</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q24" value="b" id="q24b">
-                        <label for="q24b">Configura NAT dinámico</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q24" value="c" id="q24c">
-                        <label for="q24c">Limpia la tabla NAT</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q24" value="d" id="q24d">
-                        <label for="q24d">Desactiva NAT temporalmente</label>
-                    </div>
-                </div>
-                <div class="explanation" data-answer="a">
-                    <div class="explanation-title">✓ Respuesta Correcta: A</div>
-                    <code>debug ip nat</code> muestra en consola cada traducción NAT en tiempo real (origen→traducido, destino→traducido). ⚠️ Alto impacto en CPU, usar con cuidado. <code>undebug all</code> para desactivar.
-                </div>
-            </div>
-
-            <!-- Pregunta 25 -->
-            <div class="question-block">
-                <div class="question-number">Pregunta 25</div>
-                <div class="question-text">
-                    ¿Cuál es la función de "remark" en ACL?
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q25" value="a" id="q25a">
-                        <label for="q25a">Denegar tráfico específico</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q25" value="b" id="q25b">
-                        <label for="q25b">Agregar comentarios descriptivos a la ACL</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q25" value="c" id="q25c">
-                        <label for="q25c">Reordenar entradas de ACL</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q25" value="d" id="q25d">
-                        <label for="q25d">Activar logging en la ACL</label>
-                    </div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta Correcta: B</div>
-                    <code>access-list [num] remark [texto]</code> o en ACL nombrada: <code>remark [texto]</code>. Agrega <strong>comentarios</strong> para documentar propósito de cada regla. Best practice: remark antes de cada entrada lógica.
-                </div>
-            </div>
-
-            <!-- Pregunta 26 -->
-            <div class="question-block">
-                <div class="question-number">Pregunta 26</div>
-                <div class="question-text">
-                    ¿Qué sucede cuando un cliente DHCP no recibe DHCPOFFER?
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q26" value="a" id="q26a">
-                        <label for="q26a">Usa APIPA (169.254.x.x)</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q26" value="b" id="q26b">
-                        <label for="q26b">Reenvía DHCPDISCOVER hasta 4 veces antes de APIPA</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q26" value="c" id="q26c">
-                        <label for="q26c">Queda sin IP indefinidamente</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q26" value="d" id="q26d">
-                        <label for="q26d">Solicita IP al gateway</label>
-                    </div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta Correcta: B</div>
-                    Sin OFFER, el cliente <strong>reintenta DISCOVER</strong> con backoff exponencial (típicamente 4 intentos). Si falla, asigna IP APIPA (169.254.0.0/16) y sigue intentando cada 5 minutos.
-                </div>
-            </div>
-
-            <!-- Pregunta 27 -->
-            <div class="question-block">
-                <div class="question-number">Pregunta 27</div>
-                <div class="question-text">
-                    En PAT, ¿qué diferencia hace que múltiples hosts internos puedan compartir una IP pública?
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q27" value="a" id="q27a">
-                        <label for="q27a">El uso de diferentes puertos de origen para cada conexión</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q27" value="b" id="q27b">
-                        <label for="q27b">El uso de diferentes direcciones MAC</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q27" value="c" id="q27c">
-                        <label for="q27c">El uso de diferentes VLANs</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q27" value="d" id="q27d">
-                        <label for="q27d">El uso de diferentes protocolos de enrutamiento</label>
-                    </div>
-                </div>
-                <div class="explanation" data-answer="a">
-                    <div class="explanation-title">✓ Respuesta Correcta: A</div>
-                    PAT traduce: <code>[IP_privada:puerto_origen] → [IP_pública:puerto_traducido]</code>. La tupla única <strong>(IP_pública + puerto)</strong> identifica cada sesión. Soporta ~65,000 conexiones simultáneas por IP pública (límite de puertos).
-                </div>
-            </div>
-
-            <!-- Pregunta 28 -->
-            <div class="question-block">
-                <div class="question-number">Pregunta 28</div>
-                <div class="question-text">
-                    ¿Qué comando configura un router Cisco como cliente NTP?
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q28" value="a" id="q28a">
-                        <label for="q28a"><code>ntp server 192.168.1.1</code></label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q28" value="b" id="q28b">
-                        <label for="q28b"><code>ntp master</code></label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q28" value="c" id="q28c">
-                        <label for="q28c"><code>clock timezone EST -5</code></label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q28" value="d" id="q28d">
-                        <label for="q28d"><code>service timestamps log datetime</code></label>
-                    </div>
-                </div>
-                <div class="explanation" data-answer="a">
-                    <div class="explanation-title">✓ Respuesta Correcta: A</div>
-                    <code>ntp server [IP_servidor]</code> configura router como cliente NTP. <code>ntp master [stratum]</code> lo hace servidor autoritativo. Verificar: <code>show ntp status</code>, <code>show ntp associations</code>.
-                </div>
-            </div>
-
-            <!-- Pregunta 29 -->
-            <div class="question-block">
-                <div class="question-number">Pregunta 29</div>
-                <div class="question-text">
-                    ¿Qué hace la keyword "log" al final de una ACL entry?
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q29" value="a" id="q29a">
-                        <label for="q29a">Registra todos los paquetes que coinciden con esa regla</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q29" value="b" id="q29b">
-                        <label for="q29b">Envía paquetes coincidentes a un servidor Syslog</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q29" value="c" id="q29c">
-                        <label for="q29c">Genera mensajes de log (consola/buffer/syslog) cuando se produce un match</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q29" value="d" id="q29d">
-                        <label for="q29d">Bloquea y registra el tráfico</label>
-                    </div>
-                </div>
-                <div class="explanation" data-answer="c">
-                    <div class="explanation-title">✓ Respuesta Correcta: C</div>
-                    <code>log</code> genera mensajes cuando hay match, mostrando: ACL#, acción, protocolo, origen, destino. <code>log-input</code> incluye además interfaz de entrada. ⚠️ Alto volumen puede impactar CPU. Útil para debugging/seguridad.
-                </div>
-            </div>
-
-            <!-- Pregunta 30 -->
-            <div class="question-block">
-                <div class="question-number">Pregunta 30</div>
-                <div class="question-text">
-                    ¿Qué opción DHCP proporciona la dirección IP del gateway por defecto?
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q30" value="a" id="q30a">
-                        <label for="q30a">option 1</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q30" value="b" id="q30b">
-                        <label for="q30b">option 3</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q30" value="c" id="q30c">
-                        <label for="q30c">option 6</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q30" value="d" id="q30d">
-                        <label for="q30d">option 15</label>
-                    </div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta Correcta: B</div>
-                    DHCP Options: <strong>3</strong>=default-router (gateway), 1=subnet-mask, 6=dns-server, 15=domain-name, 42=ntp-server, 66=tftp-server, 150=tftp-server (Cisco). En config pool: <code>default-router 192.168.1.1</code>.
-                </div>
-            </div>
-	    <div class="question-block">
-                <div class="question-number">Pregunta 31</div>
-                <div class="question-text">
-                    ¿Cuál es el nivel de severidad en Syslog para un mensaje de tipo "Critical"?
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q31" value="a" id="q31a">
-                        <label for="q31a">Nivel 1</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q31" value="b" id="q31b">
-                        <label for="q31b">Nivel 2</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q31" value="c" id="q31c">
-                        <label for="q31c">Nivel 3</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q31" value="d" id="q31d">
-                        <label for="q31d">Nivel 4</label>
-                    </div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta Correcta: B</div>
-                    Los niveles de Syslog van de 0 (Emergency) a 7 (Debugging). El nivel **2** corresponde a **Critical**. (Nemotecnia: Every Awesome Cisco Engineer Will Need Icecream Daily).
-                </div>
-            </div>
-
-            <div class="question-block">
-                <div class="question-number">Pregunta 32</div>
-                <div class="question-text">
-                    ¿Qué comando se utiliza para excluir las primeras 10 direcciones IP de un pool DHCP en un router Cisco?
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q32" value="a" id="q32a">
-                        <label for="q32a">ip dhcp exclude 192.168.1.1 192.168.1.10</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q32" value="b" id="q32b">
-                        <label for="q32b">ip dhcp excluded-address 192.168.1.1 192.168.1.10</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q32" value="c" id="q32c">
-                        <label for="q32c">no dhcp address 192.168.1.1 192.168.1.10</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q32" value="d" id="q32d">
-                        <label for="q32d">deny ip dhcp 192.168.1.1 10</label>
-                    </div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta Correcta: B</div>
-                    El comando correcto es **ip dhcp excluded-address** seguido de la IP inicial y la IP final. Este comando se configura en el modo de configuración global, no dentro del pool.
-                </div>
-            </div>
-
-            <div class="question-block">
-                <div class="question-number">Pregunta 33</div>
-                <div class="question-text">
-                    ¿Cuál es el rango de números para las Listas de Acceso (ACL) Estándar en Cisco IOS?
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q33" value="a" id="q33a">
-                        <label for="q33a">1-99 y 1300-1999</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q33" value="b" id="q33b">
-                        <label for="q33b">100-199 y 2000-2699</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q33" value="c" id="q33c">
-                        <label for="q33c">1-100</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q33" value="d" id="q33d">
-                        <label for="q33d">100-500</label>
-                    </div>
-                </div>
-                <div class="explanation" data-answer="a">
-                    <div class="explanation-title">✓ Respuesta Correcta: A</div>
-                    Las ACL estándar usan los rangos **1-99** y el rango expandido **1300-1999**. Solo filtran por dirección IP de origen.
-                </div>
-            </div>
-
-            <div class="question-block">
-                <div class="question-number">Pregunta 34</div>
-                <div class="question-text">
-                    En una ACL extendida, ¿qué palabra clave se utiliza para permitir el tráfico web (HTTP)?
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q34" value="a" id="q34a">
-                        <label for="q34a">eq 21</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q34" value="b" id="q34b">
-                        <label for="q34b">eq 443</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q34" value="c" id="q34c">
-                        <label for="q34c">eq 80</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q34" value="d" id="q34d">
-                        <label for="q34d">eq 53</label>
-                    </div>
-                </div>
-                <div class="explanation" data-answer="c">
-                    <div class="explanation-title">✓ Respuesta Correcta: C</div>
-                    El protocolo HTTP utiliza el puerto TCP **80**. El puerto 443 es para HTTPS, el 21 para FTP y el 53 para DNS.
-                </div>
-            </div>
-
-            <div class="question-block">
-                <div class="question-number">Pregunta 35</div>
-                <div class="question-text">
-                    ¿Qué comando NAT se requiere para permitir que el tráfico de retorno de Internet sea redirigido al host interno correcto cuando se usa PAT?
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q35" value="a" id="q35a">
-                        <label for="q35a">ip nat inside source static</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q35" value="b" id="q35b">
-                        <label for="q35b">No se requiere comando adicional; PAT usa la tabla de traducción y puertos.</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q35" value="c" id="q35c">
-                        <label for="q35c">ip nat outside source pool</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q35" value="d" id="q35d">
-                        <label for="q35d">ip nat helper-address</label>
-                    </div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta Correcta: B</div>
-                    PAT funciona de forma dinámica. Cuando un host sale, se crea una entrada en la tabla de traducciones con el número de puerto. Al volver, el router consulta esa tabla para saber a qué IP interna entregar el paquete.
-                </div>
-            </div>
-
-            <div class="question-block">
-                <div class="question-number">Pregunta 36</div>
-                <div class="question-text">
-                    ¿Cuál es el estrato (stratum) de un servidor NTP que está conectado directamente a un reloj atómico?
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q36" value="a" id="q36a">
-                        <label for="q36a">Stratum 0</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q36" value="b" id="q36b">
-                        <label for="q36b">Stratum 1</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q36" value="c" id="q36c">
-                        <label for="q36c">Stratum 2</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q36" value="d" id="q36d">
-                        <label for="q36d">Stratum 15</label>
-                    </div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta Correcta: B</div>
-                    El reloj atómico o GPS es **Stratum 0**. El servidor que está conectado directamente a él es **Stratum 1**. A medida que nos alejamos de la fuente, el número de estrato aumenta.
-                </div>
-            </div>
-
-            <div class="question-block">
-                <div class="question-number">Pregunta 37</div>
-                <div class="question-text">
-                    ¿Qué registro DNS se utiliza para mapear un nombre de dominio a una dirección IPv6?
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q37" value="a" id="q37a">
-                        <label for="q37a">Registro A</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q37" value="b" id="q37b">
-                        <label for="q37b">Registro MX</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q37" value="c" id="q37c">
-                        <label for="q37c">Registro AAAA</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q37" value="d" id="q37d">
-                        <label for="q37d">Registro CNAME</label>
-                    </div>
-                </div>
-                <div class="explanation" data-answer="c">
-                    <div class="explanation-title">✓ Respuesta Correcta: C</div>
-                    El registro **AAAA** (Quad-A) es el equivalente de IPv6 al registro A de IPv4.
-                </div>
-            </div>
-
-            <div class="question-block">
-                <div class="question-number">Pregunta 38</div>
-                <div class="question-text">
-                    ¿Cuál es el propósito del comando "ip helper-address" en una interfaz de router?
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q38" value="a" id="q38a">
-                        <label for="q38a">Permitir que el router asigne IPs a otros routers.</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q38" value="b" id="q38b">
-                        <label for="q38b">Reenviar solicitudes de broadcast de clientes DHCP a un servidor en otra subred.</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q38" value="c" id="q38c">
-                        <label for="q38c">Configurar una dirección IP secundaria en la interfaz.</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q38" value="d" id="q38d">
-                        <label for="q38d">Activar NAT dinámico automáticamente.</label>
-                    </div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta Correcta: B</div>
-                    Como los routers no reenvían broadcasts, el **ip helper-address** convierte el broadcast del cliente DHCP en un unicast dirigido al servidor DHCP que está en una red diferente.
-                </div>
-            </div>
-
-            <div class="question-block">
-                <div class="question-number">Pregunta 39</div>
-                <div class="question-text">
-                    Al configurar NAT, ¿qué comando define el pool de direcciones públicas disponibles?
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q39" value="a" id="q39a">
-                        <label for="q39a">ip nat inside source static</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q39" value="b" id="q39b">
-                        <label for="q39b">ip nat pool [nombre] [inicio] [fin] netmask [máscara]</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q39" value="c" id="q39c">
-                        <label for="q39c">ip nat inside destination</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q39" value="d" id="q39d">
-                        <label for="q39d">access-list 1 permit any</label>
-                    </div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta Correcta: B</div>
-                    El comando **ip nat pool** define el conjunto de direcciones globales (públicas) que se usarán para las traducciones dinámicas.
-                </div>
-            </div>
-
-            <div class="question-block">
-                <div class="question-number">Pregunta 40</div>
-                <div class="question-text">
-                    ¿En qué dirección se aplican las ACL para filtrar el tráfico que ingresa al router desde la red local?
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q40" value="a" id="q40a">
-                        <label for="q40a">Outbound (Salida)</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q40" value="b" id="q40b">
-                        <label for="q40b">Inbound (Entrada)</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q40" value="c" id="q40c">
-                        <label for="q40c">Both (Ambas simultáneamente)</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q40" value="d" id="q40d">
-                        <label for="q40d">Forwarding</label>
-                    </div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta Correcta: B</div>
-                    El tráfico que "entra" a la interfaz del router desde una red se filtra con el parámetro **in**. Es la mejor práctica para ACL estándar (colocarlas lo más cerca del origen posible).
-                </div>
-            </div>
-
-            <div class="question-block">
-                <div class="question-number">Pregunta 41</div>
-                <div class="question-text">
-                    ¿Qué sucede si un paquete no coincide con ninguna línea de una ACL configurada?
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q41" value="a" id="q41a">
-                        <label for="q41a">El router lo permite por defecto.</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q41" value="b" id="q41b">
-                        <label for="q41b">El router lo reenvía a la puerta de enlace predeterminada.</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q41" value="c" id="q41c">
-                        <label for="q41c">El paquete se descarta debido al "Implicit Deny" al final de la ACL.</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q41" value="d" id="q41d">
-                        <label for="q41d">El router solicita al administrador una decisión.</label>
-                    </div>
-                </div>
-                <div class="explanation" data-answer="c">
-                    <div class="explanation-title">✓ Respuesta Correcta: C</div>
-                    Todas las ACL de Cisco terminan con un **deny ip any any** invisible. Si no hay una coincidencia previa que permita el tráfico, el paquete será descartado.
-                </div>
-            </div>
-
-            <div class="question-block">
-                <div class="question-number">Pregunta 42</div>
-                <div class="question-text">
-                    En DHCP, ¿qué mensaje envía el cliente para aceptar formalmente una dirección IP ofrecida por el servidor?
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q42" value="a" id="q42a">
-                        <label for="q42a">DHCP Discover</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q42" value="b" id="q42b">
-                        <label for="q42b">DHCP Offer</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q42" value="c" id="q42c">
-                        <label for="q42c">DHCP Request</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q42" value="d" id="q42d">
-                        <label for="q42d">DHCP Ack</label>
-                    </div>
-                </div>
-                <div class="explanation" data-answer="c">
-                    <div class="explanation-title">✓ Respuesta Correcta: C</div>
-                    El proceso DORA es: Discover (Cliente), Offer (Servidor), **Request** (Cliente acepta), Ack (Servidor confirma).
-                </div>
-            </div>
-
-            <div class="question-block">
-                <div class="question-number">Pregunta 43</div>
-                <div class="question-text">
-                    ¿Qué comando verifica las traducciones activas de NAT en un router?
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q43" value="a" id="q43a">
-                        <label for="q43a">show ip nat statistics</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q43" value="b" id="q43b">
-                        <label for="q43b">show ip nat translations</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q43" value="c" id="q43c">
-                        <label for="q43c">show running-config</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q43" value="d" id="q43d">
-                        <label for="q43d">debug ip nat</label>
-                    </div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta Correcta: B</div>
-                    Este comando muestra la tabla dinámica con las direcciones Inside Local, Inside Global, Outside Local y Outside Global.
-                </div>
-            </div>
-
-            <div class="question-block">
-                <div class="question-number">Pregunta 44</div>
-                <div class="question-text">
-                    ¿Cuál es la Wildcard Mask equivalente para una máscara de subred /28 (255.255.255.240)?
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q44" value="a" id="q44a">
-                        <label for="q44a">0.0.0.255</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q44" value="b" id="q44b">
-                        <label for="q44b">0.0.0.15</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q44" value="c" id="q44c">
-                        <label for="q44c">0.0.0.31</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q44" value="d" id="q44d">
-                        <label for="q44d">0.0.0.7</label>
-                    </div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta Correcta: B</div>
-                    Para calcular la Wildcard, restamos cada octeto de 255: (255-255).(255-255).(255-255).(255-240) = **0.0.0.15**.
-                </div>
-            </div>
-
-            <div class="question-block">
-                <div class="question-number">Pregunta 45</div>
-                <div class="question-text">
-                    ¿Qué comando permite a un router sincronizar su hora con un servidor NTP externo?
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q45" value="a" id="q45a">
-                        <label for="q45a">ntp master 1</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q45" value="b" id="q45b">
-                        <label for="q45b">clock set 12:00:00</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q45" value="c" id="q45c">
-                        <label for="q45c">ntp server [IP_del_servidor]</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q45" value="d" id="q45d">
-                        <label for="q45d">service ntp enable</label>
-                    </div>
-                </div>
-                <div class="explanation" data-answer="c">
-                    <div class="explanation-title">✓ Respuesta Correcta: C</div>
-                    El comando **ntp server** pone al router en modo cliente para recibir la hora de una fuente externa confiable.
-                </div>
-            </div>
-
-            <div class="question-block">
-                <div class="question-number">Pregunta 46</div>
-                <div class="question-text">
-                    ¿Qué puerto utiliza Syslog por defecto para enviar sus logs a un servidor externo?
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q46" value="a" id="q46a">
-                        <label for="q46a">TCP 514</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q46" value="b" id="q46b">
-                        <label for="q46b">UDP 514</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q46" value="c" id="q46c">
-                        <label for="q46c">UDP 161</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q46" value="d" id="q46d">
-                        <label for="q46d">TCP 23</label>
-                    </div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta Correcta: B</div>
-                    Syslog utiliza tradicionalmente el puerto **UDP 514** para el envío de mensajes a colectores de logs.
-                </div>
-            </div>
-
-            <div class="question-block">
-                <div class="question-number">Pregunta 47</div>
-                <div class="question-text">
-                    ¿Cuál es la principal diferencia entre una ACL Estándar y una ACL Extendida?
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q47" value="a" id="q47a">
-                        <label for="q47a">La estándar puede filtrar por puerto TCP.</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q47" value="b" id="q47b">
-                        <label for="q47b">La extendida solo permite direcciones de destino.</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q47" value="c" id="q47c">
-                        <label for="q47c">La extendida puede filtrar por origen, destino, protocolo y puerto.</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q47" value="d" id="q47d">
-                        <label for="q47d">No hay diferencia, son nombres antiguos.</label>
-                    </div>
-                </div>
-                <div class="explanation" data-answer="c">
-                    <div class="explanation-title">✓ Respuesta Correcta: C</div>
-                    Las ACL **estándar** solo ven la IP de origen. Las **extendidas** son mucho más granulares y permiten filtrar basándose en IP origen/destino y puertos de capa 4.
-                </div>
-            </div>
-
-            <div class="question-block">
-                <div class="question-number">Pregunta 48</div>
-                <div class="question-text">
-                    ¿Qué comando NAT se usaría para "mapear" permanentemente un servidor web interno (192.168.1.50) a una IP pública (200.1.1.5)?
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q48" value="a" id="q48a">
-                        <label for="q48a">ip nat pool WEBSERVER 200.1.1.5 200.1.1.5 netmask 255.255.255.252</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q48" value="b" id="q48b">
-                        <label for="q48b">ip nat inside source static 192.168.1.50 200.1.1.5</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q48" value="c" id="q48c">
-                        <label for="q48c">ip nat outside static 200.1.1.5 192.168.1.50</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q48" value="d" id="q48d">
-                        <label for="q48d">ip nat inside source dynamic 192.168.1.50 interface FastEthernet0/0</label>
-                    </div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta Correcta: B</div>
-                    Se requiere **Static NAT** para servidores internos que necesitan ser accesibles desde fuera. La sintaxis es: `ip nat inside source static [IP_interna] [IP_externa]`.
-                </div>
-            </div>
-
-            <div class="question-block">
-                <div class="question-number">Pregunta 49</div>
-                <div class="question-text">
-                    ¿En una ACL extendida, para qué sirve la palabra clave "established"?
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q49" value="a" id="q49a">
-                        <label for="q49a">Para permitir solo tráfico UDP.</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q49" value="b" id="q49b">
-                        <label for="q49b">Para permitir el tráfico TCP que es respuesta a una sesión ya iniciada internamente (bit ACK o RST activo).</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q49" value="c" id="q49c">
-                        <label for="q49c">Para bloquear todas las conexiones nuevas.</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q49" value="d" id="q49d">
-                        <label for="q49d">Para establecer una prioridad alta en el tráfico.</label>
-                    </div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta Correcta: B</div>
-                    La palabra clave **established** filtra segmentos TCP que forman parte de una sesión existente (evita que atacantes inicien sesiones desde fuera hacia dentro).
-                </div>
-            </div>
-
-            <div class="question-block">
-                <div class="question-number">Pregunta 50</div>
-                <div class="question-text">
-                    Al configurar DHCP en un router, ¿qué comando define la puerta de enlace que recibirán los clientes?
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q50" value="a" id="q50a">
-                        <label for="q50a">ip default-gateway [IP]</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q50" value="b" id="q50b">
-                        <label for="q50b">default-router [IP]</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q50" value="c" id="q50c">
-                        <label for="q50c">gateway-address [IP]</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q50" value="d" id="q50d">
-                        <label for="q50d">option 3 ip [IP]</label>
-                    </div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta Correcta: B</div>
-                    Dentro del modo de configuración `ip dhcp pool`, el comando para especificar el Gateway es **default-router**.
-                </div>
-            </div>
-
-            <button type="button" class="submit-btn" onclick="gradeExam()">Calificar Examen</button>
-        </form>
-
-        <div class="results" id="results">
-            <h2 style="color: #00d4aa; font-family: 'Orbitron', monospace;">Resultados</h2>
-            <div class="score" id="score">0%</div>
-            <p class="results-text" id="resultsText"></p>
-        </div>
+  <div id="quiz-container">
     </div>
 
-    <script src="../assets/main.js"></script>
-    <script>
-        function gradeExam() {
-            const form = document.getElementById('examForm');
-            const questions = form.querySelectorAll('.question-block');
-            let correct = 0;
-            const total = 30;
+  <div class="ex-result" id="exResult">
+    <div class="ex-result-pct" id="resPct">0%</div>
+    <div class="ex-result-label" id="resMsg">Puntuación Final</div>
+    <p class="ex-sub" id="resDesc"></p>
+    <button class="ex-score-btn" style="margin: 0 auto; display: block;" onclick="resetEx()">Intentar de nuevo</button>
+  </div>
+</div>
 
-            questions.forEach((question, index) => {
-                const explanation = question.querySelector('.explanation');
-                const correctAnswer = explanation.dataset.answer.split(',');
-                const options = question.querySelectorAll('.option');
-                
-                const isCheckbox = question.querySelector('input[type="checkbox"]') !== null;
-                
-                if (isCheckbox) {
-                    const selected = Array.from(question.querySelectorAll('input:checked')).map(inp => inp.value);
-                    const isCorrect = correctAnswer.length === selected.length && 
-                                    correctAnswer.every(ans => selected.includes(ans));
-                    
-                    if (isCorrect) correct++;
-                    
-                    options.forEach(opt => {
-                        const input = opt.querySelector('input');
-                        if (correctAnswer.includes(input.value)) {
-                            opt.classList.add('correct');
-                        } else if (input.checked) {
-                            opt.classList.add('incorrect');
-                        }
-                    });
-                } else {
-                    const selected = question.querySelector('input:checked');
-                    
-                    if (selected && selected.value === correctAnswer[0]) {
-                        correct++;
-                    }
-                    
-                    options.forEach(opt => {
-                        const input = opt.querySelector('input');
-                        if (input.value === correctAnswer[0]) {
-                            opt.classList.add('correct');
-                        } else if (input.checked) {
-                            opt.classList.add('incorrect');
-                        }
-                    });
-                }
-                
-                explanation.classList.add('show');
-            });
+<script>
+const questions = [
+  {
+    q: "¿Cuál es el orden correcto de los mensajes en el proceso de asignación de direcciones DHCPv4?",
+    opts: ["DORA (Discover, Offer, Request, Acknowledgment)", "RODA (Request, Offer, Discover, Acknowledgment)", "DOAR (Discover, Offer, Acknowledgment, Request)", "ORAD (Offer, Request, Acknowledgment, Discover)"],
+    cor: 0,
+    exp: "El proceso se conoce como <strong>DORA</strong>: El cliente envía un Discover, el servidor responde con una Offer, el cliente envía un Request y el servidor finaliza con un Acknowledgment."
+  },
+  {
+    q: "¿Qué comando se utiliza en una interfaz de router para permitir que los mensajes DHCP lleguen a un servidor en una subred diferente?",
+    opts: ["ip address dhcp", "ip helper-address [IP_del_servidor]", "dhcp relay enable", "ip forward-protocol dhcp"],
+    cor: 1,
+    exp: "El comando <strong>ip helper-address</strong> reenvía los broadcasts de DHCP como unicast hacia el servidor especificado."
+  },
+  {
+    q: "¿Cuál es la función principal de NAT?",
+    opts: ["Cifrar el tráfico de red", "Traducir direcciones IP privadas en direcciones IP públicas", "Asignar nombres de dominio a direcciones IP", "Filtrar el tráfico malicioso"],
+    cor: 1,
+    exp: "NAT (Network Address Translation) permite que múltiples dispositivos con IPs privadas compartan una o pocas IPs públicas para salir a Internet."
+  },
+  {
+    q: "¿Qué tipo de NAT mapea una dirección IP privada a una sola dirección IP pública específica?",
+    opts: ["NAT Dinámico", "PAT (Overload)", "NAT Estático", "NAT de Puerto"],
+    cor: 2,
+    exp: "El <strong>NAT Estático</strong> crea un mapeo uno a uno (1:1) permanente entre una IP interna y una externa."
+  },
+  {
+    q: "En la terminología de NAT, ¿qué dirección representa al dispositivo interno tal como se ve desde la red interna?",
+    opts: ["Inside Global", "Inside Local", "Outside Local", "Outside Global"],
+    cor: 1,
+    exp: "<strong>Inside Local</strong> es la IP real asignada al host en la red privada (típicamente 192.168.x.x)."
+  },
+  {
+    q: "¿Qué permite PAT (Port Address Translation) para ahorrar direcciones IP públicas?",
+    opts: ["Usa números de puerto únicos para distinguir las conexiones", "Asigna una IP pública a cada host de forma temporal", "Solo permite tráfico web (puerto 80)", "Divide la red en subredes más pequeñas"],
+    cor: 0,
+    exp: "<strong>PAT</strong> (o NAT Overload) usa los números de puerto de la capa de transporte para que cientos de hosts compartan una sola IP pública."
+  },
+  {
+    q: "¿Cuál es el rango de números para una ACL estándar de IPv4 en Cisco IOS?",
+    opts: ["100-199", "1-99", "1000-1999", "80-80"],
+    cor: 1,
+    exp: "Las ACLs estándar usan los rangos <strong>1-99</strong> y <strong>1300-1999</strong>."
+  },
+  {
+    q: "¿Dónde se recomienda colocar una ACL Estándar?",
+    opts: ["Lo más cerca posible del origen", "Lo más cerca posible del destino", "En el ISP solamente", "En todas las interfaces del router"],
+    cor: 1,
+    exp: "Debido a que las ACL estándar solo filtran por origen, deben colocarse <strong>lo más cerca posible del destino</strong> para no bloquear tráfico legítimo hacia otros lugares."
+  },
+  {
+    q: "¿Qué sucede al final de cada ACL de Cisco por defecto?",
+    opts: ["Permit any implicito", "Deny any implicito", "No ocurre nada", "El router se reinicia"],
+    cor: 1,
+    exp: "Existe un <strong>Deny Any implícito</strong> al final de todas las ACL. Si el tráfico no coincide con ninguna línea, se descarta."
+  },
+  {
+    q: "¿Cuál es la Wildcard Mask correcta para una subred con máscara 255.255.255.240?",
+    opts: ["0.0.0.15", "0.0.0.240", "255.255.255.255", "0.0.0.31"],
+    cor: 0,
+    exp: "La wildcard es la inversa: 255 - 240 = <strong>15</strong>. Por lo tanto, 0.0.0.15."
+  }
+];
 
-            const percentage = Math.round((correct / total) * 100);
-            document.getElementById('score').textContent = percentage + '%';
-            
-            let message = '';
-            if (percentage >= 90) {
-                message = `¡Excelente! (${correct}/${total}) - Dominas los servicios IP fundamentales.`;
-            } else if (percentage >= 75) {
-                message = `¡Muy bien! (${correct}/${total}) - Buen conocimiento de DHCP, NAT y ACL.`;
-            } else if (percentage >= 60) {
-                message = `Aprobado (${correct}/${total}) - Revisa sintaxis de ACL y opciones DHCP.`;
-            } else {
-                message = `Necesitas repasar (${correct}/${total}) - Estudia DORA, NAT vs PAT, ACL estándar vs extendida.`;
-            }
-            
-            document.getElementById('resultsText').textContent = message;
-            document.getElementById('results').classList.add('show');
-            
-            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
-        }
-    </script>
+let sc = 0, an = 0, tot = questions.length;
+
+function init() {
+  const container = document.getElementById('quiz-container');
+  questions.forEach((q, i) => {
+    const qDiv = document.createElement('div');
+    qDiv.className = 'ex-q';
+    qDiv.id = `q${i}`;
+    qDiv.innerHTML = `
+      <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA ${i+1} DE ${tot}</span><span class="ex-qtype">CONCEPTO</span></div>
+      <div class="ex-qtext">${q.q}</div>
+      <div class="ex-opts">
+        ${q.opts.map((opt, oi) => `<button class="ex-opt" onclick="ansQ(${i},${oi})">${opt}</button>`).join('')}
+      </div>
+    `;
+    container.appendChild(qDiv);
+  });
+}
+
+function ansQ(qi, sel) {
+  const q = questions[qi];
+  const d = document.getElementById(`q${qi}`);
+  if(d.classList.contains('answered')) return;
+
+  const btns = d.querySelectorAll('.ex-opt');
+  btns.forEach((b, i) => {
+    b.disabled = true;
+    if(i === q.cor) b.classList.add('correct');
+    else if(i === sel) b.classList.add('wrong');
+  });
+
+  const exp = document.createElement('div');
+  exp.className = 'ex-exp';
+  exp.innerHTML = `<strong>${sel === q.cor ? '✅ Correcto!' : '❌ Incorrecto.'}</strong> ${q.exp}`;
+  d.appendChild(exp);
+  d.classList.add('answered');
+
+  if(sel === q.cor) sc++;
+  an++;
+  updScore();
+  if(an >= tot) showRes();
+}
+
+function updScore() {
+  const p = Math.round((sc/tot)*100);
+  document.getElementById('snum').textContent = `${sc}/${tot}`;
+  document.getElementById('sfill').style.width = `${(an/tot)*100}%`;
+  document.getElementById('slbl').textContent = `${an} respondidas · ${p}% correcto`;
+}
+
+function showRes() {
+  const p = Math.round((sc/tot)*100);
+  document.getElementById('exResult').style.display = 'block';
+  document.getElementById('resPct').textContent = `${p}%`;
+  document.getElementById('resDesc').textContent = p >= 70 ? "¡Excelente! Tienes un buen dominio de los servicios IP." : "Sigue practicando, los servicios IP y las ACLs son fundamentales para el CCNA.";
+  document.getElementById('exResult').scrollIntoView({behavior:'smooth'});
+}
+
+function resetEx() {
+  location.reload(); // Forma más limpia de resetear el estado dinámico
+}
+
+init();
+</script>
 </body>
 </html>
