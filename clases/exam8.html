@@ -1,904 +1,482 @@
+Aquí tienes el archivo `exam8.html` con la estructura, estilos y funcionalidad interactiva de `exam5.html` (sistema de respuestas inmediatas, barra de puntuación dinámica, diseño cyber-oscuro) pero con el contenido completo de las 50 preguntas de IPv6, WAN y QoS de tu archivo original.
+
+```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Examen 8: IPv6, WAN & QoS | CCNA Academy</title>
-    <link rel="stylesheet" href="../assets/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
-    <style>
-        .exam-container { max-width: 900px; margin: 80px auto 40px; padding: 30px; background: rgba(255,255,255,0.03); border: 1px solid rgba(0,212,170,0.2); border-radius: 8px; }
-        .exam-header { text-align: center; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 2px solid #00d4aa; }
-        .exam-header h1 { font-family: 'Orbitron', monospace; color: #00d4aa; font-size: 2.2em; margin-bottom: 10px; }
-        .exam-info { display: flex; justify-content: center; gap: 30px; margin-top: 15px; font-family: 'Share Tech Mono', monospace; color: #aaa; }
-        .question-block { background: rgba(0,0,0,0.3); padding: 25px; margin-bottom: 25px; border-left: 4px solid #00d4aa; border-radius: 6px; }
-        .question-number { font-family: 'Orbitron', monospace; color: #00d4aa; font-weight: 700; margin-bottom: 12px; font-size: 1.1em; }
-        .question-text { font-family: 'Exo 2', sans-serif; color: #fff; font-size: 1.1em; line-height: 1.6; margin-bottom: 20px; }
-        .options { display: flex; flex-direction: column; gap: 12px; }
-        .option { display: flex; align-items: flex-start; padding: 15px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; cursor: pointer; transition: all 0.3s; }
-        .option:hover { background: rgba(0,212,170,0.1); border-color: #00d4aa; }
-        .option input { margin-right: 12px; margin-top: 3px; cursor: pointer; accent-color: #00d4aa; }
-        .option label { cursor: pointer; flex: 1; color: #ddd; }
-        .option.correct { background: rgba(0,212,170,0.15); border-color: #00d4aa; }
-        .option.incorrect { background: rgba(255,68,68,0.15); border-color: #ff4444; }
-        .explanation { display: none; margin-top: 20px; padding: 20px; background: rgba(0,212,170,0.1); border-left: 4px solid #00d4aa; border-radius: 6px; color: #ddd; line-height: 1.6; }
-        .explanation.show { display: block; }
-        .explanation-title { color: #00d4aa; font-weight: 600; margin-bottom: 10px; font-family: 'Orbitron', monospace; }
-        .submit-btn { display: block; width: 100%; max-width: 300px; margin: 40px auto; padding: 15px 30px; background: linear-gradient(135deg, #00d4aa, #00a885); color: #000; border: none; border-radius: 6px; font-family: 'Orbitron', monospace; font-size: 1.1em; font-weight: 700; cursor: pointer; transition: all 0.3s; }
-        .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(0,212,170,0.4); }
-        .results { display: none; text-align: center; padding: 30px; background: rgba(0,212,170,0.1); border: 2px solid #00d4aa; border-radius: 8px; margin: 30px 0; }
-        .results.show { display: block; }
-        .score { font-family: 'Orbitron', monospace; font-size: 3em; color: #00d4aa; margin: 20px 0; }
-        code { background: rgba(0,0,0,0.5); padding: 2px 6px; border-radius: 3px; color: #00d4aa; font-family: 'Share Tech Mono', monospace; }
-    </style>
-</head>
-<body>
-<!-- ═══════════ NAVBAR Y DRAWER ESTILIZADO (igual que exam5) ═══════════ -->
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Examen 08: IPv6, WAN & QoS | CCNA Academy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head><body>
 <div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
 <nav class="ccna-drawer" id="ccnaDrawer">
   <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
   <div class="drawer-section"><div class="drawer-section-title">General</div>
     <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
   <div class="drawer-section"><div class="drawer-section-title">M1 · Fundamentos</div>
-    <a href="fundamentos.html"       class="drawer-link "><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
-    <a href="subnetting.html"        class="drawer-link "><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
-    <a href="ipv6.html"              class="drawer-link "><span class="dl-icon">6️⃣</span> IPv6</a>
-    <a href="arp.html"               class="drawer-link "><span class="dl-icon">📡</span> ARP</a>
-    <a href="rip.html"               class="drawer-link "><span class="dl-icon">🔄</span> RIP</a>
-    <a href="protocolos-internet.html" class="drawer-link "><span class="dl-icon">🌍</span> Protocolos Internet</a></div>
-  <div class="drawer-section"><div class="drawer-section-title">M2 · Dispositivos Cisco</div>
-    <a href="router.html"            class="drawer-link "><span class="dl-icon">📡</span> Routers Cisco</a>
-    <a href="switches-cisco.html"    class="drawer-link "><span class="dl-icon">🔀</span> Switches Cisco</a></div>
-  <div class="drawer-section"><div class="drawer-section-title">M3 · Switching</div>
-    <a href="vlan.html"              class="drawer-link "><span class="dl-icon">🏷️</span> VLANs</a>
-    <a href="inter-vlan-routing.html" class="drawer-link "><span class="dl-icon">🔁</span> Inter-VLAN Routing</a>
-    <a href="stp.html"               class="drawer-link "><span class="dl-icon">🌳</span> STP</a>
-    <a href="etherchannel.html"      class="drawer-link "><span class="dl-icon">🔗</span> EtherChannel</a>
-    <a href="port-security.html"     class="drawer-link "><span class="dl-icon">🔒</span> Port Security</a>
-    <a href="cdp-lldp.html"          class="drawer-link "><span class="dl-icon">🔍</span> CDP / LLDP</a></div>
+    <a href="fundamentos.html" class="drawer-link"><span class="dl-icon">🌐</span> Fundamentos</a>
+    <a href="subnetting.html" class="drawer-link"><span class="dl-icon">🔢</span> Subnetting</a>
+    <a href="ipv6.html" class="drawer-link"><span class="dl-icon">6️⃣</span> IPv6</a>
+    <a href="arp.html" class="drawer-link"><span class="dl-icon">📡</span> ARP</a>
+    <a href="rip.html" class="drawer-link"><span class="dl-icon">🔄</span> RIP</a>
+    <a href="protocolos-internet.html" class="drawer-link"><span class="dl-icon">🌍</span> Protocolos Internet</a></div>
   <div class="drawer-section"><div class="drawer-section-title">M4 · Routing</div>
-    <a href="routing.html"           class="drawer-link "><span class="dl-icon">🗺️</span> Routing Estático</a>
-    <a href="ospf.html"              class="drawer-link "><span class="dl-icon">⭕</span> OSPF</a>
-    <a href="eigrp.html"             class="drawer-link "><span class="dl-icon">⚡</span> EIGRP</a>
-    <a href="ospfv2.html"            class="drawer-link "><span class="dl-icon">🎯</span> OSPFv2 Masterclass</a></div>
-  <div class="drawer-section"><div class="drawer-section-title">M5 · Servicios IP</div>
-    <a href="dhcp.html"              class="drawer-link "><span class="dl-icon">📋</span> DHCP</a>
-    <a href="nat.html"               class="drawer-link "><span class="dl-icon">🔄</span> NAT / PAT</a></div>
-  <div class="drawer-section"><div class="drawer-section-title">M6 · Seguridad</div>
-    <a href="acl.html"               class="drawer-link "><span class="dl-icon">🛡️</span> ACLs</a></div>
-  <div class="drawer-section"><div class="drawer-section-title">M7 · WAN &amp; QoS</div>
-    <a href="wan.html"               class="drawer-link "><span class="dl-icon">🌍</span> WAN</a>
-    <a href="qos.html"               class="drawer-link "><span class="dl-icon">📊</span> QoS</a></div>
+    <a href="ospf.html" class="drawer-link"><span class="dl-icon">⭕</span> OSPF</a>
+    <a href="eigrp.html" class="drawer-link"><span class="dl-icon">⚡</span> EIGRP</a>
+    <a href="ospfv2-masterclass.html" class="drawer-link"><span class="dl-icon">🎯</span> OSPFv2 Masterclass</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M7 · WAN & QoS</div>
+    <a href="wan.html" class="drawer-link"><span class="dl-icon">🌍</span> WAN</a>
+    <a href="qos.html" class="drawer-link"><span class="dl-icon">📊</span> QoS</a></div>
   <div class="drawer-section"><div class="drawer-section-title">⚡ Herramientas</div>
-    <a href="asistente.html"         class="drawer-link "><span class="dl-icon">🤖</span> Asistente IA</a>
-    <a href="netbot.html"            class="drawer-link "><span class="dl-icon">⚙️</span> NetBot Config</a>
-    <a href="calculadora.html"       class="drawer-link "><span class="dl-icon">🧮</span> Calculadora IP</a>
-    <a href="../banco-preguntas.html" class="drawer-link active"><span class="dl-icon">📝</span> Banco de Preguntas</a></div>
+    <a href="asistente.html" class="drawer-link"><span class="dl-icon">🤖</span> Asistente IA</a>
+    <a href="netbot.html" class="drawer-link"><span class="dl-icon">⚙️</span> NetBot Config</a>
+    <a href="../banco-preguntas.html" class="drawer-link"><span class="dl-icon">📝</span> Banco de Preguntas</a>
 </nav>
 <header class="navbar">
   <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
   <a href="../index.html" class="navbar-brand">CISCO<span> ACADEMY</span></a>
   <div class="navbar-spacer"></div>
-  <a href="../banco-preguntas.html" class="navbar-link">← Banco Preguntas</a>
+  <a href="../banco-preguntas.html" class="navbar-link">← Banco</a>
 </header>
 <script src="../assets/main.js" defer></script>
 <div class="nav-spacer"></div>
 
-    <div class="exam-container">
-        <div class="exam-header">
-            <h1>EXAMEN 8</h1>
-            <p style="color: #aaa; font-size: 1.1em; margin-top: 10px;">IPv6, WAN & QoS</p>
-            <div class="exam-info"><span>⏱️ Sin límite</span><span>📝 30 preguntas</span></div>
-        </div>
+<section class="ex-hero"><div class="ex-hero-inner">
+<div class="ex-badge">BANCO DE PREGUNTAS CCNA 200-301 · EXAMEN 08 DE 10</div>
+<h1 class="ex-title">EXAMEN 08 — <span>IPv6, WAN & QoS</span></h1>
+<p class="ex-sub">Direccionamiento IPv6, formatos de dirección, autoconfiguración SLAAC, NDP, tecnologías WAN (MPLS, Metro Ethernet, PPP, Frame Relay), VPNs (GRE, DMVPN), y calidad de servicio (DiffServ, IntServ, Shaping, Policing, WRED, DSCP).</p>
+<div class="ex-meta">
+<span class="ex-meta-item">📋 50 preguntas</span>
+<span class="ex-meta-item">🎯 IPv6 · WAN · MPLS · QoS · VPN</span>
+<span class="ex-meta-item">📅 Mar 2026</span>
+<span class="ex-meta-item">⚡ Nivel Avanzado</span>
+</div></div></section>
 
-        <form id="examForm">
-            <div class="question-block">
-                <div class="question-number">Pregunta 1</div>
-                <div class="question-text">¿Cuál es el prefijo de una dirección IPv6 Link-Local?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q1" value="a" id="q1a"><label for="q1a">2001::/16</label></div>
-                    <div class="option"><input type="radio" name="q1" value="b" id="q1b"><label for="q1b">FE80::/10</label></div>
-                    <div class="option"><input type="radio" name="q1" value="c" id="q1c"><label for="q1c">FF00::/8</label></div>
-                    <div class="option"><input type="radio" name="q1" value="d" id="q1d"><label for="q1d">FC00::/7</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    <strong>FE80::/10</strong> son Link-Local (no enrutables, auto-generadas). 2001::/16=GUA, FC00::/7=ULA, FF00::/8=Multicast.
-                </div>
-            </div>
+<style>
+body{font-family:"Exo 2",sans-serif;background:#07090f;color:#e2e8f0;}
+.ex-hero{background:linear-gradient(135deg,#06080f,#0c1020 60%,#0e1428);padding:44px 24px 36px;border-bottom:1px solid rgba(251,191,36,.12);position:relative;overflow:hidden;}
+.ex-hero::before{content:"";position:absolute;top:-80px;right:-80px;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(251,191,36,.05) 0%,transparent 70%);pointer-events:none;}
+.ex-hero-inner{max-width:860px;margin:0 auto;position:relative;z-index:1;}
+.ex-badge{font-family:"Share Tech Mono",monospace;font-size:.62rem;color:#fbbf24;letter-spacing:3px;text-transform:uppercase;margin-bottom:12px;}
+.ex-title{font-family:"Orbitron",sans-serif;font-size:clamp(1.5rem,4vw,2.4rem);font-weight:900;letter-spacing:3px;color:#c2d0e8;margin-bottom:8px;line-height:1.1;}
+.ex-title span{background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.ex-sub{font-size:.9rem;color:#6b7a9a;line-height:1.65;margin-bottom:18px;max-width:680px;}
+.ex-meta{display:flex;gap:12px;flex-wrap:wrap;}
+.ex-meta-item{font-family:"Share Tech Mono",monospace;font-size:.68rem;color:#374060;padding:4px 10px;border:1px solid rgba(251,191,36,.1);border-radius:4px;}
+.ex-wrap{max-width:940px;margin:0 auto;padding:28px 20px 60px;}
+.ex-score-bar{background:#090d1a;border:1px solid rgba(251,191,36,.15);border-radius:12px;padding:16px 22px;margin-bottom:24px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;}
+.ex-score-num{font-family:"Orbitron",sans-serif;font-size:1.8rem;font-weight:900;background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;min-width:56px;}
+.ex-score-track{flex:1;height:7px;background:#0d1220;border-radius:4px;overflow:hidden;min-width:100px;}
+.ex-score-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#fbbf24,#f59e0b);transition:width .5s ease;width:0%;}
+.ex-score-label{font-family:"Share Tech Mono",monospace;font-size:.68rem;color:#4a5780;white-space:nowrap;}
+.ex-score-btn{padding:7px 16px;background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.25);border-radius:7px;color:#fbbf24;font-family:"Share Tech Mono",monospace;font-size:.68rem;cursor:pointer;margin-left:auto;}
+.ex-q{background:#0d1220;border:1px solid rgba(255,255,255,.05);border-radius:12px;padding:20px;margin-bottom:16px;}
+.ex-q.answered{border-color:rgba(251,191,36,.08);}
+.ex-qmeta{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.ex-qnum{font-family:"Share Tech Mono",monospace;font-size:.6rem;color:#374060;letter-spacing:2px;}
+.ex-qtype{font-family:"Share Tech Mono",monospace;font-size:.58rem;padding:2px 8px;border-radius:3px;}
+.ex-qtype.cli{background:rgba(0,212,170,.08);border:1px solid rgba(0,212,170,.2);color:#00d4aa;}
+.ex-qtype.concept{background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.2);color:#38bdf8;}
+.ex-qtype.trouble{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.2);color:#f87171;}
+.ex-qtext{font-size:.9rem;color:#c2d0e8;line-height:1.65;margin-bottom:14px;}
+.ex-qtext code,.ex-exp code{font-family:"Share Tech Mono",monospace;font-size:.8rem;background:rgba(0,212,170,.08);color:#00d4aa;padding:1px 5px;border-radius:4px;border:1px solid rgba(0,212,170,.15);}
+.ex-opts{display:flex;flex-direction:column;gap:7px;}
+.ex-opt{padding:10px 14px;border-radius:8px;border:1px solid rgba(255,255,255,.06);background:#090d1a;color:#6b7a9a;cursor:pointer;font-size:.86rem;text-align:left;transition:all .15s;line-height:1.5;}
+.ex-opt:hover:not(:disabled){border-color:rgba(251,191,36,.3);color:#c2d0e8;background:rgba(251,191,36,.04);}
+.ex-opt.correct{border-color:#34d399;background:rgba(52,211,153,.08);color:#34d399;}
+.ex-opt.wrong{border-color:#f87171;background:rgba(248,113,113,.08);color:#f87171;}
+.ex-exp{margin-top:12px;padding:12px 16px;background:rgba(251,191,36,.04);border-left:3px solid #fbbf24;border-radius:6px;font-size:.83rem;color:#a0aec0;line-height:1.65;}
+.ex-exp strong{color:#c2d0e8;}
+.ex-result{background:linear-gradient(135deg,rgba(251,191,36,.08),rgba(245,158,11,.04));border:1px solid rgba(251,191,36,.2);border-radius:16px;padding:32px;text-align:center;margin-top:32px;display:none;}
+.ex-result-pct{font-family:"Orbitron",sans-serif;font-size:3rem;font-weight:900;background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px;}
+.ex-result-label{font-family:"Share Tech Mono",monospace;font-size:.9rem;color:#c2d0e8;margin-bottom:6px;}
+.ex-result-sub{font-size:.82rem;color:#6b7a9a;margin-bottom:16px;}
+.ex-nav{display:flex;align-items:center;justify-content:space-between;margin-top:28px;flex-wrap:wrap;gap:12px;}
+.ex-nav a{padding:10px 22px;border-radius:8px;font-family:"Share Tech Mono",monospace;font-size:.72rem;text-decoration:none;display:inline-block;transition:all .18s;}
+.ex-nav-prev{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:#4a5780;}
+.ex-nav-prev:hover{color:#c2d0e8;}
+.ex-nav-next{background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);color:#fbbf24;}
+.ex-nav-next:hover{background:rgba(251,191,36,.2);}
+@media(max-width:680px){.ex-opt{font-size:.8rem;}.ex-qtext{font-size:.86rem;}}
+</style>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 2</div>
-                <div class="question-text">¿Qué protocolo reemplaza ARP en IPv6?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q2" value="a" id="q2a"><label for="q2a">ICMPv6 NDP (Neighbor Discovery)</label></div>
-                    <div class="option"><input type="radio" name="q2" value="b" id="q2b"><label for="q2b">DHCPv6</label></div>
-                    <div class="option"><input type="radio" name="q2" value="c" id="q2c"><label for="q2c">SLAAC</label></div>
-                    <div class="option"><input type="radio" name="q2" value="d" id="q2d"><label for="q2d">ARPv6</label></div>
-                </div>
-                <div class="explanation" data-answer="a">
-                    <div class="explanation-title">✓ Respuesta: A</div>
-                    <strong>NDP</strong> (ICMPv6 tipos 133-137) reemplaza ARP. Usa NS (Neighbor Solicitation) y NA (Neighbor Advertisement) para resolver IPv6→MAC.
-                </div>
-            </div>
+<div class="ex-wrap">
+<div class="ex-score-bar">
+<div class="ex-score-num" id="snum">0/50</div>
+<div class="ex-score-track"><div class="ex-score-fill" id="sfill"></div></div>
+<div class="ex-score-label" id="slbl">0 respondidas · 0% correcto</div>
+<button class="ex-score-btn" onclick="resetEx()">🔄 Reiniciar</button>
+</div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 3</div>
-                <div class="question-text">¿Qué tecnología WAN usa células de 53 bytes?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q3" value="a" id="q3a"><label for="q3a">Frame Relay</label></div>
-                    <div class="option"><input type="radio" name="q3" value="b" id="q3b"><label for="q3b">ATM (Asynchronous Transfer Mode)</label></div>
-                    <div class="option"><input type="radio" name="q3" value="c" id="q3c"><label for="q3c">MPLS</label></div>
-                    <div class="option"><input type="radio" name="q3" value="d" id="q3d"><label for="q3d">Metro Ethernet</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    <strong>ATM</strong> usa células fijas de 53 bytes (5 header + 48 payload). Frame Relay usa frames variables. MPLS usa etiquetas.
-                </div>
-            </div>
+<div class="ex-q" id="q0"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 1 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Cuál es el prefijo de una dirección IPv6 Link-Local?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(0,0,1,`<strong>FE80::/10</strong> son Link-Local (no enrutables, auto-generadas). 2001::/16=GUA, FC00::/7=ULA, FF00::/8=Multicast.`)">2001::/16</button>
+<button class="ex-opt" onclick="ansQ(0,1,1,`<strong>FE80::/10</strong> son Link-Local (no enrutables, auto-generadas). 2001::/16=GUA, FC00::/7=ULA, FF00::/8=Multicast.`)">FE80::/10</button>
+<button class="ex-opt" onclick="ansQ(0,2,1,`<strong>FE80::/10</strong> son Link-Local (no enrutables, auto-generadas). 2001::/16=GUA, FC00::/7=ULA, FF00::/8=Multicast.`)">FF00::/8</button>
+<button class="ex-opt" onclick="ansQ(0,3,1,`<strong>FE80::/10</strong> son Link-Local (no enrutables, auto-generadas). 2001::/16=GUA, FC00::/7=ULA, FF00::/8=Multicast.`)">FC00::/7</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 4</div>
-                <div class="question-text">¿Qué método de autoconfiguración IPv6 NO requiere DHCPv6?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q4" value="a" id="q4a"><label for="q4a">SLAAC (Stateless Address Autoconfiguration)</label></div>
-                    <div class="option"><input type="radio" name="q4" value="b" id="q4b"><label for="q4b">DHCPv6 Stateful</label></div>
-                    <div class="option"><input type="radio" name="q4" value="c" id="q4c"><label for="q4c">DHCPv6 Stateless</label></div>
-                    <div class="option"><input type="radio" name="q4" value="d" id="q4d"><label for="q4d">Manual</label></div>
-                </div>
-                <div class="explanation" data-answer="a">
-                    <div class="explanation-title">✓ Respuesta: A</div>
-                    <strong>SLAAC</strong> usa RA (Router Advertisement) con prefijo + EUI-64 o privacy extensions. No necesita servidor DHCPv6.
-                </div>
-            </div>
+<div class="ex-q" id="q1"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 2 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué protocolo reemplaza ARP en IPv6?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(1,0,0,`<strong>NDP</strong> (ICMPv6 tipos 133-137) reemplaza ARP. Usa NS (Neighbor Solicitation) y NA (Neighbor Advertisement) para resolver IPv6→MAC.`)">ICMPv6 NDP (Neighbor Discovery)</button>
+<button class="ex-opt" onclick="ansQ(1,1,0,`<strong>NDP</strong> (ICMPv6 tipos 133-137) reemplaza ARP. Usa NS (Neighbor Solicitation) y NA (Neighbor Advertisement) para resolver IPv6→MAC.`)">DHCPv6</button>
+<button class="ex-opt" onclick="ansQ(1,2,0,`<strong>NDP</strong> (ICMPv6 tipos 133-137) reemplaza ARP. Usa NS (Neighbor Solicitation) y NA (Neighbor Advertisement) para resolver IPv6→MAC.`)">SLAAC</button>
+<button class="ex-opt" onclick="ansQ(1,3,0,`<strong>NDP</strong> (ICMPv6 tipos 133-137) reemplaza ARP. Usa NS (Neighbor Solicitation) y NA (Neighbor Advertisement) para resolver IPv6→MAC.`)">ARPv6</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 5</div>
-                <div class="question-text">¿Qué modelo de QoS clasifica y marca tráfico cerca del origen?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q5" value="a" id="q5a"><label for="q5a">Best Effort</label></div>
-                    <div class="option"><input type="radio" name="q5" value="b" id="q5b"><label for="q5a">IntServ (RSVP)</label></div>
-                    <div class="option"><input type="radio" name="q5" value="c" id="q5c"><label for="q5c">DiffServ</label></div>
-                    <div class="option"><input type="radio" name="q5" value="d" id="q5d"><label for="q5d">FIFO</label></div>
-                </div>
-                <div class="explanation" data-answer="c">
-                    <div class="explanation-title">✓ Respuesta: C</div>
-                    <strong>DiffServ</strong> marca paquetes con DSCP (6 bits en ToS/TC), clasificación en edge, forwarding behavior en core. IntServ=reservas per-flow (no escalable).
-                </div>
-            </div>
+<div class="ex-q" id="q2"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 3 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué tecnología WAN usa células de 53 bytes?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(2,0,1,`<strong>ATM</strong> usa células fijas de 53 bytes (5 header + 48 payload). Frame Relay usa frames variables. MPLS usa etiquetas.`)">Frame Relay</button>
+<button class="ex-opt" onclick="ansQ(2,1,1,`<strong>ATM</strong> usa células fijas de 53 bytes (5 header + 48 payload). Frame Relay usa frames variables. MPLS usa etiquetas.`)">ATM (Asynchronous Transfer Mode)</button>
+<button class="ex-opt" onclick="ansQ(2,2,1,`<strong>ATM</strong> usa células fijas de 53 bytes (5 header + 48 payload). Frame Relay usa frames variables. MPLS usa etiquetas.`)">MPLS</button>
+<button class="ex-opt" onclick="ansQ(2,3,1,`<strong>ATM</strong> usa células fijas de 53 bytes (5 header + 48 payload). Frame Relay usa frames variables. MPLS usa etiquetas.`)">Metro Ethernet</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 6</div>
-                <div class="question-text">¿Cuántos bits tiene una dirección IPv6?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q6" value="a" id="q6a"><label for="q6a">32 bits</label></div>
-                    <div class="option"><input type="radio" name="q6" value="b" id="q6b"><label for="q6b">64 bits</label></div>
-                    <div class="option"><input type="radio" name="q6" value="c" id="q6c"><label for="q6c">128 bits</label></div>
-                    <div class="option"><input type="radio" name="q6" value="d" id="q6d"><label for="q6d">256 bits</label></div>
-                </div>
-                <div class="explanation" data-answer="c">
-                    <div class="explanation-title">✓ Respuesta: C</div>
-                    IPv6 = <strong>128 bits</strong> (8 grupos de 16 bits hexadecimales). IPv4 = 32 bits.
-                </div>
-            </div>
+<div class="ex-q" id="q3"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 4 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué método de autoconfiguración IPv6 NO requiere DHCPv6?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(3,0,0,`<strong>SLAAC</strong> usa RA (Router Advertisement) con prefijo + EUI-64 o privacy extensions. No necesita servidor DHCPv6.`)">SLAAC (Stateless Address Autoconfiguration)</button>
+<button class="ex-opt" onclick="ansQ(3,1,0,`<strong>SLAAC</strong> usa RA (Router Advertisement) con prefijo + EUI-64 o privacy extensions. No necesita servidor DHCPv6.`)">DHCPv6 Stateful</button>
+<button class="ex-opt" onclick="ansQ(3,2,0,`<strong>SLAAC</strong> usa RA (Router Advertisement) con prefijo + EUI-64 o privacy extensions. No necesita servidor DHCPv6.`)">DHCPv6 Stateless</button>
+<button class="ex-opt" onclick="ansQ(3,3,0,`<strong>SLAAC</strong> usa RA (Router Advertisement) con prefijo + EUI-64 o privacy extensions. No necesita servidor DHCPv6.`)">Manual</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 7</div>
-                <div class="question-text">¿Qué protocolo WAN usa etiquetas (labels) para conmutar paquetes?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q7" value="a" id="q7a"><label for="q7a">PPP</label></div>
-                    <div class="option"><input type="radio" name="q7" value="b" id="q7b"><label for="q7b">HDLC</label></div>
-                    <div class="option"><input type="radio" name="q7" value="c" id="q7c"><label for="q7c">MPLS</label></div>
-                    <div class="option"><input type="radio" name="q7" value="d" id="q7d"><label for="q7d">GRE</label></div>
-                </div>
-                <div class="explanation" data-answer="c">
-                    <div class="explanation-title">✓ Respuesta: C</div>
-                    <strong>MPLS</strong> (Multiprotocol Label Switching) usa etiquetas de 20 bits para forwarding rápido (label swap en vez de lookup IP).
-                </div>
-            </div>
+<div class="ex-q" id="q4"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 5 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué modelo de QoS clasifica y marca tráfico cerca del origen?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(4,0,2,`<strong>DiffServ</strong> marca paquetes con DSCP (6 bits en ToS/TC), clasificación en edge, forwarding behavior en core. IntServ=reservas per-flow (no escalable).`)">Best Effort</button>
+<button class="ex-opt" onclick="ansQ(4,1,2,`<strong>DiffServ</strong> marca paquetes con DSCP (6 bits en ToS/TC), clasificación en edge, forwarding behavior en core. IntServ=reservas per-flow (no escalable).`)">IntServ (RSVP)</button>
+<button class="ex-opt" onclick="ansQ(4,2,2,`<strong>DiffServ</strong> marca paquetes con DSCP (6 bits en ToS/TC), clasificación en edge, forwarding behavior en core. IntServ=reservas per-flow (no escalable).`)">DiffServ</button>
+<button class="ex-opt" onclick="ansQ(4,3,2,`<strong>DiffServ</strong> marca paquetes con DSCP (6 bits en ToS/TC), clasificación en edge, forwarding behavior en core. IntServ=reservas per-flow (no escalable).`)">FIFO</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 8</div>
-                <div class="question-text">En IPv6, ¿qué dirección multicast alcanza todos los routers en el enlace local?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q8" value="a" id="q8a"><label for="q8a">FF02::1</label></div>
-                    <div class="option"><input type="radio" name="q8" value="b" id="q8b"><label for="q8b">FF02::2</label></div>
-                    <div class="option"><input type="radio" name="q8" value="c" id="q8c"><label for="q8c">FF02::5</label></div>
-                    <div class="option"><input type="radio" name="q8" value="d" id="q8d"><label for="q8d">FF02::A</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    <strong>FF02::2</strong> = All-Routers. FF02::1 = All-Nodes. FF02::5 = OSPFv3. FF02::A = EIGRP.
-                </div>
-            </div>
+<div class="ex-q" id="q5"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 6 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Cuántos bits tiene una dirección IPv6?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(5,0,2,`IPv6 = <strong>128 bits</strong> (8 grupos de 16 bits hexadecimales). IPv4 = 32 bits.`)">32 bits</button>
+<button class="ex-opt" onclick="ansQ(5,1,2,`IPv6 = <strong>128 bits</strong> (8 grupos de 16 bits hexadecimales). IPv4 = 32 bits.`)">64 bits</button>
+<button class="ex-opt" onclick="ansQ(5,2,2,`IPv6 = <strong>128 bits</strong> (8 grupos de 16 bits hexadecimales). IPv4 = 32 bits.`)">128 bits</button>
+<button class="ex-opt" onclick="ansQ(5,3,2,`IPv6 = <strong>128 bits</strong> (8 grupos de 16 bits hexadecimales). IPv4 = 32 bits.`)">256 bits</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 9</div>
-                <div class="question-text">¿Qué mecanismo de QoS descarta paquetes cuando la cola está llena?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q9" value="a" id="q9a"><label for="q9a">Tail Drop</label></div>
-                    <div class="option"><input type="radio" name="q9" value="b" id="q9b"><label for="q9b">WRED (Weighted Random Early Detection)</label></div>
-                    <div class="option"><input type="radio" name="q9" value="c" id="q9c"><label for="q9c">Policing</label></div>
-                    <div class="option"><input type="radio" name="q9" value="d" id="q9d"><label for="q9d">Shaping</label></div>
-                </div>
-                <div class="explanation" data-answer="a">
-                    <div class="explanation-title">✓ Respuesta: A</div>
-                    <strong>Tail Drop</strong> descarta todos los paquetes cuando cola=100%. <strong>WRED</strong> descarta probabilísticamente antes de llenarse (evita TCP global synchronization).
-                </div>
-            </div>
+<div class="ex-q" id="q6"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 7 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué protocolo WAN usa etiquetas (labels) para conmutar paquetes?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(6,0,2,`<strong>MPLS</strong> (Multiprotocol Label Switching) usa etiquetas de 20 bits para forwarding rápido (label swap en vez de lookup IP).`)">PPP</button>
+<button class="ex-opt" onclick="ansQ(6,1,2,`<strong>MPLS</strong> (Multiprotocol Label Switching) usa etiquetas de 20 bits para forwarding rápido (label swap en vez de lookup IP).`)">HDLC</button>
+<button class="ex-opt" onclick="ansQ(6,2,2,`<strong>MPLS</strong> (Multiprotocol Label Switching) usa etiquetas de 20 bits para forwarding rápido (label swap en vez de lookup IP).`)">MPLS</button>
+<button class="ex-opt" onclick="ansQ(6,3,2,`<strong>MPLS</strong> (Multiprotocol Label Switching) usa etiquetas de 20 bits para forwarding rápido (label swap en vez de lookup IP).`)">GRE</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 10</div>
-                <div class="question-text">¿Qué tipo de VPN usa IPsec para túneles site-to-site?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q10" value="a" id="q10a"><label for="q10a">SSL VPN</label></div>
-                    <div class="option"><input type="radio" name="q10" value="b" id="q10b"><label for="q10b">GRE over IPsec</label></div>
-                    <div class="option"><input type="radio" name="q10" value="c" id="q10c"><label for="q10c">DMVPN</label></div>
-                    <div class="option"><input type="radio" name="q10" value="d" id="q10d"><label for="q10d">Todas las anteriores</label></div>
-                </div>
-                <div class="explanation" data-answer="d">
-                    <div class="explanation-title">✓ Respuesta: D</div>
-                    Todas usan IPsec para site-to-site. GRE over IPsec=túnel estático, DMVPN=túneles dinámicos hub-spoke, SSL VPN=clientless web (remote access).
-                </div>
-            </div>
+<div class="ex-q" id="q7"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 8 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">En IPv6, ¿qué dirección multicast alcanza todos los routers en el enlace local?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(7,0,1,`<strong>FF02::2</strong> = All-Routers. FF02::1 = All-Nodes. FF02::5 = OSPFv3. FF02::A = EIGRP.`)">FF02::1</button>
+<button class="ex-opt" onclick="ansQ(7,1,1,`<strong>FF02::2</strong> = All-Routers. FF02::1 = All-Nodes. FF02::5 = OSPFv3. FF02::A = EIGRP.`)">FF02::2</button>
+<button class="ex-opt" onclick="ansQ(7,2,1,`<strong>FF02::2</strong> = All-Routers. FF02::1 = All-Nodes. FF02::5 = OSPFv3. FF02::A = EIGRP.`)">FF02::5</button>
+<button class="ex-opt" onclick="ansQ(7,3,1,`<strong>FF02::2</strong> = All-Routers. FF02::1 = All-Nodes. FF02::5 = OSPFv3. FF02::A = EIGRP.`)">FF02::A</button>
+</div></div>
 
-            <!-- Preguntas 11-30 continúan con temas IPv6/WAN/QoS -->
-            <div class="question-block">
-                <div class="question-number">Pregunta 11</div>
-                <div class="question-text">¿Cuál es el tamaño de MTU mínimo en IPv6?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q11" value="a" id="q11a"><label for="q11a">576 bytes</label></div>
-                    <div class="option"><input type="radio" name="q11" value="b" id="q11b"><label for="q11b">1280 bytes</label></div>
-                    <div class="option"><input type="radio" name="q11" value="c" id="q11c"><label for="q11c">1500 bytes</label></div>
-                    <div class="option"><input type="radio" name="q11" value="d" id="q11d"><label for="q11d">9000 bytes</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    IPv6 MTU mínimo = <strong>1280 bytes</strong> (sin fragmentación). IPv4 mínimo = 576 bytes.
-                </div>
-            </div>
+<div class="ex-q" id="q8"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 9 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué mecanismo de QoS descarta paquetes cuando la cola está llena?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(8,0,0,`<strong>Tail Drop</strong> descarta todos los paquetes cuando cola=100%. <strong>WRED</strong> descarta probabilísticamente antes de llenarse (evita TCP global synchronization).`)">Tail Drop</button>
+<button class="ex-opt" onclick="ansQ(8,1,0,`<strong>Tail Drop</strong> descarta todos los paquetes cuando cola=100%. <strong>WRED</strong> descarta probabilísticamente antes de llenarse (evita TCP global synchronization).`)">WRED (Weighted Random Early Detection)</button>
+<button class="ex-opt" onclick="ansQ(8,2,0,`<strong>Tail Drop</strong> descarta todos los paquetes cuando cola=100%. <strong>WRED</strong> descarta probabilísticamente antes de llenarse (evita TCP global synchronization).`)">Policing</button>
+<button class="ex-opt" onclick="ansQ(8,3,0,`<strong>Tail Drop</strong> descarta todos los paquetes cuando cola=100%. <strong>WRED</strong> descarta probabilísticamente antes de llenarse (evita TCP global synchronization).`)">Shaping</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 12</div>
-                <div class="question-text">¿Qué comando habilita IPv6 routing en Cisco IOS?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q12" value="a" id="q12a"><label for="q12a"><code>ip routing</code></label></div>
-                    <div class="option"><input type="radio" name="q12" value="b" id="q12b"><label for="q12b"><code>ipv6 unicast-routing</code></label></div>
-                    <div class="option"><input type="radio" name="q12" value="c" id="q12c"><label for="q12c"><code>ipv6 enable</code></label></div>
-                    <div class="option"><input type="radio" name="q12" value="d" id="q12d"><label for="q12d"><code>ipv6 routing</code></label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    <code>ipv6 unicast-routing</code> habilita IPv6 routing globalmente. <code>ipv6 enable</code> solo genera link-local en interfaz.
-                </div>
-            </div>
+<div class="ex-q" id="q9"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 10 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué tipo de VPN usa IPsec para túneles site-to-site?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(9,0,3,`Todas usan IPsec para site-to-site. GRE over IPsec=túnel estático, DMVPN=túneles dinámicos hub-spoke, SSL VPN=clientless web (remote access).`)">SSL VPN</button>
+<button class="ex-opt" onclick="ansQ(9,1,3,`Todas usan IPsec para site-to-site. GRE over IPsec=túnel estático, DMVPN=túneles dinámicos hub-spoke, SSL VPN=clientless web (remote access).`)">GRE over IPsec</button>
+<button class="ex-opt" onclick="ansQ(9,2,3,`Todas usan IPsec para site-to-site. GRE over IPsec=túnel estático, DMVPN=túneles dinámicos hub-spoke, SSL VPN=clientless web (remote access).`)">DMVPN</button>
+<button class="ex-opt" onclick="ansQ(9,3,3,`Todas usan IPsec para site-to-site. GRE over IPsec=túnel estático, DMVPN=túneles dinámicos hub-spoke, SSL VPN=clientless web (remote access).`)">Todas las anteriores</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 13</div>
-                <div class="question-text">¿Qué encabezado de extensión IPv6 se usa para fragmentación?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q13" value="a" id="q13a"><label for="q13a">Hop-by-Hop Options</label></div>
-                    <div class="option"><input type="radio" name="q13" value="b" id="q13b"><label for="q13b">Fragment Header</label></div>
-                    <div class="option"><input type="radio" name="q13" value="c" id="q13c"><label for="q13c">Routing Header</label></div>
-                    <div class="option"><input type="radio" name="q13" value="d" id="q13d"><label for="q13d">Destination Options</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    <strong>Fragment Header</strong> maneja fragmentación (solo en origen, no en routers intermedios). Next Header = 44.
-                </div>
-            </div>
+<div class="ex-q" id="q10"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 11 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Cuál es el tamaño de MTU mínimo en IPv6?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(10,0,1,`IPv6 MTU mínimo = <strong>1280 bytes</strong> (sin fragmentación). IPv4 mínimo = 576 bytes.`)">576 bytes</button>
+<button class="ex-opt" onclick="ansQ(10,1,1,`IPv6 MTU mínimo = <strong>1280 bytes</strong> (sin fragmentación). IPv4 mínimo = 576 bytes.`)">1280 bytes</button>
+<button class="ex-opt" onclick="ansQ(10,2,1,`IPv6 MTU mínimo = <strong>1280 bytes</strong> (sin fragmentación). IPv4 mínimo = 576 bytes.`)">1500 bytes</button>
+<button class="ex-opt" onclick="ansQ(10,3,1,`IPv6 MTU mínimo = <strong>1280 bytes</strong> (sin fragmentación). IPv4 mínimo = 576 bytes.`)">9000 bytes</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 14</div>
-                <div class="question-text">En QoS, ¿qué valor DSCP se recomienda para voz (VoIP)?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q14" value="a" id="q14a"><label for="q14a">EF (Expedited Forwarding) - DSCP 46</label></div>
-                    <div class="option"><input type="radio" name="q14" value="b" id="q14b"><label for="q14b">AF41 - DSCP 34</label></div>
-                    <div class="option"><input type="radio" name="q14" value="c" id="q14c"><label for="q14c">CS0 - DSCP 0</label></div>
-                    <div class="option"><input type="radio" name="q14" value="d" id="q14d"><label for="q14d">CS7 - DSCP 56</label></div>
-                </div>
-                <div class="explanation" data-answer="a">
-                    <div class="explanation-title">✓ Respuesta: A</div>
-                    <strong>EF (DSCP 46)</strong> para voz. AF41 (DSCP 34) para video. CS0 (DSCP 0) = best effort.
-                </div>
-            </div>
+<div class="ex-q" id="q11"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 12 DE 50</span><span class="ex-qtype cli">CLI/CONFIG</span></div><div class="ex-qtext">¿Qué comando habilita IPv6 routing en Cisco IOS?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(11,0,1,`<code>ipv6 unicast-routing</code> habilita IPv6 routing globalmente. <code>ipv6 enable</code> solo genera link-local en interfaz.`)"><code>ip routing</code></button>
+<button class="ex-opt" onclick="ansQ(11,1,1,`<code>ipv6 unicast-routing</code> habilita IPv6 routing globalmente. <code>ipv6 enable</code> solo genera link-local en interfaz.`)"><code>ipv6 unicast-routing</code></button>
+<button class="ex-opt" onclick="ansQ(11,2,1,`<code>ipv6 unicast-routing</code> habilita IPv6 routing globalmente. <code>ipv6 enable</code> solo genera link-local en interfaz.`)"><code>ipv6 enable</code></button>
+<button class="ex-opt" onclick="ansQ(11,3,1,`<code>ipv6 unicast-routing</code> habilita IPv6 routing globalmente. <code>ipv6 enable</code> solo genera link-local en interfaz.`)"><code>ipv6 routing</code></button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 15</div>
-                <div class="question-text">¿Qué tecnología WAN usa PPP sobre Ethernet?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q15" value="a" id="q15a"><label for="q15a">PPPoE</label></div>
-                    <div class="option"><input type="radio" name="q15" value="b" id="q15b"><label for="q15b">PPPoA</label></div>
-                    <div class="option"><input type="radio" name="q15" value="c" id="q15c"><label for="q15c">MLPPP</label></div>
-                    <div class="option"><input type="radio" name="q15" value="d" id="q15d"><label for="q15d">CHAP</label></div>
-                </div>
-                <div class="explanation" data-answer="a">
-                    <div class="explanation-title">✓ Respuesta: A</div>
-                    <strong>PPPoE</strong> (Point-to-Point Protocol over Ethernet) común en DSL. Usa discovery (PADI/PADO/PADR/PADS) + sesión PPP.
-                </div>
-            </div>
+<div class="ex-q" id="q12"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 13 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué encabezado de extensión IPv6 se usa para fragmentación?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(12,0,1,`<strong>Fragment Header</strong> maneja fragmentación (solo en origen, no en routers intermedios). Next Header = 44.`)">Hop-by-Hop Options</button>
+<button class="ex-opt" onclick="ansQ(12,1,1,`<strong>Fragment Header</strong> maneja fragmentación (solo en origen, no en routers intermedios). Next Header = 44.`)">Fragment Header</button>
+<button class="ex-opt" onclick="ansQ(12,2,1,`<strong>Fragment Header</strong> maneja fragmentación (solo en origen, no en routers intermedios). Next Header = 44.`)">Routing Header</button>
+<button class="ex-opt" onclick="ansQ(12,3,1,`<strong>Fragment Header</strong> maneja fragmentación (solo en origen, no en routers intermedios). Next Header = 44.`)">Destination Options</button>
+</div></div>
 
+<div class="ex-q" id="q13"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 14 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">En QoS, ¿qué valor DSCP se recomienda para voz (VoIP)?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(13,0,0,`<strong>EF (DSCP 46)</strong> para voz. AF41 (DSCP 34) para video. CS0 (DSCP 0) = best effort.`)">EF (Expedited Forwarding) - DSCP 46</button>
+<button class="ex-opt" onclick="ansQ(13,1,0,`<strong>EF (DSCP 46)</strong> para voz. AF41 (DSCP 34) para video. CS0 (DSCP 0) = best effort.`)">AF41 - DSCP 34</button>
+<button class="ex-opt" onclick="ansQ(13,2,0,`<strong>EF (DSCP 46)</strong> para voz. AF41 (DSCP 34) para video. CS0 (DSCP 0) = best effort.`)">CS0 - DSCP 0</button>
+<button class="ex-opt" onclick="ansQ(13,3,0,`<strong>EF (DSCP 46)</strong> para voz. AF41 (DSCP 34) para video. CS0 (DSCP 0) = best effort.`)">CS7 - DSCP 56</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 16</div>
-                <div class="question-text">¿Qué técnica de QoS retrasa paquetes para suavizar ráfagas de tráfico?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q30" value="a" id="q30a"><label for="q30a">Policing</label></div>
-                    <div class="option"><input type="radio" name="q30" value="b" id="q30b"><label for="q30b">Shaping</label></div>
-                    <div class="option"><input type="radio" name="q30" value="c" id="q30c"><label for="q30c">Marking</label></div>
-                    <div class="option"><input type="radio" name="q30" value="d" id="q30d"><label for="q30d">Classification</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    <strong>Shaping</strong> usa buffer para retrasar paquetes excedentes (suaviza ráfagas). <strong>Policing</strong> descarda/remarca inmediatamente.
-                </div>
-            </div>
+<div class="ex-q" id="q14"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 15 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué tecnología WAN usa PPP sobre Ethernet?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(14,0,0,`<strong>PPPoE</strong> (Point-to-Point Protocol over Ethernet) común en DSL. Usa discovery (PADI/PADO/PADR/PADS) + sesión PPP.`)">PPPoE</button>
+<button class="ex-opt" onclick="ansQ(14,1,0,`<strong>PPPoE</strong> (Point-to-Point Protocol over Ethernet) común en DSL. Usa discovery (PADI/PADO/PADR/PADS) + sesión PPP.`)">PPPoA</button>
+<button class="ex-opt" onclick="ansQ(14,2,0,`<strong>PPPoE</strong> (Point-to-Point Protocol over Ethernet) común en DSL. Usa discovery (PADI/PADO/PADR/PADS) + sesión PPP.`)">MLPPP</button>
+<button class="ex-opt" onclick="ansQ(14,3,0,`<strong>PPPoE</strong> (Point-to-Point Protocol over Ethernet) común en DSL. Usa discovery (PADI/PADO/PADR/PADS) + sesión PPP.`)">CHAP</button>
+</div></div>
 
-		<div class="question-block">
-                <div class="question-number">Pregunta 17</div>
-                <div class="question-text">¿Cuál es el prefijo IPv6 utilizado exclusivamente para direcciones Link-Local?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q17" value="a" id="q17a"><label for="q17a">2001::/3</label></div>
-                    <div class="option"><input type="radio" name="q17" value="b" id="q17b"><label for="q17b">FC00::/7</label></div>
-                    <div class="option"><input type="radio" name="q17" value="c" id="q17c"><label for="q17c">FE80::/10</label></div>
-                    <div class="option"><input type="radio" name="q17" value="d" id="q17d"><label for="q17d">FF00::/8</label></div>
-                </div>
-                <div class="explanation" data-answer="c">
-                    <div class="explanation-title">✓ Respuesta: C</div>
-                    Las direcciones <strong>Link-Local</strong> (FE80::/10) se usan para la comunicación dentro del mismo segmento de enlace y no son enrutables fuera de él.
-                </div>
-            </div>
+<div class="ex-q" id="q15"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 16 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué técnica de QoS retrasa paquetes para suavizar ráfagas de tráfico?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(15,0,1,`<strong>Shaping</strong> usa buffer para retrasar paquetes excedentes (suaviza ráfagas). <strong>Policing</strong> descarta/remarca inmediatamente.`)">Policing</button>
+<button class="ex-opt" onclick="ansQ(15,1,1,`<strong>Shaping</strong> usa buffer para retrasar paquetes excedentes (suaviza ráfagas). <strong>Policing</strong> descarta/remarca inmediatamente.`)">Shaping</button>
+<button class="ex-opt" onclick="ansQ(15,2,1,`<strong>Shaping</strong> usa buffer para retrasar paquetes excedentes (suaviza ráfagas). <strong>Policing</strong> descarta/remarca inmediatamente.`)">Marking</button>
+<button class="ex-opt" onclick="ansQ(15,3,1,`<strong>Shaping</strong> usa buffer para retrasar paquetes excedentes (suaviza ráfagas). <strong>Policing</strong> descarta/remarca inmediatamente.`)">Classification</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 18</div>
-                <div class="question-text">¿Qué campo del encabezado IPv6 se utiliza en QoS para marcar paquetes y es equivalente al campo ToS en IPv4?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q18" value="a" id="q18a"><label for="q18a">Flow Label</label></div>
-                    <div class="option"><input type="radio" name="q18" value="b" id="q18b"><label for="q18b">Traffic Class</label></div>
-                    <div class="option"><input type="radio" name="q18" value="c" id="q18c"><label for="q18c">Hop Limit</label></div>
-                    <div class="option"><input type="radio" name="q18" value="d" id="q18d"><label for="q18d">Payload Length</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    El campo <strong>Traffic Class</strong> de 8 bits en IPv6 cumple la misma función que el campo Type of Service (ToS) en IPv4 para la clasificación de tráfico.
-                </div>
-            </div>
+<div class="ex-q" id="q16"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 17 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Cuál es el prefijo IPv6 utilizado exclusivamente para direcciones Link-Local?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(16,0,2,`Las direcciones <strong>Link-Local</strong> (FE80::/10) se usan para la comunicación dentro del mismo segmento de enlace y no son enrutables fuera de él.`)">2001::/3</button>
+<button class="ex-opt" onclick="ansQ(16,1,2,`Las direcciones <strong>Link-Local</strong> (FE80::/10) se usan para la comunicación dentro del mismo segmento de enlace y no son enrutables fuera de él.`)">FC00::/7</button>
+<button class="ex-opt" onclick="ansQ(16,2,2,`Las direcciones <strong>Link-Local</strong> (FE80::/10) se usan para la comunicación dentro del mismo segmento de enlace y no son enrutables fuera de él.`)">FE80::/10</button>
+<button class="ex-opt" onclick="ansQ(16,3,2,`Las direcciones <strong>Link-Local</strong> (FE80::/10) se usan para la comunicación dentro del mismo segmento de enlace y no son enrutables fuera de él.`)">FF00::/8</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 19</div>
-                <div class="question-text">¿Qué tecnología WAN utiliza etiquetas (labels) para reenviar paquetes en lugar de buscar en tablas de enrutamiento complejas?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q19" value="a" id="q19a"><label for="q19a">Metro Ethernet</label></div>
-                    <div class="option"><input type="radio" name="q19" value="b" id="q19b"><label for="q19b">Frame Relay</label></div>
-                    <div class="option"><input type="radio" name="q19" value="c" id="q19c"><label for="q19c">MPLS</label></div>
-                    <div class="option"><input type="radio" name="q19" value="d" id="q19d"><label for="q19d">Leased Lines</label></div>
-                </div>
-                <div class="explanation" data-answer="c">
-                    <div class="explanation-title">✓ Respuesta: C</div>
-                    <strong>MPLS</strong> (Multi-Protocol Label Switching) inserta una etiqueta entre la capa 2 y la capa 3 para agilizar el reenvío de tráfico en redes de proveedores.
-                </div>
-            </div>
+<div class="ex-q" id="q17"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 18 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué campo del encabezado IPv6 se utiliza en QoS para marcar paquetes y es equivalente al campo ToS en IPv4?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(17,0,1,`El campo <strong>Traffic Class</strong> de 8 bits en IPv6 cumple la misma función que el campo Type of Service (ToS) en IPv4 para la clasificación de tráfico.`)">Flow Label</button>
+<button class="ex-opt" onclick="ansQ(17,1,1,`El campo <strong>Traffic Class</strong> de 8 bits en IPv6 cumple la misma función que el campo Type of Service (ToS) en IPv4 para la clasificación de tráfico.`)">Traffic Class</button>
+<button class="ex-opt" onclick="ansQ(17,2,1,`El campo <strong>Traffic Class</strong> de 8 bits en IPv6 cumple la misma función que el campo Type of Service (ToS) en IPv4 para la clasificación de tráfico.`)">Hop Limit</button>
+<button class="ex-opt" onclick="ansQ(17,3,1,`El campo <strong>Traffic Class</strong> de 8 bits en IPv6 cumple la misma función que el campo Type of Service (ToS) en IPv4 para la clasificación de tráfico.`)">Payload Length</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 20</div>
-                <div class="question-text">En QoS, ¿cuál es el término que describe la variación en el tiempo de llegada de los paquetes (retardo variable)?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q20" value="a" id="q20a"><label for="q20a">Latency</label></div>
-                    <div class="option"><input type="radio" name="q20" value="b" id="q20b"><label for="q20b">Jitter</label></div>
-                    <div class="option"><input type="radio" name="q20" value="c" id="q20c"><label for="q20c">Bandwidth</label></div>
-                    <div class="option"><input type="radio" name="q20" value="d" id="q20d"><label for="q20d">Packet Loss</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    El <strong>Jitter</strong> es la fluctuación del retardo. Es especialmente crítico para aplicaciones de tiempo real como Voz sobre IP (VoIP).
-                </div>
-            </div>
+<div class="ex-q" id="q18"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 19 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué tecnología WAN utiliza etiquetas (labels) para reenviar paquetes en lugar de buscar en tablas de enrutamiento complejas?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(18,0,2,`<strong>MPLS</strong> (Multi-Protocol Label Switching) inserta una etiqueta entre la capa 2 y la capa 3 para agilizar el reenvío de tráfico en redes de proveedores.`)">Metro Ethernet</button>
+<button class="ex-opt" onclick="ansQ(18,1,2,`<strong>MPLS</strong> (Multi-Protocol Label Switching) inserta una etiqueta entre la capa 2 y la capa 3 para agilizar el reenvío de tráfico en redes de proveedores.`)">Frame Relay</button>
+<button class="ex-opt" onclick="ansQ(18,2,2,`<strong>MPLS</strong> (Multi-Protocol Label Switching) inserta una etiqueta entre la capa 2 y la capa 3 para agilizar el reenvío de tráfico en redes de proveedores.`)">MPLS</button>
+<button class="ex-opt" onclick="ansQ(18,3,2,`<strong>MPLS</strong> (Multi-Protocol Label Switching) inserta una etiqueta entre la capa 2 y la capa 3 para agilizar el reenvío de tráfico en redes de proveedores.`)">Leased Lines</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 21</div>
-                <div class="question-text">Al configurar EUI-64 en IPv6, ¿qué valor se inserta en medio de la dirección MAC de 48 bits?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q21" value="a" id="q21a"><label for="q21a">AAAA</label></div>
-                    <div class="option"><input type="radio" name="q21" value="b" id="q21b"><label for="q21b">FFFF</label></div>
-                    <div class="option"><input type="radio" name="q21" value="c" id="q21c"><label for="q21c">FFFE</label></div>
-                    <div class="option"><input type="radio" name="q21" value="d" id="q21d"><label for="q21d">EEEE</label></div>
-                </div>
-                <div class="explanation" data-answer="c">
-                    <div class="explanation-title">✓ Respuesta: C</div>
-                    Para <strong>EUI-64</strong>, se toma la MAC, se inserta <strong>FFFE</strong> en el medio y se invierte el séptimo bit (bit U/L).
-                </div>
-            </div>
+<div class="ex-q" id="q19"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 20 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">En QoS, ¿cuál es el término que describe la variación en el tiempo de llegada de los paquetes (retardo variable)?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(19,0,1,`El <strong>Jitter</strong> es la fluctuación del retardo. Es especialmente crítico para aplicaciones de tiempo real como Voz sobre IP (VoIP).`)">Latency</button>
+<button class="ex-opt" onclick="ansQ(19,1,1,`El <strong>Jitter</strong> es la fluctuación del retardo. Es especialmente crítico para aplicaciones de tiempo real como Voz sobre IP (VoIP).`)">Jitter</button>
+<button class="ex-opt" onclick="ansQ(19,2,1,`El <strong>Jitter</strong> es la fluctuación del retardo. Es especialmente crítico para aplicaciones de tiempo real como Voz sobre IP (VoIP).`)">Bandwidth</button>
+<button class="ex-opt" onclick="ansQ(19,3,1,`El <strong>Jitter</strong> es la fluctuación del retardo. Es especialmente crítico para aplicaciones de tiempo real como Voz sobre IP (VoIP).`)">Packet Loss</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 22</div>
-                <div class="question-text">¿Qué modelo de QoS proporciona garantías estrictas de ancho de banda mediante el uso de protocolos de señalización como RSVP?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q22" value="a" id="q22a"><label for="q22a">Best Effort</label></div>
-                    <div class="option"><input type="radio" name="q22" value="b" id="q22b"><label for="q22b">Differentiated Services (DiffServ)</label></div>
-                    <div class="option"><input type="radio" name="q22" value="c" id="q22c"><label for="q22c">Integrated Services (IntServ)</label></div>
-                    <div class="option"><input type="radio" name="q22" value="d" id="q22d"><label for="q22d">FIFO</label></div>
-                </div>
-                <div class="explanation" data-answer="c">
-                    <div class="explanation-title">✓ Respuesta: C</div>
-                    <strong>IntServ</strong> utiliza un enfoque de reserva de recursos de extremo a extremo, pero es difícil de escalar en redes grandes comparado con DiffServ.
-                </div>
-            </div>
+<div class="ex-q" id="q20"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 21 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">Al configurar EUI-64 en IPv6, ¿qué valor se inserta en medio de la dirección MAC de 48 bits?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(20,0,2,`Para <strong>EUI-64</strong>, se toma la MAC, se inserta <strong>FFFE</strong> en el medio y se invierte el séptimo bit (bit U/L).`)">AAAA</button>
+<button class="ex-opt" onclick="ansQ(20,1,2,`Para <strong>EUI-64</strong>, se toma la MAC, se inserta <strong>FFFE</strong> en el medio y se invierte el séptimo bit (bit U/L).`)">FFFF</button>
+<button class="ex-opt" onclick="ansQ(20,2,2,`Para <strong>EUI-64</strong>, se toma la MAC, se inserta <strong>FFFE</strong> en el medio y se invierte el séptimo bit (bit U/L).`)">FFFE</button>
+<button class="ex-opt" onclick="ansQ(20,3,2,`Para <strong>EUI-64</strong>, se toma la MAC, se inserta <strong>FFFE</strong> en el medio y se invierte el séptimo bit (bit U/L).`)">EEEE</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 23</div>
-                <div class="question-text">¿Cuál es la dirección de Multicast de IPv6 que identifica a todos los routers en el segmento local?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q23" value="a" id="q23a"><label for="q23a">FF02::1</label></div>
-                    <div class="option"><input type="radio" name="q23" value="b" id="q23b"><label for="q23b">FF02::2</label></div>
-                    <div class="option"><input type="radio" name="q23" value="c" id="q23c"><label for="q23c">FF02::5</label></div>
-                    <div class="option"><input type="radio" name="q23" value="d" id="q23d"><label for="q23d">FF02::A</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    La dirección <strong>FF02::2</strong> se refiere a todos los routers (All-Routers), mientras que FF02::1 se refiere a todos los nodos (All-Nodes).
-                </div>
-            </div>
+<div class="ex-q" id="q21"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 22 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué modelo de QoS proporciona garantías estrictas de ancho de banda mediante el uso de protocolos de señalización como RSVP?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(21,0,2,`<strong>IntServ</strong> utiliza un enfoque de reserva de recursos de extremo a extremo, pero es difícil de escalar en redes grandes comparado con DiffServ.`)">Best Effort</button>
+<button class="ex-opt" onclick="ansQ(21,1,2,`<strong>IntServ</strong> utiliza un enfoque de reserva de recursos de extremo a extremo, pero es difícil de escalar en redes grandes comparado con DiffServ.`)">Differentiated Services (DiffServ)</button>
+<button class="ex-opt" onclick="ansQ(21,2,2,`<strong>IntServ</strong> utiliza un enfoque de reserva de recursos de extremo a extremo, pero es difícil de escalar en redes grandes comparado con DiffServ.`)">Integrated Services (IntServ)</button>
+<button class="ex-opt" onclick="ansQ(21,3,2,`<strong>IntServ</strong> utiliza un enfoque de reserva de recursos de extremo a extremo, pero es difícil de escalar en redes grandes comparado con DiffServ.`)">FIFO</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 24</div>
-                <div class="question-text">¿Qué técnica de QoS descarta los paquetes excedentes de forma inmediata cuando el tráfico supera un límite definido?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q24" value="a" id="q24a"><label for="q24a">Traffic Shaping</label></div>
-                    <div class="option"><input type="radio" name="q24" value="b" id="q24b"><label for="q24b">Traffic Policing</label></div>
-                    <div class="option"><input type="radio" name="q24" value="c" id="q24c"><label for="q24c">Queuing</label></div>
-                    <div class="option"><input type="radio" name="q24" value="d" id="q24d"><label for="q24d">Classification</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    <strong>Traffic Policing</strong> descarta el tráfico sobrante (o lo remarca), provocando retransmisiones de TCP. Shaping, en cambio, los almacena en buffer.
-                </div>
-            </div>
+<div class="ex-q" id="q22"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 23 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Cuál es la dirección de Multicast de IPv6 que identifica a todos los routers en el segmento local?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(22,0,1,`La dirección <strong>FF02::2</strong> se refiere a todos los routers (All-Routers), mientras que FF02::1 se refiere a todos los nodos (All-Nodes).`)">FF02::1</button>
+<button class="ex-opt" onclick="ansQ(22,1,1,`La dirección <strong>FF02::2</strong> se refiere a todos los routers (All-Routers), mientras que FF02::1 se refiere a todos los nodos (All-Nodes).`)">FF02::2</button>
+<button class="ex-opt" onclick="ansQ(22,2,1,`La dirección <strong>FF02::2</strong> se refiere a todos los routers (All-Routers), mientras que FF02::1 se refiere a todos los nodos (All-Nodes).`)">FF02::5</button>
+<button class="ex-opt" onclick="ansQ(22,3,1,`La dirección <strong>FF02::2</strong> se refiere a todos los routers (All-Routers), mientras que FF02::1 se refiere a todos los nodos (All-Nodes).`)">FF02::A</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 25</div>
-                <div class="question-text">¿Qué protocolo WAN de código abierto se utiliza frecuentemente para establecer túneles sobre Internet y soporta multicast y protocolos de enrutamiento?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q25" value="a" id="q25a"><label for="q25a">IPsec</label></div>
-                    <div class="option"><input type="radio" name="q25" value="b" id="q25b"><label for="q25b">GRE (Generic Routing Encapsulation)</label></div>
-                    <div class="option"><input type="radio" name="q25" value="c" id="q25c"><label for="q25c">PPP</label></div>
-                    <div class="option"><input type="radio" name="q25" value="d" id="q25d"><label for="q25d">HDLC</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    <strong>GRE</strong> es un protocolo de encapsulación que permite transportar una gran variedad de protocolos de red dentro de túneles IP punto a punto.
-                </div>
-            </div>
+<div class="ex-q" id="q23"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 24 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué técnica de QoS descarta los paquetes excedentes de forma inmediata cuando el tráfico supera un límite definido?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(23,0,1,`<strong>Traffic Policing</strong> descarta el tráfico sobrante (o lo remarca), provocando retransmisiones de TCP. Shaping, en cambio, los almacena en buffer.`)">Traffic Shaping</button>
+<button class="ex-opt" onclick="ansQ(23,1,1,`<strong>Traffic Policing</strong> descarta el tráfico sobrante (o lo remarca), provocando retransmisiones de TCP. Shaping, en cambio, los almacena en buffer.`)">Traffic Policing</button>
+<button class="ex-opt" onclick="ansQ(23,2,1,`<strong>Traffic Policing</strong> descarta el tráfico sobrante (o lo remarca), provocando retransmisiones de TCP. Shaping, en cambio, los almacena en buffer.`)">Queuing</button>
+<button class="ex-opt" onclick="ansQ(23,3,1,`<strong>Traffic Policing</strong> descarta el tráfico sobrante (o lo remarca), provocando retransmisiones de TCP. Shaping, en cambio, los almacena en buffer.`)">Classification</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 26</div>
-                <div class="question-text">¿Cuál es el valor predeterminado del campo "Hop Limit" en un encabezado IPv6?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q26" value="a" id="q26a"><label for="q26a">32</label></div>
-                    <div class="option"><input type="radio" name="q26" value="b" id="q26b"><label for="q26b">64</label></div>
-                    <div class="option"><input type="radio" name="q26" value="c" id="q26c"><label for="q26c">128</label></div>
-                    <div class="option"><input type="radio" name="q26" value="d" id="q26d"><label for="q26d">255</label></div>
-                </div>
-                <div class="explanation" data-answer="c">
-                    <div class="explanation-title">✓ Respuesta: C</div>
-                    Aunque puede variar según el Sistema Operativo, el estándar común para <strong>Hop Limit</strong> (equivalente al TTL de IPv4) en Cisco es <strong>128</strong> o 64. Para el examen CCNA se asocia frecuentemente a 64 o 128.
-                </div>
-            </div>
+<div class="ex-q" id="q24"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 25 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué protocolo WAN de código abierto se utiliza frecuentemente para establecer túneles sobre Internet y soporta multicast y protocolos de enrutamiento?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(24,0,1,`<strong>GRE</strong> es un protocolo de encapsulación que permite transportar una gran variedad de protocolos de red dentro de túneles IP punto a punto.`)">IPsec</button>
+<button class="ex-opt" onclick="ansQ(24,1,1,`<strong>GRE</strong> es un protocolo de encapsulación que permite transportar una gran variedad de protocolos de red dentro de túneles IP punto a punto.`)">GRE (Generic Routing Encapsulation)</button>
+<button class="ex-opt" onclick="ansQ(24,2,1,`<strong>GRE</strong> es un protocolo de encapsulación que permite transportar una gran variedad de protocolos de red dentro de túneles IP punto a punto.`)">PPP</button>
+<button class="ex-opt" onclick="ansQ(24,3,1,`<strong>GRE</strong> es un protocolo de encapsulación que permite transportar una gran variedad de protocolos de red dentro de túneles IP punto a punto.`)">HDLC</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 27</div>
-                <div class="question-text">¿Qué mecanismo de QoS es responsable de decidir el orden en que los paquetes salen de una interfaz basándose en su prioridad?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q27" value="a" id="q27a"><label for="q27a">Marking</label></div>
-                    <div class="option"><input type="radio" name="q27" value="b" id="q27b"><label for="q27b">Queuing (Cola)</label></div>
-                    <div class="option"><input type="radio" name="q27" value="c" id="q27c"><label for="q27c">Admission Control</label></div>
-                    <div class="option"><input type="radio" name="q27" value="d" id="q27d"><label for="q27d">Congestion Avoidance</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    El <strong>Queuing</strong> (como CBWFQ o LLQ) gestiona el almacenamiento temporal y la programación de salida de los paquetes durante periodos de congestión.
-                </div>
-            </div>
+<div class="ex-q" id="q25"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 26 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Cuál es el valor predeterminado del campo "Hop Limit" en un encabezado IPv6?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(25,0,2,`Aunque puede variar según el Sistema Operativo, el estándar común para <strong>Hop Limit</strong> (equivalente al TTL de IPv4) en Cisco es <strong>128</strong> o 64.`)">32</button>
+<button class="ex-opt" onclick="ansQ(25,1,2,`Aunque puede variar según el Sistema Operativo, el estándar común para <strong>Hop Limit</strong> (equivalente al TTL de IPv4) en Cisco es <strong>128</strong> o 64.`)">64</button>
+<button class="ex-opt" onclick="ansQ(25,2,2,`Aunque puede variar según el Sistema Operativo, el estándar común para <strong>Hop Limit</strong> (equivalente al TTL de IPv4) en Cisco es <strong>128</strong> o 64.`)">128</button>
+<button class="ex-opt" onclick="ansQ(25,3,2,`Aunque puede variar según el Sistema Operativo, el estándar común para <strong>Hop Limit</strong> (equivalente al TTL de IPv4) en Cisco es <strong>128</strong> o 64.`)">255</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 28</div>
-                <div class="question-text">¿Qué tipo de dirección IPv6 es ::1/128?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q28" value="a" id="q28a"><label for="q28a">Dirección no especificada</label></div>
-                    <div class="option"><input type="radio" name="q28" value="b" id="q28b"><label for="q28b">Dirección de Loopback</label></div>
-                    <div class="option"><input type="radio" name="q28" value="c" id="q28c"><label for="q28c">Dirección de Multicast</label></div>
-                    <div class="option"><input type="radio" name="q28" value="d" id="q28d"><label for="q28d">Dirección Global Unicast</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    La dirección <strong>::1/128</strong> es el equivalente IPv6 de la dirección 127.0.0.1 de IPv4 (Loopback).
-                </div>
-            </div>
+<div class="ex-q" id="q26"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 27 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué mecanismo de QoS es responsable de decidir el orden en que los paquetes salen de una interfaz basándose en su prioridad?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(26,0,1,`El <strong>Queuing</strong> (como CBWFQ o LLQ) gestiona el almacenamiento temporal y la programación de salida de los paquetes durante periodos de congestión.`)">Marking</button>
+<button class="ex-opt" onclick="ansQ(26,1,1,`El <strong>Queuing</strong> (como CBWFQ o LLQ) gestiona el almacenamiento temporal y la programación de salida de los paquetes durante periodos de congestión.`)">Queuing (Cola)</button>
+<button class="ex-opt" onclick="ansQ(26,2,1,`El <strong>Queuing</strong> (como CBWFQ o LLQ) gestiona el almacenamiento temporal y la programación de salida de los paquetes durante periodos de congestión.`)">Admission Control</button>
+<button class="ex-opt" onclick="ansQ(26,3,1,`El <strong>Queuing</strong> (como CBWFQ o LLQ) gestiona el almacenamiento temporal y la programación de salida de los paquetes durante periodos de congestión.`)">Congestion Avoidance</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 29</div>
-                <div class="question-text">¿Qué tecnología WAN permite la conectividad de sitios remotos a través de una arquitectura de software que separa el plano de control del plano de datos?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q29" value="a" id="q29a"><label for="q29a">DMVPN</label></div>
-                    <div class="option"><input type="radio" name="q29" value="b" id="q29b"><label for="q29b">MPLS L3VPN</label></div>
-                    <div class="option"><input type="radio" name="q29" value="c" id="q29c"><label for="q29c">SD-WAN</label></div>
-                    <div class="option"><input type="radio" name="q29" value="d" id="q29d"><label for="q29d">Virtual Private Dial-up Network</label></div>
-                </div>
-                <div class="explanation" data-answer="c">
-                    <div class="explanation-title">✓ Respuesta: C</div>
-                    <strong>SD-WAN</strong> (Software-Defined WAN) permite gestionar de forma centralizada la seguridad y el enrutamiento sobre múltiples tipos de conexiones físicas.
-                </div>
-            </div>
+<div class="ex-q" id="q27"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 28 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué tipo de dirección IPv6 es ::1/128?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(27,0,1,`La dirección <strong>::1/128</strong> es el equivalente IPv6 de la dirección 127.0.0.1 de IPv4 (Loopback).`)">Dirección no especificada</button>
+<button class="ex-opt" onclick="ansQ(27,1,1,`La dirección <strong>::1/128</strong> es el equivalente IPv6 de la dirección 127.0.0.1 de IPv4 (Loopback).`)">Dirección de Loopback</button>
+<button class="ex-opt" onclick="ansQ(27,2,1,`La dirección <strong>::1/128</strong> es el equivalente IPv6 de la dirección 127.0.0.1 de IPv4 (Loopback).`)">Dirección de Multicast</button>
+<button class="ex-opt" onclick="ansQ(27,3,1,`La dirección <strong>::1/128</strong> es el equivalente IPv6 de la dirección 127.0.0.1 de IPv4 (Loopback).`)">Dirección Global Unicast</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 30</div>
-                <div class="question-text">¿Qué valor de DSCP se recomienda típicamente para el tráfico de voz (VoIP)?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q30" value="a" id="q30a"><label for="q30a">CS0 (Best Effort)</label></div>
-                    <div class="option"><input type="radio" name="q30" value="b" id="q30b"><label for="q30b">AF41</label></div>
-                    <div class="option"><input type="radio" name="q30" value="c" id="q30c"><label for="q30c">EF (Expedited Forwarding)</label></div>
-                    <div class="option"><input type="radio" name="q30" value="d" id="q30d"><label for="q30d">CS1</label></div>
-                </div>
-                <div class="explanation" data-answer="c">
-                    <div class="explanation-title">✓ Respuesta: C</div>
-                    El valor <strong>EF</strong> (DSCP 46) garantiza prioridad baja de retardo y pérdida para aplicaciones en tiempo real como la voz.
-                </div>
-            </div>
+<div class="ex-q" id="q28"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 29 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué tecnología WAN permite la conectividad de sitios remotos a través de una arquitectura de software que separa el plano de control del plano de datos?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(28,0,2,`<strong>SD-WAN</strong> (Software-Defined WAN) permite gestionar de forma centralizada la seguridad y el enrutamiento sobre múltiples tipos de conexiones físicas.`)">DMVPN</button>
+<button class="ex-opt" onclick="ansQ(28,1,2,`<strong>SD-WAN</strong> (Software-Defined WAN) permite gestionar de forma centralizada la seguridad y el enrutamiento sobre múltiples tipos de conexiones físicas.`)">MPLS L3VPN</button>
+<button class="ex-opt" onclick="ansQ(28,2,2,`<strong>SD-WAN</strong> (Software-Defined WAN) permite gestionar de forma centralizada la seguridad y el enrutamiento sobre múltiples tipos de conexiones físicas.`)">SD-WAN</button>
+<button class="ex-opt" onclick="ansQ(28,3,2,`<strong>SD-WAN</strong> (Software-Defined WAN) permite gestionar de forma centralizada la seguridad y el enrutamiento sobre múltiples tipos de conexiones físicas.`)">Virtual Private Dial-up Network</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 31</div>
-                <div class="question-text">¿Qué protocolo utiliza IPv6 para reemplazar el protocolo ARP de IPv4?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q31" value="a" id="q31a"><label for="q31a">ICMPv6 ND (Neighbor Discovery)</label></div>
-                    <div class="option"><input type="radio" name="q31" value="b" id="q31b"><label for="q31b">DHCPv6</label></div>
-                    <div class="option"><input type="radio" name="q31" value="c" id="q31c"><label for="q31c">IGMP</label></div>
-                    <div class="option"><input type="radio" name="q31" value="d" id="q31d"><label for="q31d">SNMPv3</label></div>
-                </div>
-                <div class="explanation" data-answer="a">
-                    <div class="explanation-title">✓ Respuesta: A</div>
-                    <strong>Neighbor Discovery</strong> usa mensajes de Neighbor Solicitation y Neighbor Advertisement para mapear direcciones IPv6 a direcciones MAC.
-                </div>
-            </div>
+<div class="ex-q" id="q29"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 30 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué valor de DSCP se recomienda típicamente para el tráfico de voz (VoIP)?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(29,0,2,`El valor <strong>EF</strong> (DSCP 46) garantiza prioridad baja de retardo y pérdida para aplicaciones en tiempo real como la voz.`)">CS0 (Best Effort)</button>
+<button class="ex-opt" onclick="ansQ(29,1,2,`El valor <strong>EF</strong> (DSCP 46) garantiza prioridad baja de retardo y pérdida para aplicaciones en tiempo real como la voz.`)">AF41</button>
+<button class="ex-opt" onclick="ansQ(29,2,2,`El valor <strong>EF</strong> (DSCP 46) garantiza prioridad baja de retardo y pérdida para aplicaciones en tiempo real como la voz.`)">EF (Expedited Forwarding)</button>
+<button class="ex-opt" onclick="ansQ(29,3,2,`El valor <strong>EF</strong> (DSCP 46) garantiza prioridad baja de retardo y pérdida para aplicaciones en tiempo real como la voz.`)">CS1</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 32</div>
-                <div class="question-text">¿Cuál es la función del campo "Next Header" en el encabezado base de IPv6?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q32" value="a" id="q32a"><label for="q32a">Indicar la dirección del siguiente router.</label></div>
-                    <div class="option"><input type="radio" name="q32" value="b" id="q32b"><label for="q32b">Identificar el protocolo de capa superior (TCP/UDP) o la presencia de encabezados de extensión.</label></div>
-                    <div class="option"><input type="radio" name="q32" value="c" id="q32c"><label for="q32c">Especificar el tamaño total del paquete.</label></div>
-                    <div class="option"><input type="radio" name="q32" value="d" id="q32d"><label for="q32d">Determinar la prioridad del paquete.</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    El campo <strong>Next Header</strong> indica qué viene después del encabezado base, permitiendo una estructura modular mediante encabezados de extensión.
-                </div>
-            </div>
+<div class="ex-q" id="q30"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 31 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué protocolo utiliza IPv6 para reemplazar el protocolo ARP de IPv4?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(30,0,0,`<strong>Neighbor Discovery</strong> usa mensajes de Neighbor Solicitation y Neighbor Advertisement para mapear direcciones IPv6 a direcciones MAC.`)">ICMPv6 ND (Neighbor Discovery)</button>
+<button class="ex-opt" onclick="ansQ(30,1,0,`<strong>Neighbor Discovery</strong> usa mensajes de Neighbor Solicitation y Neighbor Advertisement para mapear direcciones IPv6 a direcciones MAC.`)">DHCPv6</button>
+<button class="ex-opt" onclick="ansQ(30,2,0,`<strong>Neighbor Discovery</strong> usa mensajes de Neighbor Solicitation y Neighbor Advertisement para mapear direcciones IPv6 a direcciones MAC.`)">IGMP</button>
+<button class="ex-opt" onclick="ansQ(30,3,0,`<strong>Neighbor Discovery</strong> usa mensajes de Neighbor Solicitation y Neighbor Advertisement para mapear direcciones IPv6 a direcciones MAC.`)">SNMPv3</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 33</div>
-                <div class="question-text">¿Qué tecnología WAN proporciona una conexión de fibra óptica de alta velocidad y es común en redes metropolitanas (MAN)?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q33" value="a" id="q33a"><label for="q33a">DSL</label></div>
-                    <div class="option"><input type="radio" name="q33" value="b" id="q33b"><label for="q33b">ISDN</label></div>
-                    <div class="option"><input type="radio" name="q33" value="c" id="q33c"><label for="q33c">Metro Ethernet</label></div>
-                    <div class="option"><input type="radio" name="q33" value="d" id="q33d"><label for="q33d">T1/E1</label></div>
-                </div>
-                <div class="explanation" data-answer="c">
-                    <div class="explanation-title">✓ Respuesta: C</div>
-                    <strong>Metro Ethernet</strong> utiliza estándares de Ethernet sobre fibra para interconectar sedes en una misma área geográfica a velocidades de Gigabit.
-                </div>
-            </div>
+<div class="ex-q" id="q31"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 32 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Cuál es la función del campo "Next Header" en el encabezado base de IPv6?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(31,0,1,`El campo <strong>Next Header</strong> indica qué viene después del encabezado base, permitiendo una estructura modular mediante encabezados de extensión.`)">Indicar la dirección del siguiente router.</button>
+<button class="ex-opt" onclick="ansQ(31,1,1,`El campo <strong>Next Header</strong> indica qué viene después del encabezado base, permitiendo una estructura modular mediante encabezados de extensión.`)">Identificar el protocolo de capa superior (TCP/UDP) o la presencia de encabezados de extensión.</button>
+<button class="ex-opt" onclick="ansQ(31,2,1,`El campo <strong>Next Header</strong> indica qué viene después del encabezado base, permitiendo una estructura modular mediante encabezados de extensión.`)">Especificar el tamaño total del paquete.</button>
+<button class="ex-opt" onclick="ansQ(31,3,1,`El campo <strong>Next Header</strong> indica qué viene después del encabezado base, permitiendo una estructura modular mediante encabezados de extensión.`)">Determinar la prioridad del paquete.</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 34</div>
-                <div class="question-text">¿Cuál es el propósito del mecanismo "Tail Drop" en QoS?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q34" value="a" id="q34a"><label for="q34a">Priorizar los paquetes más pequeños.</label></div>
-                    <div class="option"><input type="radio" name="q34" value="b" id="q34b"><label for="q34b">Descartar todos los paquetes nuevos cuando la cola está completamente llena.</label></div>
-                    <div class="option"><input type="radio" name="q34" value="c" id="q34c"><label for="q34c">Reducir el retardo de serialización.</label></div>
-                    <div class="option"><input type="radio" name="q34" value="d" id="q34d"><label for="q34d">Comprimir los encabezados IP.</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    <strong>Tail Drop</strong> es el comportamiento por defecto de una cola. El problema es que puede causar la sincronización global de TCP, por lo que se prefieren métodos como WRED.
-                </div>
-            </div>
+<div class="ex-q" id="q32"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 33 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué tecnología WAN proporciona una conexión de fibra óptica de alta velocidad y es común en redes metropolitanas (MAN)?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(32,0,2,`<strong>Metro Ethernet</strong> utiliza estándares de Ethernet sobre fibra para interconectar sedes en una misma área geográfica a velocidades de Gigabit.`)">DSL</button>
+<button class="ex-opt" onclick="ansQ(32,1,2,`<strong>Metro Ethernet</strong> utiliza estándares de Ethernet sobre fibra para interconectar sedes en una misma área geográfica a velocidades de Gigabit.`)">ISDN</button>
+<button class="ex-opt" onclick="ansQ(32,2,2,`<strong>Metro Ethernet</strong> utiliza estándares de Ethernet sobre fibra para interconectar sedes en una misma área geográfica a velocidades de Gigabit.`)">Metro Ethernet</button>
+<button class="ex-opt" onclick="ansQ(32,3,2,`<strong>Metro Ethernet</strong> utiliza estándares de Ethernet sobre fibra para interconectar sedes en una misma área geográfica a velocidades de Gigabit.`)">T1/E1</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 35</div>
-                <div class="question-text">¿Cómo se abrevia correctamente la dirección IPv6 2001:0DB8:0000:0000:0000:0000:1428:57ab?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q35" value="a" id="q35a"><label for="q35a">2001:DB8:0:0:0:0:1428:57ab</label></div>
-                    <div class="option"><input type="radio" name="q35" value="b" id="q35b"><label for="q35b">2001:DB8::1428:57ab</label></div>
-                    <div class="option"><input type="radio" name="q35" value="c" id="q35c"><label for="q35c">2001:DB8:0::1428:57ab</label></div>
-                    <div class="option"><input type="radio" name="q35" value="d" id="q35d"><label for="q35d">2001:DB8::0::1428:57ab</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    Se pueden eliminar los ceros a la izquierda y reemplazar grupos consecutivos de ceros por <strong>::</strong> (una sola vez por dirección).
-                </div>
-            </div>
+<div class="ex-q" id="q33"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 34 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Cuál es el propósito del mecanismo "Tail Drop" en QoS?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(33,0,1,`<strong>Tail Drop</strong> es el comportamiento por defecto de una cola. El problema es que puede causar la sincronización global de TCP, por lo que se prefieren métodos como WRED.`)">Priorizar los paquetes más pequeños.</button>
+<button class="ex-opt" onclick="ansQ(33,1,1,`<strong>Tail Drop</strong> es el comportamiento por defecto de una cola. El problema es que puede causar la sincronización global de TCP, por lo que se prefieren métodos como WRED.`)">Descartar todos los paquetes nuevos cuando la cola está completamente llena.</button>
+<button class="ex-opt" onclick="ansQ(33,2,1,`<strong>Tail Drop</strong> es el comportamiento por defecto de una cola. El problema es que puede causar la sincronización global de TCP, por lo que se prefieren métodos como WRED.`)">Reducir el retardo de serialización.</button>
+<button class="ex-opt" onclick="ansQ(33,3,1,`<strong>Tail Drop</strong> es el comportamiento por defecto de una cola. El problema es que puede causar la sincronización global de TCP, por lo que se prefieren métodos como WRED.`)">Comprimir los encabezados IP.</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 36</div>
-                <div class="question-text">¿Qué tipo de encapsulación es la predeterminada en las interfaces seriales de los routers Cisco?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q36" value="a" id="q36a"><label for="q36a">PPP</label></div>
-                    <div class="option"><input type="radio" name="q36" value="b" id="q36b"><label for="q36b">HDLC (Cisco Proprietary)</label></div>
-                    <div class="option"><input type="radio" name="q36" value="c" id="q36c"><label for="q36c">Frame Relay</label></div>
-                    <div class="option"><input type="radio" name="q36" value="d" id="q36d"><label for="q36d">X.25</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    Cisco utiliza su propia versión de <strong>HDLC</strong> como encapsulación por defecto en enlaces seriales síncronos.
-                </div>
-            </div>
+<div class="ex-q" id="q34"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 35 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Cómo se abrevia correctamente la dirección IPv6 2001:0DB8:0000:0000:0000:0000:1428:57ab?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(34,0,1,`Se pueden eliminar los ceros a la izquierda y reemplazar grupos consecutivos de ceros por <strong>::</strong> (una sola vez por dirección).`)">2001:DB8:0:0:0:0:1428:57ab</button>
+<button class="ex-opt" onclick="ansQ(34,1,1,`Se pueden eliminar los ceros a la izquierda y reemplazar grupos consecutivos de ceros por <strong>::</strong> (una sola vez por dirección).`)">2001:DB8::1428:57ab</button>
+<button class="ex-opt" onclick="ansQ(34,2,1,`Se pueden eliminar los ceros a la izquierda y reemplazar grupos consecutivos de ceros por <strong>::</strong> (una sola vez por dirección).`)">2001:DB8:0::1428:57ab</button>
+<button class="ex-opt" onclick="ansQ(34,3,1,`Se pueden eliminar los ceros a la izquierda y reemplazar grupos consecutivos de ceros por <strong>::</strong> (una sola vez por dirección).`)">2001:DB8::0::1428:57ab</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 37</div>
-                <div class="question-text">¿Qué herramienta de QoS utiliza un "Token Bucket" para suavizar las ráfagas de tráfico enviando los excedentes a una cola de espera?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q37" value="a" id="q37a"><label for="q37a">Traffic Policing</label></div>
-                    <div class="option"><input type="radio" name="q37" value="b" id="q37b"><label for="q37b">Traffic Shaping</label></div>
-                    <div class="option"><input type="radio" name="q37" value="c" id="q37c"><label for="q37c">WRED</label></div>
-                    <div class="option"><input type="radio" name="q37" value="d" id="q37d"><label for="q37d">NBAR</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    El <strong>Traffic Shaping</strong> retiene los paquetes en una cola cuando se excede la tasa configurada, resultando en un flujo de salida más constante y ordenado.
-                </div>
-            </div>
+<div class="ex-q" id="q35"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 36 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué tipo de encapsulación es la predeterminada en las interfaces seriales de los routers Cisco?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(35,0,1,`Cisco utiliza su propia versión de <strong>HDLC</strong> como encapsulación por defecto en enlaces seriales síncronos.`)">PPP</button>
+<button class="ex-opt" onclick="ansQ(35,1,1,`Cisco utiliza su propia versión de <strong>HDLC</strong> como encapsulación por defecto en enlaces seriales síncronos.`)">HDLC (Cisco Proprietary)</button>
+<button class="ex-opt" onclick="ansQ(35,2,1,`Cisco utiliza su propia versión de <strong>HDLC</strong> como encapsulación por defecto en enlaces seriales síncronos.`)">Frame Relay</button>
+<button class="ex-opt" onclick="ansQ(35,3,1,`Cisco utiliza su propia versión de <strong>HDLC</strong> como encapsulación por defecto en enlaces seriales síncronos.`)">X.25</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 38</div>
-                <div class="question-text">¿Cuál es el rango de direcciones IPv6 de Multicast?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q38" value="a" id="q38a"><label for="q38a">FE80::/10</label></div>
-                    <div class="option"><input type="radio" name="q38" value="b" id="q38b"><label for="q38b">FF00::/8</label></div>
-                    <div class="option"><input type="radio" name="q38" value="c" id="q38c"><label for="q38c">2000::/3</label></div>
-                    <div class="option"><input type="radio" name="q38" value="d" id="q38d"><label for="q38d">FC00::/7</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    Todas las direcciones de <strong>Multicast</strong> en IPv6 comienzan con el primer octeto en FF (<strong>FF00::/8</strong>).
-                </div>
-            </div>
+<div class="ex-q" id="q36"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 37 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué herramienta de QoS utiliza un "Token Bucket" para suavizar las ráfagas de tráfico enviando los excedentes a una cola de espera?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(36,0,1,`El <strong>Traffic Shaping</strong> retiene los paquetes en una cola cuando se excede la tasa configurada, resultando en un flujo de salida más constante y ordenado.`)">Traffic Policing</button>
+<button class="ex-opt" onclick="ansQ(36,1,1,`El <strong>Traffic Shaping</strong> retiene los paquetes en una cola cuando se excede la tasa configurada, resultando en un flujo de salida más constante y ordenado.`)">Traffic Shaping</button>
+<button class="ex-opt" onclick="ansQ(36,2,1,`El <strong>Traffic Shaping</strong> retiene los paquetes en una cola cuando se excede la tasa configurada, resultando en un flujo de salida más constante y ordenado.`)">WRED</button>
+<button class="ex-opt" onclick="ansQ(36,3,1,`El <strong>Traffic Shaping</strong> retiene los paquetes en una cola cuando se excede la tasa configurada, resultando en un flujo de salida más constante y ordenado.`)">NBAR</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 39</div>
-                <div class="question-text">¿Qué campo del encabezado de trama 802.1Q se utiliza para marcar la prioridad de Capa 2 (CoS)?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q39" value="a" id="q39a"><label for="q39a">DSCP</label></div>
-                    <div class="option"><input type="radio" name="q39" value="b" id="q39b"><label for="q39b">IP Precedence</label></div>
-                    <div class="option"><input type="radio" name="q39" value="c" id="q39c"><label for="q39c">PRI (Priority bits)</label></div>
-                    <div class="option"><input type="radio" name="q39" value="d" id="q39d"><label for="q39d">VLAN ID</label></div>
-                </div>
-                <div class="explanation" data-answer="c">
-                    <div class="explanation-title">✓ Respuesta: C</div>
-                    En el Tag de VLAN de 802.1Q existen 3 bits llamados <strong>Priority</strong> (User Priority) que definen el <strong>Class of Service (CoS)</strong>.
-                </div>
-            </div>
+<div class="ex-q" id="q37"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 38 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Cuál es el rango de direcciones IPv6 de Multicast?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(37,0,1,`Todas las direcciones de <strong>Multicast</strong> en IPv6 comienzan con el primer octeto en FF (<strong>FF00::/8</strong>).`)">FE80::/10</button>
+<button class="ex-opt" onclick="ansQ(37,1,1,`Todas las direcciones de <strong>Multicast</strong> en IPv6 comienzan con el primer octeto en FF (<strong>FF00::/8</strong>).`)">FF00::/8</button>
+<button class="ex-opt" onclick="ansQ(37,2,1,`Todas las direcciones de <strong>Multicast</strong> en IPv6 comienzan con el primer octeto en FF (<strong>FF00::/8</strong>).`)">2000::/3</button>
+<button class="ex-opt" onclick="ansQ(37,3,1,`Todas las direcciones de <strong>Multicast</strong> en IPv6 comienzan con el primer octeto en FF (<strong>FF00::/8</strong>).`)">FC00::/7</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 40</div>
-                <div class="question-text">¿Qué protocolo de autenticación PPP envía las credenciales en texto plano (sin cifrar)?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q40" value="a" id="q40a"><label for="q40a">CHAP</label></div>
-                    <div class="option"><input type="radio" name="q40" value="b" id="q40b"><label for="q40b">PAP</label></div>
-                    <div class="option"><input type="radio" name="q40" value="c" id="q40c"><label for="q40c">MD5</label></div>
-                    <div class="option"><input type="radio" name="q40" value="d" id="q40d"><label for="q40d">EAP</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    <strong>PAP</strong> (Password Authentication Protocol) no es seguro porque las contraseñas viajan en texto claro. CHAP es la alternativa segura que usa hash.
-                </div>
-            </div>
+<div class="ex-q" id="q38"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 39 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué campo del encabezado de trama 802.1Q se utiliza para marcar la prioridad de Capa 2 (CoS)?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(38,0,2,`En el Tag de VLAN de 802.1Q existen 3 bits llamados <strong>Priority</strong> (User Priority) que definen el <strong>Class of Service (CoS)</strong>.`)">DSCP</button>
+<button class="ex-opt" onclick="ansQ(38,1,2,`En el Tag de VLAN de 802.1Q existen 3 bits llamados <strong>Priority</strong> (User Priority) que definen el <strong>Class of Service (CoS)</strong>.`)">IP Precedence</button>
+<button class="ex-opt" onclick="ansQ(38,2,2,`En el Tag de VLAN de 802.1Q existen 3 bits llamados <strong>Priority</strong> (User Priority) que definen el <strong>Class of Service (CoS)</strong>.`)">PRI (Priority bits)</button>
+<button class="ex-opt" onclick="ansQ(38,3,2,`En el Tag de VLAN de 802.1Q existen 3 bits llamados <strong>Priority</strong> (User Priority) que definen el <strong>Class of Service (CoS)</strong>.`)">VLAN ID</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 41</div>
-                <div class="question-text">¿Qué permite el comando "ipv6 unicast-routing" en un router Cisco?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q41" value="a" id="q41a"><label for="q41a">Habilitar la autoconfiguración DHCPv6.</label></div>
-                    <div class="option"><input type="radio" name="q41" value="b" id="q41b"><label for="q41b">Permitir que el router reenvíe paquetes IPv6 y ejecute protocolos de enrutamiento IPv6.</label></div>
-                    <div class="option"><input type="radio" name="q41" value="c" id="q41c"><label for="q41c">Asignar una dirección IPv6 a la interfaz Loopback.</label></div>
-                    <div class="option"><input type="radio" name="q41" value="d" id="q41d"><label for="q41d">Cifrar el tráfico IPv6.</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    Sin el comando <strong>ipv6 unicast-routing</strong>, un router Cisco se comporta como un host IPv6 y no procesará rutas.
-                </div>
-            </div>
+<div class="ex-q" id="q39"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 40 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué protocolo de autenticación PPP envía las credenciales en texto plano (sin cifrar)?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(39,0,1,`<strong>PAP</strong> (Password Authentication Protocol) no es seguro porque las contraseñas viajan en texto claro. CHAP es la alternativa segura que usa hash.`)">CHAP</button>
+<button class="ex-opt" onclick="ansQ(39,1,1,`<strong>PAP</strong> (Password Authentication Protocol) no es seguro porque las contraseñas viajan en texto claro. CHAP es la alternativa segura que usa hash.`)">PAP</button>
+<button class="ex-opt" onclick="ansQ(39,2,1,`<strong>PAP</strong> (Password Authentication Protocol) no es seguro porque las contraseñas viajan en texto claro. CHAP es la alternativa segura que usa hash.`)">MD5</button>
+<button class="ex-opt" onclick="ansQ(39,3,1,`<strong>PAP</strong> (Password Authentication Protocol) no es seguro porque las contraseñas viajan en texto claro. CHAP es la alternativa segura que usa hash.`)">EAP</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 42</div>
-                <div class="question-text">¿Qué mecanismo de QoS ayuda a prevenir la congestión descartando paquetes de baja prioridad de forma aleatoria antes de que la cola se llene?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q42" value="a" id="q42a"><label for="q42a">FIFO</label></div>
-                    <div class="option"><input type="radio" name="q42" value="b" id="q42b"><label for="q42b">WRED (Weighted Random Early Detection)</label></div>
-                    <div class="option"><input type="radio" name="q42" value="c" id="q42c"><label for="q42c">Low Latency Queuing</label></div>
-                    <div class="option"><input type="radio" name="q42" value="d" id="q42d"><label for="q42d">Class-Based Marking</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    <strong>WRED</strong> evita que las colas se llenen por completo y mitiga la sincronización de ventanas de TCP descartando paquetes antes de que ocurra una congestión crítica.
-                </div>
-            </div>
+<div class="ex-q" id="q40"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 41 DE 50</span><span class="ex-qtype cli">CLI/CONFIG</span></div><div class="ex-qtext">¿Qué permite el comando "ipv6 unicast-routing" en un router Cisco?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(40,0,1,`Sin el comando <strong>ipv6 unicast-routing</strong>, un router Cisco se comporta como un host IPv6 y no procesará rutas.`)">Habilitar la autoconfiguración DHCPv6.</button>
+<button class="ex-opt" onclick="ansQ(40,1,1,`Sin el comando <strong>ipv6 unicast-routing</strong>, un router Cisco se comporta como un host IPv6 y no procesará rutas.`)">Permitir que el router reenvíe paquetes IPv6 y ejecute protocolos de enrutamiento IPv6.</button>
+<button class="ex-opt" onclick="ansQ(40,2,1,`Sin el comando <strong>ipv6 unicast-routing</strong>, un router Cisco se comporta como un host IPv6 y no procesará rutas.`)">Asignar una dirección IPv6 a la interfaz Loopback.</button>
+<button class="ex-opt" onclick="ansQ(40,3,1,`Sin el comando <strong>ipv6 unicast-routing</strong>, un router Cisco se comporta como un host IPv6 y no procesará rutas.`)">Cifrar el tráfico IPv6.</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 43</div>
-                <div class="question-text">¿Cuál es la longitud total de una dirección IPv6 en bits?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q43" value="a" id="q43a"><label for="q43a">32 bits</label></div>
-                    <div class="option"><input type="radio" name="q43" value="b" id="q43b"><label for="q43b">64 bits</label></div>
-                    <div class="option"><input type="radio" name="q43" value="c" id="q43c"><label for="q43c">128 bits</label></div>
-                    <div class="option"><input type="radio" name="q43" value="d" id="q43d"><label for="q43d">256 bits</label></div>
-                </div>
-                <div class="explanation" data-answer="c">
-                    <div class="explanation-title">✓ Respuesta: C</div>
-                    IPv6 utiliza un espacio de direcciones de <strong>128 bits</strong>, permitiendo un número casi ilimitado de direcciones únicas.
-                </div>
-            </div>
+<div class="ex-q" id="q41"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 42 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué mecanismo de QoS ayuda a prevenir la congestión descartando paquetes de baja prioridad de forma aleatoria antes de que la cola se llene?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(41,0,1,`<strong>WRED</strong> evita que las colas se llenen por completo y mitiga la sincronización de ventanas de TCP descartando paquetes antes de que ocurra una congestión crítica.`)">FIFO</button>
+<button class="ex-opt" onclick="ansQ(41,1,1,`<strong>WRED</strong> evita que las colas se llenen por completo y mitiga la sincronización de ventanas de TCP descartando paquetes antes de que ocurra una congestión crítica.`)">WRED (Weighted Random Early Detection)</button>
+<button class="ex-opt" onclick="ansQ(41,2,1,`<strong>WRED</strong> evita que las colas se llenen por completo y mitiga la sincronización de ventanas de TCP descartando paquetes antes de que ocurra una congestión crítica.`)">Low Latency Queuing</button>
+<button class="ex-opt" onclick="ansQ(41,3,1,`<strong>WRED</strong> evita que las colas se llenen por completo y mitiga la sincronización de ventanas de TCP descartando paquetes antes de que ocurra una congestión crítica.`)">Class-Based Marking</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 44</div>
-                <div class="question-text">¿En qué consiste el método de transición "Dual Stack"?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q44" value="a" id="q44a"><label for="q44a">Encapsular paquetes IPv6 dentro de IPv4.</label></div>
-                    <div class="option"><input type="radio" name="q44" value="b" id="q44b"><label for="q44b">Traducir direcciones IPv6 a IPv4 mediante NAT64.</label></div>
-                    <div class="option"><input type="radio" name="q44" value="c" id="q44c"><label for="q44c">Configurar una interfaz para que procese tanto IPv4 como IPv6 de forma simultánea.</label></div>
-                    <div class="option"><input type="radio" name="q44" value="d" id="q44d"><label for="q44d">Dividir la red en dos subredes de igual tamaño.</label></div>
-                </div>
-                <div class="explanation" data-answer="c">
-                    <div class="explanation-title">✓ Respuesta: C</div>
-                    <strong>Dual Stack</strong> permite que los dispositivos hablen ambos protocolos al mismo tiempo durante el periodo de transición hacia IPv6 puro.
-                </div>
-            </div>
+<div class="ex-q" id="q42"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 43 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Cuál es la longitud total de una dirección IPv6 en bits?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(42,0,2,`IPv6 utiliza un espacio de direcciones de <strong>128 bits</strong>, permitiendo un número casi ilimitado de direcciones únicas.`)">32 bits</button>
+<button class="ex-opt" onclick="ansQ(42,1,2,`IPv6 utiliza un espacio de direcciones de <strong>128 bits</strong>, permitiendo un número casi ilimitado de direcciones únicas.`)">64 bits</button>
+<button class="ex-opt" onclick="ansQ(42,2,2,`IPv6 utiliza un espacio de direcciones de <strong>128 bits</strong>, permitiendo un número casi ilimitado de direcciones únicas.`)">128 bits</button>
+<button class="ex-opt" onclick="ansQ(42,3,2,`IPv6 utiliza un espacio de direcciones de <strong>128 bits</strong>, permitiendo un número casi ilimitado de direcciones únicas.`)">256 bits</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 45</div>
-                <div class="question-text">¿Qué tipo de VPN WAN se basa en el intercambio de etiquetas por parte del Service Provider para separar el tráfico de diferentes clientes?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q45" value="a" id="q45a"><label for="q45a">IPsec VPN</label></div>
-                    <div class="option"><input type="radio" name="q45" value="b" id="q45b"><label for="q45b">L3 MPLS VPN</label></div>
-                    <div class="option"><input type="radio" name="q45" value="c" id="q45c"><label for="q45c">SSL VPN</label></div>
-                    <div class="option"><input type="radio" name="q45" value="d" id="q45d"><label for="q45d">GRE Over IPsec</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    En las <strong>MPLS VPN de Capa 3</strong>, el proveedor utiliza VRFs y etiquetas MPLS para asegurar que el tráfico de una empresa no sea visible para otra.
-                </div>
-            </div>
+<div class="ex-q" id="q43"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 44 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿En qué consiste el método de transición "Dual Stack"?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(43,0,2,`<strong>Dual Stack</strong> permite que los dispositivos hablen ambos protocolos al mismo tiempo durante el periodo de transición hacia IPv6 puro.`)">Encapsular paquetes IPv6 dentro de IPv4.</button>
+<button class="ex-opt" onclick="ansQ(43,1,2,`<strong>Dual Stack</strong> permite que los dispositivos hablen ambos protocolos al mismo tiempo durante el periodo de transición hacia IPv6 puro.`)">Traducir direcciones IPv6 a IPv4 mediante NAT64.</button>
+<button class="ex-opt" onclick="ansQ(43,2,2,`<strong>Dual Stack</strong> permite que los dispositivos hablen ambos protocolos al mismo tiempo durante el periodo de transición hacia IPv6 puro.`)">Configurar una interfaz para que procese tanto IPv4 como IPv6 de forma simultánea.</button>
+<button class="ex-opt" onclick="ansQ(43,3,2,`<strong>Dual Stack</strong> permite que los dispositivos hablen ambos protocolos al mismo tiempo durante el periodo de transición hacia IPv6 puro.`)">Dividir la red en dos subredes de igual tamaño.</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 46</div>
-                <div class="question-text">¿Cuál es el prefijo para las direcciones IPv6 de tipo Unique Local?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q46" value="a" id="q46a"><label for="q46a">2000::/3</label></div>
-                    <div class="option"><input type="radio" name="q46" value="b" id="q46b"><label for="q46b">FE80::/10</label></div>
-                    <div class="option"><input type="radio" name="q46" value="c" id="q46c"><label for="q46c">FC00::/7</label></div>
-                    <div class="option"><input type="radio" name="q46" value="d" id="q46d"><label for="q46d">FF00::/8</label></div>
-                </div>
-                <div class="explanation" data-answer="c">
-                    <div class="explanation-title">✓ Respuesta: C</div>
-                    Las direcciones <strong>Unique Local</strong> (ULA) son el equivalente a las IPs privadas de IPv4 (RFC 1918).
-                </div>
-            </div>
+<div class="ex-q" id="q44"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 45 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué tipo de VPN WAN se basa en el intercambio de etiquetas por parte del Service Provider para separar el tráfico de diferentes clientes?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(44,0,1,`En las <strong>MPLS VPN de Capa 3</strong>, el proveedor utiliza VRFs y etiquetas MPLS para asegurar que el tráfico de una empresa no sea visible para otra.`)">IPsec VPN</button>
+<button class="ex-opt" onclick="ansQ(44,1,1,`En las <strong>MPLS VPN de Capa 3</strong>, el proveedor utiliza VRFs y etiquetas MPLS para asegurar que el tráfico de una empresa no sea visible para otra.`)">L3 MPLS VPN</button>
+<button class="ex-opt" onclick="ansQ(44,2,1,`En las <strong>MPLS VPN de Capa 3</strong>, el proveedor utiliza VRFs y etiquetas MPLS para asegurar que el tráfico de una empresa no sea visible para otra.`)">SSL VPN</button>
+<button class="ex-opt" onclick="ansQ(44,3,1,`En las <strong>MPLS VPN de Capa 3</strong>, el proveedor utiliza VRFs y etiquetas MPLS para asegurar que el tráfico de una empresa no sea visible para otra.`)">GRE Over IPsec</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 47</div>
-                <div class="question-text">¿Qué componente de QoS permite identificar aplicaciones específicas (como Facebook o YouTube) analizando la carga útil del paquete más allá del puerto TCP/UDP?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q47" value="a" id="q47a"><label for="q47a">Access Control Lists (ACL)</label></div>
-                    <div class="option"><input type="radio" name="q47" value="b" id="q47b"><label for="q47b">Network-Based Application Recognition (NBAR)</label></div>
-                    <div class="option"><input type="radio" name="q47" value="c" id="q47c"><label for="q47c">Class-Maps</label></div>
-                    <div class="option"><input type="radio" name="q47" value="d" id="q47d"><label for="q47d">Weighted Fair Queuing</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    <strong>NBAR</strong> realiza una inspección profunda de paquetes (DPI) para clasificar tráfico que usa puertos dinámicos o que intenta esconderse en puertos comunes como el 443.
-                </div>
-            </div>
+<div class="ex-q" id="q45"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 46 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Cuál es el prefijo para las direcciones IPv6 de tipo Unique Local?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(45,0,2,`Las direcciones <strong>Unique Local</strong> (ULA) son el equivalente a las IPs privadas de IPv4 (RFC 1918), rango <strong>FC00::/7</strong>.`)">2000::/3</button>
+<button class="ex-opt" onclick="ansQ(45,1,2,`Las direcciones <strong>Unique Local</strong> (ULA) son el equivalente a las IPs privadas de IPv4 (RFC 1918), rango <strong>FC00::/7</strong>.`)">FE80::/10</button>
+<button class="ex-opt" onclick="ansQ(45,2,2,`Las direcciones <strong>Unique Local</strong> (ULA) son el equivalente a las IPs privadas de IPv4 (RFC 1918), rango <strong>FC00::/7</strong>.`)">FC00::/7</button>
+<button class="ex-opt" onclick="ansQ(45,3,2,`Las direcciones <strong>Unique Local</strong> (ULA) son el equivalente a las IPs privadas de IPv4 (RFC 1918), rango <strong>FC00::/7</strong>.`)">FF00::/8</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 48</div>
-                <div class="question-text">¿Qué método permite a un host IPv6 obtener su dirección IP, prefijo y gateway sin necesidad de un servidor DHCPv6?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q48" value="a" id="q48a"><label for="q48a">Stateful DHCPv6</label></div>
-                    <div class="option"><input type="radio" name="q48" value="b" id="q48b"><label for="q48b">Stateless Address Autoconfiguration (SLAAC)</label></div>
-                    <div class="option"><input type="radio" name="q48" value="c" id="q48c"><label for="q48c">Static Mapping</label></div>
-                    <div class="option"><input type="radio" name="q48" value="d" id="q48d"><label for="q48d">EUI-48 Conversion</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    <strong>SLAAC</strong> utiliza mensajes de ICMPv6 Router Advertisement para que los hosts generen sus propias direcciones IP basándose en el prefijo anunciado por el router.
-                </div>
-            </div>
+<div class="ex-q" id="q46"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 47 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué componente de QoS permite identificar aplicaciones específicas (como Facebook o YouTube) analizando la carga útil del paquete?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(46,0,1,`<strong>NBAR</strong> realiza una inspección profunda de paquetes (DPI) para clasificar tráfico que usa puertos dinámicos o que intenta esconderse en puertos comunes como el 443.`)">Access Control Lists (ACL)</button>
+<button class="ex-opt" onclick="ansQ(46,1,1,`<strong>NBAR</strong> realiza una inspección profunda de paquetes (DPI) para clasificar tráfico que usa puertos dinámicos o que intenta esconderse en puertos comunes como el 443.`)">Network-Based Application Recognition (NBAR)</button>
+<button class="ex-opt" onclick="ansQ(46,2,1,`<strong>NBAR</strong> realiza una inspección profunda de paquetes (DPI) para clasificar tráfico que usa puertos dinámicos o que intenta esconderse en puertos comunes como el 443.`)">Class-Maps</button>
+<button class="ex-opt" onclick="ansQ(46,3,1,`<strong>NBAR</strong> realiza una inspección profunda de paquetes (DPI) para clasificar tráfico que usa puertos dinámicos o que intenta esconderse en puertos comunes como el 443.`)">Weighted Fair Queuing</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 49</div>
-                <div class="question-text">¿Cuál es el retardo máximo recomendado (one-way latency) para el tráfico de voz para mantener una buena calidad de llamada?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q49" value="a" id="q49a"><label for="q49a">50 ms</label></div>
-                    <div class="option"><input type="radio" name="q49" value="b" id="q49b"><label for="q49b">150 ms</label></div>
-                    <div class="option"><input type="radio" name="q49" value="c" id="q49c"><label for="q49c">300 ms</label></div>
-                    <div class="option"><input type="radio" name="q49" value="d" id="q49d"><label for="q49d">500 ms</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    Cisco y la industria recomiendan un retardo de extremo a extremo no mayor a <strong>150 ms</strong> para garantizar una experiencia de voz fluida.
-                </div>
-            </div>
+<div class="ex-q" id="q47"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 48 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué método permite a un host IPv6 obtener su dirección IP, prefijo y gateway sin necesidad de un servidor DHCPv6?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(47,0,1,`<strong>SLAAC</strong> utiliza mensajes de ICMPv6 Router Advertisement para que los hosts generen sus propias direcciones IP basándose en el prefijo anunciado por el router.`)">Stateful DHCPv6</button>
+<button class="ex-opt" onclick="ansQ(47,1,1,`<strong>SLAAC</strong> utiliza mensajes de ICMPv6 Router Advertisement para que los hosts generen sus propias direcciones IP basándose en el prefijo anunciado por el router.`)">Stateless Address Autoconfiguration (SLAAC)</button>
+<button class="ex-opt" onclick="ansQ(47,2,1,`<strong>SLAAC</strong> utiliza mensajes de ICMPv6 Router Advertisement para que los hosts generen sus propias direcciones IP basándose en el prefijo anunciado por el router.`)">Static Mapping</button>
+<button class="ex-opt" onclick="ansQ(47,3,1,`<strong>SLAAC</strong> utiliza mensajes de ICMPv6 Router Advertisement para que los hosts generen sus propias direcciones IP basándose en el prefijo anunciado por el router.`)">EUI-48 Conversion</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 50</div>
-                <div class="question-text">¿Qué tecnología WAN utiliza una topología Hub-and-Spoke para construir una red VPN multipunto dinámica sobre Internet pública?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q50" value="a" id="q50a"><label for="q50a">Frame Relay</label></div>
-                    <div class="option"><input type="radio" name="q50" value="b" id="q50b"><label for="q50b">DMVPN (Dynamic Multipoint VPN)</label></div>
-                    <div class="option"><input type="radio" name="q50" value="c" id="q50c"><label for="q50c">Point-to-Point Lease Line</label></div>
-                    <div class="option"><input type="radio" name="q50" value="d" id="q50d"><label for="q50d">ATM</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    <strong>DMVPN</strong> permite conectar múltiples sitios de forma segura simplificando la configuración de túneles IPsec mediante el uso de mGRE y NHRP.
-                </div>
-            </div>
+<div class="ex-q" id="q48"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 49 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Cuál es el retardo máximo recomendado (one-way latency) para el tráfico de voz para mantener una buena calidad de llamada?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(48,0,1,`Cisco y la industria recomiendan un retardo de extremo a extremo no mayor a <strong>150 ms</strong> para garantizar una experiencia de voz fluida.`)">50 ms</button>
+<button class="ex-opt" onclick="ansQ(48,1,1,`Cisco y la industria recomiendan un retardo de extremo a extremo no mayor a <strong>150 ms</strong> para garantizar una experiencia de voz fluida.`)">150 ms</button>
+<button class="ex-opt" onclick="ansQ(48,2,1,`Cisco y la industria recomiendan un retardo de extremo a extremo no mayor a <strong>150 ms</strong> para garantizar una experiencia de voz fluida.`)">300 ms</button>
+<button class="ex-opt" onclick="ansQ(48,3,1,`Cisco y la industria recomiendan un retardo de extremo a extremo no mayor a <strong>150 ms</strong> para garantizar una experiencia de voz fluida.`)">500 ms</button>
+</div></div>
 
+<div class="ex-q" id="q49"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 50 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué tecnología WAN utiliza una topología Hub-and-Spoke para construir una red VPN multipunto dinámica sobre Internet pública?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(49,0,1,`<strong>DMVPN</strong> permite conectar múltiples sitios de forma segura simplificando la configuración de túneles IPsec mediante el uso de mGRE y NHRP.`)">Frame Relay</button>
+<button class="ex-opt" onclick="ansQ(49,1,1,`<strong>DMVPN</strong> permite conectar múltiples sitios de forma segura simplificando la configuración de túneles IPsec mediante el uso de mGRE y NHRP.`)">DMVPN (Dynamic Multipoint VPN)</button>
+<button class="ex-opt" onclick="ansQ(49,2,1,`<strong>DMVPN</strong> permite conectar múltiples sitios de forma segura simplificando la configuración de túneles IPsec mediante el uso de mGRE y NHRP.`)">Point-to-Point Lease Line</button>
+<button class="ex-opt" onclick="ansQ(49,3,1,`<strong>DMVPN</strong> permite conectar múltiples sitios de forma segura simplificando la configuración de túneles IPsec mediante el uso de mGRE y NHRP.`)">ATM</button>
+</div></div>
 
-            <button type="button" class="submit-btn" onclick="gradeExam()">Calificar Examen</button>
-        </form>
+<div class="ex-result" id="exResult">
+<div class="ex-result-pct" id="rPct">0%</div>
+<div class="ex-result-label" id="rLabel"></div>
+<div class="ex-result-sub" id="rSub"></div>
+<a href="../banco-preguntas.html" style="display:inline-block;margin-top:12px;padding:10px 24px;background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.3);border-radius:8px;color:#fbbf24;font-family:Share Tech Mono,monospace;font-size:.75rem;text-decoration:none;">← Ver todos los exámenes</a>
+</div>
+<div class="ex-nav">
+<a href="exam7.html" class="ex-nav-prev">← Examen 07</a>
+<a href="exam9.html" class="ex-nav-next">Examen 09 →</a>
+</div></div>
 
-        <div class="results" id="results">
-            <h2 style="color: #00d4aa; font-family: 'Orbitron', monospace;">Resultados</h2>
-            <div class="score" id="score">0%</div>
-            <p class="results-text" id="resultsText"></p>
-        </div>
-    </div>
-
-    <script src="../assets/main.js"></script>
-    <script>
-        function gradeExam() {
-            const form = document.getElementById('examForm');
-            const questions = form.querySelectorAll('.question-block');
-            let correct = 0;
-            const total = 50;
-
-            questions.forEach(q => {
-                const explanation = q.querySelector('.explanation');
-                const correctAnswer = explanation.dataset.answer.split(',');
-                const options = q.querySelectorAll('.option');
-                const isCheckbox = q.querySelector('input[type="checkbox"]') !== null;
-                
-                if (isCheckbox) {
-                    const selected = Array.from(q.querySelectorAll('input:checked')).map(inp => inp.value);
-                    if (correctAnswer.length === selected.length && correctAnswer.every(ans => selected.includes(ans))) correct++;
-                    options.forEach(opt => {
-                        const input = opt.querySelector('input');
-                        if (correctAnswer.includes(input.value)) opt.classList.add('correct');
-                        else if (input.checked) opt.classList.add('incorrect');
-                    });
-                } else {
-                    const selected = q.querySelector('input:checked');
-                    if (selected && selected.value === correctAnswer[0]) correct++;
-                    options.forEach(opt => {
-                        const input = opt.querySelector('input');
-                        if (input.value === correctAnswer[0]) opt.classList.add('correct');
-                        else if (input.checked) opt.classList.add('incorrect');
-                    });
-                }
-                explanation.classList.add('show');
-            });
-
-            const percentage = Math.round((correct / total) * 100);
-            document.getElementById('score').textContent = percentage + '%';
-            let message = percentage >= 90 ? `¡Excelente! (${correct}/${total})` :
-                         percentage >= 75 ? `Muy bien (${correct}/${total})` :
-                         percentage >= 60 ? `Aprobado (${correct}/${total})` :
-                         `Repasa IPv6, WAN, QoS (${correct}/${total})`;
-            document.getElementById('resultsText').textContent = message;
-            document.getElementById('results').classList.add('show');
-            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
-        }
-    </script>
-</body>
-</html>
+<script>
+var sc=0,an=0,tot=50;
+function ansQ(qi,sel,cor,exp){var d=document.getElementById("q"+qi);if(!d||d.classList.contains("answered"))return;var btns=d.querySelectorAll(".ex-opt");btns.forEach(function(b){b.disabled=true;});btns[sel].classList.add(sel===cor?"correct":"wrong");if(sel!==cor)btns[cor].classList.add("correct");var e=document.createElement("div");e.className="ex-exp";e.innerHTML="<strong>"+(sel===cor?"✅ Correcto!":"❌ Incorrecto.")+"</strong> "+exp;d.appendChild(e);d.classList.add("answered");if(sel===cor)sc++;an++;updScore();if(an>=tot)showRes();}
+function updScore(){var p=tot>0?Math.round(sc/tot*100):0;document.getElementById("snum").textContent=sc+"/"+tot;document.getElementById("sfill").style.width=p+"%";document.getElementById("slbl").textContent=an+" respondidas · "+p+"% correcto";}
+function resetEx(){sc=0;an=0;updScore();document.getElementById("exResult").style.display="none";for(var i=0;i<tot;i++){var d=document.getElementById("q"+i);if(!d)continue;d.classList.remove("answered");d.querySelectorAll(".ex-opt").forEach(function(b){b.disabled=false;b.classList.remove("correct","wrong");});var ep=d.querySelector(".ex-exp");if(ep)ep.remove();}}
+function showRes(){var p=Math.round(sc/tot*100);var g=p>=85?"🏆 APROBADO — Dominio completo de IPv6/WAN/QoS":p>=70?"✅ CASI LISTO — Repasa los temas fallados":p>=55?"📚 SIGUE ESTUDIANDO — Revisa las explicaciones":"💪 NECESITAS REPASAR — Estudia más antes de repetir";var s=p>=85?"Estás listo para el CCNA 200-301.":p>=70?"Buen nivel. Repasa conceptos de MPLS, SLAAC y QoS.":"Revisa los fundamentos de IPv6, tipos de direcciones y tecnologías WAN.";document.getElementById("rPct").textContent=p+"%";document.getElementById("rLabel").textContent=g;document.getElementById("rSub").textContent=s;var r=document.getElementById("exResult");r.style.display="block";r.scrollIntoView({behavior:"smooth",block:"center"});}
+</script>
+</body></html>
+```
