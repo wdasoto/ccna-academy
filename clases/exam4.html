@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Examen 04: Routing IP | CCNA Academy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
+<nav class="ccna-drawer" id="ccnaDrawer">
+  <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
+  <div class="drawer-section"><div class="drawer-section-title">General</div>
+    <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M1 · Fundamentos</div>
+    <a href="fundamentos.html" class="drawer-link"><span class="dl-icon">🌐</span> Fundamentos</a>
+    <a href="subnetting.html" class="drawer-link"><span class="dl-icon">🔢</span> Subnetting</a>
+    <a href="ipv6.html" class="drawer-link"><span class="dl-icon">6️⃣</span> IPv6</a>
+    <a href="arp.html" class="drawer-link"><span class="dl-icon">📡</span> ARP</a>
+    <a href="rip.html" class="drawer-link"><span class="dl-icon">🔄</span> RIP</a>
+    <a href="protocolos-internet.html" class="drawer-link"><span class="dl-icon">🌍</span> Protocolos Internet</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M3 · Switching</div>
+    <a href="vlan.html" class="drawer-link"><span class="dl-icon">🏷️</span> VLANs</a>
+    <a href="stp.html" class="drawer-link"><span class="dl-icon">🌳</span> STP</a>
+    <a href="etherchannel.html" class="drawer-link"><span class="dl-icon">🔗</span> EtherChannel</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M4 · Routing</div>
+    <a href="ospf.html" class="drawer-link"><span class="dl-icon">⭕</span> OSPF</a>
+    <a href="eigrp.html" class="drawer-link"><span class="dl-icon">⚡</span> EIGRP</a>
+    <a href="ospfv2-masterclass.html" class="drawer-link"><span class="dl-icon">🎯</span> OSPFv2 Masterclass</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M5 · Servicios IP</div>
+    <a href="dhcp.html" class="drawer-link"><span class="dl-icon">📋</span> DHCP</a>
+    <a href="nat.html" class="drawer-link"><span class="dl-icon">🔄</span> NAT/PAT</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">⚡ Herramientas</div>
+    <a href="asistente.html" class="drawer-link"><span class="dl-icon">🤖</span> Asistente IA</a>
+    <a href="netbot.html" class="drawer-link"><span class="dl-icon">⚙️</span> NetBot Config</a>
+    <a href="banco-preguntas.html" class="drawer-link"><span class="dl-icon">📝</span> Banco de Preguntas</a></div>
+</nav>
+<header class="navbar">
+  <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
+  <a href="../index.html" class="navbar-brand">CISCO<span> ACADEMY</span></a>
+  <div class="navbar-spacer"></div>
+  <a href="banco-preguntas.html" class="navbar-link">← Banco</a>
+</header>
+<script src="../assets/main.js" defer></script>
+<div class="nav-spacer"></div>
+<section class="ex-hero">
+<div class="ex-hero-inner">
+<div class="ex-badge">BANCO DE PREGUNTAS · EXAMEN 04 DE 10</div>
+<h1 class="ex-title">EXAMEN 04 — <span>Routing IP</span></h1>
+<p class="ex-sub">Routing estático, rutas default, OSPF básico, RIP, distancias administrativas, longest match y comandos de verificación.</p>
+<div class="ex-meta">
+<span class="ex-meta-item">📋 30 preguntas</span>
+<span class="ex-meta-item">🎯 Routing estático · OSPF · RIP · AD · show ip route</span>
+<span class="ex-meta-item">📅 Actualizado mar 2026</span>
+</div></div></section>
+<style>
+body{font-family:"Exo 2",sans-serif;background:#07090f;color:#e2e8f0;}
+.ex-hero{background:linear-gradient(135deg,#06080f,#0c1020 60%,#0e1428);padding:44px 24px 36px;border-bottom:1px solid rgba(251,191,36,.12);position:relative;overflow:hidden;}
+.ex-hero::before{content:"";position:absolute;top:-80px;right:-80px;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(251,191,36,.05) 0%,transparent 70%);pointer-events:none;}
+.ex-hero-inner{max-width:860px;margin:0 auto;position:relative;z-index:1;}
+.ex-badge{font-family:"Share Tech Mono",monospace;font-size:.62rem;color:#fbbf24;letter-spacing:3px;text-transform:uppercase;margin-bottom:12px;}
+.ex-title{font-family:"Orbitron",sans-serif;font-size:clamp(1.5rem,4vw,2.4rem);font-weight:900;letter-spacing:3px;color:#c2d0e8;margin-bottom:8px;line-height:1.1;}
+.ex-title span{background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.ex-sub{font-size:.9rem;color:#6b7a9a;line-height:1.65;margin-bottom:18px;max-width:680px;}
+.ex-meta{display:flex;gap:12px;flex-wrap:wrap;}
+.ex-meta-item{font-family:"Share Tech Mono",monospace;font-size:.68rem;color:#374060;padding:4px 10px;border:1px solid rgba(251,191,36,.1);border-radius:4px;}
+.ex-wrap{max-width:940px;margin:0 auto;padding:28px 20px 60px;}
+.ex-score-bar{background:#090d1a;border:1px solid rgba(251,191,36,.15);border-radius:12px;padding:16px 22px;margin-bottom:24px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;}
+.ex-score-num{font-family:"Orbitron",sans-serif;font-size:1.8rem;font-weight:900;background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;min-width:56px;}
+.ex-score-track{flex:1;height:7px;background:#0d1220;border-radius:4px;overflow:hidden;min-width:100px;}
+.ex-score-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#fbbf24,#f59e0b);transition:width .5s ease;width:0%;}
+.ex-score-label{font-family:"Share Tech Mono",monospace;font-size:.68rem;color:#4a5780;white-space:nowrap;}
+.ex-score-btn{padding:7px 16px;background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.25);border-radius:7px;color:#fbbf24;font-family:"Share Tech Mono",monospace;font-size:.68rem;cursor:pointer;transition:all .18s;margin-left:auto;}
+.ex-score-btn:hover{background:rgba(251,191,36,.18);}
+.ex-q{background:#0d1220;border:1px solid rgba(255,255,255,.05);border-radius:12px;padding:20px;margin-bottom:16px;transition:border-color .2s;}
+.ex-q.answered{border-color:rgba(251,191,36,.08);}
+.ex-qmeta{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.ex-qnum{font-family:"Share Tech Mono",monospace;font-size:.6rem;color:#374060;letter-spacing:2px;}
+.ex-qtype{font-family:"Share Tech Mono",monospace;font-size:.58rem;padding:2px 8px;border-radius:3px;}
+.ex-qtype.cli{background:rgba(0,212,170,.08);border:1px solid rgba(0,212,170,.2);color:#00d4aa;}
+.ex-qtype.concept{background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.2);color:#38bdf8;}
+.ex-qtype.trouble{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.2);color:#f87171;}
+.ex-qtype.scenario{background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.2);color:#a78bfa;}
+.ex-qtext{font-size:.9rem;color:#c2d0e8;line-height:1.65;margin-bottom:14px;}
+.ex-qtext code,.ex-exp code{font-family:"Share Tech Mono",monospace;font-size:.8rem;background:rgba(0,212,170,.08);color:#00d4aa;padding:1px 5px;border-radius:4px;border:1px solid rgba(0,212,170,.15);}
+.ex-opts{display:flex;flex-direction:column;gap:7px;}
+.ex-opt{padding:10px 14px;border-radius:8px;border:1px solid rgba(255,255,255,.06);background:#090d1a;color:#6b7a9a;cursor:pointer;font-size:.86rem;text-align:left;transition:all .15s;line-height:1.5;}
+.ex-opt:hover:not(:disabled){border-color:rgba(251,191,36,.3);color:#c2d0e8;background:rgba(251,191,36,.04);}
+.ex-opt.correct{border-color:#34d399;background:rgba(52,211,153,.08);color:#34d399;}
+.ex-opt.wrong{border-color:#f87171;background:rgba(248,113,113,.08);color:#f87171;}
+.ex-exp{margin-top:12px;padding:12px 16px;background:rgba(251,191,36,.04);border-left:3px solid #fbbf24;border-radius:6px;font-size:.83rem;color:#a0aec0;line-height:1.65;}
+.ex-exp strong{color:#c2d0e8;}
+.ex-result{background:linear-gradient(135deg,rgba(251,191,36,.08),rgba(245,158,11,.04));border:1px solid rgba(251,191,36,.2);border-radius:16px;padding:32px;text-align:center;margin-top:32px;display:none;}
+.ex-result-pct{font-family:"Orbitron",sans-serif;font-size:3rem;font-weight:900;background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px;}
+.ex-result-label{font-family:"Share Tech Mono",monospace;font-size:.9rem;color:#c2d0e8;margin-bottom:6px;}
+.ex-result-sub{font-size:.82rem;color:#6b7a9a;margin-bottom:16px;}
+.ex-nav{display:flex;align-items:center;justify-content:space-between;margin-top:28px;flex-wrap:wrap;gap:12px;}
+.ex-nav a{padding:10px 22px;border-radius:8px;font-family:"Share Tech Mono",monospace;font-size:.72rem;cursor:pointer;transition:all .18s;text-decoration:none;display:inline-block;}
+.ex-nav-prev{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:#4a5780;}
+.ex-nav-prev:hover{color:#c2d0e8;border-color:rgba(255,255,255,.2);}
+.ex-nav-next{background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);color:#fbbf24;}
+.ex-nav-next:hover{background:rgba(251,191,36,.2);box-shadow:0 0 16px rgba(251,191,36,.15);}
+@media(max-width:680px){.ex-opts .ex-opt{font-size:.8rem;}.ex-qtext{font-size:.86rem;}}
+</style>
+<div class="ex-wrap">
+<div class="ex-score-bar">
+<div class="ex-score-num" id="snum">0/30</div>
+<div class="ex-score-track"><div class="ex-score-fill" id="sfill"></div></div>
+<div class="ex-score-label" id="slbl">0 respondidas · 0% correcto</div>
+<button class="ex-score-btn" onclick="resetEx()">🔄 Reiniciar</button>
+</div>
+<div class="ex-q" id="q0">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 1 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Qué significa [110/5] en la tabla de routing de Cisco IOS?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(0,0,1,`Formato <strong>[AD/Métrica]</strong>: AD=110 (OSPF), Métrica=5 (costo OSPF). ADs clave: Connected=0, Static=1, EIGRP=90, OSPF=110, RIP=120. La AD determina cuál protocolo gana cuando anuncian la misma red.`)">Velocidad 110Mbps y 5 saltos</button>
+<button class="ex-opt" onclick="ansQ(0,1,1,`Formato <strong>[AD/Métrica]</strong>: AD=110 (OSPF), Métrica=5 (costo OSPF). ADs clave: Connected=0, Static=1, EIGRP=90, OSPF=110, RIP=120. La AD determina cuál protocolo gana cuando anuncian la misma red.`)">AD=110 (OSPF) / Métrica=5</button>
+<button class="ex-opt" onclick="ansQ(0,2,1,`Formato <strong>[AD/Métrica]</strong>: AD=110 (OSPF), Métrica=5 (costo OSPF). ADs clave: Connected=0, Static=1, EIGRP=90, OSPF=110, RIP=120. La AD determina cuál protocolo gana cuando anuncian la misma red.`)">Prioridad 110 y costo 5</button>
+<button class="ex-opt" onclick="ansQ(0,3,1,`Formato <strong>[AD/Métrica]</strong>: AD=110 (OSPF), Métrica=5 (costo OSPF). ADs clave: Connected=0, Static=1, EIGRP=90, OSPF=110, RIP=120. La AD determina cuál protocolo gana cuando anuncian la misma red.`)">ID protocolo 110 e interfaz 5</button>
+</div>
+</div><div class="ex-q" id="q1">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 2 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Qué principio elige la ruta cuando existen múltiples rutas al mismo destino?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(1,0,1,`La <strong>Distancia Administrativa</strong> determina la preferencia entre protocolos. Menor AD = más confiable. Si OSPF (110) y RIP (120) anuncian la misma red, gana OSPF. La AD es local — no se intercambia.`)">Mayor métrica</button>
+<button class="ex-opt" onclick="ansQ(1,1,1,`La <strong>Distancia Administrativa</strong> determina la preferencia entre protocolos. Menor AD = más confiable. Si OSPF (110) y RIP (120) anuncian la misma red, gana OSPF. La AD es local — no se intercambia.`)">Menor Distancia Administrativa (AD)</button>
+<button class="ex-opt" onclick="ansQ(1,2,1,`La <strong>Distancia Administrativa</strong> determina la preferencia entre protocolos. Menor AD = más confiable. Si OSPF (110) y RIP (120) anuncian la misma red, gana OSPF. La AD es local — no se intercambia.`)">Más rutas de backup</button>
+<button class="ex-opt" onclick="ansQ(1,3,1,`La <strong>Distancia Administrativa</strong> determina la preferencia entre protocolos. Menor AD = más confiable. Si OSPF (110) y RIP (120) anuncian la misma red, gana OSPF. La AD es local — no se intercambia.`)">La configurada primero</button>
+</div>
+</div><div class="ex-q" id="q2">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 3 DE 30</span><span class="ex-qtype cli">CLI/CONFIG</span></div>
+  <div class="ex-qtext">¿Cuál es el comando para configurar ruta estática hacia 10.0.0.0/8 via 192.168.1.1?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(2,0,1,`<code>ip route [red] [máscara] [next-hop o interfaz]</code>. Ruta flotante (backup): agregar AD mayor al final: <code>ip route 10.0.0.0 255.0.0.0 192.168.1.1 200</code>.`)">ip static-route 10.0.0.0 255.0.0.0 192.168.1.1</button>
+<button class="ex-opt" onclick="ansQ(2,1,1,`<code>ip route [red] [máscara] [next-hop o interfaz]</code>. Ruta flotante (backup): agregar AD mayor al final: <code>ip route 10.0.0.0 255.0.0.0 192.168.1.1 200</code>.`)">ip route 10.0.0.0 255.0.0.0 192.168.1.1</button>
+<button class="ex-opt" onclick="ansQ(2,2,1,`<code>ip route [red] [máscara] [next-hop o interfaz]</code>. Ruta flotante (backup): agregar AD mayor al final: <code>ip route 10.0.0.0 255.0.0.0 192.168.1.1 200</code>.`)">route add 10.0.0.0/8 192.168.1.1</button>
+<button class="ex-opt" onclick="ansQ(2,3,1,`<code>ip route [red] [máscara] [next-hop o interfaz]</code>. Ruta flotante (backup): agregar AD mayor al final: <code>ip route 10.0.0.0 255.0.0.0 192.168.1.1 200</code>.`)">static ip route 10.0.0.0 255.0.0.0 192.168.1.1</button>
+</div>
+</div><div class="ex-q" id="q3">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 4 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Qué es la ruta default y cuándo se usa?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(3,0,1,`La <strong>ruta default (0.0.0.0/0)</strong> es el gateway of last resort. Se usa cuando no hay ninguna ruta más específica. Configurar: <code>ip route 0.0.0.0 0.0.0.0 [next-hop]</code>. Aparece en 'show ip route' como S*.`)">Ruta con menor métrica</button>
+<button class="ex-opt" onclick="ansQ(3,1,1,`La <strong>ruta default (0.0.0.0/0)</strong> es el gateway of last resort. Se usa cuando no hay ninguna ruta más específica. Configurar: <code>ip route 0.0.0.0 0.0.0.0 [next-hop]</code>. Aparece en 'show ip route' como S*.`)">Ruta 0.0.0.0/0 — se usa cuando no hay ruta más específica para el destino</button>
+<button class="ex-opt" onclick="ansQ(3,2,1,`La <strong>ruta default (0.0.0.0/0)</strong> es el gateway of last resort. Se usa cuando no hay ninguna ruta más específica. Configurar: <code>ip route 0.0.0.0 0.0.0.0 [next-hop]</code>. Aparece en 'show ip route' como S*.`)">Primera ruta configurada</button>
+<button class="ex-opt" onclick="ansQ(3,3,1,`La <strong>ruta default (0.0.0.0/0)</strong> es el gateway of last resort. Se usa cuando no hay ninguna ruta más específica. Configurar: <code>ip route 0.0.0.0 0.0.0.0 [next-hop]</code>. Aparece en 'show ip route' como S*.`)">Ruta hacia el servidor DNS</button>
+</div>
+</div><div class="ex-q" id="q4">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 5 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Qué es el principio de Longest Match?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(4,0,1,`<strong>Longest Match</strong>: cuando múltiples rutas coinciden con el destino, el router usa la más específica (mayor prefijo). Ejemplo: destino 192.168.1.5 con rutas /24 y /28 — usa /28. La ruta 0.0.0.0/0 siempre pierde (menos específica).`)">La ruta con mayor número de saltos</button>
+<button class="ex-opt" onclick="ansQ(4,1,1,`<strong>Longest Match</strong>: cuando múltiples rutas coinciden con el destino, el router usa la más específica (mayor prefijo). Ejemplo: destino 192.168.1.5 con rutas /24 y /28 — usa /28. La ruta 0.0.0.0/0 siempre pierde (menos específica).`)">La ruta más específica (mayor prefijo /) que coincide con el destino — siempre se prefiere</button>
+<button class="ex-opt" onclick="ansQ(4,2,1,`<strong>Longest Match</strong>: cuando múltiples rutas coinciden con el destino, el router usa la más específica (mayor prefijo). Ejemplo: destino 192.168.1.5 con rutas /24 y /28 — usa /28. La ruta 0.0.0.0/0 siempre pierde (menos específica).`)">La ruta que ha existido más tiempo</button>
+<button class="ex-opt" onclick="ansQ(4,3,1,`<strong>Longest Match</strong>: cuando múltiples rutas coinciden con el destino, el router usa la más específica (mayor prefijo). Ejemplo: destino 192.168.1.5 con rutas /24 y /28 — usa /28. La ruta 0.0.0.0/0 siempre pierde (menos específica).`)">La ruta con menor latencia</button>
+</div>
+</div><div class="ex-q" id="q5">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 6 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuál es la AD de rutas OSPF?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(5,0,2,`OSPF tiene AD=<strong>110</strong>. Tabla completa: Connected=0, Static=1, EIGRP=90, OSPF=110, RIP=120, EIGRP external=170. Menor AD = más confiable = instalada en la tabla de routing cuando compite.`)">90</button>
+<button class="ex-opt" onclick="ansQ(5,1,2,`OSPF tiene AD=<strong>110</strong>. Tabla completa: Connected=0, Static=1, EIGRP=90, OSPF=110, RIP=120, EIGRP external=170. Menor AD = más confiable = instalada en la tabla de routing cuando compite.`)">100</button>
+<button class="ex-opt" onclick="ansQ(5,2,2,`OSPF tiene AD=<strong>110</strong>. Tabla completa: Connected=0, Static=1, EIGRP=90, OSPF=110, RIP=120, EIGRP external=170. Menor AD = más confiable = instalada en la tabla de routing cuando compite.`)">110</button>
+<button class="ex-opt" onclick="ansQ(5,3,2,`OSPF tiene AD=<strong>110</strong>. Tabla completa: Connected=0, Static=1, EIGRP=90, OSPF=110, RIP=120, EIGRP external=170. Menor AD = más confiable = instalada en la tabla de routing cuando compite.`)">120</button>
+</div>
+</div><div class="ex-q" id="q6">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 7 DE 30</span><span class="ex-qtype cli">CLI/CONFIG</span></div>
+  <div class="ex-qtext">¿Qué comando muestra la tabla de routing completa?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(6,0,1,`<code>show ip route</code> muestra todas las rutas: C=connected, L=local, S=static, R=RIP, O=OSPF, D=EIGRP, B=BGP. Para filtrar: <code>show ip route ospf</code>, <code>show ip route 192.168.1.0</code>.`)">show route ip</button>
+<button class="ex-opt" onclick="ansQ(6,1,1,`<code>show ip route</code> muestra todas las rutas: C=connected, L=local, S=static, R=RIP, O=OSPF, D=EIGRP, B=BGP. Para filtrar: <code>show ip route ospf</code>, <code>show ip route 192.168.1.0</code>.`)">show ip route</button>
+<button class="ex-opt" onclick="ansQ(6,2,1,`<code>show ip route</code> muestra todas las rutas: C=connected, L=local, S=static, R=RIP, O=OSPF, D=EIGRP, B=BGP. Para filtrar: <code>show ip route ospf</code>, <code>show ip route 192.168.1.0</code>.`)">display ip routing-table</button>
+<button class="ex-opt" onclick="ansQ(6,3,1,`<code>show ip route</code> muestra todas las rutas: C=connected, L=local, S=static, R=RIP, O=OSPF, D=EIGRP, B=BGP. Para filtrar: <code>show ip route ospf</code>, <code>show ip route 192.168.1.0</code>.`)">show ip routing</button>
+</div>
+</div><div class="ex-q" id="q7">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 8 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Qué es una ruta flotante (floating static)?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(7,0,1,`Una <strong>floating static route</strong> tiene AD mayor que el protocolo principal. Ejemplo: OSPF (AD=110) + ruta estática AD=150 → IOS instala OSPF. Si OSPF falla, la ruta estática se activa automáticamente como backup.`)">Ruta que cambia con el tráfico</button>
+<button class="ex-opt" onclick="ansQ(7,1,1,`Una <strong>floating static route</strong> tiene AD mayor que el protocolo principal. Ejemplo: OSPF (AD=110) + ruta estática AD=150 → IOS instala OSPF. Si OSPF falla, la ruta estática se activa automáticamente como backup.`)">Ruta estática con AD mayor que el protocolo principal — solo se instala cuando la ruta dinámica falla</button>
+<button class="ex-opt" onclick="ansQ(7,2,1,`Una <strong>floating static route</strong> tiene AD mayor que el protocolo principal. Ejemplo: OSPF (AD=110) + ruta estática AD=150 → IOS instala OSPF. Si OSPF falla, la ruta estática se activa automáticamente como backup.`)">Ruta con IP variable</button>
+<button class="ex-opt" onclick="ansQ(7,3,1,`Una <strong>floating static route</strong> tiene AD mayor que el protocolo principal. Ejemplo: OSPF (AD=110) + ruta estática AD=150 → IOS instala OSPF. Si OSPF falla, la ruta estática se activa automáticamente como backup.`)">Ruta que usa DHCP para el next-hop</button>
+</div>
+</div><div class="ex-q" id="q8">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 9 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuál es la AD de RIP?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(8,0,2,`RIP tiene AD=<strong>120</strong>. La AD alta refleja que RIP es menos confiable que OSPF (110) y EIGRP (90). Si la misma red es anunciada por RIP y OSPF, gana OSPF (menor AD).`)">90</button>
+<button class="ex-opt" onclick="ansQ(8,1,2,`RIP tiene AD=<strong>120</strong>. La AD alta refleja que RIP es menos confiable que OSPF (110) y EIGRP (90). Si la misma red es anunciada por RIP y OSPF, gana OSPF (menor AD).`)">110</button>
+<button class="ex-opt" onclick="ansQ(8,2,2,`RIP tiene AD=<strong>120</strong>. La AD alta refleja que RIP es menos confiable que OSPF (110) y EIGRP (90). Si la misma red es anunciada por RIP y OSPF, gana OSPF (menor AD).`)">120</button>
+<button class="ex-opt" onclick="ansQ(8,3,2,`RIP tiene AD=<strong>120</strong>. La AD alta refleja que RIP es menos confiable que OSPF (110) y EIGRP (90). Si la misma red es anunciada por RIP y OSPF, gana OSPF (menor AD).`)">130</button>
+</div>
+</div><div class="ex-q" id="q9">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 10 DE 30</span><span class="ex-qtype cli">CLI/CONFIG</span></div>
+  <div class="ex-qtext">¿Cuál es el comando mínimo para habilitar OSPF y anunciar 192.168.1.0/24 en área 0?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(9,0,0,`<code>router ospf [process-id]</code> + <code>network [dirección] [wildcard] area [área]</code>. El process-id es local al router (no necesita coincidir). El área sí debe coincidir entre vecinos. Wildcard 0.0.0.255 = habilita OSPF en interfaces de la /24.`)">router ospf 1; network 192.168.1.0 0.0.0.255 area 0</button>
+<button class="ex-opt" onclick="ansQ(9,1,0,`<code>router ospf [process-id]</code> + <code>network [dirección] [wildcard] area [área]</code>. El process-id es local al router (no necesita coincidir). El área sí debe coincidir entre vecinos. Wildcard 0.0.0.255 = habilita OSPF en interfaces de la /24.`)">ospf enable; advertise 192.168.1.0/24 area 0</button>
+<button class="ex-opt" onclick="ansQ(9,2,0,`<code>router ospf [process-id]</code> + <code>network [dirección] [wildcard] area [área]</code>. El process-id es local al router (no necesita coincidir). El área sí debe coincidir entre vecinos. Wildcard 0.0.0.255 = habilita OSPF en interfaces de la /24.`)">router ospf; network area 0 192.168.1.0/24</button>
+<button class="ex-opt" onclick="ansQ(9,3,0,`<code>router ospf [process-id]</code> + <code>network [dirección] [wildcard] area [área]</code>. El process-id es local al router (no necesita coincidir). El área sí debe coincidir entre vecinos. Wildcard 0.0.0.255 = habilita OSPF en interfaces de la /24.`)">ip ospf enable area 0</button>
+</div>
+</div><div class="ex-q" id="q10">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 11 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Qué letra representa una ruta EIGRP en la tabla de routing?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(10,0,2,`La letra <strong>'D'</strong> indica EIGRP (viene de DUAL, el algoritmo). Letras: C=Connected, L=Local, S=Static, R=RIP, <strong>D</strong>=EIGRP, O=OSPF, B=BGP, EX=EIGRP External, IA=OSPF Inter-Area.`)">E</button>
+<button class="ex-opt" onclick="ansQ(10,1,2,`La letra <strong>'D'</strong> indica EIGRP (viene de DUAL, el algoritmo). Letras: C=Connected, L=Local, S=Static, R=RIP, <strong>D</strong>=EIGRP, O=OSPF, B=BGP, EX=EIGRP External, IA=OSPF Inter-Area.`)">G</button>
+<button class="ex-opt" onclick="ansQ(10,2,2,`La letra <strong>'D'</strong> indica EIGRP (viene de DUAL, el algoritmo). Letras: C=Connected, L=Local, S=Static, R=RIP, <strong>D</strong>=EIGRP, O=OSPF, B=BGP, EX=EIGRP External, IA=OSPF Inter-Area.`)">D</button>
+<button class="ex-opt" onclick="ansQ(10,3,2,`La letra <strong>'D'</strong> indica EIGRP (viene de DUAL, el algoritmo). Letras: C=Connected, L=Local, S=Static, R=RIP, <strong>D</strong>=EIGRP, O=OSPF, B=BGP, EX=EIGRP External, IA=OSPF Inter-Area.`)">X</button>
+</div>
+</div><div class="ex-q" id="q11">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 12 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Qué hace 'passive-interface' en OSPF?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(11,0,1,`<code>passive-interface [interfaz]</code>: OSPF <strong>deja de enviar Hellos</strong> (no forma adyacencias) pero <strong>sigue anunciando la red</strong>. Usar en interfaces LAN donde no hay routers OSPF — seguridad y eficiencia.`)">Detiene OSPF completamente en esa interfaz</button>
+<button class="ex-opt" onclick="ansQ(11,1,1,`<code>passive-interface [interfaz]</code>: OSPF <strong>deja de enviar Hellos</strong> (no forma adyacencias) pero <strong>sigue anunciando la red</strong>. Usar en interfaces LAN donde no hay routers OSPF — seguridad y eficiencia.`)">La interfaz sigue anunciando su red en OSPF pero NO envía/recibe Hello — no forma adyacencias</button>
+<button class="ex-opt" onclick="ansQ(11,2,1,`<code>passive-interface [interfaz]</code>: OSPF <strong>deja de enviar Hellos</strong> (no forma adyacencias) pero <strong>sigue anunciando la red</strong>. Usar en interfaces LAN donde no hay routers OSPF — seguridad y eficiencia.`)">Convierte la interfaz en ruta estática</button>
+<button class="ex-opt" onclick="ansQ(11,3,1,`<code>passive-interface [interfaz]</code>: OSPF <strong>deja de enviar Hellos</strong> (no forma adyacencias) pero <strong>sigue anunciando la red</strong>. Usar en interfaces LAN donde no hay routers OSPF — seguridad y eficiencia.`)">Aumenta la métrica OSPF</button>
+</div>
+</div><div class="ex-q" id="q12">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 13 DE 30</span><span class="ex-qtype cli">CLI/CONFIG</span></div>
+  <div class="ex-qtext">¿Cómo verifica que OSPF ha formado adyacencias?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(12,0,1,`<code>show ip ospf neighbor</code> muestra: Neighbor ID, Priority, State (<strong>FULL</strong>=adyacencia completa), Dead time, Address, Interface. FULL indica que las rutas se intercambian correctamente.`)">show ip route</button>
+<button class="ex-opt" onclick="ansQ(12,1,1,`<code>show ip ospf neighbor</code> muestra: Neighbor ID, Priority, State (<strong>FULL</strong>=adyacencia completa), Dead time, Address, Interface. FULL indica que las rutas se intercambian correctamente.`)">show ip ospf neighbor</button>
+<button class="ex-opt" onclick="ansQ(12,2,1,`<code>show ip ospf neighbor</code> muestra: Neighbor ID, Priority, State (<strong>FULL</strong>=adyacencia completa), Dead time, Address, Interface. FULL indica que las rutas se intercambian correctamente.`)">show ospf status</button>
+<button class="ex-opt" onclick="ansQ(12,3,1,`<code>show ip ospf neighbor</code> muestra: Neighbor ID, Priority, State (<strong>FULL</strong>=adyacencia completa), Dead time, Address, Interface. FULL indica que las rutas se intercambian correctamente.`)">ping vecino</button>
+</div>
+</div><div class="ex-q" id="q13">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 14 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Qué es el Router-ID de OSPF?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(13,0,1,`El <strong>Router-ID OSPF</strong> se elige: 1) Manual (<code>router-id [IP]</code>), 2) IP más alta de loopbacks activas, 3) IP más alta de cualquier interfaz. Siempre configurarlo manualmente. Cambio requiere <code>clear ip ospf process</code>.`)">Dirección IP de la interfaz más alta</button>
+<button class="ex-opt" onclick="ansQ(13,1,1,`El <strong>Router-ID OSPF</strong> se elige: 1) Manual (<code>router-id [IP]</code>), 2) IP más alta de loopbacks activas, 3) IP más alta de cualquier interfaz. Siempre configurarlo manualmente. Cambio requiere <code>clear ip ospf process</code>.`)">Una dirección IPv4 única de 32 bits que identifica el router en el dominio OSPF</button>
+<button class="ex-opt" onclick="ansQ(13,2,1,`El <strong>Router-ID OSPF</strong> se elige: 1) Manual (<code>router-id [IP]</code>), 2) IP más alta de loopbacks activas, 3) IP más alta de cualquier interfaz. Siempre configurarlo manualmente. Cambio requiere <code>clear ip ospf process</code>.`)">El número de proceso OSPF</button>
+<button class="ex-opt" onclick="ansQ(13,3,1,`El <strong>Router-ID OSPF</strong> se elige: 1) Manual (<code>router-id [IP]</code>), 2) IP más alta de loopbacks activas, 3) IP más alta de cualquier interfaz. Siempre configurarlo manualmente. Cambio requiere <code>clear ip ospf process</code>.`)">El hostname del router</button>
+</div>
+</div><div class="ex-q" id="q14">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 15 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Qué indica 'S*' en la tabla de routing?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(14,0,1,`<strong>S*</strong>: S=Static, *=está siendo usada como Gateway of Last Resort. Aparece al inicio de 'show ip route' como 'Gateway of last resort is [IP] to network 0.0.0.0'.`)">Ruta estática normal</button>
+<button class="ex-opt" onclick="ansQ(14,1,1,`<strong>S*</strong>: S=Static, *=está siendo usada como Gateway of Last Resort. Aparece al inicio de 'show ip route' como 'Gateway of last resort is [IP] to network 0.0.0.0'.`)">Ruta default candidata activa como Gateway of Last Resort</button>
+<button class="ex-opt" onclick="ansQ(14,2,1,`<strong>S*</strong>: S=Static, *=está siendo usada como Gateway of Last Resort. Aparece al inicio de 'show ip route' como 'Gateway of last resort is [IP] to network 0.0.0.0'.`)">Ruta OSPF sumarizada</button>
+<button class="ex-opt" onclick="ansQ(14,3,1,`<strong>S*</strong>: S=Static, *=está siendo usada como Gateway of Last Resort. Aparece al inicio de 'show ip route' como 'Gateway of last resort is [IP] to network 0.0.0.0'.`)">Ruta suspendida</button>
+</div>
+</div><div class="ex-q" id="q15">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 16 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuál es la métrica de OSPF y cómo se calcula?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(15,0,1,`OSPF usa el <strong>costo</strong>: 10⁸/BW. FastE=1, GigE=1 (problema — igual que FastE). Solución: <code>auto-cost reference-bandwidth 1000</code> → FastE=10, GigE=1. Deben coincidir en todos los routers.`)">Hop count</button>
+<button class="ex-opt" onclick="ansQ(15,1,1,`OSPF usa el <strong>costo</strong>: 10⁸/BW. FastE=1, GigE=1 (problema — igual que FastE). Solución: <code>auto-cost reference-bandwidth 1000</code> → FastE=10, GigE=1. Deben coincidir en todos los routers.`)">Costo = 100,000,000 / BW en bps — mayor BW = menor costo</button>
+<button class="ex-opt" onclick="ansQ(15,2,1,`OSPF usa el <strong>costo</strong>: 10⁸/BW. FastE=1, GigE=1 (problema — igual que FastE). Solución: <code>auto-cost reference-bandwidth 1000</code> → FastE=10, GigE=1. Deben coincidir en todos los routers.`)">Retardo acumulado</button>
+<button class="ex-opt" onclick="ansQ(15,3,1,`OSPF usa el <strong>costo</strong>: 10⁸/BW. FastE=1, GigE=1 (problema — igual que FastE). Solución: <code>auto-cost reference-bandwidth 1000</code> → FastE=10, GigE=1. Deben coincidir en todos los routers.`)">Combinación de BW, delay y confiabilidad</button>
+</div>
+</div><div class="ex-q" id="q16">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 17 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuándo se realiza elección DR/BDR en OSPF?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(16,0,1,`DR/BDR solo en redes <strong>broadcast multi-acceso (Ethernet/NBMA)</strong>. En enlaces punto a punto (Serial, P2P) NO hay elección DR/BDR — ambos routers forman FULL directamente. Para forzar P2P en Ethernet: <code>ip ospf network point-to-point</code>.`)">Siempre, en todas las redes OSPF</button>
+<button class="ex-opt" onclick="ansQ(16,1,1,`DR/BDR solo en redes <strong>broadcast multi-acceso (Ethernet/NBMA)</strong>. En enlaces punto a punto (Serial, P2P) NO hay elección DR/BDR — ambos routers forman FULL directamente. Para forzar P2P en Ethernet: <code>ip ospf network point-to-point</code>.`)">Solo en redes broadcast multi-acceso (Ethernet) y NBMA — no en enlaces punto a punto</button>
+<button class="ex-opt" onclick="ansQ(16,2,1,`DR/BDR solo en redes <strong>broadcast multi-acceso (Ethernet/NBMA)</strong>. En enlaces punto a punto (Serial, P2P) NO hay elección DR/BDR — ambos routers forman FULL directamente. Para forzar P2P en Ethernet: <code>ip ospf network point-to-point</code>.`)">Solo con más de 10 routers</button>
+<button class="ex-opt" onclick="ansQ(16,3,1,`DR/BDR solo en redes <strong>broadcast multi-acceso (Ethernet/NBMA)</strong>. En enlaces punto a punto (Serial, P2P) NO hay elección DR/BDR — ambos routers forman FULL directamente. Para forzar P2P en Ethernet: <code>ip ospf network point-to-point</code>.`)">Solo en el área 0</button>
+</div>
+</div><div class="ex-q" id="q17">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 18 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuál es la AD de rutas directamente conectadas?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(17,0,0,`Las rutas <strong>Connected</strong> tienen AD=<strong>0</strong> — siempre preferidas sobre cualquier otra fuente. Son las redes directamente conectadas a interfaces activas. En 'show ip route' aparecen con 'C' (red) y 'L' (host /32).`)">0</button>
+<button class="ex-opt" onclick="ansQ(17,1,0,`Las rutas <strong>Connected</strong> tienen AD=<strong>0</strong> — siempre preferidas sobre cualquier otra fuente. Son las redes directamente conectadas a interfaces activas. En 'show ip route' aparecen con 'C' (red) y 'L' (host /32).`)">1</button>
+<button class="ex-opt" onclick="ansQ(17,2,0,`Las rutas <strong>Connected</strong> tienen AD=<strong>0</strong> — siempre preferidas sobre cualquier otra fuente. Son las redes directamente conectadas a interfaces activas. En 'show ip route' aparecen con 'C' (red) y 'L' (host /32).`)">5</button>
+<button class="ex-opt" onclick="ansQ(17,3,0,`Las rutas <strong>Connected</strong> tienen AD=<strong>0</strong> — siempre preferidas sobre cualquier otra fuente. Son las redes directamente conectadas a interfaces activas. En 'show ip route' aparecen con 'C' (red) y 'L' (host /32).`)">90</button>
+</div>
+</div><div class="ex-q" id="q18">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 19 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Qué es el recursive lookup en routing?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(18,0,1,`<strong>Recursive lookup</strong>: si el next-hop de una ruta no es directamente alcanzable, el router busca otra ruta para llegar a ese next-hop. Si no la encuentra, la ruta estática NO se instala en la tabla.`)">Búsqueda en múltiples tablas</button>
+<button class="ex-opt" onclick="ansQ(18,1,1,`<strong>Recursive lookup</strong>: si el next-hop de una ruta no es directamente alcanzable, el router busca otra ruta para llegar a ese next-hop. Si no la encuentra, la ruta estática NO se instala en la tabla.`)">Cuando el next-hop no está directamente conectado, el router busca en su tabla cómo llegar a ese next-hop</button>
+<button class="ex-opt" onclick="ansQ(18,2,1,`<strong>Recursive lookup</strong>: si el next-hop de una ruta no es directamente alcanzable, el router busca otra ruta para llegar a ese next-hop. Si no la encuentra, la ruta estática NO se instala en la tabla.`)">Un bucle de routing</button>
+<button class="ex-opt" onclick="ansQ(18,3,1,`<strong>Recursive lookup</strong>: si el next-hop de una ruta no es directamente alcanzable, el router busca otra ruta para llegar a ese next-hop. Si no la encuentra, la ruta estática NO se instala en la tabla.`)">Búsqueda en más de un protocolo</button>
+</div>
+</div><div class="ex-q" id="q19">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 20 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Qué es Split Horizon en protocolos Distance Vector?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(19,0,1,`<strong>Split Horizon</strong>: si R2 aprendió la ruta a Red-A de R1 (via Gi0/0), R2 NO anuncia Red-A de vuelta a R1 por Gi0/0. Previene bucles de 2 routers. Problemático en Frame Relay Hub-and-Spoke.`)">Dividir red en dos para balanceo de carga</button>
+<button class="ex-opt" onclick="ansQ(19,1,1,`<strong>Split Horizon</strong>: si R2 aprendió la ruta a Red-A de R1 (via Gi0/0), R2 NO anuncia Red-A de vuelta a R1 por Gi0/0. Previene bucles de 2 routers. Problemático en Frame Relay Hub-and-Spoke.`)">No anunciar una ruta por la misma interfaz por la que fue aprendida — previene bucles</button>
+<button class="ex-opt" onclick="ansQ(19,2,1,`<strong>Split Horizon</strong>: si R2 aprendió la ruta a Red-A de R1 (via Gi0/0), R2 NO anuncia Red-A de vuelta a R1 por Gi0/0. Previene bucles de 2 routers. Problemático en Frame Relay Hub-and-Spoke.`)">Usar múltiples rutas simultáneamente</button>
+<button class="ex-opt" onclick="ansQ(19,3,1,`<strong>Split Horizon</strong>: si R2 aprendió la ruta a Red-A de R1 (via Gi0/0), R2 NO anuncia Red-A de vuelta a R1 por Gi0/0. Previene bucles de 2 routers. Problemático en Frame Relay Hub-and-Spoke.`)">Dividir ancho de banda</button>
+</div>
+</div><div class="ex-q" id="q20">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 21 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuál es la AD de rutas estáticas?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(20,0,1,`Las rutas <strong>Static</strong> tienen AD=<strong>1</strong>. Solo las Connected (AD=0) son más preferidas. Por eso una ruta estática normal siempre gana sobre OSPF, EIGRP y RIP. Las rutas flotantes usan AD>1 para actuar como backup.`)">0</button>
+<button class="ex-opt" onclick="ansQ(20,1,1,`Las rutas <strong>Static</strong> tienen AD=<strong>1</strong>. Solo las Connected (AD=0) son más preferidas. Por eso una ruta estática normal siempre gana sobre OSPF, EIGRP y RIP. Las rutas flotantes usan AD>1 para actuar como backup.`)">1</button>
+<button class="ex-opt" onclick="ansQ(20,2,1,`Las rutas <strong>Static</strong> tienen AD=<strong>1</strong>. Solo las Connected (AD=0) son más preferidas. Por eso una ruta estática normal siempre gana sobre OSPF, EIGRP y RIP. Las rutas flotantes usan AD>1 para actuar como backup.`)">90</button>
+<button class="ex-opt" onclick="ansQ(20,3,1,`Las rutas <strong>Static</strong> tienen AD=<strong>1</strong>. Solo las Connected (AD=0) son más preferidas. Por eso una ruta estática normal siempre gana sobre OSPF, EIGRP y RIP. Las rutas flotantes usan AD>1 para actuar como backup.`)">110</button>
+</div>
+</div><div class="ex-q" id="q21">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 22 DE 30</span><span class="ex-qtype cli">CLI/CONFIG</span></div>
+  <div class="ex-qtext">¿Qué comando verifica la configuración de OSPF incluyendo redes y vecinos?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(21,0,2,`<code>show ip protocols</code> muestra todos los protocolos activos: proceso OSPF, Router-ID, redes anunciadas, interfaces, redistribución. Para detalles OSPF: <code>show ip ospf</code> (timers, áreas), <code>show ip ospf interface</code> (estado por interfaz).`)">show ospf config</button>
+<button class="ex-opt" onclick="ansQ(21,1,2,`<code>show ip protocols</code> muestra todos los protocolos activos: proceso OSPF, Router-ID, redes anunciadas, interfaces, redistribución. Para detalles OSPF: <code>show ip ospf</code> (timers, áreas), <code>show ip ospf interface</code> (estado por interfaz).`)">show ip ospf</button>
+<button class="ex-opt" onclick="ansQ(21,2,2,`<code>show ip protocols</code> muestra todos los protocolos activos: proceso OSPF, Router-ID, redes anunciadas, interfaces, redistribución. Para detalles OSPF: <code>show ip ospf</code> (timers, áreas), <code>show ip ospf interface</code> (estado por interfaz).`)">show ip protocols</button>
+<button class="ex-opt" onclick="ansQ(21,3,2,`<code>show ip protocols</code> muestra todos los protocolos activos: proceso OSPF, Router-ID, redes anunciadas, interfaces, redistribución. Para detalles OSPF: <code>show ip ospf</code> (timers, áreas), <code>show ip ospf interface</code> (estado por interfaz).`)">show ip ospf database</button>
+</div>
+</div><div class="ex-q" id="q22">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 23 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Qué es ECMP (Equal-Cost Multi-Path)?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(22,0,1,`<strong>ECMP</strong>: cuando hay múltiples rutas con igual AD y métrica, Cisco IOS instala todas en la tabla y usa CEF para balancear. Default: hasta 4 rutas. Configurable: <code>maximum-paths [1-32]</code>. El balanceo es generalmente per-flow.`)">Solo una ruta se usa — la segunda es backup</button>
+<button class="ex-opt" onclick="ansQ(22,1,1,`<strong>ECMP</strong>: cuando hay múltiples rutas con igual AD y métrica, Cisco IOS instala todas en la tabla y usa CEF para balancear. Default: hasta 4 rutas. Configurable: <code>maximum-paths [1-32]</code>. El balanceo es generalmente per-flow.`)">Cuando hay múltiples rutas con misma AD y métrica, el router instala todas y balancea el tráfico</button>
+<button class="ex-opt" onclick="ansQ(22,2,1,`<strong>ECMP</strong>: cuando hay múltiples rutas con igual AD y métrica, Cisco IOS instala todas en la tabla y usa CEF para balancear. Default: hasta 4 rutas. Configurable: <code>maximum-paths [1-32]</code>. El balanceo es generalmente per-flow.`)">Las rutas se suman en BW</button>
+<button class="ex-opt" onclick="ansQ(22,3,1,`<strong>ECMP</strong>: cuando hay múltiples rutas con igual AD y métrica, Cisco IOS instala todas en la tabla y usa CEF para balancear. Default: hasta 4 rutas. Configurable: <code>maximum-paths [1-32]</code>. El balanceo es generalmente per-flow.`)">El admin elige manualmente</button>
+</div>
+</div><div class="ex-q" id="q23">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 24 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Qué letra indica rutas OSPF en la tabla de routing?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(23,0,2,`La letra <strong>'O'</strong> indica OSPF. O IA = OSPF Inter-Area (de otra área). O E1/E2 = rutas externas redistribuidas. O N1/N2 = NSSA external. La AD es 110 para todas las variantes OSPF.`)">P</button>
+<button class="ex-opt" onclick="ansQ(23,1,2,`La letra <strong>'O'</strong> indica OSPF. O IA = OSPF Inter-Area (de otra área). O E1/E2 = rutas externas redistribuidas. O N1/N2 = NSSA external. La AD es 110 para todas las variantes OSPF.`)">Q</button>
+<button class="ex-opt" onclick="ansQ(23,2,2,`La letra <strong>'O'</strong> indica OSPF. O IA = OSPF Inter-Area (de otra área). O E1/E2 = rutas externas redistribuidas. O N1/N2 = NSSA external. La AD es 110 para todas las variantes OSPF.`)">O</button>
+<button class="ex-opt" onclick="ansQ(23,3,2,`La letra <strong>'O'</strong> indica OSPF. O IA = OSPF Inter-Area (de otra área). O E1/E2 = rutas externas redistribuidas. O N1/N2 = NSSA external. La AD es 110 para todas las variantes OSPF.`)">S</button>
+</div>
+</div><div class="ex-q" id="q24">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 25 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuándo se usa routing estático vs dinámico?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(24,0,1,`<strong>Estático</strong>: redes pequeñas con pocas rutas, enlaces stub (una sola salida), ruta default. Ventaja: simple, predecible, sin overhead. <strong>Dinámico</strong>: redes grandes, adaptación automática a cambios. OSPF, EIGRP, BGP.`)">Routing estático siempre es mejor</button>
+<button class="ex-opt" onclick="ansQ(24,1,1,`<strong>Estático</strong>: redes pequeñas con pocas rutas, enlaces stub (una sola salida), ruta default. Ventaja: simple, predecible, sin overhead. <strong>Dinámico</strong>: redes grandes, adaptación automática a cambios. OSPF, EIGRP, BGP.`)">Estático: redes pequeñas, enlaces stub, ruta default. Dinámico: redes grandes donde mantenimiento manual es impracticable</button>
+<button class="ex-opt" onclick="ansQ(24,2,1,`<strong>Estático</strong>: redes pequeñas con pocas rutas, enlaces stub (una sola salida), ruta default. Ventaja: simple, predecible, sin overhead. <strong>Dinámico</strong>: redes grandes, adaptación automática a cambios. OSPF, EIGRP, BGP.`)">Dinámico solo en redes privadas</button>
+<button class="ex-opt" onclick="ansQ(24,3,1,`<strong>Estático</strong>: redes pequeñas con pocas rutas, enlaces stub (una sola salida), ruta default. Ventaja: simple, predecible, sin overhead. <strong>Dinámico</strong>: redes grandes, adaptación automática a cambios. OSPF, EIGRP, BGP.`)">No hay diferencia</button>
+</div>
+</div><div class="ex-q" id="q25">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 26 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Qué es el Router-ID de OSPF y qué ocurre si cambia?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(25,0,1,`El <strong>Router-ID</strong> es una IP de 32 bits única por router en el dominio OSPF. Si se cambia manualmente, el cambio no aplica hasta ejecutar <code>clear ip ospf process</code> (o reiniciar). El Router-ID afecta la elección DR/BDR.`)">Un valor que cambia con cada actualización</button>
+<button class="ex-opt" onclick="ansQ(25,1,1,`El <strong>Router-ID</strong> es una IP de 32 bits única por router en el dominio OSPF. Si se cambia manualmente, el cambio no aplica hasta ejecutar <code>clear ip ospf process</code> (o reiniciar). El Router-ID afecta la elección DR/BDR.`)">Una IP de 32 bits que identifica el router — cambiar requiere 'clear ip ospf process' para que tome efecto</button>
+<button class="ex-opt" onclick="ansQ(25,2,1,`El <strong>Router-ID</strong> es una IP de 32 bits única por router en el dominio OSPF. Si se cambia manualmente, el cambio no aplica hasta ejecutar <code>clear ip ospf process</code> (o reiniciar). El Router-ID afecta la elección DR/BDR.`)">El número de área OSPF</button>
+<button class="ex-opt" onclick="ansQ(25,3,1,`El <strong>Router-ID</strong> es una IP de 32 bits única por router en el dominio OSPF. Si se cambia manualmente, el cambio no aplica hasta ejecutar <code>clear ip ospf process</code> (o reiniciar). El Router-ID afecta la elección DR/BDR.`)">La IP de la interfaz WAN</button>
+</div>
+</div><div class="ex-q" id="q26">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 27 DE 30</span><span class="ex-qtype cli">CLI/CONFIG</span></div>
+  <div class="ex-qtext">¿Cuál es el comando para eliminar una ruta estática?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(26,0,1,`<code>no ip route [red] [máscara] [next-hop]</code> — debe coincidir exactamente con la ruta configurada. <code>clear ip route *</code> limpia la tabla pero no borra rutas estáticas de la config.`)">delete ip route 10.0.0.0 255.0.0.0</button>
+<button class="ex-opt" onclick="ansQ(26,1,1,`<code>no ip route [red] [máscara] [next-hop]</code> — debe coincidir exactamente con la ruta configurada. <code>clear ip route *</code> limpia la tabla pero no borra rutas estáticas de la config.`)">no ip route 10.0.0.0 255.0.0.0 192.168.1.1</button>
+<button class="ex-opt" onclick="ansQ(26,2,1,`<code>no ip route [red] [máscara] [next-hop]</code> — debe coincidir exactamente con la ruta configurada. <code>clear ip route *</code> limpia la tabla pero no borra rutas estáticas de la config.`)">remove route 10.0.0.0</button>
+<button class="ex-opt" onclick="ansQ(26,3,1,`<code>no ip route [red] [máscara] [next-hop]</code> — debe coincidir exactamente con la ruta configurada. <code>clear ip route *</code> limpia la tabla pero no borra rutas estáticas de la config.`)">clear ip route 10.0.0.0</button>
+</div>
+</div><div class="ex-q" id="q27">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 28 DE 30</span><span class="ex-qtype cli">CLI/CONFIG</span></div>
+  <div class="ex-qtext">¿Qué muestra 'show ip route connected'?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(27,0,1,`<code>show ip route connected</code> filtra mostrando solo <strong>C</strong> (redes conectadas) y <strong>L</strong> (IPs /32 de interfaces). Útil para verificar rápidamente interfaces activas sin ver toda la tabla.`)">Todas las rutas</button>
+<button class="ex-opt" onclick="ansQ(27,1,1,`<code>show ip route connected</code> filtra mostrando solo <strong>C</strong> (redes conectadas) y <strong>L</strong> (IPs /32 de interfaces). Útil para verificar rápidamente interfaces activas sin ver toda la tabla.`)">Solo rutas directamente conectadas (C y L)</button>
+<button class="ex-opt" onclick="ansQ(27,2,1,`<code>show ip route connected</code> filtra mostrando solo <strong>C</strong> (redes conectadas) y <strong>L</strong> (IPs /32 de interfaces). Útil para verificar rápidamente interfaces activas sin ver toda la tabla.`)">Rutas dinámicas</button>
+<button class="ex-opt" onclick="ansQ(27,3,1,`<code>show ip route connected</code> filtra mostrando solo <strong>C</strong> (redes conectadas) y <strong>L</strong> (IPs /32 de interfaces). Útil para verificar rápidamente interfaces activas sin ver toda la tabla.`)">Rutas estáticas</button>
+</div>
+</div><div class="ex-q" id="q28">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 29 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Qué es una ruta via Null0?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(28,0,1,`Una ruta <strong>via Null0</strong> descarta los paquetes sin ICMP. Se crea automáticamente en ABR OSPF para rutas sumarizadas (previene bucles). También se usa en 'black hole routing'. Diferente de <code>reject</code> que sí envía ICMP Unreachable.`)">Ruta que usa la interfaz loopback</button>
+<button class="ex-opt" onclick="ansQ(28,1,1,`Una ruta <strong>via Null0</strong> descarta los paquetes sin ICMP. Se crea automáticamente en ABR OSPF para rutas sumarizadas (previene bucles). También se usa en 'black hole routing'. Diferente de <code>reject</code> que sí envía ICMP Unreachable.`)">Ruta agujero negro — descarta silenciosamente sin enviar ICMP Unreachable</button>
+<button class="ex-opt" onclick="ansQ(28,2,1,`Una ruta <strong>via Null0</strong> descarta los paquetes sin ICMP. Se crea automáticamente en ABR OSPF para rutas sumarizadas (previene bucles). También se usa en 'black hole routing'. Diferente de <code>reject</code> que sí envía ICMP Unreachable.`)">Ruta temporal</button>
+<button class="ex-opt" onclick="ansQ(28,3,1,`Una ruta <strong>via Null0</strong> descarta los paquetes sin ICMP. Se crea automáticamente en ABR OSPF para rutas sumarizadas (previene bucles). También se usa en 'black hole routing'. Diferente de <code>reject</code> que sí envía ICMP Unreachable.`)">Ruta de backup automática</button>
+</div>
+</div><div class="ex-q" id="q29">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 30 DE 30</span><span class="ex-qtype cli">CLI/CONFIG</span></div>
+  <div class="ex-qtext">¿Qué comando configura el Router-ID de OSPF manualmente?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(29,0,0,`<code>router ospf [process]</code> → <code>router-id [IPv4]</code>. Ejemplo: <code>router ospf 1</code> → <code>router-id 1.1.1.1</code>. Aplicar cambio: <code>clear ip ospf process</code>. Usar IP de loopback como Router-ID es best practice.`)">router ospf 1; router-id 1.1.1.1</button>
+<button class="ex-opt" onclick="ansQ(29,1,0,`<code>router ospf [process]</code> → <code>router-id [IPv4]</code>. Ejemplo: <code>router ospf 1</code> → <code>router-id 1.1.1.1</code>. Aplicar cambio: <code>clear ip ospf process</code>. Usar IP de loopback como Router-ID es best practice.`)">ip ospf router-id 1.1.1.1</button>
+<button class="ex-opt" onclick="ansQ(29,2,0,`<code>router ospf [process]</code> → <code>router-id [IPv4]</code>. Ejemplo: <code>router ospf 1</code> → <code>router-id 1.1.1.1</code>. Aplicar cambio: <code>clear ip ospf process</code>. Usar IP de loopback como Router-ID es best practice.`)">ospf router-id 1.1.1.1</button>
+<button class="ex-opt" onclick="ansQ(29,3,0,`<code>router ospf [process]</code> → <code>router-id [IPv4]</code>. Ejemplo: <code>router ospf 1</code> → <code>router-id 1.1.1.1</code>. Aplicar cambio: <code>clear ip ospf process</code>. Usar IP de loopback como Router-ID es best practice.`)">router ospf 1; ip router-id 1.1.1.1</button>
+</div>
+</div>
+<div class="ex-result" id="exResult">
+<div class="ex-result-pct" id="rPct">0%</div>
+<div class="ex-result-label" id="rLabel"></div>
+<div class="ex-result-sub" id="rSub"></div>
+<a href="banco-preguntas.html" style="display:inline-block;margin-top:12px;padding:10px 24px;background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.3);border-radius:8px;color:#fbbf24;font-family:Share Tech Mono,monospace;font-size:.75rem;text-decoration:none;">← Ver todos los exámenes</a>
+</div>
+<div class="ex-nav"><a href="exam3.html" class="ex-nav-prev">← Anterior</a><a href="exam5.html" class="ex-nav-next">Siguiente →</a></div>
+</div>
+<script>
+var sc=0,an=0,tot=30;
+function ansQ(qi,sel,cor,exp){
+  var d=document.getElementById("q"+qi);
+  if(!d||d.classList.contains("answered"))return;
+  var btns=d.querySelectorAll(".ex-opt");
+  btns.forEach(function(b){b.disabled=true;});
+  btns[sel].classList.add(sel===cor?"correct":"wrong");
+  if(sel!==cor)btns[cor].classList.add("correct");
+  var e=document.createElement("div");
+  e.className="ex-exp";
+  e.innerHTML="<strong>"+(sel===cor?"✅ Correcto!":"❌ Incorrecto.")+"</strong> "+exp;
+  d.appendChild(e);
+  d.classList.add("answered");
+  if(sel===cor)sc++;
+  an++;
+  updScore();
+  if(an>=tot)showRes();
+}
+function updScore(){
+  var p=tot>0?Math.round(sc/tot*100):0;
+  document.getElementById("snum").textContent=sc+"/"+tot;
+  document.getElementById("sfill").style.width=p+"%";
+  document.getElementById("slbl").textContent=an+" respondidas · "+p+"% correcto";
+}
+function resetEx(){
+  sc=0;an=0;updScore();
+  document.getElementById("exResult").style.display="none";
+  for(var i=0;i<tot;i++){
+    var d=document.getElementById("q"+i);
+    if(!d)continue;
+    d.classList.remove("answered");
+    var btns=d.querySelectorAll(".ex-opt");
+    btns.forEach(function(b){b.disabled=false;b.classList.remove("correct","wrong");});
+    var ep=d.querySelector(".ex-exp");
+    if(ep)ep.remove();
+  }
+}
+function showRes(){
+  var p=Math.round(sc/tot*100);
+  var g=p>=85?"🏆 APROBADO — Excelente preparación":p>=70?"✅ CASI LISTO — Repasa los temas fallados":p>=55?"📚 SIGUE ESTUDIANDO — Revisa las explicaciones":"💪 NECESITAS REPASAR — Estudia más antes de repetir";
+  var s=p>=85?"Estás listo para el examen real CCNA 200-301.":p>=70?"Buen nivel. Repasa los conceptos donde fallaste.":p>=55?"Revisa las clases magistrales relacionadas.":"Repasa las clases y vuelve a intentarlo.";
+  document.getElementById("rPct").textContent=p+"%";
+  document.getElementById("rLabel").textContent=g;
+  document.getElementById("rSub").textContent=s;
+  var r=document.getElementById("exResult");
+  r.style.display="block";
+  r.scrollIntoView({behavior:"smooth",block:"center"});
+}
+</script>
+</body></html>

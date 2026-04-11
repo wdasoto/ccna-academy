@@ -1,113 +1,420 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Examen 1: Fundamentos de Redes | CCNA Academy</title>
-    <link rel="stylesheet" href="../assets/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Examen 01: Fundamentos de Redes | CCNA Academy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
 </head>
 <body>
-    <div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
-    <nav class="ccna-drawer" id="ccnaDrawer">
-      <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
-      <div class="drawer-section">
-        <div class="drawer-section-title">General</div>
-        <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a>
-        <a href="banco-preguntas.html" class="drawer-link"><span class="dl-icon">📝</span> Volver al Banco</a>
-      </div>
-    </nav>
-
-    <header class="header-quiz">
-        <div class="container">
-            <button class="btn-menu" onclick="ccnaOpen()">☰</button>
-            <h1>EXAMEN 1: FUNDAMENTOS DE REDES</h1>
-            <p>Dominio 1.0 — CCNA 200-301 (50 Preguntas)</p>
-        </div>
-    </header>
-
-    <main class="container quiz-container">
-        <div id="quiz-form">
-            <div id="questions-container"></div>
-            
-            <button type="button" class="btn-verify" onclick="verifyQuiz()">Finalizar y Calificar</button>
-        </div>
-
-        <div id="results" class="results-card" style="display:none;">
-            <h2>RESULTADOS</h2>
-            <div class="score-circle" id="score">0%</div>
-            <p id="resultsText"></p>
-            <button onclick="location.reload()" class="btn-retry">Reintentar Examen</button>
-        </div>
-    </main>
-
-    <script src="../assets/main.js"></script>
-    <script>
-        const questions = [
-            { q: "¿Cuál es la función principal de la capa de Red en el modelo OSI?", a: ["Enrutamiento de paquetes", "Entrega de datos proceso a proceso", "Control de errores de enlace", "Representación de datos"], c: 0 },
-            { q: "¿Qué protocolo opera en la capa de transporte y es orientado a conexión?", a: ["UDP", "IP", "TCP", "ICMP"], c: 2 },
-            { q: "¿Cuál es el propósito del protocolo ARP?", a: ["Asociar un nombre de dominio a una IP", "Asociar una dirección IP a una dirección MAC", "Asociar una MAC a un puerto de switch", "Transferir archivos de forma segura"], c: 1 },
-            { q: "¿Qué tipo de cable se debe usar para conectar un switch a un router?", a: ["Cruzado (Crossover)", "Directo (Straight-through)", "Consola (Rollover)", "Serial"], c: 1 },
-            { q: "¿Cuál es la máscara de subred por defecto para una dirección Clase B?", a: ["255.0.0.0", "255.255.255.0", "255.255.0.0", "255.255.255.252"], c: 2 },
-            { q: "¿Qué dispositivo opera principalmente en la Capa 2 del modelo OSI?", a: ["Router", "Hub", "Switch", "Repetidor"], c: 2 },
-            { q: "¿Cuál es la dirección de loopback estándar en IPv4?", a: ["192.168.1.1", "127.0.0.1", "10.0.0.1", "169.254.0.1"], c: 1 },
-            { q: "¿Qué campo del encabezado IPv4 se utiliza para evitar bucles infinitos?", a: ["Checksum", "Flags", "Time to Live (TTL)", "Protocol"], c: 2 },
-            { q: "¿Cuál es el tamaño (en bits) de una dirección IPv6?", a: ["32 bits", "48 bits", "64 bits", "128 bits"], c: 3 },
-            { q: "¿Qué protocolo se utiliza para la configuración dinámica de direcciones IP?", a: ["DNS", "DHCP", "SNMP", "NTP"], c: 1 },
-            // ... Aquí completarías las 50 preguntas siguiendo este patrón
-        ];
-
-        // Función para renderizar preguntas
-        function loadQuestions() {
-            const container = document.getElementById('questions-container');
-            questions.forEach((item, index) => {
-                const qDiv = document.createElement('div');
-                qDiv.className = 'question-block';
-                qDiv.innerHTML = `
-                    <p class="question-text"><strong>${index + 1}.</strong> ${item.q}</p>
-                    <div class="options-grid">
-                        ${item.a.map((opt, i) => `
-                            <label class="option-label">
-                                <input type="radio" name="q${index}" value="${i}">
-                                ${opt}
-                            </label>
-                        `).join('')}
-                    </div>
-                `;
-                container.appendChild(qDiv);
-            });
-        }
-
-        function verifyQuiz() {
-            let correct = 0;
-            questions.forEach((item, index) => {
-                const selected = document.querySelector(`input[name="q${index}"]:checked`);
-                const options = document.querySelectorAll(`input[name="q${index}"]`);
-                
-                options.forEach(opt => {
-                    const label = opt.parentElement;
-                    if (parseInt(opt.value) === item.c) {
-                        label.style.borderColor = "#00d4aa";
-                        label.style.background = "rgba(0,212,170,0.1)";
-                    } else if (opt.checked) {
-                        label.style.borderColor = "#ff4444";
-                        label.style.background = "rgba(255,68,68,0.1)";
-                    }
-                });
-
-                if (selected && parseInt(selected.value) === item.c) {
-                    correct++;
-                }
-            });
-
-            const score = Math.round((correct / questions.length) * 100);
-            document.getElementById('score').textContent = score + "%";
-            document.getElementById('resultsText').textContent = `Has respondido correctamente ${correct} de ${questions.length} preguntas.`;
-            document.getElementById('results').style.display = 'block';
-            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-        }
-
-        window.onload = loadQuestions;
-    </script>
-</body>
-</html>
+<div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
+<nav class="ccna-drawer" id="ccnaDrawer">
+  <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
+  <div class="drawer-section"><div class="drawer-section-title">General</div>
+    <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M1 · Fundamentos</div>
+    <a href="fundamentos.html" class="drawer-link"><span class="dl-icon">🌐</span> Fundamentos</a>
+    <a href="subnetting.html" class="drawer-link"><span class="dl-icon">🔢</span> Subnetting</a>
+    <a href="ipv6.html" class="drawer-link"><span class="dl-icon">6️⃣</span> IPv6</a>
+    <a href="arp.html" class="drawer-link"><span class="dl-icon">📡</span> ARP</a>
+    <a href="rip.html" class="drawer-link"><span class="dl-icon">🔄</span> RIP</a>
+    <a href="protocolos-internet.html" class="drawer-link"><span class="dl-icon">🌍</span> Protocolos Internet</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M3 · Switching</div>
+    <a href="vlan.html" class="drawer-link"><span class="dl-icon">🏷️</span> VLANs</a>
+    <a href="stp.html" class="drawer-link"><span class="dl-icon">🌳</span> STP</a>
+    <a href="etherchannel.html" class="drawer-link"><span class="dl-icon">🔗</span> EtherChannel</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M4 · Routing</div>
+    <a href="ospf.html" class="drawer-link"><span class="dl-icon">⭕</span> OSPF</a>
+    <a href="eigrp.html" class="drawer-link"><span class="dl-icon">⚡</span> EIGRP</a>
+    <a href="ospfv2-masterclass.html" class="drawer-link"><span class="dl-icon">🎯</span> OSPFv2 Masterclass</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M5 · Servicios IP</div>
+    <a href="dhcp.html" class="drawer-link"><span class="dl-icon">📋</span> DHCP</a>
+    <a href="nat.html" class="drawer-link"><span class="dl-icon">🔄</span> NAT/PAT</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">⚡ Herramientas</div>
+    <a href="asistente.html" class="drawer-link"><span class="dl-icon">🤖</span> Asistente IA</a>
+    <a href="netbot.html" class="drawer-link"><span class="dl-icon">⚙️</span> NetBot Config</a>
+    <a href="banco-preguntas.html" class="drawer-link"><span class="dl-icon">📝</span> Banco de Preguntas</a></div>
+</nav>
+<header class="navbar">
+  <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
+  <a href="../index.html" class="navbar-brand">CISCO<span> ACADEMY</span></a>
+  <div class="navbar-spacer"></div>
+  <a href="banco-preguntas.html" class="navbar-link">← Banco</a>
+</header>
+<script src="../assets/main.js" defer></script>
+<div class="nav-spacer"></div>
+<section class="ex-hero">
+<div class="ex-hero-inner">
+<div class="ex-badge">BANCO DE PREGUNTAS · EXAMEN 01 DE 10</div>
+<h1 class="ex-title">EXAMEN 01 — <span>Fundamentos de Redes</span></h1>
+<p class="ex-sub">Modelos OSI y TCP/IP, encapsulación, protocolos de capa 2 y 3, Ethernet, ARP, ICMP y comandos básicos Cisco IOS.</p>
+<div class="ex-meta">
+<span class="ex-meta-item">📋 31 preguntas</span>
+<span class="ex-meta-item">🎯 OSI · TCP/IP · Ethernet · ARP · ICMP · CLI básico</span>
+<span class="ex-meta-item">📅 Actualizado mar 2026</span>
+</div></div></section>
+<style>
+body{font-family:"Exo 2",sans-serif;background:#07090f;color:#e2e8f0;}
+.ex-hero{background:linear-gradient(135deg,#06080f,#0c1020 60%,#0e1428);padding:44px 24px 36px;border-bottom:1px solid rgba(251,191,36,.12);position:relative;overflow:hidden;}
+.ex-hero::before{content:"";position:absolute;top:-80px;right:-80px;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(251,191,36,.05) 0%,transparent 70%);pointer-events:none;}
+.ex-hero-inner{max-width:860px;margin:0 auto;position:relative;z-index:1;}
+.ex-badge{font-family:"Share Tech Mono",monospace;font-size:.62rem;color:#fbbf24;letter-spacing:3px;text-transform:uppercase;margin-bottom:12px;}
+.ex-title{font-family:"Orbitron",sans-serif;font-size:clamp(1.5rem,4vw,2.4rem);font-weight:900;letter-spacing:3px;color:#c2d0e8;margin-bottom:8px;line-height:1.1;}
+.ex-title span{background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.ex-sub{font-size:.9rem;color:#6b7a9a;line-height:1.65;margin-bottom:18px;max-width:680px;}
+.ex-meta{display:flex;gap:12px;flex-wrap:wrap;}
+.ex-meta-item{font-family:"Share Tech Mono",monospace;font-size:.68rem;color:#374060;padding:4px 10px;border:1px solid rgba(251,191,36,.1);border-radius:4px;}
+.ex-wrap{max-width:940px;margin:0 auto;padding:28px 20px 60px;}
+.ex-score-bar{background:#090d1a;border:1px solid rgba(251,191,36,.15);border-radius:12px;padding:16px 22px;margin-bottom:24px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;}
+.ex-score-num{font-family:"Orbitron",sans-serif;font-size:1.8rem;font-weight:900;background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;min-width:56px;}
+.ex-score-track{flex:1;height:7px;background:#0d1220;border-radius:4px;overflow:hidden;min-width:100px;}
+.ex-score-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#fbbf24,#f59e0b);transition:width .5s ease;width:0%;}
+.ex-score-label{font-family:"Share Tech Mono",monospace;font-size:.68rem;color:#4a5780;white-space:nowrap;}
+.ex-score-btn{padding:7px 16px;background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.25);border-radius:7px;color:#fbbf24;font-family:"Share Tech Mono",monospace;font-size:.68rem;cursor:pointer;transition:all .18s;margin-left:auto;}
+.ex-score-btn:hover{background:rgba(251,191,36,.18);}
+.ex-q{background:#0d1220;border:1px solid rgba(255,255,255,.05);border-radius:12px;padding:20px;margin-bottom:16px;transition:border-color .2s;}
+.ex-q.answered{border-color:rgba(251,191,36,.08);}
+.ex-qmeta{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.ex-qnum{font-family:"Share Tech Mono",monospace;font-size:.6rem;color:#374060;letter-spacing:2px;}
+.ex-qtype{font-family:"Share Tech Mono",monospace;font-size:.58rem;padding:2px 8px;border-radius:3px;}
+.ex-qtype.cli{background:rgba(0,212,170,.08);border:1px solid rgba(0,212,170,.2);color:#00d4aa;}
+.ex-qtype.concept{background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.2);color:#38bdf8;}
+.ex-qtype.trouble{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.2);color:#f87171;}
+.ex-qtype.scenario{background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.2);color:#a78bfa;}
+.ex-qtext{font-size:.9rem;color:#c2d0e8;line-height:1.65;margin-bottom:14px;}
+.ex-qtext code,.ex-exp code{font-family:"Share Tech Mono",monospace;font-size:.8rem;background:rgba(0,212,170,.08);color:#00d4aa;padding:1px 5px;border-radius:4px;border:1px solid rgba(0,212,170,.15);}
+.ex-opts{display:flex;flex-direction:column;gap:7px;}
+.ex-opt{padding:10px 14px;border-radius:8px;border:1px solid rgba(255,255,255,.06);background:#090d1a;color:#6b7a9a;cursor:pointer;font-size:.86rem;text-align:left;transition:all .15s;line-height:1.5;}
+.ex-opt:hover:not(:disabled){border-color:rgba(251,191,36,.3);color:#c2d0e8;background:rgba(251,191,36,.04);}
+.ex-opt.correct{border-color:#34d399;background:rgba(52,211,153,.08);color:#34d399;}
+.ex-opt.wrong{border-color:#f87171;background:rgba(248,113,113,.08);color:#f87171;}
+.ex-exp{margin-top:12px;padding:12px 16px;background:rgba(251,191,36,.04);border-left:3px solid #fbbf24;border-radius:6px;font-size:.83rem;color:#a0aec0;line-height:1.65;}
+.ex-exp strong{color:#c2d0e8;}
+.ex-result{background:linear-gradient(135deg,rgba(251,191,36,.08),rgba(245,158,11,.04));border:1px solid rgba(251,191,36,.2);border-radius:16px;padding:32px;text-align:center;margin-top:32px;display:none;}
+.ex-result-pct{font-family:"Orbitron",sans-serif;font-size:3rem;font-weight:900;background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px;}
+.ex-result-label{font-family:"Share Tech Mono",monospace;font-size:.9rem;color:#c2d0e8;margin-bottom:6px;}
+.ex-result-sub{font-size:.82rem;color:#6b7a9a;margin-bottom:16px;}
+.ex-nav{display:flex;align-items:center;justify-content:space-between;margin-top:28px;flex-wrap:wrap;gap:12px;}
+.ex-nav a{padding:10px 22px;border-radius:8px;font-family:"Share Tech Mono",monospace;font-size:.72rem;cursor:pointer;transition:all .18s;text-decoration:none;display:inline-block;}
+.ex-nav-prev{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:#4a5780;}
+.ex-nav-prev:hover{color:#c2d0e8;border-color:rgba(255,255,255,.2);}
+.ex-nav-next{background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);color:#fbbf24;}
+.ex-nav-next:hover{background:rgba(251,191,36,.2);box-shadow:0 0 16px rgba(251,191,36,.15);}
+@media(max-width:680px){.ex-opts .ex-opt{font-size:.8rem;}.ex-qtext{font-size:.86rem;}}
+</style>
+<div class="ex-wrap">
+<div class="ex-score-bar">
+<div class="ex-score-num" id="snum">0/31</div>
+<div class="ex-score-track"><div class="ex-score-fill" id="sfill"></div></div>
+<div class="ex-score-label" id="slbl">0 respondidas · 0% correcto</div>
+<button class="ex-score-btn" onclick="resetEx()">🔄 Reiniciar</button>
+</div>
+<div class="ex-q" id="q0">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 1 DE 31</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuántas capas tiene el modelo OSI?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(0,0,2,`El modelo OSI (Open Systems Interconnection) tiene exactamente <strong>7 capas</strong>: Física(1), Enlace de Datos(2), Red(3), Transporte(4), Sesión(5), Presentación(6) y Aplicación(7).`)">4</button>
+<button class="ex-opt" onclick="ansQ(0,1,2,`El modelo OSI (Open Systems Interconnection) tiene exactamente <strong>7 capas</strong>: Física(1), Enlace de Datos(2), Red(3), Transporte(4), Sesión(5), Presentación(6) y Aplicación(7).`)">5</button>
+<button class="ex-opt" onclick="ansQ(0,2,2,`El modelo OSI (Open Systems Interconnection) tiene exactamente <strong>7 capas</strong>: Física(1), Enlace de Datos(2), Red(3), Transporte(4), Sesión(5), Presentación(6) y Aplicación(7).`)">7</button>
+<button class="ex-opt" onclick="ansQ(0,3,2,`El modelo OSI (Open Systems Interconnection) tiene exactamente <strong>7 capas</strong>: Física(1), Enlace de Datos(2), Red(3), Transporte(4), Sesión(5), Presentación(6) y Aplicación(7).`)">8</button>
+</div>
+</div><div class="ex-q" id="q1">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 2 DE 31</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿En qué capa del modelo OSI opera un switch de capa 2?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(1,0,1,`Un switch de capa 2 toma decisiones de reenvío basadas en <strong>direcciones MAC</strong> (Capa 2). Los routers operan en Capa 3 (IP). Los hubs operan en Capa 1. Los firewalls de aplicación pueden operar hasta Capa 7.`)">Capa 1 — Física</button>
+<button class="ex-opt" onclick="ansQ(1,1,1,`Un switch de capa 2 toma decisiones de reenvío basadas en <strong>direcciones MAC</strong> (Capa 2). Los routers operan en Capa 3 (IP). Los hubs operan en Capa 1. Los firewalls de aplicación pueden operar hasta Capa 7.`)">Capa 2 — Enlace de Datos</button>
+<button class="ex-opt" onclick="ansQ(1,2,1,`Un switch de capa 2 toma decisiones de reenvío basadas en <strong>direcciones MAC</strong> (Capa 2). Los routers operan en Capa 3 (IP). Los hubs operan en Capa 1. Los firewalls de aplicación pueden operar hasta Capa 7.`)">Capa 3 — Red</button>
+<button class="ex-opt" onclick="ansQ(1,3,1,`Un switch de capa 2 toma decisiones de reenvío basadas en <strong>direcciones MAC</strong> (Capa 2). Los routers operan en Capa 3 (IP). Los hubs operan en Capa 1. Los firewalls de aplicación pueden operar hasta Capa 7.`)">Capa 4 — Transporte</button>
+</div>
+</div><div class="ex-q" id="q2">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 3 DE 31</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuál es la PDU de la capa de Transporte en TCP?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(2,0,2,`PDUs por capa: Física=Bits, Enlace=<strong>Frame</strong>, Red=<strong>Paquete</strong>, Transporte TCP=<strong>Segmento</strong> (UDP=Datagrama), Aplicación=Datos. Este concepto es frecuente en el examen CCNA.`)">Frame</button>
+<button class="ex-opt" onclick="ansQ(2,1,2,`PDUs por capa: Física=Bits, Enlace=<strong>Frame</strong>, Red=<strong>Paquete</strong>, Transporte TCP=<strong>Segmento</strong> (UDP=Datagrama), Aplicación=Datos. Este concepto es frecuente en el examen CCNA.`)">Paquete</button>
+<button class="ex-opt" onclick="ansQ(2,2,2,`PDUs por capa: Física=Bits, Enlace=<strong>Frame</strong>, Red=<strong>Paquete</strong>, Transporte TCP=<strong>Segmento</strong> (UDP=Datagrama), Aplicación=Datos. Este concepto es frecuente en el examen CCNA.`)">Segmento</button>
+<button class="ex-opt" onclick="ansQ(2,3,2,`PDUs por capa: Física=Bits, Enlace=<strong>Frame</strong>, Red=<strong>Paquete</strong>, Transporte TCP=<strong>Segmento</strong> (UDP=Datagrama), Aplicación=Datos. Este concepto es frecuente en el examen CCNA.`)">Bit</button>
+</div>
+</div><div class="ex-q" id="q3">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 4 DE 31</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuál es la dirección MAC de broadcast?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(3,0,1,`La MAC de broadcast es <strong>FF:FF:FF:FF:FF:FF</strong>. Todos los dispositivos del mismo segmento Ethernet la procesan. No confundir con 255.255.255.255 que es broadcast de capa 3 (IP).`)">00:00:00:00:00:00</button>
+<button class="ex-opt" onclick="ansQ(3,1,1,`La MAC de broadcast es <strong>FF:FF:FF:FF:FF:FF</strong>. Todos los dispositivos del mismo segmento Ethernet la procesan. No confundir con 255.255.255.255 que es broadcast de capa 3 (IP).`)">FF:FF:FF:FF:FF:FF</button>
+<button class="ex-opt" onclick="ansQ(3,2,1,`La MAC de broadcast es <strong>FF:FF:FF:FF:FF:FF</strong>. Todos los dispositivos del mismo segmento Ethernet la procesan. No confundir con 255.255.255.255 que es broadcast de capa 3 (IP).`)">127.0.0.1</button>
+<button class="ex-opt" onclick="ansQ(3,3,1,`La MAC de broadcast es <strong>FF:FF:FF:FF:FF:FF</strong>. Todos los dispositivos del mismo segmento Ethernet la procesan. No confundir con 255.255.255.255 que es broadcast de capa 3 (IP).`)">255.255.255.255</button>
+</div>
+</div><div class="ex-q" id="q4">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 5 DE 31</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Qué EtherType corresponde a ARP?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(4,0,1,`EtherType <strong>0x0806</strong> = ARP. Otros valores clave: 0x0800=IPv4, 0x86DD=IPv6, 0x8100=802.1Q VLAN. El EtherType en el frame Ethernet identifica el protocolo de capa superior.`)">0x0800</button>
+<button class="ex-opt" onclick="ansQ(4,1,1,`EtherType <strong>0x0806</strong> = ARP. Otros valores clave: 0x0800=IPv4, 0x86DD=IPv6, 0x8100=802.1Q VLAN. El EtherType en el frame Ethernet identifica el protocolo de capa superior.`)">0x0806</button>
+<button class="ex-opt" onclick="ansQ(4,2,1,`EtherType <strong>0x0806</strong> = ARP. Otros valores clave: 0x0800=IPv4, 0x86DD=IPv6, 0x8100=802.1Q VLAN. El EtherType en el frame Ethernet identifica el protocolo de capa superior.`)">0x86DD</button>
+<button class="ex-opt" onclick="ansQ(4,3,1,`EtherType <strong>0x0806</strong> = ARP. Otros valores clave: 0x0800=IPv4, 0x86DD=IPv6, 0x8100=802.1Q VLAN. El EtherType en el frame Ethernet identifica el protocolo de capa superior.`)">0x8100</button>
+</div>
+</div><div class="ex-q" id="q5">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 6 DE 31</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Qué campo del header IP previene bucles infinitos?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(5,0,2,`El <strong>TTL (Time To Live)</strong> se decrementa en 1 por cada router. Cuando llega a 0, el router descarta el paquete y envía ICMP Type 11 (Time Exceeded) al origen. Cisco IOS usa TTL=255 por defecto en sus pings.`)">Checksum</button>
+<button class="ex-opt" onclick="ansQ(5,1,2,`El <strong>TTL (Time To Live)</strong> se decrementa en 1 por cada router. Cuando llega a 0, el router descarta el paquete y envía ICMP Type 11 (Time Exceeded) al origen. Cisco IOS usa TTL=255 por defecto en sus pings.`)">Identification</button>
+<button class="ex-opt" onclick="ansQ(5,2,2,`El <strong>TTL (Time To Live)</strong> se decrementa en 1 por cada router. Cuando llega a 0, el router descarta el paquete y envía ICMP Type 11 (Time Exceeded) al origen. Cisco IOS usa TTL=255 por defecto en sus pings.`)">TTL</button>
+<button class="ex-opt" onclick="ansQ(5,3,2,`El <strong>TTL (Time To Live)</strong> se decrementa en 1 por cada router. Cuando llega a 0, el router descarta el paquete y envía ICMP Type 11 (Time Exceeded) al origen. Cisco IOS usa TTL=255 por defecto en sus pings.`)">Flags</button>
+</div>
+</div><div class="ex-q" id="q6">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 7 DE 31</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Qué mensaje ICMP envía el comando ping?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(6,0,1,`Ping usa <strong>ICMP Type 8 Echo Request</strong> y espera <strong>ICMP Type 0 Echo Reply</strong>. Type 11 lo usa traceroute (TTL agotado). Type 3 indica destino inalcanzable.`)">Type 3 (Unreachable) y Type 4</button>
+<button class="ex-opt" onclick="ansQ(6,1,1,`Ping usa <strong>ICMP Type 8 Echo Request</strong> y espera <strong>ICMP Type 0 Echo Reply</strong>. Type 11 lo usa traceroute (TTL agotado). Type 3 indica destino inalcanzable.`)">Type 8 (Echo Request) enviado, Type 0 (Echo Reply) recibido</button>
+<button class="ex-opt" onclick="ansQ(6,2,1,`Ping usa <strong>ICMP Type 8 Echo Request</strong> y espera <strong>ICMP Type 0 Echo Reply</strong>. Type 11 lo usa traceroute (TTL agotado). Type 3 indica destino inalcanzable.`)">Type 11 (Time Exceeded) en ambos sentidos</button>
+<button class="ex-opt" onclick="ansQ(6,3,1,`Ping usa <strong>ICMP Type 8 Echo Request</strong> y espera <strong>ICMP Type 0 Echo Reply</strong>. Type 11 lo usa traceroute (TTL agotado). Type 3 indica destino inalcanzable.`)">Type 5 (Redirect)</button>
+</div>
+</div><div class="ex-q" id="q7">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 8 DE 31</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Qué ocurre cuando un switch recibe un frame con MAC destino desconocida?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(7,0,2,`Cuando la MAC destino <strong>no está en la tabla MAC</strong>, el switch realiza <strong>flooding</strong> — envía el frame por todos los puertos del mismo VLAN excepto el de entrada. Este proceso se llama Unknown Unicast Flooding.`)">Lo descarta</button>
+<button class="ex-opt" onclick="ansQ(7,1,2,`Cuando la MAC destino <strong>no está en la tabla MAC</strong>, el switch realiza <strong>flooding</strong> — envía el frame por todos los puertos del mismo VLAN excepto el de entrada. Este proceso se llama Unknown Unicast Flooding.`)">Lo envía solo al primer puerto</button>
+<button class="ex-opt" onclick="ansQ(7,2,2,`Cuando la MAC destino <strong>no está en la tabla MAC</strong>, el switch realiza <strong>flooding</strong> — envía el frame por todos los puertos del mismo VLAN excepto el de entrada. Este proceso se llama Unknown Unicast Flooding.`)">Flooding — lo envía por todos los puertos excepto el de entrada</button>
+<button class="ex-opt" onclick="ansQ(7,3,2,`Cuando la MAC destino <strong>no está en la tabla MAC</strong>, el switch realiza <strong>flooding</strong> — envía el frame por todos los puertos del mismo VLAN excepto el de entrada. Este proceso se llama Unknown Unicast Flooding.`)">Solicita la MAC al servidor DHCP</button>
+</div>
+</div><div class="ex-q" id="q8">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 9 DE 31</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuál es la diferencia entre un hub y un switch?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(8,0,1,`Un <strong>hub</strong> repite la señal por todos los puertos — todos comparten el mismo dominio de colisión. Un <strong>switch</strong> crea un dominio de colisión independiente por puerto usando la tabla MAC. Todos los puertos del hub/switch comparten el mismo dominio de broadcast.`)">Los hubs son más rápidos</button>
+<button class="ex-opt" onclick="ansQ(8,1,1,`Un <strong>hub</strong> repite la señal por todos los puertos — todos comparten el mismo dominio de colisión. Un <strong>switch</strong> crea un dominio de colisión independiente por puerto usando la tabla MAC. Todos los puertos del hub/switch comparten el mismo dominio de broadcast.`)">Los switches crean dominios de colisión separados por puerto; los hubs comparten el dominio</button>
+<button class="ex-opt" onclick="ansQ(8,2,1,`Un <strong>hub</strong> repite la señal por todos los puertos — todos comparten el mismo dominio de colisión. Un <strong>switch</strong> crea un dominio de colisión independiente por puerto usando la tabla MAC. Todos los puertos del hub/switch comparten el mismo dominio de broadcast.`)">Los hubs usan IPs, los switches MACs</button>
+<button class="ex-opt" onclick="ansQ(8,3,1,`Un <strong>hub</strong> repite la señal por todos los puertos — todos comparten el mismo dominio de colisión. Un <strong>switch</strong> crea un dominio de colisión independiente por puerto usando la tabla MAC. Todos los puertos del hub/switch comparten el mismo dominio de broadcast.`)">Los switches operan en capa 1</button>
+</div>
+</div><div class="ex-q" id="q9">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 10 DE 31</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Qué protocolo traduce IPs a MACs dentro de una red local?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(9,0,2,`<strong>ARP (Address Resolution Protocol)</strong> resuelve IPs a MACs. El host envía un ARP Request como broadcast; el dueño de la IP responde con un ARP Reply unicast con su MAC. EtherType 0x0806.`)">ICMP</button>
+<button class="ex-opt" onclick="ansQ(9,1,2,`<strong>ARP (Address Resolution Protocol)</strong> resuelve IPs a MACs. El host envía un ARP Request como broadcast; el dueño de la IP responde con un ARP Reply unicast con su MAC. EtherType 0x0806.`)">DNS</button>
+<button class="ex-opt" onclick="ansQ(9,2,2,`<strong>ARP (Address Resolution Protocol)</strong> resuelve IPs a MACs. El host envía un ARP Request como broadcast; el dueño de la IP responde con un ARP Reply unicast con su MAC. EtherType 0x0806.`)">ARP</button>
+<button class="ex-opt" onclick="ansQ(9,3,2,`<strong>ARP (Address Resolution Protocol)</strong> resuelve IPs a MACs. El host envía un ARP Request como broadcast; el dueño de la IP responde con un ARP Reply unicast con su MAC. EtherType 0x0806.`)">DHCP</button>
+</div>
+</div><div class="ex-q" id="q10">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 11 DE 31</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuántos dominios de broadcast crea un switch de 24 puertos sin VLANs?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(10,0,1,`Un switch sin VLANs tiene <strong>1 único dominio de broadcast</strong> — todos los puertos en la misma VLAN por defecto (VLAN 1). Para segmentar dominios de broadcast se usan VLANs. Los routers separan dominios de broadcast en cada interfaz.`)">24 dominios</button>
+<button class="ex-opt" onclick="ansQ(10,1,1,`Un switch sin VLANs tiene <strong>1 único dominio de broadcast</strong> — todos los puertos en la misma VLAN por defecto (VLAN 1). Para segmentar dominios de broadcast se usan VLANs. Los routers separan dominios de broadcast en cada interfaz.`)">1 dominio</button>
+<button class="ex-opt" onclick="ansQ(10,2,1,`Un switch sin VLANs tiene <strong>1 único dominio de broadcast</strong> — todos los puertos en la misma VLAN por defecto (VLAN 1). Para segmentar dominios de broadcast se usan VLANs. Los routers separan dominios de broadcast en cada interfaz.`)">2 dominios</button>
+<button class="ex-opt" onclick="ansQ(10,3,1,`Un switch sin VLANs tiene <strong>1 único dominio de broadcast</strong> — todos los puertos en la misma VLAN por defecto (VLAN 1). Para segmentar dominios de broadcast se usan VLANs. Los routers separan dominios de broadcast en cada interfaz.`)">12 dominios</button>
+</div>
+</div><div class="ex-q" id="q11">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 12 DE 31</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuál es el número de protocolo IP de TCP?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(11,0,1,`TCP = protocolo IP número <strong>6</strong>. ICMP=1, UDP=17, GRE=47, ESP=50, EIGRP=88, OSPF=89. Este campo del header IP identifica qué protocolo lleva el payload.`)">1</button>
+<button class="ex-opt" onclick="ansQ(11,1,1,`TCP = protocolo IP número <strong>6</strong>. ICMP=1, UDP=17, GRE=47, ESP=50, EIGRP=88, OSPF=89. Este campo del header IP identifica qué protocolo lleva el payload.`)">6</button>
+<button class="ex-opt" onclick="ansQ(11,2,1,`TCP = protocolo IP número <strong>6</strong>. ICMP=1, UDP=17, GRE=47, ESP=50, EIGRP=88, OSPF=89. Este campo del header IP identifica qué protocolo lleva el payload.`)">17</button>
+<button class="ex-opt" onclick="ansQ(11,3,1,`TCP = protocolo IP número <strong>6</strong>. ICMP=1, UDP=17, GRE=47, ESP=50, EIGRP=88, OSPF=89. Este campo del header IP identifica qué protocolo lleva el payload.`)">89</button>
+</div>
+</div><div class="ex-q" id="q12">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 13 DE 31</span><span class="ex-qtype cli">CLI/CONFIG</span></div>
+  <div class="ex-qtext">¿Cuál es el comando para ver la tabla MAC de un switch Cisco?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(12,0,1,`<code>show mac address-table</code> muestra la tabla de MACs del switch: VLAN, MAC, Tipo (DYNAMIC/STATIC) y Puerto. También: <code>show mac address-table address [MAC]</code> o <code>show mac address-table interface [int]</code>.`)">show ip arp</button>
+<button class="ex-opt" onclick="ansQ(12,1,1,`<code>show mac address-table</code> muestra la tabla de MACs del switch: VLAN, MAC, Tipo (DYNAMIC/STATIC) y Puerto. También: <code>show mac address-table address [MAC]</code> o <code>show mac address-table interface [int]</code>.`)">show mac address-table</button>
+<button class="ex-opt" onclick="ansQ(12,2,1,`<code>show mac address-table</code> muestra la tabla de MACs del switch: VLAN, MAC, Tipo (DYNAMIC/STATIC) y Puerto. También: <code>show mac address-table address [MAC]</code> o <code>show mac address-table interface [int]</code>.`)">show interface status</button>
+<button class="ex-opt" onclick="ansQ(12,3,1,`<code>show mac address-table</code> muestra la tabla de MACs del switch: VLAN, MAC, Tipo (DYNAMIC/STATIC) y Puerto. También: <code>show mac address-table address [MAC]</code> o <code>show mac address-table interface [int]</code>.`)">show cdp neighbors</button>
+</div>
+</div><div class="ex-q" id="q13">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 14 DE 31</span><span class="ex-qtype cli">CLI/CONFIG</span></div>
+  <div class="ex-qtext">¿Qué hace el comando 'show ip interface brief'?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(13,0,1,`<code>show ip interface brief</code> muestra un resumen rápido de todas las interfaces: nombre, dirección IP, OK?, Method, Status (up/down/administratively down), Protocol (up/down). Es el comando más usado para verificar rápidamente el estado de las interfaces.`)">Muestra la tabla de routing</button>
+<button class="ex-opt" onclick="ansQ(13,1,1,`<code>show ip interface brief</code> muestra un resumen rápido de todas las interfaces: nombre, dirección IP, OK?, Method, Status (up/down/administratively down), Protocol (up/down). Es el comando más usado para verificar rápidamente el estado de las interfaces.`)">Muestra estado de interfaces: nombre, IP, estado (up/down) y protocolo</button>
+<button class="ex-opt" onclick="ansQ(13,2,1,`<code>show ip interface brief</code> muestra un resumen rápido de todas las interfaces: nombre, dirección IP, OK?, Method, Status (up/down/administratively down), Protocol (up/down). Es el comando más usado para verificar rápidamente el estado de las interfaces.`)">Muestra la configuración completa de interfaces</button>
+<button class="ex-opt" onclick="ansQ(13,3,1,`<code>show ip interface brief</code> muestra un resumen rápido de todas las interfaces: nombre, dirección IP, OK?, Method, Status (up/down/administratively down), Protocol (up/down). Es el comando más usado para verificar rápidamente el estado de las interfaces.`)">Muestra estadísticas de tráfico</button>
+</div>
+</div><div class="ex-q" id="q14">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 15 DE 31</span><span class="ex-qtype cli">CLI/CONFIG</span></div>
+  <div class="ex-qtext">¿Qué significa 'administratively down' en una interfaz Cisco?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(14,0,1,`'<strong>administratively down</strong>' indica que la interfaz fue deshabilitada con el comando <code>shutdown</code>. Para activarla: <code>no shutdown</code>. Las interfaces de router están 'shutdown' por defecto; las de switch están activas al conectar un cable.`)">Cable desconectado</button>
+<button class="ex-opt" onclick="ansQ(14,1,1,`'<strong>administratively down</strong>' indica que la interfaz fue deshabilitada con el comando <code>shutdown</code>. Para activarla: <code>no shutdown</code>. Las interfaces de router están 'shutdown' por defecto; las de switch están activas al conectar un cable.`)">La interfaz fue apagada manualmente con 'shutdown'</button>
+<button class="ex-opt" onclick="ansQ(14,2,1,`'<strong>administratively down</strong>' indica que la interfaz fue deshabilitada con el comando <code>shutdown</code>. Para activarla: <code>no shutdown</code>. Las interfaces de router están 'shutdown' por defecto; las de switch están activas al conectar un cable.`)">No hay dirección IP configurada</button>
+<button class="ex-opt" onclick="ansQ(14,3,1,`'<strong>administratively down</strong>' indica que la interfaz fue deshabilitada con el comando <code>shutdown</code>. Para activarla: <code>no shutdown</code>. Las interfaces de router están 'shutdown' por defecto; las de switch están activas al conectar un cable.`)">Problema de velocidad/duplex</button>
+</div>
+</div><div class="ex-q" id="q15">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 16 DE 31</span><span class="ex-qtype cli">CLI/CONFIG</span></div>
+  <div class="ex-qtext">¿Qué protocolo descubre vecinos directamente conectados y sus capacidades en redes Cisco?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(15,0,1,`<strong>CDP (Cisco Discovery Protocol)</strong> y <strong>LLDP (Link Layer Discovery Protocol)</strong> descubren vecinos directamente conectados. CDP es propietario Cisco (habilitado por defecto). LLDP es el estándar IEEE 802.1AB. Comando: <code>show cdp neighbors detail</code>.`)">SNMP</button>
+<button class="ex-opt" onclick="ansQ(15,1,1,`<strong>CDP (Cisco Discovery Protocol)</strong> y <strong>LLDP (Link Layer Discovery Protocol)</strong> descubren vecinos directamente conectados. CDP es propietario Cisco (habilitado por defecto). LLDP es el estándar IEEE 802.1AB. Comando: <code>show cdp neighbors detail</code>.`)">CDP / LLDP</button>
+<button class="ex-opt" onclick="ansQ(15,2,1,`<strong>CDP (Cisco Discovery Protocol)</strong> y <strong>LLDP (Link Layer Discovery Protocol)</strong> descubren vecinos directamente conectados. CDP es propietario Cisco (habilitado por defecto). LLDP es el estándar IEEE 802.1AB. Comando: <code>show cdp neighbors detail</code>.`)">OSPF</button>
+<button class="ex-opt" onclick="ansQ(15,3,1,`<strong>CDP (Cisco Discovery Protocol)</strong> y <strong>LLDP (Link Layer Discovery Protocol)</strong> descubren vecinos directamente conectados. CDP es propietario Cisco (habilitado por defecto). LLDP es el estándar IEEE 802.1AB. Comando: <code>show cdp neighbors detail</code>.`)">ping</button>
+</div>
+</div><div class="ex-q" id="q16">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 17 DE 31</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuál es el tamaño máximo de un frame Ethernet estándar?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(16,0,1,`El frame Ethernet máximo estándar es <strong>1518 bytes</strong> (14 header + 1500 payload + 4 FCS). Con tag 802.1Q: 1522 bytes. Jumbo frames: hasta 9000 bytes (requiere configuración especial). El valor de 1500 bytes es el MTU (Maximum Transmission Unit).`)">1000 bytes</button>
+<button class="ex-opt" onclick="ansQ(16,1,1,`El frame Ethernet máximo estándar es <strong>1518 bytes</strong> (14 header + 1500 payload + 4 FCS). Con tag 802.1Q: 1522 bytes. Jumbo frames: hasta 9000 bytes (requiere configuración especial). El valor de 1500 bytes es el MTU (Maximum Transmission Unit).`)">1518 bytes</button>
+<button class="ex-opt" onclick="ansQ(16,2,1,`El frame Ethernet máximo estándar es <strong>1518 bytes</strong> (14 header + 1500 payload + 4 FCS). Con tag 802.1Q: 1522 bytes. Jumbo frames: hasta 9000 bytes (requiere configuración especial). El valor de 1500 bytes es el MTU (Maximum Transmission Unit).`)">1522 bytes</button>
+<button class="ex-opt" onclick="ansQ(16,3,1,`El frame Ethernet máximo estándar es <strong>1518 bytes</strong> (14 header + 1500 payload + 4 FCS). Con tag 802.1Q: 1522 bytes. Jumbo frames: hasta 9000 bytes (requiere configuración especial). El valor de 1500 bytes es el MTU (Maximum Transmission Unit).`)">9000 bytes</button>
+</div>
+</div><div class="ex-q" id="q17">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 18 DE 31</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuál es la dirección de loopback estándar en IPv4?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(17,0,2,`La dirección de loopback estándar es <strong>127.0.0.1</strong>. Todo el rango 127.0.0.0/8 está reservado. <code>ping 127.0.0.1</code> verifica el stack TCP/IP local sin salir a la red. En Cisco, las interfaces loopback se crean con <code>interface loopback 0</code>.`)">192.168.0.1</button>
+<button class="ex-opt" onclick="ansQ(17,1,2,`La dirección de loopback estándar es <strong>127.0.0.1</strong>. Todo el rango 127.0.0.0/8 está reservado. <code>ping 127.0.0.1</code> verifica el stack TCP/IP local sin salir a la red. En Cisco, las interfaces loopback se crean con <code>interface loopback 0</code>.`)">10.0.0.1</button>
+<button class="ex-opt" onclick="ansQ(17,2,2,`La dirección de loopback estándar es <strong>127.0.0.1</strong>. Todo el rango 127.0.0.0/8 está reservado. <code>ping 127.0.0.1</code> verifica el stack TCP/IP local sin salir a la red. En Cisco, las interfaces loopback se crean con <code>interface loopback 0</code>.`)">127.0.0.1</button>
+<button class="ex-opt" onclick="ansQ(17,3,2,`La dirección de loopback estándar es <strong>127.0.0.1</strong>. Todo el rango 127.0.0.0/8 está reservado. <code>ping 127.0.0.1</code> verifica el stack TCP/IP local sin salir a la red. En Cisco, las interfaces loopback se crean con <code>interface loopback 0</code>.`)">0.0.0.0</button>
+</div>
+</div><div class="ex-q" id="q18">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 19 DE 31</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuáles son las MACs que cambian y las que no cambian al pasar por un router?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(18,0,1,`Principio fundamental: las <strong>IPs no cambian</strong> (identifican los extremos finales). Las <strong>MACs cambian en cada salto</strong> — el router quita el frame entrante y construye uno nuevo con las MACs del segmento local. ARP se ejecuta en cada segmento para obtener la MAC del siguiente salto.`)">IPs y MACs permanecen iguales</button>
+<button class="ex-opt" onclick="ansQ(18,1,1,`Principio fundamental: las <strong>IPs no cambian</strong> (identifican los extremos finales). Las <strong>MACs cambian en cada salto</strong> — el router quita el frame entrante y construye uno nuevo con las MACs del segmento local. ARP se ejecuta en cada segmento para obtener la MAC del siguiente salto.`)">MACs cambian en cada salto, IPs no cambian (extremo a extremo)</button>
+<button class="ex-opt" onclick="ansQ(18,2,1,`Principio fundamental: las <strong>IPs no cambian</strong> (identifican los extremos finales). Las <strong>MACs cambian en cada salto</strong> — el router quita el frame entrante y construye uno nuevo con las MACs del segmento local. ARP se ejecuta en cada segmento para obtener la MAC del siguiente salto.`)">IPs cambian en cada salto, MACs no cambian</button>
+<button class="ex-opt" onclick="ansQ(18,3,1,`Principio fundamental: las <strong>IPs no cambian</strong> (identifican los extremos finales). Las <strong>MACs cambian en cada salto</strong> — el router quita el frame entrante y construye uno nuevo con las MACs del segmento local. ARP se ejecuta en cada segmento para obtener la MAC del siguiente salto.`)">Todo cambia en cada salto</button>
+</div>
+</div><div class="ex-q" id="q19">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 20 DE 31</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Qué tipo de dirección es 169.254.10.5?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(19,0,2,`El rango <strong>169.254.0.0/16</strong> es APIPA — un host configura esta IP automáticamente cuando no puede obtener IP de DHCP. Solo permite comunicación local (sin gateway, sin DNS, sin Internet). Indica problema de conectividad con el servidor DHCP.`)">Dirección pública</button>
+<button class="ex-opt" onclick="ansQ(19,1,2,`El rango <strong>169.254.0.0/16</strong> es APIPA — un host configura esta IP automáticamente cuando no puede obtener IP de DHCP. Solo permite comunicación local (sin gateway, sin DNS, sin Internet). Indica problema de conectividad con el servidor DHCP.`)">Dirección privada clase B</button>
+<button class="ex-opt" onclick="ansQ(19,2,2,`El rango <strong>169.254.0.0/16</strong> es APIPA — un host configura esta IP automáticamente cuando no puede obtener IP de DHCP. Solo permite comunicación local (sin gateway, sin DNS, sin Internet). Indica problema de conectividad con el servidor DHCP.`)">APIPA — Automatic Private IP Addressing (sin servidor DHCP disponible)</button>
+<button class="ex-opt" onclick="ansQ(19,3,2,`El rango <strong>169.254.0.0/16</strong> es APIPA — un host configura esta IP automáticamente cuando no puede obtener IP de DHCP. Solo permite comunicación local (sin gateway, sin DNS, sin Internet). Indica problema de conectividad con el servidor DHCP.`)">Dirección de loopback</button>
+</div>
+</div><div class="ex-q" id="q20">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 21 DE 31</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuántos bits tiene una dirección MAC?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(20,0,1,`Una MAC tiene <strong>48 bits</strong> (6 bytes), representados como AA:BB:CC:DD:EE:FF. Los primeros 24 bits = OUI (fabricante). Los últimos 24 bits = asignados por el fabricante. Las MACs son únicas globalmente (en teoría).`)">32 bits</button>
+<button class="ex-opt" onclick="ansQ(20,1,1,`Una MAC tiene <strong>48 bits</strong> (6 bytes), representados como AA:BB:CC:DD:EE:FF. Los primeros 24 bits = OUI (fabricante). Los últimos 24 bits = asignados por el fabricante. Las MACs son únicas globalmente (en teoría).`)">48 bits</button>
+<button class="ex-opt" onclick="ansQ(20,2,1,`Una MAC tiene <strong>48 bits</strong> (6 bytes), representados como AA:BB:CC:DD:EE:FF. Los primeros 24 bits = OUI (fabricante). Los últimos 24 bits = asignados por el fabricante. Las MACs son únicas globalmente (en teoría).`)">64 bits</button>
+<button class="ex-opt" onclick="ansQ(20,3,1,`Una MAC tiene <strong>48 bits</strong> (6 bytes), representados como AA:BB:CC:DD:EE:FF. Los primeros 24 bits = OUI (fabricante). Los últimos 24 bits = asignados por el fabricante. Las MACs son únicas globalmente (en teoría).`)">128 bits</button>
+</div>
+</div><div class="ex-q" id="q21">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 22 DE 31</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuál es la diferencia entre TCP y UDP?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(21,0,1,`<strong>TCP</strong>: orientado a conexión, confiable, ordenado, con control de flujo — para HTTP, SSH, FTP. <strong>UDP</strong>: sin conexión, sin garantías, 8 bytes de header mínimo — para DNS, VoIP, DHCP, SNMP donde importa la velocidad.`)">TCP usa IPv4, UDP usa IPv6</button>
+<button class="ex-opt" onclick="ansQ(21,1,1,`<strong>TCP</strong>: orientado a conexión, confiable, ordenado, con control de flujo — para HTTP, SSH, FTP. <strong>UDP</strong>: sin conexión, sin garantías, 8 bytes de header mínimo — para DNS, VoIP, DHCP, SNMP donde importa la velocidad.`)">TCP garantiza entrega ordenada con conexión (3-Way HS); UDP es sin conexión y sin garantías — más rápido</button>
+<button class="ex-opt" onclick="ansQ(21,2,1,`<strong>TCP</strong>: orientado a conexión, confiable, ordenado, con control de flujo — para HTTP, SSH, FTP. <strong>UDP</strong>: sin conexión, sin garantías, 8 bytes de header mínimo — para DNS, VoIP, DHCP, SNMP donde importa la velocidad.`)">TCP es más rápido que UDP</button>
+<button class="ex-opt" onclick="ansQ(21,3,1,`<strong>TCP</strong>: orientado a conexión, confiable, ordenado, con control de flujo — para HTTP, SSH, FTP. <strong>UDP</strong>: sin conexión, sin garantías, 8 bytes de header mínimo — para DNS, VoIP, DHCP, SNMP donde importa la velocidad.`)">UDP usa más ancho de banda</button>
+</div>
+</div><div class="ex-q" id="q22">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 23 DE 31</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuál es el número de puerto de SSH?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(22,0,1,`SSH usa el puerto <strong>TCP 22</strong>. Telnet=23, FTP=20/21, HTTP=80, HTTPS=443, DNS=53, DHCP=67/68. SSH cifra toda la sesión (contraseñas y datos). Telnet envía todo en texto plano — nunca usar en producción.`)">21</button>
+<button class="ex-opt" onclick="ansQ(22,1,1,`SSH usa el puerto <strong>TCP 22</strong>. Telnet=23, FTP=20/21, HTTP=80, HTTPS=443, DNS=53, DHCP=67/68. SSH cifra toda la sesión (contraseñas y datos). Telnet envía todo en texto plano — nunca usar en producción.`)">22</button>
+<button class="ex-opt" onclick="ansQ(22,2,1,`SSH usa el puerto <strong>TCP 22</strong>. Telnet=23, FTP=20/21, HTTP=80, HTTPS=443, DNS=53, DHCP=67/68. SSH cifra toda la sesión (contraseñas y datos). Telnet envía todo en texto plano — nunca usar en producción.`)">23</button>
+<button class="ex-opt" onclick="ansQ(22,3,1,`SSH usa el puerto <strong>TCP 22</strong>. Telnet=23, FTP=20/21, HTTP=80, HTTPS=443, DNS=53, DHCP=67/68. SSH cifra toda la sesión (contraseñas y datos). Telnet envía todo en texto plano — nunca usar en producción.`)">80</button>
+</div>
+</div><div class="ex-q" id="q23">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 24 DE 31</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Qué rango es de direcciones privadas Clase C según RFC 1918?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(23,0,2,`RFC 1918 define: Clase A=<strong>10.0.0.0/8</strong>, Clase B=<strong>172.16.0.0/12</strong>, Clase C=<strong>192.168.0.0/16</strong>. Las IPs privadas no son enrutables en Internet. 100.64.0.0/10 es Carrier-Grade NAT (RFC 6598).`)">10.0.0.0/8</button>
+<button class="ex-opt" onclick="ansQ(23,1,2,`RFC 1918 define: Clase A=<strong>10.0.0.0/8</strong>, Clase B=<strong>172.16.0.0/12</strong>, Clase C=<strong>192.168.0.0/16</strong>. Las IPs privadas no son enrutables en Internet. 100.64.0.0/10 es Carrier-Grade NAT (RFC 6598).`)">172.16.0.0/12</button>
+<button class="ex-opt" onclick="ansQ(23,2,2,`RFC 1918 define: Clase A=<strong>10.0.0.0/8</strong>, Clase B=<strong>172.16.0.0/12</strong>, Clase C=<strong>192.168.0.0/16</strong>. Las IPs privadas no son enrutables en Internet. 100.64.0.0/10 es Carrier-Grade NAT (RFC 6598).`)">192.168.0.0/16</button>
+<button class="ex-opt" onclick="ansQ(23,3,2,`RFC 1918 define: Clase A=<strong>10.0.0.0/8</strong>, Clase B=<strong>172.16.0.0/12</strong>, Clase C=<strong>192.168.0.0/16</strong>. Las IPs privadas no son enrutables en Internet. 100.64.0.0/10 es Carrier-Grade NAT (RFC 6598).`)">100.64.0.0/10</button>
+</div>
+</div><div class="ex-q" id="q24">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 25 DE 31</span><span class="ex-qtype cli">CLI/CONFIG</span></div>
+  <div class="ex-qtext">¿Cuál es el comando para guardar la configuración activa en NVRAM?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(24,0,1,`<code>copy running-config startup-config</code> (o el alias <code>write memory</code> / <code>wr</code>) guarda la config RAM (running) en NVRAM (startup). Si no se guarda, los cambios se pierden al reiniciar. <code>show startup-config</code> muestra la config guardada. <code>erase startup-config</code> la borra.`)">save running-config</button>
+<button class="ex-opt" onclick="ansQ(24,1,1,`<code>copy running-config startup-config</code> (o el alias <code>write memory</code> / <code>wr</code>) guarda la config RAM (running) en NVRAM (startup). Si no se guarda, los cambios se pierden al reiniciar. <code>show startup-config</code> muestra la config guardada. <code>erase startup-config</code> la borra.`)">copy running-config startup-config</button>
+<button class="ex-opt" onclick="ansQ(24,2,1,`<code>copy running-config startup-config</code> (o el alias <code>write memory</code> / <code>wr</code>) guarda la config RAM (running) en NVRAM (startup). Si no se guarda, los cambios se pierden al reiniciar. <code>show startup-config</code> muestra la config guardada. <code>erase startup-config</code> la borra.`)">write startup</button>
+<button class="ex-opt" onclick="ansQ(24,3,1,`<code>copy running-config startup-config</code> (o el alias <code>write memory</code> / <code>wr</code>) guarda la config RAM (running) en NVRAM (startup). Si no se guarda, los cambios se pierden al reiniciar. <code>show startup-config</code> muestra la config guardada. <code>erase startup-config</code> la borra.`)">save config nvram</button>
+</div>
+</div><div class="ex-q" id="q25">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 26 DE 31</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Qué es CSMA/CD y dónde se usa?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(25,0,1,`<strong>CSMA/CD</strong>: Carrier Sense Multiple Access / Collision Detection. En Ethernet half-duplex: escucha si el medio está libre, transmite, detecta colisiones, aplica backoff exponencial aleatorio. Full-duplex elimina colisiones y CSMA/CD. Los switches modernos operan en full-duplex.`)">Protocolo de routing</button>
+<button class="ex-opt" onclick="ansQ(25,1,1,`<strong>CSMA/CD</strong>: Carrier Sense Multiple Access / Collision Detection. En Ethernet half-duplex: escucha si el medio está libre, transmite, detecta colisiones, aplica backoff exponencial aleatorio. Full-duplex elimina colisiones y CSMA/CD. Los switches modernos operan en full-duplex.`)">Método de acceso al medio Ethernet half-duplex — detecta colisiones y aplica backoff</button>
+<button class="ex-opt" onclick="ansQ(25,2,1,`<strong>CSMA/CD</strong>: Carrier Sense Multiple Access / Collision Detection. En Ethernet half-duplex: escucha si el medio está libre, transmite, detecta colisiones, aplica backoff exponencial aleatorio. Full-duplex elimina colisiones y CSMA/CD. Los switches modernos operan en full-duplex.`)">Protocolo de seguridad</button>
+<button class="ex-opt" onclick="ansQ(25,3,1,`<strong>CSMA/CD</strong>: Carrier Sense Multiple Access / Collision Detection. En Ethernet half-duplex: escucha si el medio está libre, transmite, detecta colisiones, aplica backoff exponencial aleatorio. Full-duplex elimina colisiones y CSMA/CD. Los switches modernos operan en full-duplex.`)">Protocolo de switching</button>
+</div>
+</div><div class="ex-q" id="q26">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 27 DE 31</span><span class="ex-qtype cli">CLI/CONFIG</span></div>
+  <div class="ex-qtext">¿Qué muestra 'show interfaces GigabitEthernet0/0'?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(26,0,1,`<code>show interfaces [int]</code> muestra estadísticas completas: estado físico/protocolo, hardware address (MAC), IP, MTU, BW, delay, encapsulación, modo duplex/velocidad, errores (input/output errors, CRC, collisions, resets). Es el comando más detallado para troubleshooting de capa 2.`)">Solo el estado de la interfaz</button>
+<button class="ex-opt" onclick="ansQ(26,1,1,`<code>show interfaces [int]</code> muestra estadísticas completas: estado físico/protocolo, hardware address (MAC), IP, MTU, BW, delay, encapsulación, modo duplex/velocidad, errores (input/output errors, CRC, collisions, resets). Es el comando más detallado para troubleshooting de capa 2.`)">Estado, velocidad, duplex, IP, MTU, estadísticas de tráfico y errores de la interfaz</button>
+<button class="ex-opt" onclick="ansQ(26,2,1,`<code>show interfaces [int]</code> muestra estadísticas completas: estado físico/protocolo, hardware address (MAC), IP, MTU, BW, delay, encapsulación, modo duplex/velocidad, errores (input/output errors, CRC, collisions, resets). Es el comando más detallado para troubleshooting de capa 2.`)">Solo la dirección IP</button>
+<button class="ex-opt" onclick="ansQ(26,3,1,`<code>show interfaces [int]</code> muestra estadísticas completas: estado físico/protocolo, hardware address (MAC), IP, MTU, BW, delay, encapsulación, modo duplex/velocidad, errores (input/output errors, CRC, collisions, resets). Es el comando más detallado para troubleshooting de capa 2.`)">Solo estadísticas de errores</button>
+</div>
+</div><div class="ex-q" id="q27">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 28 DE 31</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuáles son los rangos de puertos UDP/TCP para aplicaciones del usuario (efímeros)?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(27,0,2,`Los puertos <strong>efímeros (dinámicos/privados): 49152-65535</strong>. Los clientes los usan como puerto origen al iniciar conexiones. Rangos: Well-Known (0-1023) para servicios estándar, Registered (1024-49151) para aplicaciones, Ephemeral (49152-65535) para clientes. En Linux el rango efímero por defecto es 32768-60999.`)">0-1023</button>
+<button class="ex-opt" onclick="ansQ(27,1,2,`Los puertos <strong>efímeros (dinámicos/privados): 49152-65535</strong>. Los clientes los usan como puerto origen al iniciar conexiones. Rangos: Well-Known (0-1023) para servicios estándar, Registered (1024-49151) para aplicaciones, Ephemeral (49152-65535) para clientes. En Linux el rango efímero por defecto es 32768-60999.`)">1024-49151</button>
+<button class="ex-opt" onclick="ansQ(27,2,2,`Los puertos <strong>efímeros (dinámicos/privados): 49152-65535</strong>. Los clientes los usan como puerto origen al iniciar conexiones. Rangos: Well-Known (0-1023) para servicios estándar, Registered (1024-49151) para aplicaciones, Ephemeral (49152-65535) para clientes. En Linux el rango efímero por defecto es 32768-60999.`)">49152-65535</button>
+<button class="ex-opt" onclick="ansQ(27,3,2,`Los puertos <strong>efímeros (dinámicos/privados): 49152-65535</strong>. Los clientes los usan como puerto origen al iniciar conexiones. Rangos: Well-Known (0-1023) para servicios estándar, Registered (1024-49151) para aplicaciones, Ephemeral (49152-65535) para clientes. En Linux el rango efímero por defecto es 32768-60999.`)">1024-65535</button>
+</div>
+</div><div class="ex-q" id="q28">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 29 DE 31</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Qué protocolo IP número 1 corresponde?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(28,0,2,`El protocolo IP número <strong>1</strong> corresponde a <strong>ICMP</strong> (Internet Control Message Protocol). ICMP provee mensajes de control y error: Echo Request/Reply (ping), Time Exceeded (traceroute), Destination Unreachable. No transporta datos de usuario.`)">TCP</button>
+<button class="ex-opt" onclick="ansQ(28,1,2,`El protocolo IP número <strong>1</strong> corresponde a <strong>ICMP</strong> (Internet Control Message Protocol). ICMP provee mensajes de control y error: Echo Request/Reply (ping), Time Exceeded (traceroute), Destination Unreachable. No transporta datos de usuario.`)">UDP</button>
+<button class="ex-opt" onclick="ansQ(28,2,2,`El protocolo IP número <strong>1</strong> corresponde a <strong>ICMP</strong> (Internet Control Message Protocol). ICMP provee mensajes de control y error: Echo Request/Reply (ping), Time Exceeded (traceroute), Destination Unreachable. No transporta datos de usuario.`)">ICMP</button>
+<button class="ex-opt" onclick="ansQ(28,3,2,`El protocolo IP número <strong>1</strong> corresponde a <strong>ICMP</strong> (Internet Control Message Protocol). ICMP provee mensajes de control y error: Echo Request/Reply (ping), Time Exceeded (traceroute), Destination Unreachable. No transporta datos de usuario.`)">OSPF</button>
+</div>
+</div><div class="ex-q" id="q29">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 30 DE 31</span><span class="ex-qtype cli">CLI/CONFIG</span></div>
+  <div class="ex-qtext">¿Cuáles son los dos comandos que ponen una interfaz en operación completa en un router?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(29,0,1,`Para activar una interfaz en un router: <code>ip address [IP] [máscara]</code> (asigna la IP) y <code>no shutdown</code> (activa la interfaz físicamente). Sin <code>no shutdown</code>, la interfaz permanece 'administratively down'. Las interfaces de switch ya vienen activas al conectar un cable.`)">speed y duplex</button>
+<button class="ex-opt" onclick="ansQ(29,1,1,`Para activar una interfaz en un router: <code>ip address [IP] [máscara]</code> (asigna la IP) y <code>no shutdown</code> (activa la interfaz físicamente). Sin <code>no shutdown</code>, la interfaz permanece 'administratively down'. Las interfaces de switch ya vienen activas al conectar un cable.`)">ip address y no shutdown</button>
+<button class="ex-opt" onclick="ansQ(29,2,1,`Para activar una interfaz en un router: <code>ip address [IP] [máscara]</code> (asigna la IP) y <code>no shutdown</code> (activa la interfaz físicamente). Sin <code>no shutdown</code>, la interfaz permanece 'administratively down'. Las interfaces de switch ya vienen activas al conectar un cable.`)">hostname y interface</button>
+<button class="ex-opt" onclick="ansQ(29,3,1,`Para activar una interfaz en un router: <code>ip address [IP] [máscara]</code> (asigna la IP) y <code>no shutdown</code> (activa la interfaz físicamente). Sin <code>no shutdown</code>, la interfaz permanece 'administratively down'. Las interfaces de switch ya vienen activas al conectar un cable.`)">description y ip address</button>
+</div>
+</div><div class="ex-q" id="q30">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 31 DE 31</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuál es el protocolo que usa UDP puerto 53?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(30,0,1,`<strong>DNS (Domain Name System)</strong> usa UDP 53 para consultas normales y TCP 53 para transferencias de zona. DNS traduce nombres de dominio a IPs. Sin DNS funcional, la navegación web falla aunque haya conectividad IP.`)">HTTP</button>
+<button class="ex-opt" onclick="ansQ(30,1,1,`<strong>DNS (Domain Name System)</strong> usa UDP 53 para consultas normales y TCP 53 para transferencias de zona. DNS traduce nombres de dominio a IPs. Sin DNS funcional, la navegación web falla aunque haya conectividad IP.`)">DNS</button>
+<button class="ex-opt" onclick="ansQ(30,2,1,`<strong>DNS (Domain Name System)</strong> usa UDP 53 para consultas normales y TCP 53 para transferencias de zona. DNS traduce nombres de dominio a IPs. Sin DNS funcional, la navegación web falla aunque haya conectividad IP.`)">DHCP</button>
+<button class="ex-opt" onclick="ansQ(30,3,1,`<strong>DNS (Domain Name System)</strong> usa UDP 53 para consultas normales y TCP 53 para transferencias de zona. DNS traduce nombres de dominio a IPs. Sin DNS funcional, la navegación web falla aunque haya conectividad IP.`)">SNMP</button>
+</div>
+</div>
+<div class="ex-result" id="exResult">
+<div class="ex-result-pct" id="rPct">0%</div>
+<div class="ex-result-label" id="rLabel"></div>
+<div class="ex-result-sub" id="rSub"></div>
+<a href="banco-preguntas.html" style="display:inline-block;margin-top:12px;padding:10px 24px;background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.3);border-radius:8px;color:#fbbf24;font-family:Share Tech Mono,monospace;font-size:.75rem;text-decoration:none;">← Ver todos los exámenes</a>
+</div>
+<div class="ex-nav"><a href="banco-preguntas.html" class="ex-nav-prev">← Anterior</a><a href="exam2.html" class="ex-nav-next">Siguiente →</a></div>
+</div>
+<script>
+var sc=0,an=0,tot=31;
+function ansQ(qi,sel,cor,exp){
+  var d=document.getElementById("q"+qi);
+  if(!d||d.classList.contains("answered"))return;
+  var btns=d.querySelectorAll(".ex-opt");
+  btns.forEach(function(b){b.disabled=true;});
+  btns[sel].classList.add(sel===cor?"correct":"wrong");
+  if(sel!==cor)btns[cor].classList.add("correct");
+  var e=document.createElement("div");
+  e.className="ex-exp";
+  e.innerHTML="<strong>"+(sel===cor?"✅ Correcto!":"❌ Incorrecto.")+"</strong> "+exp;
+  d.appendChild(e);
+  d.classList.add("answered");
+  if(sel===cor)sc++;
+  an++;
+  updScore();
+  if(an>=tot)showRes();
+}
+function updScore(){
+  var p=tot>0?Math.round(sc/tot*100):0;
+  document.getElementById("snum").textContent=sc+"/"+tot;
+  document.getElementById("sfill").style.width=p+"%";
+  document.getElementById("slbl").textContent=an+" respondidas · "+p+"% correcto";
+}
+function resetEx(){
+  sc=0;an=0;updScore();
+  document.getElementById("exResult").style.display="none";
+  for(var i=0;i<tot;i++){
+    var d=document.getElementById("q"+i);
+    if(!d)continue;
+    d.classList.remove("answered");
+    var btns=d.querySelectorAll(".ex-opt");
+    btns.forEach(function(b){b.disabled=false;b.classList.remove("correct","wrong");});
+    var ep=d.querySelector(".ex-exp");
+    if(ep)ep.remove();
+  }
+}
+function showRes(){
+  var p=Math.round(sc/tot*100);
+  var g=p>=85?"🏆 APROBADO — Excelente preparación":p>=70?"✅ CASI LISTO — Repasa los temas fallados":p>=55?"📚 SIGUE ESTUDIANDO — Revisa las explicaciones":"💪 NECESITAS REPASAR — Estudia más antes de repetir";
+  var s=p>=85?"Estás listo para el examen real CCNA 200-301.":p>=70?"Buen nivel. Repasa los conceptos donde fallaste.":p>=55?"Revisa las clases magistrales relacionadas.":"Repasa las clases y vuelve a intentarlo.";
+  document.getElementById("rPct").textContent=p+"%";
+  document.getElementById("rLabel").textContent=g;
+  document.getElementById("rSub").textContent=s;
+  var r=document.getElementById("exResult");
+  r.style.display="block";
+  r.scrollIntoView({behavior:"smooth",block:"center"});
+}
+</script>
+</body></html>

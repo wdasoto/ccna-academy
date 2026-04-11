@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Examen 03: Switching Avanzado | CCNA Academy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
+<nav class="ccna-drawer" id="ccnaDrawer">
+  <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
+  <div class="drawer-section"><div class="drawer-section-title">General</div>
+    <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M1 · Fundamentos</div>
+    <a href="fundamentos.html" class="drawer-link"><span class="dl-icon">🌐</span> Fundamentos</a>
+    <a href="subnetting.html" class="drawer-link"><span class="dl-icon">🔢</span> Subnetting</a>
+    <a href="ipv6.html" class="drawer-link"><span class="dl-icon">6️⃣</span> IPv6</a>
+    <a href="arp.html" class="drawer-link"><span class="dl-icon">📡</span> ARP</a>
+    <a href="rip.html" class="drawer-link"><span class="dl-icon">🔄</span> RIP</a>
+    <a href="protocolos-internet.html" class="drawer-link"><span class="dl-icon">🌍</span> Protocolos Internet</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M3 · Switching</div>
+    <a href="vlan.html" class="drawer-link"><span class="dl-icon">🏷️</span> VLANs</a>
+    <a href="stp.html" class="drawer-link"><span class="dl-icon">🌳</span> STP</a>
+    <a href="etherchannel.html" class="drawer-link"><span class="dl-icon">🔗</span> EtherChannel</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M4 · Routing</div>
+    <a href="ospf.html" class="drawer-link"><span class="dl-icon">⭕</span> OSPF</a>
+    <a href="eigrp.html" class="drawer-link"><span class="dl-icon">⚡</span> EIGRP</a>
+    <a href="ospfv2-masterclass.html" class="drawer-link"><span class="dl-icon">🎯</span> OSPFv2 Masterclass</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M5 · Servicios IP</div>
+    <a href="dhcp.html" class="drawer-link"><span class="dl-icon">📋</span> DHCP</a>
+    <a href="nat.html" class="drawer-link"><span class="dl-icon">🔄</span> NAT/PAT</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">⚡ Herramientas</div>
+    <a href="asistente.html" class="drawer-link"><span class="dl-icon">🤖</span> Asistente IA</a>
+    <a href="netbot.html" class="drawer-link"><span class="dl-icon">⚙️</span> NetBot Config</a>
+    <a href="banco-preguntas.html" class="drawer-link"><span class="dl-icon">📝</span> Banco de Preguntas</a></div>
+</nav>
+<header class="navbar">
+  <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
+  <a href="../index.html" class="navbar-brand">CISCO<span> ACADEMY</span></a>
+  <div class="navbar-spacer"></div>
+  <a href="banco-preguntas.html" class="navbar-link">← Banco</a>
+</header>
+<script src="../assets/main.js" defer></script>
+<div class="nav-spacer"></div>
+<section class="ex-hero">
+<div class="ex-hero-inner">
+<div class="ex-badge">BANCO DE PREGUNTAS · EXAMEN 03 DE 10</div>
+<h1 class="ex-title">EXAMEN 03 — <span>Switching Avanzado</span></h1>
+<p class="ex-sub">VLANs, Trunk 802.1Q, STP/RSTP, EtherChannel LACP/PAgP, Port Security, CDP/LLDP y configuración completa en Cisco IOS.</p>
+<div class="ex-meta">
+<span class="ex-meta-item">📋 30 preguntas</span>
+<span class="ex-meta-item">🎯 VLANs · STP · EtherChannel · Port Security · CDP</span>
+<span class="ex-meta-item">📅 Actualizado mar 2026</span>
+</div></div></section>
+<style>
+body{font-family:"Exo 2",sans-serif;background:#07090f;color:#e2e8f0;}
+.ex-hero{background:linear-gradient(135deg,#06080f,#0c1020 60%,#0e1428);padding:44px 24px 36px;border-bottom:1px solid rgba(251,191,36,.12);position:relative;overflow:hidden;}
+.ex-hero::before{content:"";position:absolute;top:-80px;right:-80px;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(251,191,36,.05) 0%,transparent 70%);pointer-events:none;}
+.ex-hero-inner{max-width:860px;margin:0 auto;position:relative;z-index:1;}
+.ex-badge{font-family:"Share Tech Mono",monospace;font-size:.62rem;color:#fbbf24;letter-spacing:3px;text-transform:uppercase;margin-bottom:12px;}
+.ex-title{font-family:"Orbitron",sans-serif;font-size:clamp(1.5rem,4vw,2.4rem);font-weight:900;letter-spacing:3px;color:#c2d0e8;margin-bottom:8px;line-height:1.1;}
+.ex-title span{background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.ex-sub{font-size:.9rem;color:#6b7a9a;line-height:1.65;margin-bottom:18px;max-width:680px;}
+.ex-meta{display:flex;gap:12px;flex-wrap:wrap;}
+.ex-meta-item{font-family:"Share Tech Mono",monospace;font-size:.68rem;color:#374060;padding:4px 10px;border:1px solid rgba(251,191,36,.1);border-radius:4px;}
+.ex-wrap{max-width:940px;margin:0 auto;padding:28px 20px 60px;}
+.ex-score-bar{background:#090d1a;border:1px solid rgba(251,191,36,.15);border-radius:12px;padding:16px 22px;margin-bottom:24px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;}
+.ex-score-num{font-family:"Orbitron",sans-serif;font-size:1.8rem;font-weight:900;background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;min-width:56px;}
+.ex-score-track{flex:1;height:7px;background:#0d1220;border-radius:4px;overflow:hidden;min-width:100px;}
+.ex-score-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#fbbf24,#f59e0b);transition:width .5s ease;width:0%;}
+.ex-score-label{font-family:"Share Tech Mono",monospace;font-size:.68rem;color:#4a5780;white-space:nowrap;}
+.ex-score-btn{padding:7px 16px;background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.25);border-radius:7px;color:#fbbf24;font-family:"Share Tech Mono",monospace;font-size:.68rem;cursor:pointer;transition:all .18s;margin-left:auto;}
+.ex-score-btn:hover{background:rgba(251,191,36,.18);}
+.ex-q{background:#0d1220;border:1px solid rgba(255,255,255,.05);border-radius:12px;padding:20px;margin-bottom:16px;transition:border-color .2s;}
+.ex-q.answered{border-color:rgba(251,191,36,.08);}
+.ex-qmeta{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.ex-qnum{font-family:"Share Tech Mono",monospace;font-size:.6rem;color:#374060;letter-spacing:2px;}
+.ex-qtype{font-family:"Share Tech Mono",monospace;font-size:.58rem;padding:2px 8px;border-radius:3px;}
+.ex-qtype.cli{background:rgba(0,212,170,.08);border:1px solid rgba(0,212,170,.2);color:#00d4aa;}
+.ex-qtype.concept{background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.2);color:#38bdf8;}
+.ex-qtype.trouble{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.2);color:#f87171;}
+.ex-qtype.scenario{background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.2);color:#a78bfa;}
+.ex-qtext{font-size:.9rem;color:#c2d0e8;line-height:1.65;margin-bottom:14px;}
+.ex-qtext code,.ex-exp code{font-family:"Share Tech Mono",monospace;font-size:.8rem;background:rgba(0,212,170,.08);color:#00d4aa;padding:1px 5px;border-radius:4px;border:1px solid rgba(0,212,170,.15);}
+.ex-opts{display:flex;flex-direction:column;gap:7px;}
+.ex-opt{padding:10px 14px;border-radius:8px;border:1px solid rgba(255,255,255,.06);background:#090d1a;color:#6b7a9a;cursor:pointer;font-size:.86rem;text-align:left;transition:all .15s;line-height:1.5;}
+.ex-opt:hover:not(:disabled){border-color:rgba(251,191,36,.3);color:#c2d0e8;background:rgba(251,191,36,.04);}
+.ex-opt.correct{border-color:#34d399;background:rgba(52,211,153,.08);color:#34d399;}
+.ex-opt.wrong{border-color:#f87171;background:rgba(248,113,113,.08);color:#f87171;}
+.ex-exp{margin-top:12px;padding:12px 16px;background:rgba(251,191,36,.04);border-left:3px solid #fbbf24;border-radius:6px;font-size:.83rem;color:#a0aec0;line-height:1.65;}
+.ex-exp strong{color:#c2d0e8;}
+.ex-result{background:linear-gradient(135deg,rgba(251,191,36,.08),rgba(245,158,11,.04));border:1px solid rgba(251,191,36,.2);border-radius:16px;padding:32px;text-align:center;margin-top:32px;display:none;}
+.ex-result-pct{font-family:"Orbitron",sans-serif;font-size:3rem;font-weight:900;background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px;}
+.ex-result-label{font-family:"Share Tech Mono",monospace;font-size:.9rem;color:#c2d0e8;margin-bottom:6px;}
+.ex-result-sub{font-size:.82rem;color:#6b7a9a;margin-bottom:16px;}
+.ex-nav{display:flex;align-items:center;justify-content:space-between;margin-top:28px;flex-wrap:wrap;gap:12px;}
+.ex-nav a{padding:10px 22px;border-radius:8px;font-family:"Share Tech Mono",monospace;font-size:.72rem;cursor:pointer;transition:all .18s;text-decoration:none;display:inline-block;}
+.ex-nav-prev{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:#4a5780;}
+.ex-nav-prev:hover{color:#c2d0e8;border-color:rgba(255,255,255,.2);}
+.ex-nav-next{background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);color:#fbbf24;}
+.ex-nav-next:hover{background:rgba(251,191,36,.2);box-shadow:0 0 16px rgba(251,191,36,.15);}
+@media(max-width:680px){.ex-opts .ex-opt{font-size:.8rem;}.ex-qtext{font-size:.86rem;}}
+</style>
+<div class="ex-wrap">
+<div class="ex-score-bar">
+<div class="ex-score-num" id="snum">0/30</div>
+<div class="ex-score-track"><div class="ex-score-fill" id="sfill"></div></div>
+<div class="ex-score-label" id="slbl">0 respondidas · 0% correcto</div>
+<button class="ex-score-btn" onclick="resetEx()">🔄 Reiniciar</button>
+</div>
+<div class="ex-q" id="q0">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 1 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuál es el propósito principal de las VLANs?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(0,0,1,`Las <strong>VLANs</strong> segmentan la red en dominios de broadcast independientes. Beneficios: seguridad, rendimiento, flexibilidad administrativa. Sin VLANs, todo el switch es un único dominio de broadcast.`)">Aumentar velocidad de red</button>
+<button class="ex-opt" onclick="ansQ(0,1,1,`Las <strong>VLANs</strong> segmentan la red en dominios de broadcast independientes. Beneficios: seguridad, rendimiento, flexibilidad administrativa. Sin VLANs, todo el switch es un único dominio de broadcast.`)">Segmentar en múltiples dominios de broadcast lógicos independientes</button>
+<button class="ex-opt" onclick="ansQ(0,2,1,`Las <strong>VLANs</strong> segmentan la red en dominios de broadcast independientes. Beneficios: seguridad, rendimiento, flexibilidad administrativa. Sin VLANs, todo el switch es un único dominio de broadcast.`)">Aumentar puertos disponibles</button>
+<button class="ex-opt" onclick="ansQ(0,3,1,`Las <strong>VLANs</strong> segmentan la red en dominios de broadcast independientes. Beneficios: seguridad, rendimiento, flexibilidad administrativa. Sin VLANs, todo el switch es un único dominio de broadcast.`)">Proporcionar redundancia</button>
+</div>
+</div><div class="ex-q" id="q1">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 2 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuál es el rango de VLANs estándar en Cisco IOS?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(1,0,0,`Rango normal: <strong>1-1001</strong>. VLANs extendidas: 1006-4094 (requieren VTP transparente). Reservadas: 1002-1005 (Token Ring/FDDI). VLAN 1 es la nativa por defecto y no puede eliminarse.`)">1-1001</button>
+<button class="ex-opt" onclick="ansQ(1,1,0,`Rango normal: <strong>1-1001</strong>. VLANs extendidas: 1006-4094 (requieren VTP transparente). Reservadas: 1002-1005 (Token Ring/FDDI). VLAN 1 es la nativa por defecto y no puede eliminarse.`)">1-4094</button>
+<button class="ex-opt" onclick="ansQ(1,2,0,`Rango normal: <strong>1-1001</strong>. VLANs extendidas: 1006-4094 (requieren VTP transparente). Reservadas: 1002-1005 (Token Ring/FDDI). VLAN 1 es la nativa por defecto y no puede eliminarse.`)">2-1001</button>
+<button class="ex-opt" onclick="ansQ(1,3,0,`Rango normal: <strong>1-1001</strong>. VLANs extendidas: 1006-4094 (requieren VTP transparente). Reservadas: 1002-1005 (Token Ring/FDDI). VLAN 1 es la nativa por defecto y no puede eliminarse.`)">100-4094</button>
+</div>
+</div><div class="ex-q" id="q2">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 3 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuál es la diferencia entre puerto access y trunk?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(2,0,1,`<strong>Access port</strong>: una sola VLAN, para hosts finales, sin etiqueta. <strong>Trunk port</strong>: múltiples VLANs con etiquetas 802.1Q (4 bytes), para enlaces entre switches, router-on-a-stick, o servidores virtualizados.`)">Access es más rápido</button>
+<button class="ex-opt" onclick="ansQ(2,1,1,`<strong>Access port</strong>: una sola VLAN, para hosts finales, sin etiqueta. <strong>Trunk port</strong>: múltiples VLANs con etiquetas 802.1Q (4 bytes), para enlaces entre switches, router-on-a-stick, o servidores virtualizados.`)">Access pertenece a una sola VLAN; trunk transporta múltiples VLANs con etiquetas 802.1Q</button>
+<button class="ex-opt" onclick="ansQ(2,2,1,`<strong>Access port</strong>: una sola VLAN, para hosts finales, sin etiqueta. <strong>Trunk port</strong>: múltiples VLANs con etiquetas 802.1Q (4 bytes), para enlaces entre switches, router-on-a-stick, o servidores virtualizados.`)">Trunk solo funciona con fibra</button>
+<button class="ex-opt" onclick="ansQ(2,3,1,`<strong>Access port</strong>: una sola VLAN, para hosts finales, sin etiqueta. <strong>Trunk port</strong>: múltiples VLANs con etiquetas 802.1Q (4 bytes), para enlaces entre switches, router-on-a-stick, o servidores virtualizados.`)">Access no requiere configuración</button>
+</div>
+</div><div class="ex-q" id="q3">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 4 DE 30</span><span class="ex-qtype cli">CLI/CONFIG</span></div>
+  <div class="ex-qtext">¿Qué comando configura un puerto como access en VLAN 10?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(3,0,1,`Configuración correcta: <code>switchport mode access</code> (fuerza modo acceso) + <code>switchport access vlan 10</code> (asigna la VLAN). Sin 'mode access', el puerto podría negociar trunk con DTP.`)">switchport mode trunk vlan 10</button>
+<button class="ex-opt" onclick="ansQ(3,1,1,`Configuración correcta: <code>switchport mode access</code> (fuerza modo acceso) + <code>switchport access vlan 10</code> (asigna la VLAN). Sin 'mode access', el puerto podría negociar trunk con DTP.`)">switchport access vlan 10 (requiere también 'switchport mode access')</button>
+<button class="ex-opt" onclick="ansQ(3,2,1,`Configuración correcta: <code>switchport mode access</code> (fuerza modo acceso) + <code>switchport access vlan 10</code> (asigna la VLAN). Sin 'mode access', el puerto podría negociar trunk con DTP.`)">Solo 'switchport mode access' es suficiente</button>
+<button class="ex-opt" onclick="ansQ(3,3,1,`Configuración correcta: <code>switchport mode access</code> (fuerza modo acceso) + <code>switchport access vlan 10</code> (asigna la VLAN). Sin 'mode access', el puerto podría negociar trunk con DTP.`)">vlan access 10</button>
+</div>
+</div><div class="ex-q" id="q4">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 5 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Qué es la VLAN nativa en un trunk 802.1Q?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(4,0,1,`La <strong>VLAN nativa</strong> es la única VLAN en un trunk cuyo tráfico viaja <strong>sin etiqueta 802.1Q</strong>. Ambos extremos deben tener la misma VLAN nativa. Best practice: cambiarla de VLAN 1 a una VLAN dedicada sin hosts.`)">La primera VLAN configurada</button>
+<button class="ex-opt" onclick="ansQ(4,1,1,`La <strong>VLAN nativa</strong> es la única VLAN en un trunk cuyo tráfico viaja <strong>sin etiqueta 802.1Q</strong>. Ambos extremos deben tener la misma VLAN nativa. Best practice: cambiarla de VLAN 1 a una VLAN dedicada sin hosts.`)">La VLAN cuyos frames van SIN etiqueta por el trunk — por defecto VLAN 1</button>
+<button class="ex-opt" onclick="ansQ(4,2,1,`La <strong>VLAN nativa</strong> es la única VLAN en un trunk cuyo tráfico viaja <strong>sin etiqueta 802.1Q</strong>. Ambos extremos deben tener la misma VLAN nativa. Best practice: cambiarla de VLAN 1 a una VLAN dedicada sin hosts.`)">La VLAN con más tráfico</button>
+<button class="ex-opt" onclick="ansQ(4,3,1,`La <strong>VLAN nativa</strong> es la única VLAN en un trunk cuyo tráfico viaja <strong>sin etiqueta 802.1Q</strong>. Ambos extremos deben tener la misma VLAN nativa. Best practice: cambiarla de VLAN 1 a una VLAN dedicada sin hosts.`)">La VLAN del servidor más importante</button>
+</div>
+</div><div class="ex-q" id="q5">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 6 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuál es la prioridad STP por defecto en un switch Cisco?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(5,0,2,`Prioridad STP default: <strong>32768</strong>. En PVST+: prioridad efectiva = base + VLAN ID. Solo acepta múltiplos de 4096. Para cambiar: <code>spanning-tree vlan [x] priority 24576</code>. Menor prioridad = más probable de ser Root Bridge.`)">0</button>
+<button class="ex-opt" onclick="ansQ(5,1,2,`Prioridad STP default: <strong>32768</strong>. En PVST+: prioridad efectiva = base + VLAN ID. Solo acepta múltiplos de 4096. Para cambiar: <code>spanning-tree vlan [x] priority 24576</code>. Menor prioridad = más probable de ser Root Bridge.`)">4096</button>
+<button class="ex-opt" onclick="ansQ(5,2,2,`Prioridad STP default: <strong>32768</strong>. En PVST+: prioridad efectiva = base + VLAN ID. Solo acepta múltiplos de 4096. Para cambiar: <code>spanning-tree vlan [x] priority 24576</code>. Menor prioridad = más probable de ser Root Bridge.`)">32768</button>
+<button class="ex-opt" onclick="ansQ(5,3,2,`Prioridad STP default: <strong>32768</strong>. En PVST+: prioridad efectiva = base + VLAN ID. Solo acepta múltiplos de 4096. Para cambiar: <code>spanning-tree vlan [x] priority 24576</code>. Menor prioridad = más probable de ser Root Bridge.`)">61440</button>
+</div>
+</div><div class="ex-q" id="q6">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 7 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cómo se elige el Root Bridge en STP?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(6,0,1,`El <strong>Root Bridge</strong> = menor Bridge ID = prioridad + MAC. Para forzar: <code>spanning-tree vlan [x] root primary</code> (ajusta a 24576 automáticamente) o <code>spanning-tree vlan [x] priority 4096</code>.`)">El switch con más puertos</button>
+<button class="ex-opt" onclick="ansQ(6,1,1,`El <strong>Root Bridge</strong> = menor Bridge ID = prioridad + MAC. Para forzar: <code>spanning-tree vlan [x] root primary</code> (ajusta a 24576 automáticamente) o <code>spanning-tree vlan [x] priority 4096</code>.`)">El switch con menor Bridge ID (prioridad + MAC)</button>
+<button class="ex-opt" onclick="ansQ(6,2,1,`El <strong>Root Bridge</strong> = menor Bridge ID = prioridad + MAC. Para forzar: <code>spanning-tree vlan [x] root primary</code> (ajusta a 24576 automáticamente) o <code>spanning-tree vlan [x] priority 4096</code>.`)">El switch configurado manualmente</button>
+<button class="ex-opt" onclick="ansQ(6,3,1,`El <strong>Root Bridge</strong> = menor Bridge ID = prioridad + MAC. Para forzar: <code>spanning-tree vlan [x] root primary</code> (ajusta a 24576 automáticamente) o <code>spanning-tree vlan [x] priority 4096</code>.`)">El switch con mayor uptime</button>
+</div>
+</div><div class="ex-q" id="q7">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 8 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuáles son los estados de un puerto en STP (802.1D)?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(7,0,1,`5 estados STP 802.1D: <strong>Blocking</strong> (escucha BPDUs, no reenvía), <strong>Listening</strong> (procesa BPDUs, 15s), <strong>Learning</strong> (aprende MACs, 15s), <strong>Forwarding</strong> (operación normal), <strong>Disabled</strong>. RSTP simplifica a 3: Discarding, Learning, Forwarding.`)">Up, Down, Standby</button>
+<button class="ex-opt" onclick="ansQ(7,1,1,`5 estados STP 802.1D: <strong>Blocking</strong> (escucha BPDUs, no reenvía), <strong>Listening</strong> (procesa BPDUs, 15s), <strong>Learning</strong> (aprende MACs, 15s), <strong>Forwarding</strong> (operación normal), <strong>Disabled</strong>. RSTP simplifica a 3: Discarding, Learning, Forwarding.`)">Blocking, Listening, Learning, Forwarding, Disabled</button>
+<button class="ex-opt" onclick="ansQ(7,2,1,`5 estados STP 802.1D: <strong>Blocking</strong> (escucha BPDUs, no reenvía), <strong>Listening</strong> (procesa BPDUs, 15s), <strong>Learning</strong> (aprende MACs, 15s), <strong>Forwarding</strong> (operación normal), <strong>Disabled</strong>. RSTP simplifica a 3: Discarding, Learning, Forwarding.`)">Active, Passive, Backup</button>
+<button class="ex-opt" onclick="ansQ(7,3,1,`5 estados STP 802.1D: <strong>Blocking</strong> (escucha BPDUs, no reenvía), <strong>Listening</strong> (procesa BPDUs, 15s), <strong>Learning</strong> (aprende MACs, 15s), <strong>Forwarding</strong> (operación normal), <strong>Disabled</strong>. RSTP simplifica a 3: Discarding, Learning, Forwarding.`)">Running, Idle, Error</button>
+</div>
+</div><div class="ex-q" id="q8">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 9 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuál es la principal mejora de RSTP sobre STP?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(8,0,1,`<strong>RSTP (802.1w)</strong> converge en <strong>1-2 segundos</strong> usando el mecanismo de propuesta/acuerdo (Proposal/Agreement) directo entre switches. STP tarda 30-50 segundos (15s Listening + 15s Learning). RSTP es backward compatible con STP.`)">RSTP soporta más VLANs</button>
+<button class="ex-opt" onclick="ansQ(8,1,1,`<strong>RSTP (802.1w)</strong> converge en <strong>1-2 segundos</strong> usando el mecanismo de propuesta/acuerdo (Proposal/Agreement) directo entre switches. STP tarda 30-50 segundos (15s Listening + 15s Learning). RSTP es backward compatible con STP.`)">RSTP converge en 1-2 segundos vs 30-50 segundos de STP</button>
+<button class="ex-opt" onclick="ansQ(8,2,1,`<strong>RSTP (802.1w)</strong> converge en <strong>1-2 segundos</strong> usando el mecanismo de propuesta/acuerdo (Proposal/Agreement) directo entre switches. STP tarda 30-50 segundos (15s Listening + 15s Learning). RSTP es backward compatible con STP.`)">RSTP elimina el Root Bridge</button>
+<button class="ex-opt" onclick="ansQ(8,3,1,`<strong>RSTP (802.1w)</strong> converge en <strong>1-2 segundos</strong> usando el mecanismo de propuesta/acuerdo (Proposal/Agreement) directo entre switches. STP tarda 30-50 segundos (15s Listening + 15s Learning). RSTP es backward compatible con STP.`)">RSTP usa menos CPU</button>
+</div>
+</div><div class="ex-q" id="q9">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 10 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Qué es EtherChannel?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(9,0,1,`<strong>EtherChannel</strong> (IEEE 802.3ad): agrupa 2-8 interfaces en un Port-Channel lógico. STP lo ve como un único enlace. Protocolos: LACP (estándar IEEE) y PAgP (propietario Cisco). Si un enlace falla, el tráfico continúa por los restantes.`)">Un protocolo de routing</button>
+<button class="ex-opt" onclick="ansQ(9,1,1,`<strong>EtherChannel</strong> (IEEE 802.3ad): agrupa 2-8 interfaces en un Port-Channel lógico. STP lo ve como un único enlace. Protocolos: LACP (estándar IEEE) y PAgP (propietario Cisco). Si un enlace falla, el tráfico continúa por los restantes.`)">Agrupa 2-8 enlaces físicos en un canal lógico para mayor BW y redundancia</button>
+<button class="ex-opt" onclick="ansQ(9,2,1,`<strong>EtherChannel</strong> (IEEE 802.3ad): agrupa 2-8 interfaces en un Port-Channel lógico. STP lo ve como un único enlace. Protocolos: LACP (estándar IEEE) y PAgP (propietario Cisco). Si un enlace falla, el tráfico continúa por los restantes.`)">Un tipo de VLAN especial</button>
+<button class="ex-opt" onclick="ansQ(9,3,1,`<strong>EtherChannel</strong> (IEEE 802.3ad): agrupa 2-8 interfaces en un Port-Channel lógico. STP lo ve como un único enlace. Protocolos: LACP (estándar IEEE) y PAgP (propietario Cisco). Si un enlace falla, el tráfico continúa por los restantes.`)">Un protocolo de seguridad</button>
+</div>
+</div><div class="ex-q" id="q10">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 11 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuáles son los modos de LACP?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(10,0,1,`LACP: <strong>Active</strong> (inicia y responde), <strong>Passive</strong> (solo responde), <strong>On</strong> (fuerza sin negociación). Combinaciones válidas: Active+Active ✓, Active+Passive ✓, Passive+Passive ✗. PAgP: Desirable (activo) y Auto (pasivo).`)">On, Auto, Desirable</button>
+<button class="ex-opt" onclick="ansQ(10,1,1,`LACP: <strong>Active</strong> (inicia y responde), <strong>Passive</strong> (solo responde), <strong>On</strong> (fuerza sin negociación). Combinaciones válidas: Active+Active ✓, Active+Passive ✓, Passive+Passive ✗. PAgP: Desirable (activo) y Auto (pasivo).`)">Active, Passive, On</button>
+<button class="ex-opt" onclick="ansQ(10,2,1,`LACP: <strong>Active</strong> (inicia y responde), <strong>Passive</strong> (solo responde), <strong>On</strong> (fuerza sin negociación). Combinaciones válidas: Active+Active ✓, Active+Passive ✓, Passive+Passive ✗. PAgP: Desirable (activo) y Auto (pasivo).`)">Trunk, Access, Dynamic</button>
+<button class="ex-opt" onclick="ansQ(10,3,1,`LACP: <strong>Active</strong> (inicia y responde), <strong>Passive</strong> (solo responde), <strong>On</strong> (fuerza sin negociación). Combinaciones válidas: Active+Active ✓, Active+Passive ✓, Passive+Passive ✗. PAgP: Desirable (activo) y Auto (pasivo).`)">Full, Half, Auto</button>
+</div>
+</div><div class="ex-q" id="q11">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 12 DE 30</span><span class="ex-qtype cli">CLI/CONFIG</span></div>
+  <div class="ex-qtext">¿Qué comando configura EtherChannel con LACP activo en Gi0/1-2?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(11,0,1,`<code>interface range GigabitEthernet0/1-2</code> → <code>channel-group 1 mode active</code>. Luego configurar: <code>interface port-channel 1</code> → modo trunk/access. Verificar: <code>show etherchannel summary</code>.`)">interface range Gi0/1-2; etherchannel 1 lacp</button>
+<button class="ex-opt" onclick="ansQ(11,1,1,`<code>interface range GigabitEthernet0/1-2</code> → <code>channel-group 1 mode active</code>. Luego configurar: <code>interface port-channel 1</code> → modo trunk/access. Verificar: <code>show etherchannel summary</code>.`)">interface range Gi0/1-2; channel-group 1 mode active</button>
+<button class="ex-opt" onclick="ansQ(11,2,1,`<code>interface range GigabitEthernet0/1-2</code> → <code>channel-group 1 mode active</code>. Luego configurar: <code>interface port-channel 1</code> → modo trunk/access. Verificar: <code>show etherchannel summary</code>.`)">interface range Gi0/1-2; lacp channel 1</button>
+<button class="ex-opt" onclick="ansQ(11,3,1,`<code>interface range GigabitEthernet0/1-2</code> → <code>channel-group 1 mode active</code>. Luego configurar: <code>interface port-channel 1</code> → modo trunk/access. Verificar: <code>show etherchannel summary</code>.`)">port-channel 1 interfaces Gi0/1 Gi0/2</button>
+</div>
+</div><div class="ex-q" id="q12">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 13 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Qué función cumple Port Security?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(12,0,1,`<strong>Port Security</strong>: limita el número de MACs por puerto (default: 1). Modos de violación: <strong>Shutdown</strong> (err-disabled, default), <strong>Restrict</strong> (descarta + log), <strong>Protect</strong> (solo descarta). Sticky: aprende MACs y las guarda en running-config.`)">Cifra el tráfico</button>
+<button class="ex-opt" onclick="ansQ(12,1,1,`<strong>Port Security</strong>: limita el número de MACs por puerto (default: 1). Modos de violación: <strong>Shutdown</strong> (err-disabled, default), <strong>Restrict</strong> (descarta + log), <strong>Protect</strong> (solo descarta). Sticky: aprende MACs y las guarda en running-config.`)">Limita MACs por puerto y define acciones ante violaciones</button>
+<button class="ex-opt" onclick="ansQ(12,2,1,`<strong>Port Security</strong>: limita el número de MACs por puerto (default: 1). Modos de violación: <strong>Shutdown</strong> (err-disabled, default), <strong>Restrict</strong> (descarta + log), <strong>Protect</strong> (solo descarta). Sticky: aprende MACs y las guarda en running-config.`)">Bloquea acceso SSH</button>
+<button class="ex-opt" onclick="ansQ(12,3,1,`<strong>Port Security</strong>: limita el número de MACs por puerto (default: 1). Modos de violación: <strong>Shutdown</strong> (err-disabled, default), <strong>Restrict</strong> (descarta + log), <strong>Protect</strong> (solo descarta). Sticky: aprende MACs y las guarda en running-config.`)">Previene ataques DoS capa 7</button>
+</div>
+</div><div class="ex-q" id="q13">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 14 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Qué hace BPDU Guard?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(13,0,1,`<strong>BPDU Guard</strong> pone en err-disabled cualquier puerto PortFast que reciba una BPDU — protege contra switches no autorizados. Configurar: <code>spanning-tree bpduguard enable</code> por interfaz, o <code>spanning-tree portfast bpduguard default</code> globalmente.`)">Permite recibir BPDUs de routers</button>
+<button class="ex-opt" onclick="ansQ(13,1,1,`<strong>BPDU Guard</strong> pone en err-disabled cualquier puerto PortFast que reciba una BPDU — protege contra switches no autorizados. Configurar: <code>spanning-tree bpduguard enable</code> por interfaz, o <code>spanning-tree portfast bpduguard default</code> globalmente.`)">Deshabilita automáticamente un puerto PortFast al recibir una BPDU</button>
+<button class="ex-opt" onclick="ansQ(13,2,1,`<strong>BPDU Guard</strong> pone en err-disabled cualquier puerto PortFast que reciba una BPDU — protege contra switches no autorizados. Configurar: <code>spanning-tree bpduguard enable</code> por interfaz, o <code>spanning-tree portfast bpduguard default</code> globalmente.`)">Acelera convergencia STP</button>
+<button class="ex-opt" onclick="ansQ(13,3,1,`<strong>BPDU Guard</strong> pone en err-disabled cualquier puerto PortFast que reciba una BPDU — protege contra switches no autorizados. Configurar: <code>spanning-tree bpduguard enable</code> por interfaz, o <code>spanning-tree portfast bpduguard default</code> globalmente.`)">Es sinónimo de PortFast</button>
+</div>
+</div><div class="ex-q" id="q14">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 15 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Qué hace 'spanning-tree portfast' en un puerto?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(14,0,1,`<strong>PortFast</strong>: el puerto salta Listening y Learning → Forwarding en ~1 segundo. Solo para puertos conectados a hosts (PCs, impresoras), NUNCA a switches. Siempre combinar con BPDU Guard para seguridad.`)">Deshabilita STP completamente</button>
+<button class="ex-opt" onclick="ansQ(14,1,1,`<strong>PortFast</strong>: el puerto salta Listening y Learning → Forwarding en ~1 segundo. Solo para puertos conectados a hosts (PCs, impresoras), NUNCA a switches. Siempre combinar con BPDU Guard para seguridad.`)">Permite al puerto pasar directamente a Forwarding sin esperar timers — para hosts finales</button>
+<button class="ex-opt" onclick="ansQ(14,2,1,`<strong>PortFast</strong>: el puerto salta Listening y Learning → Forwarding en ~1 segundo. Solo para puertos conectados a hosts (PCs, impresoras), NUNCA a switches. Siempre combinar con BPDU Guard para seguridad.`)">Convierte el puerto en Root Port</button>
+<button class="ex-opt" onclick="ansQ(14,3,1,`<strong>PortFast</strong>: el puerto salta Listening y Learning → Forwarding en ~1 segundo. Solo para puertos conectados a hosts (PCs, impresoras), NUNCA a switches. Siempre combinar con BPDU Guard para seguridad.`)">Aumenta la prioridad STP</button>
+</div>
+</div><div class="ex-q" id="q15">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 16 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿En qué archivo se almacenan las VLANs en un switch Cisco?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(15,0,2,`Las VLANs se almacenan en <strong>vlan.dat en Flash</strong>. 'erase startup-config' NO borra las VLANs. Para borrarlas: <code>delete flash:vlan.dat</code> + reload.`)">startup-config en NVRAM</button>
+<button class="ex-opt" onclick="ansQ(15,1,2,`Las VLANs se almacenan en <strong>vlan.dat en Flash</strong>. 'erase startup-config' NO borra las VLANs. Para borrarlas: <code>delete flash:vlan.dat</code> + reload.`)">running-config en RAM</button>
+<button class="ex-opt" onclick="ansQ(15,2,2,`Las VLANs se almacenan en <strong>vlan.dat en Flash</strong>. 'erase startup-config' NO borra las VLANs. Para borrarlas: <code>delete flash:vlan.dat</code> + reload.`)">vlan.dat en Flash</button>
+<button class="ex-opt" onclick="ansQ(15,3,2,`Las VLANs se almacenan en <strong>vlan.dat en Flash</strong>. 'erase startup-config' NO borra las VLANs. Para borrarlas: <code>delete flash:vlan.dat</code> + reload.`)">IOS.bin en Flash</button>
+</div>
+</div><div class="ex-q" id="q16">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 17 DE 30</span><span class="ex-qtype cli">CLI/CONFIG</span></div>
+  <div class="ex-qtext">¿Cuál es el comando para verificar puertos trunk activos?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(16,0,1,`<code>show interfaces trunk</code> muestra: interfaz, encapsulación, VLANs permitidas, VLANs activas, VLANs en STP forwarding. Para verificar un puerto específico: <code>show interfaces [int] trunk</code>.`)">show vlan brief</button>
+<button class="ex-opt" onclick="ansQ(16,1,1,`<code>show interfaces trunk</code> muestra: interfaz, encapsulación, VLANs permitidas, VLANs activas, VLANs en STP forwarding. Para verificar un puerto específico: <code>show interfaces [int] trunk</code>.`)">show interfaces trunk</button>
+<button class="ex-opt" onclick="ansQ(16,2,1,`<code>show interfaces trunk</code> muestra: interfaz, encapsulación, VLANs permitidas, VLANs activas, VLANs en STP forwarding. Para verificar un puerto específico: <code>show interfaces [int] trunk</code>.`)">show switchport trunk</button>
+<button class="ex-opt" onclick="ansQ(16,3,1,`<code>show interfaces trunk</code> muestra: interfaz, encapsulación, VLANs permitidas, VLANs activas, VLANs en STP forwarding. Para verificar un puerto específico: <code>show interfaces [int] trunk</code>.`)">show trunk status</button>
+</div>
+</div><div class="ex-q" id="q17">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 18 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Qué es PVST+ en Cisco?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(17,0,1,`<strong>PVST+</strong>: una instancia STP por cada VLAN activa. Permite Root Bridge diferente por VLAN → balanceo de carga. VLAN 10 usa enlace A, VLAN 20 usa enlace B. Es el modo STP por defecto en switches Cisco.`)">Protocolo de routing por VLAN</button>
+<button class="ex-opt" onclick="ansQ(17,1,1,`<strong>PVST+</strong>: una instancia STP por cada VLAN activa. Permite Root Bridge diferente por VLAN → balanceo de carga. VLAN 10 usa enlace A, VLAN 20 usa enlace B. Es el modo STP por defecto en switches Cisco.`)">Per-VLAN Spanning Tree Plus — instancia STP separada por VLAN, permite balanceo de carga</button>
+<button class="ex-opt" onclick="ansQ(17,2,1,`<strong>PVST+</strong>: una instancia STP por cada VLAN activa. Permite Root Bridge diferente por VLAN → balanceo de carga. VLAN 10 usa enlace A, VLAN 20 usa enlace B. Es el modo STP por defecto en switches Cisco.`)">Protocolo de agregación de enlaces</button>
+<button class="ex-opt" onclick="ansQ(17,3,1,`<strong>PVST+</strong>: una instancia STP por cada VLAN activa. Permite Root Bridge diferente por VLAN → balanceo de carga. VLAN 10 usa enlace A, VLAN 20 usa enlace B. Es el modo STP por defecto en switches Cisco.`)">Mecanismo de seguridad para VLANs</button>
+</div>
+</div><div class="ex-q" id="q18">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 19 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuál es el propósito de Root Guard en STP?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(18,0,1,`<strong>Root Guard</strong>: si un puerto con Root Guard recibe BPDU con mejor Bridge ID (que desplazaría al Root Bridge actual), el puerto entra en root-inconsistent (bloqueado). Protege la topología STP contra switches no autorizados.`)">Hace que el switch local siempre sea Root Bridge</button>
+<button class="ex-opt" onclick="ansQ(18,1,1,`<strong>Root Guard</strong>: si un puerto con Root Guard recibe BPDU con mejor Bridge ID (que desplazaría al Root Bridge actual), el puerto entra en root-inconsistent (bloqueado). Protege la topología STP contra switches no autorizados.`)">Evita que un puerto reciba BPDUs superiores que cambiarían el Root Bridge</button>
+<button class="ex-opt" onclick="ansQ(18,2,1,`<strong>Root Guard</strong>: si un puerto con Root Guard recibe BPDU con mejor Bridge ID (que desplazaría al Root Bridge actual), el puerto entra en root-inconsistent (bloqueado). Protege la topología STP contra switches no autorizados.`)">Aumenta la convergencia STP</button>
+<button class="ex-opt" onclick="ansQ(18,3,1,`<strong>Root Guard</strong>: si un puerto con Root Guard recibe BPDU con mejor Bridge ID (que desplazaría al Root Bridge actual), el puerto entra en root-inconsistent (bloqueado). Protege la topología STP contra switches no autorizados.`)">Es sinónimo de BPDU Guard</button>
+</div>
+</div><div class="ex-q" id="q19">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 20 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuál es la diferencia entre CDP y LLDP?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(19,0,1,`<strong>CDP</strong>: propietario Cisco, habilitado por defecto. <strong>LLDP</strong>: estándar IEEE 802.1AB, funciona entre cualquier fabricante. En entornos multi-vendor siempre usar LLDP. Habilitar: <code>lldp run</code> globalmente.`)">CDP es más rápido</button>
+<button class="ex-opt" onclick="ansQ(19,1,1,`<strong>CDP</strong>: propietario Cisco, habilitado por defecto. <strong>LLDP</strong>: estándar IEEE 802.1AB, funciona entre cualquier fabricante. En entornos multi-vendor siempre usar LLDP. Habilitar: <code>lldp run</code> globalmente.`)">CDP es propietario Cisco; LLDP es el estándar IEEE 802.1AB para multi-vendor</button>
+<button class="ex-opt" onclick="ansQ(19,2,1,`<strong>CDP</strong>: propietario Cisco, habilitado por defecto. <strong>LLDP</strong>: estándar IEEE 802.1AB, funciona entre cualquier fabricante. En entornos multi-vendor siempre usar LLDP. Habilitar: <code>lldp run</code> globalmente.`)">LLDP solo funciona en switches</button>
+<button class="ex-opt" onclick="ansQ(19,3,1,`<strong>CDP</strong>: propietario Cisco, habilitado por defecto. <strong>LLDP</strong>: estándar IEEE 802.1AB, funciona entre cualquier fabricante. En entornos multi-vendor siempre usar LLDP. Habilitar: <code>lldp run</code> globalmente.`)">No hay diferencia</button>
+</div>
+</div><div class="ex-q" id="q20">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 21 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Qué ataque intenta llenar la tabla MAC de un switch para forzar flooding?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(20,0,2,`<strong>MAC Flooding</strong>: el atacante envía miles de frames con MACs falsas, llenando la tabla MAC. El switch hace flooding de unicast por todos los puertos — el atacante captura tráfico. Mitigación: Port Security limita MACs por puerto.`)">ARP Spoofing</button>
+<button class="ex-opt" onclick="ansQ(20,1,2,`<strong>MAC Flooding</strong>: el atacante envía miles de frames con MACs falsas, llenando la tabla MAC. El switch hace flooding de unicast por todos los puertos — el atacante captura tráfico. Mitigación: Port Security limita MACs por puerto.`)">VLAN Hopping</button>
+<button class="ex-opt" onclick="ansQ(20,2,2,`<strong>MAC Flooding</strong>: el atacante envía miles de frames con MACs falsas, llenando la tabla MAC. El switch hace flooding de unicast por todos los puertos — el atacante captura tráfico. Mitigación: Port Security limita MACs por puerto.`)">MAC Flooding</button>
+<button class="ex-opt" onclick="ansQ(20,3,2,`<strong>MAC Flooding</strong>: el atacante envía miles de frames con MACs falsas, llenando la tabla MAC. El switch hace flooding de unicast por todos los puertos — el atacante captura tráfico. Mitigación: Port Security limita MACs por puerto.`)">STP Manipulation</button>
+</div>
+</div><div class="ex-q" id="q21">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 22 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuál es el costo STP por defecto de una interfaz Gigabit Ethernet?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(21,0,1,`Costos STP (IEEE 802.1t): 10Mbps=100, 100Mbps=19, <strong>1Gbps=4</strong>, 10Gbps=2. El puerto con menor costo acumulado hacia el Root Bridge se elige Root Port. Cambiar: <code>spanning-tree cost [valor]</code> por interfaz.`)">1</button>
+<button class="ex-opt" onclick="ansQ(21,1,1,`Costos STP (IEEE 802.1t): 10Mbps=100, 100Mbps=19, <strong>1Gbps=4</strong>, 10Gbps=2. El puerto con menor costo acumulado hacia el Root Bridge se elige Root Port. Cambiar: <code>spanning-tree cost [valor]</code> por interfaz.`)">4</button>
+<button class="ex-opt" onclick="ansQ(21,2,1,`Costos STP (IEEE 802.1t): 10Mbps=100, 100Mbps=19, <strong>1Gbps=4</strong>, 10Gbps=2. El puerto con menor costo acumulado hacia el Root Bridge se elige Root Port. Cambiar: <code>spanning-tree cost [valor]</code> por interfaz.`)">19</button>
+<button class="ex-opt" onclick="ansQ(21,3,1,`Costos STP (IEEE 802.1t): 10Mbps=100, 100Mbps=19, <strong>1Gbps=4</strong>, 10Gbps=2. El puerto con menor costo acumulado hacia el Root Bridge se elige Root Port. Cambiar: <code>spanning-tree cost [valor]</code> por interfaz.`)">100</button>
+</div>
+</div><div class="ex-q" id="q22">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 23 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Qué sucede con una broadcast storm sin STP?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(22,0,2,`Sin STP, un bucle L2 causa una <strong>broadcast storm</strong>: un frame de broadcast llega al switch, se inunda, vuelve por el enlace redundante, se reinunda — ciclo infinito que satura al 100% la red en milisegundos. Síntomas: tráfico al 100%, hosts no responden.`)">Los switches la bloquean automáticamente</button>
+<button class="ex-opt" onclick="ansQ(22,1,2,`Sin STP, un bucle L2 causa una <strong>broadcast storm</strong>: un frame de broadcast llega al switch, se inunda, vuelve por el enlace redundante, se reinunda — ciclo infinito que satura al 100% la red en milisegundos. Síntomas: tráfico al 100%, hosts no responden.`)">El tráfico se limita automáticamente</button>
+<button class="ex-opt" onclick="ansQ(22,2,2,`Sin STP, un bucle L2 causa una <strong>broadcast storm</strong>: un frame de broadcast llega al switch, se inunda, vuelve por el enlace redundante, se reinunda — ciclo infinito que satura al 100% la red en milisegundos. Síntomas: tráfico al 100%, hosts no responden.`)">Los frames de broadcast circulan infinitamente saturando la red al 100%</button>
+<button class="ex-opt" onclick="ansQ(22,3,2,`Sin STP, un bucle L2 causa una <strong>broadcast storm</strong>: un frame de broadcast llega al switch, se inunda, vuelve por el enlace redundante, se reinunda — ciclo infinito que satura al 100% la red en milisegundos. Síntomas: tráfico al 100%, hosts no responden.`)">Solo afecta a los hosts con IP</button>
+</div>
+</div><div class="ex-q" id="q23">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 24 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuál es la encapsulación estándar para trunks en switches modernos?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(23,0,1,`<strong>802.1Q</strong> es el estándar IEEE para trunks — compatible entre fabricantes. Inserta 4 bytes en el frame Ethernet con el VLAN ID (12 bits → hasta 4094 VLANs). ISL es propietario antiguo de Cisco, ya obsoleto.`)">ISL</button>
+<button class="ex-opt" onclick="ansQ(23,1,1,`<strong>802.1Q</strong> es el estándar IEEE para trunks — compatible entre fabricantes. Inserta 4 bytes en el frame Ethernet con el VLAN ID (12 bits → hasta 4094 VLANs). ISL es propietario antiguo de Cisco, ya obsoleto.`)">802.1Q</button>
+<button class="ex-opt" onclick="ansQ(23,2,1,`<strong>802.1Q</strong> es el estándar IEEE para trunks — compatible entre fabricantes. Inserta 4 bytes en el frame Ethernet con el VLAN ID (12 bits → hasta 4094 VLANs). ISL es propietario antiguo de Cisco, ya obsoleto.`)">802.3ad</button>
+<button class="ex-opt" onclick="ansQ(23,3,1,`<strong>802.1Q</strong> es el estándar IEEE para trunks — compatible entre fabricantes. Inserta 4 bytes en el frame Ethernet con el VLAN ID (12 bits → hasta 4094 VLANs). ISL es propietario antiguo de Cisco, ya obsoleto.`)">HDLC</button>
+</div>
+</div><div class="ex-q" id="q24">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 25 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Qué ataque usa 802.1Q double-tagging o negociación DTP para acceder a VLANs no autorizadas?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(24,0,1,`<strong>VLAN Hopping</strong>: Switch Spoofing (negocia trunk con DTP) o Double Tagging (frame con doble etiqueta 802.1Q). Mitigación: <code>switchport nonegotiate</code>, cambiar VLAN nativa a VLAN sin uso (<code>switchport trunk native vlan 999</code>).`)">ARP Spoofing</button>
+<button class="ex-opt" onclick="ansQ(24,1,1,`<strong>VLAN Hopping</strong>: Switch Spoofing (negocia trunk con DTP) o Double Tagging (frame con doble etiqueta 802.1Q). Mitigación: <code>switchport nonegotiate</code>, cambiar VLAN nativa a VLAN sin uso (<code>switchport trunk native vlan 999</code>).`)">VLAN Hopping</button>
+<button class="ex-opt" onclick="ansQ(24,2,1,`<strong>VLAN Hopping</strong>: Switch Spoofing (negocia trunk con DTP) o Double Tagging (frame con doble etiqueta 802.1Q). Mitigación: <code>switchport nonegotiate</code>, cambiar VLAN nativa a VLAN sin uso (<code>switchport trunk native vlan 999</code>).`)">MAC Flooding</button>
+<button class="ex-opt" onclick="ansQ(24,3,1,`<strong>VLAN Hopping</strong>: Switch Spoofing (negocia trunk con DTP) o Double Tagging (frame con doble etiqueta 802.1Q). Mitigación: <code>switchport nonegotiate</code>, cambiar VLAN nativa a VLAN sin uso (<code>switchport trunk native vlan 999</code>).`)">STP Manipulation</button>
+</div>
+</div><div class="ex-q" id="q25">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 26 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuántas MACs permite Port Security por defecto?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(25,0,0,`Port Security permite <strong>1 MAC</strong> por defecto. Configurar máximo: <code>switchport port-security maximum [número]</code>. Para sticky: <code>switchport port-security mac-address sticky</code> (aprende y guarda automáticamente en running-config).`)">1</button>
+<button class="ex-opt" onclick="ansQ(25,1,0,`Port Security permite <strong>1 MAC</strong> por defecto. Configurar máximo: <code>switchport port-security maximum [número]</code>. Para sticky: <code>switchport port-security mac-address sticky</code> (aprende y guarda automáticamente en running-config).`)">2</button>
+<button class="ex-opt" onclick="ansQ(25,2,0,`Port Security permite <strong>1 MAC</strong> por defecto. Configurar máximo: <code>switchport port-security maximum [número]</code>. Para sticky: <code>switchport port-security mac-address sticky</code> (aprende y guarda automáticamente en running-config).`)">5</button>
+<button class="ex-opt" onclick="ansQ(25,3,0,`Port Security permite <strong>1 MAC</strong> por defecto. Configurar máximo: <code>switchport port-security maximum [número]</code>. Para sticky: <code>switchport port-security mac-address sticky</code> (aprende y guarda automáticamente en running-config).`)">Ilimitado</button>
+</div>
+</div><div class="ex-q" id="q26">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 27 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuál es el modo de violación Port Security por defecto?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(26,0,2,`El modo de violación default es <strong>Shutdown</strong>: el puerto entra en err-disabled inmediatamente. Para recuperar: <code>interface [int]</code> → <code>shutdown</code> → <code>no shutdown</code>. Para recuperación automática: <code>errdisable recovery cause psecure-violation</code>.`)">Protect</button>
+<button class="ex-opt" onclick="ansQ(26,1,2,`El modo de violación default es <strong>Shutdown</strong>: el puerto entra en err-disabled inmediatamente. Para recuperar: <code>interface [int]</code> → <code>shutdown</code> → <code>no shutdown</code>. Para recuperación automática: <code>errdisable recovery cause psecure-violation</code>.`)">Restrict</button>
+<button class="ex-opt" onclick="ansQ(26,2,2,`El modo de violación default es <strong>Shutdown</strong>: el puerto entra en err-disabled inmediatamente. Para recuperar: <code>interface [int]</code> → <code>shutdown</code> → <code>no shutdown</code>. Para recuperación automática: <code>errdisable recovery cause psecure-violation</code>.`)">Shutdown (err-disabled)</button>
+<button class="ex-opt" onclick="ansQ(26,3,2,`El modo de violación default es <strong>Shutdown</strong>: el puerto entra en err-disabled inmediatamente. Para recuperar: <code>interface [int]</code> → <code>shutdown</code> → <code>no shutdown</code>. Para recuperación automática: <code>errdisable recovery cause psecure-violation</code>.`)">Drop</button>
+</div>
+</div><div class="ex-q" id="q27">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 28 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuál es el propósito de 'switchport nonegotiate'?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(27,0,1,`<code>switchport nonegotiate</code> deshabilita DTP — seguridad contra negociación automática de trunks. Requiere que el modo ya sea fijo (trunk o access). Combinación segura: <code>switchport mode trunk</code> + <code>switchport nonegotiate</code>.`)">Fuerza half-duplex</button>
+<button class="ex-opt" onclick="ansQ(27,1,1,`<code>switchport nonegotiate</code> deshabilita DTP — seguridad contra negociación automática de trunks. Requiere que el modo ya sea fijo (trunk o access). Combinación segura: <code>switchport mode trunk</code> + <code>switchport nonegotiate</code>.`)">Deshabilita DTP — el puerto no negocia trunk automáticamente</button>
+<button class="ex-opt" onclick="ansQ(27,2,1,`<code>switchport nonegotiate</code> deshabilita DTP — seguridad contra negociación automática de trunks. Requiere que el modo ya sea fijo (trunk o access). Combinación segura: <code>switchport mode trunk</code> + <code>switchport nonegotiate</code>.`)">Configura el puerto como access permanente</button>
+<button class="ex-opt" onclick="ansQ(27,3,1,`<code>switchport nonegotiate</code> deshabilita DTP — seguridad contra negociación automática de trunks. Requiere que el modo ya sea fijo (trunk o access). Combinación segura: <code>switchport mode trunk</code> + <code>switchport nonegotiate</code>.`)">Deshabilita STP en el puerto</button>
+</div>
+</div><div class="ex-q" id="q28">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 29 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Qué muestra 'show spanning-tree vlan 10'?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(28,0,1,`<code>show spanning-tree vlan 10</code>: Root Bridge ID (prioridad + MAC), Bridge ID local, y por interfaz: rol (Root/Designated/Alternate/Backup) y estado (Forwarding/Blocking). También muestra timers (Hello=2s, Forward delay=15s, Max age=20s).`)">Solo estado de puertos</button>
+<button class="ex-opt" onclick="ansQ(28,1,1,`<code>show spanning-tree vlan 10</code>: Root Bridge ID (prioridad + MAC), Bridge ID local, y por interfaz: rol (Root/Designated/Alternate/Backup) y estado (Forwarding/Blocking). También muestra timers (Hello=2s, Forward delay=15s, Max age=20s).`)">Root Bridge ID, prioridad local y estado de cada puerto (Root/Designated/Alternate, FWD/BLK)</button>
+<button class="ex-opt" onclick="ansQ(28,2,1,`<code>show spanning-tree vlan 10</code>: Root Bridge ID (prioridad + MAC), Bridge ID local, y por interfaz: rol (Root/Designated/Alternate/Backup) y estado (Forwarding/Blocking). También muestra timers (Hello=2s, Forward delay=15s, Max age=20s).`)">Solo interfaces Blocking</button>
+<button class="ex-opt" onclick="ansQ(28,3,1,`<code>show spanning-tree vlan 10</code>: Root Bridge ID (prioridad + MAC), Bridge ID local, y por interfaz: rol (Root/Designated/Alternate/Backup) y estado (Forwarding/Blocking). También muestra timers (Hello=2s, Forward delay=15s, Max age=20s).`)">Estado de BPDU Guard</button>
+</div>
+</div><div class="ex-q" id="q29">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 30 DE 30</span><span class="ex-qtype cli">CLI/CONFIG</span></div>
+  <div class="ex-qtext">¿Cuál es el comando para verificar el estado de Port Security en una interfaz?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(29,0,2,`<code>show port-security interface [int]</code> muestra: modo (Shutdown/Restrict/Protect), MACs máximas, MACs actuales, violaciones, estado (Secure-up/err-disabled). <code>show port-security</code> da un resumen de todos los puertos habilitados.`)">show port-security</button>
+<button class="ex-opt" onclick="ansQ(29,1,2,`<code>show port-security interface [int]</code> muestra: modo (Shutdown/Restrict/Protect), MACs máximas, MACs actuales, violaciones, estado (Secure-up/err-disabled). <code>show port-security</code> da un resumen de todos los puertos habilitados.`)">show interfaces security</button>
+<button class="ex-opt" onclick="ansQ(29,2,2,`<code>show port-security interface [int]</code> muestra: modo (Shutdown/Restrict/Protect), MACs máximas, MACs actuales, violaciones, estado (Secure-up/err-disabled). <code>show port-security</code> da un resumen de todos los puertos habilitados.`)">show port-security interface [int]</button>
+<button class="ex-opt" onclick="ansQ(29,3,2,`<code>show port-security interface [int]</code> muestra: modo (Shutdown/Restrict/Protect), MACs máximas, MACs actuales, violaciones, estado (Secure-up/err-disabled). <code>show port-security</code> da un resumen de todos los puertos habilitados.`)">show mac address-table secure</button>
+</div>
+</div>
+<div class="ex-result" id="exResult">
+<div class="ex-result-pct" id="rPct">0%</div>
+<div class="ex-result-label" id="rLabel"></div>
+<div class="ex-result-sub" id="rSub"></div>
+<a href="banco-preguntas.html" style="display:inline-block;margin-top:12px;padding:10px 24px;background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.3);border-radius:8px;color:#fbbf24;font-family:Share Tech Mono,monospace;font-size:.75rem;text-decoration:none;">← Ver todos los exámenes</a>
+</div>
+<div class="ex-nav"><a href="exam2.html" class="ex-nav-prev">← Anterior</a><a href="exam4.html" class="ex-nav-next">Siguiente →</a></div>
+</div>
+<script>
+var sc=0,an=0,tot=30;
+function ansQ(qi,sel,cor,exp){
+  var d=document.getElementById("q"+qi);
+  if(!d||d.classList.contains("answered"))return;
+  var btns=d.querySelectorAll(".ex-opt");
+  btns.forEach(function(b){b.disabled=true;});
+  btns[sel].classList.add(sel===cor?"correct":"wrong");
+  if(sel!==cor)btns[cor].classList.add("correct");
+  var e=document.createElement("div");
+  e.className="ex-exp";
+  e.innerHTML="<strong>"+(sel===cor?"✅ Correcto!":"❌ Incorrecto.")+"</strong> "+exp;
+  d.appendChild(e);
+  d.classList.add("answered");
+  if(sel===cor)sc++;
+  an++;
+  updScore();
+  if(an>=tot)showRes();
+}
+function updScore(){
+  var p=tot>0?Math.round(sc/tot*100):0;
+  document.getElementById("snum").textContent=sc+"/"+tot;
+  document.getElementById("sfill").style.width=p+"%";
+  document.getElementById("slbl").textContent=an+" respondidas · "+p+"% correcto";
+}
+function resetEx(){
+  sc=0;an=0;updScore();
+  document.getElementById("exResult").style.display="none";
+  for(var i=0;i<tot;i++){
+    var d=document.getElementById("q"+i);
+    if(!d)continue;
+    d.classList.remove("answered");
+    var btns=d.querySelectorAll(".ex-opt");
+    btns.forEach(function(b){b.disabled=false;b.classList.remove("correct","wrong");});
+    var ep=d.querySelector(".ex-exp");
+    if(ep)ep.remove();
+  }
+}
+function showRes(){
+  var p=Math.round(sc/tot*100);
+  var g=p>=85?"🏆 APROBADO — Excelente preparación":p>=70?"✅ CASI LISTO — Repasa los temas fallados":p>=55?"📚 SIGUE ESTUDIANDO — Revisa las explicaciones":"💪 NECESITAS REPASAR — Estudia más antes de repetir";
+  var s=p>=85?"Estás listo para el examen real CCNA 200-301.":p>=70?"Buen nivel. Repasa los conceptos donde fallaste.":p>=55?"Revisa las clases magistrales relacionadas.":"Repasa las clases y vuelve a intentarlo.";
+  document.getElementById("rPct").textContent=p+"%";
+  document.getElementById("rLabel").textContent=g;
+  document.getElementById("rSub").textContent=s;
+  var r=document.getElementById("exResult");
+  r.style.display="block";
+  r.scrollIntoView({behavior:"smooth",block:"center"});
+}
+</script>
+</body></html>

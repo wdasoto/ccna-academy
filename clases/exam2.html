@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Examen 02: Subnetting IPv4 & VLSM | CCNA Academy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
+<nav class="ccna-drawer" id="ccnaDrawer">
+  <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
+  <div class="drawer-section"><div class="drawer-section-title">General</div>
+    <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M1 · Fundamentos</div>
+    <a href="fundamentos.html" class="drawer-link"><span class="dl-icon">🌐</span> Fundamentos</a>
+    <a href="subnetting.html" class="drawer-link"><span class="dl-icon">🔢</span> Subnetting</a>
+    <a href="ipv6.html" class="drawer-link"><span class="dl-icon">6️⃣</span> IPv6</a>
+    <a href="arp.html" class="drawer-link"><span class="dl-icon">📡</span> ARP</a>
+    <a href="rip.html" class="drawer-link"><span class="dl-icon">🔄</span> RIP</a>
+    <a href="protocolos-internet.html" class="drawer-link"><span class="dl-icon">🌍</span> Protocolos Internet</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M3 · Switching</div>
+    <a href="vlan.html" class="drawer-link"><span class="dl-icon">🏷️</span> VLANs</a>
+    <a href="stp.html" class="drawer-link"><span class="dl-icon">🌳</span> STP</a>
+    <a href="etherchannel.html" class="drawer-link"><span class="dl-icon">🔗</span> EtherChannel</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M4 · Routing</div>
+    <a href="ospf.html" class="drawer-link"><span class="dl-icon">⭕</span> OSPF</a>
+    <a href="eigrp.html" class="drawer-link"><span class="dl-icon">⚡</span> EIGRP</a>
+    <a href="ospfv2-masterclass.html" class="drawer-link"><span class="dl-icon">🎯</span> OSPFv2 Masterclass</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M5 · Servicios IP</div>
+    <a href="dhcp.html" class="drawer-link"><span class="dl-icon">📋</span> DHCP</a>
+    <a href="nat.html" class="drawer-link"><span class="dl-icon">🔄</span> NAT/PAT</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">⚡ Herramientas</div>
+    <a href="asistente.html" class="drawer-link"><span class="dl-icon">🤖</span> Asistente IA</a>
+    <a href="netbot.html" class="drawer-link"><span class="dl-icon">⚙️</span> NetBot Config</a>
+    <a href="banco-preguntas.html" class="drawer-link"><span class="dl-icon">📝</span> Banco de Preguntas</a></div>
+</nav>
+<header class="navbar">
+  <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
+  <a href="../index.html" class="navbar-brand">CISCO<span> ACADEMY</span></a>
+  <div class="navbar-spacer"></div>
+  <a href="banco-preguntas.html" class="navbar-link">← Banco</a>
+</header>
+<script src="../assets/main.js" defer></script>
+<div class="nav-spacer"></div>
+<section class="ex-hero">
+<div class="ex-hero-inner">
+<div class="ex-badge">BANCO DE PREGUNTAS · EXAMEN 02 DE 10</div>
+<h1 class="ex-title">EXAMEN 02 — <span>Subnetting IPv4 & VLSM</span></h1>
+<p class="ex-sub">Cálculo de subredes, máscaras, hosts utilizables, VLSM, CIDR, wildcard masks y diseño de redes.</p>
+<div class="ex-meta">
+<span class="ex-meta-item">📋 30 preguntas</span>
+<span class="ex-meta-item">🎯 CIDR · Máscaras · VLSM · Wildcard · Hosts</span>
+<span class="ex-meta-item">📅 Actualizado mar 2026</span>
+</div></div></section>
+<style>
+body{font-family:"Exo 2",sans-serif;background:#07090f;color:#e2e8f0;}
+.ex-hero{background:linear-gradient(135deg,#06080f,#0c1020 60%,#0e1428);padding:44px 24px 36px;border-bottom:1px solid rgba(251,191,36,.12);position:relative;overflow:hidden;}
+.ex-hero::before{content:"";position:absolute;top:-80px;right:-80px;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(251,191,36,.05) 0%,transparent 70%);pointer-events:none;}
+.ex-hero-inner{max-width:860px;margin:0 auto;position:relative;z-index:1;}
+.ex-badge{font-family:"Share Tech Mono",monospace;font-size:.62rem;color:#fbbf24;letter-spacing:3px;text-transform:uppercase;margin-bottom:12px;}
+.ex-title{font-family:"Orbitron",sans-serif;font-size:clamp(1.5rem,4vw,2.4rem);font-weight:900;letter-spacing:3px;color:#c2d0e8;margin-bottom:8px;line-height:1.1;}
+.ex-title span{background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.ex-sub{font-size:.9rem;color:#6b7a9a;line-height:1.65;margin-bottom:18px;max-width:680px;}
+.ex-meta{display:flex;gap:12px;flex-wrap:wrap;}
+.ex-meta-item{font-family:"Share Tech Mono",monospace;font-size:.68rem;color:#374060;padding:4px 10px;border:1px solid rgba(251,191,36,.1);border-radius:4px;}
+.ex-wrap{max-width:940px;margin:0 auto;padding:28px 20px 60px;}
+.ex-score-bar{background:#090d1a;border:1px solid rgba(251,191,36,.15);border-radius:12px;padding:16px 22px;margin-bottom:24px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;}
+.ex-score-num{font-family:"Orbitron",sans-serif;font-size:1.8rem;font-weight:900;background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;min-width:56px;}
+.ex-score-track{flex:1;height:7px;background:#0d1220;border-radius:4px;overflow:hidden;min-width:100px;}
+.ex-score-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#fbbf24,#f59e0b);transition:width .5s ease;width:0%;}
+.ex-score-label{font-family:"Share Tech Mono",monospace;font-size:.68rem;color:#4a5780;white-space:nowrap;}
+.ex-score-btn{padding:7px 16px;background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.25);border-radius:7px;color:#fbbf24;font-family:"Share Tech Mono",monospace;font-size:.68rem;cursor:pointer;transition:all .18s;margin-left:auto;}
+.ex-score-btn:hover{background:rgba(251,191,36,.18);}
+.ex-q{background:#0d1220;border:1px solid rgba(255,255,255,.05);border-radius:12px;padding:20px;margin-bottom:16px;transition:border-color .2s;}
+.ex-q.answered{border-color:rgba(251,191,36,.08);}
+.ex-qmeta{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.ex-qnum{font-family:"Share Tech Mono",monospace;font-size:.6rem;color:#374060;letter-spacing:2px;}
+.ex-qtype{font-family:"Share Tech Mono",monospace;font-size:.58rem;padding:2px 8px;border-radius:3px;}
+.ex-qtype.cli{background:rgba(0,212,170,.08);border:1px solid rgba(0,212,170,.2);color:#00d4aa;}
+.ex-qtype.concept{background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.2);color:#38bdf8;}
+.ex-qtype.trouble{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.2);color:#f87171;}
+.ex-qtype.scenario{background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.2);color:#a78bfa;}
+.ex-qtext{font-size:.9rem;color:#c2d0e8;line-height:1.65;margin-bottom:14px;}
+.ex-qtext code,.ex-exp code{font-family:"Share Tech Mono",monospace;font-size:.8rem;background:rgba(0,212,170,.08);color:#00d4aa;padding:1px 5px;border-radius:4px;border:1px solid rgba(0,212,170,.15);}
+.ex-opts{display:flex;flex-direction:column;gap:7px;}
+.ex-opt{padding:10px 14px;border-radius:8px;border:1px solid rgba(255,255,255,.06);background:#090d1a;color:#6b7a9a;cursor:pointer;font-size:.86rem;text-align:left;transition:all .15s;line-height:1.5;}
+.ex-opt:hover:not(:disabled){border-color:rgba(251,191,36,.3);color:#c2d0e8;background:rgba(251,191,36,.04);}
+.ex-opt.correct{border-color:#34d399;background:rgba(52,211,153,.08);color:#34d399;}
+.ex-opt.wrong{border-color:#f87171;background:rgba(248,113,113,.08);color:#f87171;}
+.ex-exp{margin-top:12px;padding:12px 16px;background:rgba(251,191,36,.04);border-left:3px solid #fbbf24;border-radius:6px;font-size:.83rem;color:#a0aec0;line-height:1.65;}
+.ex-exp strong{color:#c2d0e8;}
+.ex-result{background:linear-gradient(135deg,rgba(251,191,36,.08),rgba(245,158,11,.04));border:1px solid rgba(251,191,36,.2);border-radius:16px;padding:32px;text-align:center;margin-top:32px;display:none;}
+.ex-result-pct{font-family:"Orbitron",sans-serif;font-size:3rem;font-weight:900;background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px;}
+.ex-result-label{font-family:"Share Tech Mono",monospace;font-size:.9rem;color:#c2d0e8;margin-bottom:6px;}
+.ex-result-sub{font-size:.82rem;color:#6b7a9a;margin-bottom:16px;}
+.ex-nav{display:flex;align-items:center;justify-content:space-between;margin-top:28px;flex-wrap:wrap;gap:12px;}
+.ex-nav a{padding:10px 22px;border-radius:8px;font-family:"Share Tech Mono",monospace;font-size:.72rem;cursor:pointer;transition:all .18s;text-decoration:none;display:inline-block;}
+.ex-nav-prev{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:#4a5780;}
+.ex-nav-prev:hover{color:#c2d0e8;border-color:rgba(255,255,255,.2);}
+.ex-nav-next{background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);color:#fbbf24;}
+.ex-nav-next:hover{background:rgba(251,191,36,.2);box-shadow:0 0 16px rgba(251,191,36,.15);}
+@media(max-width:680px){.ex-opts .ex-opt{font-size:.8rem;}.ex-qtext{font-size:.86rem;}}
+</style>
+<div class="ex-wrap">
+<div class="ex-score-bar">
+<div class="ex-score-num" id="snum">0/30</div>
+<div class="ex-score-track"><div class="ex-score-fill" id="sfill"></div></div>
+<div class="ex-score-label" id="slbl">0 respondidas · 0% correcto</div>
+<button class="ex-score-btn" onclick="resetEx()">🔄 Reiniciar</button>
+</div>
+<div class="ex-q" id="q0">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 1 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuántos hosts utilizables tiene la red 192.168.10.0/26?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(0,0,1,`Una subred /26 tiene 6 bits de host: 2⁶-2=<strong>62 hosts utilizables</strong>. Máscara: 255.255.255.192. Subredes /26 de .0: .0 (0-63), .64 (64-127), .128 (128-191), .192 (192-255). El '-2' es por la dirección de red y el broadcast.`)">30</button>
+<button class="ex-opt" onclick="ansQ(0,1,1,`Una subred /26 tiene 6 bits de host: 2⁶-2=<strong>62 hosts utilizables</strong>. Máscara: 255.255.255.192. Subredes /26 de .0: .0 (0-63), .64 (64-127), .128 (128-191), .192 (192-255). El '-2' es por la dirección de red y el broadcast.`)">62</button>
+<button class="ex-opt" onclick="ansQ(0,2,1,`Una subred /26 tiene 6 bits de host: 2⁶-2=<strong>62 hosts utilizables</strong>. Máscara: 255.255.255.192. Subredes /26 de .0: .0 (0-63), .64 (64-127), .128 (128-191), .192 (192-255). El '-2' es por la dirección de red y el broadcast.`)">126</button>
+<button class="ex-opt" onclick="ansQ(0,3,1,`Una subred /26 tiene 6 bits de host: 2⁶-2=<strong>62 hosts utilizables</strong>. Máscara: 255.255.255.192. Subredes /26 de .0: .0 (0-63), .64 (64-127), .128 (128-191), .192 (192-255). El '-2' es por la dirección de red y el broadcast.`)">64</button>
+</div>
+</div><div class="ex-q" id="q1">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 2 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuál es la dirección de red de 172.16.35.200/21?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(1,0,1,`/21 = 255.255.248.0. Tercer octeto: 248=11111000. 35=00100011. AND=00100000=32. La red es <strong>172.16.32.0/21</strong>. Las redes /21 saltan de 8 en 8 en el tercer octeto: .0, .8, .16, .24, .32...`)">172.16.35.0</button>
+<button class="ex-opt" onclick="ansQ(1,1,1,`/21 = 255.255.248.0. Tercer octeto: 248=11111000. 35=00100011. AND=00100000=32. La red es <strong>172.16.32.0/21</strong>. Las redes /21 saltan de 8 en 8 en el tercer octeto: .0, .8, .16, .24, .32...`)">172.16.32.0</button>
+<button class="ex-opt" onclick="ansQ(1,2,1,`/21 = 255.255.248.0. Tercer octeto: 248=11111000. 35=00100011. AND=00100000=32. La red es <strong>172.16.32.0/21</strong>. Las redes /21 saltan de 8 en 8 en el tercer octeto: .0, .8, .16, .24, .32...`)">172.16.34.0</button>
+<button class="ex-opt" onclick="ansQ(1,3,1,`/21 = 255.255.248.0. Tercer octeto: 248=11111000. 35=00100011. AND=00100000=32. La red es <strong>172.16.32.0/21</strong>. Las redes /21 saltan de 8 en 8 en el tercer octeto: .0, .8, .16, .24, .32...`)">172.16.0.0</button>
+</div>
+</div><div class="ex-q" id="q2">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 3 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuántos hosts tiene una subred /30?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(2,0,0,`Una /30 tiene 2 bits de host: 2²-2=<strong>2 hosts utilizables</strong>. Es la máscara estándar para enlaces punto a punto WAN. Máscara: 255.255.255.252. 4 IPs totales: red, 2 hosts, broadcast.`)">2 hosts</button>
+<button class="ex-opt" onclick="ansQ(2,1,0,`Una /30 tiene 2 bits de host: 2²-2=<strong>2 hosts utilizables</strong>. Es la máscara estándar para enlaces punto a punto WAN. Máscara: 255.255.255.252. 4 IPs totales: red, 2 hosts, broadcast.`)">4 hosts</button>
+<button class="ex-opt" onclick="ansQ(2,2,0,`Una /30 tiene 2 bits de host: 2²-2=<strong>2 hosts utilizables</strong>. Es la máscara estándar para enlaces punto a punto WAN. Máscara: 255.255.255.252. 4 IPs totales: red, 2 hosts, broadcast.`)">6 hosts</button>
+<button class="ex-opt" onclick="ansQ(2,3,0,`Una /30 tiene 2 bits de host: 2²-2=<strong>2 hosts utilizables</strong>. Es la máscara estándar para enlaces punto a punto WAN. Máscara: 255.255.255.252. 4 IPs totales: red, 2 hosts, broadcast.`)">30 hosts</button>
+</div>
+</div><div class="ex-q" id="q3">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 4 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuál es la wildcard mask de 255.255.255.240?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(3,0,1,`Wildcard = complemento de la máscara: 255-240=<strong>15 → 0.0.0.15</strong>. Wildcards se usan en ACLs y OSPF: <code>network 192.168.1.0 0.0.0.255 area 0</code>. En binario: 240=11110000, wildcard=00001111.`)">0.0.0.240</button>
+<button class="ex-opt" onclick="ansQ(3,1,1,`Wildcard = complemento de la máscara: 255-240=<strong>15 → 0.0.0.15</strong>. Wildcards se usan en ACLs y OSPF: <code>network 192.168.1.0 0.0.0.255 area 0</code>. En binario: 240=11110000, wildcard=00001111.`)">0.0.0.15</button>
+<button class="ex-opt" onclick="ansQ(3,2,1,`Wildcard = complemento de la máscara: 255-240=<strong>15 → 0.0.0.15</strong>. Wildcards se usan en ACLs y OSPF: <code>network 192.168.1.0 0.0.0.255 area 0</code>. En binario: 240=11110000, wildcard=00001111.`)">0.0.0.16</button>
+<button class="ex-opt" onclick="ansQ(3,3,1,`Wildcard = complemento de la máscara: 255-240=<strong>15 → 0.0.0.15</strong>. Wildcards se usan en ACLs y OSPF: <code>network 192.168.1.0 0.0.0.255 area 0</code>. En binario: 240=11110000, wildcard=00001111.`)">255.255.255.15</button>
+</div>
+</div><div class="ex-q" id="q4">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 5 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuántas subredes /30 se pueden crear a partir de una red /26?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(4,0,2,`Una /26 tiene 64 IPs. Una /30 tiene 4 IPs. 64/4=<strong>16 subredes /30</strong>. Fórmula: bits prestados = 30-26=4 → 2⁴=16 subredes.`)">4</button>
+<button class="ex-opt" onclick="ansQ(4,1,2,`Una /26 tiene 64 IPs. Una /30 tiene 4 IPs. 64/4=<strong>16 subredes /30</strong>. Fórmula: bits prestados = 30-26=4 → 2⁴=16 subredes.`)">8</button>
+<button class="ex-opt" onclick="ansQ(4,2,2,`Una /26 tiene 64 IPs. Una /30 tiene 4 IPs. 64/4=<strong>16 subredes /30</strong>. Fórmula: bits prestados = 30-26=4 → 2⁴=16 subredes.`)">16</button>
+<button class="ex-opt" onclick="ansQ(4,3,2,`Una /26 tiene 64 IPs. Una /30 tiene 4 IPs. 64/4=<strong>16 subredes /30</strong>. Fórmula: bits prestados = 30-26=4 → 2⁴=16 subredes.`)">32</button>
+</div>
+</div><div class="ex-q" id="q5">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 6 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuál es la primera dirección de host válida de 10.1.1.128/25?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(5,0,1,`La dirección de red .128 no es asignable. Primer host válido = red+1 = <strong>10.1.1.129</strong>. Broadcast: 10.1.1.255. Rango de hosts: .129 – .254 (126 hosts).`)">10.1.1.128</button>
+<button class="ex-opt" onclick="ansQ(5,1,1,`La dirección de red .128 no es asignable. Primer host válido = red+1 = <strong>10.1.1.129</strong>. Broadcast: 10.1.1.255. Rango de hosts: .129 – .254 (126 hosts).`)">10.1.1.129</button>
+<button class="ex-opt" onclick="ansQ(5,2,1,`La dirección de red .128 no es asignable. Primer host válido = red+1 = <strong>10.1.1.129</strong>. Broadcast: 10.1.1.255. Rango de hosts: .129 – .254 (126 hosts).`)">10.1.1.130</button>
+<button class="ex-opt" onclick="ansQ(5,3,1,`La dirección de red .128 no es asignable. Primer host válido = red+1 = <strong>10.1.1.129</strong>. Broadcast: 10.1.1.255. Rango de hosts: .129 – .254 (126 hosts).`)">10.1.1.1</button>
+</div>
+</div><div class="ex-q" id="q6">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 7 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuál es la máscara de subred en decimal de /28?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(6,0,1,`/28 tiene 28 bits en 1. Cuarto octeto: 1111 0000 = <strong>240</strong>. Máscara: 255.255.255.240. Hosts: 2⁴-2=14. Tabla básica: /28=240, /27=224, /26=192, /25=128, /24=0.`)">255.255.255.224</button>
+<button class="ex-opt" onclick="ansQ(6,1,1,`/28 tiene 28 bits en 1. Cuarto octeto: 1111 0000 = <strong>240</strong>. Máscara: 255.255.255.240. Hosts: 2⁴-2=14. Tabla básica: /28=240, /27=224, /26=192, /25=128, /24=0.`)">255.255.255.240</button>
+<button class="ex-opt" onclick="ansQ(6,2,1,`/28 tiene 28 bits en 1. Cuarto octeto: 1111 0000 = <strong>240</strong>. Máscara: 255.255.255.240. Hosts: 2⁴-2=14. Tabla básica: /28=240, /27=224, /26=192, /25=128, /24=0.`)">255.255.255.248</button>
+<button class="ex-opt" onclick="ansQ(6,3,1,`/28 tiene 28 bits en 1. Cuarto octeto: 1111 0000 = <strong>240</strong>. Máscara: 255.255.255.240. Hosts: 2⁴-2=14. Tabla básica: /28=240, /27=224, /26=192, /25=128, /24=0.`)">255.255.255.252</button>
+</div>
+</div><div class="ex-q" id="q7">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 8 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">Un administrador quiere sumarizar 192.168.4.0/24, .5.0/24, .6.0/24 y .7.0/24 en una sola ruta. ¿Cuál es?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(7,0,1,`4 redes /24 consecutivas = 1 red /22. El resumen correcto es <strong>192.168.4.0/22</strong> (cubre .4.0 hasta .7.255). En binario: .4=00000100, .7=00000111 → bits en común son los primeros 22.`)">192.168.4.0/21</button>
+<button class="ex-opt" onclick="ansQ(7,1,1,`4 redes /24 consecutivas = 1 red /22. El resumen correcto es <strong>192.168.4.0/22</strong> (cubre .4.0 hasta .7.255). En binario: .4=00000100, .7=00000111 → bits en común son los primeros 22.`)">192.168.4.0/22</button>
+<button class="ex-opt" onclick="ansQ(7,2,1,`4 redes /24 consecutivas = 1 red /22. El resumen correcto es <strong>192.168.4.0/22</strong> (cubre .4.0 hasta .7.255). En binario: .4=00000100, .7=00000111 → bits en común son los primeros 22.`)">192.168.0.0/20</button>
+<button class="ex-opt" onclick="ansQ(7,3,1,`4 redes /24 consecutivas = 1 red /22. El resumen correcto es <strong>192.168.4.0/22</strong> (cubre .4.0 hasta .7.255). En binario: .4=00000100, .7=00000111 → bits en común son los primeros 22.`)">192.168.4.0/24</button>
+</div>
+</div><div class="ex-q" id="q8">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 9 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuántos hosts tiene una red de clase C sin subnetting?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(8,0,1,`Clase C /24 tiene 8 bits de host: 2⁸-2=<strong>254 hosts</strong>. Clase A /8: ~16.7M. Clase B /16: 65534. Para calcular: 2ⁿ-2 donde n es el número de bits de host.`)">126</button>
+<button class="ex-opt" onclick="ansQ(8,1,1,`Clase C /24 tiene 8 bits de host: 2⁸-2=<strong>254 hosts</strong>. Clase A /8: ~16.7M. Clase B /16: 65534. Para calcular: 2ⁿ-2 donde n es el número de bits de host.`)">254</button>
+<button class="ex-opt" onclick="ansQ(8,2,1,`Clase C /24 tiene 8 bits de host: 2⁸-2=<strong>254 hosts</strong>. Clase A /8: ~16.7M. Clase B /16: 65534. Para calcular: 2ⁿ-2 donde n es el número de bits de host.`)">510</button>
+<button class="ex-opt" onclick="ansQ(8,3,1,`Clase C /24 tiene 8 bits de host: 2⁸-2=<strong>254 hosts</strong>. Clase A /8: ~16.7M. Clase B /16: 65534. Para calcular: 2ⁿ-2 donde n es el número de bits de host.`)">65534</button>
+</div>
+</div><div class="ex-q" id="q9">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 10 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Qué significa el '/' en la notación CIDR 192.168.1.0/24?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(9,0,1,`En CIDR el número después del '/' indica el <strong>número de bits en 1 en la máscara</strong> (longitud del prefijo). /24=255.255.255.0, /30=255.255.255.252, /32=host específico.`)">Número de subredes</button>
+<button class="ex-opt" onclick="ansQ(9,1,1,`En CIDR el número después del '/' indica el <strong>número de bits en 1 en la máscara</strong> (longitud del prefijo). /24=255.255.255.0, /30=255.255.255.252, /32=host específico.`)">Número de bits en 1 en la máscara (prefijo)</button>
+<button class="ex-opt" onclick="ansQ(9,2,1,`En CIDR el número después del '/' indica el <strong>número de bits en 1 en la máscara</strong> (longitud del prefijo). /24=255.255.255.0, /30=255.255.255.252, /32=host específico.`)">Número de hosts disponibles</button>
+<button class="ex-opt" onclick="ansQ(9,3,1,`En CIDR el número después del '/' indica el <strong>número de bits en 1 en la máscara</strong> (longitud del prefijo). /24=255.255.255.0, /30=255.255.255.252, /32=host específico.`)">Clase de red</button>
+</div>
+</div><div class="ex-q" id="q10">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 11 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">Un host tiene IP 192.168.1.130/26. ¿A qué subred pertenece?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(10,0,2,`Subredes /26: .0 (0-63), .64 (64-127), .128 (128-191), .192 (192-255). El host .130 está entre .128 y .191 → pertenece a <strong>192.168.1.128/26</strong>. Broadcast: .191. Hosts: .129 a .190.`)">192.168.1.0/26</button>
+<button class="ex-opt" onclick="ansQ(10,1,2,`Subredes /26: .0 (0-63), .64 (64-127), .128 (128-191), .192 (192-255). El host .130 está entre .128 y .191 → pertenece a <strong>192.168.1.128/26</strong>. Broadcast: .191. Hosts: .129 a .190.`)">192.168.1.64/26</button>
+<button class="ex-opt" onclick="ansQ(10,2,2,`Subredes /26: .0 (0-63), .64 (64-127), .128 (128-191), .192 (192-255). El host .130 está entre .128 y .191 → pertenece a <strong>192.168.1.128/26</strong>. Broadcast: .191. Hosts: .129 a .190.`)">192.168.1.128/26</button>
+<button class="ex-opt" onclick="ansQ(10,3,2,`Subredes /26: .0 (0-63), .64 (64-127), .128 (128-191), .192 (192-255). El host .130 está entre .128 y .191 → pertenece a <strong>192.168.1.128/26</strong>. Broadcast: .191. Hosts: .129 a .190.`)">192.168.1.192/26</button>
+</div>
+</div><div class="ex-q" id="q11">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 12 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Qué es VLSM (Variable Length Subnet Masking)?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(11,0,1,`<strong>VLSM</strong> permite usar diferentes prefijos dentro del mismo espacio de direcciones. Ejemplo: /30 para enlaces WAN (2 hosts), /27 para redes pequeñas (30 hosts), /25 para redes grandes (126). Maximiza eficiencia. Requiere protocolos classless (RIPv2, OSPF, EIGRP).`)">Todas las subredes con la misma máscara</button>
+<button class="ex-opt" onclick="ansQ(11,1,1,`<strong>VLSM</strong> permite usar diferentes prefijos dentro del mismo espacio de direcciones. Ejemplo: /30 para enlaces WAN (2 hosts), /27 para redes pequeñas (30 hosts), /25 para redes grandes (126). Maximiza eficiencia. Requiere protocolos classless (RIPv2, OSPF, EIGRP).`)">Usar diferentes máscaras dentro del mismo espacio de red para asignar el tamaño exacto a cada segmento</button>
+<button class="ex-opt" onclick="ansQ(11,2,1,`<strong>VLSM</strong> permite usar diferentes prefijos dentro del mismo espacio de direcciones. Ejemplo: /30 para enlaces WAN (2 hosts), /27 para redes pequeñas (30 hosts), /25 para redes grandes (126). Maximiza eficiencia. Requiere protocolos classless (RIPv2, OSPF, EIGRP).`)">Un protocolo de routing</button>
+<button class="ex-opt" onclick="ansQ(11,3,1,`<strong>VLSM</strong> permite usar diferentes prefijos dentro del mismo espacio de direcciones. Ejemplo: /30 para enlaces WAN (2 hosts), /27 para redes pequeñas (30 hosts), /25 para redes grandes (126). Maximiza eficiencia. Requiere protocolos classless (RIPv2, OSPF, EIGRP).`)">Una función de NAT</button>
+</div>
+</div><div class="ex-q" id="q12">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 13 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuántas IPs tiene una subred /20?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(12,0,3,`Una /20 tiene 12 bits de host: 2¹²=<strong>4096 IPs</strong> totales (4094 utilizables). Máscara: 255.255.240.0. Ejemplo: 192.168.0.0/20 cubre .0.0 hasta .15.255.`)">256</button>
+<button class="ex-opt" onclick="ansQ(12,1,3,`Una /20 tiene 12 bits de host: 2¹²=<strong>4096 IPs</strong> totales (4094 utilizables). Máscara: 255.255.240.0. Ejemplo: 192.168.0.0/20 cubre .0.0 hasta .15.255.`)">1024</button>
+<button class="ex-opt" onclick="ansQ(12,2,3,`Una /20 tiene 12 bits de host: 2¹²=<strong>4096 IPs</strong> totales (4094 utilizables). Máscara: 255.255.240.0. Ejemplo: 192.168.0.0/20 cubre .0.0 hasta .15.255.`)">2048</button>
+<button class="ex-opt" onclick="ansQ(12,3,3,`Una /20 tiene 12 bits de host: 2¹²=<strong>4096 IPs</strong> totales (4094 utilizables). Máscara: 255.255.240.0. Ejemplo: 192.168.0.0/20 cubre .0.0 hasta .15.255.`)">4096</button>
+</div>
+</div><div class="ex-q" id="q13">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 14 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuál es el 'magic number' para calcular subredes con /27?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(13,0,1,`Magic number = 256 - valor del octeto interesante de la máscara. Para /27: máscara=224, 256-224=<strong>32</strong>. Las subredes /27 saltan de 32 en 32: .0, .32, .64, .96, .128, .160, .192, .224.`)">16</button>
+<button class="ex-opt" onclick="ansQ(13,1,1,`Magic number = 256 - valor del octeto interesante de la máscara. Para /27: máscara=224, 256-224=<strong>32</strong>. Las subredes /27 saltan de 32 en 32: .0, .32, .64, .96, .128, .160, .192, .224.`)">32</button>
+<button class="ex-opt" onclick="ansQ(13,2,1,`Magic number = 256 - valor del octeto interesante de la máscara. Para /27: máscara=224, 256-224=<strong>32</strong>. Las subredes /27 saltan de 32 en 32: .0, .32, .64, .96, .128, .160, .192, .224.`)">64</button>
+<button class="ex-opt" onclick="ansQ(13,3,1,`Magic number = 256 - valor del octeto interesante de la máscara. Para /27: máscara=224, 256-224=<strong>32</strong>. Las subredes /27 saltan de 32 en 32: .0, .32, .64, .96, .128, .160, .192, .224.`)">128</button>
+</div>
+</div><div class="ex-q" id="q14">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 15 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuántas subredes /24 caben en una red /21?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(14,0,1,`Una /21 tiene 21 bits de red, una /24 tiene 24. Diferencia: 3 bits → 2³=<strong>8 subredes /24</strong>. Ejemplo: 10.0.0.0/21 contiene 10.0.0.0/24 hasta 10.0.7.0/24.`)">4</button>
+<button class="ex-opt" onclick="ansQ(14,1,1,`Una /21 tiene 21 bits de red, una /24 tiene 24. Diferencia: 3 bits → 2³=<strong>8 subredes /24</strong>. Ejemplo: 10.0.0.0/21 contiene 10.0.0.0/24 hasta 10.0.7.0/24.`)">8</button>
+<button class="ex-opt" onclick="ansQ(14,2,1,`Una /21 tiene 21 bits de red, una /24 tiene 24. Diferencia: 3 bits → 2³=<strong>8 subredes /24</strong>. Ejemplo: 10.0.0.0/21 contiene 10.0.0.0/24 hasta 10.0.7.0/24.`)">16</button>
+<button class="ex-opt" onclick="ansQ(14,3,1,`Una /21 tiene 21 bits de red, una /24 tiene 24. Diferencia: 3 bits → 2³=<strong>8 subredes /24</strong>. Ejemplo: 10.0.0.0/21 contiene 10.0.0.0/24 hasta 10.0.7.0/24.`)">32</button>
+</div>
+</div><div class="ex-q" id="q15">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 16 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuál es la wildcard mask equivalente a /24?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(15,0,1,`Wildcard de /24 (255.255.255.0): 255-255=0, 255-255=0, 255-255=0, 255-0=255 → <strong>0.0.0.255</strong>. Se usa en ACLs: <code>permit ip 192.168.1.0 0.0.0.255</code> permite toda la red /24.`)">0.0.0.0</button>
+<button class="ex-opt" onclick="ansQ(15,1,1,`Wildcard de /24 (255.255.255.0): 255-255=0, 255-255=0, 255-255=0, 255-0=255 → <strong>0.0.0.255</strong>. Se usa en ACLs: <code>permit ip 192.168.1.0 0.0.0.255</code> permite toda la red /24.`)">0.0.0.255</button>
+<button class="ex-opt" onclick="ansQ(15,2,1,`Wildcard de /24 (255.255.255.0): 255-255=0, 255-255=0, 255-255=0, 255-0=255 → <strong>0.0.0.255</strong>. Se usa en ACLs: <code>permit ip 192.168.1.0 0.0.0.255</code> permite toda la red /24.`)">255.255.255.0</button>
+<button class="ex-opt" onclick="ansQ(15,3,1,`Wildcard de /24 (255.255.255.0): 255-255=0, 255-255=0, 255-255=0, 255-0=255 → <strong>0.0.0.255</strong>. Se usa en ACLs: <code>permit ip 192.168.1.0 0.0.0.255</code> permite toda la red /24.`)">0.255.255.255</button>
+</div>
+</div><div class="ex-q" id="q16">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 17 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuántos bits de host se necesitan para 500 hosts?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(16,0,2,`Con 9 bits: 2⁹-2=510 ≥ 500. Con 8 bits: 2⁸-2=254 — insuficiente. Prefijo resultante en un /32: 32-9=<strong>/23</strong>. Ejemplo: 192.168.0.0/23 tiene 510 hosts.`)">7 bits (126 hosts)</button>
+<button class="ex-opt" onclick="ansQ(16,1,2,`Con 9 bits: 2⁹-2=510 ≥ 500. Con 8 bits: 2⁸-2=254 — insuficiente. Prefijo resultante en un /32: 32-9=<strong>/23</strong>. Ejemplo: 192.168.0.0/23 tiene 510 hosts.`)">8 bits (254 hosts)</button>
+<button class="ex-opt" onclick="ansQ(16,2,2,`Con 9 bits: 2⁹-2=510 ≥ 500. Con 8 bits: 2⁸-2=254 — insuficiente. Prefijo resultante en un /32: 32-9=<strong>/23</strong>. Ejemplo: 192.168.0.0/23 tiene 510 hosts.`)">9 bits (510 hosts)</button>
+<button class="ex-opt" onclick="ansQ(16,3,2,`Con 9 bits: 2⁹-2=510 ≥ 500. Con 8 bits: 2⁸-2=254 — insuficiente. Prefijo resultante en un /32: 32-9=<strong>/23</strong>. Ejemplo: 192.168.0.0/23 tiene 510 hosts.`)">10 bits (1022 hosts)</button>
+</div>
+</div><div class="ex-q" id="q17">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 18 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuál es la dirección de broadcast de 192.168.10.64/27?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(17,0,1,`Subredes /27 de 192.168.10.0: .0 (0-31), .32 (32-63), .64 (64-95). La subred .64/27 termina en <strong>192.168.10.95</strong> (broadcast). Hosts válidos: .65 a .94 (30 hosts).`)">192.168.10.127</button>
+<button class="ex-opt" onclick="ansQ(17,1,1,`Subredes /27 de 192.168.10.0: .0 (0-31), .32 (32-63), .64 (64-95). La subred .64/27 termina en <strong>192.168.10.95</strong> (broadcast). Hosts válidos: .65 a .94 (30 hosts).`)">192.168.10.95</button>
+<button class="ex-opt" onclick="ansQ(17,2,1,`Subredes /27 de 192.168.10.0: .0 (0-31), .32 (32-63), .64 (64-95). La subred .64/27 termina en <strong>192.168.10.95</strong> (broadcast). Hosts válidos: .65 a .94 (30 hosts).`)">192.168.10.96</button>
+<button class="ex-opt" onclick="ansQ(17,3,1,`Subredes /27 de 192.168.10.0: .0 (0-31), .32 (32-63), .64 (64-95). La subred .64/27 termina en <strong>192.168.10.95</strong> (broadcast). Hosts válidos: .65 a .94 (30 hosts).`)">192.168.10.255</button>
+</div>
+</div><div class="ex-q" id="q18">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 19 DE 30</span><span class="ex-qtype cli">CLI/CONFIG</span></div>
+  <div class="ex-qtext">¿Qué indica 'ip route 0.0.0.0 0.0.0.0 192.168.1.1'?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(18,0,1,`<code>ip route 0.0.0.0 0.0.0.0 192.168.1.1</code> configura la <strong>ruta default</strong> (gateway of last resort). Cuando no hay ruta más específica, el tráfico va a 192.168.1.1. Aparece en 'show ip route' como S* (static default).`)">Bloquea todo el tráfico</button>
+<button class="ex-opt" onclick="ansQ(18,1,1,`<code>ip route 0.0.0.0 0.0.0.0 192.168.1.1</code> configura la <strong>ruta default</strong> (gateway of last resort). Cuando no hay ruta más específica, el tráfico va a 192.168.1.1. Aparece en 'show ip route' como S* (static default).`)">Ruta default — todo el tráfico sin ruta específica va hacia 192.168.1.1</button>
+<button class="ex-opt" onclick="ansQ(18,2,1,`<code>ip route 0.0.0.0 0.0.0.0 192.168.1.1</code> configura la <strong>ruta default</strong> (gateway of last resort). Cuando no hay ruta más específica, el tráfico va a 192.168.1.1. Aparece en 'show ip route' como S* (static default).`)">Ruta a la red 0.0.0.0</button>
+<button class="ex-opt" onclick="ansQ(18,3,1,`<code>ip route 0.0.0.0 0.0.0.0 192.168.1.1</code> configura la <strong>ruta default</strong> (gateway of last resort). Cuando no hay ruta más específica, el tráfico va a 192.168.1.1. Aparece en 'show ip route' como S* (static default).`)">Comando inválido</button>
+</div>
+</div><div class="ex-q" id="q19">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 20 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuántos bits de host tiene una red /29?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(19,0,1,`Una /29 tiene 32-29=<strong>3 bits de host</strong>. 2³=8 IPs totales, 6 hosts utilizables. Máscara: 255.255.255.248. Uso típico: segmentos pequeños de gestión de red.`)">2</button>
+<button class="ex-opt" onclick="ansQ(19,1,1,`Una /29 tiene 32-29=<strong>3 bits de host</strong>. 2³=8 IPs totales, 6 hosts utilizables. Máscara: 255.255.255.248. Uso típico: segmentos pequeños de gestión de red.`)">3</button>
+<button class="ex-opt" onclick="ansQ(19,2,1,`Una /29 tiene 32-29=<strong>3 bits de host</strong>. 2³=8 IPs totales, 6 hosts utilizables. Máscara: 255.255.255.248. Uso típico: segmentos pequeños de gestión de red.`)">4</button>
+<button class="ex-opt" onclick="ansQ(19,3,1,`Una /29 tiene 32-29=<strong>3 bits de host</strong>. 2³=8 IPs totales, 6 hosts utilizables. Máscara: 255.255.255.248. Uso típico: segmentos pequeños de gestión de red.`)">5</button>
+</div>
+</div><div class="ex-q" id="q20">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 21 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuántas subredes /29 se pueden crear de una red /24?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(20,0,2,`Una /24 tiene 8 bits de host. Una /29 tiene 3. Bits para subredes: 8-3=5 → 2⁵=<strong>32 subredes /29</strong>. Verificación: 256 IPs /24 ÷ 8 IPs por /29 = 32 subredes.`)">8</button>
+<button class="ex-opt" onclick="ansQ(20,1,2,`Una /24 tiene 8 bits de host. Una /29 tiene 3. Bits para subredes: 8-3=5 → 2⁵=<strong>32 subredes /29</strong>. Verificación: 256 IPs /24 ÷ 8 IPs por /29 = 32 subredes.`)">16</button>
+<button class="ex-opt" onclick="ansQ(20,2,2,`Una /24 tiene 8 bits de host. Una /29 tiene 3. Bits para subredes: 8-3=5 → 2⁵=<strong>32 subredes /29</strong>. Verificación: 256 IPs /24 ÷ 8 IPs por /29 = 32 subredes.`)">32</button>
+<button class="ex-opt" onclick="ansQ(20,3,2,`Una /24 tiene 8 bits de host. Una /29 tiene 3. Bits para subredes: 8-3=5 → 2⁵=<strong>32 subredes /29</strong>. Verificación: 256 IPs /24 ÷ 8 IPs por /29 = 32 subredes.`)">64</button>
+</div>
+</div><div class="ex-q" id="q21">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 22 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuál es la máscara de /19 en notación decimal?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(21,0,0,`/19 tiene 19 bits. Primeros 16: 255.255. Bits 17-19 en tercer octeto: 111 00000 = 224. Máscara: <strong>255.255.224.0</strong>. Hosts: 2¹³-2=8190.`)">255.255.224.0</button>
+<button class="ex-opt" onclick="ansQ(21,1,0,`/19 tiene 19 bits. Primeros 16: 255.255. Bits 17-19 en tercer octeto: 111 00000 = 224. Máscara: <strong>255.255.224.0</strong>. Hosts: 2¹³-2=8190.`)">255.255.240.0</button>
+<button class="ex-opt" onclick="ansQ(21,2,0,`/19 tiene 19 bits. Primeros 16: 255.255. Bits 17-19 en tercer octeto: 111 00000 = 224. Máscara: <strong>255.255.224.0</strong>. Hosts: 2¹³-2=8190.`)">255.255.248.0</button>
+<button class="ex-opt" onclick="ansQ(21,3,0,`/19 tiene 19 bits. Primeros 16: 255.255. Bits 17-19 en tercer octeto: 111 00000 = 224. Máscara: <strong>255.255.224.0</strong>. Hosts: 2¹³-2=8190.`)">255.255.252.0</button>
+</div>
+</div><div class="ex-q" id="q22">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 23 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cómo se determina si dos hosts están en la misma subred?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(22,0,1,`Para verificar misma subred: aplicar <strong>AND lógico</strong> (máscara) a ambas IPs. Si el resultado es igual, están en la misma red. Ejemplo: Host A=192.168.1.10/26 AND 255.255.255.192=192.168.1.0; Host B=192.168.1.70/26 AND=192.168.1.64. Diferentes → subredes distintas.`)">Comparando el tercer octeto</button>
+<button class="ex-opt" onclick="ansQ(22,1,1,`Para verificar misma subred: aplicar <strong>AND lógico</strong> (máscara) a ambas IPs. Si el resultado es igual, están en la misma red. Ejemplo: Host A=192.168.1.10/26 AND 255.255.255.192=192.168.1.0; Host B=192.168.1.70/26 AND=192.168.1.64. Diferentes → subredes distintas.`)">Aplicando AND lógico (máscara) a ambas IPs — si resultado igual, misma subred</button>
+<button class="ex-opt" onclick="ansQ(22,2,1,`Para verificar misma subred: aplicar <strong>AND lógico</strong> (máscara) a ambas IPs. Si el resultado es igual, están en la misma red. Ejemplo: Host A=192.168.1.10/26 AND 255.255.255.192=192.168.1.0; Host B=192.168.1.70/26 AND=192.168.1.64. Diferentes → subredes distintas.`)">Si las IPs son consecutivas</button>
+<button class="ex-opt" onclick="ansQ(22,3,1,`Para verificar misma subred: aplicar <strong>AND lógico</strong> (máscara) a ambas IPs. Si el resultado es igual, están en la misma red. Ejemplo: Host A=192.168.1.10/26 AND 255.255.255.192=192.168.1.0; Host B=192.168.1.70/26 AND=192.168.1.64. Diferentes → subredes distintas.`)">Comparando los primeros 3 octetos</button>
+</div>
+</div><div class="ex-q" id="q23">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 24 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuántos bits de host tiene una red /22?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(23,0,1,`Una /22 tiene 32-22=<strong>10 bits de host</strong>. 2¹⁰-2=1022 hosts. Máscara: 255.255.252.0. Equivale a 4 subredes /24 consecutivas.`)">8</button>
+<button class="ex-opt" onclick="ansQ(23,1,1,`Una /22 tiene 32-22=<strong>10 bits de host</strong>. 2¹⁰-2=1022 hosts. Máscara: 255.255.252.0. Equivale a 4 subredes /24 consecutivas.`)">10</button>
+<button class="ex-opt" onclick="ansQ(23,2,1,`Una /22 tiene 32-22=<strong>10 bits de host</strong>. 2¹⁰-2=1022 hosts. Máscara: 255.255.252.0. Equivale a 4 subredes /24 consecutivas.`)">12</button>
+<button class="ex-opt" onclick="ansQ(23,3,1,`Una /22 tiene 32-22=<strong>10 bits de host</strong>. 2¹⁰-2=1022 hosts. Máscara: 255.255.252.0. Equivale a 4 subredes /24 consecutivas.`)">6</button>
+</div>
+</div><div class="ex-q" id="q24">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 25 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuántos hosts utilizables tiene una subred /25?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(24,0,1,`Una /25 tiene 7 bits de host: 2⁷-2=<strong>126 hosts</strong>. Máscara: 255.255.255.128. En una red /24, hay 2 subredes /25: .0 (0-127) y .128 (128-255).`)">64</button>
+<button class="ex-opt" onclick="ansQ(24,1,1,`Una /25 tiene 7 bits de host: 2⁷-2=<strong>126 hosts</strong>. Máscara: 255.255.255.128. En una red /24, hay 2 subredes /25: .0 (0-127) y .128 (128-255).`)">126</button>
+<button class="ex-opt" onclick="ansQ(24,2,1,`Una /25 tiene 7 bits de host: 2⁷-2=<strong>126 hosts</strong>. Máscara: 255.255.255.128. En una red /24, hay 2 subredes /25: .0 (0-127) y .128 (128-255).`)">128</button>
+<button class="ex-opt" onclick="ansQ(24,3,1,`Una /25 tiene 7 bits de host: 2⁷-2=<strong>126 hosts</strong>. Máscara: 255.255.255.128. En una red /24, hay 2 subredes /25: .0 (0-127) y .128 (128-255).`)">254</button>
+</div>
+</div><div class="ex-q" id="q25">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 26 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Qué significa que un protocolo de routing sea 'classless'?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(25,0,1,`Classless significa que el protocolo <strong>incluye la máscara</strong> en sus actualizaciones. Classless: RIPv2, OSPF, EIGRP, BGP. Classful: RIPv1 (no incluye máscara). VLSM requiere protocolos classless.`)">No usa clases A, B, C</button>
+<button class="ex-opt" onclick="ansQ(25,1,1,`Classless significa que el protocolo <strong>incluye la máscara</strong> en sus actualizaciones. Classless: RIPv2, OSPF, EIGRP, BGP. Classful: RIPv1 (no incluye máscara). VLSM requiere protocolos classless.`)">Incluye la máscara de subred en sus actualizaciones, permitiendo VLSM y subredes discontinuas</button>
+<button class="ex-opt" onclick="ansQ(25,2,1,`Classless significa que el protocolo <strong>incluye la máscara</strong> en sus actualizaciones. Classless: RIPv2, OSPF, EIGRP, BGP. Classful: RIPv1 (no incluye máscara). VLSM requiere protocolos classless.`)">Opera sin autenticación</button>
+<button class="ex-opt" onclick="ansQ(25,3,1,`Classless significa que el protocolo <strong>incluye la máscara</strong> en sus actualizaciones. Classless: RIPv2, OSPF, EIGRP, BGP. Classful: RIPv1 (no incluye máscara). VLSM requiere protocolos classless.`)">No tiene límite de saltos</button>
+</div>
+</div><div class="ex-q" id="q26">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 27 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuántas subredes /27 se pueden crear de una red /24?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(26,0,2,`Una /24 tiene 8 bits de host. Una /27 tiene 5. Bits prestados: 8-5=3 → 2³=<strong>8 subredes /27</strong>. Cada /27 tiene 30 hosts utilizables. Las 8 subredes: .0, .32, .64, .96, .128, .160, .192, .224.`)">4</button>
+<button class="ex-opt" onclick="ansQ(26,1,2,`Una /24 tiene 8 bits de host. Una /27 tiene 5. Bits prestados: 8-5=3 → 2³=<strong>8 subredes /27</strong>. Cada /27 tiene 30 hosts utilizables. Las 8 subredes: .0, .32, .64, .96, .128, .160, .192, .224.`)">6</button>
+<button class="ex-opt" onclick="ansQ(26,2,2,`Una /24 tiene 8 bits de host. Una /27 tiene 5. Bits prestados: 8-5=3 → 2³=<strong>8 subredes /27</strong>. Cada /27 tiene 30 hosts utilizables. Las 8 subredes: .0, .32, .64, .96, .128, .160, .192, .224.`)">8</button>
+<button class="ex-opt" onclick="ansQ(26,3,2,`Una /24 tiene 8 bits de host. Una /27 tiene 5. Bits prestados: 8-5=3 → 2³=<strong>8 subredes /27</strong>. Cada /27 tiene 30 hosts utilizables. Las 8 subredes: .0, .32, .64, .96, .128, .160, .192, .224.`)">16</button>
+</div>
+</div><div class="ex-q" id="q27">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 28 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuántas IPs tiene una red /32?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(27,0,1,`Una red /32 tiene <strong>1 sola dirección IP</strong> — sin bits de host. Es la dirección de un host específico. Se usa en: rutas de host en tablas de routing, interfaces loopback (/32), ACLs con 'host'.`)">0</button>
+<button class="ex-opt" onclick="ansQ(27,1,1,`Una red /32 tiene <strong>1 sola dirección IP</strong> — sin bits de host. Es la dirección de un host específico. Se usa en: rutas de host en tablas de routing, interfaces loopback (/32), ACLs con 'host'.`)">1</button>
+<button class="ex-opt" onclick="ansQ(27,2,1,`Una red /32 tiene <strong>1 sola dirección IP</strong> — sin bits de host. Es la dirección de un host específico. Se usa en: rutas de host en tablas de routing, interfaces loopback (/32), ACLs con 'host'.`)">2</button>
+<button class="ex-opt" onclick="ansQ(27,3,1,`Una red /32 tiene <strong>1 sola dirección IP</strong> — sin bits de host. Es la dirección de un host específico. Se usa en: rutas de host en tablas de routing, interfaces loopback (/32), ACLs con 'host'.`)">256</button>
+</div>
+</div><div class="ex-q" id="q28">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 29 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Cuál es la máscara de /17 en decimal?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(28,0,1,`/17 tiene 17 bits. Primeros 16: 255.255. Bit 17 es 1 → 10000000=128 en el tercer octeto. Máscara: <strong>255.255.128.0</strong>. Hosts: 2¹⁵-2=32766.`)">255.255.0.0</button>
+<button class="ex-opt" onclick="ansQ(28,1,1,`/17 tiene 17 bits. Primeros 16: 255.255. Bit 17 es 1 → 10000000=128 en el tercer octeto. Máscara: <strong>255.255.128.0</strong>. Hosts: 2¹⁵-2=32766.`)">255.255.128.0</button>
+<button class="ex-opt" onclick="ansQ(28,2,1,`/17 tiene 17 bits. Primeros 16: 255.255. Bit 17 es 1 → 10000000=128 en el tercer octeto. Máscara: <strong>255.255.128.0</strong>. Hosts: 2¹⁵-2=32766.`)">255.255.192.0</button>
+<button class="ex-opt" onclick="ansQ(28,3,1,`/17 tiene 17 bits. Primeros 16: 255.255. Bit 17 es 1 → 10000000=128 en el tercer octeto. Máscara: <strong>255.255.128.0</strong>. Hosts: 2¹⁵-2=32766.`)">255.128.0.0</button>
+</div>
+</div><div class="ex-q" id="q29">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 30 DE 30</span><span class="ex-qtype concept">CONCEPTO</span></div>
+  <div class="ex-qtext">¿Qué es una 'ruta de host'?</div>
+  <div class="ex-opts"><button class="ex-opt" onclick="ansQ(29,0,1,`Una <strong>ruta de host (/32)</strong> apunta a una IP específica. Cisco IOS instala automáticamente entradas 'L' (Local) con /32 para cada IP configurada en sus interfaces. Ejemplo: interfaz con 192.168.1.1/24 genera C 192.168.1.0/24 + L 192.168.1.1/32.`)">Ruta con mayor metric</button>
+<button class="ex-opt" onclick="ansQ(29,1,1,`Una <strong>ruta de host (/32)</strong> apunta a una IP específica. Cisco IOS instala automáticamente entradas 'L' (Local) con /32 para cada IP configurada en sus interfaces. Ejemplo: interfaz con 192.168.1.1/24 genera C 192.168.1.0/24 + L 192.168.1.1/32.`)">Ruta /32 que apunta a un host específico — se instala automáticamente para cada IP en interfaces del router</button>
+<button class="ex-opt" onclick="ansQ(29,2,1,`Una <strong>ruta de host (/32)</strong> apunta a una IP específica. Cisco IOS instala automáticamente entradas 'L' (Local) con /32 para cada IP configurada en sus interfaces. Ejemplo: interfaz con 192.168.1.1/24 genera C 192.168.1.0/24 + L 192.168.1.1/32.`)">Ruta temporal que expira</button>
+<button class="ex-opt" onclick="ansQ(29,3,1,`Una <strong>ruta de host (/32)</strong> apunta a una IP específica. Cisco IOS instala automáticamente entradas 'L' (Local) con /32 para cada IP configurada en sus interfaces. Ejemplo: interfaz con 192.168.1.1/24 genera C 192.168.1.0/24 + L 192.168.1.1/32.`)">Ruta hacia el servidor DHCP</button>
+</div>
+</div>
+<div class="ex-result" id="exResult">
+<div class="ex-result-pct" id="rPct">0%</div>
+<div class="ex-result-label" id="rLabel"></div>
+<div class="ex-result-sub" id="rSub"></div>
+<a href="banco-preguntas.html" style="display:inline-block;margin-top:12px;padding:10px 24px;background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.3);border-radius:8px;color:#fbbf24;font-family:Share Tech Mono,monospace;font-size:.75rem;text-decoration:none;">← Ver todos los exámenes</a>
+</div>
+<div class="ex-nav"><a href="exam1.html" class="ex-nav-prev">← Anterior</a><a href="exam3.html" class="ex-nav-next">Siguiente →</a></div>
+</div>
+<script>
+var sc=0,an=0,tot=30;
+function ansQ(qi,sel,cor,exp){
+  var d=document.getElementById("q"+qi);
+  if(!d||d.classList.contains("answered"))return;
+  var btns=d.querySelectorAll(".ex-opt");
+  btns.forEach(function(b){b.disabled=true;});
+  btns[sel].classList.add(sel===cor?"correct":"wrong");
+  if(sel!==cor)btns[cor].classList.add("correct");
+  var e=document.createElement("div");
+  e.className="ex-exp";
+  e.innerHTML="<strong>"+(sel===cor?"✅ Correcto!":"❌ Incorrecto.")+"</strong> "+exp;
+  d.appendChild(e);
+  d.classList.add("answered");
+  if(sel===cor)sc++;
+  an++;
+  updScore();
+  if(an>=tot)showRes();
+}
+function updScore(){
+  var p=tot>0?Math.round(sc/tot*100):0;
+  document.getElementById("snum").textContent=sc+"/"+tot;
+  document.getElementById("sfill").style.width=p+"%";
+  document.getElementById("slbl").textContent=an+" respondidas · "+p+"% correcto";
+}
+function resetEx(){
+  sc=0;an=0;updScore();
+  document.getElementById("exResult").style.display="none";
+  for(var i=0;i<tot;i++){
+    var d=document.getElementById("q"+i);
+    if(!d)continue;
+    d.classList.remove("answered");
+    var btns=d.querySelectorAll(".ex-opt");
+    btns.forEach(function(b){b.disabled=false;b.classList.remove("correct","wrong");});
+    var ep=d.querySelector(".ex-exp");
+    if(ep)ep.remove();
+  }
+}
+function showRes(){
+  var p=Math.round(sc/tot*100);
+  var g=p>=85?"🏆 APROBADO — Excelente preparación":p>=70?"✅ CASI LISTO — Repasa los temas fallados":p>=55?"📚 SIGUE ESTUDIANDO — Revisa las explicaciones":"💪 NECESITAS REPASAR — Estudia más antes de repetir";
+  var s=p>=85?"Estás listo para el examen real CCNA 200-301.":p>=70?"Buen nivel. Repasa los conceptos donde fallaste.":p>=55?"Revisa las clases magistrales relacionadas.":"Repasa las clases y vuelve a intentarlo.";
+  document.getElementById("rPct").textContent=p+"%";
+  document.getElementById("rLabel").textContent=g;
+  document.getElementById("rSub").textContent=s;
+  var r=document.getElementById("exResult");
+  r.style.display="block";
+  r.scrollIntoView({behavior:"smooth",block:"center"});
+}
+</script>
+</body></html>
