@@ -50,7 +50,7 @@
 <h1 class="ex-title">EXAMEN 04 — <span>Routing IP</span></h1>
 <p class="ex-sub">Routing estático, rutas default, OSPF básico, RIP, distancias administrativas, longest match y comandos de verificación.</p>
 <div class="ex-meta">
-<span class="ex-meta-item">📋 30 preguntas</span>
+<span class="ex-meta-item">📋 50 preguntas</span>
 <span class="ex-meta-item">🎯 Routing estático · OSPF · RIP · AD · show ip route</span>
 <span class="ex-meta-item">📅 Actualizado mar 2026</span>
 </div></div></section>
@@ -105,7 +105,7 @@ body{font-family:"Exo 2",sans-serif;background:#07090f;color:#e2e8f0;}
 </style>
 <div class="ex-wrap">
 <div class="ex-score-bar">
-<div class="ex-score-num" id="snum">0/30</div>
+<div class="ex-score-num" id="snum">0/50</div>
 <div class="ex-score-track"><div class="ex-score-fill" id="sfill"></div></div>
 <div class="ex-score-label" id="slbl">0 respondidas · 0% correcto</div>
 <button class="ex-score-btn" onclick="resetEx()">🔄 Reiniciar</button>
@@ -351,6 +351,227 @@ body{font-family:"Exo 2",sans-serif;background:#07090f;color:#e2e8f0;}
 <button class="ex-opt" onclick="ansQ(29,3,0,`<code>router ospf [process]</code> → <code>router-id [IPv4]</code>. Ejemplo: <code>router ospf 1</code> → <code>router-id 1.1.1.1</code>. Aplicar cambio: <code>clear ip ospf process</code>. Usar IP de loopback como Router-ID es best practice.`)">router ospf 1; ip router-id 1.1.1.1</button>
 </div>
 </div>
+
+<div class="ex-q" id="q30">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 31 DE 50</span><span class="ex-qtype concept">ROUTING</span></div>
+  <div class="ex-qtext">Si un router recibe tres rutas hacia el mismo destino, ¿cuál elegirá para instalar en la tabla de enrutamiento?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(30,0,3,`El router primero compara la <strong>Longest Prefix Match (LPM)</strong>. La ruta con la máscara más específica (ej. /26 sobre /24) siempre gana. Si los prefijos son iguales, se compara la Distancia Administrativa.`)">La que tenga menor Distancia Administrativa</button>
+    <button class="ex-opt" onclick="ansQ(30,1,3,`El router primero compara la <strong>Longest Prefix Match (LPM)</strong>. La ruta con la máscara más específica (ej. /26 sobre /24) siempre gana. Si los prefijos son iguales, se compara la Distancia Administrativa.`)">La que tenga la métrica más baja</button>
+    <button class="ex-opt" onclick="ansQ(30,2,3,`El router primero compara la <strong>Longest Prefix Match (LPM)</strong>. La ruta con la máscara más específica (ej. /26 sobre /24) siempre gana. Si los prefijos son iguales, se compara la Distancia Administrativa.`)">La que fue configurada más recientemente</button>
+    <button class="ex-opt" onclick="ansQ(30,3,3,`El router primero compara la <strong>Longest Prefix Match (LPM)</strong>. La ruta con la máscara más específica (ej. /26 sobre /24) siempre gana. Si los prefijos son iguales, se compara la Distancia Administrativa.`)">La que tenga el prefijo más largo (máscara más específica)</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q31">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 32 DE 50</span><span class="ex-qtype concept">AD</span></div>
+  <div class="ex-qtext">¿Cuál es la Distancia Administrativa (AD) predeterminada para el protocolo OSPF?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(31,0,1,`La <strong>Distancia Administrativa</strong> define la confiabilidad del origen de la ruta. Valores comunes: Directa (0), Estática (1), EIGRP (90), <strong>OSPF (110)</strong>, RIP (120).`)">90</button>
+    <button class="ex-opt" onclick="ansQ(31,1,1,`La <strong>Distancia Administrativa</strong> define la confiabilidad del origen de la ruta. Valores comunes: Directa (0), Estática (1), EIGRP (90), <strong>OSPF (110)</strong>, RIP (120).`)">110</button>
+    <button class="ex-opt" onclick="ansQ(31,2,1,`La <strong>Distancia Administrativa</strong> define la confiabilidad del origen de la ruta. Valores comunes: Directa (0), Estática (1), EIGRP (90), <strong>OSPF (110)</strong>, RIP (120).`)">120</button>
+    <button class="ex-opt" onclick="ansQ(31,3,1,`La <strong>Distancia Administrativa</strong> define la confiabilidad del origen de la ruta. Valores comunes: Directa (0), Estática (1), EIGRP (90), <strong>OSPF (110)</strong>, RIP (120).`)">20</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q32">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 33 DE 50</span><span class="ex-qtype cli">STATIC ROUTE</span></div>
+  <div class="ex-qtext">¿Qué técnica se utiliza para crear una ruta estática de respaldo que solo aparece en la tabla si la ruta principal falla?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(32,0,0,`Se conoce como <strong>Floating Static Route</strong>. Se configura asignando una Distancia Administrativa mayor a la de la ruta principal. Ejemplo: <code>ip route 0.0.0.0 0.0.0.0 10.1.1.2 200</code>.`)">Floating Static Route</button>
+    <button class="ex-opt" onclick="ansQ(32,1,0,`Se conoce como <strong>Floating Static Route</strong>. Se configura asignando una Distancia Administrativa mayor a la de la ruta principal. Ejemplo: <code>ip route 0.0.0.0 0.0.0.0 10.1.1.2 200</code>.`)">Default Gateway Route</button>
+    <button class="ex-opt" onclick="ansQ(32,2,0,`Se conoce como <strong>Floating Static Route</strong>. Se configura asignando una Distancia Administrativa mayor a la de la ruta principal. Ejemplo: <code>ip route 0.0.0.0 0.0.0.0 10.1.1.2 200</code>.`)">Recursive Static Route</button>
+    <button class="ex-opt" onclick="ansQ(32,3,0,`Se conoce como <strong>Floating Static Route</strong>. Se configura asignando una Distancia Administrativa mayor a la de la ruta principal. Ejemplo: <code>ip route 0.0.0.0 0.0.0.0 10.1.1.2 200</code>.`)">Summary Static Route</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q33">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 34 DE 50</span><span class="ex-qtype cli">CLI/CONFIG</span></div>
+  <div class="ex-qtext">¿Cuál es el comando correcto para configurar una ruta estática predeterminada?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(33,0,2,`Una <strong>ruta predeterminada</strong> (Gateway of last resort) utiliza 0.0.0.0 como red y 0.0.0.0 como máscara. Comando: <code>ip route 0.0.0.0 0.0.0.0 [next-hop/exit-int]</code>.`)">ip route 255.255.255.255 0.0.0.0 10.1.1.1</button>
+    <button class="ex-opt" onclick="ansQ(33,1,2,`Una <strong>ruta predeterminada</strong> (Gateway of last resort) utiliza 0.0.0.0 como red y 0.0.0.0 como máscara. Comando: <code>ip route 0.0.0.0 0.0.0.0 [next-hop/exit-int]</code>.`)">ip default-gateway 0.0.0.0 10.1.1.1</button>
+    <button class="ex-opt" onclick="ansQ(33,2,2,`Una <strong>ruta predeterminada</strong> (Gateway of last resort) utiliza 0.0.0.0 como red y 0.0.0.0 como máscara. Comando: <code>ip route 0.0.0.0 0.0.0.0 [next-hop/exit-int]</code>.`)">ip route 0.0.0.0 0.0.0.0 10.1.1.1</button>
+    <button class="ex-opt" onclick="ansQ(33,3,2,`Una <strong>ruta predeterminada</strong> (Gateway of last resort) utiliza 0.0.0.0 como red y 0.0.0.0 como máscara. Comando: <code>ip route 0.0.0.0 0.0.0.0 [next-hop/exit-int]</code>.`)">ip route * 10.1.1.1</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q34">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 35 DE 50</span><span class="ex-qtype cli">OSPF</span></div>
+  <div class="ex-qtext">¿Cuál es el efecto de configurar una interfaz como 'passive-interface' en OSPF?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(34,0,3,`La <strong>passive-interface</strong> deja de enviar y recibir paquetes Hello de OSPF, por lo que no forma vecindades. Sin embargo, la red de esa interfaz <strong>sí se anuncia</strong> a otros routers.`)">La interfaz se apaga administrativamente</button>
+    <button class="ex-opt" onclick="ansQ(34,1,3,`La <strong>passive-interface</strong> deja de enviar y recibir paquetes Hello de OSPF, por lo que no forma vecindades. Sin embargo, la red de esa interfaz <strong>sí se anuncia</strong> a otros routers.`)">La interfaz deja de anunciar su subred conectada</button>
+    <button class="ex-opt" onclick="ansQ(34,2,3,`La <strong>passive-interface</strong> deja de enviar y recibir paquetes Hello de OSPF, por lo que no forma vecindades. Sin embargo, la red de esa interfaz <strong>sí se anuncia</strong> a otros routers.`)">Aumenta la prioridad de la interfaz para ser DR</button>
+    <button class="ex-opt" onclick="ansQ(34,3,3,`La <strong>passive-interface</strong> deja de enviar y recibir paquetes Hello de OSPF, por lo que no forma vecindades. Sin embargo, la red de esa interfaz <strong>sí se anuncia</strong> a otros routers.`)">Deja de enviar/recibir Hellos pero sigue anunciando la red</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q35">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 36 DE 50</span><span class="ex-qtype cli">INTER-VLAN</span></div>
+  <div class="ex-qtext">En una configuración de Router-on-a-Stick, ¿qué comando es vital dentro de la subinterfaz para que el router procese el tráfico de una VLAN específica?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(35,0,2,`En <strong>RoaS</strong>, cada subinterfaz debe vincularse a una VLAN usando <code>encapsulation dot1q [vlan-id]</code>. Esto permite al router entender el etiquetado 802.1Q proveniente del switch.`)">switchport mode trunk</button>
+    <button class="ex-opt" onclick="ansQ(35,1,2,`En <strong>RoaS</strong>, cada subinterfaz debe vincularse a una VLAN usando <code>encapsulation dot1q [vlan-id]</code>. Esto permite al router entender el etiquetado 802.1Q proveniente del switch.`)">vlan [id]</button>
+    <button class="ex-opt" onclick="ansQ(35,2,2,`En <strong>RoaS</strong>, cada subinterfaz debe vincularse a una VLAN usando <code>encapsulation dot1q [vlan-id]</code>. Esto permite al router entender el etiquetado 802.1Q proveniente del switch.`)">encapsulation dot1q [vlan-id]</button>
+    <button class="ex-opt" onclick="ansQ(35,3,2,`En <strong>RoaS</strong>, cada subinterfaz debe vincularse a una VLAN usando <code>encapsulation dot1q [vlan-id]</code>. Esto permite al router entender el etiquetado 802.1Q proveniente del switch.`)">ip helper-address [ip]</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q36">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 37 DE 50</span><span class="ex-qtype concept">OSPF</span></div>
+  <div class="ex-qtext">¿Cómo se denomina al área de OSPF que debe estar presente en cualquier despliegue multiarea y a la cual todas las demás áreas deben conectarse?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(36,0,1,`El <strong>Área 0</strong> es el <strong>Backbone Area</strong>. Todas las áreas (1, 2, etc.) deben tener una conexión física o lógica (Virtual Link) al Área 0 para permitir el intercambio de rutas.`)">Stub Area</button>
+    <button class="ex-opt" onclick="ansQ(36,1,1,`El <strong>Área 0</strong> es el <strong>Backbone Area</strong>. Todas las áreas (1, 2, etc.) deben tener una conexión física o lógica (Virtual Link) al Área 0 para permitir el intercambio de rutas.`)">Backbone Area (Área 0)</button>
+    <button class="ex-opt" onclick="ansQ(36,2,1,`El <strong>Área 0</strong> es el <strong>Backbone Area</strong>. Todas las áreas (1, 2, etc.) deben tener una conexión física o lógica (Virtual Link) al Área 0 para permitir el intercambio de rutas.`)">Normal Area</button>
+    <button class="ex-opt" onclick="ansQ(36,3,1,`El <strong>Área 0</strong> es el <strong>Backbone Area</strong>. Todas las áreas (1, 2, etc.) deben tener una conexión física o lógica (Virtual Link) al Área 0 para permitir el intercambio de rutas.`)">Standard Area</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q37">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 38 DE 50</span><span class="ex-qtype cli">OSPF</span></div>
+  <div class="ex-qtext">¿Qué métrica utiliza OSPF para determinar la mejor ruta hacia un destino?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(37,0,3,`OSPF usa <strong>Costo</strong> como métrica, basada en el ancho de banda del enlace (10^8 / ancho de banda en bps). Ejemplo: Un enlace de 100Mbps tiene un costo de 1.`)">Saltos (Hops)</button>
+    <button class="ex-opt" onclick="ansQ(37,1,3,`OSPF usa <strong>Costo</strong> como métrica, basada en el ancho de banda del enlace (10^8 / ancho de banda en bps). Ejemplo: Un enlace de 100Mbps tiene un costo de 1.`)">Ancho de banda y Retraso</button>
+    <button class="ex-opt" onclick="ansQ(37,2,3,`OSPF usa <strong>Costo</strong> como métrica, basada en el ancho de banda del enlace (10^8 / ancho de banda en bps). Ejemplo: Un enlace de 100Mbps tiene un costo de 1.`)">Fiabilidad y Carga</button>
+    <button class="ex-opt" onclick="ansQ(37,3,3,`OSPF usa <strong>Costo</strong> como métrica, basada en el ancho de banda del enlace (10^8 / ancho de banda en bps). Ejemplo: Un enlace de 100Mbps tiene un costo de 1.`)">Costo (Cost)</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q38">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 39 DE 50</span><span class="ex-qtype cli">TABLE</span></div>
+  <div class="ex-qtext">En la tabla de enrutamiento, ¿qué significa el código 'C'?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(38,0,0,`El código <strong>C</strong> indica que la red está <strong>Directamente Conectada</strong> (Connected). El código <strong>L</strong> indica la IP local de la interfaz (/32).`)">Red directamente conectada</button>
+    <button class="ex-opt" onclick="ansQ(38,1,0,`El código <strong>C</strong> indica que la red está <strong>Directamente Conectada</strong> (Connected). El código <strong>L</strong> indica la IP local de la interfaz (/32).`)">Ruta aprendida por Cisco EIGRP</button>
+    <button class="ex-opt" onclick="ansQ(38,2,0,`El código <strong>C</strong> indica que la red está <strong>Directamente Conectada</strong> (Connected). El código <strong>L</strong> indica la IP local de la interfaz (/32).`)">Ruta candidata a predeterminada</button>
+    <button class="ex-opt" onclick="ansQ(38,3,0,`El código <strong>C</strong> indica que la red está <strong>Directamente Conectada</strong> (Connected). El código <strong>L</strong> indica la IP local de la interfaz (/32).`)">Ruta estática configurada</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q39">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 40 DE 50</span><span class="ex-qtype concept">OSPF</span></div>
+  <div class="ex-qtext">¿Qué sucede primero durante el proceso de elección de un DR (Designated Router) en OSPF?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(39,0,2,`La elección del DR/BDR se basa primero en la <strong>Prioridad de interfaz</strong> (default 1). Si hay empate, se elige el router con el <strong>Router-ID</strong> más alto.`)">Se elige el router con el Router-ID más alto</button>
+    <button class="ex-opt" onclick="ansQ(39,1,2,`La elección del DR/BDR se basa primero en la <strong>Prioridad de interfaz</strong> (default 1). Si hay empate, se elige el router con el <strong>Router-ID</strong> más alto.`)">Se elige el router con la MAC más baja</button>
+    <button class="ex-opt" onclick="ansQ(39,2,2,`La elección del DR/BDR se basa primero en la <strong>Prioridad de interfaz</strong> (default 1). Si hay empate, se elige el router con el <strong>Router-ID</strong> más alto.`)">Se compara la prioridad de la interfaz de OSPF</button>
+    <button class="ex-opt" onclick="ansQ(39,3,2,`La elección del DR/BDR se basa primero en la <strong>Prioridad de interfaz</strong> (default 1). Si hay empate, se elige el router con el <strong>Router-ID</strong> más alto.`)">El primer router en encenderse gana automáticamente</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q40">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 41 DE 50</span><span class="ex-qtype cli">OSPF</span></div>
+  <div class="ex-qtext">¿Cuál es el comando para ver los vecinos OSPF y verificar si han alcanzado el estado FULL?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(40,0,1,`<code>show ip ospf neighbor</code> muestra el ID del vecino, la prioridad, el estado (FULL, 2-WAY), la IP y la interfaz local.`)">show ip ospf database</button>
+    <button class="ex-opt" onclick="ansQ(40,1,1,`<code>show ip ospf neighbor</code> muestra el ID del vecino, la prioridad, el estado (FULL, 2-WAY), la IP y la interfaz local.`)">show ip ospf neighbor</button>
+    <button class="ex-opt" onclick="ansQ(40,2,1,`<code>show ip ospf neighbor</code> muestra el ID del vecino, la prioridad, el estado (FULL, 2-WAY), la IP y la interfaz local.`)">show ip ospf interface</button>
+    <button class="ex-opt" onclick="ansQ(40,3,1,`<code>show ip ospf neighbor</code> muestra el ID del vecino, la prioridad, el estado (FULL, 2-WAY), la IP y la interfaz local.`)">show ip protocols ospf</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q41">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 42 DE 50</span><span class="ex-qtype cli">IPV6</span></div>
+  <div class="ex-qtext">¿Cuál es el comando base para habilitar el enrutamiento unicast de IPv6 en un router Cisco?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(41,0,3,`Por defecto, los routers Cisco tienen IPv6 desactivado. Debe ejecutarse <strong>ipv6 unicast-routing</strong> en modo de configuración global antes de configurar protocolos de enrutamiento IPv6.`)">ipv6 enable</button>
+    <button class="ex-opt" onclick="ansQ(41,1,3,`Por defecto, los routers Cisco tienen IPv6 desactivado. Debe ejecutarse <strong>ipv6 unicast-routing</strong> en modo de configuración global antes de configurar protocolos de enrutamiento IPv6.`)">ip routing ipv6</button>
+    <button class="ex-opt" onclick="ansQ(41,2,3,`Por defecto, los routers Cisco tienen IPv6 desactivado. Debe ejecutarse <strong>ipv6 unicast-routing</strong> en modo de configuración global antes de configurar protocolos de enrutamiento IPv6.`)">ipv6 routing enable</button>
+    <button class="ex-opt" onclick="ansQ(41,3,3,`Por defecto, los routers Cisco tienen IPv6 desactivado. Debe ejecutarse <strong>ipv6 unicast-routing</strong> en modo de configuración global antes de configurar protocolos de enrutamiento IPv6.`)">ipv6 unicast-routing</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q42">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 43 DE 50</span><span class="ex-qtype concept">ROUTING</span></div>
+  <div class="ex-qtext">¿Qué sucede con un paquete si el router no encuentra una coincidencia para la red de destino y no existe una ruta predeterminada?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(42,0,0,`Si no hay coincidencia ni Gateway of Last Resort, el router <strong>descarta el paquete</strong> y envía un mensaje ICMP 'Destination Unreachable' al origen.`)">El paquete es descartado</button>
+    <button class="ex-opt" onclick="ansQ(42,1,0,`Si no hay coincidencia ni Gateway of Last Resort, el router <strong>descarta el paquete</strong> y envía un mensaje ICMP 'Destination Unreachable' al origen.`)">El paquete se envía por la interfaz de administración</button>
+    <button class="ex-opt" onclick="ansQ(42,2,0,`Si no hay coincidencia ni Gateway of Last Resort, el router <strong>descarta el paquete</strong> y envía un mensaje ICMP 'Destination Unreachable' al origen.`)">El router inunda el paquete por todas sus interfaces</button>
+    <button class="ex-opt" onclick="ansQ(42,3,0,`Si no hay coincidencia ni Gateway of Last Resort, el router <strong>descarta el paquete</strong> y envía un mensaje ICMP 'Destination Unreachable' al origen.`)">El router pregunta al switch vecino por el destino</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q43">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 44 DE 50</span><span class="ex-qtype concept">FHRP</span></div>
+  <div class="ex-qtext">¿Cuál es el propósito principal de protocolos como HSRP o VRRP?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(43,0,2,`Los protocolos <strong>FHRP</strong> (First Hop Redundancy Protocol) proporcionan redundancia de Gateway. Permiten que varios routers compartan una IP virtual para que los hosts no pierdan conexión si falla el router principal.`)">Balancear el tráfico de Internet dinámicamente</button>
+    <button class="ex-opt" onclick="ansQ(43,1,2,`Los protocolos <strong>FHRP</strong> (First Hop Redundancy Protocol) proporcionan redundancia de Gateway. Permiten que varios routers compartan una IP virtual para que los hosts no pierdan conexión si falla el router principal.`)">Cifrar el tráfico entre routers de la misma red</button>
+    <button class="ex-opt" onclick="ansQ(43,2,2,`Los protocolos <strong>FHRP</strong> (First Hop Redundancy Protocol) proporcionan redundancia de Gateway. Permiten que varios routers compartan una IP virtual para que los hosts no pierdan conexión si falla el router principal.`)">Proporcionar redundancia de Gateway predeterminado</button>
+    <button class="ex-opt" onclick="ansQ(43,3,2,`Los protocolos <strong>FHRP</strong> (First Hop Redundancy Protocol) proporcionan redundancia de Gateway. Permiten que varios routers compartan una IP virtual para que los hosts no pierdan conexión si falla el router principal.`)">Asignar direcciones IP a los hosts automáticamente</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q44">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 45 DE 50</span><span class="ex-qtype cli">OSPF</span></div>
+  <div class="ex-qtext">¿Qué valor de Wildcard Mask se usaría para anunciar la red 192.168.10.0/24 en el comando 'network' de OSPF?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(44,0,1,`La <strong>Wildcard</strong> es la inversa de la máscara. Para un /24 (255.255.255.0), la wildcard es <strong>0.0.0.255</strong>.`)">255.255.255.0</button>
+    <button class="ex-opt" onclick="ansQ(44,1,1,`La <strong>Wildcard</strong> es la inversa de la máscara. Para un /24 (255.255.255.0), la wildcard es <strong>0.0.0.255</strong>.`)">0.0.0.255</button>
+    <button class="ex-opt" onclick="ansQ(44,2,1,`La <strong>Wildcard</strong> es la inversa de la máscara. Para un /24 (255.255.255.0), la wildcard es <strong>0.0.0.255</strong>.`)">0.0.0.31</button>
+    <button class="ex-opt" onclick="ansQ(44,3,1,`La <strong>Wildcard</strong> es la inversa de la máscara. Para un /24 (255.255.255.0), la wildcard es <strong>0.0.0.255</strong>.`)">0.0.0.0</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q45">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 46 DE 50</span><span class="ex-qtype concept">ROUTING</span></div>
+  <div class="ex-qtext">¿Qué componente del router se encarga de almacenar la tabla de enrutamiento y la tabla ARP durante su funcionamiento?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(45,0,0,`La <strong>RAM</strong> es memoria volátil que contiene el <strong>Running-config</strong>, las tablas de enrutamiento, la tabla ARP y el buffer de paquetes.`)">Memoria RAM</button>
+    <button class="ex-opt" onclick="ansQ(45,1,0,`La <strong>RAM</strong> es memoria volátil que contiene el <strong>Running-config</strong>, las tablas de enrutamiento, la tabla ARP y el buffer de paquetes.`)">Memoria NVRAM</button>
+    <button class="ex-opt" onclick="ansQ(45,2,0,`La <strong>RAM</strong> es memoria volátil que contiene el <strong>Running-config</strong>, las tablas de enrutamiento, la tabla ARP y el buffer de paquetes.`)">Memoria Flash</button>
+    <button class="ex-opt" onclick="ansQ(45,3,0,`La <strong>RAM</strong> es memoria volátil que contiene el <strong>Running-config</strong>, las tablas de enrutamiento, la tabla ARP y el buffer de paquetes.`)">Memoria ROM</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q46">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 47 DE 50</span><span class="ex-qtype concept">AD</span></div>
+  <div class="ex-qtext">¿Cuál es la Distancia Administrativa de una ruta estática que apunta a una dirección IP de siguiente salto?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(46,0,2,`Cisco asigna una <strong>AD de 1</strong> a las rutas estáticas por defecto, lo que las hace más confiables que cualquier protocolo de enrutamiento dinámico (OSPF, EIGRP, etc.).`)">0</button>
+    <button class="ex-opt" onclick="ansQ(46,1,2,`Cisco asigna una <strong>AD de 1</strong> a las rutas estáticas por defecto, lo que las hace más confiables que cualquier protocolo de enrutamiento dinámico (OSPF, EIGRP, etc.).`)">5</button>
+    <button class="ex-opt" onclick="ansQ(46,2,2,`Cisco asigna una <strong>AD de 1</strong> a las rutas estáticas por defecto, lo que las hace más confiables que cualquier protocolo de enrutamiento dinámico (OSPF, EIGRP, etc.).`)">1</button>
+    <button class="ex-opt" onclick="ansQ(46,3,2,`Cisco asigna una <strong>AD de 1</strong> a las rutas estáticas por defecto, lo que las hace más confiables que cualquier protocolo de enrutamiento dinámico (OSPF, EIGRP, etc.).`)">110</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q47">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 48 DE 50</span><span class="ex-qtype cli">OSPF</span></div>
+  <div class="ex-qtext">¿Qué comando permite redistribuir una ruta predeterminada estática dentro del dominio de OSPF para que otros routers la aprendan?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(47,0,3,`Dentro de <code>router ospf [id]</code>, el comando <strong>default-information originate</strong> inyecta una ruta por defecto (0.0.0.0/0) en el área, siempre que el router ya tenga una en su tabla.`)">redistribute static</button>
+    <button class="ex-opt" onclick="ansQ(47,1,3,`Dentro de <code>router ospf [id]</code>, el comando <strong>default-information originate</strong> inyecta una ruta por defecto (0.0.0.0/0) en el área, siempre que el router ya tenga una en su tabla.`)">ip route 0.0.0.0 0.0.0.0 ospf</button>
+    <button class="ex-opt" onclick="ansQ(47,2,3,`Dentro de <code>router ospf [id]</code>, el comando <strong>default-information originate</strong> inyecta una ruta por defecto (0.0.0.0/0) en el área, siempre que el router ya tenga una en su tabla.`)">network 0.0.0.0 0.0.0.0 area 0</button>
+    <button class="ex-opt" onclick="ansQ(47,3,3,`Dentro de <code>router ospf [id]</code>, el comando <strong>default-information originate</strong> inyecta una ruta por defecto (0.0.0.0/0) en el área, siempre que el router ya tenga una en su tabla.`)">default-information originate</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q48">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 49 DE 50</span><span class="ex-qtype concept">ROUTING</span></div>
+  <div class="ex-qtext">¿A qué se refiere el término 'Recursive Lookup' en enrutamiento?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(48,0,0,`Ocurre cuando el router encuentra una ruta cuyo siguiente salto no está directamente conectado, obligándolo a realizar una <strong>segunda búsqueda</strong> para encontrar la interfaz de salida.`)">Realizar múltiples búsquedas en la tabla para encontrar la interfaz de salida</button>
+    <button class="ex-opt" onclick="ansQ(48,1,0,`Ocurre cuando el router encuentra una ruta cuyo siguiente salto no está directamente conectado, obligándolo a realizar una <strong>segunda búsqueda</strong> para encontrar la interfaz de salida.`)">El proceso de actualización de rutas cada 30 segundos</button>
+    <button class="ex-opt" onclick="ansQ(48,2,0,`Ocurre cuando el router encuentra una ruta cuyo siguiente salto no está directamente conectado, obligándolo a realizar una <strong>segunda búsqueda</strong> para encontrar la interfaz de salida.`)">Enviar un paquete de vuelta al origen si no hay ruta</button>
+    <button class="ex-opt" onclick="ansQ(48,3,0,`Ocurre cuando el router encuentra una ruta cuyo siguiente salto no está directamente conectado, obligándolo a realizar una <strong>segunda búsqueda</strong> para encontrar la interfaz de salida.`)">Cuando dos protocolos tienen la misma Distancia Administrativa</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q49">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 50 DE 50</span><span class="ex-qtype concept">OSPF</span></div>
+  <div class="ex-qtext">¿Cuál es el intervalo de tiempo 'Dead' predeterminado en OSPF para enlaces de tipo Broadcast (Ethernet)?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(49,0,1,`El <strong>Dead Interval</strong> es por defecto 4 veces el Hello Interval. Si el Hello es 10 segundos, el Dead Interval es <strong>40 segundos</strong>.`)">10 segundos</button>
+    <button class="ex-opt" onclick="ansQ(49,1,1,`El <strong>Dead Interval</strong> es por defecto 4 veces el Hello Interval. Si el Hello es 10 segundos, el Dead Interval es <strong>40 segundos</strong>.`)">40 segundos</button>
+    <button class="ex-opt" onclick="ansQ(49,2,1,`El <strong>Dead Interval</strong> es por defecto 4 veces el Hello Interval. Si el Hello es 10 segundos, el Dead Interval es <strong>40 segundos</strong>.`)">30 segundos</button>
+    <button class="ex-opt" onclick="ansQ(49,3,1,`El <strong>Dead Interval</strong> es por defecto 4 veces el Hello Interval. Si el Hello es 10 segundos, el Dead Interval es <strong>40 segundos</strong>.`)">120 segundos</button>
+  </div>
+</div>
+
 <div class="ex-result" id="exResult">
 <div class="ex-result-pct" id="rPct">0%</div>
 <div class="ex-result-label" id="rLabel"></div>
@@ -360,7 +581,7 @@ body{font-family:"Exo 2",sans-serif;background:#07090f;color:#e2e8f0;}
 <div class="ex-nav"><a href="exam3.html" class="ex-nav-prev">← Anterior</a><a href="exam5.html" class="ex-nav-next">Siguiente →</a></div>
 </div>
 <script>
-var sc=0,an=0,tot=30;
+var sc=0,an=0,tot=50;
 function ansQ(qi,sel,cor,exp){
   var d=document.getElementById("q"+qi);
   if(!d||d.classList.contains("answered"))return;
