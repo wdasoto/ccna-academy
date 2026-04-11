@@ -540,6 +540,226 @@ body{font-family:"Exo 2",sans-serif;background:#07090f;color:#e2e8f0;}
 <button class="ex-opt" onclick="ansQ(59,3,2,`La solución es configurar <code>ip helper-address [IP_servidor_DHCP]</code> en la interfaz LAN de los routers de cada sucursal (la interfaz que conecta a los hosts). El relay agent convierte los DHCP Discover broadcasts en unicast hacia el servidor central. También verificar: ACL no bloqueando UDP 67/68, ip helper en la interfaz correcta (LAN, no WAN), y que el servidor DHCP tenga pools para las subredes de las sucursales.`)">DHCP no puede funcionar entre sedes — requiere servidor local obligatoriamente</button>
 </div></div>
 
+<div class="ex-q" id="q60">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 61 DE 80</span><span class="ex-qtype concept">ROUTING</span></div>
+  <div class="ex-qtext">¿Qué valor utiliza un router para elegir la mejor ruta si recibe dos rutas hacia el mismo destino desde diferentes protocolos de enrutamiento?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(60,0,1,`La <strong>Distancia Administrativa (AD)</strong> es el valor que define la confiabilidad de un protocolo. A menor AD, más confiable es la ruta. Por ejemplo, OSPF (110) vs EIGRP (90).`)">Métrica</button>
+    <button class="ex-opt" onclick="ansQ(60,1,1,`La <strong>Distancia Administrativa (AD)</strong> es el valor que define la confiabilidad de un protocolo. A menor AD, más confiable es la ruta. Por ejemplo, OSPF (110) vs EIGRP (90).`)">Distancia Administrativa</button>
+    <button class="ex-opt" onclick="ansQ(60,2,1,`La <strong>Distancia Administrativa (AD)</strong> es el valor que define la confiabilidad de un protocolo. A menor AD, más confiable es la ruta. Por ejemplo, OSPF (110) vs EIGRP (90).`)">Costo de enlace</button>
+    <button class="ex-opt" onclick="ansQ(60,3,1,`La <strong>Distancia Administrativa (AD)</strong> es el valor que define la confiabilidad de un protocolo. A menor AD, más confiable es la ruta. Por ejemplo, OSPF (110) vs EIGRP (90).`)">Ancho de banda</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q61">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 62 DE 80</span><span class="ex-qtype config">ROUTING</span></div>
+  <div class="ex-qtext">¿Cómo se configura una ruta estática flotante para que actúe como respaldo de una ruta OSPF?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(61,0,3,`Una ruta flotante se crea asignando una <strong>Distancia Administrativa mayor</strong> que la del protocolo principal (OSPF=110). Al ponerle 120, solo aparecerá en la tabla si OSPF falla.`)">Configurando la ruta con una AD de 90</button>
+    <button class="ex-opt" onclick="ansQ(61,1,3,`Una ruta flotante se crea asignando una <strong>Distancia Administrativa mayor</strong> que la del protocolo principal (OSPF=110). Al ponerle 120, solo aparecerá en la tabla si OSPF falla.`)">Usando el comando priority high</button>
+    <button class="ex-opt" onclick="ansQ(61,2,3,`Una ruta flotante se crea asignando una <strong>Distancia Administrativa mayor</strong> que la del protocolo principal (OSPF=110). Al ponerle 120, solo aparecerá en la tabla si OSPF falla.`)">Configurándola en una interfaz loopback</button>
+    <button class="ex-opt" onclick="ansQ(61,3,3,`Una ruta flotante se crea asignando una <strong>Distancia Administrativa mayor</strong> que la del protocolo principal (OSPF=110). Al ponerle 120, solo aparecerá en la tabla si OSPF falla.`)">Configurando la ruta con una AD de 120</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q62">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 63 DE 80</span><span class="ex-qtype trouble">OSPF</span></div>
+  <div class="ex-qtext">Dos routers OSPF están conectados pero no forman una adyacencia. Ambos tienen el mismo área y máscara. ¿Cuál es el error más probable?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(62,0,0,`Para que OSPF forme adyacencia, los <strong>Hello/Dead intervals deben coincidir</strong>. Si uno tiene 10s y el otro 30s, nunca serán vecinos.`)">Los intervalos Hello o Dead no coinciden</button>
+    <button class="ex-opt" onclick="ansQ(62,1,0,`Para que OSPF forme adyacencia, los <strong>Hello/Dead intervals deben coincidir</strong>. Si uno tiene 10s y el otro 30s, nunca serán vecinos.`)">Tienen diferentes Router IDs</button>
+    <button class="ex-opt" onclick="ansQ(62,2,0,`Para que OSPF forme adyacencia, los <strong>Hello/Dead intervals deben coincidir</strong>. Si uno tiene 10s y el otro 30s, nunca serán vecinos.`)">Ambos son Designated Routers (DR)</button>
+    <button class="ex-opt" onclick="ansQ(62,3,0,`Para que OSPF forme adyacencia, los <strong>Hello/Dead intervals deben coincidir</strong>. Si uno tiene 10s y el otro 30s, nunca serán vecinos.`)">El comando network está mal escrito</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q63">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 64 DE 80</span><span class="ex-qtype security">WLAN</span></div>
+  <div class="ex-qtext">¿Qué mecanismo utiliza WPA3 para protegerse contra ataques de diccionario y fuerza bruta en redes Wi-Fi personales?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(63,0,2,`WPA3 reemplaza PSK con <strong>SAE (Simultaneous Authentication of Equals)</strong>, que utiliza un intercambio de claves resistente a ataques offline de diccionario.`)">TKIP</button>
+    <button class="ex-opt" onclick="ansQ(63,1,2,`WPA3 reemplaza PSK con <strong>SAE (Simultaneous Authentication of Equals)</strong>, que utiliza un intercambio de claves resistente a ataques offline de diccionario.`)">Pre-Shared Key (PSK)</button>
+    <button class="ex-opt" onclick="ansQ(63,2,2,`WPA3 reemplaza PSK con <strong>SAE (Simultaneous Authentication of Equals)</strong>, que utiliza un intercambio de claves resistente a ataques offline de diccionario.`)">SAE (Simultaneous Authentication of Equals)</button>
+    <button class="ex-opt" onclick="ansQ(63,3,2,`WPA3 reemplaza PSK con <strong>SAE (Simultaneous Authentication of Equals)</strong>, que utiliza un intercambio de claves resistente a ataques offline de diccionario.`)">AES-CCMP</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q64">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 65 DE 80</span><span class="ex-qtype automation">SDN</span></div>
+  <div class="ex-qtext">¿Cuál es el formato de datos más utilizado por las APIs REST debido a su ligereza y facilidad de lectura?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(64,0,1,`<strong>JSON</strong> (JavaScript Object Notation) es el estándar de facto para SDN y APIs REST por ser legible por humanos y fácil de procesar para máquinas.`)">XML</button>
+    <button class="ex-opt" onclick="ansQ(64,1,1,`<strong>JSON</strong> (JavaScript Object Notation) es el estándar de facto para SDN y APIs REST por ser legible por humanos y fácil de procesar para máquinas.`)">JSON</button>
+    <button class="ex-opt" onclick="ansQ(64,2,1,`<strong>JSON</strong> (JavaScript Object Notation) es el estándar de facto para SDN y APIs REST por ser legible por humanos y fácil de procesar para máquinas.`)">YAML</button>
+    <button class="ex-opt" onclick="ansQ(64,3,1,`<strong>JSON</strong> (JavaScript Object Notation) es el estándar de facto para SDN y APIs REST por ser legible por humanos y fácil de procesar para máquinas.`)">HTML</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q65">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 66 DE 80</span><span class="ex-qtype concept">IPv6</span></div>
+  <div class="ex-qtext">¿Cuál es el prefijo reservado para las direcciones IPv6 de tipo Link-Local?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(65,0,3,`Las direcciones <strong>Link-Local</strong> siempre comienzan con <code>fe80::/10</code>. Son obligatorias en cada interfaz IPv6.`)">2001::/3</button>
+    <button class="ex-opt" onclick="ansQ(65,1,3,`Las direcciones <strong>Link-Local</strong> siempre comienzan con <code>fe80::/10</code>. Son obligatorias en cada interfaz IPv6.`)">fc00::/7</button>
+    <button class="ex-opt" onclick="ansQ(65,2,3,`Las direcciones <strong>Link-Local</strong> siempre comienzan con <code>fe80::/10</code>. Son obligatorias en cada interfaz IPv6.`)">ff00::/8</button>
+    <button class="ex-opt" onclick="ansQ(65,3,3,`Las direcciones <strong>Link-Local</strong> siempre comienzan con <code>fe80::/10</code>. Son obligatorias en cada interfaz IPv6.`)">fe80::/10</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q66">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 67 DE 80</span><span class="ex-qtype security">SERVICES</span></div>
+  <div class="ex-qtext">¿Qué función cumple DHCP Snooping en una red local?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(66,0,0,`<strong>DHCP Snooping</strong> evita ataques de 'Rogue DHCP' filtrando mensajes DHCP de servidores no autorizados y creando una tabla de confianza de IPs y MACs.`)">Previene que servidores DHCP no autorizados asignen direcciones IP</button>
+    <button class="ex-opt" onclick="ansQ(66,1,0,`<strong>DHCP Snooping</strong> evita ataques de 'Rogue DHCP' filtrando mensajes DHCP de servidores no autorizados y creando una tabla de confianza de IPs y MACs.`)">Asigna direcciones IP automáticamente a los clientes</button>
+    <button class="ex-opt" onclick="ansQ(66,2,0,`<strong>DHCP Snooping</strong> evita ataques de 'Rogue DHCP' filtrando mensajes DHCP de servidores no autorizados y creando una tabla de confianza de IPs y MACs.`)">Cifra el tráfico entre el router y el cliente</button>
+    <button class="ex-opt" onclick="ansQ(66,3,0,`<strong>DHCP Snooping</strong> evita ataques de 'Rogue DHCP' filtrando mensajes DHCP de servidores no autorizados y creando una tabla de confianza de IPs y MACs.`)">Limita la velocidad de navegación de los usuarios</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q67">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 68 DE 80</span><span class="ex-qtype automation">SDN</span></div>
+  <div class="ex-qtext">En una arquitectura SDN, ¿qué interfaz se utiliza para la comunicación entre el controlador y los dispositivos de red (switches/routers)?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(67,0,1,`La comunicación <strong>Southbound</strong> (hacia el sur) conecta el controlador con el plano de datos físico o virtual (ej. OpenFlow, NETCONF).`)">Northbound API</button>
+    <button class="ex-opt" onclick="ansQ(67,1,1,`La comunicación <strong>Southbound</strong> (hacia el sur) conecta el controlador con el plano de datos físico o virtual (ej. OpenFlow, NETCONF).`)">Southbound API</button>
+    <button class="ex-opt" onclick="ansQ(67,2,1,`La comunicación <strong>Southbound</strong> (hacia el sur) conecta el controlador con el plano de datos físico o virtual (ej. OpenFlow, NETCONF).`)">Eastbound API</button>
+    <button class="ex-opt" onclick="ansQ(67,3,1,`La comunicación <strong>Southbound</strong> (hacia el sur) conecta el controlador con el plano de datos físico o virtual (ej. OpenFlow, NETCONF).`)">Westbound API</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q68">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 69 DE 80</span><span class="ex-qtype security">SWITCHING</span></div>
+  <div class="ex-qtext">¿Qué sucede si un switch recibe una trama con una dirección MAC de origen distinta a la configurada estáticamente en un puerto con Port Security activo?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(68,0,0,`Si ocurre una violación en modo 'Shutdown' (por defecto), el puerto <strong>se apaga inmediatamente</strong> y queda en estado err-disable.`)">El puerto entra en estado err-disable</button>
+    <button class="ex-opt" onclick="ansQ(68,1,0,`Si ocurre una violación en modo 'Shutdown' (por defecto), el puerto <strong>se apaga inmediatamente</strong> y queda en estado err-disable.`)">El switch borra su tabla de direcciones MAC</button>
+    <button class="ex-opt" onclick="ansQ(68,2,0,`Si ocurre una violación en modo 'Shutdown' (por defecto), el puerto <strong>se apaga inmediatamente</strong> y queda en estado err-disable.`)">El switch reinicia automáticamente la interfaz</button>
+    <button class="ex-opt" onclick="ansQ(68,3,0,`Si ocurre una violación en modo 'Shutdown' (por defecto), el puerto <strong>se apaga inmediatamente</strong> y queda en estado err-disable.`)">La trama se reenvía a la VLAN de administración</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q69">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 70 DE 80</span><span class="ex-qtype config">SERVICES</span></div>
+  <div class="ex-qtext">¿Cuál es el comando correcto para sincronizar el reloj de un router con un servidor NTP en la IP 10.1.1.5?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(69,0,2,`El comando correcto es <code>ntp server [IP]</code>. Esto permite que el router actúe como cliente NTP y sincronice su tiempo.`)">ntp clock 10.1.1.5</button>
+    <button class="ex-opt" onclick="ansQ(69,1,2,`El comando correcto es <code>ntp server [IP]</code>. Esto permite que el router actúe como cliente NTP y sincronice su tiempo.`)">ntp peer 10.1.1.5</button>
+    <button class="ex-opt" onclick="ansQ(69,2,2,`El comando correcto es <code>ntp server [IP]</code>. Esto permite que el router actúe como cliente NTP y sincronice su tiempo.`)">ntp server 10.1.1.5</button>
+    <button class="ex-opt" onclick="ansQ(69,3,2,`El comando correcto es <code>ntp server [IP]</code>. Esto permite que el router actúe como cliente NTP y sincronice su tiempo.`)">ntp client 10.1.1.5</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q70">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 71 DE 80</span><span class="ex-qtype concept">IP SERVICES</span></div>
+  <div class="ex-qtext">¿Qué protocolo FHRP es estándar de la industria (no propietario de Cisco) para redundancia de gateway?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(70,0,1,`Mientras que HSRP y GLBP son de Cisco, <strong>VRRP</strong> (Virtual Router Redundancy Protocol) es el estándar abierto definido en el RFC 5798.`)">HSRP</button>
+    <button class="ex-opt" onclick="ansQ(70,1,1,`Mientras que HSRP y GLBP son de Cisco, <strong>VRRP</strong> (Virtual Router Redundancy Protocol) es el estándar abierto definido en el RFC 5798.`)">VRRP</button>
+    <button class="ex-opt" onclick="ansQ(70,2,1,`Mientras que HSRP y GLBP son de Cisco, <strong>VRRP</strong> (Virtual Router Redundancy Protocol) es el estándar abierto definido en el RFC 5798.`)">GLBP</button>
+    <button class="ex-opt" onclick="ansQ(70,3,1,`Mientras que HSRP y GLBP son de Cisco, <strong>VRRP</strong> (Virtual Router Redundancy Protocol) es el estándar abierto definido en el RFC 5798.`)">STP</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q71">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 72 DE 80</span><span class="ex-qtype security">SERVICES</span></div>
+  <div class="ex-qtext">¿Qué versión de SNMP es la única que soporta autenticación y cifrado de datos?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(71,0,3,`<strong>SNMPv3</strong> añade tres niveles de seguridad: NoAuthNoPriv, AuthNoPriv y AuthPriv (que incluye cifrado AES/DES).`)">v1</button>
+    <button class="ex-opt" onclick="ansQ(71,1,3,`<strong>SNMPv3</strong> añade tres niveles de seguridad: NoAuthNoPriv, AuthNoPriv y AuthPriv (que incluye cifrado AES/DES).`)">v2c</button>
+    <button class="ex-opt" onclick="ansQ(71,2,3,`<strong>SNMPv3</strong> añade tres niveles de seguridad: NoAuthNoPriv, AuthNoPriv y AuthPriv (que incluye cifrado AES/DES).`)">v2</button>
+    <button class="ex-opt" onclick="ansQ(71,3,3,`<strong>SNMPv3</strong> añade tres niveles de seguridad: NoAuthNoPriv, AuthNoPriv y AuthPriv (que incluye cifrado AES/DES).`)">v3</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q72">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 73 DE 80</span><span class="ex-qtype automation">SDN</span></div>
+  <div class="ex-qtext">¿Cuál es la función principal de Cisco DNA Center en una red empresarial?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(72,0,0,`DNA Center es una plataforma de <strong>gestión centralizada</strong> que permite automatización basada en la intención (Intent-Based Networking).`)">Gestión centralizada y automatización de dispositivos</button>
+    <button class="ex-opt" onclick="ansQ(72,1,0,`DNA Center es una plataforma de <strong>gestión centralizada</strong> que permite automatización basada en la intención (Intent-Based Networking).`)">Actuar como servidor de archivos para los empleados</button>
+    <button class="ex-opt" onclick="ansQ(72,2,0,`DNA Center es una plataforma de <strong>gestión centralizada</strong> que permite automatización basada en la intención (Intent-Based Networking).`)">Filtrar correos electrónicos no deseados</button>
+    <button class="ex-opt" onclick="ansQ(72,3,0,`DNA Center es una plataforma de <strong>gestión centralizada</strong> que permite automatización basada en la intención (Intent-Based Networking).`)">Aumentar la potencia de las antenas Wi-Fi</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q73">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 74 DE 80</span><span class="ex-qtype concept">SWITCHING</span></div>
+  <div class="ex-qtext">¿Qué protocolo evita bucles de Capa 2 en una topología con enlaces redundantes?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(73,0,3,`<strong>STP</strong> (Spanning Tree Protocol) bloquea lógicamente puertos redundantes para evitar tormentas de broadcast y fallos de red.`)">OSPF</button>
+    <button class="ex-opt" onclick="ansQ(73,1,3,`<strong>STP</strong> (Spanning Tree Protocol) bloquea lógicamente puertos redundantes para evitar tormentas de broadcast y fallos de red.`)">LACP</button>
+    <button class="ex-opt" onclick="ansQ(73,2,3,`<strong>STP</strong> (Spanning Tree Protocol) bloquea lógicamente puertos redundantes para evitar tormentas de broadcast y fallos de red.`)">VTP</button>
+    <button class="ex-opt" onclick="ansQ(73,3,3,`<strong>STP</strong> (Spanning Tree Protocol) bloquea lógicamente puertos redundantes para evitar tormentas de broadcast y fallos de red.`)">STP</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q74">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 75 DE 80</span><span class="ex-qtype config">SWITCHING</span></div>
+  <div class="ex-qtext">¿Qué modo de EtherChannel (LACP) inicia la negociación activamente con el otro switch?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(74,0,0,`En LACP, el modo <strong>Active</strong> envía paquetes para iniciar el canal, mientras que el modo 'Passive' solo responde si se lo piden.`)">Active</button>
+    <button class="ex-opt" onclick="ansQ(74,1,0,`En LACP, el modo <strong>Active</strong> envía paquetes para iniciar el canal, mientras que el modo 'Passive' solo responde si se lo piden.`)">Passive</button>
+    <button class="ex-opt" onclick="ansQ(74,2,0,`En LACP, el modo <strong>Active</strong> envía paquetes para iniciar el canal, mientras que el modo 'Passive' solo responde si se lo piden.`)">Desirable</button>
+    <button class="ex-opt" onclick="ansQ(74,3,0,`En LACP, el modo <strong>Active</strong> envía paquetes para iniciar el canal, mientras que el modo 'Passive' solo responde si se lo piden.`)">Auto</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q75">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 76 DE 80</span><span class="ex-qtype concept">WLAN</span></div>
+  <div class="ex-qtext">En una arquitectura WLAN centralizada, ¿qué túnel se utiliza para transportar los datos del usuario desde el AP hasta la WLC?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(75,0,2,`El túnel <strong>CAPWAP</strong> encapsula tanto el tráfico de gestión como los datos de los clientes Wi-Fi entre el Lightweight AP y la controladora.`)">SSH</button>
+    <button class="ex-opt" onclick="ansQ(75,1,2,`El túnel <strong>CAPWAP</strong> encapsula tanto el tráfico de gestión como los datos de los clientes Wi-Fi entre el Lightweight AP y la controladora.`)">GRE</button>
+    <button class="ex-opt" onclick="ansQ(75,2,2,`El túnel <strong>CAPWAP</strong> encapsula tanto el tráfico de gestión como los datos de los clientes Wi-Fi entre el Lightweight AP y la controladora.`)">CAPWAP</button>
+    <button class="ex-opt" onclick="ansQ(75,3,2,`El túnel <strong>CAPWAP</strong> encapsula tanto el tráfico de gestión como los datos de los clientes Wi-Fi entre el Lightweight AP y la controladora.`)">IPsec</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q76">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 77 DE 80</span><span class="ex-qtype security">SECURITY</span></div>
+  <div class="ex-qtext">¿Cuál es el propósito de Dynamic ARP Inspection (DAI)?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(76,0,1,`<strong>DAI</strong> inspecciona las respuestas ARP para asegurar que no sean falsas (ARP Poisoning), usando la base de datos de DHCP Snooping.`)">Bloquear todas las peticiones DNS</button>
+    <button class="ex-opt" onclick="ansQ(76,1,1,`<strong>DAI</strong> inspecciona las respuestas ARP para asegurar que no sean falsas (ARP Poisoning), usando la base de datos de DHCP Snooping.`)">Prevenir ataques de suplantación de identidad ARP (ARP Spoofing)</button>
+    <button class="ex-opt" onclick="ansQ(76,2,1,`<strong>DAI</strong> inspecciona las respuestas ARP para asegurar que no sean falsas (ARP Poisoning), usando la base de datos de DHCP Snooping.`)">Asignar direcciones MAC de forma dinámica</button>
+    <button class="ex-opt" onclick="ansQ(76,3,1,`<strong>DAI</strong> inspecciona las respuestas ARP para asegurar que no sean falsas (ARP Poisoning), usando la base de datos de DHCP Snooping.`)">Cifrar la tabla ARP del switch</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q77">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 78 DE 80</span><span class="ex-qtype automation">SDN</span></div>
+  <div class="ex-qtext">¿Qué verbo HTTP se utiliza en una API REST para crear un nuevo recurso en el servidor?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(77,0,1,`En REST: <strong>GET</strong> (Leer), <strong>POST</strong> (Crear), <strong>PUT</strong> (Actualizar) y <strong>DELETE</strong> (Eliminar).`)">GET</button>
+    <button class="ex-opt" onclick="ansQ(77,1,1,`En REST: <strong>GET</strong> (Leer), <strong>POST</strong> (Crear), <strong>PUT</strong> (Actualizar) y <strong>DELETE</strong> (Eliminar).`)">POST</button>
+    <button class="ex-opt" onclick="ansQ(77,2,1,`En REST: <strong>GET</strong> (Leer), <strong>POST</strong> (Crear), <strong>PUT</strong> (Actualizar) y <strong>DELETE</strong> (Eliminar).`)">PATCH</button>
+    <button class="ex-opt" onclick="ansQ(77,3,1,`En REST: <strong>GET</strong> (Leer), <strong>POST</strong> (Crear), <strong>PUT</strong> (Actualizar) y <strong>DELETE</strong> (Eliminar).`)">PUSH</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q78">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 79 DE 80</span><span class="ex-qtype concept">IPv6</span></div>
+  <div class="ex-qtext">¿Qué método permite a un host IPv6 autoconfigurarse sin necesidad de un servidor DHCPv6?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(78,0,0,`<strong>SLAAC</strong> (Stateless Address Autoconfiguration) permite que los hosts generen su propia IP usando el prefijo enviado por el router en los mensajes RA.`)">SLAAC</button>
+    <button class="ex-opt" onclick="ansQ(78,1,0,`<strong>SLAAC</strong> (Stateless Address Autoconfiguration) permite que los hosts generen su propia IP usando el prefijo enviado por el router en los mensajes RA.`)">NAT64</button>
+    <button class="ex-opt" onclick="ansQ(78,2,0,`<strong>SLAAC</strong> (Stateless Address Autoconfiguration) permite que los hosts generen su propia IP usando el prefijo enviado por el router en los mensajes RA.`)">EUI-48</button>
+    <button class="ex-opt" onclick="ansQ(78,3,0,`<strong>SLAAC</strong> (Stateless Address Autoconfiguration) permite que los hosts generen su propia IP usando el prefijo enviado por el router en los mensajes RA.`)">APIPA</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q79">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 80 DE 80</span><span class="ex-qtype concept">FABRIC</span></div>
+  <div class="ex-qtext">En una arquitectura Spine-Leaf, ¿cuál es la regla fundamental de conexión de dispositivos?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(79,0,3,`Para máxima redundancia y baja latencia, los dispositivos <strong>Leaf nunca se conectan entre sí</strong>, y los Spine tampoco. Siempre es Leaf a Spine.`)">Los switches Spine se conectan entre sí mediante fibra</button>
+    <button class="ex-opt" onclick="ansQ(79,1,3,`Para máxima redundancia y baja latencia, los dispositivos <strong>Leaf nunca se conectan entre sí</strong>, y los Spine tampoco. Siempre es Leaf a Spine.`)">Los servidores se conectan directamente a los switches Spine</button>
+    <button class="ex-opt" onclick="ansQ(79,2,3,`Para máxima redundancia y baja latencia, los dispositivos <strong>Leaf nunca se conectan entre sí</strong>, y los Spine tampoco. Siempre es Leaf a Spine.`)">Los dispositivos Leaf se conectan en anillo</button>
+    <button class="ex-opt" onclick="ansQ(79,3,3,`Para máxima redundancia y baja latencia, los dispositivos <strong>Leaf nunca se conectan entre sí</strong>, y los Spine tampoco. Siempre es Leaf a Spine.`)">Los switches Leaf se conectan a todos los switches Spine, pero no entre sí</button>
+  </div>
+</div>
+
 <div class="ex-result" id="exResult">
 <div class="ex-result-pct" id="rPct">0%</div>
 <div class="ex-result-label" id="rLabel"></div>
