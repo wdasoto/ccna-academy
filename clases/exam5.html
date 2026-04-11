@@ -41,7 +41,7 @@
 <h1 class="ex-title">EXAMEN 05 — <span>EIGRP &amp; OSPFv2 Avanzado</span></h1>
 <p class="ex-sub">Algoritmo DUAL, Successor y Feasible Successor, OSPFv2 multi-área, LSAs, DR/BDR, áreas Stub, redistribución y comandos avanzados de verificación.</p>
 <div class="ex-meta">
-<span class="ex-meta-item">📋 30 preguntas</span>
+<span class="ex-meta-item">📋 50 preguntas</span>
 <span class="ex-meta-item">🎯 DUAL · OSPF Multi-área · LSA · DR/BDR · Stub</span>
 <span class="ex-meta-item">📅 Mar 2026</span>
 <span class="ex-meta-item">⚡ Nivel Avanzado</span>
@@ -97,7 +97,7 @@ body{font-family:"Exo 2",sans-serif;background:#07090f;color:#e2e8f0;}
 
 <div class="ex-wrap">
 <div class="ex-score-bar">
-<div class="ex-score-num" id="snum">0/30</div>
+<div class="ex-score-num" id="snum">0/50</div>
 <div class="ex-score-track"><div class="ex-score-fill" id="sfill"></div></div>
 <div class="ex-score-label" id="slbl">0 respondidas · 0% correcto</div>
 <button class="ex-score-btn" onclick="resetEx()">🔄 Reiniciar</button>
@@ -313,6 +313,226 @@ body{font-family:"Exo 2",sans-serif;background:#07090f;color:#e2e8f0;}
 <button class="ex-opt" onclick="ansQ(29,3,1,`Las causas más comunes de fallo de adyacencia EIGRP son: 1) <strong>AS number diferente</strong> (deben coincidir), 2) <strong>K-values diferentes</strong> (deben coincidir), 3) <strong>Redes no coincidentes</strong> en el comando <code>network</code> (la interfaz no está habilitada para EIGRP), 4) ACL bloqueando protocolo 88, 5) EIGRP deshabilitado en la interfaz con <code>passive-interface</code>. Verificar: <code>show ip eigrp neighbors</code> y <code>debug eigrp packets</code>.`)">Solo se puede tener EIGRP en una interfaz por router</button>
 </div></div>
 
+<div class="ex-q" id="q30">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 31 DE 50</span><span class="ex-qtype concept">OSPFv2</span></div>
+  <div class="ex-qtext">¿Cuál es el orden de prioridad que sigue un router OSPF para elegir su Router-ID (RID)?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(30,0,1,`El orden de elección del RID es: 1) Comando <code>router-id</code> manual, 2) La <strong>IP de loopback</strong> más alta, 3) La <strong>IP activa física</strong> más alta. OSPF no utiliza la MAC para el RID.`)">IP física más alta, luego Loopback, luego comando router-id</button>
+    <button class="ex-opt" onclick="ansQ(30,1,1,`El orden de elección del RID es: 1) Comando <code>router-id</code> manual, 2) La <strong>IP de loopback</strong> más alta, 3) La <strong>IP activa física</strong> más alta. OSPF no utiliza la MAC para el RID.`)">Comando router-id, luego Loopback más alta, luego IP física activa más alta</button>
+    <button class="ex-opt" onclick="ansQ(30,2,1,`El orden de elección del RID es: 1) Comando <code>router-id</code> manual, 2) La <strong>IP de loopback</strong> más alta, 3) La <strong>IP activa física</strong> más alta. OSPF no utiliza la MAC para el RID.`)">Loopback más alta, luego comando router-id, luego IP física más alta</button>
+    <button class="ex-opt" onclick="ansQ(30,3,1,`El orden de elección del RID es: 1) Comando <code>router-id</code> manual, 2) La <strong>IP de loopback</strong> más alta, 3) La <strong>IP activa física</strong> más alta. OSPF no utiliza la MAC para el RID.`)">Dirección MAC más baja de la interfaz de administración</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q31">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 32 DE 50</span><span class="ex-qtype trouble">EIGRP</span></div>
+  <div class="ex-qtext">¿Cuáles son los dos valores K que EIGRP utiliza de forma predeterminada para el cálculo de su métrica?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(31,0,0,`Por defecto, EIGRP solo usa <strong>K1 (Ancho de banda)</strong> y <strong>K3 (Retraso o Delay)</strong>. Los valores K2 (Carga), K4 (Fiabilidad) y K5 (MTU) están configurados en 0 inicialmente.`)">K1 (Bandwidth) y K3 (Delay)</button>
+    <button class="ex-opt" onclick="ansQ(31,1,0,`Por defecto, EIGRP solo usa <strong>K1 (Ancho de banda)</strong> y <strong>K3 (Retraso o Delay)</strong>. Los valores K2 (Carga), K4 (Fiabilidad) y K5 (MTU) están configurados en 0 inicialmente.`)">K1 (Bandwidth) y K2 (Load)</button>
+    <button class="ex-opt" onclick="ansQ(31,2,0,`Por defecto, EIGRP solo usa <strong>K1 (Ancho de banda)</strong> y <strong>K3 (Retraso o Delay)</strong>. Los valores K2 (Carga), K4 (Fiabilidad) y K5 (MTU) están configurados en 0 inicialmente.`)">K2 (Load) y K4 (Reliability)</button>
+    <button class="ex-opt" onclick="ansQ(31,3,0,`Por defecto, EIGRP solo usa <strong>K1 (Ancho de banda)</strong> y <strong>K3 (Retraso o Delay)</strong>. Los valores K2 (Carga), K4 (Fiabilidad) y K5 (MTU) están configurados en 0 inicialmente.`)">K3 (Delay) y K5 (MTU)</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q32">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 33 DE 50</span><span class="ex-qtype concept">OSPFv2</span></div>
+  <div class="ex-qtext">En una red Multi-acceso (Ethernet), ¿cuál es el estado final de una adyacencia entre dos routers que son DROTHERS?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(32,0,2,`En redes broadcast, los <strong>DROTHERS</strong> solo forman una adyacencia completa (FULL) con el DR y el BDR. Entre ellos, se quedan permanentemente en estado <strong>2-WAY</strong> para ahorrar recursos.`)">FULL</button>
+    <button class="ex-opt" onclick="ansQ(32,1,2,`En redes broadcast, los <strong>DROTHERS</strong> solo forman una adyacencia completa (FULL) con el DR y el BDR. Entre ellos, se quedan permanentemente en estado <strong>2-WAY</strong> para ahorrar recursos.`)">EXCHANGE</button>
+    <button class="ex-opt" onclick="ansQ(32,2,2,`En redes broadcast, los <strong>DROTHERS</strong> solo forman una adyacencia completa (FULL) con el DR y el BDR. Entre ellos, se quedan permanentemente en estado <strong>2-WAY</strong> para ahorrar recursos.`)">2-WAY</button>
+    <button class="ex-opt" onclick="ansQ(32,3,2,`En redes broadcast, los <strong>DROTHERS</strong> solo forman una adyacencia completa (FULL) con el DR y el BDR. Entre ellos, se quedan permanentemente en estado <strong>2-WAY</strong> para ahorrar recursos.`)">LOADING</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q33">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 34 DE 50</span><span class="ex-qtype concept">EIGRP</span></div>
+  <div class="ex-qtext">¿Qué condición debe cumplir un router para ser considerado un 'Feasible Successor' en EIGRP?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(33,0,3,`La <strong>Condición de Factibilidad</strong> establece que la Reported Distance (RD) del vecino debe ser <strong>estrictamente menor</strong> que la Feasible Distance (FD) del Successor actual para garantizar que no haya bucles.`)">Su métrica debe ser igual a la del Successor</button>
+    <button class="ex-opt" onclick="ansQ(33,1,3,`La <strong>Condición de Factibilidad</strong> establece que la Reported Distance (RD) del vecino debe ser <strong>estrictamente menor</strong> que la Feasible Distance (FD) del Successor actual para garantizar que no haya bucles.`)">Debe tener la IP más baja de todos los vecinos</button>
+    <button class="ex-opt" onclick="ansQ(33,2,3,`La <strong>Condición de Factibilidad</strong> establece que la Reported Distance (RD) del vecino debe ser <strong>estrictamente menor</strong> que la Feasible Distance (FD) del Successor actual para garantizar que no haya bucles.`)">Su FD debe ser menor que la RD del router local</button>
+    <button class="ex-opt" onclick="ansQ(33,3,3,`La <strong>Condición de Factibilidad</strong> establece que la Reported Distance (RD) del vecino debe ser <strong>estrictamente menor</strong> que la Feasible Distance (FD) del Successor actual para garantizar que no haya bucles.`)">Su Reported Distance (RD) debe ser menor que la Feasible Distance (FD) del Successor</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q34">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 35 DE 50</span><span class="ex-qtype trouble">OSPFv2</span></div>
+  <div class="ex-qtext">Si cambias el ancho de banda de una interfaz con el comando 'bandwidth', ¿cómo afecta esto a OSPF?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(34,0,2,`El comando <code>bandwidth</code> modifica el parámetro que OSPF usa en su fórmula de costo (100Mbps / BW). No cambia la velocidad real de la interfaz, solo la <strong>métrica lógica</strong>.`)">Cambia la velocidad física de transmisión de datos</button>
+    <button class="ex-opt" onclick="ansQ(34,1,2,`El comando <code>bandwidth</code> modifica el parámetro que OSPF usa en su fórmula de costo (100Mbps / BW). No cambia la velocidad real de la interfaz, solo la <strong>métrica lógica</strong>.`)">Reinicia el proceso OSPF automáticamente</button>
+    <button class="ex-opt" onclick="ansQ(34,2,2,`El comando <code>bandwidth</code> modifica el parámetro que OSPF usa en su fórmula de costo (100Mbps / BW). No cambia la velocidad real de la interfaz, solo la <strong>métrica lógica</strong>.`)">Modifica el costo de la interfaz para el cálculo de la mejor ruta</button>
+    <button class="ex-opt" onclick="ansQ(34,3,2,`El comando <code>bandwidth</code> modifica el parámetro que OSPF usa en su fórmula de costo (100Mbps / BW). No cambia la velocidad real de la interfaz, solo la <strong>métrica lógica</strong>.`)">No tiene ningún efecto en OSPF, solo en EIGRP</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q35">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 36 DE 50</span><span class="ex-qtype cli">EIGRP</span></div>
+  <div class="ex-qtext">¿Cuál es la dirección multicast utilizada por EIGRP para enviar actualizaciones de enrutamiento en IPv4?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(35,0,3,`EIGRP utiliza la dirección <strong>224.0.0.10</strong> para comunicación multicast en IPv4. Para IPv6 utiliza la dirección FF02::A.`)">224.0.0.5</button>
+    <button class="ex-opt" onclick="ansQ(35,1,3,`EIGRP utiliza la dirección <strong>224.0.0.10</strong> para comunicación multicast en IPv4. Para IPv6 utiliza la dirección FF02::A.`)">224.0.0.6</button>
+    <button class="ex-opt" onclick="ansQ(35,2,3,`EIGRP utiliza la dirección <strong>224.0.0.10</strong> para comunicación multicast en IPv4. Para IPv6 utiliza la dirección FF02::A.`)">224.0.0.9</button>
+    <button class="ex-opt" onclick="ansQ(35,3,3,`EIGRP utiliza la dirección <strong>224.0.0.10</strong> para comunicación multicast en IPv4. Para IPv6 utiliza la dirección FF02::A.`)">224.0.0.10</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q36">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 37 DE 50</span><span class="ex-qtype cli">OSPFv2</span></div>
+  <div class="ex-qtext">¿Qué comando se utiliza para inyectar una ruta predeterminada (0.0.0.0/0) en todo el dominio OSPF?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(36,0,1,`El comando <code>default-information originate</code> permite que un router anuncie una ruta por defecto a sus vecinos. El router debe tener una ruta por defecto ya configurada o usar la keyword <code>always</code>.`)">redistribute static subnets</button>
+    <button class="ex-opt" onclick="ansQ(36,1,1,`El comando <code>default-information originate</code> permite que un router anuncie una ruta por defecto a sus vecinos. El router debe tener una ruta por defecto ya configurada o usar la keyword <code>always</code>.`)">default-information originate</button>
+    <button class="ex-opt" onclick="ansQ(36,2,1,`El comando <code>default-information originate</code> permite que un router anuncie una ruta por defecto a sus vecinos. El router debe tener una ruta por defecto ya configurada o usar la keyword <code>always</code>.`)">ip default-network 0.0.0.0</button>
+    <button class="ex-opt" onclick="ansQ(36,3,1,`El comando <code>default-information originate</code> permite que un router anuncie una ruta por defecto a sus vecinos. El router debe tener una router por defecto ya configurada o usar la keyword <code>always</code>.`)">area 0 range 0.0.0.0 0.0.0.0</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q37">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 38 DE 50</span><span class="ex-qtype trouble">EIGRP</span></div>
+  <div class="ex-qtext">¿Qué significa que una ruta en EIGRP esté en estado 'Active' (A) al revisar la tabla de topología?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(37,0,2,`Una ruta en estado <strong>Active</strong> significa que el router perdió el Successor y no tiene un Feasible Successor, por lo que está enviando <strong>Queries</strong> a sus vecinos para encontrar una ruta alternativa. Lo ideal es que las rutas estén en <strong>Passive (P)</strong>.`)">La ruta es completamente funcional y está en la tabla de rutas</button>
+    <button class="ex-opt" onclick="ansQ(37,1,2,`Una ruta en estado <strong>Active</strong> significa que el router perdió el Successor y no tiene un Feasible Successor, por lo que está enviando <strong>Queries</strong> a sus vecinos para encontrar una ruta alternativa. Lo ideal es que las rutas estén en <strong>Passive (P)</strong>.`)">La interfaz de salida de esa ruta está activa</button>
+    <button class="ex-opt" onclick="ansQ(37,2,2,`Una ruta en estado <strong>Active</strong> significa que el router perdió el Successor y no tiene un Feasible Successor, por lo que está enviando <strong>Queries</strong> a sus vecinos para encontrar una ruta alternativa. Lo ideal es que las rutas estén en <strong>Passive (P)</strong>.`)">El router está buscando activamente un camino alternativo (Query)</button>
+    <button class="ex-opt" onclick="ansQ(37,3,2,`Una ruta en estado <strong>Active</strong> significa que el router perdió el Successor y no tiene un Feasible Successor, por lo que está enviando <strong>Queries</strong> a sus vecinos para encontrar una ruta alternativa. Lo ideal es que las rutas estén en <strong>Passive (P)</strong>.`)">Es una ruta estática redistribuida en EIGRP</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q38">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 39 DE 50</span><span class="ex-qtype cli">OSPFv2</span></div>
+  <div class="ex-qtext">¿Cuál es el costo predeterminado de OSPF para una interfaz con un ancho de banda de 10 Gbps (TenGigabitEthernet)?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(38,0,0,`Por defecto, el <code>reference-bandwidth</code> es 100Mbps. Cualquier interfaz mayor o igual a 100Mbps tendrá un <strong>costo de 1</strong>. Para corregir esto en redes modernas, se debe usar el comando <code>auto-cost reference-bandwidth</code>.`)">1</button>
+    <button class="ex-opt" onclick="ansQ(38,1,0,`Por defecto, el <code>reference-bandwidth</code> es 100Mbps. Cualquier interfaz mayor o igual a 100Mbps tendrá un <strong>costo de 1</strong>. Para corregir esto en redes modernas, se debe usar el comando <code>auto-cost reference-bandwidth</code>.`)">10</button>
+    <button class="ex-opt" onclick="ansQ(38,2,0,`Por defecto, el <code>reference-bandwidth</code> es 100Mbps. Cualquier interfaz mayor o igual a 100Mbps tendrá un <strong>costo de 1</strong>. Para corregir esto en redes modernas, se debe usar el comando <code>auto-cost reference-bandwidth</code>.`)">100</button>
+    <button class="ex-opt" onclick="ansQ(38,3,0,`Por defecto, el <code>reference-bandwidth</code> es 100Mbps. Cualquier interfaz mayor o igual a 100Mbps tendrá un <strong>costo de 1</strong>. Para corregir esto en redes modernas, se debe usar el comando <code>auto-cost reference-bandwidth</code>.`)">0</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q39">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 40 DE 50</span><span class="ex-qtype concept">EIGRP</span></div>
+  <div class="ex-qtext">¿Qué sucede si dos routers EIGRP tienen AS numbers diferentes pero el resto de la configuración es idéntica?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(39,0,3,`El <strong>Número de Sistema Autónomo (AS)</strong> debe coincidir exactamente para que se forme la adyacencia. Es uno de los errores más comunes de troubleshooting.`)">Forman adyacencia pero no intercambian rutas</button>
+    <button class="ex-opt" onclick="ansQ(39,1,3,`El <strong>Número de Sistema Autónomo (AS)</strong> debe coincidir exactamente para que se forme la adyacencia. Es uno de los errores más comunes de troubleshooting.`)">El router con el AS más alto se vuelve maestro</button>
+    <button class="ex-opt" onclick="ansQ(39,2,3,`El <strong>Número de Sistema Autónomo (AS)</strong> debe coincidir exactamente para que se forme la adyacencia. Es uno de los errores más comunes de troubleshooting.`)">Solo intercambian rutas directamente conectadas</button>
+    <button class="ex-opt" onclick="ansQ(39,3,3,`El <strong>Número de Sistema Autónomo (AS)</strong> debe coincidir exactamente para que se forme la adyacencia. Es uno de los errores más comunes de troubleshooting.`)">No forman adyacencia de vecinos</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q40">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 41 DE 50</span><span class="ex-qtype cli">OSPFv2</span></div>
+  <div class="ex-qtext">¿Cómo se deshabilita la elección de DR/BDR en una interfaz OSPF que se conecta a otro router mediante un enlace punto a punto Ethernet?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(40,0,1,`En interfaces Ethernet (Broadcast por defecto), se puede usar <code>ip ospf network point-to-point</code> para acelerar la convergencia, ya que este tipo de red <strong>no elige DR/BDR</strong>.`)">ip ospf priority 0</button>
+    <button class="ex-opt" onclick="ansQ(40,1,1,`En interfaces Ethernet (Broadcast por defecto), se puede usar <code>ip ospf network point-to-point</code> para acelerar la convergencia, ya que este tipo de red <strong>no elige DR/BDR</strong>.`)">ip ospf network point-to-point</button>
+    <button class="ex-opt" onclick="ansQ(40,2,1,`En interfaces Ethernet (Broadcast por defecto), se puede usar <code>ip ospf network point-to-point</code> para acelerar la convergencia, ya que este tipo de red <strong>no elige DR/BDR</strong>.`)">passive-interface [interfaz]</button>
+    <button class="ex-opt" onclick="ansQ(40,3,1,`En interfaces Ethernet (Broadcast por defecto), se puede usar <code>ip ospf network point-to-point</code> para acelerar la convergencia, ya que este tipo de red <strong>no elige DR/BDR</strong>.`)">no ospf dr-election</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q41">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 42 DE 50</span><span class="ex-qtype concept">EIGRP</span></div>
+  <div class="ex-qtext">¿Cuál es la distancia administrativa (AD) de una ruta interna de EIGRP?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(41,0,2,`EIGRP usa <strong>AD 90</strong> para rutas internas y <strong>AD 170</strong> para rutas externas (redistribuidas). Esto lo hace más preferido que OSPF (AD 110).`)">110</button>
+    <button class="ex-opt" onclick="ansQ(41,1,2,`EIGRP usa <strong>AD 90</strong> para rutas internas y <strong>AD 170</strong> para rutas externas (redistribuidas). Esto lo hace más preferido que OSPF (AD 110).`)">120</button>
+    <button class="ex-opt" onclick="ansQ(41,2,2,`EIGRP usa <strong>AD 90</strong> para rutas internas y <strong>AD 170</strong> para rutas externas (redistribuidas). Esto lo hace más preferido que OSPF (AD 110).`)">90</button>
+    <button class="ex-opt" onclick="ansQ(41,3,2,`EIGRP usa <strong>AD 90</strong> para rutas internas y <strong>AD 170</strong> para rutas externas (redistribuidas). Esto lo hace más preferido que OSPF (AD 110).`)">100</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q42">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 43 DE 50</span><span class="ex-qtype cli">OSPFv2</span></div>
+  <div class="ex-qtext">¿Qué comando muestra detalladamente los temporizadores Hello y Dead de una interfaz OSPF?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(42,0,3,`El comando <code>show ip ospf interface [nombre]</code> permite ver si una interfaz es DR/BDR, el costo, el estado de red y los timers. Es fundamental para detectar <strong>mismatch de timers</strong>.`)">show ip ospf neighbor</button>
+    <button class="ex-opt" onclick="ansQ(42,1,3,`El comando <code>show ip ospf interface [nombre]</code> permite ver si una interfaz es DR/BDR, el costo, el estado de red y los timers. Es fundamental para detectar <strong>mismatch de timers</strong>.`)">show ip ospf database</button>
+    <button class="ex-opt" onclick="ansQ(42,2,3,`El comando <code>show ip ospf interface [nombre]</code> permite ver si una interfaz es DR/BDR, el costo, el estado de red y los timers. Es fundamental para detectar <strong>mismatch de timers</strong>.`)">show ip protocols</button>
+    <button class="ex-opt" onclick="ansQ(42,3,3,`El comando <code>show ip ospf interface [nombre]</code> permite ver si una interfaz es DR/BDR, el costo, el estado de red y los timers. Es fundamental para detectar <strong>mismatch de timers</strong>.`)">show ip ospf interface [nombre]</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q43">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 44 DE 50</span><span class="ex-qtype concept">EIGRP</span></div>
+  <div class="ex-qtext">¿A qué se refiere el término 'Reported Distance' (RD) en EIGRP?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(43,0,1,`La <strong>Reported Distance</strong> (también llamada Advertised Distance) es la métrica total que un <strong>vecino anuncia</strong> desde su propia perspectiva hacia una red de destino.`)">Es la métrica calculada desde el router local hasta el destino</button>
+    <button class="ex-opt" onclick="ansQ(43,1,1,`La <strong>Reported Distance</strong> (también llamada Advertised Distance) es la métrica total que un <strong>vecino anuncia</strong> desde su propia perspectiva hacia una red de destino.`)">Es la métrica que el vecino anuncia para llegar a una red</button>
+    <button class="ex-opt" onclick="ansQ(43,2,1,`La <strong>Reported Distance</strong> (también llamada Advertised Distance) es la métrica total que un <strong>vecino anuncia</strong> desde su propia perspectiva hacia una red de destino.`)">Es la distancia administrativa por defecto del protocolo</button>
+    <button class="ex-opt" onclick="ansQ(43,3,1,`La <strong>Reported Distance</strong> (también llamada Advertised Distance) es la métrica total que un <strong>vecino anuncia</strong> desde su propia perspectiva hacia una red de destino.`)">Es el tiempo que tarda un paquete Hello en ser reportado</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q44">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 45 DE 50</span><span class="ex-qtype concept">OSPFv2</span></div>
+  <div class="ex-qtext">¿Qué sucede si un router OSPF tiene una prioridad de 0 en su interfaz?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(44,0,2,`Configurar la prioridad en <strong>0</strong> (<code>ip ospf priority 0</code>) excluye permanentemente al router de ser elegido como DR o BDR, forzándolo a ser siempre un <strong>DROTHER</strong>.`)">Se convierte automáticamente en el DR del segmento</button>
+    <button class="ex-opt" onclick="ansQ(44,1,2,`Configurar la prioridad en <strong>0</strong> (<code>ip ospf priority 0</code>) excluye permanentemente al router de ser elegido como DR o BDR, forzándolo a ser siempre un <strong>DROTHER</strong>.`)">Se convierte automáticamente en el BDR del segmento</button>
+    <button class="ex-opt" onclick="ansQ(44,2,2,`Configurar la prioridad en <strong>0</strong> (<code>ip ospf priority 0</code>) excluye permanentemente al router de ser elegido como DR o BDR, forzándolo a ser siempre un <strong>DROTHER</strong>.`)">No puede ser elegido como DR ni BDR</button>
+    <button class="ex-opt" onclick="ansQ(44,3,2,`Configurar la prioridad en <strong>0</strong> (<code>ip ospf priority 0</code>) excluye permanentemente al router de ser elegido como DR o BDR, forzándolo a ser siempre un <strong>DROTHER</strong>.`)">Deja de enviar BPDUs por esa interfaz</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q45">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 46 DE 50</span><span class="ex-qtype trouble">EIGRP</span></div>
+  <div class="ex-qtext">¿Cómo logra EIGRP realizar un balanceo de carga en rutas con métricas distintas (Unequal Cost Load Balancing)?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(45,0,0,`EIGRP es el único protocolo que permite balanceo de carga desigual mediante el comando <code>variance [n]</code>. El router multiplicará la métrica del Successor por 'n' para incluir rutas secundarias que cumplan la condición.`)">Utilizando el comando 'variance'</button>
+    <button class="ex-opt" onclick="ansQ(45,1,0,`EIGRP es el único protocolo que permite balanceo de carga desigual mediante el comando <code>variance [n]</code>. El router multiplicará la métrica del Successor por 'n' para incluir rutas secundarias que cumplan la condición.`)">Configurando el mismo ancho de banda en todas las interfaces</button>
+    <button class="ex-opt" onclick="ansQ(45,2,0,`EIGRP es el único protocolo que permite balanceo de carga desigual mediante el comando <code>variance [n]</code>. El router multiplicará la métrica del Successor por 'n' para incluir rutas secundarias que cumplan la condición.`)">No es posible, solo permite balanceo de carga de igual costo</button>
+    <button class="ex-opt" onclick="ansQ(45,3,0,`EIGRP es el único protocolo que permite balanceo de carga desigual mediante el comando <code>variance [n]</code>. El router multiplicará la métrica del Successor por 'n' para incluir rutas secundarias que cumplan la condición.`)">Aumentando la prioridad de la interfaz secundaria</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q46">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 47 DE 50</span><span class="ex-qtype cli">OSPFv2</span></div>
+  <div class="ex-qtext">¿Qué tipo de LSA (Link State Advertisement) genera un router OSPF para anunciar sus propias interfaces directamente conectadas dentro de un área?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(46,0,0,`El <strong>LSA Tipo 1 (Router LSA)</strong> es generado por cada router para describir sus propios enlaces y estados. No cruza los límites de un ABR (Area Border Router).`)">LSA Tipo 1</button>
+    <button class="ex-opt" onclick="ansQ(46,1,0,`El <strong>LSA Tipo 1 (Router LSA)</strong> es generado por cada router para describir sus propios enlaces y estados. No cruza los límites de un ABR (Area Border Router).`)">LSA Tipo 2</button>
+    <button class="ex-opt" onclick="ansQ(46,2,0,`El <strong>LSA Tipo 1 (Router LSA)</strong> es generado por cada router para describir sus propios enlaces y estados. No cruza los límites de un ABR (Area Border Router).`)">LSA Tipo 3</button>
+    <button class="ex-opt" onclick="ansQ(46,3,0,`El <strong>LSA Tipo 1 (Router LSA)</strong> es generado por cada router para describir sus propios enlaces y estados. No cruza los límites de un ABR (Area Border Router).`)">LSA Tipo 5</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q47">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 48 DE 50</span><span class="ex-qtype concept">EIGRP</span></div>
+  <div class="ex-qtext">¿Cuál es el algoritmo principal que utiliza EIGRP para garantizar una convergencia rápida y libre de bucles?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(47,0,1,`EIGRP utiliza <strong>DUAL (Diffusing Update Algorithm)</strong>. Este algoritmo mantiene una tabla de topología con rutas de respaldo (Feasible Successors) para conmutación casi instantánea.`)">Dijkstra (SPF)</button>
+    <button class="ex-opt" onclick="ansQ(47,1,1,`EIGRP utiliza <strong>DUAL (Diffusing Update Algorithm)</strong>. Este algoritmo mantiene una tabla de topología con rutas de respaldo (Feasible Successors) para conmutación casi instantánea.`)">DUAL</button>
+    <button class="ex-opt" onclick="ansQ(47,2,1,`EIGRP utiliza <strong>DUAL (Diffusing Update Algorithm)</strong>. Este algoritmo mantiene una tabla de topología con rutas de respaldo (Feasible Successors) para conmutación casi instantánea.`)">Bellman-Ford</button>
+    <button class="ex-opt" onclick="ansQ(47,3,1,`EIGRP utiliza <strong>DUAL (Diffusing Update Algorithm)</strong>. Este algoritmo mantiene una tabla de topología con rutas de respaldo (Feasible Successors) para conmutación casi instantánea.`)">Spanning-Tree Algorithm</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q48">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 49 DE 50</span><span class="ex-qtype trouble">OSPFv2</span></div>
+  <div class="ex-qtext">Si dos routers OSPF tienen el mismo Router-ID (RID), ¿qué problema se presenta principalmente?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(48,0,3,`Si los RID coinciden, los routers tendrán problemas para identificarse de forma única en la base de datos de estado de enlace (LSDB), lo que causará <strong>inestabilidad en las rutas</strong> y fallos en la formación de adyacencia.`)">OSPF cambia automáticamente el RID al segundo router</button>
+    <button class="ex-opt" onclick="ansQ(48,1,3,`Si los RID coinciden, los routers tendrán problemas para identificarse de forma única en la base de datos de estado de enlace (LSDB), lo que causará <strong>inestabilidad en las rutas</strong> y fallos en la formación de adyacencia.`)">Solo uno de los routers podrá anunciar el Área 0</button>
+    <button class="ex-opt" onclick="ansQ(48,2,3,`Si los RID coinciden, los routers tendrán problemas para identificarse de forma única en la base de datos de estado de enlace (LSDB), lo que causará <strong>inestabilidad en las rutas</strong> y fallos en la formación de adyacencia.`)">No hay problema mientras las IPs de interfaz sean distintas</button>
+    <button class="ex-opt" onclick="ansQ(48,3,3,`Si los RID coinciden, los routers tendrán problemas para identificarse de forma única en la base de datos de estado de enlace (LSDB), lo que causará <strong>inestabilidad en las rutas</strong> y fallos en la formación de adyacencia.`)">Se producen conflictos en la LSDB y problemas de adyacencia</button>
+  </div>
+</div>
+
+<div class="ex-q" id="q49">
+  <div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 50 DE 50</span><span class="ex-qtype concept">EIGRP</span></div>
+  <div class="ex-qtext">¿Qué sucede con los vecinos de EIGRP en una interfaz cuando se activa el comando 'passive-interface'?</div>
+  <div class="ex-opts">
+    <button class="ex-opt" onclick="ansQ(49,0,2,`En EIGRP, <code>passive-interface</code> detiene el envío y recepción de paquetes Hello, por lo que <strong>se pierde cualquier adyacencia</strong> existente. Sin embargo, la red de la interfaz todavía se anuncia a otros vecinos.`)">Continúan intercambiando rutas pero no Hellos</button>
+    <button class="ex-opt" onclick="ansQ(49,1,2,`En EIGRP, <code>passive-interface</code> detiene el envío y recepción de paquetes Hello, por lo que <strong>se pierde cualquier adyacencia</strong> existente. Sin embargo, la red de la interfaz todavía se anuncia a otros vecinos.`)">La adyacencia se mantiene pero solo en una dirección</button>
+    <button class="ex-opt" onclick="ansQ(49,2,2,`En EIGRP, <code>passive-interface</code> detiene el envío y recepción de paquetes Hello, por lo que <strong>se pierde cualquier adyacencia</strong> existente. Sin embargo, la red de la interfaz todavía se anuncia a otros vecinos.`)">Se rompe la adyacencia de vecinos en esa interfaz</button>
+    <button class="ex-opt" onclick="ansQ(49,3,2,`En EIGRP, <code>passive-interface</code> detiene el envío y recepción de paquetes Hello, por lo que <strong>se pierde cualquier adyacencia</strong> existente. Sin embargo, la red de la interfaz todavía se anuncia a otros vecinos.`)">Aumenta la seguridad cifrando los paquetes Hello</button>
+  </div>
+</div>
+
 <div class="ex-result" id="exResult">
 <div class="ex-result-pct" id="rPct">0%</div>
 <div class="ex-result-label" id="rLabel"></div>
@@ -325,7 +545,7 @@ body{font-family:"Exo 2",sans-serif;background:#07090f;color:#e2e8f0;}
 </div></div>
 
 <script>
-var sc=0,an=0,tot=30;
+var sc=0,an=0,tot=50;
 function ansQ(qi,sel,cor,exp){var d=document.getElementById("q"+qi);if(!d||d.classList.contains("answered"))return;var btns=d.querySelectorAll(".ex-opt");btns.forEach(function(b){b.disabled=true;});btns[sel].classList.add(sel===cor?"correct":"wrong");if(sel!==cor)btns[cor].classList.add("correct");var e=document.createElement("div");e.className="ex-exp";e.innerHTML="<strong>"+(sel===cor?"✅ Correcto!":"❌ Incorrecto.")+"</strong> "+exp;d.appendChild(e);d.classList.add("answered");if(sel===cor)sc++;an++;updScore();if(an>=tot)showRes();}
 function updScore(){var p=tot>0?Math.round(sc/tot*100):0;document.getElementById("snum").textContent=sc+"/"+tot;document.getElementById("sfill").style.width=p+"%";document.getElementById("slbl").textContent=an+" respondidas · "+p+"% correcto";}
 function resetEx(){sc=0;an=0;updScore();document.getElementById("exResult").style.display="none";for(var i=0;i<tot;i++){var d=document.getElementById("q"+i);if(!d)continue;d.classList.remove("answered");d.querySelectorAll(".ex-opt").forEach(function(b){b.disabled=false;b.classList.remove("correct","wrong");});var ep=d.querySelector(".ex-exp");if(ep)ep.remove();}}
