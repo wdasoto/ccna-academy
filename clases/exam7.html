@@ -1,906 +1,477 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Examen 7: Seguridad | CCNA Academy</title>
-    <link rel="stylesheet" href="../assets/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
-    <style>
-        .exam-container { max-width: 900px; margin: 80px auto 40px; padding: 30px; background: rgba(255,255,255,0.03); border: 1px solid rgba(0,212,170,0.2); border-radius: 8px; }
-        .exam-header { text-align: center; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 2px solid #00d4aa; }
-        .exam-header h1 { font-family: 'Orbitron', monospace; color: #00d4aa; font-size: 2.2em; margin-bottom: 10px; }
-        .exam-info { display: flex; justify-content: center; gap: 30px; margin-top: 15px; font-family: 'Share Tech Mono', monospace; color: #aaa; }
-        .exam-info span { display: flex; align-items: center; gap: 8px; }
-        .question-block { background: rgba(0,0,0,0.3); padding: 25px; margin-bottom: 25px; border-left: 4px solid #00d4aa; border-radius: 6px; }
-        .question-number { font-family: 'Orbitron', monospace; color: #00d4aa; font-weight: 700; margin-bottom: 12px; font-size: 1.1em; }
-        .question-text { font-family: 'Exo 2', sans-serif; color: #fff; font-size: 1.1em; line-height: 1.6; margin-bottom: 20px; }
-        .options { display: flex; flex-direction: column; gap: 12px; }
-        .option { display: flex; align-items: flex-start; padding: 15px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; cursor: pointer; transition: all 0.3s; font-family: 'Exo 2', sans-serif; }
-        .option:hover { background: rgba(0,212,170,0.1); border-color: #00d4aa; }
-        .option input[type="radio"], .option input[type="checkbox"] { margin-right: 12px; margin-top: 3px; cursor: pointer; accent-color: #00d4aa; }
-        .option label { cursor: pointer; flex: 1; color: #ddd; }
-        .option.correct { background: rgba(0,212,170,0.15); border-color: #00d4aa; }
-        .option.incorrect { background: rgba(255,68,68,0.15); border-color: #ff4444; }
-        .explanation { display: none; margin-top: 20px; padding: 20px; background: rgba(0,212,170,0.1); border-left: 4px solid #00d4aa; border-radius: 6px; font-family: 'Exo 2', sans-serif; color: #ddd; line-height: 1.6; }
-        .explanation.show { display: block; }
-        .explanation-title { color: #00d4aa; font-weight: 600; margin-bottom: 10px; font-family: 'Orbitron', monospace; }
-        .submit-btn { display: block; width: 100%; max-width: 300px; margin: 40px auto; padding: 15px 30px; background: linear-gradient(135deg, #00d4aa, #00a885); color: #000; border: none; border-radius: 6px; font-family: 'Orbitron', monospace; font-size: 1.1em; font-weight: 700; cursor: pointer; transition: all 0.3s; }
-        .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(0,212,170,0.4); }
-        .results { display: none; text-align: center; padding: 30px; background: rgba(0,212,170,0.1); border: 2px solid #00d4aa; border-radius: 8px; margin: 30px 0; }
-        .results.show { display: block; }
-        .score { font-family: 'Orbitron', monospace; font-size: 3em; color: #00d4aa; margin: 20px 0; }
-        .results-text { font-family: 'Exo 2', sans-serif; color: #ddd; font-size: 1.2em; }
-        code { background: rgba(0,0,0,0.5); padding: 2px 6px; border-radius: 3px; color: #00d4aa; font-family: 'Share Tech Mono', monospace; }
-    </style>
-</head>
-<body>
-<!-- ═══════════ NAVBAR Y DRAWER ESTILIZADO (igual que exam5) ═══════════ -->
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Examen 07: Seguridad de Redes | CCNA Academy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head><body>
 <div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
 <nav class="ccna-drawer" id="ccnaDrawer">
   <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
   <div class="drawer-section"><div class="drawer-section-title">General</div>
     <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
   <div class="drawer-section"><div class="drawer-section-title">M1 · Fundamentos</div>
-    <a href="fundamentos.html"       class="drawer-link "><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
-    <a href="subnetting.html"        class="drawer-link "><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
-    <a href="ipv6.html"              class="drawer-link "><span class="dl-icon">6️⃣</span> IPv6</a>
-    <a href="arp.html"               class="drawer-link "><span class="dl-icon">📡</span> ARP</a>
-    <a href="rip.html"               class="drawer-link "><span class="dl-icon">🔄</span> RIP</a>
-    <a href="protocolos-internet.html" class="drawer-link "><span class="dl-icon">🌍</span> Protocolos Internet</a></div>
-  <div class="drawer-section"><div class="drawer-section-title">M2 · Dispositivos Cisco</div>
-    <a href="router.html"            class="drawer-link "><span class="dl-icon">📡</span> Routers Cisco</a>
-    <a href="switches-cisco.html"    class="drawer-link "><span class="dl-icon">🔀</span> Switches Cisco</a></div>
-  <div class="drawer-section"><div class="drawer-section-title">M3 · Switching</div>
-    <a href="vlan.html"              class="drawer-link "><span class="dl-icon">🏷️</span> VLANs</a>
-    <a href="inter-vlan-routing.html" class="drawer-link "><span class="dl-icon">🔁</span> Inter-VLAN Routing</a>
-    <a href="stp.html"               class="drawer-link "><span class="dl-icon">🌳</span> STP</a>
-    <a href="etherchannel.html"      class="drawer-link "><span class="dl-icon">🔗</span> EtherChannel</a>
-    <a href="port-security.html"     class="drawer-link "><span class="dl-icon">🔒</span> Port Security</a>
-    <a href="cdp-lldp.html"          class="drawer-link "><span class="dl-icon">🔍</span> CDP / LLDP</a></div>
+    <a href="fundamentos.html" class="drawer-link"><span class="dl-icon">🌐</span> Fundamentos</a>
+    <a href="subnetting.html" class="drawer-link"><span class="dl-icon">🔢</span> Subnetting</a>
+    <a href="arp.html" class="drawer-link"><span class="dl-icon">📡</span> ARP</a>
+    <a href="rip.html" class="drawer-link"><span class="dl-icon">🔄</span> RIP</a>
+    <a href="protocolos-internet.html" class="drawer-link"><span class="dl-icon">🌍</span> Protocolos Internet</a></div>
   <div class="drawer-section"><div class="drawer-section-title">M4 · Routing</div>
-    <a href="routing.html"           class="drawer-link "><span class="dl-icon">🗺️</span> Routing Estático</a>
-    <a href="ospf.html"              class="drawer-link "><span class="dl-icon">⭕</span> OSPF</a>
-    <a href="eigrp.html"             class="drawer-link "><span class="dl-icon">⚡</span> EIGRP</a>
-    <a href="ospfv2.html"            class="drawer-link "><span class="dl-icon">🎯</span> OSPFv2 Masterclass</a></div>
-  <div class="drawer-section"><div class="drawer-section-title">M5 · Servicios IP</div>
-    <a href="dhcp.html"              class="drawer-link "><span class="dl-icon">📋</span> DHCP</a>
-    <a href="nat.html"               class="drawer-link "><span class="dl-icon">🔄</span> NAT / PAT</a></div>
+    <a href="ospf.html" class="drawer-link"><span class="dl-icon">⭕</span> OSPF</a>
+    <a href="eigrp.html" class="drawer-link"><span class="dl-icon">⚡</span> EIGRP</a>
+    <a href="ospfv2-masterclass.html" class="drawer-link"><span class="dl-icon">🎯</span> OSPFv2 Masterclass</a></div>
   <div class="drawer-section"><div class="drawer-section-title">M6 · Seguridad</div>
-    <a href="acl.html"               class="drawer-link "><span class="dl-icon">🛡️</span> ACLs</a></div>
-  <div class="drawer-section"><div class="drawer-section-title">M7 · WAN &amp; QoS</div>
-    <a href="wan.html"               class="drawer-link "><span class="dl-icon">🌍</span> WAN</a>
-    <a href="qos.html"               class="drawer-link "><span class="dl-icon">📊</span> QoS</a></div>
+    <a href="acl.html" class="drawer-link"><span class="dl-icon">🛡️</span> ACLs</a>
+    <a href="port-security.html" class="drawer-link"><span class="dl-icon">🔒</span> Port Security</a></div>
   <div class="drawer-section"><div class="drawer-section-title">⚡ Herramientas</div>
-    <a href="asistente.html"         class="drawer-link "><span class="dl-icon">🤖</span> Asistente IA</a>
-    <a href="netbot.html"            class="drawer-link "><span class="dl-icon">⚙️</span> NetBot Config</a>
-    <a href="calculadora.html"       class="drawer-link "><span class="dl-icon">🧮</span> Calculadora IP</a>
-    <a href="../banco-preguntas.html" class="drawer-link active"><span class="dl-icon">📝</span> Banco de Preguntas</a></div>
+    <a href="asistente.html" class="drawer-link"><span class="dl-icon">🤖</span> Asistente IA</a>
+    <a href="netbot.html" class="drawer-link"><span class="dl-icon">⚙️</span> NetBot Config</a>
+    <a href="../banco-preguntas.html" class="drawer-link"><span class="dl-icon">📝</span> Banco de Preguntas</a>
 </nav>
 <header class="navbar">
   <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
   <a href="../index.html" class="navbar-brand">CISCO<span> ACADEMY</span></a>
   <div class="navbar-spacer"></div>
-  <a href="../banco-preguntas.html" class="navbar-link">← Banco Preguntas</a>
+  <a href="../banco-preguntas.html" class="navbar-link">← Banco</a>
 </header>
 <script src="../assets/main.js" defer></script>
 <div class="nav-spacer"></div>
 
-    <div class="exam-container">
-        <div class="exam-header">
-            <h1>EXAMEN 7</h1>
-            <p style="color: #aaa; font-size: 1.1em; margin-top: 10px;">Seguridad de Redes (Port Security, AAA, VPN, Wireless)</p>
-            <div class="exam-info"><span>⏱️ Sin límite</span><span>📝 30 preguntas</span></div>
-        </div>
+<section class="ex-hero"><div class="ex-hero-inner">
+<div class="ex-badge">BANCO DE PREGUNTAS CCNA 200-301 · EXAMEN 07 DE 10</div>
+<h1 class="ex-title">EXAMEN 07 — <span>Seguridad de Redes</span></h1>
+<p class="ex-sub">Port Security, AAA, TACACS+/RADIUS, DHCP Snooping, DAI, VPN (IPsec, SSL, DMVPN), Wireless (WPA2/WPA3, 802.1X, Rogue AP, Evil Twin), SNMPv3, y protección contra ataques de capa 2.</p>
+<div class="ex-meta">
+<span class="ex-meta-item">📋 50 preguntas</span>
+<span class="ex-meta-item">🎯 Port Security · AAA · VPN · Wireless</span>
+<span class="ex-meta-item">📅 Mar 2026</span>
+<span class="ex-meta-item">⚡ Nivel Avanzado</span>
+</div></div></section>
 
-        <form id="examForm">
-            <!-- P1 -->
-            <div class="question-block">
-                <div class="question-number">Pregunta 1</div>
-                <div class="question-text">¿Qué acción de Port Security desactiva el puerto y envía trap SNMP?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q1" value="a" id="q1a"><label for="q1a">protect</label></div>
-                    <div class="option"><input type="radio" name="q1" value="b" id="q1b"><label for="q1b">restrict</label></div>
-                    <div class="option"><input type="radio" name="q1" value="c" id="q1c"><label for="q1c">shutdown</label></div>
-                    <div class="option"><input type="radio" name="q1" value="d" id="q1d"><label for="q1d">err-disable</label></div>
-                </div>
-                <div class="explanation" data-answer="c">
-                    <div class="explanation-title">✓ Respuesta: C</div>
-                    <code>shutdown</code> (default) pone puerto en err-disabled, incrementa contador violaciones, envía trap SNMP y syslog. <code>restrict</code>=descarta frames + log. <code>protect</code>=solo descarta frames.
-                </div>
-            </div>
+<style>
+body{font-family:"Exo 2",sans-serif;background:#07090f;color:#e2e8f0;}
+.ex-hero{background:linear-gradient(135deg,#06080f,#0c1020 60%,#0e1428);padding:44px 24px 36px;border-bottom:1px solid rgba(251,191,36,.12);position:relative;overflow:hidden;}
+.ex-hero::before{content:"";position:absolute;top:-80px;right:-80px;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(251,191,36,.05) 0%,transparent 70%);pointer-events:none;}
+.ex-hero-inner{max-width:860px;margin:0 auto;position:relative;z-index:1;}
+.ex-badge{font-family:"Share Tech Mono",monospace;font-size:.62rem;color:#fbbf24;letter-spacing:3px;text-transform:uppercase;margin-bottom:12px;}
+.ex-title{font-family:"Orbitron",sans-serif;font-size:clamp(1.5rem,4vw,2.4rem);font-weight:900;letter-spacing:3px;color:#c2d0e8;margin-bottom:8px;line-height:1.1;}
+.ex-title span{background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.ex-sub{font-size:.9rem;color:#6b7a9a;line-height:1.65;margin-bottom:18px;max-width:680px;}
+.ex-meta{display:flex;gap:12px;flex-wrap:wrap;}
+.ex-meta-item{font-family:"Share Tech Mono",monospace;font-size:.68rem;color:#374060;padding:4px 10px;border:1px solid rgba(251,191,36,.1);border-radius:4px;}
+.ex-wrap{max-width:940px;margin:0 auto;padding:28px 20px 60px;}
+.ex-score-bar{background:#090d1a;border:1px solid rgba(251,191,36,.15);border-radius:12px;padding:16px 22px;margin-bottom:24px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;}
+.ex-score-num{font-family:"Orbitron",sans-serif;font-size:1.8rem;font-weight:900;background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;min-width:56px;}
+.ex-score-track{flex:1;height:7px;background:#0d1220;border-radius:4px;overflow:hidden;min-width:100px;}
+.ex-score-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#fbbf24,#f59e0b);transition:width .5s ease;width:0%;}
+.ex-score-label{font-family:"Share Tech Mono",monospace;font-size:.68rem;color:#4a5780;white-space:nowrap;}
+.ex-score-btn{padding:7px 16px;background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.25);border-radius:7px;color:#fbbf24;font-family:"Share Tech Mono",monospace;font-size:.68rem;cursor:pointer;margin-left:auto;}
+.ex-q{background:#0d1220;border:1px solid rgba(255,255,255,.05);border-radius:12px;padding:20px;margin-bottom:16px;}
+.ex-q.answered{border-color:rgba(251,191,36,.08);}
+.ex-qmeta{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.ex-qnum{font-family:"Share Tech Mono",monospace;font-size:.6rem;color:#374060;letter-spacing:2px;}
+.ex-qtype{font-family:"Share Tech Mono",monospace;font-size:.58rem;padding:2px 8px;border-radius:3px;}
+.ex-qtype.cli{background:rgba(0,212,170,.08);border:1px solid rgba(0,212,170,.2);color:#00d4aa;}
+.ex-qtype.concept{background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.2);color:#38bdf8;}
+.ex-qtype.trouble{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.2);color:#f87171;}
+.ex-qtext{font-size:.9rem;color:#c2d0e8;line-height:1.65;margin-bottom:14px;}
+.ex-qtext code,.ex-exp code{font-family:"Share Tech Mono",monospace;font-size:.8rem;background:rgba(0,212,170,.08);color:#00d4aa;padding:1px 5px;border-radius:4px;border:1px solid rgba(0,212,170,.15);}
+.ex-opts{display:flex;flex-direction:column;gap:7px;}
+.ex-opt{padding:10px 14px;border-radius:8px;border:1px solid rgba(255,255,255,.06);background:#090d1a;color:#6b7a9a;cursor:pointer;font-size:.86rem;text-align:left;transition:all .15s;line-height:1.5;}
+.ex-opt:hover:not(:disabled){border-color:rgba(251,191,36,.3);color:#c2d0e8;background:rgba(251,191,36,.04);}
+.ex-opt.correct{border-color:#34d399;background:rgba(52,211,153,.08);color:#34d399;}
+.ex-opt.wrong{border-color:#f87171;background:rgba(248,113,113,.08);color:#f87171;}
+.ex-exp{margin-top:12px;padding:12px 16px;background:rgba(251,191,36,.04);border-left:3px solid #fbbf24;border-radius:6px;font-size:.83rem;color:#a0aec0;line-height:1.65;}
+.ex-exp strong{color:#c2d0e8;}
+.ex-result{background:linear-gradient(135deg,rgba(251,191,36,.08),rgba(245,158,11,.04));border:1px solid rgba(251,191,36,.2);border-radius:16px;padding:32px;text-align:center;margin-top:32px;display:none;}
+.ex-result-pct{font-family:"Orbitron",sans-serif;font-size:3rem;font-weight:900;background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px;}
+.ex-result-label{font-family:"Share Tech Mono",monospace;font-size:.9rem;color:#c2d0e8;margin-bottom:6px;}
+.ex-result-sub{font-size:.82rem;color:#6b7a9a;margin-bottom:16px;}
+.ex-nav{display:flex;align-items:center;justify-content:space-between;margin-top:28px;flex-wrap:wrap;gap:12px;}
+.ex-nav a{padding:10px 22px;border-radius:8px;font-family:"Share Tech Mono",monospace;font-size:.72rem;text-decoration:none;display:inline-block;transition:all .18s;}
+.ex-nav-prev{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:#4a5780;}
+.ex-nav-prev:hover{color:#c2d0e8;}
+.ex-nav-next{background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);color:#fbbf24;}
+.ex-nav-next:hover{background:rgba(251,191,36,.2);}
+@media(max-width:680px){.ex-opt{font-size:.8rem;}.ex-qtext{font-size:.86rem;}}
+</style>
 
-            <!-- P2 -->
-            <div class="question-block">
-                <div class="question-number">Pregunta 2</div>
-                <div class="question-text">¿Qué protocolo AAA usa TCP y cifra todo el paquete?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q2" value="a" id="q2a"><label for="q2a">RADIUS</label></div>
-                    <div class="option"><input type="radio" name="q2" value="b" id="q2b"><label for="q2b">TACACS+</label></div>
-                    <div class="option"><input type="radio" name="q2" value="c" id="q2c"><label for="q2c">Kerberos</label></div>
-                    <div class="option"><input type="radio" name="q2" value="d" id="q2d"><label for="q2d">LDAP</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    <strong>TACACS+</strong>: TCP/49, cifra payload completo, separa AAA. <strong>RADIUS</strong>: UDP/1812-1813, solo cifra password, combina authn/authz.
-                </div>
-            </div>
+<div class="ex-wrap">
+<div class="ex-score-bar">
+<div class="ex-score-num" id="snum">0/50</div>
+<div class="ex-score-track"><div class="ex-score-fill" id="sfill"></div></div>
+<div class="ex-score-label" id="slbl">0 respondidas · 0% correcto</div>
+<button class="ex-score-btn" onclick="resetEx()">🔄 Reiniciar</button>
+</div>
 
-            <!-- P3 -->
-            <div class="question-block">
-                <div class="question-number">Pregunta 3</div>
-                <div class="question-text">¿Qué ataque mitiga DHCP Snooping?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q3" value="a" id="q3a"><label for="q3a">VLAN hopping</label></div>
-                    <div class="option"><input type="radio" name="q3" value="b" id="q3b"><label for="q3b">DHCP starvation y rogue DHCP server</label></div>
-                    <div class="option"><input type="radio" name="q3" value="c" id="q3c"><label for="q3c">STP manipulation</label></div>
-                    <div class="option"><input type="radio" name="q3" value="d" id="q3d"><label for="q3d">MAC flooding</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    DHCP Snooping crea binding table (MAC-IP-VLAN-port), marca puertos trusted/untrusted, bloquea DHCPOFFER/ACK en untrusted. Mitiga rogue servers y DHCP starvation.
-                </div>
-            </div>
+<div class="ex-q" id="q0"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 1 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué acción de Port Security desactiva el puerto y envía trap SNMP?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(0,0,2,`<code>shutdown</code> (default) pone puerto en err-disabled, incrementa contador violaciones, envía trap SNMP y syslog. <code>restrict</code>=descarta frames + log. <code>protect</code>=solo descarta frames.`)">protect</button>
+<button class="ex-opt" onclick="ansQ(0,1,2,`<code>shutdown</code> (default) pone puerto en err-disabled, incrementa contador violaciones, envía trap SNMP y syslog. <code>restrict</code>=descarta frames + log. <code>protect</code>=solo descarta frames.`)">restrict</button>
+<button class="ex-opt" onclick="ansQ(0,2,2,`<code>shutdown</code> (default) pone puerto en err-disabled, incrementa contador violaciones, envía trap SNMP y syslog. <code>restrict</code>=descarta frames + log. <code>protect</code>=solo descarta frames.`)">shutdown</button>
+<button class="ex-opt" onclick="ansQ(0,3,2,`<code>shutdown</code> (default) pone puerto en err-disabled, incrementa contador violaciones, envía trap SNMP y syslog. <code>restrict</code>=descarta frames + log. <code>protect</code>=solo descarta frames.`)">err-disable</button>
+</div></div>
 
-            <!-- P4 -->
-            <div class="question-block">
-                <div class="question-number">Pregunta 4</div>
-                <div class="question-text">¿Qué característica impide CAM table overflow?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q4" value="a" id="q4a"><label for="q4a">Port Security</label></div>
-                    <div class="option"><input type="radio" name="q4" value="b" id="q4b"><label for="q4b">BPDU Guard</label></div>
-                    <div class="option"><input type="radio" name="q4" value="c" id="q4c"><label for="q4c">Root Guard</label></div>
-                    <div class="option"><input type="radio" name="q4" value="d" id="q4d"><label for="q4d">DHCP Snooping</label></div>
-                </div>
-                <div class="explanation" data-answer="a">
-                    <div class="explanation-title">✓ Respuesta: A</div>
-                    <strong>Port Security</strong> limita MACs por puerto. CAM overflow (macof attack) llena tabla con MACs falsas → switch actúa como hub. Port sec con <code>switchport port-security maximum 2</code> mitiga esto.
-                </div>
-            </div>
+<div class="ex-q" id="q1"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 2 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué protocolo AAA usa TCP y cifra todo el paquete?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(1,0,1,`<strong>TACACS+</strong>: TCP/49, cifra payload completo, separa AAA. <strong>RADIUS</strong>: UDP/1812-1813, solo cifra password, combina authn/authz.`)">RADIUS</button>
+<button class="ex-opt" onclick="ansQ(1,1,1,`<strong>TACACS+</strong>: TCP/49, cifra payload completo, separa AAA. <strong>RADIUS</strong>: UDP/1812-1813, solo cifra password, combina authn/authz.`)">TACACS+</button>
+<button class="ex-opt" onclick="ansQ(1,2,1,`<strong>TACACS+</strong>: TCP/49, cifra payload completo, separa AAA. <strong>RADIUS</strong>: UDP/1812-1813, solo cifra password, combina authn/authz.`)">Kerberos</button>
+<button class="ex-opt" onclick="ansQ(1,3,1,`<strong>TACACS+</strong>: TCP/49, cifra payload completo, separa AAA. <strong>RADIUS</strong>: UDP/1812-1813, solo cifra password, combina authn/authz.`)">LDAP</button>
+</div></div>
 
-            <!-- P5 -->
-            <div class="question-block">
-                <div class="question-number">Pregunta 5</div>
-                <div class="question-text">¿Qué protocolo de autenticación wireless usa servidor RADIUS?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q5" value="a" id="q5a"><label for="q5a">WPA2-Personal</label></div>
-                    <div class="option"><input type="radio" name="q5" value="b" id="q5b"><label for="q5b">WPA2-Enterprise (802.1X)</label></div>
-                    <div class="option"><input type="radio" name="q5" value="c" id="q5c"><label for="q5c">WEP</label></div>
-                    <div class="option"><input type="radio" name="q5" value="d" id="q5d"><label for="q5d">Open Authentication</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    <strong>WPA2-Enterprise</strong> usa 802.1X (EAP) con servidor RADIUS para autenticación centralizada. WPA2-Personal usa PSK (pre-shared key) sin servidor.
-                </div>
-            </div>
-		<div class="question-block">
-                <div class="question-number">Pregunta 6</div>
-                <div class="question-text">¿Cuál es el estado predeterminado de una interfaz de switch cuando ocurre una violación de Port Security y no se ha configurado un modo específico?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q6" value="a" id="q6a"><label for="q6a">Protect</label></div>
-                    <div class="option"><input type="radio" name="q6" value="b" id="q6b"><label for="q6b">Restrict</label></div>
-                    <div class="option"><input type="radio" name="q6" value="c" id="q6c"><label for="q6c">Shutdown</label></div>
-                    <div class="option"><input type="radio" name="q6" value="d" id="q6d"><label for="q6d">Disabled</label></div>
-                </div>
-                <div class="explanation" data-answer="c">
-                    <div class="explanation-title">✓ Respuesta: C</div>
-                    El modo <strong>Shutdown</strong> es el predeterminado. La interfaz se pone en estado error-disabled, se incrementa el contador de violaciones y se envía un mensaje SNMP/Syslog.
-                </div>
-            </div>
+<div class="ex-q" id="q2"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 3 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué ataque mitiga DHCP Snooping?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(2,0,1,`DHCP Snooping crea binding table (MAC-IP-VLAN-port), marca puertos trusted/untrusted, bloquea DHCPOFFER/ACK en untrusted. Mitiga rogue servers y DHCP starvation.`)">VLAN hopping</button>
+<button class="ex-opt" onclick="ansQ(2,1,1,`DHCP Snooping crea binding table (MAC-IP-VLAN-port), marca puertos trusted/untrusted, bloquea DHCPOFFER/ACK en untrusted. Mitiga rogue servers y DHCP starvation.`)">DHCP starvation y rogue DHCP server</button>
+<button class="ex-opt" onclick="ansQ(2,2,1,`DHCP Snooping crea binding table (MAC-IP-VLAN-port), marca puertos trusted/untrusted, bloquea DHCPOFFER/ACK en untrusted. Mitiga rogue servers y DHCP starvation.`)">STP manipulation</button>
+<button class="ex-opt" onclick="ansQ(2,3,1,`DHCP Snooping crea binding table (MAC-IP-VLAN-port), marca puertos trusted/untrusted, bloquea DHCPOFFER/ACK en untrusted. Mitiga rogue servers y DHCP starvation.`)">MAC flooding</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 7</div>
-                <div class="question-text">¿Qué componente del modelo AAA se encarga de determinar a qué recursos y comandos tiene permitido acceder un usuario?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q7" value="a" id="q7a"><label for="q7a">Authentication</label></div>
-                    <div class="option"><input type="radio" name="q7" value="b" id="q7b"><label for="q7b">Authorization</label></div>
-                    <div class="option"><input type="radio" name="q7" value="c" id="q7c"><label for="q7c">Accounting</label></div>
-                    <div class="option"><input type="radio" name="q7" value="d" id="q7d"><label for="q7d">Accessibility</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    La <strong>Autorización</strong> define los privilegios del usuario (qué puede hacer), mientras que la Autenticación verifica quién es y el Accounting registra qué hizo.
-                </div>
-            </div>
+<div class="ex-q" id="q3"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 4 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué característica impide CAM table overflow?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(3,0,0,`<strong>Port Security</strong> limita MACs por puerto. CAM overflow (macof attack) llena tabla con MACs falsas → switch actúa como hub. Port sec con <code>switchport port-security maximum 2</code> mitiga esto.`)">Port Security</button>
+<button class="ex-opt" onclick="ansQ(3,1,0,`<strong>Port Security</strong> limita MACs por puerto. CAM overflow (macof attack) llena tabla con MACs falsas → switch actúa como hub. Port sec con <code>switchport port-security maximum 2</code> mitiga esto.`)">BPDU Guard</button>
+<button class="ex-opt" onclick="ansQ(3,2,0,`<strong>Port Security</strong> limita MACs por puerto. CAM overflow (macof attack) llena tabla con MACs falsas → switch actúa como hub. Port sec con <code>switchport port-security maximum 2</code> mitiga esto.`)">Root Guard</button>
+<button class="ex-opt" onclick="ansQ(3,3,0,`<strong>Port Security</strong> limita MACs por puerto. CAM overflow (macof attack) llena tabla con MACs falsas → switch actúa como hub. Port sec con <code>switchport port-security maximum 2</code> mitiga esto.`)">DHCP Snooping</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 8</div>
-                <div class="question-text">¿Qué tipo de VPN utiliza el protocolo TLS/SSL para proporcionar acceso remoto seguro sin necesidad de instalar un software cliente especializado?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q8" value="a" id="q8a"><label for="q8a">Site-to-Site VPN</label></div>
-                    <div class="option"><input type="radio" name="q8" value="b" id="q8b"><label for="q8b">IPsec VPN</label></div>
-                    <div class="option"><input type="radio" name="q8" value="c" id="q8c"><label for="q8c">Clientless SSL VPN</label></div>
-                    <div class="option"><input type="radio" name="q8" value="d" id="q8d"><label for="q8d">GRE Over IPsec</label></div>
-                </div>
-                <div class="explanation" data-answer="c">
-                    <div class="explanation-title">✓ Respuesta: C</div>
-                    Una <strong>Clientless SSL VPN</strong> permite a los usuarios acceder a recursos corporativos usando solo un navegador web estándar mediante cifrado SSL/TLS.
-                </div>
-            </div>
+<div class="ex-q" id="q4"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 5 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué protocolo de autenticación wireless usa servidor RADIUS?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(4,0,1,`<strong>WPA2-Enterprise</strong> usa 802.1X (EAP) con servidor RADIUS para autenticación centralizada. WPA2-Personal usa PSK (pre-shared key) sin servidor.`)">WPA2-Personal</button>
+<button class="ex-opt" onclick="ansQ(4,1,1,`<strong>WPA2-Enterprise</strong> usa 802.1X (EAP) con servidor RADIUS para autenticación centralizada. WPA2-Personal usa PSK (pre-shared key) sin servidor.`)">WPA2-Enterprise (802.1X)</button>
+<button class="ex-opt" onclick="ansQ(4,2,1,`<strong>WPA2-Enterprise</strong> usa 802.1X (EAP) con servidor RADIUS para autenticación centralizada. WPA2-Personal usa PSK (pre-shared key) sin servidor.`)">WEP</button>
+<button class="ex-opt" onclick="ansQ(4,3,1,`<strong>WPA2-Enterprise</strong> usa 802.1X (EAP) con servidor RADIUS para autenticación centralizada. WPA2-Personal usa PSK (pre-shared key) sin servidor.`)">Open Authentication</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 9</div>
-                <div class="question-text">En Port Security, ¿qué comando permite que las direcciones MAC aprendidas dinámicamente se guarden en la configuración persistente (running-config)?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q9" value="a" id="q9a"><label for="q9a">switchport port-security mac-address dynamic</label></div>
-                    <div class="option"><input type="radio" name="q9" value="b" id="q9b"><label for="q9b">switchport port-security mac-address sticky</label></div>
-                    <div class="option"><input type="radio" name="q9" value="c" id="q9c"><label for="q9c">switchport port-security aging static</label></div>
-                    <div class="option"><input type="radio" name="q9" value="d" id="q9d"><label for="q9d">switchport port-security persistence</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    La opción <strong>sticky</strong> convierte las direcciones dinámicas en "pegajosas", permitiendo que se almacenen en la configuración y sobrevivan a un reinicio si se guarda la configuración.
-                </div>
-            </div>
+<div class="ex-q" id="q5"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 6 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Cuál es el estado predeterminado de una interfaz cuando ocurre una violación de Port Security sin modo específico configurado?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(5,0,2,`El modo <strong>shutdown</strong> es el predeterminado. La interfaz se pone en estado error-disabled, se incrementa el contador de violaciones y se envía un mensaje SNMP/Syslog.`)">Protect</button>
+<button class="ex-opt" onclick="ansQ(5,1,2,`El modo <strong>shutdown</strong> es el predeterminado. La interfaz se pone en estado error-disabled, se incrementa el contador de violaciones y se envía un mensaje SNMP/Syslog.`)">Restrict</button>
+<button class="ex-opt" onclick="ansQ(5,2,2,`El modo <strong>shutdown</strong> es el predeterminado. La interfaz se pone en estado error-disabled, se incrementa el contador de violaciones y se envía un mensaje SNMP/Syslog.`)">Shutdown</button>
+<button class="ex-opt" onclick="ansQ(5,3,2,`El modo <strong>shutdown</strong> es el predeterminado. La interfaz se pone en estado error-disabled, se incrementa el contador de violaciones y se envía un mensaje SNMP/Syslog.`)">Disabled</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 10</div>
-                <div class="question-text">¿Cuál es el protocolo propietario de Cisco utilizado para la comunicación entre un NAS y un servidor AAA que cifra todo el cuerpo del paquete?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q10" value="a" id="q10a"><label for="q10a">RADIUS</label></div>
-                    <div class="option"><input type="radio" name="q10" value="b" id="q10b"><label for="q10b">Diameter</label></div>
-                    <div class="option"><input type="radio" name="q10" value="c" id="q10c"><label for="q10c">TACACS+</label></div>
-                    <div class="option"><input type="radio" name="q10" value="d" id="q10d"><label for="q10d">SNMPv3</label></div>
-                </div>
-                <div class="explanation" data-answer="c">
-                    <div class="explanation-title">✓ Respuesta: C</div>
-                    <strong>TACACS+</strong> cifra todo el contenido del paquete (a diferencia de RADIUS que solo cifra el password) y separa las funciones de A, A y A.
-                </div>
-            </div>
+<div class="ex-q" id="q6"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 7 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué componente del modelo AAA se encarga de determinar a qué recursos tiene acceso un usuario?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(6,0,1,`La <strong>Autorización</strong> define los privilegios del usuario (qué puede hacer), mientras que la Autenticación verifica quién es y el Accounting registra qué hizo.`)">Authentication</button>
+<button class="ex-opt" onclick="ansQ(6,1,1,`La <strong>Autorización</strong> define los privilegios del usuario (qué puede hacer), mientras que la Autenticación verifica quién es y el Accounting registra qué hizo.`)">Authorization</button>
+<button class="ex-opt" onclick="ansQ(6,2,1,`La <strong>Autorización</strong> define los privilegios del usuario (qué puede hacer), mientras que la Autenticación verifica quién es y el Accounting registra qué hizo.`)">Accounting</button>
+<button class="ex-opt" onclick="ansQ(6,3,1,`La <strong>Autorización</strong> define los privilegios del usuario (qué puede hacer), mientras que la Autenticación verifica quién es y el Accounting registra qué hizo.`)">Accessibility</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 11</div>
-                <div class="question-text">¿Qué algoritmo de cifrado es el estándar para WPA2?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q11" value="a" id="q11a"><label for="q11a">TKIP</label></div>
-                    <div class="option"><input type="radio" name="q11" value="b" id="q11b"><label for="q11b">DES</label></div>
-                    <div class="option"><input type="radio" name="q11" value="c" id="q11c"><label for="q11c">AES</label></div>
-                    <div class="option"><input type="radio" name="q11" value="d" id="q11d"><label for="q11d">MD5</label></div>
-                </div>
-                <div class="explanation" data-answer="c">
-                    <div class="explanation-title">✓ Respuesta: C</div>
-                    <strong>AES</strong> (Advanced Encryption Standard) con el protocolo CCMP es el estándar de cifrado robusto para WPA2.
-                </div>
-            </div>
+<div class="ex-q" id="q7"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 8 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué tipo de VPN utiliza TLS/SSL para acceso remoto sin cliente especializado?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(7,0,2,`Una <strong>Clientless SSL VPN</strong> permite a los usuarios acceder a recursos corporativos usando solo un navegador web estándar mediante cifrado SSL/TLS.`)">Site-to-Site VPN</button>
+<button class="ex-opt" onclick="ansQ(7,1,2,`Una <strong>Clientless SSL VPN</strong> permite a los usuarios acceder a recursos corporativos usando solo un navegador web estándar mediante cifrado SSL/TLS.`)">IPsec VPN</button>
+<button class="ex-opt" onclick="ansQ(7,2,2,`Una <strong>Clientless SSL VPN</strong> permite a los usuarios acceder a recursos corporativos usando solo un navegador web estándar mediante cifrado SSL/TLS.`)">Clientless SSL VPN</button>
+<button class="ex-opt" onclick="ansQ(7,3,2,`Una <strong>Clientless SSL VPN</strong> permite a los usuarios acceder a recursos corporativos usando solo un navegador web estándar mediante cifrado SSL/TLS.`)">GRE Over IPsec</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 12</div>
-                <div class="question-text">¿Qué modo de violación de Port Security descarta el tráfico no autorizado y genera un mensaje de log, pero mantiene la interfaz activa?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q12" value="a" id="q12a"><label for="q12a">Shutdown</label></div>
-                    <div class="option"><input type="radio" name="q12" value="b" id="q12b"><label for="q12b">Restrict</label></div>
-                    <div class="option"><input type="radio" name="q12" value="c" id="q12c"><label for="q12c">Protect</label></div>
-                    <div class="option"><input type="radio" name="q12" value="d" id="q12d"><label for="q12d">Block</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    El modo <strong>Restrict</strong> descarta el tráfico, incrementa el contador de violaciones y envía notificaciones, sin apagar la interfaz. El modo Protect hace lo mismo pero sin notificaciones.
-                </div>
-            </div>
+<div class="ex-q" id="q8"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 9 DE 50</span><span class="ex-qtype cli">CLI/CONFIG</span></div><div class="ex-qtext">¿Qué comando permite que las direcciones MAC aprendidas dinámicamente se guarden en la configuración persistente?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(8,0,1,`La opción <strong>sticky</strong> convierte las direcciones dinámicas en "pegajosas", permitiendo que se almacenen en la configuración y sobrevivan a un reinicio si se guarda la configuración.`)">switchport port-security mac-address dynamic</button>
+<button class="ex-opt" onclick="ansQ(8,1,1,`La opción <strong>sticky</strong> convierte las direcciones dinámicas en "pegajosas", permitiendo que se almacenen en la configuración y sobrevivan a un reinicio si se guarda la configuración.`)">switchport port-security mac-address sticky</button>
+<button class="ex-opt" onclick="ansQ(8,2,1,`La opción <strong>sticky</strong> convierte las direcciones dinámicas en "pegajosas", permitiendo que se almacenen en la configuración y sobrevivan a un reinicio si se guarda la configuración.`)">switchport port-security aging static</button>
+<button class="ex-opt" onclick="ansQ(8,3,1,`La opción <strong>sticky</strong> convierte las direcciones dinámicas en "pegajosas", permitiendo que se almacenen en la configuración y sobrevivan a un reinicio si se guarda la configuración.`)">switchport port-security persistence</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 13</div>
-                <div class="question-text">¿Cuál es el propósito principal de un SSID en una red inalámbrica?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q13" value="a" id="q13a"><label for="q13a">Cifrar los datos de la red.</label></div>
-                    <div class="option"><input type="radio" name="q13" value="b" id="q13b"><label for="q13b">Identificar de forma única la red WLAN para los clientes.</label></div>
-                    <div class="option"><input type="radio" name="q13" value="c" id="q13c"><label for="q13c">Establecer el canal de frecuencia.</label></div>
-                    <div class="option"><input type="radio" name="q13" value="d" id="q13d"><label for="q13d">Asignar direcciones IP a los clientes.</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    El <strong>SSID</strong> (Service Set Identifier) es el nombre de la red inalámbrica que los usuarios ven al intentar conectarse.
-                </div>
-            </div>
+<div class="ex-q" id="q9"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 10 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué protocolo propietario de Cisco cifra todo el cuerpo del paquete AAA?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(9,0,2,`<strong>TACACS+</strong> cifra todo el contenido del paquete (a diferencia de RADIUS que solo cifra el password) y separa las funciones de A, A y A.`)">RADIUS</button>
+<button class="ex-opt" onclick="ansQ(9,1,2,`<strong>TACACS+</strong> cifra todo el contenido del paquete (a diferencia de RADIUS que solo cifra el password) y separa las funciones de A, A y A.`)">Diameter</button>
+<button class="ex-opt" onclick="ansQ(9,2,2,`<strong>TACACS+</strong> cifra todo el contenido del paquete (a diferencia de RADIUS que solo cifra el password) y separa las funciones de A, A y A.`)">TACACS+</button>
+<button class="ex-opt" onclick="ansQ(9,3,2,`<strong>TACACS+</strong> cifra todo el contenido del paquete (a diferencia de RADIUS que solo cifra el password) y separa las funciones de A, A y A.`)">SNMPv3</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 14</div>
-                <div class="question-text">¿Qué mecanismo de seguridad en switches previene que un atacante suplante a un servidor DHCP legítimo?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q14" value="a" id="q14a"><label for="q14a">Dynamic ARP Inspection</label></div>
-                    <div class="option"><input type="radio" name="q14" value="b" id="q14b"><label for="q14b">IP Source Guard</label></div>
-                    <div class="option"><input type="radio" name="q14" value="c" id="q14c"><label for="q14c">DHCP Snooping</label></div>
-                    <div class="option"><input type="radio" name="q14" value="d" id="q14d"><label for="q14d">Root Guard</label></div>
-                </div>
-                <div class="explanation" data-answer="c">
-                    <div class="explanation-title">✓ Respuesta: C</div>
-                    <strong>DHCP Snooping</strong> clasifica interfaces como "trusted" (donde está el servidor real) y "untrusted", bloqueando mensajes DHCP Offer de puertos no autorizados.
-                </div>
-            </div>
+<div class="ex-q" id="q10"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 11 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué algoritmo de cifrado es el estándar para WPA2?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(10,0,2,`<strong>AES</strong> (Advanced Encryption Standard) con el protocolo CCMP es el estándar de cifrado robusto para WPA2.`)">TKIP</button>
+<button class="ex-opt" onclick="ansQ(10,1,2,`<strong>AES</strong> (Advanced Encryption Standard) con el protocolo CCMP es el estándar de cifrado robusto para WPA2.`)">DES</button>
+<button class="ex-opt" onclick="ansQ(10,2,2,`<strong>AES</strong> (Advanced Encryption Standard) con el protocolo CCMP es el estándar de cifrado robusto para WPA2.`)">AES</button>
+<button class="ex-opt" onclick="ansQ(10,3,2,`<strong>AES</strong> (Advanced Encryption Standard) con el protocolo CCMP es el estándar de cifrado robusto para WPA2.`)">MD5</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 15</div>
-                <div class="question-text">¿Qué protocolo utiliza una VPN Site-to-Site para autenticar, cifrar y verificar la integridad de los paquetes a nivel de capa 3?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q15" value="a" id="q15a"><label for="q15a">TLS</label></div>
-                    <div class="option"><input type="radio" name="q15" value="b" id="q15b"><label for="q15b">IPsec</label></div>
-                    <div class="option"><input type="radio" name="q15" value="c" id="q15c"><label for="q15c">SSH</label></div>
-                    <div class="option"><input type="radio" name="q15" value="d" id="q15d"><label for="q15d">L2TP</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    <strong>IPsec</strong> (Internet Protocol Security) es el conjunto de protocolos estándar para asegurar comunicaciones IP mediante autenticación y cifrado.
-                </div>
-            </div>
+<div class="ex-q" id="q11"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 12 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué modo de violación descarta tráfico no autorizado y genera log, pero mantiene la interfaz activa?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(11,0,1,`El modo <strong>Restrict</strong> descarta el tráfico, incrementa el contador de violaciones y envía notificaciones, sin apagar la interfaz. El modo Protect hace lo mismo pero sin notificaciones.`)">Shutdown</button>
+<button class="ex-opt" onclick="ansQ(11,1,1,`El modo <strong>Restrict</strong> descarta el tráfico, incrementa el contador de violaciones y envía notificaciones, sin apagar la interfaz. El modo Protect hace lo mismo pero sin notificaciones.`)">Restrict</button>
+<button class="ex-opt" onclick="ansQ(11,2,1,`El modo <strong>Restrict</strong> descarta el tráfico, incrementa el contador de violaciones y envía notificaciones, sin apagar la interfaz. El modo Protect hace lo mismo pero sin notificaciones.`)">Protect</button>
+<button class="ex-opt" onclick="ansQ(11,3,1,`El modo <strong>Restrict</strong> descarta el tráfico, incrementa el contador de violaciones y envía notificaciones, sin apagar la interfaz. El modo Protect hace lo mismo pero sin notificaciones.`)">Block</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 16</div>
-                <div class="question-text">¿Qué modo de operación inalámbrica permite que los APs sean gestionados de forma centralizada por un WLC?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q16" value="a" id="q16a"><label for="q16a">Autonomous AP</label></div>
-                    <div class="option"><input type="radio" name="q16" value="b" id="q16b"><label for="q16b">Lightweight AP (LAP)</label></div>
-                    <div class="option"><input type="radio" name="q16" value="c" id="q16c"><label for="q16c">Bridge Mode</label></div>
-                    <div class="option"><input type="radio" name="q16" value="d" id="q16d"><label for="q16d">Ad-hoc Mode</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    Los <strong>Lightweight APs</strong> funcionan con el protocolo CAPWAP para comunicarse con un controlador (WLC), el cual gestiona la configuración y políticas.
-                </div>
-            </div>
+<div class="ex-q" id="q12"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 13 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Cuál es el propósito principal de un SSID?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(12,0,1,`El <strong>SSID</strong> (Service Set Identifier) es el nombre de la red inalámbrica que los usuarios ven al intentar conectarse.`)">Cifrar los datos de la red.</button>
+<button class="ex-opt" onclick="ansQ(12,1,1,`El <strong>SSID</strong> (Service Set Identifier) es el nombre de la red inalámbrica que los usuarios ven al intentar conectarse.`)">Identificar de forma única la red WLAN para los clientes.</button>
+<button class="ex-opt" onclick="ansQ(12,2,1,`El <strong>SSID</strong> (Service Set Identifier) es el nombre de la red inalámbrica que los usuarios ven al intentar conectarse.`)">Establecer el canal de frecuencia.</button>
+<button class="ex-opt" onclick="ansQ(12,3,1,`El <strong>SSID</strong> (Service Set Identifier) es el nombre de la red inalámbrica que los usuarios ven al intentar conectarse.`)">Asignar direcciones IP a los clientes.</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 17</div>
-                <div class="question-text">¿Cuál es la función del protocolo CAPWAP en una arquitectura WLAN de Cisco?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q17" value="a" id="q17a"><label for="q17a">Cifrar los datos de los usuarios finales.</label></div>
-                    <div class="option"><input type="radio" name="q17" value="b" id="q17b"><label for="q17b">Encapsular el tráfico de control y datos entre el AP y el WLC.</label></div>
-                    <div class="option"><input type="radio" name="q17" value="c" id="q17c"><label for="q17c">Autenticar clientes mediante portales cautivos.</label></div>
-                    <div class="option"><input type="radio" name="q17" value="d" id="q17d"><label for="q17d">Escanear canales para evitar interferencias.</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    <strong>CAPWAP</strong> crea túneles para transportar tanto el tráfico de gestión (Control) como el tráfico de los clientes (Data) hacia el controlador centralizado.
-                </div>
-            </div>
+<div class="ex-q" id="q13"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 14 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué mecanismo previene que un atacante suplante un servidor DHCP legítimo?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(13,0,2,`<strong>DHCP Snooping</strong> clasifica interfaces como "trusted" (donde está el servidor real) y "untrusted", bloqueando mensajes DHCP Offer de puertos no autorizados.`)">Dynamic ARP Inspection</button>
+<button class="ex-opt" onclick="ansQ(13,1,2,`<strong>DHCP Snooping</strong> clasifica interfaces como "trusted" (donde está el servidor real) y "untrusted", bloqueando mensajes DHCP Offer de puertos no autorizados.`)">IP Source Guard</button>
+<button class="ex-opt" onclick="ansQ(13,2,2,`<strong>DHCP Snooping</strong> clasifica interfaces como "trusted" (donde está el servidor real) y "untrusted", bloqueando mensajes DHCP Offer de puertos no autorizados.`)">DHCP Snooping</button>
+<button class="ex-opt" onclick="ansQ(13,3,2,`<strong>DHCP Snooping</strong> clasifica interfaces como "trusted" (donde está el servidor real) y "untrusted", bloqueando mensajes DHCP Offer de puertos no autorizados.`)">Root Guard</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 18</div>
-                <div class="question-text">¿Qué comando global activa el modelo AAA en un dispositivo Cisco?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q18" value="a" id="q18a"><label for="q18a">aaa authentication login default</label></div>
-                    <div class="option"><input type="radio" name="q18" value="b" id="q18b"><label for="q18b">aaa enable</label></div>
-                    <div class="option"><input type="radio" name="q18" value="c" id="q18c"><label for="q18c">aaa new-model</label></div>
-                    <div class="option"><input type="radio" name="q18" value="d" id="q18d"><label for="q18d">service aaa activation</label></div>
-                </div>
-                <div class="explanation" data-answer="c">
-                    <div class="explanation-title">✓ Respuesta: C</div>
-                    El comando <strong>aaa new-model</strong> es indispensable para habilitar el conjunto de comandos AAA en el router o switch.
-                </div>
-            </div>
+<div class="ex-q" id="q14"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 15 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué protocolo utiliza una VPN Site-to-Site para autenticar, cifrar y verificar integridad a nivel de capa 3?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(14,0,1,`<strong>IPsec</strong> (Internet Protocol Security) es el conjunto de protocolos estándar para asegurar comunicaciones IP mediante autenticación y cifrado.`)">TLS</button>
+<button class="ex-opt" onclick="ansQ(14,1,1,`<strong>IPsec</strong> (Internet Protocol Security) es el conjunto de protocolos estándar para asegurar comunicaciones IP mediante autenticación y cifrado.`)">IPsec</button>
+<button class="ex-opt" onclick="ansQ(14,2,1,`<strong>IPsec</strong> (Internet Protocol Security) es el conjunto de protocolos estándar para asegurar comunicaciones IP mediante autenticación y cifrado.`)">SSH</button>
+<button class="ex-opt" onclick="ansQ(14,3,1,`<strong>IPsec</strong> (Internet Protocol Security) es el conjunto de protocolos estándar para asegurar comunicaciones IP mediante autenticación y cifrado.`)">L2TP</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 19</div>
-                <div class="question-text">¿Qué característica de seguridad inalámbrica requiere que el cliente ingrese una contraseña compartida antes de asociarse, pero no ofrece autenticación individualizada?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q19" value="a" id="q19a"><label for="q19a">802.1X</label></div>
-                    <div class="option"><input type="radio" name="q19" value="b" id="q19b"><label for="q19b">RADIUS</label></div>
-                    <div class="option"><input type="radio" name="q19" value="c" id="q19c"><label for="q19c">WPA2-PSK (Personal)</label></div>
-                    <div class="option"><input type="radio" name="q19" value="d" id="q19d"><label for="q19d">EAP-FAST</label></div>
-                </div>
-                <div class="explanation" data-answer="c">
-                    <div class="explanation-title">✓ Respuesta: C</div>
-                    En <strong>WPA2-PSK</strong> todos los usuarios comparten la misma clave (Pre-Shared Key), lo cual es ideal para hogares pero menos seguro para empresas.
-                </div>
-            </div>
+<div class="ex-q" id="q15"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 16 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué modo de operación inalámbrica permite que los APs sean gestionados centralmente por un WLC?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(15,0,1,`Los <strong>Lightweight APs</strong> funcionan con el protocolo CAPWAP para comunicarse con un controlador (WLC), el cual gestiona la configuración y políticas.`)">Autonomous AP</button>
+<button class="ex-opt" onclick="ansQ(15,1,1,`Los <strong>Lightweight APs</strong> funcionan con el protocolo CAPWAP para comunicarse con un controlador (WLC), el cual gestiona la configuración y políticas.`)">Lightweight AP (LAP)</button>
+<button class="ex-opt" onclick="ansQ(15,2,1,`Los <strong>Lightweight APs</strong> funcionan con el protocolo CAPWAP para comunicarse con un controlador (WLC), el cual gestiona la configuración y políticas.`)">Bridge Mode</button>
+<button class="ex-opt" onclick="ansQ(15,3,1,`Los <strong>Lightweight APs</strong> funcionan con el protocolo CAPWAP para comunicarse con un controlador (WLC), el cual gestiona la configuración y políticas.`)">Ad-hoc Mode</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 20</div>
-                <div class="question-text">¿Cuál es la función del plano de control en una red inalámbrica con controlador (WLC)?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q20" value="a" id="q20a"><label for="q20a">Enrutar paquetes de usuario a Internet.</label></div>
-                    <div class="option"><input type="radio" name="q20" value="b" id="q20b"><label for="q20b">Gestionar la asociación de clientes y asignación de canales.</label></div>
-                    <div class="option"><input type="radio" name="q20" value="c" id="q20c"><label for="q20c">Almacenar los archivos de configuración de los switches.</label></div>
-                    <div class="option"><input type="radio" name="q20" value="d" id="q20d"><label for="q20d">Cifrar los túneles GRE.</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    El <strong>Plano de Control</strong> en arquitecturas centralizadas se encarga de las decisiones inteligentes como el roaming, la potencia de radio y la autenticación.
-                </div>
-            </div>
+<div class="ex-q" id="q16"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 17 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Cuál es la función del protocolo CAPWAP en arquitectura WLAN?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(16,0,1,`<strong>CAPWAP</strong> crea túneles para transportar tanto el tráfico de gestión (Control) como el tráfico de los clientes (Data) hacia el controlador centralizado.`)">Cifrar los datos de los usuarios finales.</button>
+<button class="ex-opt" onclick="ansQ(16,1,1,`<strong>CAPWAP</strong> crea túneles para transportar tanto el tráfico de gestión (Control) como el tráfico de los clientes (Data) hacia el controlador centralizado.`)">Encapsular tráfico de control y datos entre AP y WLC.</button>
+<button class="ex-opt" onclick="ansQ(16,2,1,`<strong>CAPWAP</strong> crea túneles para transportar tanto el tráfico de gestión (Control) como el tráfico de los clientes (Data) hacia el controlador centralizado.`)">Autenticar clientes mediante portales cautivos.</button>
+<button class="ex-opt" onclick="ansQ(16,3,1,`<strong>CAPWAP</strong> crea túneles para transportar tanto el tráfico de gestión (Control) como el tráfico de los clientes (Data) hacia el controlador centralizado.`)">Escanear canales para evitar interferencias.</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 21</div>
-                <div class="question-text">¿Qué técnica de ataque intenta desbordar la tabla de direcciones MAC de un switch para forzarlo a actuar como un hub?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q21" value="a" id="q21a"><label for="q21a">MAC Spoofing</label></div>
-                    <div class="option"><input type="radio" name="q21" value="b" id="q21b"><label for="q21b">DHCP Starvation</label></div>
-                    <div class="option"><input type="radio" name="q21" value="c" id="q21c"><label for="q21c">MAC Address Flooding</label></div>
-                    <div class="option"><input type="radio" name="q21" value="d" id="q21d"><label for="q21d">ARP Poisoning</label></div>
-                </div>
-                <div class="explanation" data-answer="c">
-                    <div class="explanation-title">✓ Respuesta: C</div>
-                    El <strong>MAC Address Flooding</strong> inunda la tabla CAM con direcciones falsas. Port Security es la defensa principal contra esto.
-                </div>
-            </div>
+<div class="ex-q" id="q17"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 18 DE 50</span><span class="ex-qtype cli">CLI/CONFIG</span></div><div class="ex-qtext">¿Qué comando global activa el modelo AAA en un dispositivo Cisco?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(17,0,2,`El comando <strong>aaa new-model</strong> es indispensable para habilitar el conjunto de comandos AAA en el router o switch.`)">aaa authentication login default</button>
+<button class="ex-opt" onclick="ansQ(17,1,2,`El comando <strong>aaa new-model</strong> es indispensable para habilitar el conjunto de comandos AAA en el router o switch.`)">aaa enable</button>
+<button class="ex-opt" onclick="ansQ(17,2,2,`El comando <strong>aaa new-model</strong> es indispensable para habilitar el conjunto de comandos AAA en el router o switch.`)">aaa new-model</button>
+<button class="ex-opt" onclick="ansQ(17,3,2,`El comando <strong>aaa new-model</strong> es indispensable para habilitar el conjunto de comandos AAA en el router o switch.`)">service aaa activation</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 22</div>
-                <div class="question-text">¿Qué tipo de amenaza inalámbrica consiste en un AP instalado en la red sin autorización del departamento de IT?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q22" value="a" id="q22a"><label for="q22a">Evil Twin</label></div>
-                    <div class="option"><input type="radio" name="q22" value="b" id="q22b"><label for="q22b">Rogue AP</label></div>
-                    <div class="option"><input type="radio" name="q22" value="c" id="q22c"><label for="q22c">Man-in-the-Middle</label></div>
-                    <div class="option"><input type="radio" name="q22" value="d" id="q22d"><label for="q22d">Interferencia de Radiofrecuencia</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    Un <strong>Rogue AP</strong> es un punto de acceso no autorizado conectado físicamente a la red cableada de la empresa, creando un agujero de seguridad.
-                </div>
-            </div>
+<div class="ex-q" id="q18"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 19 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué característica de seguridad inalámbrica requiere contraseña compartida pero no ofrece autenticación individualizada?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(18,0,2,`En <strong>WPA2-PSK</strong> todos los usuarios comparten la misma clave (Pre-Shared Key), lo cual es ideal para hogares pero menos seguro para empresas.`)">802.1X</button>
+<button class="ex-opt" onclick="ansQ(18,1,2,`En <strong>WPA2-PSK</strong> todos los usuarios comparten la misma clave (Pre-Shared Key), lo cual es ideal para hogares pero menos seguro para empresas.`)">RADIUS</button>
+<button class="ex-opt" onclick="ansQ(18,2,2,`En <strong>WPA2-PSK</strong> todos los usuarios comparten la misma clave (Pre-Shared Key), lo cual es ideal para hogares pero menos seguro para empresas.`)">WPA2-PSK (Personal)</button>
+<button class="ex-opt" onclick="ansQ(18,3,2,`En <strong>WPA2-PSK</strong> todos los usuarios comparten la misma clave (Pre-Shared Key), lo cual es ideal para hogares pero menos seguro para empresas.`)">EAP-FAST</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 23</div>
-                <div class="question-text">¿Cuál es la principal ventaja de usar WPA3 sobre WPA2?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q23" value="a" id="q23a"><label for="q23a">Mayor velocidad de conexión.</label></div>
-                    <div class="option"><input type="radio" name="q23" value="b" id="q23b"><label for="q23b">Protección contra ataques de fuerza bruta mediante el protocolo SAE.</label></div>
-                    <div class="option"><input type="radio" name="q23" value="c" id="q23c"><label for="q23c">Eliminación de la necesidad de SSID.</label></div>
-                    <div class="option"><input type="radio" name="q23" value="d" id="q23d"><label for="q23d">Compatibilidad nativa con hubs antiguos.</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    WPA3 introduce <strong>SAE</strong> (Simultaneous Authentication of Equals), que reemplaza el handshake de WPA2 y protege contra ataques de diccionario fuera de línea.
-                </div>
-            </div>
+<div class="ex-q" id="q19"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 20 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Cuál es la función del plano de control en una red inalámbrica con WLC?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(19,0,1,`El <strong>Plano de Control</strong> en arquitecturas centralizadas se encarga de las decisiones inteligentes como el roaming, la potencia de radio y la autenticación.`)">Enrutar paquetes de usuario a Internet.</button>
+<button class="ex-opt" onclick="ansQ(19,1,1,`El <strong>Plano de Control</strong> en arquitecturas centralizadas se encarga de las decisiones inteligentes como el roaming, la potencia de radio y la autenticación.`)">Gestionar la asociación de clientes y asignación de canales.</button>
+<button class="ex-opt" onclick="ansQ(19,2,1,`El <strong>Plano de Control</strong> en arquitecturas centralizadas se encarga de las decisiones inteligentes como el roaming, la potencia de radio y la autenticación.`)">Almacenar archivos de configuración de switches.</button>
+<button class="ex-opt" onclick="ansQ(19,3,1,`El <strong>Plano de Control</strong> en arquitecturas centralizadas se encarga de las decisiones inteligentes como el roaming, la potencia de radio y la autenticación.`)">Cifrar los túneles GRE.</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 24</div>
-                <div class="question-text">¿Qué puerto UDP utiliza TACACS+ para su funcionamiento?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q24" value="a" id="q24a"><label for="q24a">UDP 1812</label></div>
-                    <div class="option"><input type="radio" name="q24" value="b" id="q24b"><label for="q24b">TCP 49</label></div>
-                    <div class="option"><input type="radio" name="q24" value="c" id="q24c"><label for="q24c">UDP 1645</label></div>
-                    <div class="option"><input type="radio" name="q24" value="d" id="q24d"><label for="q24d">TCP 443</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    A diferencia de RADIUS (que usa UDP), <strong>TACACS+</strong> utiliza el protocolo de transporte **TCP** en el puerto **49**.
-                </div>
-            </div>
+<div class="ex-q" id="q20"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 21 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué técnica intenta desbordar la tabla de direcciones MAC para forzar al switch a actuar como un hub?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(20,0,2,`El <strong>MAC Address Flooding</strong> inunda la tabla CAM con direcciones falsas. Port Security es la defensa principal contra esto.`)">MAC Spoofing</button>
+<button class="ex-opt" onclick="ansQ(20,1,2,`El <strong>MAC Address Flooding</strong> inunda la tabla CAM con direcciones falsas. Port Security es la defensa principal contra esto.`)">DHCP Starvation</button>
+<button class="ex-opt" onclick="ansQ(20,2,2,`El <strong>MAC Address Flooding</strong> inunda la tabla CAM con direcciones falsas. Port Security es la defensa principal contra esto.`)">MAC Address Flooding</button>
+<button class="ex-opt" onclick="ansQ(20,3,2,`El <strong>MAC Address Flooding</strong> inunda la tabla CAM con direcciones falsas. Port Security es la defensa principal contra esto.`)">ARP Poisoning</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 25</div>
-                <div class="question-text">¿Qué tecnología VPN permite crear túneles dinámicos multipunto bajo demanda (Spoke-to-Spoke) sin intervención manual constante?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q25" value="a" id="q25a"><label for="q25a">Static IPsec Tunnel</label></div>
-                    <div class="option"><input type="radio" name="q25" value="b" id="q25b"><label for="q25b">GRE Tunneling</label></div>
-                    <div class="option"><input type="radio" name="q25" value="c" id="q25c"><label for="q25c">DMVPN (Dynamic Multipoint VPN)</label></div>
-                    <div class="option"><input type="radio" name="q25" value="d" id="q25d"><label for="q25d">MPLS</label></div>
-                </div>
-                <div class="explanation" data-answer="c">
-                    <div class="explanation-title">✓ Respuesta: C</div>
-                    <strong>DMVPN</strong> combina multipoint GRE, NHRP e IPsec para permitir que las sucursales hablen entre sí directamente sin pasar por el Hub.
-                </div>
-            </div>
+<div class="ex-q" id="q21"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 22 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué tipo de amenaza inalámbrica consiste en un AP instalado sin autorización de IT?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(21,0,1,`Un <strong>Rogue AP</strong> es un punto de acceso no autorizado conectado físicamente a la red cableada de la empresa, creando un agujero de seguridad.`)">Evil Twin</button>
+<button class="ex-opt" onclick="ansQ(21,1,1,`Un <strong>Rogue AP</strong> es un punto de acceso no autorizado conectado físicamente a la red cableada de la empresa, creando un agujero de seguridad.`)">Rogue AP</button>
+<button class="ex-opt" onclick="ansQ(21,2,1,`Un <strong>Rogue AP</strong> es un punto de acceso no autorizado conectado físicamente a la red cableada de la empresa, creando un agujero de seguridad.`)">Man-in-the-Middle</button>
+<button class="ex-opt" onclick="ansQ(21,3,1,`Un <strong>Rogue AP</strong> es un punto de acceso no autorizado conectado físicamente a la red cableada de la empresa, creando un agujero de seguridad.`)">Interferencia de Radiofrecuencia</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 26</div>
-                <div class="question-text">¿En qué consiste el "Dynamic ARP Inspection" (DAI)?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q26" value="a" id="q26a"><label for="q26a">En asignar IPs estáticas según la dirección MAC.</label></div>
-                    <div class="option"><input type="radio" name="q26" value="b" id="q26b"><label for="q26b">En validar paquetes ARP comparándolos con la base de datos de DHCP Snooping.</label></div>
-                    <div class="option"><input type="radio" name="q26" value="c" id="q26c"><label for="q26c">En cifrar las tablas de enrutamiento.</label></div>
-                    <div class="option"><input type="radio" name="q26" value="d" id="q26d"><label for="q26d">En bloquear el tráfico ICMP de origen desconocido.</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    <strong>DAI</strong> previene ataques de ARP Poisoning interceptando y validando cada respuesta ARP antes de actualizar la tabla local.
-                </div>
-            </div>
+<div class="ex-q" id="q22"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 23 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Cuál es la principal ventaja de usar WPA3 sobre WPA2?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(22,0,1,`WPA3 introduce <strong>SAE</strong> (Simultaneous Authentication of Equals), que reemplaza el handshake de WPA2 y protege contra ataques de diccionario fuera de línea.`)">Mayor velocidad de conexión.</button>
+<button class="ex-opt" onclick="ansQ(22,1,1,`WPA3 introduce <strong>SAE</strong> (Simultaneous Authentication of Equals), que reemplaza el handshake de WPA2 y protege contra ataques de diccionario fuera de línea.`)">Protección contra ataques de fuerza bruta mediante SAE.</button>
+<button class="ex-opt" onclick="ansQ(22,2,1,`WPA3 introduce <strong>SAE</strong> (Simultaneous Authentication of Equals), que reemplaza el handshake de WPA2 y protege contra ataques de diccionario fuera de línea.`)">Eliminación de la necesidad de SSID.</button>
+<button class="ex-opt" onclick="ansQ(22,3,1,`WPA3 introduce <strong>SAE</strong> (Simultaneous Authentication of Equals), que reemplaza el handshake de WPA2 y protege contra ataques de diccionario fuera de línea.`)">Compatibilidad nativa con hubs antiguos.</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 27</div>
-                <div class="question-text">¿Qué banda de frecuencia ofrece más canales no superpuestos para redes Wireless?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q27" value="a" id="q27a"><label for="q27a">2.4 GHz</label></div>
-                    <div class="option"><input type="radio" name="q27" value="b" id="q27b"><label for="q27b">5 GHz</label></div>
-                    <div class="option"><input type="radio" name="q27" value="c" id="q27c"><label for="q27c">900 MHz</label></div>
-                    <div class="option"><input type="radio" name="q27" value="d" id="q27d"><label for="q27d">Bluetooth</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    La banda de <strong>5 GHz</strong> tiene muchos más canales (hasta 24 o más dependiendo del país) que no se solapan, comparada con los 3 canales de la banda de 2.4 GHz (1, 6, 11).
-                </div>
-            </div>
+<div class="ex-q" id="q23"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 24 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué puerto UDP utiliza TACACS+ para su funcionamiento?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(23,0,1,`A diferencia de RADIUS (que usa UDP), <strong>TACACS+</strong> utiliza el protocolo de transporte <strong>TCP</strong> en el puerto <strong>49</strong>.`)">UDP 1812</button>
+<button class="ex-opt" onclick="ansQ(23,1,1,`A diferencia de RADIUS (que usa UDP), <strong>TACACS+</strong> utiliza el protocolo de transporte <strong>TCP</strong> en el puerto <strong>49</strong>.`)">TCP 49</button>
+<button class="ex-opt" onclick="ansQ(23,2,1,`A diferencia de RADIUS (que usa UDP), <strong>TACACS+</strong> utiliza el protocolo de transporte <strong>TCP</strong> en el puerto <strong>49</strong>.`)">UDP 1645</button>
+<button class="ex-opt" onclick="ansQ(23,3,1,`A diferencia de RADIUS (que usa UDP), <strong>TACACS+</strong> utiliza el protocolo de transporte <strong>TCP</strong> en el puerto <strong>49</strong>.`)">TCP 443</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 28</div>
-                <div class="question-text">¿Cuál es el propósito del protocolo NHRP en DMVPN?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q28" value="a" id="q28a"><label for="q28a">Cifrar los datos en tránsito.</label></div>
-                    <div class="option"><input type="radio" name="q28" value="b" id="q28b"><label for="q28b">Mapear direcciones IP de túnel con direcciones IP públicas físicas (Next Hop).</label></div>
-                    <div class="option"><input type="radio" name="q28" value="c" id="q28c"><label for="q28c">Enrutar paquetes dinámicamente usando OSPF.</label></div>
-                    <div class="option"><input type="radio" name="q28" value="d" id="q28d"><label for="q28d">Asignar VLANs dinámicas a los clientes.</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    <strong>NHRP</strong> (Next Hop Resolution Protocol) actúa como un "servicio de directorio" donde los Spokes registran sus IPs públicas para que el Hub y otros Spokes sepan dónde encontrarlos.
-                </div>
-            </div>
+<div class="ex-q" id="q24"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 25 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué tecnología VPN permite crear túneles dinámicos Spoke-to-Spoke bajo demanda?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(24,0,2,`<strong>DMVPN</strong> combina multipoint GRE, NHRP e IPsec para permitir que las sucursales hablen entre sí directamente sin pasar por el Hub.`)">Static IPsec Tunnel</button>
+<button class="ex-opt" onclick="ansQ(24,1,2,`<strong>DMVPN</strong> combina multipoint GRE, NHRP e IPsec para permitir que las sucursales hablen entre sí directamente sin pasar por el Hub.`)">GRE Tunneling</button>
+<button class="ex-opt" onclick="ansQ(24,2,2,`<strong>DMVPN</strong> combina multipoint GRE, NHRP e IPsec para permitir que las sucursales hablen entre sí directamente sin pasar por el Hub.`)">DMVPN (Dynamic Multipoint VPN)</button>
+<button class="ex-opt" onclick="ansQ(24,3,2,`<strong>DMVPN</strong> combina multipoint GRE, NHRP e IPsec para permitir que las sucursales hablen entre sí directamente sin pasar por el Hub.`)">MPLS</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 29</div>
-                <div class="question-text">¿Qué característica de seguridad desactiva automáticamente un puerto de switch si recibe una unidad de datos de protocolo de puente (BPDU) no esperada?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q29" value="a" id="q29a"><label for="q29a">Port Security</label></div>
-                    <div class="option"><input type="radio" name="q29" value="b" id="q29b"><label for="q29b">Root Guard</label></div>
-                    <div class="option"><input type="radio" name="q29" value="c" id="q29c"><label for="q29c">BPDU Guard</label></div>
-                    <div class="option"><input type="radio" name="q29" value="d" id="q29d"><label for="q29d">Loop Guard</label></div>
-                </div>
-                <div class="explanation" data-answer="c">
-                    <div class="explanation-title">✓ Respuesta: C</div>
-                    <strong>BPDU Guard</strong> se usa en puertos de acceso (PortFast). Si alguien conecta un switch a ese puerto, la interfaz se apaga para prevenir bucles de capa 2 y cambios en la topología STP.
-                </div>
-            </div>
+<div class="ex-q" id="q25"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 26 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿En qué consiste el "Dynamic ARP Inspection" (DAI)?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(25,0,1,`<strong>DAI</strong> previene ataques de ARP Poisoning interceptando y validando cada respuesta ARP antes de actualizar la tabla local, comparándola con la binding table de DHCP Snooping.`)">En asignar IPs estáticas según la MAC.</button>
+<button class="ex-opt" onclick="ansQ(25,1,1,`<strong>DAI</strong> previene ataques de ARP Poisoning interceptando y validando cada respuesta ARP antes de actualizar la tabla local, comparándola con la binding table de DHCP Snooping.`)">En validar paquetes ARP comparándolos con la base de datos de DHCP Snooping.</button>
+<button class="ex-opt" onclick="ansQ(25,2,1,`<strong>DAI</strong> previene ataques de ARP Poisoning interceptando y validando cada respuesta ARP antes de actualizar la tabla local, comparándola con la binding table de DHCP Snooping.`)">En cifrar las tablas de enrutamiento.</button>
+<button class="ex-opt" onclick="ansQ(25,3,1,`<strong>DAI</strong> previene ataques de ARP Poisoning interceptando y validando cada respuesta ARP antes de actualizar la tabla local, comparándola con la binding table de DHCP Snooping.`)">En bloquear el tráfico ICMP.</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 30</div>
-                <div class="question-text">¿Qué protocolo EAP es considerado uno de los más seguros porque requiere certificados digitales tanto en el servidor como en el cliente?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q30" value="a" id="q30a"><label for="q30a">EAP-TLS</label></div>
-                    <div class="option"><input type="radio" name="q30" value="b" id="q30b"><label for="q30b">PEAP</label></div>
-                    <div class="option"><input type="radio" name="q30" value="c" id="q30c"><label for="q30c">EAP-MSCHAPv2</label></div>
-                    <div class="option"><input type="radio" name="q30" value="d" id="q30d"><label for="q30d">LEAP</label></div>
-                </div>
-                <div class="explanation" data-answer="a">
-                    <div class="explanation-title">✓ Respuesta: A</div>
-                    <strong>EAP-TLS</strong> requiere una infraestructura de clave pública (PKI) y certificados en ambos extremos, ofreciendo el nivel más alto de seguridad inalámbrica.
-                </div>
-            </div>
+<div class="ex-q" id="q26"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 27 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué banda de frecuencia ofrece más canales no superpuestos para redes Wireless?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(26,0,1,`La banda de <strong>5 GHz</strong> tiene muchos más canales (hasta 24+) que no se solapan, comparada con los 3 canales de la banda de 2.4 GHz (1, 6, 11).`)">2.4 GHz</button>
+<button class="ex-opt" onclick="ansQ(26,1,1,`La banda de <strong>5 GHz</strong> tiene muchos más canales (hasta 24+) que no se solapan, comparada con los 3 canales de la banda de 2.4 GHz (1, 6, 11).`)">5 GHz</button>
+<button class="ex-opt" onclick="ansQ(26,2,1,`La banda de <strong>5 GHz</strong> tiene muchos más canales (hasta 24+) que no se solapan, comparada con los 3 canales de la banda de 2.4 GHz (1, 6, 11).`)">900 MHz</button>
+<button class="ex-opt" onclick="ansQ(26,3,1,`La banda de <strong>5 GHz</strong> tiene muchos más canales (hasta 24+) que no se solapan, comparada con los 3 canales de la banda de 2.4 GHz (1, 6, 11).`)">Bluetooth</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 31</div>
-                <div class="question-text">¿Cuál es el comando para ver el estado de las interfaces puestas en "error-disabled" por seguridad?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q31" value="a" id="q31a"><label for="q31a">show interfaces status</label></div>
-                    <div class="option"><input type="radio" name="q31" value="b" id="q31b"><label for="q31b">show ip interface brief</label></div>
-                    <div class="option"><input type="radio" name="q31" value="c" id="q31c"><label for="q31c">show port-security</label></div>
-                    <div class="option"><input type="radio" name="q31" value="d" id="q31d"><label for="q31d">show error-disable recovery</label></div>
-                </div>
-                <div class="explanation" data-answer="a">
-                    <div class="explanation-title">✓ Respuesta: A</div>
-                    El comando <strong>show interfaces status</strong> muestra claramente el estado "err-disabled" en la columna de Status de la interfaz afectada.
-                </div>
-            </div>
+<div class="ex-q" id="q27"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 28 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Cuál es el propósito del protocolo NHRP en DMVPN?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(27,0,1,`<strong>NHRP</strong> (Next Hop Resolution Protocol) actúa como un "servicio de directorio" donde los Spokes registran sus IPs públicas para que el Hub y otros Spokes sepan dónde encontrarlos.`)">Cifrar los datos en tránsito.</button>
+<button class="ex-opt" onclick="ansQ(27,1,1,`<strong>NHRP</strong> (Next Hop Resolution Protocol) actúa como un "servicio de directorio" donde los Spokes registran sus IPs públicas para que el Hub y otros Spokes sepan dónde encontrarlos.`)">Mapear direcciones IP de túnel con direcciones IP públicas físicas.</button>
+<button class="ex-opt" onclick="ansQ(27,2,1,`<strong>NHRP</strong> (Next Hop Resolution Protocol) actúa como un "servicio de directorio" donde los Spokes registran sus IPs públicas para que el Hub y otros Spokes sepan dónde encontrarlos.`)">Enrutar paquetes usando OSPF.</button>
+<button class="ex-opt" onclick="ansQ(27,3,1,`<strong>NHRP</strong> (Next Hop Resolution Protocol) actúa como un "servicio de directorio" donde los Spokes registran sus IPs públicas para que el Hub y otros Spokes sepan dónde encontrarlos.`)">Asignar VLANs dinámicas.</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 32</div>
-                <div class="question-text">¿Qué ataque de red utiliza mensajes ICMP Redirect o falsas respuestas ARP para interceptar tráfico entre dos dispositivos?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q32" value="a" id="q32a"><label for="q32a">Denial of Service (DoS)</label></div>
-                    <div class="option"><input type="radio" name="q32" value="b" id="q32b"><label for="q32b">Man-in-the-Middle (MitM)</label></div>
-                    <div class="option"><input type="radio" name="q32" value="c" id="q32c"><label for="q32c">Reconnaissance</label></div>
-                    <div class="option"><input type="radio" name="q32" value="d" id="q32d"><label for="q32d">Social Engineering</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    El ataque <strong>Man-in-the-Middle</strong> busca situar al atacante en la ruta de comunicación para espiar o modificar los datos sin que las víctimas lo noten.
-                </div>
-            </div>
+<div class="ex-q" id="q28"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 29 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué característica desactiva automáticamente un puerto si recibe una BPDU no esperada?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(28,0,2,`<strong>BPDU Guard</strong> se usa en puertos de acceso (PortFast). Si alguien conecta un switch a ese puerto, la interfaz se apaga para prevenir bucles de capa 2.`)">Port Security</button>
+<button class="ex-opt" onclick="ansQ(28,1,2,`<strong>BPDU Guard</strong> se usa en puertos de acceso (PortFast). Si alguien conecta un switch a ese puerto, la interfaz se apaga para prevenir bucles de capa 2.`)">Root Guard</button>
+<button class="ex-opt" onclick="ansQ(28,2,2,`<strong>BPDU Guard</strong> se usa en puertos de acceso (PortFast). Si alguien conecta un switch a ese puerto, la interfaz se apaga para prevenir bucles de capa 2.`)">BPDU Guard</button>
+<button class="ex-opt" onclick="ansQ(28,3,2,`<strong>BPDU Guard</strong> se usa en puertos de acceso (PortFast). Si alguien conecta un switch a ese puerto, la interfaz se apaga para prevenir bucles de capa 2.`)">Loop Guard</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 33</div>
-                <div class="question-text">¿Cuál es la función de una VPN "Split-Tunneling"?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q33" value="a" id="q33a"><label for="q33a">Enviar todo el tráfico a través del túnel VPN.</label></div>
-                    <div class="option"><input type="radio" name="q33" value="b" id="q33b"><label for="q33b">Permitir que el tráfico corporativo vaya por la VPN y el tráfico de Internet por la conexión local.</label></div>
-                    <div class="option"><input type="radio" name="q33" value="c" id="q33c"><label for="q33c">Dividir el túnel en dos capas de cifrado distintas.</label></div>
-                    <div class="option"><input type="radio" name="q33" value="d" id="q33d"><label for="q33d">Aumentar el ancho de banda sumando dos túneles.</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    El <strong>Split-Tunneling</strong> optimiza el ancho de banda al evitar que el tráfico no esencial (como ver YouTube) pase por la red privada de la empresa.
-                </div>
-            </div>
+<div class="ex-q" id="q29"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 30 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué protocolo EAP es considerado uno de los más seguros porque requiere certificados digitales en ambos extremos?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(29,0,0,`<strong>EAP-TLS</strong> requiere una infraestructura de clave pública (PKI) y certificados en ambos extremos, ofreciendo el nivel más alto de seguridad inalámbrica.`)">EAP-TLS</button>
+<button class="ex-opt" onclick="ansQ(29,1,0,`<strong>EAP-TLS</strong> requiere una infraestructura de clave pública (PKI) y certificados en ambos extremos, ofreciendo el nivel más alto de seguridad inalámbrica.`)">PEAP</button>
+<button class="ex-opt" onclick="ansQ(29,2,0,`<strong>EAP-TLS</strong> requiere una infraestructura de clave pública (PKI) y certificados en ambos extremos, ofreciendo el nivel más alto de seguridad inalámbrica.`)">EAP-MSCHAPv2</button>
+<button class="ex-opt" onclick="ansQ(29,3,0,`<strong>EAP-TLS</strong> requiere una infraestructura de clave pública (PKI) y certificados en ambos extremos, ofreciendo el nivel más alto de seguridad inalámbrica.`)">LEAP</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 34</div>
-                <div class="question-text">¿Qué protocolo inalámbrico es vulnerable al ataque "WPS brute force"?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q34" value="a" id="q34a"><label for="q34a">WPA2-Enterprise</label></div>
-                    <div class="option"><input type="radio" name="q34" value="b" id="q34b"><label for="q34b">WEP</label></div>
-                    <div class="option"><input type="radio" name="q34" value="c" id="q34c"><label for="q34c">Wi-Fi Protected Setup (WPS)</label></div>
-                    <div class="option"><input type="radio" name="q34" value="d" id="q34d"><label for="q34d">IPsec</label></div>
-                </div>
-                <div class="explanation" data-answer="c">
-                    <div class="explanation-title">✓ Respuesta: C</div>
-                    <strong>WPS</strong> tiene una debilidad de diseño en su PIN de 8 dígitos que permite a atacantes obtener la clave PSK en pocas horas. Se recomienda desactivarlo.
-                </div>
-            </div>
+<div class="ex-q" id="q30"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 31 DE 50</span><span class="ex-qtype cli">CLI/CONFIG</span></div><div class="ex-qtext">¿Cuál es el comando para ver el estado de las interfaces en "error-disabled"?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(30,0,0,`El comando <strong>show interfaces status</strong> muestra claramente el estado "err-disabled" en la columna de Status de la interfaz afectada.`)">show interfaces status</button>
+<button class="ex-opt" onclick="ansQ(30,1,0,`El comando <strong>show interfaces status</strong> muestra claramente el estado "err-disabled" en la columna de Status de la interfaz afectada.`)">show ip interface brief</button>
+<button class="ex-opt" onclick="ansQ(30,2,0,`El comando <strong>show interfaces status</strong> muestra claramente el estado "err-disabled" en la columna de Status de la interfaz afectada.`)">show port-security</button>
+<button class="ex-opt" onclick="ansQ(30,3,0,`El comando <strong>show interfaces status</strong> muestra claramente el estado "err-disabled" en la columna de Status de la interfaz afectada.`)">show error-disable recovery</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 35</div>
-                <div class="question-text">¿Qué componente del túnel IPsec se encarga de negociar los algoritmos de seguridad (Security Associations)?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q35" value="a" id="q35a"><label for="q35a">ESP</label></div>
-                    <div class="option"><input type="radio" name="q35" value="b" id="q35b"><label for="q35b">AH</label></div>
-                    <div class="option"><input type="radio" name="q35" value="c" id="q35c"><label for="q35c">IKE (Internet Key Exchange)</label></div>
-                    <div class="option"><input type="radio" name="q35" value="d" id="q35d"><label for="q35d">Diffie-Hellman</label></div>
-                </div>
-                <div class="explanation" data-answer="c">
-                    <div class="explanation-title">✓ Respuesta: C</div>
-                    <strong>IKE</strong> es el protocolo que gestiona la autenticación de los peers y la negociación de los parámetros de cifrado en las Fases 1 y 2.
-                </div>
-            </div>
+<div class="ex-q" id="q31"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 32 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué ataque utiliza mensajes ICMP Redirect o falsas respuestas ARP para interceptar tráfico?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(31,0,1,`El ataque <strong>Man-in-the-Middle</strong> busca situar al atacante en la ruta de comunicación para espiar o modificar los datos sin que las víctimas lo noten.`)">Denial of Service (DoS)</button>
+<button class="ex-opt" onclick="ansQ(31,1,1,`El ataque <strong>Man-in-the-Middle</strong> busca situar al atacante en la ruta de comunicación para espiar o modificar los datos sin que las víctimas lo noten.`)">Man-in-the-Middle (MitM)</button>
+<button class="ex-opt" onclick="ansQ(31,2,1,`El ataque <strong>Man-in-the-Middle</strong> busca situar al atacante en la ruta de comunicación para espiar o modificar los datos sin que las víctimas lo noten.`)">Reconnaissance</button>
+<button class="ex-opt" onclick="ansQ(31,3,1,`El ataque <strong>Man-in-the-Middle</strong> busca situar al atacante en la ruta de comunicación para espiar o modificar los datos sin que las víctimas lo noten.`)">Social Engineering</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 36</div>
-                <div class="question-text">¿Qué comando se usa para habilitar Port Security en una interfaz de switch específica?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q36" value="a" id="q36a"><label for="q36a">switchport port-security active</label></div>
-                    <div class="option"><input type="radio" name="q36" value="b" id="q36b"><label for="q36b">port-security enable</label></div>
-                    <div class="option"><input type="radio" name="q36" value="c" id="q36c"><label for="q36c">switchport port-security</label></div>
-                    <div class="option"><input type="radio" name="q36" value="d" id="q36d"><label for="q36d">switchport security-on</label></div>
-                </div>
-                <div class="explanation" data-answer="c">
-                    <div class="explanation-title">✓ Respuesta: C</div>
-                    El comando <strong>switchport port-security</strong> (sin parámetros adicionales) es el que activa la funcionalidad en la interfaz (previamente configurada como modo acceso).
-                </div>
-            </div>
+<div class="ex-q" id="q32"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 33 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Cuál es la función de una VPN "Split-Tunneling"?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(32,0,1,`El <strong>Split-Tunneling</strong> optimiza el ancho de banda al evitar que el tráfico no esencial (como streaming) pase por la red privada de la empresa.`)">Enviar todo el tráfico a través del túnel VPN.</button>
+<button class="ex-opt" onclick="ansQ(32,1,1,`El <strong>Split-Tunneling</strong> optimiza el ancho de banda al evitar que el tráfico no esencial (como streaming) pase por la red privada de la empresa.`)">Permitir que el tráfico corporativo vaya por la VPN y el de Internet por la conexión local.</button>
+<button class="ex-opt" onclick="ansQ(32,2,1,`El <strong>Split-Tunneling</strong> optimiza el ancho de banda al evitar que el tráfico no esencial (como streaming) pase por la red privada de la empresa.`)">Dividir el túnel en dos capas de cifrado distintas.</button>
+<button class="ex-opt" onclick="ansQ(32,3,1,`El <strong>Split-Tunneling</strong> optimiza el ancho de banda al evitar que el tráfico no esencial (como streaming) pase por la red privada de la empresa.`)">Aumentar el ancho de banda sumando dos túneles.</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 37</div>
-                <div class="question-text">¿Cuál es el beneficio de SNMPv3 sobre sus versiones anteriores (v1 y v2c)?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q37" value="a" id="q37a"><label for="q37a">Mayor velocidad de transferencia.</label></div>
-                    <div class="option"><input type="radio" name="q37" value="b" id="q37b"><label for="q37b">Soporte para autenticación y cifrado de datos de gestión.</label></div>
-                    <div class="option"><input type="radio" name="q37" value="c" id="q37c"><label for="q37c">Es gratuito.</label></div>
-                    <div class="option"><input type="radio" name="q37" value="d" id="q37d"><label for="q37d">No requiere MIB.</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    <strong>SNMPv3</strong> introduce seguridad criptográfica, evitando que las "community strings" viajen en texto plano como ocurre en v1 y v2c.
-                </div>
-            </div>
+<div class="ex-q" id="q33"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 34 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué protocolo inalámbrico es vulnerable al ataque "WPS brute force"?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(33,0,2,`<strong>WPS</strong> tiene una debilidad de diseño en su PIN de 8 dígitos que permite a atacantes obtener la clave PSK en pocas horas. Se recomienda desactivarlo.`)">WPA2-Enterprise</button>
+<button class="ex-opt" onclick="ansQ(33,1,2,`<strong>WPS</strong> tiene una debilidad de diseño en su PIN de 8 dígitos que permite a atacantes obtener la clave PSK en pocas horas. Se recomienda desactivarlo.`)">WEP</button>
+<button class="ex-opt" onclick="ansQ(33,2,2,`<strong>WPS</strong> tiene una debilidad de diseño en su PIN de 8 dígitos que permite a atacantes obtener la clave PSK en pocas horas. Se recomienda desactivarlo.`)">Wi-Fi Protected Setup (WPS)</button>
+<button class="ex-opt" onclick="ansQ(33,3,2,`<strong>WPS</strong> tiene una debilidad de diseño en su PIN de 8 dígitos que permite a atacantes obtener la clave PSK en pocas horas. Se recomienda desactivarlo.`)">IPsec</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 38</div>
-                <div class="question-text">¿Qué tipo de VPN es más adecuada para conectar permanentemente dos oficinas corporativas a través de Internet?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q38" value="a" id="q38a"><label for="q38a">Remote Access VPN</label></div>
-                    <div class="option"><input type="radio" name="q38" value="b" id="q38b"><label for="q38b">Site-to-Site VPN</label></div>
-                    <div class="option"><input type="radio" name="q38" value="c" id="q38c"><label for="q38c">SSL VPN</label></div>
-                    <div class="option"><input type="radio" name="q38" value="d" id="q38d"><label for="q38d">Dynamic Access VPN</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    La <strong>VPN Site-to-Site</strong> une dos redes completas (LAN a LAN) de forma transparente para los usuarios finales.
-                </div>
-            </div>
+<div class="ex-q" id="q34"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 35 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué componente del túnel IPsec negocia los Security Associations (SA)?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(34,0,2,`<strong>IKE</strong> (Internet Key Exchange) es el protocolo que gestiona la autenticación de los peers y la negociación de los parámetros de cifrado en las Fases 1 y 2.`)">ESP</button>
+<button class="ex-opt" onclick="ansQ(34,1,2,`<strong>IKE</strong> (Internet Key Exchange) es el protocolo que gestiona la autenticación de los peers y la negociación de los parámetros de cifrado en las Fases 1 y 2.`)">AH</button>
+<button class="ex-opt" onclick="ansQ(34,2,2,`<strong>IKE</strong> (Internet Key Exchange) es el protocolo que gestiona la autenticación de los peers y la negociación de los parámetros de cifrado en las Fases 1 y 2.`)">IKE (Internet Key Exchange)</button>
+<button class="ex-opt" onclick="ansQ(34,3,2,`<strong>IKE</strong> (Internet Key Exchange) es el protocolo que gestiona la autenticación de los peers y la negociación de los parámetros de cifrado en las Fases 1 y 2.`)">Diffie-Hellman</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 39</div>
-                <div class="question-text">¿Cuál es la función del servidor RADIUS en una autenticación 802.1X?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q39" value="a" id="q39a"><label for="q39a">Actuar como supplicant.</label></div>
-                    <div class="option"><input type="radio" name="q39" value="b" id="q39b"><label for="q39b">Ser el autenticador (switch/AP).</label></div>
-                    <div class="option"><input type="radio" name="q39" value="c" id="q39c"><label for="q39c">Actuar como el servidor de autenticación (Authentication Server).</label></div>
-                    <div class="option"><input type="radio" name="q39" value="d" id="q39d"><label for="q39d">Almacenar las claves WEP.</label></div>
-                </div>
-                <div class="explanation" data-answer="c">
-                    <div class="explanation-title">✓ Respuesta: C</div>
-                    En el estándar 802.1X, el **Supplicant** es el cliente, el **Authenticator** es el switch o AP, y el **Authentication Server** es el servidor AAA (RADIUS).
-                </div>
-            </div>
+<div class="ex-q" id="q35"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 36 DE 50</span><span class="ex-qtype cli">CLI/CONFIG</span></div><div class="ex-qtext">¿Qué comando se usa para habilitar Port Security en una interfaz?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(35,0,2,`El comando <strong>switchport port-security</strong> (sin parámetros adicionales) es el que activa la funcionalidad en la interfaz (previamente configurada como modo acceso).`)">switchport port-security active</button>
+<button class="ex-opt" onclick="ansQ(35,1,2,`El comando <strong>switchport port-security</strong> (sin parámetros adicionales) es el que activa la funcionalidad en la interfaz (previamente configurada como modo acceso).`)">port-security enable</button>
+<button class="ex-opt" onclick="ansQ(35,2,2,`El comando <strong>switchport port-security</strong> (sin parámetros adicionales) es el que activa la funcionalidad en la interfaz (previamente configurada como modo acceso).`)">switchport port-security</button>
+<button class="ex-opt" onclick="ansQ(35,3,2,`El comando <strong>switchport port-security</strong> (sin parámetros adicionales) es el que activa la funcionalidad en la interfaz (previamente configurada como modo acceso).`)">switchport security-on</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 40</div>
-                <div class="question-text">¿Qué algoritmo se usa en el proceso de intercambio de llaves IPsec para que dos dispositivos generen una llave secreta compartida sobre un canal inseguro?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q40" value="a" id="q40a"><label for="q40a">AES</label></div>
-                    <div class="option"><input type="radio" name="q40" value="b" id="q40b"><label for="q40b">SHA</label></div>
-                    <div class="option"><input type="radio" name="q40" value="c" id="q40c"><label for="q40c">Diffie-Hellman (DH)</label></div>
-                    <div class="option"><input type="radio" name="q40" value="d" id="q40d"><label for="q40d">RSA</label></div>
-                </div>
-                <div class="explanation" data-answer="c">
-                    <div class="explanation-title">✓ Respuesta: C</div>
-                    <strong>Diffie-Hellman</strong> es el método matemático que permite establecer una clave compartida sin haberla enviado nunca a través de la red.
-                </div>
-            </div>
+<div class="ex-q" id="q36"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 37 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Cuál es el beneficio de SNMPv3 sobre sus versiones anteriores (v1 y v2c)?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(36,0,1,`<strong>SNMPv3</strong> introduce seguridad criptográfica, evitando que las "community strings" viajen en texto plano como ocurre en v1 y v2c.`)">Mayor velocidad de transferencia.</button>
+<button class="ex-opt" onclick="ansQ(36,1,1,`<strong>SNMPv3</strong> introduce seguridad criptográfica, evitando que las "community strings" viajen en texto plano como ocurre en v1 y v2c.`)">Soporte para autenticación y cifrado de datos de gestión.</button>
+<button class="ex-opt" onclick="ansQ(36,2,1,`<strong>SNMPv3</strong> introduce seguridad criptográfica, evitando que las "community strings" viajen en texto plano como ocurre en v1 y v2c.`)">Es gratuito.</button>
+<button class="ex-opt" onclick="ansQ(36,3,1,`<strong>SNMPv3</strong> introduce seguridad criptográfica, evitando que las "community strings" viajen en texto plano como ocurre en v1 y v2c.`)">No requiere MIB.</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 41</div>
-                <div class="question-text">¿Qué vulnerabilidad de seguridad de red permite a un atacante enviar paquetes IP con una dirección de origen falsa?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q41" value="a" id="q41a"><label for="q41a">IP Spoofing</label></div>
-                    <div class="option"><input type="radio" name="q41" value="b" id="q41b"><label for="q41b">SYN Flood</label></div>
-                    <div class="option"><input type="radio" name="q41" value="c" id="q41c"><label for="q41c">Brute Force</label></div>
-                    <div class="option"><input type="radio" name="q41" value="d" id="q41d"><label for="q41d">SQL Injection</label></div>
-                </div>
-                <div class="explanation" data-answer="a">
-                    <div class="explanation-title">✓ Respuesta: A</div>
-                    El <strong>IP Spoofing</strong> se usa a menudo en ataques DoS para ocultar la identidad del atacante o engañar a sistemas basados en confianza por IP.
-                </div>
-            </div>
+<div class="ex-q" id="q37"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 38 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué tipo de VPN es más adecuada para conectar permanentemente dos oficinas corporativas?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(37,0,1,`La <strong>VPN Site-to-Site</strong> une dos redes completas (LAN a LAN) de forma transparente para los usuarios finales.`)">Remote Access VPN</button>
+<button class="ex-opt" onclick="ansQ(37,1,1,`La <strong>VPN Site-to-Site</strong> une dos redes completas (LAN a LAN) de forma transparente para los usuarios finales.`)">Site-to-Site VPN</button>
+<button class="ex-opt" onclick="ansQ(37,2,1,`La <strong>VPN Site-to-Site</strong> une dos redes completas (LAN a LAN) de forma transparente para los usuarios finales.`)">SSL VPN</button>
+<button class="ex-opt" onclick="ansQ(37,3,1,`La <strong>VPN Site-to-Site</strong> une dos redes completas (LAN a LAN) de forma transparente para los usuarios finales.`)">Dynamic Access VPN</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 42</div>
-                <div class="question-text">¿Qué modo de WPA2 utiliza una llave de cifrado diferente para cada usuario basada en su login personal?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q42" value="a" id="q42a"><label for="q42a">Personal</label></div>
-                    <div class="option"><input type="radio" name="q42" value="b" id="q42b"><label for="q42b">Enterprise</label></div>
-                    <div class="option"><input type="radio" name="q42" value="c" id="q42c"><label for="q42c">Pre-Shared Key</label></div>
-                    <div class="option"><input type="radio" name="q42" value="d" id="q42d"><label for="q42d">Static WEP</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    <strong>WPA2-Enterprise</strong> genera dinámicamente llaves únicas para cada sesión de usuario tras una autenticación exitosa contra un servidor RADIUS.
-                </div>
-            </div>
+<div class="ex-q" id="q38"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 39 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Cuál es la función del servidor RADIUS en una autenticación 802.1X?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(38,0,2,`En el estándar 802.1X, el <strong>Supplicant</strong> es el cliente, el <strong>Authenticator</strong> es el switch/AP, y el <strong>Authentication Server</strong> es el servidor AAA (RADIUS).`)">Actuar como supplicant.</button>
+<button class="ex-opt" onclick="ansQ(38,1,2,`En el estándar 802.1X, el <strong>Supplicant</strong> es el cliente, el <strong>Authenticator</strong> es el switch/AP, y el <strong>Authentication Server</strong> es el servidor AAA (RADIUS).`)">Ser el autenticador (switch/AP).</button>
+<button class="ex-opt" onclick="ansQ(38,2,2,`En el estándar 802.1X, el <strong>Supplicant</strong> es el cliente, el <strong>Authenticator</strong> es el switch/AP, y el <strong>Authentication Server</strong> es el servidor AAA (RADIUS).`)">Actuar como el servidor de autenticación.</button>
+<button class="ex-opt" onclick="ansQ(38,3,2,`En el estándar 802.1X, el <strong>Supplicant</strong> es el cliente, el <strong>Authenticator</strong> es el switch/AP, y el <strong>Authentication Server</strong> es el servidor AAA (RADIUS).`)">Almacenar las claves WEP.</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 43</div>
-                <div class="question-text">¿Qué protocolo IPsec asegura la integridad de los datos y el origen del mensaje, pero NO proporciona cifrado (confidencialidad)?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q43" value="a" id="q43a"><label for="q43a">ESP (Encapsulating Security Payload)</label></div>
-                    <div class="option"><input type="radio" name="q43" value="b" id="q43b"><label for="q43b">AH (Authentication Header)</label></div>
-                    <div class="option"><input type="radio" name="q43" value="c" id="q43c"><label for="q43c">IKEv2</label></div>
-                    <div class="option"><input type="radio" name="q43" value="d" id="q43d"><label for="q43d">GRE</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    <strong>AH</strong> solo garantiza que el paquete no fue modificado y que viene de quien dice venir. Si se requiere cifrado, se debe usar <strong>ESP</strong>.
-                </div>
-            </div>
+<div class="ex-q" id="q39"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 40 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué algoritmo se usa en IPsec para generar una llave secreta compartida sobre un canal inseguro?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(39,0,2,`<strong>Diffie-Hellman</strong> es el método matemático que permite establecer una clave compartida sin haberla enviado nunca a través de la red.`)">AES</button>
+<button class="ex-opt" onclick="ansQ(39,1,2,`<strong>Diffie-Hellman</strong> es el método matemático que permite establecer una clave compartida sin haberla enviado nunca a través de la red.`)">SHA</button>
+<button class="ex-opt" onclick="ansQ(39,2,2,`<strong>Diffie-Hellman</strong> es el método matemático que permite establecer una clave compartida sin haberla enviado nunca a través de la red.`)">Diffie-Hellman (DH)</button>
+<button class="ex-opt" onclick="ansQ(39,3,2,`<strong>Diffie-Hellman</strong> es el método matemático que permite establecer una clave compartida sin haberla enviado nunca a través de la red.`)">RSA</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 44</div>
-                <div class="question-text">¿Cuál es la función del plano de datos (Data Plane) en un AP autónomo?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q44" value="a" id="q44a"><label for="q44a">Enviar beacons de publicidad de red.</label></div>
-                    <div class="option"><input type="radio" name="q44" value="b" id="q44b"><label for="q44b">Procesar y reenviar los frames de los usuarios finales.</label></div>
-                    <div class="option"><input type="radio" name="q44" value="c" id="q44c"><label for="q44c">Comunicarse con el WLC mediante CAPWAP.</label></div>
-                    <div class="option"><input type="radio" name="q44" value="d" id="q44d"><label for="q44d">Gestionar el firmware del AP.</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    En un <strong>AP Autónomo</strong>, el propio AP gestiona todo: control y datos. El plano de datos es el encargado del movimiento real de los frames inalámbricos a la red cableada.
-                </div>
-            </div>
+<div class="ex-q" id="q40"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 41 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué vulnerabilidad permite a un atacante enviar paquetes IP con dirección de origen falsa?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(40,0,0,`El <strong>IP Spoofing</strong> se usa a menudo en ataques DoS para ocultar la identidad del atacante o engañar a sistemas basados en confianza por IP.`)">IP Spoofing</button>
+<button class="ex-opt" onclick="ansQ(40,1,0,`El <strong>IP Spoofing</strong> se usa a menudo en ataques DoS para ocultar la identidad del atacante o engañar a sistemas basados en confianza por IP.`)">SYN Flood</button>
+<button class="ex-opt" onclick="ansQ(40,2,0,`El <strong>IP Spoofing</strong> se usa a menudo en ataques DoS para ocultar la identidad del atacante o engañar a sistemas basados en confianza por IP.`)">Brute Force</button>
+<button class="ex-opt" onclick="ansQ(40,3,0,`El <strong>IP Spoofing</strong> se usa a menudo en ataques DoS para ocultar la identidad del atacante o engañar a sistemas basados en confianza por IP.`)">SQL Injection</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 45</div>
-                <div class="question-text">¿Cómo se le llama a un ataque MitM donde el atacante crea un punto de acceso inalámbrico con el mismo SSID que una red legítima?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q45" value="a" id="q45a"><label for="q45a">Worm</label></div>
-                    <div class="option"><input type="radio" name="q45" value="b" id="q45b"><label for="q45b">Trojan Horse</label></div>
-                    <div class="option"><input type="radio" name="q45" value="c" id="q45c"><label for="q45c">Evil Twin</label></div>
-                    <div class="option"><input type="radio" name="q45" value="d" id="q45d"><label for="q45d">Phishing</label></div>
-                </div>
-                <div class="explanation" data-answer="c">
-                    <div class="explanation-title">✓ Respuesta: C</div>
-                    Un <strong>Evil Twin</strong> engaña a los dispositivos de los usuarios para que se conecten al AP del atacante creyendo que es la red oficial, permitiendo capturar datos sensibles.
-                </div>
-            </div>
+<div class="ex-q" id="q41"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 42 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué modo de WPA2 utiliza una llave de cifrado diferente para cada usuario basada en su login?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(41,0,1,`<strong>WPA2-Enterprise</strong> genera dinámicamente llaves únicas para cada sesión de usuario tras una autenticación exitosa contra un servidor RADIUS.`)">Personal</button>
+<button class="ex-opt" onclick="ansQ(41,1,1,`<strong>WPA2-Enterprise</strong> genera dinámicamente llaves únicas para cada sesión de usuario tras una autenticación exitosa contra un servidor RADIUS.`)">Enterprise</button>
+<button class="ex-opt" onclick="ansQ(41,2,1,`<strong>WPA2-Enterprise</strong> genera dinámicamente llaves únicas para cada sesión de usuario tras una autenticación exitosa contra un servidor RADIUS.`)">Pre-Shared Key</button>
+<button class="ex-opt" onclick="ansQ(41,3,1,`<strong>WPA2-Enterprise</strong> genera dinámicamente llues únicas para cada sesión de usuario tras una autenticación exitosa contra un servidor RADIUS.`)">Static WEP</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 46</div>
-                <div class="question-text">¿Qué comando permite habilitar el registro de los comandos ejecutados por un usuario en un servidor AAA (Accounting)?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q46" value="a" id="q46a"><label for="q46a">aaa accounting commands 15 default start-stop group tacacs+</label></div>
-                    <div class="option"><input type="radio" name="q46" value="b" id="q46b"><label for="q46b">aaa authentication command log</label></div>
-                    <div class="option"><input type="radio" name="q46" value="c" id="q46c"><label for="q46c">tacacs-server log commands</label></div>
-                    <div class="option"><input type="radio" name="q46" value="d" id="q46d"><label for="q46d">aaa authorization accounting</label></div>
-                </div>
-                <div class="explanation" data-answer="a">
-                    <div class="explanation-title">✓ Respuesta: A</div>
-                    Este comando envía información al servidor TACACS+ cada vez que un usuario con nivel de privilegio 15 inicia o termina la ejecución de un comando.
-                </div>
-            </div>
+<div class="ex-q" id="q42"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 43 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué protocolo IPsec asegura la integridad pero NO proporciona cifrado?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(42,0,1,`<strong>AH</strong> (Authentication Header) solo garantiza que el paquete no fue modificado y que viene de quien dice venir. Si se requiere cifrado, se debe usar <strong>ESP</strong>.`)">ESP</button>
+<button class="ex-opt" onclick="ansQ(42,1,1,`<strong>AH</strong> (Authentication Header) solo garantiza que el paquete no fue modificado y que viene de quien dice venir. Si se requiere cifrado, se debe usar <strong>ESP</strong>.`)">AH</button>
+<button class="ex-opt" onclick="ansQ(42,2,1,`<strong>AH</strong> (Authentication Header) solo garantiza que el paquete no fue modificado y que viene de quien dice venir. Si se requiere cifrado, se debe usar <strong>ESP</strong>.`)">IKEv2</button>
+<button class="ex-opt" onclick="ansQ(42,3,1,`<strong>AH</strong> (Authentication Header) solo garantiza que el paquete no fue modificado y que viene de quien dice venir. Si se requiere cifrado, se debe usar <strong>ESP</strong>.`)">GRE</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 47</div>
-                <div class="question-text">¿Cuál es el valor máximo de direcciones MAC que se pueden configurar por puerto mediante Port Security?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q47" value="a" id="q47a"><label for="q47a">1</label></div>
-                    <div class="option"><input type="radio" name="q47" value="b" id="q47b"><label for="q47b">128</label></div>
-                    <div class="option"><input type="radio" name="q47" value="c" id="q47c"><label for="q47c">1024</label></div>
-                    <div class="option"><input type="radio" name="q47" value="d" id="q47d"><label for="q47d">Depende del modelo de hardware del switch.</label></div>
-                </div>
-                <div class="explanation" data-answer="d">
-                    <div class="explanation-title">✓ Respuesta: D</div>
-                    Aunque el valor por defecto es 1, el límite máximo permitido varía según las capacidades de hardware de cada modelo específico de switch Cisco.
-                </div>
-            </div>
+<div class="ex-q" id="q43"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 44 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Cuál es la función del plano de datos (Data Plane) en un AP autónomo?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(43,0,1,`En un <strong>AP Autónomo</strong>, el propio AP gestiona todo: control y datos. El plano de datos es el encargado del movimiento real de los frames inalámbricos a la red cableada.`)">Enviar beacons de publicidad.</button>
+<button class="ex-opt" onclick="ansQ(43,1,1,`En un <strong>AP Autónomo</strong>, el propio AP gestiona todo: control y datos. El plano de datos es el encargado del movimiento real de los frames inalámbricos a la red cableada.`)">Procesar y reenviar los frames de los usuarios finales.</button>
+<button class="ex-opt" onclick="ansQ(43,2,1,`En un <strong>AP Autónomo</strong>, el propio AP gestiona todo: control y datos. El plano de datos es el encargado del movimiento real de los frames inalámbricos a la red cableada.`)">Comunicarse con el WLC mediante CAPWAP.</button>
+<button class="ex-opt" onclick="ansQ(43,3,1,`En un <strong>AP Autónomo</strong>, el propio AP gestiona todo: control y datos. El plano de datos es el encargado del movimiento real de los frames inalámbricos a la red cableada.`)">Gestionar el firmware del AP.</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 48</div>
-                <div class="question-text">¿Qué estándar inalámbrico introdujo el soporte para bandas de 2.4 GHz y 5 GHz simultáneamente y alcanzó velocidades de hasta 600 Mbps?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q48" value="a" id="q48a"><label for="q48a">802.11a</label></div>
-                    <div class="option"><input type="radio" name="q48" value="b" id="q48b"><label for="q48b">802.11g</label></div>
-                    <div class="option"><input type="radio" name="q48" value="c" id="q48c"><label for="q48c">802.11n</label></div>
-                    <div class="option"><input type="radio" name="q48" value="d" id="q48d"><label for="q48d">802.11ac</label></div>
-                </div>
-                <div class="explanation" data-answer="c">
-                    <div class="explanation-title">✓ Respuesta: C</div>
-                    <strong>802.11n</strong> fue el primer estándar en usar MIMO (Multiple Input Multiple Output) y operar en ambas bandas de frecuencia.
-                </div>
-            </div>
+<div class="ex-q" id="q44"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 45 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Cómo se llama un ataque MitM donde el atacante crea un AP con el mismo SSID que una red legítima?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(44,0,2,`Un <strong>Evil Twin</strong> engaña a los dispositivos para que se conecten al AP del atacante creyendo que es la red oficial, permitiendo capturar datos sensibles.`)">Worm</button>
+<button class="ex-opt" onclick="ansQ(44,1,2,`Un <strong>Evil Twin</strong> engaña a los dispositivos para que se conecten al AP del atacante creyendo que es la red oficial, permitiendo capturar datos sensibles.`)">Trojan Horse</button>
+<button class="ex-opt" onclick="ansQ(44,2,2,`Un <strong>Evil Twin</strong> engaña a los dispositivos para que se conecten al AP del atacante creyendo que es la red oficial, permitiendo capturar datos sensibles.`)">Evil Twin</button>
+<button class="ex-opt" onclick="ansQ(44,3,2,`Un <strong>Evil Twin</strong> engaña a los dispositivos para que se conecten al AP del atacante creyendo que es la red oficial, permitiendo capturar datos sensibles.`)">Phishing</button>
+</div></div>
 
-            <div class="question-block">
-                <div class="question-number">Pregunta 49</div>
-                <div class="question-text">¿Qué modo de Wireless LAN Controller (WLC) se utiliza para instalaciones pequeñas donde el controlador está integrado físicamente en un switch Catalyst?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q49" value="a" id="q49a"><label for="q49a">Centralized WLC</label></div>
-                    <div class="option"><input type="radio" name="q49" value="b" id="q49b"><label for="q49b">Embedded WLC</label></div>
-                    <div class="option"><input type="radio" name="q49" value="c" id="q49c"><label for="q49c">Cloud WLC</label></div>
-                    <div class="option"><input type="radio" name="q49" value="d" id="q49d"><label for="q49d">Mobility Express</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    El <strong>Embedded WLC</strong> corre directamente sobre el hardware de switches específicos (como la serie Catalyst 9000), ahorrando espacio y costos de hardware adicional.
-                </div>
-            </div>
-		<div class="question-block">
-                <div class="question-number">Pregunta 50</div>
-                <div class="question-text">¿Cuál es la función principal del protocolo Cisco Management Frame Protection (MFP)?</div>
-                <div class="options">
-                    <div class="option"><input type="radio" name="q50" value="a" id="q50a"><label for="q50a">Cifrar el tráfico de datos del usuario final en la red inalámbrica.</label></div>
-                    <div class="option"><input type="radio" name="q50" value="b" id="q50b"><label for="q50b">Prevenir ataques de denegación de servicio (DoS) que utilizan tramas de gestión falsificadas.</label></div>
-                    <div class="option"><input type="radio" name="q50" value="c" id="q50c"><label for="q50c">Aumentar la velocidad de transmisión en la banda de 5 GHz.</label></div>
-                    <div class="option"><input type="radio" name="q50" value="d" id="q50d"><label for="q50d">Gestionar la asignación dinámica de direcciones IP a través de RADIUS.</label></div>
-                </div>
-                <div class="explanation" data-answer="b">
-                    <div class="explanation-title">✓ Respuesta: B</div>
-                    <strong>Cisco MFP</strong> añade una firma criptográfica a las tramas de gestión (como las de desasociación). Si un atacante intenta enviar una trama falsa para desconectar a los usuarios, el AP o el cliente detectarán que la firma no es válida y la ignorarán.
-                </div>
-            </div>
+<div class="ex-q" id="q45"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 46 DE 50</span><span class="ex-qtype cli">CLI/CONFIG</span></div><div class="ex-qtext">¿Qué comando permite habilitar el registro de comandos ejecutados por un usuario en un servidor AAA (Accounting)?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(45,0,0,`Este comando envía información al servidor TACACS+ cada vez que un usuario con nivel de privilegio 15 inicia o termina la ejecución de un comando.`)">aaa accounting commands 15 default start-stop group tacacs+</button>
+<button class="ex-opt" onclick="ansQ(45,1,0,`Este comando envía información al servidor TACACS+ cada vez que un usuario con nivel de privilegio 15 inicia o termina la ejecución de un comando.`)">aaa authentication command log</button>
+<button class="ex-opt" onclick="ansQ(45,2,0,`Este comando envía información al servidor TACACS+ cada vez que un usuario con nivel de privilegio 15 inicia o termina la ejecución de un comando.`)">tacacs-server log commands</button>
+<button class="ex-opt" onclick="ansQ(45,3,0,`Este comando envía información al servidor TACACS+ cada vez que un usuario con nivel de privilegio 15 inicia o termina la ejecución de un comando.`)">aaa authorization accounting</button>
+</div></div>
 
-            <button type="button" class="submit-btn" onclick="gradeExam()">Calificar Examen</button>
-        </form>
+<div class="ex-q" id="q46"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 47 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Cuál es el valor máximo de direcciones MAC configurables por puerto en Port Security?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(46,0,3,`Aunque el valor por defecto es 1, el límite máximo permitido varía según las capacidades de hardware de cada modelo específico de switch Cisco.`)">1</button>
+<button class="ex-opt" onclick="ansQ(46,1,3,`Aunque el valor por defecto es 1, el límite máximo permitido varía según las capacidades de hardware de cada modelo específico de switch Cisco.`)">128</button>
+<button class="ex-opt" onclick="ansQ(46,2,3,`Aunque el valor por defecto es 1, el límite máximo permitido varía según las capacidades de hardware de cada modelo específico de switch Cisco.`)">1024</button>
+<button class="ex-opt" onclick="ansQ(46,3,3,`Aunque el valor por defecto es 1, el límite máximo permitido varía según las capacidades de hardware de cada modelo específico de switch Cisco.`)">Depende del modelo de hardware del switch.</button>
+</div></div>
 
-        <div class="results" id="results">
-            <h2 style="color: #00d4aa; font-family: 'Orbitron', monospace;">Resultados</h2>
-            <div class="score" id="score">0%</div>
-            <p class="results-text" id="resultsText"></p>
-        </div>
-    </div>
+<div class="ex-q" id="q47"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 48 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué estándar inalámbrico introdujo soporte para 2.4 GHz y 5 GHz simultáneamente y velocidades hasta 600 Mbps?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(47,0,2,`<strong>802.11n</strong> fue el primer estándar en usar MIMO (Multiple Input Multiple Output) y operar en ambas bandas de frecuencia.`)">802.11a</button>
+<button class="ex-opt" onclick="ansQ(47,1,2,`<strong>802.11n</strong> fue el primer estándar en usar MIMO (Multiple Input Multiple Output) y operar en ambas bandas de frecuencia.`)">802.11g</button>
+<button class="ex-opt" onclick="ansQ(47,2,2,`<strong>802.11n</strong> fue el primer estándar en usar MIMO (Multiple Input Multiple Output) y operar en ambas bandas de frecuencia.`)">802.11n</button>
+<button class="ex-opt" onclick="ansQ(47,3,2,`<strong>802.11n</strong> fue el primer estándar en usar MIMO (Multiple Input Multiple Output) y operar en ambas bandas de frecuencia.`)">802.11ac</button>
+</div></div>
 
-    <script src="../assets/main.js"></script>
-    <script>
-        function gradeExam() {
-            const form = document.getElementById('examForm');
-            const questions = form.querySelectorAll('.question-block');
-            let correct = 0;
-            const total = 50;
+<div class="ex-q" id="q48"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 49 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Qué modo de WLC se utiliza para instalaciones pequeñas donde el controlador está integrado en un switch Catalyst?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(48,0,1,`El <strong>Embedded WLC</strong> corre directamente sobre el hardware de switches específicos (como la serie Catalyst 9000), ahorrando espacio y costos de hardware adicional.`)">Centralized WLC</button>
+<button class="ex-opt" onclick="ansQ(48,1,1,`El <strong>Embedded WLC</strong> corre directamente sobre el hardware de switches específicos (como la serie Catalyst 9000), ahorrando espacio y costos de hardware adicional.`)">Embedded WLC</button>
+<button class="ex-opt" onclick="ansQ(48,2,1,`El <strong>Embedded WLC</strong> corre directamente sobre el hardware de switches específicos (como la serie Catalyst 9000), ahorrando espacio y costos de hardware adicional.`)">Cloud WLC</button>
+<button class="ex-opt" onclick="ansQ(48,3,1,`El <strong>Embedded WLC</strong> corre directamente sobre el hardware de switches específicos (como la serie Catalyst 9000), ahorrando espacio y costos de hardware adicional.`)">Mobility Express</button>
+</div></div>
 
-            questions.forEach(q => {
-                const explanation = q.querySelector('.explanation');
-                const correctAnswer = explanation.dataset.answer.split(',');
-                const options = q.querySelectorAll('.option');
-                const isCheckbox = q.querySelector('input[type="checkbox"]') !== null;
-                
-                if (isCheckbox) {
-                    const selected = Array.from(q.querySelectorAll('input:checked')).map(inp => inp.value);
-                    if (correctAnswer.length === selected.length && correctAnswer.every(ans => selected.includes(ans))) correct++;
-                    options.forEach(opt => {
-                        const input = opt.querySelector('input');
-                        if (correctAnswer.includes(input.value)) opt.classList.add('correct');
-                        else if (input.checked) opt.classList.add('incorrect');
-                    });
-                } else {
-                    const selected = q.querySelector('input:checked');
-                    if (selected && selected.value === correctAnswer[0]) correct++;
-                    options.forEach(opt => {
-                        const input = opt.querySelector('input');
-                        if (input.value === correctAnswer[0]) opt.classList.add('correct');
-                        else if (input.checked) opt.classList.add('incorrect');
-                    });
-                }
-                explanation.classList.add('show');
-            });
+<div class="ex-q" id="q49"><div class="ex-qmeta"><span class="ex-qnum">PREGUNTA 50 DE 50</span><span class="ex-qtype concept">CONCEPTO</span></div><div class="ex-qtext">¿Cuál es la función del protocolo Cisco Management Frame Protection (MFP)?</div><div class="ex-opts">
+<button class="ex-opt" onclick="ansQ(49,0,1,`<strong>Cisco MFP</strong> añade una firma criptográfica a las tramas de gestión. Si un atacante intenta enviar una trama falsa para desconectar usuarios, el AP detectará que la firma no es válida y la ignorará.`)">Cifrar el tráfico de datos del usuario final.</button>
+<button class="ex-opt" onclick="ansQ(49,1,1,`<strong>Cisco MFP</strong> añade una firma criptográfica a las tramas de gestión. Si un atacante intenta enviar una trama falsa para desconectar usuarios, el AP detectará que la firma no es válida y la ignorará.`)">Prevenir ataques DoS que utilizan tramas de gestión falsificadas.</button>
+<button class="ex-opt" onclick="ansQ(49,2,1,`<strong>Cisco MFP</strong> añade una firma criptográfica a las tramas de gestión. Si un atacante intenta enviar una trama falsa para desconectar usuarios, el AP detectará que la firma no es válida y la ignorará.`)">Aumentar la velocidad de transmisión en 5 GHz.</button>
+<button class="ex-opt" onclick="ansQ(49,3,1,`<strong>Cisco MFP</strong> añade una firma criptográfica a las tramas de gestión. Si un atacante intenta enviar una trama falsa para desconectar usuarios, el AP detectará que la firma no es válida y la ignorará.`)">Gestionar la asignación dinámica de IPs mediante RADIUS.</button>
+</div></div>
 
-            const percentage = Math.round((correct / total) * 100);
-            document.getElementById('score').textContent = percentage + '%';
-            let message = percentage >= 90 ? `¡Excelente! (${correct}/${total})` :
-                         percentage >= 75 ? `Muy bien (${correct}/${total})` :
-                         percentage >= 60 ? `Aprobado (${correct}/${total})` :
-                         `Repasa no fue buena tu nota  (${correct}/${total})`;
-            document.getElementById('resultsText').textContent = message;
-            document.getElementById('results').classList.add('show');
-            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
-        }
-    </script>
-</body>
-</html>
+<div class="ex-result" id="exResult">
+<div class="ex-result-pct" id="rPct">0%</div>
+<div class="ex-result-label" id="rLabel"></div>
+<div class="ex-result-sub" id="rSub"></div>
+<a href="../banco-preguntas.html" style="display:inline-block;margin-top:12px;padding:10px 24px;background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.3);border-radius:8px;color:#fbbf24;font-family:Share Tech Mono,monospace;font-size:.75rem;text-decoration:none;">← Ver todos los exámenes</a>
+</div>
+<div class="ex-nav">
+<a href="exam6.html" class="ex-nav-prev">← Examen 06</a>
+<a href="exam8.html" class="ex-nav-next">Examen 08 →</a>
+</div></div>
+
+<script>
+var sc=0,an=0,tot=50;
+function ansQ(qi,sel,cor,exp){var d=document.getElementById("q"+qi);if(!d||d.classList.contains("answered"))return;var btns=d.querySelectorAll(".ex-opt");btns.forEach(function(b){b.disabled=true;});btns[sel].classList.add(sel===cor?"correct":"wrong");if(sel!==cor)btns[cor].classList.add("correct");var e=document.createElement("div");e.className="ex-exp";e.innerHTML="<strong>"+(sel===cor?"✅ Correcto!":"❌ Incorrecto.")+"</strong> "+exp;d.appendChild(e);d.classList.add("answered");if(sel===cor)sc++;an++;updScore();if(an>=tot)showRes();}
+function updScore(){var p=tot>0?Math.round(sc/tot*100):0;document.getElementById("snum").textContent=sc+"/"+tot;document.getElementById("sfill").style.width=p+"%";document.getElementById("slbl").textContent=an+" respondidas · "+p+"% correcto";}
+function resetEx(){sc=0;an=0;updScore();document.getElementById("exResult").style.display="none";for(var i=0;i<tot;i++){var d=document.getElementById("q"+i);if(!d)continue;d.classList.remove("answered");d.querySelectorAll(".ex-opt").forEach(function(b){b.disabled=false;b.classList.remove("correct","wrong");});var ep=d.querySelector(".ex-exp");if(ep)ep.remove();}}
+function showRes(){var p=Math.round(sc/tot*100);var g=p>=85?"🏆 APROBADO — Dominio completo de seguridad":p>=70?"✅ CASI LISTO — Repasa los temas fallados":p>=55?"📚 SIGUE ESTUDIANDO — Revisa las explicaciones":"💪 NECESITAS REPASAR — Estudia más antes de repetir";var s=p>=85?"Estás listo para el CCNA 200-301.":p>=70?"Buen nivel. Repasa conceptos de AAA y VPNs.":"Revisa los fundamentos de Port Security, ACLs y Wireless Security.";document.getElementById("rPct").textContent=p+"%";document.getElementById("rLabel").textContent=g;document.getElementById("rSub").textContent=s;var r=document.getElementById("exResult");r.style.display="block";r.scrollIntoView({behavior:"smooth",block:"center"});}
+</script>
+</body></html>
