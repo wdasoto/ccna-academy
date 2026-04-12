@@ -1116,13 +1116,15 @@ function initQuiz() {
   const container = document.getElementById('quizContainerARP');
   let html = '';
   questions.forEach((q, i) => {
-    html += `<div class="quiz-question" id="qq${i}">
-      <div class="quiz-q-num">PREGUNTA ${i+1} DE ${questions.length}</div>
-      <div class="quiz-q-text">${q.q}</div>
-      <div class="quiz-opts">
-        ${q.opts.map((o,j) => `<button class="quiz-opt" onclick="answerQ(${i},${j},${q.ans},\`${q.exp.replace(/`/g,"'")}\`)">${o}</button>`).join('')}
-      </div>
-    </div>`;
+    const expSafe = q.exp.replace(/'/g, "&#39;").replace(/"/g, "&quot;");
+    html += '<div class="quiz-question" id="qq' + i + '">' +
+      '<div class="quiz-q-num">PREGUNTA ' + (i+1) + ' DE ' + questions.length + '</div>' +
+      '<div class="quiz-q-text">' + q.q + '</div>' +
+      '<div class="quiz-opts">' +
+      q.opts.map(function(o,j) {
+        return '<button class="quiz-opt" onclick="answerQ(' + i + ',' + j + ',' + q.ans + ',\'' + expSafe + '\')">' + o + '</button>';
+      }).join('') +
+      '</div></div>';
   });
   container.innerHTML = html;
 }
