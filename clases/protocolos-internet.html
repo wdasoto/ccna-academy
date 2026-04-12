@@ -77,16 +77,16 @@
 
 <div class="pi-tabs-wrap">
   <div class="pi-tabs-bar">
-    <button class="pi-tab active" onclick="showTabPI('suite',this)">🌐 Suite TCP/IP</button>
-    <button class="pi-tab" onclick="showTabPI('ip',this)">📦 IP</button>
-    <button class="pi-tab" onclick="showTabPI('tcp',this)">🔗 TCP</button>
-    <button class="pi-tab" onclick="showTabPI('udp',this)">⚡ UDP</button>
-    <button class="pi-tab" onclick="showTabPI('icmp',this)">🔔 ICMP</button>
-    <button class="pi-tab" onclick="showTabPI('app',this)">📱 Aplicación</button>
-    <button class="pi-tab" onclick="showTabPI('puertos',this)">🔌 Puertos</button>
-    <button class="pi-tab" onclick="showTabPI('cisco',this)">💻 Cisco IOS</button>
-    <button class="pi-tab" onclick="showTabPI('tabla',this)">📊 Referencia</button>
-    <button class="pi-tab" onclick="showTabPI('quiz',this)">🎯 Quiz</button>
+    <button class="pi-tab active" onclick="ProtoInternetQuiz.showTabPI('suite',this)">🌐 Suite TCP/IP</button>
+    <button class="pi-tab" onclick="ProtoInternetQuiz.showTabPI('ip',this)">📦 IP</button>
+    <button class="pi-tab" onclick="ProtoInternetQuiz.showTabPI('tcp',this)">🔗 TCP</button>
+    <button class="pi-tab" onclick="ProtoInternetQuiz.showTabPI('udp',this)">⚡ UDP</button>
+    <button class="pi-tab" onclick="ProtoInternetQuiz.showTabPI('icmp',this)">🔔 ICMP</button>
+    <button class="pi-tab" onclick="ProtoInternetQuiz.showTabPI('app',this)">📱 Aplicación</button>
+    <button class="pi-tab" onclick="ProtoInternetQuiz.showTabPI('puertos',this)">🔌 Puertos</button>
+    <button class="pi-tab" onclick="ProtoInternetQuiz.showTabPI('cisco',this)">💻 Cisco IOS</button>
+    <button class="pi-tab" onclick="ProtoInternetQuiz.showTabPI('tabla',this)">📊 Referencia</button>
+    <button class="pi-tab" onclick="ProtoInternetQuiz.showTabPI('quiz',this)">🎯 Quiz</button>
   </div>
 
 <div id="tab-suite" class="pi-tab-content active">
@@ -738,113 +738,150 @@ code{font-family:'Share Tech Mono',monospace;font-size:0.82rem;background:rgba(1
 </style>
 
 <script>
-function showTabPI(id, btn) {
-  document.querySelectorAll('.pi-tab-content').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.pi-tab').forEach(b => b.classList.remove('active'));
-  document.getElementById('tab-' + id).classList.add('active');
-  if (btn) btn.classList.add('active');
-}
+// ═══════════════════════════════════════════════════════════════════════════════
+// NAMESPACE: ProtoInternetQuiz — Aislado para evitar sobrescritura por main.js
+// ═══════════════════════════════════════════════════════════════════════════════
 
-function buildPortsTable() {
-  const ports = [
-    ['FTP datos','20','TCP','Canal de datos FTP en modo activo'],
-    ['FTP control','21','TCP','Canal de control FTP — comandos y autenticación'],
-    ['SSH','22','TCP','Secure Shell — reemplaza Telnet. Siempre usar v2.'],
-    ['Telnet','23','TCP','Acceso remoto en texto plano — INSEGURO'],
-    ['SMTP','25','TCP','Envío de correo entre servidores de mail'],
-    ['DNS','53','UDP/TCP','Consultas (UDP) · Transferencia de zona (TCP)'],
-    ['DHCP servidor','67','UDP','DHCP server escucha en puerto 67'],
-    ['DHCP cliente','68','UDP','DHCP client usa puerto 68 de origen'],
-    ['TFTP','69','UDP','Transferencia simple sin autenticación — IOS Cisco'],
-    ['HTTP','80','TCP','Web sin cifrar — no usar para datos sensibles'],
-    ['POP3','110','TCP','Descarga de correo del servidor'],
-    ['NTP','123','UDP','Sincronización de relojes — Stratum 0-15'],
-    ['IMAP','143','TCP','Correo sincronizado entre dispositivos'],
-    ['SNMP agente','161','UDP','Polling y configuración SNMP'],
-    ['SNMP trap','162','UDP','Alertas proactivas del agente al manager'],
-    ['BGP','179','TCP','Border Gateway Protocol — routing entre AS'],
-    ['HTTPS','443','TCP','HTTP sobre TLS — estándar actual para web'],
-    ['SMTPS','465','TCP','SMTP sobre TLS'],
-    ['Syslog','514','UDP','Logs centralizados a servidor externo'],
-    ['IMAPS','993','TCP','IMAP sobre TLS'],
-    ['POP3S','995','TCP','POP3 sobre TLS'],
-    ['RIP','520','UDP','Routing Information Protocol — actualizaciones'],
-    ['RDP','3389','TCP','Remote Desktop Protocol — Windows'],
-  ];
-  const hdrs = ['Protocolo','Puerto','Transporte','Descripción'];
-  let h = '<div class="pi-table-wrap"><table class="pi-table"><thead><tr>';
-  hdrs.forEach(x => h += `<th>${x}</th>`);
-  h += '</tr></thead><tbody>';
-  ports.forEach(r => { h += '<tr>' + r.map(c => `<td>${c}</td>`).join('') + '</tr>'; });
-  h += '</tbody></table></div>';
-  document.getElementById('portTableDiv').innerHTML = h;
-}
+const ProtoInternetQuiz = {
+  
+  showTabPI: function(tabName, btn) {
+    // Ocultar todos los tabs
+    const tabs = document.querySelectorAll('.pi-tab-content');
+    tabs.forEach(t => t.classList.remove('active'));
+    
+    // Remover clase active de botones
+    const btns = document.querySelectorAll('.pi-tab');
+    btns.forEach(b => b.classList.remove('active'));
+    
+    // Mostrar tab seleccionado
+    const activeTab = document.getElementById('pi-' + tabName);
+    if (activeTab) {
+      activeTab.classList.add('active');
+      btn.classList.add('active');
+      
+      // Si el tab contiene quiz, inicializarlo
+      if (tabName === 'quiz') {
+        this.initQuiz();
+      }
+    }
+  },
 
-function buildRefTable() {
-  const data = [
-    ['IP','—','Capa 3','Protocolo=variable','Sin conexión, best-effort, TTL, fragmentación, direccionamiento lógico (32 bits)'],
-    ['ICMP','—','Capa 3','Protocolo=1','Mensajes de control/error. Type 8/0 = ping. Type 11 = traceroute. Type 3 = unreachable.'],
-    ['TCP','—','Capa 4','Protocolo=6','Confiable, ordenado, orientado a conexión. 3-Way HS. Window size. Retransmisión automática.'],
-    ['UDP','—','Capa 4','Protocolo=17','Sin conexión, rápido, 8 bytes header. Para tiempo real y servicios petición/respuesta.'],
-    ['HTTP','80','TCP','Aplicación','Web sin cifrar. GET/POST/PUT/DELETE. Códigos 2xx/3xx/4xx/5xx.'],
-    ['HTTPS','443','TCP','Aplicación','HTTP sobre TLS/SSL. Cifrado completo. Estándar actual para toda web.'],
-    ['DNS','53','UDP/TCP','Aplicación','Nombres→IP. UDP para consultas, TCP para zonas. Registros A/AAAA/MX/CNAME/PTR.'],
-    ['FTP','20/21','TCP','Aplicación','Puerto 21=control, 20=datos. Modo pasivo: cliente inicia ambas conexiones. Sin cifrado.'],
-    ['TFTP','69','UDP','Aplicación','Sin autenticación. Para IOS de Cisco, configs, boot PXE. No lista directorios.'],
-    ['SSH','22','TCP','Aplicación','Cifrado RSA+AES. v2 obligatorio en CCNA. Requiere: hostname, domain, crypto key, login local.'],
-    ['Telnet','23','TCP','Aplicación','Texto plano — INSEGURO. Solo labs. Reemplazado completamente por SSH.'],
-    ['SMTP','25','TCP','Aplicación','Envío de correo. Puerto 587 para clientes autenticados. SMTPS=465 (TLS).'],
-    ['DHCP','67/68','UDP','Aplicación','DORA. Asigna IP/Máscara/GW/DNS. ip helper-address para relay. DHCP Snooping para seguridad.'],
-    ['SNMP','161/162','UDP','Aplicación','GET/SET/TRAP. v3 recomendado (auth+cifrado). MIB = base de objetos gestionables.'],
-    ['NTP','123','UDP','Aplicación','Stratum 0-15. ±1-50ms LAN. Crítico para logs, TLS, Kerberos, HSRP. ntp master en Cisco.'],
-    ['Syslog','514','UDP','Aplicación','Niveles 0-7. logging host [IP]. service timestamps log datetime msec.'],
-    ['RIP','520','UDP','Aplicación','AD=120. Máx 15 hops. v2 classless. Multicast 224.0.0.9. 30s updates.'],
-  ];
-  const hdrs = ['Protocolo','Puerto','Transporte','Capa','Puntos clave CCNA'];
-  let h = '<div class="pi-table-wrap"><table class="pi-table"><thead><tr>';
-  hdrs.forEach(x => h += `<th>${x}</th>`);
-  h += '</tr></thead><tbody>';
-  data.forEach(r => { h += '<tr>' + r.map(c => `<td>${c}</td>`).join('') + '</tr>'; });
-  h += '</tbody></table></div>';
-  document.getElementById('refTableDiv').innerHTML = h;
-}
+  buildPortsTable: function() {
+    const ports = [
+      ['FTP datos','20','TCP','Canal de datos FTP en modo activo'],
+      ['FTP control','21','TCP','Canal de control FTP — comandos y autenticación'],
+      ['SSH','22','TCP','Secure Shell — reemplaza Telnet. Siempre usar v2.'],
+      ['Telnet','23','TCP','Acceso remoto en texto plano — INSEGURO'],
+      ['SMTP','25','TCP','Envío de correo entre servidores de mail'],
+      ['DNS','53','UDP/TCP','Consultas (UDP) · Transferencia de zona (TCP)'],
+      ['DHCP servidor','67','UDP','DHCP server escucha en puerto 67'],
+      ['DHCP cliente','68','UDP','DHCP client usa puerto 68 de origen'],
+      ['TFTP','69','UDP','Transferencia simple sin autenticación — IOS Cisco'],
+      ['HTTP','80','TCP','Web sin cifrar — no usar para datos sensibles'],
+      ['POP3','110','TCP','Descarga de correo del servidor'],
+      ['NTP','123','UDP','Sincronización de relojes — Stratum 0-15'],
+      ['IMAP','143','TCP','Correo sincronizado entre dispositivos'],
+      ['SNMP agente','161','UDP','Polling y configuración SNMP'],
+      ['SNMP trap','162','UDP','Alertas proactivas del agente al manager'],
+      ['BGP','179','TCP','Border Gateway Protocol — routing entre AS'],
+      ['HTTPS','443','TCP','HTTP sobre TLS — estándar actual para web'],
+      ['SMTPS','465','TCP','SMTP sobre TLS'],
+      ['Syslog','514','UDP','Logs centralizados a servidor externo'],
+      ['IMAPS','993','TCP','IMAP sobre TLS'],
+      ['POP3S','995','TCP','POP3 sobre TLS'],
+      ['RIP','520','UDP','Routing Information Protocol — actualizaciones'],
+      ['RDP','3389','TCP','Remote Desktop Protocol — Windows'],
+    ];
+    const hdrs = ['Protocolo','Puerto','Transporte','Descripción'];
+    let h = '<div class="pi-table-wrap"><table class="pi-table"><thead><tr>';
+    hdrs.forEach(x => h += `<th>${x}</th>`);
+    h += '</tr></thead><tbody>';
+    ports.forEach(r => { h += '<tr>' + r.map(c => `<td>${c}</td>`).join('') + '</tr>'; });
+    h += '</tbody></table></div>';
+    const portDiv = document.getElementById('portTableDiv');
+    if (portDiv) portDiv.innerHTML = h;
+  },
 
-function initQuiz() {
-  const Qs = [
-    {q:'¿Cuál es la diferencia fundamental entre TCP y UDP?',opts:['TCP usa IPv4 y UDP usa IPv6','TCP garantiza entrega ordenada con conexión; UDP es sin conexión y sin garantías','TCP es más rápido que UDP en todo','UDP usa más ancho de banda que TCP'],ans:1,exp:'TCP es orientado a conexión (3-Way Handshake), garantiza entrega, orden, tiene control de flujo y congestión — ideal para HTTP, SSH, FTP. UDP es sin conexión, sin garantías, con solo 8 bytes de header — ideal para DNS, VoIP, DHCP, SNMP donde la velocidad y latencia baja importan más que la perfección.'},
-    {q:'¿Qué campo del header IP previene que los paquetes circulen indefinidamente en bucles?',opts:['Checksum','Identification','TTL — Time To Live','DF flag'],ans:2,exp:'El TTL se decrementa en 1 por cada router. Cuando llega a 0, el router descarta el paquete y envía ICMP Type 11 "Time Exceeded" al origen. Esto previene bucles. Traceroute explota este mecanismo enviando paquetes con TTL=1,2,3... revelando cada router en el camino. Cisco IOS usa TTL=255 por defecto en sus pings.'},
-    {q:'¿Qué mensajes ICMP se intercambian en un ping exitoso?',opts:['ICMP Type 3 y Type 4','ICMP Type 8 (Echo Request) → ICMP Type 0 (Echo Reply)','ICMP Type 11 en ambos sentidos','ICMP Type 5 (Redirect)'],ans:1,exp:'Ping envía ICMP Type 8 (Echo Request) y el destino responde con ICMP Type 0 (Echo Reply). Otros tipos: Type 3 = destino inalcanzable (múltiples códigos: 0=red, 1=host, 3=puerto, 4=fragmentación), Type 11 = TTL agotado (traceroute), Type 5 = redirección de ruta mejor.'},
-    {q:'¿Por qué DNS usa UDP en lugar de TCP para consultas normales?',opts:['UDP es más seguro','Las consultas son pequeñas y el modelo petición/respuesta hace innecesario el overhead del 3-Way Handshake','DNS no puede usar TCP','UDP provee cifrado'],ans:1,exp:'Una consulta DNS típica es menor a 512 bytes. TCP requeriría 3 mensajes del handshake antes de la consulta — triplicando el tráfico para algo tan simple. UDP permite petición+respuesta en 2 mensajes. DNS sí usa TCP para transferencias de zona (AXFR) donde la respuesta supera 512 bytes.'},
-    {q:'¿Cuál es el propósito del campo Window Size en la cabecera TCP?',opts:['Define el MTU del enlace','Control de flujo — el receptor indica cuántos bytes puede aceptar sin ACK','Define el número de segmentos máximo','Tiempo antes de retransmitir'],ans:1,exp:'Window Size es el mecanismo de control de flujo de TCP. El receptor anuncia cuántos bytes puede aceptar en su buffer. El emisor no puede enviar más de ese límite. Si el receptor procesa lento, reduce Window Size para que el emisor frene. Previene desbordamiento de buffers del receptor.'},
-    {q:'Un administrador configura "ip ssh version 2" en Cisco IOS. ¿Qué otros comandos son OBLIGATORIOS antes de que SSH funcione?',opts:['Solo "login local" en VTY','hostname, ip domain-name, y crypto key generate rsa — sin ellos SSH no puede iniciarse','Solo "transport input ssh" en VTY','ip ssh authentication-retries'],ans:1,exp:'SSH requiere mínimo: 1) hostname distinto de "Router" (la key RSA usa el nombre), 2) ip domain-name (forma el FQDN para la key), 3) crypto key generate rsa modulus 2048 (genera el par de claves), 4) username con secret (para login local), 5) login local + transport input ssh en VTY. Sin el hostname y domain-name, el comando crypto key falla.'},
-    {q:'¿Qué protocolo usa UDP puerto 69 y para qué se usa en redes Cisco?',opts:['Telnet — acceso remoto','FTP — transferencia de archivos segura','TFTP — transferencia de imágenes IOS y archivos de configuración sin autenticación','SNMP — gestión de dispositivos'],ans:2,exp:'TFTP (Trivial File Transfer Protocol) usa UDP 69. No tiene autenticación, no permite listar directorios — solo GET y PUT de archivos específicos. En redes Cisco se usa para: copiar imágenes IOS entre routers/switches y servidores TFTP, guardar/restaurar configuraciones, boot de dispositivos sin disco local (PXE). La falta de seguridad lo hace adecuado solo en redes de gestión aisladas.'},
-    {q:'¿Cuál es el número de protocolo IP de TCP?',opts:['1','6','17','89'],ans:1,exp:'El campo Protocol en el header IP identifica el protocolo encapsulado: 1=ICMP, 6=TCP, 17=UDP, 47=GRE, 50=ESP (IPSec), 89=OSPF. Cuando un router recibe un paquete IP, usa este campo para saber a qué módulo de capa 4 entregar el payload. En Wireshark se ve como "Protocol: TCP (6)" en el header IP.'},
-    {q:'¿Qué flag TCP indica que un extremo no enviará más datos en esa dirección?',opts:['RST','SYN','FIN','ACK'],ans:2,exp:'FIN (Finish) indica cierre ordenado de la conexión. El extremo que envía FIN declara que no enviará más datos. TCP usa un cierre de 4 pasos (4-Way FIN): FIN→ACK→FIN→ACK. Ambos extremos deben enviar su propio FIN para cerrar completamente. RST en cambio es cierre abrupto — indica error y termina la conexión inmediatamente sin el proceso de 4 pasos.'},
-    {q:'¿Qué versión de SNMP proporciona autenticación y cifrado?',opts:['SNMPv1','SNMPv2c','SNMPv3','Todas las versiones tienen cifrado'],ans:2,exp:'SNMPv3 es la única versión con seguridad real: autenticación (MD5 o SHA) + privacidad/cifrado (DES o AES). SNMPv1 y v2c usan community strings en texto plano — cualquiera que capture el tráfico puede ver la contraseña y potencialmente modificar configuraciones. Para el examen CCNA, SNMPv3 es el estándar recomendado para entornos de producción.'},
-  ];
-  const c = document.getElementById('quizContainerPI');
-  let h = '';
-  Qs.forEach((q,i) => {
-    h += `<div class="pi-quiz-q" id="piq${i}">
-      <div class="pi-quiz-num">PREGUNTA ${i+1} DE ${Qs.length}</div>
-      <div class="pi-quiz-text">${q.q}</div>
-      <div class="pi-quiz-opts">${q.opts.map((o,j)=>`<button class="pi-quiz-opt" onclick="answerPI(${i},${j},${q.ans},\`${q.exp.replace(/`/g,"'")}\`)">${o}</button>`).join('')}</div>
-    </div>`;
-  });
-  c.innerHTML = h;
-}
-function answerPI(qi,sel,correct,exp){
-  const qDiv=document.getElementById('piq'+qi);
-  const btns=qDiv.querySelectorAll('.pi-quiz-opt');
-  btns.forEach(b=>b.disabled=true);
-  btns[sel].classList.add(sel===correct?'correct':'wrong');
-  if(sel!==correct)btns[correct].classList.add('correct');
-  const e=document.createElement('div');
-  e.className='pi-quiz-exp';
-  e.innerHTML=`<strong>${sel===correct?'✅ Correcto!':'❌ Incorrecto.'}</strong> ${exp}`;
-  qDiv.appendChild(e);
-}
-document.addEventListener('DOMContentLoaded',function(){buildPortsTable();buildRefTable();initQuiz();});
+  buildRefTable: function() {
+    const data = [
+      ['IP','—','Capa 3','Protocolo=variable','Sin conexión, best-effort, TTL, fragmentación, direccionamiento lógico (32 bits)'],
+      ['ICMP','—','Capa 3','Protocolo=1','Mensajes de control/error. Type 8/0 = ping. Type 11 = traceroute. Type 3 = unreachable.'],
+      ['TCP','—','Capa 4','Protocolo=6','Confiable, ordenado, orientado a conexión. 3-Way HS. Window size. Retransmisión automática.'],
+      ['UDP','—','Capa 4','Protocolo=17','Sin conexión, rápido, 8 bytes header. Para tiempo real y servicios petición/respuesta.'],
+      ['HTTP','80','TCP','Aplicación','Web sin cifrar. GET/POST/PUT/DELETE. Códigos 2xx/3xx/4xx/5xx.'],
+      ['HTTPS','443','TCP','Aplicación','HTTP sobre TLS/SSL. Cifrado completo. Estándar actual para toda web.'],
+      ['DNS','53','UDP/TCP','Aplicación','Nombres→IP. UDP para consultas, TCP para zonas. Registros A/AAAA/MX/CNAME/PTR.'],
+      ['FTP','20/21','TCP','Aplicación','Puerto 21=control, 20=datos. Modo pasivo: cliente inicia ambas conexiones. Sin cifrado.'],
+      ['TFTP','69','UDP','Aplicación','Sin autenticación. Para IOS de Cisco, configs, boot PXE. No lista directorios.'],
+      ['SSH','22','TCP','Aplicación','Cifrado RSA+AES. v2 obligatorio en CCNA. Requiere: hostname, domain, crypto key, login local.'],
+      ['Telnet','23','TCP','Aplicación','Texto plano — INSEGURO. Solo labs. Reemplazado completamente por SSH.'],
+      ['SMTP','25','TCP','Aplicación','Envío de correo. Puerto 587 para clientes autenticados. SMTPS=465 (TLS).'],
+      ['DHCP','67/68','UDP','Aplicación','DORA. Asigna IP/Máscara/GW/DNS. ip helper-address para relay. DHCP Snooping para seguridad.'],
+      ['SNMP','161/162','UDP','Aplicación','GET/SET/TRAP. v3 recomendado (auth+cifrado). MIB = base de objetos gestionables.'],
+      ['NTP','123','UDP','Aplicación','Stratum 0-15. ±1-50ms LAN. Crítico para logs, TLS, Kerberos, HSRP. ntp master en Cisco.'],
+      ['Syslog','514','UDP','Aplicación','Niveles 0-7. logging host [IP]. service timestamps log datetime msec.'],
+      ['RIP','520','UDP','Aplicación','AD=120. Máx 15 hops. v2 classless. Multicast 224.0.0.9. 30s updates.'],
+    ];
+    const hdrs = ['Protocolo','Puerto','Transporte','Capa','Puntos clave CCNA'];
+    let h = '<div class="pi-table-wrap"><table class="pi-table"><thead><tr>';
+    hdrs.forEach(x => h += `<th>${x}</th>`);
+    h += '</tr></thead><tbody>';
+    data.forEach(r => { h += '<tr>' + r.map(c => `<td>${c}</td>`).join('') + '</tr>'; });
+    h += '</tbody></table></div>';
+    const refDiv = document.getElementById('refTableDiv');
+    if (refDiv) refDiv.innerHTML = h;
+  },
+
+  initQuiz: function() {
+    const Qs = [
+      {q:'¿Cuál es la diferencia fundamental entre TCP y UDP?',opts:['TCP usa IPv4 y UDP usa IPv6','TCP garantiza entrega ordenada con conexión; UDP es sin conexión y sin garantías','TCP es más rápido que UDP en todo','UDP usa más ancho de banda que TCP'],ans:1,exp:'TCP es orientado a conexión (3-Way Handshake), garantiza entrega, orden, tiene control de flujo y congestión — ideal para HTTP, SSH, FTP. UDP es sin conexión, sin garantías, con solo 8 bytes de header — ideal para DNS, VoIP, DHCP, SNMP donde la velocidad y latencia baja importan más que la perfección.'},
+      {q:'¿Qué campo del header IP previene que los paquetes circulen indefinidamente en bucles?',opts:['Checksum','Identification','TTL — Time To Live','DF flag'],ans:2,exp:'El TTL se decrementa en 1 por cada router. Cuando llega a 0, el router descarta el paquete y envía ICMP Type 11 "Time Exceeded" al origen. Esto previene bucles. Traceroute explota este mecanismo enviando paquetes con TTL=1,2,3... revelando cada router en el camino. Cisco IOS usa TTL=255 por defecto en sus pings.'},
+      {q:'¿Qué mensajes ICMP se intercambian en un ping exitoso?',opts:['ICMP Type 3 y Type 4','ICMP Type 8 (Echo Request) → ICMP Type 0 (Echo Reply)','ICMP Type 11 en ambos sentidos','ICMP Type 5 (Redirect)'],ans:1,exp:'Ping envía ICMP Type 8 (Echo Request) y el destino responde con ICMP Type 0 (Echo Reply). Otros tipos: Type 3 = destino inalcanzable (múltiples códigos: 0=red, 1=host, 3=puerto, 4=fragmentación), Type 11 = TTL agotado (traceroute), Type 5 = redirección de ruta mejor.'},
+      {q:'¿Por qué DNS usa UDP en lugar de TCP para consultas normales?',opts:['UDP es más seguro','Las consultas son pequeñas y el modelo petición/respuesta hace innecesario el overhead del 3-Way Handshake','DNS no puede usar TCP','UDP provee cifrado'],ans:1,exp:'Una consulta DNS típica es menor a 512 bytes. TCP requeriría 3 mensajes del handshake antes de la consulta — triplicando el tráfico para algo tan simple. UDP permite petición+respuesta en 2 mensajes. DNS sí usa TCP para transferencias de zona (AXFR) donde la respuesta supera 512 bytes.'},
+      {q:'¿Cuál es el propósito del campo Window Size en la cabecera TCP?',opts:['Define el MTU del enlace','Control de flujo — el receptor indica cuántos bytes puede aceptar sin ACK','Define el número de segmentos máximo','Tiempo antes de retransmitir'],ans:1,exp:'Window Size es el mecanismo de control de flujo de TCP. El receptor anuncia cuántos bytes puede aceptar en su buffer. El emisor no puede enviar más de ese límite. Si el receptor procesa lento, reduce Window Size para que el emisor frene. Previene desbordamiento de buffers del receptor.'},
+      {q:'Un administrador configura "ip ssh version 2" en Cisco IOS. ¿Qué otros comandos son OBLIGATORIOS antes de que SSH funcione?',opts:['Solo "login local" en VTY','hostname, ip domain-name, y crypto key generate rsa — sin ellos SSH no puede iniciarse','Solo "transport input ssh" en VTY','ip ssh authentication-retries'],ans:1,exp:'SSH requiere mínimo: 1) hostname distinto de "Router" (la key RSA usa el nombre), 2) ip domain-name (forma el FQDN para la key), 3) crypto key generate rsa modulus 2048 (genera el par de claves), 4) username con secret (para login local), 5) login local + transport input ssh en VTY. Sin el hostname y domain-name, el comando crypto key falla.'},
+      {q:'¿Qué protocolo usa UDP puerto 69 y para qué se usa en redes Cisco?',opts:['Telnet — acceso remoto','FTP — transferencia de archivos segura','TFTP — transferencia de imágenes IOS y archivos de configuración sin autenticación','SNMP — gestión de dispositivos'],ans:2,exp:'TFTP (Trivial File Transfer Protocol) usa UDP 69. No tiene autenticación, no permite listar directorios — solo GET y PUT de archivos específicos. En redes Cisco se usa para: copiar imágenes IOS entre routers/switches y servidores TFTP, guardar/restaurar configuraciones, boot de dispositivos sin disco local (PXE). La falta de seguridad lo hace adecuado solo en redes de gestión aisladas.'},
+      {q:'¿Cuál es el número de protocolo IP de TCP?',opts:['1','6','17','89'],ans:1,exp:'El campo Protocol en el header IP identifica el protocolo encapsulado: 1=ICMP, 6=TCP, 17=UDP, 47=GRE, 50=ESP (IPSec), 89=OSPF. Cuando un router recibe un paquete IP, usa este campo para saber a qué módulo de capa 4 entregar el payload. En Wireshark se ve como "Protocol: TCP (6)" en el header IP.'},
+      {q:'¿Qué flag TCP indica que un extremo no enviará más datos en esa dirección?',opts:['RST','SYN','FIN','ACK'],ans:2,exp:'FIN (Finish) indica cierre ordenado de la conexión. El extremo que envía FIN declara que no enviará más datos. TCP usa un cierre de 4 pasos (4-Way FIN): FIN→ACK→FIN→ACK. Ambos extremos deben enviar su propio FIN para cerrar completamente. RST en cambio es cierre abrupto — indica error y termina la conexión inmediatamente sin el proceso de 4 pasos.'},
+      {q:'¿Qué versión de SNMP proporciona autenticación y cifrado?',opts:['SNMPv1','SNMPv2c','SNMPv3','Todas las versiones tienen cifrado'],ans:2,exp:'SNMPv3 es la única versión con seguridad real: autenticación (MD5 o SHA) + privacidad/cifrado (DES o AES). SNMPv1 y v2c usan community strings en texto plano — cualquiera que capture el tráfico puede ver la contraseña y potencialmente modificar configuraciones. Para el examen CCNA, SNMPv3 es el estándar recomendado para entornos de producción.'},
+    ];
+    const c = document.getElementById('quizContainerPI');
+    if (!c) return;
+    let h = '';
+    Qs.forEach((q,i) => {
+      h += `<div class="pi-quiz-q" id="piq${i}">
+        <div class="pi-quiz-num">PREGUNTA ${i+1} DE ${Qs.length}</div>
+        <div class="pi-quiz-text">${q.q}</div>
+        <div class="pi-quiz-opts">${q.opts.map((o,j)=>`<button class="pi-quiz-opt" onclick="ProtoInternetQuiz.answerPI(${i},${j},${q.ans},\`${q.exp.replace(/`/g,"'")}\`)">${o}</button>`).join('')}</div>
+      </div>`;
+    });
+    c.innerHTML = h;
+  },
+
+  answerPI: function(qi, sel, correct, exp) {
+    const qDiv = document.getElementById('piq' + qi);
+    if (!qDiv) return;
+    const btns = qDiv.querySelectorAll('.pi-quiz-opt');
+    btns.forEach(b => b.disabled = true);
+    btns[sel].classList.add(sel === correct ? 'correct' : 'wrong');
+    if (sel !== correct) btns[correct].classList.add('correct');
+    const e = document.createElement('div');
+    e.className = 'pi-quiz-exp';
+    e.innerHTML = `<strong>${sel === correct ? '✅ Correcto!' : '❌ Incorrecto.'}</strong> ${exp}`;
+    qDiv.appendChild(e);
+  }
+};
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// INICIALIZACIÓN: Esperar a que main.js se haya cargado completamente
+// ═══════════════════════════════════════════════════════════════════════════════
+
+window.addEventListener('load', function() {
+  ProtoInternetQuiz.buildPortsTable();
+  ProtoInternetQuiz.buildRefTable();
+  // El quiz se inicializa cuando se hace click en la pestaña "Quiz"
+});
+-e 
 </script>
 </body>
 </html>
