@@ -1114,37 +1114,59 @@ function initQuiz() {
   ];
 
   const container = document.getElementById('quizContainerARP');
+  if (!container) return;
+
   let html = '';
-  questions.forEach((q, i) => {
-    // Escapamos las comillas simples en la explicación para que no rompan el onclick
-    const escapedExp = q.exp.replace(/'/g, "\\'");
+  questionsArp.forEach((q, i) => {
+    // Escapamos comillas para evitar errores en el HTML
+    const safeExp = q.exp.replace(/'/g, "\\'").replace(/"/g, "&quot;");
     
-    html += `<div class="quiz-question" id="qq${i}">
-      <div class="quiz-q-num">PREGUNTA ${i+1} DE ${questions.length}</div>
+    html += `
+    <div class="quiz-question" id="qq${i}">
+      <div class="quiz-q-num">PREGUNTA ${i + 1} DE ${questionsArp.length}</div>
       <div class="quiz-q-text">${q.q}</div>
       <div class="quiz-opts">
-        ${q.opts.map((o,j) => `
-          <button class="quiz-opt" onclick="answerQ(${i},${j},${q.ans},'${escapedExp}')">
-            ${o}
-          </button>`).join('')}
+        ${q.opts.map((opt, j) => `
+          <button class="quiz-opt" onclick="answerQ(${i}, ${j}, ${q.ans}, '${safeExp}')">
+            ${opt}
+          </button>
+        `).join('')}
       </div>
     </div>`;
   });
   container.innerHTML = html;
 }
-
+// 3. Función para procesar respuestas
 function answerQ(qi, sel, correct, exp) {
   const qDiv = document.getElementById('qq' + qi);
   const btns = qDiv.querySelectorAll('.quiz-opt');
+  
   btns.forEach(b => b.disabled = true);
+  
   btns[sel].classList.add(sel === correct ? 'correct' : 'wrong');
   if (sel !== correct) btns[correct].classList.add('correct');
+
   const expDiv = document.createElement('div');
   expDiv.className = 'quiz-explanation';
-  expDiv.innerHTML = `<strong>${sel===correct?'✅ Correcto!':'❌ Incorrecto.'}</strong> ${exp}`;
+  expDiv.innerHTML = `<strong>Explicación:</strong> ${exp}`;
   qDiv.appendChild(expDiv);
 }
 
+// 4. Asegurar que el Quiz cargue al entrar a la pestaña
+function showTabArp(tabId, btn) {
+  // Ocultar todas las pestañas
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  
+  // Mostrar la seleccionada
+  document.getElementById(tabId).classList.add('active');
+  btn.classList.add('active');
+
+  // Si la pestaña es 'quiz', generarlo
+  if (tabId === 'quiz') {
+    generateQuizArp();
+  }
+}
 document.addEventListener('DOMContentLoaded', function() {
   buildRefTable();
   initQuiz();
