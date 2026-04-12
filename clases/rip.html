@@ -1,3 +1,6 @@
+Aquí tienes el archivo **`rip.html`** completo con el **namespace `RIPQuiz`** aplicado. Esto protege el código contra la sobreescritura por `../assets/main.js` cuando se carga con `defer`.
+
+```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -79,15 +82,15 @@
 <!-- TABS -->
 <div class="tabs-wrap">
   <div class="tabs-bar">
-    <button class="tab-btn active" onclick="showTabRip('teoria',this)">📖 Teoría</button>
-    <button class="tab-btn" onclick="showTabRip('algoritmo',this)">🧮 Algoritmo</button>
-    <button class="tab-btn" onclick="showTabRip('v1vsv2',this)">📊 RIPv1 vs v2</button>
-    <button class="tab-btn" onclick="showTabRip('bucles',this)">⚠️ Bucles &amp; Fixes</button>
-    <button class="tab-btn" onclick="showTabRip('cli',this)">💻 CLI Cisco</button>
-    <button class="tab-btn" onclick="showTabRip('lab',this)">🧪 Laboratorio</button>
-    <button class="tab-btn" onclick="showTabRip('tabla',this)">📊 Referencia</button>
-    <button class="tab-btn" onclick="showTabRip('trouble',this)">🔧 Troubleshooting</button>
-    <button class="tab-btn" onclick="showTabRip('quiz',this)">🎯 Quiz</button>
+    <button class="tab-btn active" onclick="RIPQuiz.showTabRip('teoria',this)">📖 Teoría</button>
+    <button class="tab-btn" onclick="RIPQuiz.showTabRip('algoritmo',this)">🧮 Algoritmo</button>
+    <button class="tab-btn" onclick="RIPQuiz.showTabRip('v1vsv2',this)">📊 RIPv1 vs v2</button>
+    <button class="tab-btn" onclick="RIPQuiz.showTabRip('bucles',this)">⚠️ Bucles &amp; Fixes</button>
+    <button class="tab-btn" onclick="RIPQuiz.showTabRip('cli',this)">💻 CLI Cisco</button>
+    <button class="tab-btn" onclick="RIPQuiz.showTabRip('lab',this)">🧪 Laboratorio</button>
+    <button class="tab-btn" onclick="RIPQuiz.showTabRip('tabla',this)">📊 Referencia</button>
+    <button class="tab-btn" onclick="RIPQuiz.showTabRip('trouble',this)">🔧 Troubleshooting</button>
+    <button class="tab-btn" onclick="RIPQuiz.showTabRip('quiz',this)">🎯 Quiz</button>
   </div>
 
 <!-- ══════════════════════════════════════════════
@@ -846,11 +849,7 @@ Router# undebug all</code></pre>
 </div>
 </div>
 
-<footer class="footer">
-  <p> WDS-CCNA Portal · RIP · M1 · Fundamentos</p>
-  <p style="margin-top:.3rem">Basado en <em>CCNA 200-301 Official Cert Guide</em> (Wendell Odom) · RFC 8200 · RFC 4861</p>
-  <p style="margin-top:.4rem"><a href="../index.html">← Volver al índice</a></p>
-</footer>
+</div><!-- /.tabs-wrap -->
 
 <style>
 .class-hero { background: linear-gradient(135deg, #06080f 0%, #0d1220 60%, #101830 100%); padding: 56px 24px 48px; border-bottom: 1px solid rgba(0,212,170,0.12); position: relative; overflow: hidden; }
@@ -933,136 +932,204 @@ code { font-family:'Share Tech Mono',monospace; font-size:0.82rem; background:rg
 </style>
 
 <script>
-function showTabRip(id, btn) {
-  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('tab-' + id).classList.add('active');
-  if (btn) btn.classList.add('active');
-}
-
-function buildRefTable() {
-  const data = [
-    ['Versión actual recomendada', 'RIPv2', 'Classless, VLSM, multicast, autenticación MD5'],
-    ['Distancia Administrativa', '120', 'Mayor que OSPF(110) y EIGRP(90) — menos preferido'],
-    ['Métrica', 'Hop Count', 'Número de routers entre origen y destino'],
-    ['Métrica máxima', '15 hops', '16 = infinito (red inalcanzable)'],
-    ['Dirección multicast', '224.0.0.9', 'RIPv2. RIPv1 usa broadcast 255.255.255.255'],
-    ['Puerto UDP', '520', 'Transporte de actualizaciones RIP'],
-    ['Update Timer', '30 segundos', 'Frecuencia de envío de tabla completa'],
-    ['Invalid Timer', '180 segundos', 'Tiempo antes de marcar ruta como inválida'],
-    ['Holddown Timer', '180 segundos', 'Período de ignorar peores métricas para ruta caída'],
-    ['Flush Timer', '240 segundos', 'Tiempo antes de eliminar ruta inválida de la tabla'],
-    ['Load Balancing', 'Hasta 4 rutas (ajustable)', 'maximum-paths permite hasta 16'],
-    ['Comando clave 1', 'no auto-summary', 'SIEMPRE en RIPv2 para soportar VLSM'],
-    ['Comando clave 2', 'passive-interface', 'Evita enviar updates a interfaces de hosts'],
-    ['Comando clave 3', 'show ip protocols', 'Verificar configuración y vecinos RIP'],
-    ['Anti-bucle principal', 'Split Horizon', 'No anunciar ruta por la misma interfaz que se aprendió'],
-  ];
-  const headers = ['Parámetro', 'Valor', 'Descripción'];
-  let html = '<div class="table-wrap"><table class="ref-table"><thead><tr>';
-  headers.forEach(h => html += `<th>${h}</th>`);
-  html += '</tr></thead><tbody>';
-  data.forEach(row => {
-    html += '<tr>' + row.map(c => `<td>${c}</td>`).join('') + '</tr>';
-  });
-  html += '</tbody></table></div>';
-  document.getElementById('refTableRIP').innerHTML = html;
-}
-
-function initQuiz() {
-  const questions = [
-    {
-      q: '¿Cuál es la Distancia Administrativa (AD) de RIP?',
-      opts: ['90','110','120','150'],
-      ans: 2,
-      exp: 'La AD de RIP es 120. Para comparar: EIGRP internal = 90, OSPF = 110, RIP = 120, External EIGRP = 170. A menor AD, más confiable. Si OSPF y RIP anuncian la misma ruta, OSPF gana (110 < 120). La AD solo importa cuando dos protocolos diferentes anuncian la misma red.'
-    },
-    {
-      q: 'Un router RIP recibe una actualización con una ruta a 192.168.5.0/24 con métrica = 15. ¿Puede este router llegar a esa red y propagarla a sus vecinos?',
-      opts: ['Sí, puede llegar y propagar normalmente','Sí puede llegar, pero NO puede propagarla (métrica sería 16 = infinito)','No puede llegar — métrica 15 es el límite','No — RIP no soporta más de 10 hops'],
-      ans: 1,
-      exp: 'Métrica 15 significa que hay 15 routers entre el origen y la red. El router SÍ puede agregar la ruta a su tabla (15 ≤ 15). Pero cuando intente propagarla a sus vecinos, la métrica sería 15+1=16, que equivale a infinito. Por lo tanto, NO propaga rutas con métrica 15 — esas redes quedan aisladas en ese router. El límite práctico de alcance en RIP es 15 hops.'
-    },
-    {
-      q: '¿Cuál es la diferencia fundamental entre RIPv1 y RIPv2?',
-      opts: ['RIPv2 tiene AD de 100 vs AD de 120 en v1','RIPv2 incluye la máscara de subred en sus actualizaciones, soportando VLSM y classless routing','RIPv2 usa TCP en vez de UDP','RIPv2 limita a 30 hops vs 15 en v1'],
-      ans: 1,
-      exp: 'La diferencia crítica es que RIPv2 es CLASSLESS — incluye la máscara de subred (/24, /30, etc.) en cada entrada de su actualización. RIPv1 no incluye máscara y asume rutas classful (clase A=/8, B=/16, C=/24). Esto hace que RIPv2 soporte VLSM, subredes discontinuas y redes modernas. Ambas versiones usan UDP 520, AD 120 y límite de 15 hops.'
-    },
-    {
-      q: '¿Qué comando es CRÍTICO configurar en RIPv2 para evitar que envíe rutas resumidas en lugar de subredes?',
-      opts: ['ip classless','no classful','no auto-summary','ip subnet-zero'],
-      ans: 2,
-      exp: '"no auto-summary" es el comando esencial en RIPv2. Sin él, RIPv2 resume automáticamente las redes a sus límites classful cuando cruzan fronteras de red. Por ejemplo, 192.168.1.0/26 y 192.168.1.128/26 se resumirían como 192.168.1.0/24, perdiendo la información de las subredes. Con "no auto-summary", cada subred se anuncia con su máscara exacta.'
-    },
-    {
-      q: '¿Cuál es el propósito del Holddown Timer en RIP?',
-      opts: ['Determina cuándo enviar la próxima actualización periódica','Previene que información incorrecta de rutas caídas sobrescriba la tabla durante el período de convergencia','Controla cuánto tiempo esperar antes de eliminar una ruta de la tabla','Define el tiempo máximo de espera para un ARP Reply'],
-      ans: 1,
-      exp: 'El Holddown Timer (180s) protege la estabilidad durante la convergencia. Cuando una ruta se marca como inválida (caída), el router ignora cualquier actualización que anuncie esa ruta con una métrica PEOR. Esto previene el problema de "counting to infinity" donde routers con información obsoleta podrían reinstalar rutas incorrectas antes de que la red converja correctamente.'
-    },
-    {
-      q: '¿Qué mecanismo anti-bucle evita que un router anuncie una ruta de vuelta por la misma interfaz por la que la aprendió?',
-      opts: ['Holddown Timer','Route Poisoning','Split Horizon','Maximum Hop Count'],
-      ans: 2,
-      exp: 'Split Horizon es el mecanismo que dice: "no anunciar una ruta por la misma interfaz por la que se aprendió". Si R2 aprendió la ruta a 10.1.0.0 de R1 (via interfaz Gi0/0), con Split Horizon R2 NO incluye 10.1.0.0 en sus actualizaciones enviadas por Gi0/0 hacia R1. Esto elimina los bucles simples entre 2 routers. Para casos más complejos se combina con Poison Reverse.'
-    },
-    {
-      q: '¿A qué dirección envía sus actualizaciones RIPv2 por defecto?',
-      opts: ['255.255.255.255 (broadcast)','224.0.0.5 (OSPF)','224.0.0.9 (multicast RIPv2)','224.0.0.10 (EIGRP)'],
-      ans: 2,
-      exp: '224.0.0.9 es la dirección multicast de RIPv2. Solo los dispositivos que escuchan en ese grupo (routers con RIPv2 activo) procesan las actualizaciones. RIPv1 usaba broadcast 255.255.255.255, lo que causaba que TODOS los hosts del segmento procesaran los paquetes RIP innecesariamente. El multicast de v2 es más eficiente. 224.0.0.5/6 son de OSPF, 224.0.0.10 de EIGRP.'
-    },
-    {
-      q: 'Al configurar RIP, el administrador ejecuta "network 192.168.10.0". ¿Qué interfaces anunciará RIP?',
-      opts: ['Solo la interfaz con IP exactamente 192.168.10.0','Solo interfaces con IPs en la subred 192.168.10.0/24','Todas las interfaces cuya IP pertenece a la red CLASSFUL 192.168.10.0/24','Solo la interfaz con la máscara /24'],
-      ans: 2,
-      exp: 'El comando "network" en RIP usa lógica CLASSFUL. "network 192.168.10.0" activa RIP en todas las interfaces cuya dirección IP pertenece a la red classful 192.168.10.0/24 (clase C). Si tienes interfaces con 192.168.10.1/26 y 192.168.10.130/26, ambas serán activadas porque ambas caen dentro de 192.168.10.0/24. No se especifica máscara en el comando network de RIP.'
-    },
-    {
-      q: '¿Cuándo usarías "passive-interface" en la configuración de RIP?',
-      opts: ['En interfaces WAN hacia otros routers para no enviar demasiadas actualizaciones','En interfaces LAN hacia hosts, para que no envíen actualizaciones RIP pero sí procesen las recibidas','En cualquier interfaz para desactivar RIP completamente','En interfaces loopback solamente'],
-      ans: 1,
-      exp: 'passive-interface se usa en interfaces que están conectadas a redes de hosts (LANs), NO a otros routers RIP. Con passive-interface, la interfaz NO envía actualizaciones RIP (ahorrando ancho de banda y seguridad), pero SÍ aprende rutas de actualizaciones entrantes y SÍ anuncia las redes de esa interfaz en las actualizaciones que salen por otras interfaces. Es una buena práctica de seguridad.'
-    },
-    {
-      q: 'Un ingeniero ve en "show ip route": "R 172.16.0.0/16 [120/3] via 10.0.0.2". ¿Qué significa [120/3]?',
-      opts: ['Velocidad de 120 Mbps y 3 ms de latencia','AD = 120 (RIP) y métrica = 3 hops hacia esa red','Prioridad 120 y cost 3','Timeout 120s y 3 reintentos'],
-      ans: 1,
-      exp: 'En Cisco IOS, el formato [AD/métrica] siempre aparece en "show ip route". [120/3] significa: AD = 120 (confirmando que es RIP, ya que esa es su AD) y métrica = 3 (hay 3 routers entre este router y la red 172.16.0.0/16). El next-hop es 10.0.0.2. Si la misma red estuviera en OSPF como [110/30], OSPF ganaría por tener menor AD (110 < 120).'
+/* -----------------------------------------------------------------
+   NAMESPACE RIPQuiz - Protege el código contra sobreescritura por main.js
+----------------------------------------------------------------- */
+var RIPQuiz = (function() {
+  
+  function showTabRip(id, btn) {
+    document.querySelectorAll('.tab-content').forEach(function(t) { t.classList.remove('active'); });
+    document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+    var target = document.getElementById('tab-' + id);
+    if (target) target.classList.add('active');
+    if (btn) btn.classList.add('active');
+    
+    // Si es la pestaña quiz, asegurarnos de que esté inicializado
+    if (id === 'quiz') {
+      initQuiz();
     }
-  ];
+  }
 
-  const container = document.getElementById('quizContainerRIP');
-  let html = '';
-  questions.forEach((q, i) => {
-    html += `<div class="quiz-question" id="qqr${i}">
-      <div class="quiz-q-num">PREGUNTA ${i+1} DE ${questions.length}</div>
-      <div class="quiz-q-text">${q.q}</div>
-      <div class="quiz-opts">
-        ${q.opts.map((o,j) => `<button class="quiz-opt" onclick="answerQR(${i},${j},${q.ans},\`${q.exp.replace(/`/g,"'")}\`)">${o}</button>`).join('')}
-      </div>
-    </div>`;
+  function buildRefTable() {
+    const data = [
+      ['Versión actual recomendada', 'RIPv2', 'Classless, VLSM, multicast, autenticación MD5'],
+      ['Distancia Administrativa', '120', 'Mayor que OSPF(110) y EIGRP(90) — menos preferido'],
+      ['Métrica', 'Hop Count', 'Número de routers entre origen y destino'],
+      ['Métrica máxima', '15 hops', '16 = infinito (red inalcanzable)'],
+      ['Dirección multicast', '224.0.0.9', 'RIPv2. RIPv1 usa broadcast 255.255.255.255'],
+      ['Puerto UDP', '520', 'Transporte de actualizaciones RIP'],
+      ['Update Timer', '30 segundos', 'Frecuencia de envío de tabla completa'],
+      ['Invalid Timer', '180 segundos', 'Tiempo antes de marcar ruta como inválida'],
+      ['Holddown Timer', '180 segundos', 'Período de ignorar peores métricas para ruta caída'],
+      ['Flush Timer', '240 segundos', 'Tiempo antes de eliminar ruta inválida de la tabla'],
+      ['Load Balancing', 'Hasta 4 rutas (ajustable)', 'maximum-paths permite hasta 16'],
+      ['Comando clave 1', 'no auto-summary', 'SIEMPRE en RIPv2 para soportar VLSM'],
+      ['Comando clave 2', 'passive-interface', 'Evita enviar updates a interfaces de hosts'],
+      ['Comando clave 3', 'show ip protocols', 'Verificar configuración y vecinos RIP'],
+      ['Anti-bucle principal', 'Split Horizon', 'No anunciar ruta por la misma interfaz que se aprendió'],
+    ];
+    const headers = ['Parámetro', 'Valor', 'Descripción'];
+    var html = '<div class="table-wrap"><table class="ref-table"><thead><tr>';
+    for (var i = 0; i < headers.length; i++) {
+      html += '<th>' + headers[i] + '</th>';
+    }
+    html += '</tr></thead><tbody>';
+    for (var i = 0; i < data.length; i++) {
+      html += '<tr>';
+      for (var j = 0; j < data[i].length; j++) {
+        html += '<td>' + data[i][j] + '</td>';
+      }
+      html += '</tr>';
+    }
+    html += '</tbody></table></div>';
+    var refDiv = document.getElementById('refTableRIP');
+    if (refDiv) refDiv.innerHTML = html;
+  }
+
+  function initQuiz() {
+    const questions = [
+      {
+        q: '¿Cuál es la Distancia Administrativa (AD) de RIP?',
+        opts: ['90','110','120','150'],
+        ans: 2,
+        exp: 'La AD de RIP es 120. Para comparar: EIGRP internal = 90, OSPF = 110, RIP = 120, External EIGRP = 170. A menor AD, más confiable. Si OSPF y RIP anuncian la misma ruta, OSPF gana (110 < 120). La AD solo importa cuando dos protocolos diferentes anuncian la misma red.'
+      },
+      {
+        q: 'Un router RIP recibe una actualización con una ruta a 192.168.5.0/24 con métrica = 15. ¿Puede este router llegar a esa red y propagarla a sus vecinos?',
+        opts: ['Sí, puede llegar y propagar normalmente','Sí puede llegar, pero NO puede propagarla (métrica sería 16 = infinito)','No puede llegar — métrica 15 es el límite','No — RIP no soporta más de 10 hops'],
+        ans: 1,
+        exp: 'Métrica 15 significa que hay 15 routers entre el origen y la red. El router SÍ puede agregar la ruta a su tabla (15 ≤ 15). Pero cuando intente propagarla a sus vecinos, la métrica sería 15+1=16, que equivale a infinito. Por lo tanto, NO propaga rutas con métrica 15 — esas redes quedan aisladas en ese router. El límite práctico de alcance en RIP es 15 hops.'
+      },
+      {
+        q: '¿Cuál es la diferencia fundamental entre RIPv1 y RIPv2?',
+        opts: ['RIPv2 tiene AD de 100 vs AD de 120 en v1','RIPv2 incluye la máscara de subred en sus actualizaciones, soportando VLSM y classless routing','RIPv2 usa TCP en vez de UDP','RIPv2 limita a 30 hops vs 15 en v1'],
+        ans: 1,
+        exp: 'La diferencia crítica es que RIPv2 es CLASSLESS — incluye la máscara de subred (/24, /30, etc.) en cada entrada de su actualización. RIPv1 no incluye máscara y asume rutas classful (clase A=/8, B=/16, C=/24). Esto hace que RIPv2 soporte VLSM, subredes discontinuas y redes modernas. Ambas versiones usan UDP 520, AD 120 y límite de 15 hops.'
+      },
+      {
+        q: '¿Qué comando es CRÍTICO configurar en RIPv2 para evitar que envíe rutas resumidas en lugar de subredes?',
+        opts: ['ip classless','no classful','no auto-summary','ip subnet-zero'],
+        ans: 2,
+        exp: '"no auto-summary" es el comando esencial en RIPv2. Sin él, RIPv2 resume automáticamente las redes a sus límites classful cuando cruzan fronteras de red. Por ejemplo, 192.168.1.0/26 y 192.168.1.128/26 se resumirían como 192.168.1.0/24, perdiendo la información de las subredes. Con "no auto-summary", cada subred se anuncia con su máscara exacta.'
+      },
+      {
+        q: '¿Cuál es el propósito del Holddown Timer en RIP?',
+        opts: ['Determina cuándo enviar la próxima actualización periódica','Previene que información incorrecta de rutas caídas sobrescriba la tabla durante el período de convergencia','Controla cuánto tiempo esperar antes de eliminar una ruta de la tabla','Define el tiempo máximo de espera para un ARP Reply'],
+        ans: 1,
+        exp: 'El Holddown Timer (180s) protege la estabilidad durante la convergencia. Cuando una ruta se marca como inválida (caída), el router ignora cualquier actualización que anuncie esa ruta con una métrica PEOR. Esto previene el problema de "counting to infinity" donde routers con información obsoleta podrían reinstalar rutas incorrectas antes de que la red converja correctamente.'
+      },
+      {
+        q: '¿Qué mecanismo anti-bucle evita que un router anuncie una ruta de vuelta por la misma interfaz por la que la aprendió?',
+        opts: ['Holddown Timer','Route Poisoning','Split Horizon','Maximum Hop Count'],
+        ans: 2,
+        exp: 'Split Horizon es el mecanismo que dice: "no anunciar una ruta por la misma interfaz por la que se aprendió". Si R2 aprendió la ruta a 10.1.0.0 de R1 (via interfaz Gi0/0), con Split Horizon R2 NO incluye 10.1.0.0 en sus actualizaciones enviadas por Gi0/0 hacia R1. Esto elimina los bucles simples entre 2 routers. Para casos más complejos se combina con Poison Reverse.'
+      },
+      {
+        q: '¿A qué dirección envía sus actualizaciones RIPv2 por defecto?',
+        opts: ['255.255.255.255 (broadcast)','224.0.0.5 (OSPF)','224.0.0.9 (multicast RIPv2)','224.0.0.10 (EIGRP)'],
+        ans: 2,
+        exp: '224.0.0.9 es la dirección multicast de RIPv2. Solo los dispositivos que escuchan en ese grupo (routers con RIPv2 activo) procesan las actualizaciones. RIPv1 usaba broadcast 255.255.255.255, lo que causaba que TODOS los hosts del segmento procesaran los paquetes RIP innecesariamente. El multicast de v2 es más eficiente. 224.0.0.5/6 son de OSPF, 224.0.0.10 de EIGRP.'
+      },
+      {
+        q: 'Al configurar RIP, el administrador ejecuta "network 192.168.10.0". ¿Qué interfaces anunciará RIP?',
+        opts: ['Solo la interfaz con IP exactamente 192.168.10.0','Solo interfaces con IPs en la subred 192.168.10.0/24','Todas las interfaces cuya IP pertenece a la red CLASSFUL 192.168.10.0/24','Solo la interfaz con la máscara /24'],
+        ans: 2,
+        exp: 'El comando "network" en RIP usa lógica CLASSFUL. "network 192.168.10.0" activa RIP en todas las interfaces cuya dirección IP pertenece a la red classful 192.168.10.0/24 (clase C). Si tienes interfaces con 192.168.10.1/26 y 192.168.10.130/26, ambas serán activadas porque ambas caen dentro de 192.168.10.0/24. No se especifica máscara en el comando network de RIP.'
+      },
+      {
+        q: '¿Cuándo usarías "passive-interface" en la configuración de RIP?',
+        opts: ['En interfaces WAN hacia otros routers para no enviar demasiadas actualizaciones','En interfaces LAN hacia hosts, para que no envíen actualizaciones RIP pero sí procesen las recibidas','En cualquier interfaz para desactivar RIP completamente','En interfaces loopback solamente'],
+        ans: 1,
+        exp: 'passive-interface se usa en interfaces que están conectadas a redes de hosts (LANs), NO a otros routers RIP. Con passive-interface, la interfaz NO envía actualizaciones RIP (ahorrando ancho de banda y seguridad), pero SÍ aprende rutas de actualizaciones entrantes y SÍ anuncia las redes de esa interfaz en las actualizaciones que salen por otras interfaces. Es una buena práctica de seguridad.'
+      },
+      {
+        q: 'Un ingeniero ve en "show ip route": "R 172.16.0.0/16 [120/3] via 10.0.0.2". ¿Qué significa [120/3]?',
+        opts: ['Velocidad de 120 Mbps y 3 ms de latencia','AD = 120 (RIP) y métrica = 3 hops hacia esa red','Prioridad 120 y cost 3','Timeout 120s y 3 reintentos'],
+        ans: 1,
+        exp: 'En Cisco IOS, el formato [AD/métrica] siempre aparece en "show ip route". [120/3] significa: AD = 120 (confirmando que es RIP, ya que esa es su AD) y métrica = 3 (hay 3 routers entre este router y la red 172.16.0.0/16). El next-hop es 10.0.0.2. Si la misma red estuviera en OSPF como [110/30], OSPF ganaría por tener menor AD (110 < 120).'
+      }
+    ];
+
+    var container = document.getElementById('quizContainerRIP');
+    if (!container) return;
+    
+    // Verificar si ya existe contenido (para no regenerar si ya está)
+    if (container.innerHTML.trim() !== '') return;
+    
+    var html = '';
+    for (var i = 0; i < questions.length; i++) {
+      var q = questions[i];
+      var optsHtml = '';
+      for (var j = 0; j < q.opts.length; j++) {
+        optsHtml += '<button class="quiz-opt" data-qi="' + i + '" data-sel="' + j + '" data-ans="' + q.ans + '">' + q.opts[j] + '</button>';
+      }
+      html += '<div class="quiz-question" id="qqr' + i + '">' +
+        '<div class="quiz-q-num">PREGUNTA ' + (i+1) + ' DE ' + questions.length + '</div>' +
+        '<div class="quiz-q-text">' + q.q + '</div>' +
+        '<div class="quiz-opts">' + optsHtml + '</div>' +
+        '</div>';
+    }
+    container.innerHTML = html;
+
+    // Guardar explicaciones en objeto separado
+    window._ripExp = {};
+    for (var i = 0; i < questions.length; i++) { 
+      window._ripExp[i] = questions[i].exp; 
+    }
+
+    // Asignar eventos con addEventListener
+    var buttons = container.querySelectorAll('.quiz-opt');
+    for (var k = 0; k < buttons.length; k++) {
+      buttons[k].addEventListener('click', function() {
+        var qi  = parseInt(this.getAttribute('data-qi'), 10);
+        var sel = parseInt(this.getAttribute('data-sel'), 10);
+        var ans = parseInt(this.getAttribute('data-ans'), 10);
+        answerQR(qi, sel, ans, window._ripExp[qi]);
+      });
+    }
+  }
+
+  function answerQR(qi, sel, correct, exp) {
+    var qDiv = document.getElementById('qqr' + qi);
+    var btns = qDiv.querySelectorAll('.quiz-opt');
+    for (var i = 0; i < btns.length; i++) { 
+      btns[i].disabled = true; 
+    }
+    btns[sel].classList.add(sel === correct ? 'correct' : 'wrong');
+    if (sel !== correct) btns[correct].classList.add('correct');
+    var expDiv = document.createElement('div');
+    expDiv.className = 'quiz-explanation';
+    expDiv.innerHTML = '<strong>' + (sel===correct?'✅ Correcto!':'❌ Incorrecto.') + '</strong> ' + exp;
+    qDiv.appendChild(expDiv);
+  }
+
+  // Inicialización cuando el DOM está listo
+  function init() {
+    buildRefTable();
+    // No llamamos initQuiz aquí porque se llama cuando se abre la pestaña
+  }
+
+  // API pública
+  return {
+    showTabRip: showTabRip,
+    init: init
+  };
+  
+})();
+
+// Inicializar cuando la ventana esté completamente cargada (después de main.js)
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+      RIPQuiz.init();
+    }, 100);
   });
-  container.innerHTML = html;
+} else {
+  setTimeout(function() {
+    RIPQuiz.init();
+  }, 100);
 }
-
-function answerQR(qi, sel, correct, exp) {
-  const qDiv = document.getElementById('qqr' + qi);
-  const btns = qDiv.querySelectorAll('.quiz-opt');
-  btns.forEach(b => b.disabled = true);
-  btns[sel].classList.add(sel === correct ? 'correct' : 'wrong');
-  if (sel !== correct) btns[correct].classList.add('correct');
-  const expDiv = document.createElement('div');
-  expDiv.className = 'quiz-explanation';
-  expDiv.innerHTML = `<strong>${sel===correct?'✅ Correcto!':'❌ Incorrecto.'}</strong> ${exp}`;
-  qDiv.appendChild(expDiv);
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-  buildRefTable();
-  initQuiz();
-});
 </script>
 </body>
 </html>
+```
