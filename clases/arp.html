@@ -1004,6 +1004,7 @@ function buildRefTable() {
   html += '<div class="table-wrap"><table class="ref-table"><thead><tr>' + h1.map(h=>`<th>${h}</th>`).join('') + '</tr></thead><tbody>';
   d1.forEach(r => { html += '<tr>' + r.map(c=>`<td>${c}</td>`).join('') + '</tr>'; });
   html += '</tbody></table></div>';
+  
   const h2 = ['Campo ARP', 'Tamaño', 'En Request', 'En Reply', 'Descripción'];
   const d2 = [
     ['Hardware Type (HTYPE)',         '2 bytes', '0x0001 (Ethernet)',     '0x0001',             'Tipo de red física.'],
@@ -1019,6 +1020,7 @@ function buildRefTable() {
   html += '<div class="table-wrap"><table class="ref-table"><thead><tr>' + h2.map(h=>`<th>${h}</th>`).join('') + '</tr></thead><tbody>';
   d2.forEach(r => { html += '<tr>' + r.map(c=>`<td>${c}</td>`).join('') + '</tr>'; });
   html += '</tbody></table></div>';
+  
   const h3 = ['Comando', 'Modo', 'Descripción'];
   const d3 = [
     ['show arp',                                   'Privilegiado', 'Tabla ARP completa con Age, MAC e interfaz.'],
@@ -1045,7 +1047,9 @@ function buildRefTable() {
   html += '<div class="table-wrap"><table class="ref-table"><thead><tr>' + h3.map(h=>`<th>${h}</th>`).join('') + '</tr></thead><tbody>';
   d3.forEach(r => { html += '<tr>' + r.map(c=>`<td>${c}</td>`).join('') + '</tr>'; });
   html += '</tbody></table></div>';
-  document.getElementById('refTableARP').innerHTML = html;
+  
+  const el = document.getElementById('refTableARP');
+  if (el) el.innerHTML = html;
 }
 
 // ── QUIZ ──────────────────────────────────────
@@ -1114,25 +1118,53 @@ function initQuiz() {
   ];
 
   const container = document.getElementById('quizContainerARP');
+  if (!container) {
+    console.error('Error: No se encontró el contenedor #quizContainerARP');
+    return;
+  }
+  
   let html = '';
   questions.forEach((q, i) => {
+    // Escapar comillas para el atributo data-exp
+    const expEscaped = q.exp.replace(/"/g, '&quot;').replace(/'/g, "&apos;");
+    
     html += `<div class="quiz-question" id="qq${i}">
       <div class="quiz-q-num">PREGUNTA ${i+1} DE ${questions.length}</div>
       <div class="quiz-q-text">${q.q}</div>
       <div class="quiz-opts">
-        ${q.opts.map((o,j) => `<button class="quiz-opt" onclick="answerQ(${i},${j},${q.ans},\`${q.exp.replace(/`/g,"'")}\`)">${o}</button>`).join('')}
+        ${q.opts.map((o,j) => `<button class="quiz-opt" data-qi="${i}" data-sel="${j}" data-correct="${q.ans}" data-exp="${expEscaped}">${o}</button>`).join('')}
       </div>
     </div>`;
   });
+  
   container.innerHTML = html;
+  
+  // Agregar event listeners después de renderizar
+  container.querySelectorAll('.quiz-opt').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const qi = parseInt(this.getAttribute('data-qi'));
+      const sel = parseInt(this.getAttribute('data-sel'));
+      const correct = parseInt(this.getAttribute('data-correct'));
+      const exp = this.getAttribute('data-exp');
+      answerQ(qi, sel, correct, exp);
+    });
+  });
 }
 
 function answerQ(qi, sel, correct, exp) {
   const qDiv = document.getElementById('qq' + qi);
+  if (!qDiv) return;
+  
   const btns = qDiv.querySelectorAll('.quiz-opt');
   btns.forEach(b => b.disabled = true);
-  btns[sel].classList.add(sel === correct ? 'correct' : 'wrong');
-  if (sel !== correct) btns[correct].classList.add('correct');
+  
+  if (sel === correct) {
+    btns[sel].classList.add('correct');
+  } else {
+    btns[sel].classList.add('wrong');
+    if (btns[correct]) btns[correct].classList.add('correct');
+  }
+  
   const expDiv = document.createElement('div');
   expDiv.className = 'quiz-explanation';
   expDiv.innerHTML = `<strong>${sel===correct?'✅ Correcto!':'❌ Incorrecto.'}</strong> ${exp}`;
