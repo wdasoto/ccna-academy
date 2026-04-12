@@ -1,234 +1,862 @@
+Aquí tienes el archivo `arp.html` completo con el **namespace `ARPQuiz`** aplicado. Esto evita que `../assets/main.js` sobrescriba tus funciones cuando se ejecute después con `defer`.
+
+```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ARP — Address Resolution Protocol | CCNA Academy</title>
-  <meta name="description"
-        content="Clase magistral ARP: proceso completo, tabla ARP, Gratuitous ARP, Proxy ARP, ARP Spoofing, DAI, CLI Cisco IOS y laboratorio Packet Tracer. CCNA 200-301.">
+  <meta name="description" content="Clase magistral ARP: proceso completo, tabla ARP, Gratuitous ARP, Proxy ARP, ARP Spoofing, DAI, CLI Cisco IOS y laboratorio Packet Tracer. CCNA 200-301.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 <body>
 
 <div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
-
 <nav class="ccna-drawer" id="ccnaDrawer">
-  <!-- ==== DRAWER (menú lateral) ==== -->
   <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
-
-  <!-- General -->
   <div class="drawer-section"><div class="drawer-section-title">General</div>
     <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
-
-  <!-- M1 – Fundamentos -->
   <div class="drawer-section"><div class="drawer-section-title">M1 · Fundamentos</div>
-    <a href="fundamentos.html"        class="drawer-link"><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
-    <a href="subnetting.html"        class="drawer-link"><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
-    <a href="ipv6.html"              class="drawer-link"><span class="dl-icon">6️⃣</span> IPv6</a>
+    <a href="fundamentos.html"       class="drawer-link "><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
+    <a href="subnetting.html"        class="drawer-link "><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
+    <a href="ipv6.html"              class="drawer-link "><span class="dl-icon">6️⃣</span> IPv6</a>
     <a href="arp.html"               class="drawer-link active"><span class="dl-icon">📡</span> ARP</a>
-    <a href="rip.html"               class="drawer-link"><span class="dl-icon">🔄</span> RIP</a>
-    <a href="protocolos-internet.html" class="drawer-link"><span class="dl-icon">🌍</span> Protocolos Internet</a></div>
-
-  <!-- M2 – Dispositivos Cisco -->
+    <a href="rip.html"               class="drawer-link "><span class="dl-icon">🔄</span> RIP</a>
+    <a href="protocolos-internet.html" class="drawer-link "><span class="dl-icon">🌍</span> Protocolos Internet</a></div>
   <div class="drawer-section"><div class="drawer-section-title">M2 · Dispositivos Cisco</div>
-    <a href="router.html"                class="drawer-link"><span class="dl-icon">📡</span> Routers Cisco</a>
-    <a href="switches-cisco.html"        class="drawer-link"><span class="dl-icon">🔀</span> Switches Cisco</a></div>
-
-  <!-- M3 – Switching -->
+    <a href="router.html"            class="drawer-link "><span class="dl-icon">📡</span> Routers Cisco</a>
+    <a href="switches-cisco.html"    class="drawer-link "><span class="dl-icon">🔀</span> Switches Cisco</a></div>
   <div class="drawer-section"><div class="drawer-section-title">M3 · Switching</div>
-    <a href="vlan.html"                  class="drawer-link"><span class="dl-icon">🏷️</span> VLANs</a>
-    <a href="inter-vlan-routing.html"    class="drawer-link"><span class="dl-icon">🔁</span> Inter‑VLAN Routing</a>
-    <a href="stp.html"                    class="drawer-link"><span class="dl-icon">🌳</span> STP</a>
-    <a href="etherchannel.html"          class="drawer-link"><span class="dl-icon">🔗</span> EtherChannel</a>
-    <a href="port-security.html"         class="drawer-link"><span class="dl-icon">🔒</span> Port Security</a>
-    <a href="cdp-lldp.html"              class="drawer-link"><span class="dl-icon">🔍</span> CDP / LLDP</a></div>
-
-  <!-- M4 – Routing -->
+    <a href="vlan.html"              class="drawer-link "><span class="dl-icon">🏷️</span> VLANs</a>
+    <a href="inter-vlan-routing.html" class="drawer-link "><span class="dl-icon">🔁</span> Inter-VLAN Routing</a>
+    <a href="stp.html"               class="drawer-link "><span class="dl-icon">🌳</span> STP</a>
+    <a href="etherchannel.html"      class="drawer-link "><span class="dl-icon">🔗</span> EtherChannel</a>
+    <a href="port-security.html"     class="drawer-link "><span class="dl-icon">🔒</span> Port Security</a>
+    <a href="cdp-lldp.html"          class="drawer-link "><span class="dl-icon">🔍</span> CDP / LLDP</a></div>
   <div class="drawer-section"><div class="drawer-section-title">M4 · Routing</div>
-    <a href="routing.html"           class="drawer-link"><span class="dl-icon">🗺️</span> Routing Estático</a>
-    <a href="ospf.html"              class="drawer-link"><span class="dl-icon">⭕</span> OSPF</a>
-    <a href="eigrp.html"             class="drawer-link"><span class="dl-icon">⚡</span> EIGRP</a>
-    <a href="ospfv2-masterclass.html" class="drawer-link"><span class="dl-icon">🎯</span> OSPFv2 Masterclass</a></div>
-
-  <!-- M5 – Servicios IP -->
+    <a href="routing.html"           class="drawer-link "><span class="dl-icon">🗺️</span> Routing Estático</a>
+    <a href="ospf.html"              class="drawer-link "><span class="dl-icon">⭕</span> OSPF</a>
+    <a href="eigrp.html"             class="drawer-link "><span class="dl-icon">⚡</span> EIGRP</a>
+    <a href="ospfv2-masterclass.html"            class="drawer-link "><span class="dl-icon">🎯</span> OSPFv2 Masterclass</a></div>
   <div class="drawer-section"><div class="drawer-section-title">M5 · Servicios IP</div>
-    <a href="dhcp.html" class="drawer-link"><span class="dl-icon">📋</span> DHCP</a>
-    <a href="nat.html"  class="drawer-link"><span class="dl-icon">🔄</span> NAT / PAT</a></div>
-
-  <!-- M6 – Seguridad -->
+    <a href="dhcp.html"              class="drawer-link "><span class="dl-icon">📋</span> DHCP</a>
+    <a href="nat.html"               class="drawer-link "><span class="dl-icon">🔄</span> NAT / PAT</a></div>
   <div class="drawer-section"><div class="drawer-section-title">M6 · Seguridad</div>
-    <a href="acl.html" class="drawer-link"><span class="dl-icon">🛡️</span> ACLs</a></div>
-
-  <!-- M7 – WAN & QoS -->
+    <a href="acl.html"               class="drawer-link "><span class="dl-icon">🛡️</span> ACLs</a></div>
   <div class="drawer-section"><div class="drawer-section-title">M7 · WAN &amp; QoS</div>
-    <a href="wan.html" class="drawer-link"><span class="dl-icon">🌍</span> WAN</a>
-    <a href="qos.html" class="drawer-link"><span class="dl-icon">📊</span> QoS</a></div>
-
-  <!-- Herramientas -->
+    <a href="wan.html"               class="drawer-link "><span class="dl-icon">🌍</span> WAN</a>
+    <a href="qos.html"               class="drawer-link "><span class="dl-icon">📊</span> QoS</a></div>
   <div class="drawer-section"><div class="drawer-section-title">⚡ Herramientas</div>
-    <a href="asistente.html"  class="drawer-link"><span class="dl-icon">🤖</span> Asistente IA</a>
-    <a href="netbot.html"     class="drawer-link"><span class="dl-icon">⚙️</span> NetBot Config</a>
-    <a href="calculadora.html"class="drawer-link"><span class="dl-icon">🧮</span> Calculadora IP</a>
-    <a href="../banco-preguntas.html" class="drawer-link"><span class="dl-icon">📝</span> Banco de Preguntas</a></div>
+    <a href="asistente.html"         class="drawer-link "><span class="dl-icon">🤖</span> Asistente IA</a>
+    <a href="netbot.html"            class="drawer-link "><span class="dl-icon">⚙️</span> NetBot Config</a>
+    <a href="calculadora.html"       class="drawer-link "><span class="dl-icon">🧮</span> Calculadora IP</a>
+    <a href="../banco-preguntas.html" class="drawer-link "><span class="dl-icon">📝</span> Banco de Preguntas</a></div>
 </nav>
-
 <header class="navbar">
   <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
   <a href="../index.html" class="navbar-brand">CISCO<span> ACADEMY</span></a>
   <div class="navbar-spacer"></div>
   <a href="../index.html" class="navbar-link">← Inicio</a>
 </header>
-
 <script src="../assets/main.js" defer></script>
 <div class="nav-spacer"></div>
 
-<!-----------------------------------------------------------------
-   HERO (encabezado de la lección)
------------------------------------------------------------------>
+<!-- HERO -->
 <section class="class-hero">
   <div class="class-hero-inner">
     <div class="class-badge">M1 · FUNDAMENTOS · CAPA 2 / CAPA 3</div>
     <h1 class="class-title">ARP <span class="class-title-accent">Address Resolution Protocol</span></h1>
-    <p class="class-subtitle">
-      El protocolo que traduce direcciones IP a direcciones MAC. Sin ARP, ningún paquete IP
-      puede entregarse dentro de una red local. Comprender ARP a fondo es comprender
-      la base de toda comunicación en redes Ethernet modernas.
-    </p>
+    <p class="class-subtitle">El protocolo que traduce direcciones IP a direcciones MAC. Sin ARP, ningún paquete IP puede entregarse dentro de una red local. Comprender ARP a fondo es comprender la base de toda comunicación en redes Ethernet modernas.</p>
     <div class="class-meta">
-      <span class="meta-item">📋 RFC 826 — 1982</span>
-      <span class="meta-item">🎯 CCNA 200‑301 Exam Topic 1.3</span>
-      <span class="meta-item">⏱ ~60 min lectura</span>
+      <span class="meta-item">📋 RFC 826 — 1982</span>
+      <span class="meta-item">🎯 CCNA 200-301 Exam Topic 1.3</span>
+      <span class="meta-item">⏱ ~60 min lectura</span>
       <span class="meta-item">🧪 Lab incluido</span>
       <span class="meta-item">🔒 Seguridad DAI</span>
     </div>
   </div>
 </section>
 
-<!-----------------------------------------------------------------
-   TABS – barra de botones
------------------------------------------------------------------>
+<!-- TABS -->
 <div class="tabs-wrap">
   <div class="tabs-bar">
-    <button class="tab-btn active"
-            onclick="ARPQuiz.showTabArp('teoria',this)">📖 Teoría</button>
-    <button class="tab-btn"
-            onclick="ARPQuiz.showTabArp('proceso',this)">🔄 Proceso ARP</button>
-    <button class="tab-btn"
-            onclick="ARPQuiz.showTabArp('tipos',this)">📂 Tipos ARP</button>
-    <button class="tab-btn"
-            onclick="ARPQuiz.showTabArp('seguridad',this)">🔒 Seguridad</button>
-    <button class="tab-btn"
-            onclick="ARPQuiz.showTabArp('cli',this)">💻 CLI Cisco</button>
-    <button class="tab-btn"
-            onclick="ARPQuiz.showTabArp('lab',this)">🧪 Laboratorio</button>
-    <button class="tab-btn"
-            onclick="ARPQuiz.showTabArp('tabla',this)">📊 Referencia</button>
-    <button class="tab-btn"
-            onclick="ARPQuiz.showTabArp('trouble',this)">🔧 Troubleshooting</button>
-    <button class="tab-btn"
-            onclick="ARPQuiz.showTabArp('quiz',this)">🎯 Quiz</button>
+    <button class="tab-btn active" onclick="ARPQuiz.showTabArp('teoria',this)">📖 Teoría</button>
+    <button class="tab-btn" onclick="ARPQuiz.showTabArp('proceso',this)">🔄 Proceso ARP</button>
+    <button class="tab-btn" onclick="ARPQuiz.showTabArp('tipos',this)">📂 Tipos ARP</button>
+    <button class="tab-btn" onclick="ARPQuiz.showTabArp('seguridad',this)">🔒 Seguridad</button>
+    <button class="tab-btn" onclick="ARPQuiz.showTabArp('cli',this)">💻 CLI Cisco</button>
+    <button class="tab-btn" onclick="ARPQuiz.showTabArp('lab',this)">🧪 Laboratorio</button>
+    <button class="tab-btn" onclick="ARPQuiz.showTabArp('tabla',this)">📊 Referencia</button>
+    <button class="tab-btn" onclick="ARPQuiz.showTabArp('trouble',this)">🔧 Troubleshooting</button>
+    <button class="tab-btn" onclick="ARPQuiz.showTabArp('quiz',this)">🎯 Quiz</button>
   </div>
 
-  <!-- -----------------------------------------------------------------
-       TAB 1 – TEORÍA
-       ----------------------------------------------------------------- -->
-  <div id="tab-teoria" class="tab-content active">
-    <div class="content-block">
-      <h2 class="section-title">¿Qué es ARP y por qué existe?</h2>
-      <!-- (TODO: el resto del contenido de la pestaña “Teoría” permanece sin cambios) -->
-      <p>… (texto, diagramas, tablas, etc.) …</p>
+<!-- ══════════════════════════════════════════════
+     TAB 1 — TEORÍA
+══════════════════════════════════════════════ -->
+<div id="tab-teoria" class="tab-content active">
+<div class="content-block">
+  <h2 class="section-title">¿Qué es ARP y por qué existe?</h2>
+  <p>En toda comunicación de red existe un problema fundamental: las aplicaciones y los protocolos de capa 3 trabajan con <strong>direcciones IP</strong>, pero la red física Ethernet requiere <strong>direcciones MAC</strong> para entregar los frames de un dispositivo a otro. Nadie conoce de antemano la MAC del destinatario.</p>
+  <p><strong>ARP (Address Resolution Protocol)</strong>, definido en la <strong>RFC 826 (1982)</strong>, resuelve exactamente este problema: <em>dada una dirección IP conocida dentro del mismo segmento local, encontrar la dirección MAC que le corresponde</em>. Sin ARP en operación, no existe comunicación de capa 2 dirigida.</p>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Analogía perfecta</div>
+    <p>Imagina que trabajas en una empresa y necesitas entregar un documento a "Laura Pérez" (la dirección IP). Para entregarlo físicamente debes saber en qué escritorio trabaja (la dirección MAC). Preguntas en voz alta a toda la oficina: <em>"¿Alguien sabe dónde está Laura Pérez?"</em> — eso es un <strong>ARP Request (broadcast)</strong>. Laura responde: <em>"¡Soy yo, escritorio B-7!"</em> — eso es el <strong>ARP Reply (unicast)</strong>. Memorizas su ubicación y ya no necesitas preguntar de nuevo durante un tiempo.</p>
+  </div>
+
+  <h2 class="section-title">Posición de ARP en el modelo OSI</h2>
+  <p>ARP es un protocolo único porque opera en la <strong>frontera entre capa 2 y capa 3</strong>. Técnicamente:</p>
+  <ul>
+    <li>Usa frames Ethernet de <strong>capa 2</strong> para transportarse</li>
+    <li>Resuelve direcciones de <strong>capa 3</strong> (IP)</li>
+    <li>Tiene su propio EtherType: <code>0x0806</code></li>
+    <li>NO es encapsulado dentro de IP — viaja directamente en el frame Ethernet</li>
+    <li><strong>No cruza routers</strong> — es estrictamente local al dominio de broadcast (VLAN)</li>
+  </ul>
+
+  <div class="diagram-box">
+    <div class="diagram-title">Encapsulamiento de un mensaje ARP</div>
+    <div class="frame-diagram">
+      <div class="frame-field eth">Ethernet Header<br><small>DST MAC | SRC MAC | EtherType: 0x0806</small></div>
+      <div class="frame-field arp">ARP Payload — 28 bytes<br><small>HW Type | Proto Type | HLen | PLen | Opcode | Sender MAC+IP | Target MAC+IP</small></div>
+      <div class="frame-field fcs">FCS<br><small>CRC 32</small></div>
     </div>
   </div>
 
-  <!-- -----------------------------------------------------------------
-       TAB 2 – PROCESO ARP
-       ----------------------------------------------------------------- -->
-  <div id="tab-proceso" class="tab-content">
-    <div class="content-block">
-      <h2 class="section-title">El proceso ARP paso a paso</h2>
-      <!-- (contenido proceso ARP) -->
-      <p>… (lista de pasos, diagramas…) …</p>
+  <h2 class="section-title">Estructura del Paquete ARP</h2>
+  <p>Un mensaje ARP tiene exactamente <strong>28 bytes</strong> de payload (para IPv4 sobre Ethernet). Cada campo tiene un propósito específico:</p>
+
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead><tr><th>Campo</th><th>Tamaño</th><th>Valor típico</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr><td><code>Hardware Type (HTYPE)</code></td><td>2 bytes</td><td>0x0001</td><td>Tipo de red física. 1 = Ethernet. Define el tipo de dirección hardware usada.</td></tr>
+        <tr><td><code>Protocol Type (PTYPE)</code></td><td>2 bytes</td><td>0x0800</td><td>Protocolo de capa 3. 0x0800 = IPv4. Mismo valor que EtherType de IP.</td></tr>
+        <tr><td><code>Hardware Address Length (HLEN)</code></td><td>1 byte</td><td>6</td><td>Longitud en bytes de la dirección MAC. Siempre 6 para Ethernet.</td></tr>
+        <tr><td><code>Protocol Address Length (PLEN)</code></td><td>1 byte</td><td>4</td><td>Longitud en bytes de la dirección IP. Siempre 4 para IPv4.</td></tr>
+        <tr><td><code>Operation (Opcode)</code></td><td>2 bytes</td><td>1 = Request, 2 = Reply</td><td>Define si es solicitud (1) o respuesta (2).</td></tr>
+        <tr><td><code>Sender Hardware Address</code></td><td>6 bytes</td><td>AA:BB:CC:DD:EE:01</td><td>MAC del dispositivo que envía el mensaje.</td></tr>
+        <tr><td><code>Sender Protocol Address</code></td><td>4 bytes</td><td>192.168.1.10</td><td>IP del dispositivo que envía el mensaje.</td></tr>
+        <tr><td><code>Target Hardware Address</code></td><td>6 bytes</td><td>00:00:00:00:00:00</td><td>MAC buscada. En Request = ceros (desconocida). En Reply = la MAC real.</td></tr>
+        <tr><td><code>Target Protocol Address</code></td><td>4 bytes</td><td>192.168.1.1</td><td>IP que se desea resolver.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="section-title">La Tabla ARP (ARP Cache)</h2>
+  <p>Cada dispositivo mantiene una <strong>tabla ARP en memoria RAM</strong> que mapea IPs conocidas con sus MACs correspondientes. Esta tabla es dinámica y tiene un tiempo de vida (TTL) por cada entrada.</p>
+  <ul>
+    <li><strong>Entrada dinámica:</strong> Aprendida automáticamente. TTL: 240 seg en Cisco IOS, 60 seg en Windows, 20 min en macOS.</li>
+    <li><strong>Entrada estática:</strong> Configurada manualmente por el administrador. No expira. Inmune a ARP Poisoning.</li>
+    <li><strong>Entrada incompleta:</strong> ARP Request enviado, Reply aún no recibido. Estado transitorio mientras se espera la respuesta.</li>
+  </ul>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚠️ Punto crítico CCNA</div>
+    <p>Cuando un router reenvía un paquete de un segmento a otro, <strong>reemplaza las MACs de origen y destino en cada salto</strong>. Las <strong>IPs de origen y destino permanecen iguales de extremo a extremo</strong>. En cada nuevo segmento se ejecuta un ARP para resolver la MAC del siguiente salto. Este concepto es frecuente en el examen CCNA.</p>
+  </div>
+
+  <h2 class="section-title">ARP entre redes distintas — El rol del Default Gateway</h2>
+  <p>Cuando el destino está en una <strong>red diferente</strong>, el host origen NO hace ARP por la IP destino. En cambio:</p>
+  <ol>
+    <li>El host aplica su máscara de subred y determina que el destino está en una red diferente.</li>
+    <li>No puede hacer ARP por la IP destino — <strong>hace ARP por la IP del Default Gateway</strong>.</li>
+    <li>Envía el frame con la <strong>MAC del router</strong> como destino, pero con la IP final en el header IP.</li>
+    <li>El router desencapsula el frame, consulta su tabla de routing y hace ARP en el segmento siguiente.</li>
+    <li>Este proceso se repite en cada salto hasta llegar al destino final.</li>
+  </ol>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 2 — PROCESO ARP
+══════════════════════════════════════════════ -->
+<div id="tab-proceso" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">El proceso ARP paso a paso</h2>
+
+  <div class="process-steps">
+    <div class="process-step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <div class="step-title">Consulta de la caché ARP local</div>
+        <p>Antes de generar cualquier tráfico, el dispositivo <strong>consulta su tabla ARP en RAM</strong>. Si hay una entrada válida y no expirada para la IP destino, utiliza esa MAC de inmediato. No se genera ningún mensaje ARP. En redes activas, la mayoría de comunicaciones usan la caché directamente.</p>
+      </div>
+    </div>
+    <div class="process-step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <div class="step-title">ARP Request — Broadcast de capa 2</div>
+        <p>Si no hay entrada en caché, el host construye un <strong>ARP Request</strong> y lo envía como <strong>broadcast de capa 2</strong>:</p>
+        <ul>
+          <li>MAC destino del frame: <code>FF:FF:FF:FF:FF:FF</code> (broadcast)</li>
+          <li>Target MAC en el payload ARP: <code>00:00:00:00:00:00</code> (desconocida)</li>
+          <li>Target IP: la IP que queremos resolver</li>
+          <li>Sender MAC y Sender IP: los del host que pregunta</li>
+        </ul>
+        <p><strong>Todos los hosts del segmento reciben este frame</strong> porque es broadcast. Los switches lo inundan por todos los puertos del mismo dominio de broadcast (VLAN).</p>
+      </div>
+    </div>
+    <div class="process-step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <div class="step-title">Procesamiento por cada host</div>
+        <p>Cada host que recibe el ARP Request hace lo siguiente:</p>
+        <ul>
+          <li><strong>Aprendizaje pasivo:</strong> extrae el Sender MAC e IP del Request y lo agrega a su propia caché ARP. Esto optimiza la comunicación futura sin necesidad de un nuevo ARP.</li>
+          <li><strong>Comparación:</strong> coteja la Target IP con su propia dirección IP configurada.</li>
+          <li>Si <strong>NO coincide</strong>: descarta silenciosamente el request</li>
+          <li>Si <strong>SÍ coincide</strong>: prepara y envía un ARP Reply</li>
+        </ul>
+      </div>
+    </div>
+    <div class="process-step">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <div class="step-title">ARP Reply — Unicast</div>
+        <p>El host dueño de la IP responde con un <strong>ARP Reply unicast</strong> directamente al solicitante:</p>
+        <ul>
+          <li>MAC destino del frame: MAC del host que preguntó</li>
+          <li>Sender MAC: su propia MAC (la respuesta)</li>
+          <li>Opcode: 2 (Reply)</li>
+        </ul>
+        <p>El Reply va directo al solicitante — <strong>no es broadcast</strong>. Ya se conoce la MAC destino gracias al Sender MAC del Request.</p>
+      </div>
+    </div>
+    <div class="process-step">
+      <div class="step-num">5</div>
+      <div class="step-content">
+        <div class="step-title">Actualización de caché y envío del paquete pendiente</div>
+        <p>Al recibir el ARP Reply, el solicitante:</p>
+        <ul>
+          <li>Guarda la correspondencia IP→MAC en su caché con el TTL configurado (240 seg en IOS).</li>
+          <li>Encapsula el paquete IP que estaba pendiente usando la MAC recién aprendida como destino L2.</li>
+          <li>Transmite el frame inmediatamente.</li>
+        </ul>
+        <p>Toda comunicación posterior hacia esa IP durante la vigencia del TTL usará la caché directamente — sin generar nuevo tráfico ARP.</p>
+      </div>
     </div>
   </div>
 
-  <!-- -----------------------------------------------------------------
-       TAB 3 – TIPOS ARP
-       ----------------------------------------------------------------- -->
-  <div id="tab-tipos" class="tab-content">
-    <div class="content-block">
-      <h2 class="section-title">Tipos de ARP</h2>
-      <!-- (contenido tipos ARP) -->
+  <h2 class="section-title">Diagrama de flujo completo</h2>
+  <div class="topology-svg">
+    <svg viewBox="0 0 780 320" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:780px;">
+      <defs>
+        <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L8,3 z" fill="#00d4aa"/>
+        </marker>
+        <marker id="arr2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L8,3 z" fill="#38bdf8"/>
+        </marker>
+      </defs>
+      <!-- PC A -->
+      <rect x="20" y="120" width="100" height="60" rx="8" fill="#0d1220" stroke="#00d4aa" stroke-width="1.5"/>
+      <text x="70" y="145" text-anchor="middle" fill="#00d4aa" font-family="Share Tech Mono" font-size="11">PC-A</text>
+      <text x="70" y="162" text-anchor="middle" fill="#6b7a9a" font-family="Share Tech Mono" font-size="9">192.168.1.10</text>
+      <text x="70" y="174" text-anchor="middle" fill="#6b7a9a" font-family="Share Tech Mono" font-size="8">AA:BB:CC:11:22:33</text>
+      <!-- SWITCH -->
+      <rect x="310" y="130" width="120" height="40" rx="6" fill="#0d1220" stroke="#4a5780" stroke-width="1"/>
+      <text x="370" y="155" text-anchor="middle" fill="#4a5780" font-family="Share Tech Mono" font-size="10">SW-1</text>
+      <!-- PC B -->
+      <rect x="490" y="30" width="100" height="60" rx="8" fill="#0d1220" stroke="#374060" stroke-width="1"/>
+      <text x="540" y="55" text-anchor="middle" fill="#6b7a9a" font-family="Share Tech Mono" font-size="11">PC-B</text>
+      <text x="540" y="72" text-anchor="middle" fill="#374060" font-family="Share Tech Mono" font-size="9">192.168.1.20</text>
+      <!-- PC C -->
+      <rect x="490" y="120" width="100" height="60" rx="8" fill="#0d1220" stroke="#00d4aa" stroke-width="1.5"/>
+      <text x="540" y="145" text-anchor="middle" fill="#00d4aa" font-family="Share Tech Mono" font-size="11">PC-C</text>
+      <text x="540" y="162" text-anchor="middle" fill="#6b7a9a" font-family="Share Tech Mono" font-size="9">192.168.1.30</text>
+      <text x="540" y="174" text-anchor="middle" fill="#6b7a9a" font-family="Share Tech Mono" font-size="8">CC:DD:EE:44:55:66</text>
+      <!-- PC D -->
+      <rect x="490" y="210" width="100" height="60" rx="8" fill="#0d1220" stroke="#374060" stroke-width="1"/>
+      <text x="540" y="235" text-anchor="middle" fill="#6b7a9a" font-family="Share Tech Mono" font-size="11">PC-D</text>
+      <text x="540" y="252" text-anchor="middle" fill="#374060" font-family="Share Tech Mono" font-size="9">192.168.1.40</text>
+      <!-- Lines to switch -->
+      <line x1="120" y1="150" x2="310" y2="150" stroke="#4a5780" stroke-width="1.5"/>
+      <line x1="430" y1="145" x2="490" y2="60" stroke="#4a5780" stroke-width="1.5"/>
+      <line x1="430" y1="150" x2="490" y2="150" stroke="#4a5780" stroke-width="1.5"/>
+      <line x1="430" y1="155" x2="490" y2="240" stroke="#4a5780" stroke-width="1.5"/>
+      <!-- ARP Request broadcast arrow -->
+      <line x1="120" y1="140" x2="480" y2="55" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr2)"/>
+      <line x1="120" y1="143" x2="480" y2="143" stroke="#38bdf8" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arr2)"/>
+      <line x1="120" y1="146" x2="480" y2="230" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr2)"/>
+      <text x="270" y="128" text-anchor="middle" fill="#38bdf8" font-family="Share Tech Mono" font-size="9">ARP REQUEST</text>
+      <text x="270" y="140" text-anchor="middle" fill="#38bdf8" font-family="Share Tech Mono" font-size="8">FF:FF:FF:FF:FF:FF</text>
+      <text x="270" y="152" text-anchor="middle" fill="#38bdf8" font-family="Share Tech Mono" font-size="8">"¿Quién tiene 1.30?"</text>
+      <!-- ARP Reply unicast arrow -->
+      <line x1="490" y1="160" x2="130" y2="160" stroke="#00d4aa" stroke-width="2" marker-end="url(#arr)"/>
+      <text x="320" y="178" text-anchor="middle" fill="#00d4aa" font-family="Share Tech Mono" font-size="9">ARP REPLY (unicast)</text>
+      <text x="320" y="190" text-anchor="middle" fill="#00d4aa" font-family="Share Tech Mono" font-size="8">"1.30 está en CC:DD:EE:44:55:66"</text>
+      <!-- Labels -->
+      <text x="540" y="295" text-anchor="middle" fill="#00d4aa" font-family="Share Tech Mono" font-size="9">✓ Responde</text>
+      <text x="540" y="15" text-anchor="middle" fill="#374060" font-family="Share Tech Mono" font-size="9">✗ Descarta</text>
+      <text x="540" y="285" text-anchor="middle" fill="#374060" font-family="Share Tech Mono" font-size="9">✗ Descarta</text>
+    </svg>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 ¿Por qué el primer ping en Cisco IOS falla? (.!!!!)</div>
+    <p>En Cisco IOS, al ejecutar <code>ping</code> por primera vez el resultado frecuente es <code>.!!!!</code>. El primer punto (<code>.</code>) = timeout. El router necesitó resolver la MAC vía ARP antes de encapsular el primer ICMP. El proceso toma &lt;2 segundos. Los siguientes pings (<code>!</code>) usan la caché ARP y son exitosos. Si todos los pings fallan (<code>.....</code>), ahí sí hay un problema real de conectividad.</p>
+  </div>
+
+  <h2 class="section-title">Impacto en rendimiento — ARP Storms</h2>
+  <p>En redes grandes con muchos hosts, el tráfico ARP puede volverse significativo. Un <strong>ARP Storm</strong> ocurre cuando muchos hosts generan ARP Requests simultáneamente (ej: después de un corte de luz cuando todos arrancan al mismo tiempo). Las consecuencias:</p>
+  <ul>
+    <li>Los switches inundan todos los puertos con broadcasts</li>
+    <li>Cada host procesa TODOS los ARP Requests recibidos</li>
+    <li>La CPU de switches y hosts se satura</li>
+    <li>La latencia aumenta y los paquetes de datos se pierden</li>
+  </ul>
+  <p>La solución es <strong>segmentar la red en VLANs</strong> — cada VLAN es un dominio de broadcast independiente, limitando el alcance del tráfico ARP.</p>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 3 — TIPOS ARP
+══════════════════════════════════════════════ -->
+<div id="tab-tipos" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Tipos de ARP</h2>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">📢</div>
+      <h3>ARP Request</h3>
+      <p>Solicitud estándar. Enviado como <strong>broadcast</strong> (<code>FF:FF:FF:FF:FF:FF</code>). Pregunta: <em>"¿Quién tiene la IP X? Dime tu MAC"</em>. Target MAC = ceros. Opcode = 1.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">✅</div>
+      <h3>ARP Reply</h3>
+      <p>Respuesta unicast al solicitante. Opcode = 2. Contiene la MAC correspondiente a la IP preguntada. Solo el solicitante lo recibe — no inunda la red.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">📣</div>
+      <h3>Gratuitous ARP (GARP)</h3>
+      <p>ARP donde <strong>Sender IP = Target IP</strong>. El host hace ARP de su propia IP. Usado para anuncio de presencia, detección de duplicados y alta disponibilidad (HSRP/VRRP).</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🔀</div>
+      <h3>Proxy ARP</h3>
+      <p>Un router responde ARP Requests <strong>en nombre de hosts en otras redes</strong>, usando su propia MAC. Permite comunicación a hosts sin gateway bien configurado. Activo por defecto en IOS.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🔁</div>
+      <h3>Reverse ARP (RARP)</h3>
+      <p>El proceso inverso: dado una MAC, obtener la IP. <strong>Obsoleto</strong>, reemplazado por DHCP. Un host sin IP preguntaba al servidor RARP cuál IP le correspondía.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🔍</div>
+      <h3>Inverse ARP (InARP)</h3>
+      <p>Usado en redes Frame Relay y ATM. Dado un DLCI (identificador de circuito virtual), descubre la IP del extremo remoto. Diferente a ARP estándar.</p>
     </div>
   </div>
 
-  <!-- -----------------------------------------------------------------
-       TAB 4 – SEGURIDAD
-       ----------------------------------------------------------------- -->
-  <div id="tab-seguridad" class="tab-content">
-    <div class="content-block">
-      <h2 class="section-title">ARP Spoofing / ARP Poisoning</h2>
-      <!-- (contenido seguridad) -->
+  <h2 class="section-title">Gratuitous ARP — Análisis en profundidad</h2>
+  <p>El GARP es el tipo de ARP más importante para el examen CCNA. Sus casos de uso críticos en entornos de producción:</p>
+
+  <div class="use-case-list">
+    <div class="use-case">
+      <div class="use-case-title">🚀 Anuncio de IP al arrancar</div>
+      <p>Cuando un host configura su IP (manual o por DHCP), envía un GARP para informar a todos los vecinos de su presencia. Los dispositivos que tenían una entrada anterior para esa IP en su caché la actualizan con la nueva MAC.</p>
+    </div>
+    <div class="use-case">
+      <div class="use-case-title">🔍 Detección de IP duplicada</div>
+      <p>Si otro host ya tiene esa IP, responderá al GARP con un ARP Reply. El host que envió el GARP detecta la colisión y genera un error. Windows muestra "Conflicto de dirección IP".</p>
+    </div>
+    <div class="use-case">
+      <div class="use-case-title">⚡ Alta Disponibilidad — HSRP / VRRP / GLBP</div>
+      <p>Cuando el router standby asume el rol activo en HSRP, VRRP o GLBP, envía inmediatamente un GARP usando la IP virtual del grupo. Todos los hosts del segmento actualizan su caché ARP apuntando al nuevo router activo, garantizando continuidad del servicio sin reconfiguración manual.</p>
+    </div>
+    <div class="use-case">
+      <div class="use-case-title">🔄 Actualización post-migración</div>
+      <p>Cuando se reemplaza una tarjeta de red (cambio de MAC) pero se mantiene la misma IP, el GARP actualiza todas las cachés vecinas automáticamente.</p>
     </div>
   </div>
 
-  <!-- -----------------------------------------------------------------
-       TAB 5 – CLI CISCO
-       ----------------------------------------------------------------- -->
-  <div id="tab-cli" class="tab-content">
-    <div class="content-block">
-      <h2 class="section-title">Comandos ARP en Cisco IOS — Referencia completa</h2>
-      <!-- (contenido CLI) -->
+  <h2 class="section-title">Proxy ARP — Configuración y funcionamiento</h2>
+  <p>Con Proxy ARP habilitado, un router puede responder ARP Requests de hosts que no tienen default gateway configurado correctamente. El router actúa como "intermediario":</p>
+
+  <div class="code-block">
+    <div class="code-label">Cisco IOS — Proxy ARP</div>
+    <pre><code><span class="cmd-comment">! Verificar estado actual de Proxy ARP en una interfaz</span>
+Router# show ip interface GigabitEthernet0/0 | include proxy
+<span class="cmd-output">  Proxy ARP is enabled</span>
+
+<span class="cmd-comment">! Deshabilitar Proxy ARP — recomendado en redes bien diseñadas</span>
+Router(config)# interface GigabitEthernet0/0
+Router(config-if)# no ip proxy-arp
+
+<span class="cmd-comment">! Habilitar Proxy ARP (si se requiere compatibilidad legacy)</span>
+Router(config-if)# ip proxy-arp</code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚠️ Seguridad con Proxy ARP</div>
+    <p>Un dispositivo mal configurado con Proxy ARP activo puede responder ARP Requests ajenos y redirigir tráfico inadvertidamente. En redes con gateways correctamente configurados, Proxy ARP es innecesario. <strong>Deshabilitar con <code>no ip proxy-arp</code></strong> en todas las interfaces de producción es una práctica de hardening recomendada.</p>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 4 — SEGURIDAD
+══════════════════════════════════════════════ -->
+<div id="tab-seguridad" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">ARP Spoofing / ARP Poisoning</h2>
+  <p>La vulnerabilidad fundamental de ARP es que <strong>no tiene ningún mecanismo de autenticación</strong>. Cualquier host puede enviar ARP Replies con información falsa y los receptores actualizarán su caché sin cuestionarlo. Esto es la base del ataque <strong>ARP Spoofing / ARP Cache Poisoning</strong>, que permite construir un ataque Man-in-the-Middle (MitM) completo en cualquier red LAN.</p>
+
+  <div class="attack-diagram">
+    <div class="diagram-title">🔴 Ataque ARP Poisoning — Man in the Middle</div>
+    <div class="attack-steps">
+      <div class="attack-step">
+        <span class="attack-num">1</span>
+        <span>El atacante envía ARP Replies falsos a la víctima: <em>"La IP del router 192.168.1.1 tiene MAC AA:BB:CC:ATACANTE"</em></span>
+      </div>
+      <div class="attack-step">
+        <span class="attack-num">2</span>
+        <span>La víctima actualiza su caché ARP con la MAC falsa del atacante</span>
+      </div>
+      <div class="attack-step">
+        <span class="attack-num">3</span>
+        <span>El atacante también envenena la caché del router: <em>"La víctima tiene MAC AA:BB:CC:ATACANTE"</em></span>
+      </div>
+      <div class="attack-step">
+        <span class="attack-num">4</span>
+        <span>Todo el tráfico víctima↔router ahora pasa por el atacante → Man in the Middle completo</span>
+      </div>
     </div>
   </div>
 
-  <!-- -----------------------------------------------------------------
-       TAB 6 – LABORATORIO
-       ----------------------------------------------------------------- -->
-  <div id="tab-lab" class="tab-content">
-    <div class="content-block">
-      <h2 class="section-title">🧪 Laboratorio ARP — Packet Tracer</h2>
-      <!-- (contenido lab) -->
+  <h2 class="section-title">Dynamic ARP Inspection (DAI)</h2>
+  <p><strong>DAI</strong> es la contramedida de Cisco contra ARP Spoofing. Opera en los switches y valida cada mensaje ARP contra la tabla de vinculaciones de <strong>DHCP Snooping</strong>. Si el par IP+MAC del ARP no coincide con la asignación legítima, el mensaje es descartado silenciosamente.</p>
+
+  <div class="code-block">
+    <div class="code-label">Configuración DAI en Switch Cisco</div>
+    <pre><code><span class="cmd-comment">! Paso 1: Habilitar DHCP Snooping (requisito previo para DAI)</span>
+SW(config)# ip dhcp snooping
+SW(config)# ip dhcp snooping vlan 10
+
+<span class="cmd-comment">! Paso 2: Configurar el puerto del DHCP server como trusted</span>
+SW(config)# interface GigabitEthernet0/1
+SW(config-if)# ip dhcp snooping trust
+SW(config-if)# exit
+
+<span class="cmd-comment">! Paso 3: Habilitar Dynamic ARP Inspection para la VLAN</span>
+SW(config)# ip arp inspection vlan 10
+
+<span class="cmd-comment">! PASO 4 — Puertos de hosts: untrusted por defecto (correcto)</span>
+<span class="cmd-comment">! Puertos trunk / uplinks hacia otros switches: trusted</span>
+SW(config)# interface GigabitEthernet0/24
+SW(config-if)# ip arp inspection trust
+
+<span class="cmd-comment">! PASO 5 — Para hosts con IP estática (sin entrada DHCP Snooping)</span>
+SW(config)# arp access-list HOSTS-ESTATICOS
+SW(config-arp-nacl)# permit ip host 192.168.10.5 mac host aabb.cc11.2233
+SW(config-arp-nacl)# exit
+SW(config)# ip arp inspection filter HOSTS-ESTATICOS vlan 10
+
+<span class="cmd-comment">! Verificación de DAI</span>
+SW# show ip arp inspection
+SW# show ip arp inspection vlan 10
+SW# show ip arp inspection statistics vlan 10</code></pre>
+  </div>
+
+  <h2 class="section-title">ARP Estático — Defensa adicional</h2>
+  <p>Las entradas ARP estáticas son inmunes a ARP Poisoning porque no pueden ser sobrescritas por ARP Replies recibidos. Se usan para dispositivos críticos como el default gateway.</p>
+
+  <div class="code-block">
+    <div class="code-label">ARP estático en Cisco IOS</div>
+    <pre><code><span class="cmd-comment">! Agregar entrada ARP estática</span>
+Router(config)# arp 192.168.1.254 aabb.cc11.2233 arpa
+
+<span class="cmd-comment">! Ver tabla ARP — Age "-" = entrada estática (permanente)</span>
+Router# show arp
+<span class="cmd-output">Protocol  Address       Age (min)  Hardware Addr   Type  Interface
+Internet  192.168.1.254         -  aabb.cc11.2233  ARPA  Gi0/0  &#8592; ESTÁTICA
+Internet  192.168.1.10          8  aabb.cc44.5566  ARPA  Gi0/0  &#8592; Dinámica</span>
+
+<span class="cmd-comment">! Eliminar entrada estática</span>
+Router(config)# no arp 192.168.1.254 aabb.cc11.2233 arpa</code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Resumen de defensas ARP</div>
+    <ul>
+      <li><strong>DAI</strong>: Protección automática en switches — la más efectiva</li>
+      <li><strong>ARP estático</strong>: Para dispositivos críticos como gateways</li>
+      <li><strong>Port Security</strong>: Limita MACs por puerto, reduce superficie de ataque</li>
+      <li><strong>DHCP Snooping</strong>: Base de DAI, también protege contra DHCP falsos</li>
+      <li><strong>VLANs</strong>: Segmentan dominios de broadcast, limitan alcance del ataque</li>
+      <li><strong>802.1X</strong>: Autenticación de puerto, impide que dispositivos no autorizados se conecten.</li>
+      <li><strong>Cifrado (TLS/HTTPS/SSH)</strong>: aunque el atacante intercepte el tráfico, no puede descifrarlo.</li>
+    </ul>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 5 — CLI CISCO
+══════════════════════════════════════════════ -->
+<div id="tab-cli" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Comandos ARP en Cisco IOS — Referencia completa</h2>
+
+  <div class="code-block">
+    <div class="code-label">Visualización de la tabla ARP</div>
+    <pre><code><span class="cmd-comment">! Ver tabla ARP completa del router</span>
+Router# show arp
+<span class="cmd-output">Protocol  Address          Age (min)  Hardware Addr   Type   Interface
+Internet  192.168.1.1             -   aabb.cc00.0100  ARPA   GigabitEthernet0/0
+Internet  192.168.1.10           12   aabb.cc11.2233  ARPA   GigabitEthernet0/0
+Internet  192.168.1.20            5   aabb.cc44.5566  ARPA   GigabitEthernet0/0</span>
+
+<span class="cmd-comment">! Ver solo interfaz específica</span>
+Router# show arp GigabitEthernet0/0
+
+<span class="cmd-comment">! Ver ARP con detalles (IOS 15+)</span>
+Router# show ip arp
+
+<span class="cmd-comment">! Ver entrada de una IP específica</span>
+Router# show arp 192.168.1.10
+
+<span class="cmd-comment">! Age "-" = estática o propia del router (permanente)</span>
+<span class="cmd-comment">! Age numérico = minutos desde que se aprendió (dinámica)</span></code></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">Gestión de la caché ARP</div>
+    <pre><code><span class="cmd-comment">! Limpiar TODA la tabla ARP dinámica</span>
+Router# clear arp-cache
+
+<span class="cmd-comment">! Limpiar ARP de una interfaz específica</span>
+Router# clear arp interface GigabitEthernet0/0
+
+<span class="cmd-comment">! Configurar tiempo de vida de entradas ARP (default: 14400 seg = 4 horas)</span>
+Router(config)# interface GigabitEthernet0/0
+Router(config-if)# arp timeout 300
+<span class="cmd-comment">! Rango: 0-2147483 segundos. 0 = nunca expira</span>
+
+<span class="cmd-comment">! Ver timeout ARP configurado</span>
+Router# show interfaces GigabitEthernet0/0 | include ARP
+<span class="cmd-output">  ARP type: ARPA, ARP Timeout 00:05:00</span></code></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">Entradas ARP estáticas</div>
+    <pre><code><span class="cmd-comment">! Agregar entrada ARP estática (no expira)</span>
+Router(config)# arp 10.0.0.1 dead.beef.cafe arpa
+
+<span class="cmd-comment">! Formato de MAC: xxxx.xxxx.xxxx (notación Cisco)</span>
+<span class="cmd-comment">! Equivalente: DE:AD:BE:EF:CA:FE</span>
+
+<span class="cmd-comment">! Eliminar entrada estática</span>
+Router(config)# no arp 10.0.0.1 dead.beef.cafe arpa
+
+<span class="cmd-comment">! Ver tabla ARP con tipo de entrada</span>
+Router# show arp
+<span class="cmd-output">Protocol  Address    Age  Hardware Addr   Type  Interface
+Internet  10.0.0.1    -   dead.beef.cafe  ARPA  (static)</span></code></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">Debug ARP — Ver ARP en tiempo real</div>
+    <pre><code><span class="cmd-comment">! Activar debug ARP (CUIDADO: verboso en producción)</span>
+Router# debug arp
+<span class="cmd-output">ARP packet debugging is on</span>
+<span class="cmd-output">IP ARP: sent req src 192.168.1.1 0000.0c00.0100, dst 192.168.1.10 0000.0000.0000</span>
+<span class="cmd-output">IP ARP: rcvd rep src 192.168.1.10 aabb.cc11.2233, dst 192.168.1.1</span>
+
+<span class="cmd-comment">! Desactivar debug</span>
+Router# undebug all
+<span class="cmd-comment">! O: Router# no debug arp</span></code></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">Verificación en un switch Cisco</div>
+    <pre><code><span class="cmd-comment">! Ver tabla MAC del switch (diferente a ARP)</span>
+SW# show mac address-table
+<span class="cmd-output">          Mac Address Table
+-------------------------------------------
+Vlan  Mac Address      Type     Ports
+----  -----------      ----     -----
+   1  aabb.cc11.2233  DYNAMIC  Gi0/1
+   1  aabb.cc44.5566  DYNAMIC  Gi0/2
+   1  dead.beef.cafe  STATIC   CPU</span>
+
+<span class="cmd-comment">! Los switches usan tabla MAC (L2) — los routers usan tabla ARP (L2→L3)</span>
+<span class="cmd-comment">! El switch aprende MACs de los frames que pasan, SIN ARP</span></code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 6 — LABORATORIO
+══════════════════════════════════════════════ -->
+<div id="tab-lab" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">🧪 Laboratorio ARP — Packet Tracer</h2>
+
+  <div class="lab-topology">
+    <div class="diagram-title">Topología del Laboratorio</div>
+    <svg viewBox="0 0 700 280" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:700px;">
+      <!-- PC-A -->
+      <rect x="20" y="100" width="110" height="65" rx="8" fill="#0d1220" stroke="#00d4aa" stroke-width="1.5"/>
+      <text x="75" y="125" text-anchor="middle" fill="#00d4aa" font-size="11" font-family="Share Tech Mono">PC-A</text>
+      <text x="75" y="142" text-anchor="middle" fill="#6b7a9a" font-size="9" font-family="Share Tech Mono">192.168.1.10/24</text>
+      <text x="75" y="157" text-anchor="middle" fill="#374060" font-size="8" font-family="Share Tech Mono">GW: 192.168.1.1</text>
+      <!-- SW -->
+      <rect x="280" y="115" width="110" height="40" rx="6" fill="#0d1220" stroke="#4a5780" stroke-width="1"/>
+      <text x="335" y="140" text-anchor="middle" fill="#4a5780" font-size="10" font-family="Share Tech Mono">SW-1</text>
+      <!-- PC-B -->
+      <rect x="530" y="40" width="110" height="65" rx="8" fill="#0d1220" stroke="#38bdf8" stroke-width="1.5"/>
+      <text x="585" y="65" text-anchor="middle" fill="#38bdf8" font-size="11" font-family="Share Tech Mono">PC-B</text>
+      <text x="585" y="82" text-anchor="middle" fill="#6b7a9a" font-size="9" font-family="Share Tech Mono">192.168.1.20/24</text>
+      <text x="585" y="97" text-anchor="middle" fill="#374060" font-size="8" font-family="Share Tech Mono">GW: 192.168.1.1</text>
+      <!-- Router -->
+      <rect x="280" y="195" width="110" height="65" rx="8" fill="#0d1220" stroke="#a78bfa" stroke-width="1.5"/>
+      <text x="335" y="220" text-anchor="middle" fill="#a78bfa" font-size="11" font-family="Share Tech Mono">R1</text>
+      <text x="335" y="237" text-anchor="middle" fill="#6b7a9a" font-size="9" font-family="Share Tech Mono">Gi0/0: 192.168.1.1</text>
+      <text x="335" y="252" text-anchor="middle" fill="#374060" font-size="8" font-family="Share Tech Mono">Gi0/1: 10.0.0.1/30</text>
+      <!-- PC-C externo -->
+      <rect x="530" y="195" width="110" height="65" rx="8" fill="#0d1220" stroke="#374060" stroke-width="1"/>
+      <text x="585" y="220" text-anchor="middle" fill="#6b7a9a" font-size="11" font-family="Share Tech Mono">PC-C</text>
+      <text x="585" y="237" text-anchor="middle" fill="#374060" font-size="9" font-family="Share Tech Mono">10.0.0.2/30</text>
+      <!-- Lines -->
+      <line x1="130" y1="133" x2="280" y2="133" stroke="#4a5780" stroke-width="1.5"/>
+      <line x1="390" y1="128" x2="530" y2="73" stroke="#4a5780" stroke-width="1.5"/>
+      <line x1="335" y1="155" x2="335" y2="195" stroke="#a78bfa" stroke-width="1.5"/>
+      <line x1="390" y1="228" x2="530" y2="228" stroke="#374060" stroke-width="1.5"/>
+      <!-- Labels -->
+      <text x="200" y="127" text-anchor="middle" fill="#4a5780" font-size="8" font-family="Share Tech Mono">Gi0/1</text>
+      <text x="470" y="100" text-anchor="middle" fill="#4a5780" font-size="8" font-family="Share Tech Mono">Gi0/2</text>
+      <text x="310" y="178" text-anchor="middle" fill="#a78bfa" font-size="8" font-family="Share Tech Mono">Gi0/0</text>
+    </svg>
+  </div>
+
+  <h3 class="sub-title">Tabla de Direccionamiento</h3>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead><tr><th>Dispositivo</th><th>Interfaz</th><th>IP</th><th>Máscara</th><th>Gateway</th></tr></thead>
+      <tbody>
+        <tr><td>PC-A</td><td>NIC</td><td>192.168.1.10</td><td>255.255.255.0</td><td>192.168.1.1</td></tr>
+        <tr><td>PC-B</td><td>NIC</td><td>192.168.1.20</td><td>255.255.255.0</td><td>192.168.1.1</td></tr>
+        <tr><td>R1</td><td>Gi0/0</td><td>192.168.1.1</td><td>255.255.255.0</td><td>—</td></tr>
+        <tr><td>R1</td><td>Gi0/1</td><td>10.0.0.1</td><td>255.255.255.252</td><td>—</td></tr>
+        <tr><td>PC-C</td><td>NIC</td><td>10.0.0.2</td><td>255.255.255.252</td><td>10.0.0.1</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="sub-title">Procedimiento del Laboratorio</h3>
+  <div class="lab-steps">
+    <div class="lab-step">
+      <div class="lab-step-num">Parte 1</div>
+      <div class="lab-step-title">Configurar R1</div>
+      <div class="code-block" style="margin-top:8px;">
+        <pre><code>Router> enable
+Router# configure terminal
+Router(config)# hostname R1
+R1(config)# interface GigabitEthernet0/0
+R1(config-if)# ip address 192.168.1.1 255.255.255.0
+R1(config-if)# no shutdown
+R1(config-if)# interface GigabitEthernet0/1
+R1(config-if)# ip address 10.0.0.1 255.255.255.252
+R1(config-if)# no shutdown
+R1(config-if)# end
+R1# show ip interface brief</code></pre>
+      </div>
+    </div>
+    <div class="lab-step">
+      <div class="lab-step-num">Parte 2</div>
+      <div class="lab-step-title">Observar tabla ARP vacía</div>
+      <div class="code-block" style="margin-top:8px;">
+        <pre><code><span class="cmd-comment">! Antes de cualquier comunicación, ver la tabla ARP</span>
+R1# show arp
+<span class="cmd-output">Protocol  Address    Age  Hardware Addr  Type  Interface
+Internet  192.168.1.1  -  aabb.cc00.0100 ARPA  GigabitEthernet0/0
+Internet  10.0.0.1     -  aabb.cc00.0200 ARPA  GigabitEthernet0/1</span>
+<span class="cmd-comment">! Solo entradas propias del router (Age = -)</span></code></pre>
+      </div>
+    </div>
+    <div class="lab-step">
+      <div class="lab-step-num">Parte 3</div>
+      <div class="lab-step-title">Generar tráfico y observar ARP</div>
+      <div class="code-block" style="margin-top:8px;">
+        <pre><code><span class="cmd-comment">! Desde PC-A, hacer ping a PC-B (mismo segmento)</span>
+PC-A> ping 192.168.1.20
+
+<span class="cmd-comment">! En R1, ver cómo aparecen nuevas entradas</span>
+R1# show arp
+<span class="cmd-output">Protocol  Address       Age  Hardware Addr   Type  Interface
+Internet  192.168.1.1    -   aabb.cc00.0100  ARPA  GigabitEthernet0/0
+Internet  192.168.1.10   3   aabb.cc11.2233  ARPA  GigabitEthernet0/0
+Internet  192.168.1.20   1   aabb.cc44.5566  ARPA  GigabitEthernet0/0</span>
+
+<span class="cmd-comment">! Desde PC-A, ping a PC-C (diferente red — pasa por R1)</span>
+PC-A> ping 10.0.0.2
+<span class="cmd-comment">! PC-A hará ARP por 192.168.1.1 (gateway), NO por 10.0.0.2</span></code></pre>
+      </div>
+    </div>
+    <div class="lab-step">
+      <div class="lab-step-num">Parte 4</div>
+      <div class="lab-step-title">Análisis con Packet Tracer Simulation Mode</div>
+      <p>En Packet Tracer, activa el <strong>Simulation Mode</strong> y filtra por ARP. Observa:</p>
+      <ul>
+        <li>El frame ARP Request va del PC al switch y se inunda por todos los puertos</li>
+        <li>Todos los PCs reciben el Request pero solo el dueño de la IP responde</li>
+        <li>El ARP Reply va directamente (unicast) al PC solicitante</li>
+        <li>Luego el paquete ICMP (ping) usa la MAC recién aprendida</li>
+      </ul>
+    </div>
+    <div class="lab-step">
+      <div class="lab-step-num">Parte 5</div>
+      <div class="lab-step-title">Experimentar con clear arp-cache</div>
+      <div class="code-block" style="margin-top:8px;">
+        <pre><code><span class="cmd-comment">! Limpiar tabla ARP del router</span>
+R1# clear arp-cache
+
+<span class="cmd-comment">! Verificar que quedó vacía (solo entradas propias)</span>
+R1# show arp
+
+<span class="cmd-comment">! Hacer ping nuevamente y observar cómo se repobla</span>
+R1# ping 192.168.1.10
+<span class="cmd-output">Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 192.168.1.10, timeout is 2 seconds:
+.!!!!
+Success rate is 80 percent (4/5)</span>
+<span class="cmd-comment">! El primer ping falla (.) porque debe esperar el ARP Reply</span>
+<span class="cmd-comment">! Los siguientes son exitosos (!) porque ya tiene la MAC</span></code></pre>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 7 — REFERENCIA
+══════════════════════════════════════════════ -->
+<div id="tab-tabla" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Tabla de Referencia ARP Completa</h2>
+  <div id="refTableARP"></div>
+
+  <h2 class="section-title" style="margin-top:32px;">Comparativa: ARP vs NDP (IPv6)</h2>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead><tr><th>Característica</th><th>ARP (IPv4)</th><th>NDP — Neighbor Discovery (IPv6)</th></tr></thead>
+      <tbody>
+        <tr><td>Protocolo</td><td>ARP — EtherType 0x0806</td><td>ICMPv6 Type 135/136</td></tr>
+        <tr><td>Tipo de solicitud</td><td>Broadcast L2</td><td>Multicast IPv6 Solicited-Node</td></tr>
+        <tr><td>Mensaje de solicitud</td><td>ARP Request</td><td>Neighbor Solicitation (NS)</td></tr>
+        <tr><td>Mensaje de respuesta</td><td>ARP Reply</td><td>Neighbor Advertisement (NA)</td></tr>
+        <tr><td>Equivalente a GARP</td><td>Gratuitous ARP</td><td>Unsolicited NA</td></tr>
+        <tr><td>Detección IP duplicada</td><td>GARP + esperar respuesta</td><td>DAD — Duplicate Address Detection</td></tr>
+        <tr><td>Descubrimiento de router</td><td>No (usa DHCP/manual)</td><td>Router Solicitation / Advertisement</td></tr>
+        <tr><td>Autenticación</td><td>Ninguna ❌</td><td>SEcure Neighbor Discovery (SEND) ✓</td></tr>
+        <tr><td>Impacto de broadcast</td><td>Alto — todos los hosts</td><td>Bajo — solo grupos multicast</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="section-title" style="margin-top:32px;">Valores EtherType importantes</h2>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead><tr><th>EtherType</th><th>Protocolo</th><th>Uso</th></tr></thead>
+      <tbody>
+        <tr><td><code>0x0800</code></td><td>IPv4</td><td>Paquetes IP versión 4</td></tr>
+        <tr><td><code>0x0806</code></td><td>ARP</td><td>Address Resolution Protocol</td></tr>
+        <tr><td><code>0x8100</code></td><td>802.1Q VLAN</td><td>Tagged frames con VLAN ID</td></tr>
+        <tr><td><code>0x86DD</code></td><td>IPv6</td><td>Paquetes IP versión 6</td></tr>
+        <tr><td><code>0x8847</code></td><td>MPLS unicast</td><td>Multiprotocol Label Switching</td></tr>
+        <tr><td><code>0x8035</code></td><td>RARP</td><td>Reverse ARP (obsoleto)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 8 — TROUBLESHOOTING
+══════════════════════════════════════════════ -->
+<div id="tab-trouble" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Problemas comunes relacionados con ARP y sus soluciones</h2>
+
+  <div class="trouble-list">
+    <div class="trouble-item">
+      <div class="trouble-symptom">❌ Primer ping siempre falla en Cisco IOS (.!!!!)</div>
+      <div class="trouble-cause">Causa: El router no tenía la entrada ARP del destino. Debió enviar un ARP Request y esperar el Reply antes de encapsular el ICMP. El primer paquete supera el timeout de 2 segundos.</div>
+      <div class="trouble-solution">✅ Completamente normal en IOS. Si TODOS los pings fallan (.....) hay un problema real: verificar conectividad, tabla ARP y routing.</div>
+    </div>
+    <div class="trouble-item">
+      <div class="trouble-symptom">❌ No hay conectividad aunque IPs y rutas estén correctas</div>
+      <div class="trouble-cause">Causa probable: caché ARP corrupta con entradas incorrectas. Puede ocurrir tras ARP Poisoning, reemplazo de hardware o fallo de red.</div>
+      <div class="trouble-solution">✅ Ejecutar <code>clear arp-cache</code> en el router para forzar resolución nueva. Verificar con <code>show arp</code> que las MACs sean correctas.</div>
+    </div>
+    <div class="trouble-item">
+      <div class="trouble-symptom">❌ Comunicación intermitente — conectividad va y viene</div>
+      <div class="trouble-cause">Causa probable: ARP Poisoning activo. Las entradas ARP de la caché cambian frecuentemente por el atacante enviando Replies falsos repetidamente.</div>
+      <div class="trouble-solution">✅ Ejecutar <code>show arp</code> repetidamente y observar si las MACs cambian. Si hay variación, implementar DAI con DHCP Snooping para bloquear los Replies ilegítimos.</div>
+    </div>
+    <div class="trouble-item">
+      <div class="trouble-symptom">❌ Host no puede comunicarse con el gateway tras cambio de hardware</div>
+      <div class="trouble-cause">Causa: el host tiene cacheada la MAC antigua del gateway. La nueva NIC tiene otra MAC, la caché ARP todavía apunta a la anterior.</div>
+      <div class="trouble-solution">✅ En el host: limpiar caché ARP (<code>arp -d *</code> Windows / <code>ip neigh flush all</code> Linux). En el nuevo gateway: enviar un GARP para que todos los hosts actualicen su caché automáticamente.</div>
+    </div>
+    <div class="trouble-item">
+      <div class="trouble-symptom">❌ DAI descarta ARPs de un host con IP estática</div>
+      <div class="trouble-cause">Causa: DAI valida contra la tabla DHCP Snooping. Hosts con IP estática no tienen entrada en esa tabla (nunca usaron DHCP), por lo que sus ARPs son rechazados.</div>
+      <div class="trouble-solution">✅ Crear ARP ACL manual: <code>arp access-list ESTATICOS</code> → <code>permit ip host [IP] mac host [MAC]</code> → <code>ip arp inspection filter ESTATICOS vlan [X]</code>.</div>
+    </div>
+    <div class="trouble-item">
+      <div class="trouble-symptom">❌ HSRP failover correcto pero el tráfico no conmuta hacia el nuevo router activo</div>
+      <div class="trouble-cause">Causa: los hosts mantienen en caché la MAC del router que falló. El nuevo router activo envió el GARP pero fue bloqueado por DAI (su puerto no está marcado como trusted).</div>
+      <div class="trouble-solution">✅ Verificar que los puertos hacia los routers HSRP estén marcados como <code>ip arp inspection trust</code> en el switch. El GARP del nuevo router activo debe poder llegar a los hosts.</div>
     </div>
   </div>
 
-  <!-- -----------------------------------------------------------------
-       TAB 7 – REFERENCIA
-       ----------------------------------------------------------------- -->
-  <div id="tab-tabla" class="tab-content">
-    <div class="content-block">
-      <h2 class="section-title">Tabla de Referencia ARP Completa</h2>
-      <div id="refTableARP"></div>
-      <!-- (comparativas, valores EtherType, etc.) -->
-    </div>
-  </div>
+  <h2 class="section-title">Metodología de diagnóstico ARP</h2>
+  <div class="code-block">
+    <div class="code-label">Secuencia de diagnóstico ARP</div>
+    <pre><code><span class="cmd-comment">! 1. Verificar tabla ARP del router</span>
+R1# show arp
+R1# show ip arp
 
-  <!-- -----------------------------------------------------------------
-       TAB 8 – TROUBLESHOOTING
-       ----------------------------------------------------------------- -->
-  <div id="tab-trouble" class="tab-content">
-    <div class="content-block">
-      <h2 class="section-title">Problemas comunes y sus soluciones</h2>
-      <!-- (lista de problemas) -->
-    </div>
-  </div>
+<span class="cmd-comment">! 2. Verificar si hay entradas inconsistentes o duplicadas</span>
+R1# show arp | include 192.168.1
 
-  <!-- -----------------------------------------------------------------
-       TAB 9 – QUIZ
-       ----------------------------------------------------------------- -->
-  <div id="tab-quiz" class="tab-content">
-    <div class="content-block">
-      <h2 class="section-title">Quiz ARP — Estilo CCNA 200‑301</h2>
-      <div id="quizContainerARP"></div>
-    </div>
+<span class="cmd-comment">! 3. Ver estadísticas ARP de una interfaz</span>
+R1# show interfaces GigabitEthernet0/0 | include ARP
+
+<span class="cmd-comment">! 4. Debug en tiempo real (solo en lab)</span>
+R1# debug arp
+R1# undebug all
+
+<span class="cmd-comment">! 5. Ver estado de DAI si está configurado</span>
+SW# show ip arp inspection
+SW# show ip arp inspection statistics vlan 10
+
+<span class="cmd-comment">! 6. Ver tabla DHCP Snooping (base de DAI)</span>
+SW# show ip dhcp snooping binding</code></pre>
   </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 9 — QUIZ
+══════════════════════════════════════════════ -->
+<div id="tab-quiz" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Quiz ARP — Estilo CCNA 200-301</h2>
+  <div id="quizContainerARP"></div>
+</div>
+</div>
+
 </div><!-- /.tabs-wrap -->
 
-<!-----------------------------------------------------------------
-   ESTILOS (se mantienen los que ya tenías)
------------------------------------------------------------------>
 <style>
 /* ── PAGE STYLES ── */
 .class-hero { background: linear-gradient(135deg, #06080f 0%, #0d1220 60%, #101830 100%); padding: 56px 24px 48px; border-bottom: 1px solid rgba(0,212,170,0.12); position: relative; overflow: hidden; }
@@ -253,6 +881,7 @@
 /* CONTENT */
 .content-block { max-width: 860px; }
 .section-title { font-family:'Orbitron',sans-serif; font-size:1rem; color:#00d4aa; letter-spacing:2px; margin:28px 0 14px; padding-bottom:8px; border-bottom:1px solid rgba(0,212,170,0.12); }
+.section-title:first-child { margin-top:0; }
 .sub-title { font-family:'Share Tech Mono',monospace; font-size:0.85rem; color:#38bdf8; margin:24px 0 10px; }
 p { color:#8294b8; line-height:1.75; margin-bottom:14px; font-size:0.9rem; }
 ul, ol { color:#8294b8; padding-left:1.4rem; margin-bottom:14px; font-size:0.9rem; }
@@ -267,7 +896,7 @@ code { font-family:'Share Tech Mono',monospace; font-size:0.82rem; background:rg
 .info-box-title { font-family:'Share Tech Mono',monospace; font-size:0.75rem; color:#00d4aa; margin-bottom:8px; }
 .info-box.warning .info-box-title { color:#fbbf24; }
 
-/* DIAGRAM BOX */
+/* DIAGRAM */
 .diagram-box { background:#050810; border:1px solid rgba(0,212,170,0.15); border-radius:10px; padding:20px; margin:18px 0; }
 .diagram-title { font-family:'Share Tech Mono',monospace; font-size:0.68rem; color:#4a5780; letter-spacing:2px; text-transform:uppercase; margin-bottom:14px; }
 .frame-diagram { display:flex; gap:4px; }
@@ -284,13 +913,55 @@ code { font-family:'Share Tech Mono',monospace; font-size:0.82rem; background:rg
 .ref-table td { padding:9px 12px; border:1px solid rgba(255,255,255,0.04); color:#8294b8; }
 .ref-table tr:hover td { background:rgba(0,212,170,0.03); }
 
-/* CODE BLOCKS */
+/* CODE */
 .code-block { background:#050810; border:1px solid rgba(0,212,170,0.12); border-left:3px solid #00d4aa; border-radius:8px; padding:0; margin:16px 0; overflow:hidden; }
 .code-label { background:rgba(0,212,170,0.06); padding:8px 16px; font-family:'Share Tech Mono',monospace; font-size:0.65rem; color:#4a5780; letter-spacing:2px; text-transform:uppercase; border-bottom:1px solid rgba(0,212,170,0.08); }
 .code-block pre { margin:0; padding:16px; overflow-x:auto; }
 .code-block code { background:none; border:none; padding:0; color:#a8b4c8; font-size:0.8rem; line-height:1.7; display:block; }
 .cmd-comment { color:#374060; font-style:italic; }
 .cmd-output  { color:#6b7a9a; }
+
+/* TOPOLOGY SVG */
+.topology-svg { background:#050810; border:1px solid rgba(0,212,170,0.1); border-radius:10px; padding:16px; margin:16px 0; }
+
+/* PROCESS STEPS */
+.process-steps { display:flex; flex-direction:column; gap:12px; margin:16px 0; }
+.process-step { display:flex; gap:16px; align-items:flex-start; background:#090d1a; border:1px solid rgba(0,212,170,0.08); border-radius:10px; padding:16px; }
+.step-num { width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,#00d4aa,#38bdf8); display:flex; align-items:center; justify-content:center; font-family:'Orbitron',sans-serif; font-size:0.8rem; color:#000; font-weight:700; flex-shrink:0; }
+.step-content { flex:1; }
+.step-title { font-family:'Share Tech Mono',monospace; font-size:0.82rem; color:#c2d0e8; margin-bottom:6px; }
+
+/* CONCEPT GRID */
+.concept-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:12px; margin:16px 0; }
+.concept-card { background:#090d1a; border:1px solid rgba(0,212,170,0.1); border-radius:10px; padding:16px; }
+.concept-icon { font-size:1.8rem; margin-bottom:8px; }
+.concept-card h3 { font-family:'Share Tech Mono',monospace; font-size:0.78rem; color:#00d4aa; margin-bottom:8px; }
+.concept-card p { font-size:0.8rem; margin:0; }
+
+/* USE CASES */
+.use-case-list { display:flex; flex-direction:column; gap:10px; margin:16px 0; }
+.use-case { background:#090d1a; border:1px solid rgba(0,212,170,0.08); border-radius:8px; padding:14px; }
+.use-case-title { font-family:'Share Tech Mono',monospace; font-size:0.78rem; color:#38bdf8; margin-bottom:6px; }
+
+/* ATTACK DIAGRAM */
+.attack-diagram { background:#0a0810; border:1px solid rgba(248,113,113,0.15); border-radius:10px; padding:16px; margin:16px 0; }
+.attack-steps { display:flex; flex-direction:column; gap:8px; margin-top:10px; }
+.attack-step { display:flex; gap:12px; align-items:flex-start; }
+.attack-num { width:24px; height:24px; border-radius:50%; background:rgba(248,113,113,0.2); border:1px solid #f87171; display:flex; align-items:center; justify-content:center; font-family:'Share Tech Mono',monospace; font-size:0.7rem; color:#f87171; flex-shrink:0; }
+
+/* LAB STEPS */
+.lab-topology { background:#050810; border:1px solid rgba(0,212,170,0.1); border-radius:10px; padding:16px; margin:16px 0; }
+.lab-steps { display:flex; flex-direction:column; gap:16px; margin:16px 0; }
+.lab-step { background:#090d1a; border:1px solid rgba(0,212,170,0.08); border-radius:10px; padding:16px; }
+.lab-step-num { font-family:'Share Tech Mono',monospace; font-size:0.6rem; color:#00d4aa; letter-spacing:2px; text-transform:uppercase; margin-bottom:4px; }
+.lab-step-title { font-family:'Orbitron',sans-serif; font-size:0.8rem; color:#c2d0e8; margin-bottom:8px; }
+
+/* TROUBLE */
+.trouble-list { display:flex; flex-direction:column; gap:12px; margin:16px 0; }
+.trouble-item { background:#090d1a; border:1px solid rgba(0,212,170,0.08); border-radius:10px; padding:16px; }
+.trouble-symptom { font-family:'Share Tech Mono',monospace; font-size:0.8rem; color:#f87171; margin-bottom:6px; }
+.trouble-cause { font-size:0.82rem; color:#6b7a9a; margin-bottom:6px; }
+.trouble-solution { font-size:0.82rem; color:#34d399; }
 
 /* QUIZ */
 .quiz-question { background:#090d1a; border:1px solid rgba(0,212,170,0.1); border-radius:10px; padding:20px; margin-bottom:16px; }
@@ -303,245 +974,225 @@ code { font-family:'Share Tech Mono',monospace; font-size:0.82rem; background:rg
 .quiz-opt.wrong   { border-color:#f87171; background:rgba(248,113,113,0.08); color:#f87171; }
 .quiz-explanation { margin-top:10px; padding:10px 14px; background:rgba(167,139,250,0.06); border-left:3px solid #a78bfa; border-radius:6px; font-size:0.82rem; color:#a0aec0; line-height:1.6; }
 
-@media(max-width:680px){
+@media(max-width:680px) {
   .tab-btn { font-size:0.65rem; padding:6px 10px; }
   .tab-content { padding:20px 14px; }
   .frame-diagram { flex-direction:column; }
+  .concept-grid { grid-template-columns:1fr; }
 }
 </style>
 
-<!-----------------------------------------------------------------
-   SCRIPT – *namespace* ARPQuiz (se ejecuta después del load)
------------------------------------------------------------------>
 <script>
 /* -----------------------------------------------------------------
-   Todo el código está dentro del objeto global ARPQuiz para que
-   main.js no lo sobrescriba.
+   NAMESPACE ARPQuiz - Protege el código contra sobreescritura por main.js
 ----------------------------------------------------------------- */
-var ARPQuiz = (function () {
-
-  /* ---------- 1️⃣  Cambio de pestaña ---------- */
+var ARPQuiz = (function() {
+  // Funciones privadas dentro del namespace
+  
   function showTabArp(id, btn) {
-    var tabs = document.querySelectorAll('.tab-content');
-    for (var i = 0; i < tabs.length; i++) { tabs[i].classList.remove('active'); }
-
-    var btns = document.querySelectorAll('.tab-btn');
-    for (var i = 0; i < btns.length; i++) { btns[i].classList.remove('active'); }
-
+    document.querySelectorAll('.tab-content').forEach(function(t) { t.classList.remove('active'); });
+    document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
     var target = document.getElementById('tab-' + id);
-    if (target) { target.classList.add('active'); }
-    if (btn)   { btn.classList.add('active'); }
-
-    /* Si la nueva pestaña es “Quiz”, generamos el quiz (por si se perdió). */
-    if (id === 'quiz') { initQuiz(); }
+    if (target) target.classList.add('active');
+    if (btn) btn.classList.add('active');
+    
+    // Si es la pestaña quiz, asegurarnos de que esté inicializado
+    if (id === 'quiz') {
+      initQuiz();
+    }
   }
 
-  /* ---------- 2️⃣  Tabla de referencia ---------- */
   function buildRefTable() {
-    var h1 = ['Tipo de Mensaje','Destino Frame L2','EtherType','Opcode','Descripción clave'];
-    var d1 = [
-      ['ARP Request','Broadcast — FF:FF:FF:FF:FF:FF','0x0806','1','Pregunta: ¿Quién tiene la IP X? Target MAC = 00:00:00:00:00:00'],
-      ['ARP Reply','Unicast → solicitante','0x0806','2','Responde: La IP X está en la MAC Y. Sender MAC = respuesta.'],
-      ['Gratuitous ARP','Broadcast — FF:FF:FF:FF:FF:FF','0x0806','1 ó 2','Sender IP = Target IP. Anuncio, detección de duplicados, HSRP/VRRP.'],
-      ['Proxy ARP Reply','Unicast → solicitante','0x0806','2','Router responde con su MAC por hosts en otras redes.'],
-      ['ARP Estático','N/A — sin tráfico','—','—','Age = "-". Configurado manualmente. Inmune a ARP Poisoning.'],
-      ['ARP Timeout','N/A','—','—','Default Cisco IOS: 14400 s (4 h). Configurable por interfaz.'],
-      ['DAI Drop','N/A — descartado','—','—','IP+MAC no coincide con tabla DHCP Snooping → frame descartado.']
+    const h1 = ['Tipo de Mensaje', 'Destino Frame L2', 'EtherType', 'Opcode', 'Descripción clave'];
+    const d1 = [
+      ['ARP Request',    'Broadcast — FF:FF:FF:FF:FF:FF', '0x0806', '1', 'Pregunta: ¿Quién tiene la IP X? Target MAC = 00:00:00:00:00:00'],
+      ['ARP Reply',      'Unicast → solicitante',          '0x0806', '2', 'Responde: La IP X está en la MAC Y. Sender MAC = respuesta.'],
+      ['Gratuitous ARP', 'Broadcast — FF:FF:FF:FF:FF:FF', '0x0806', '1 ó 2', 'Sender IP = Target IP. Anuncio, duplicados, HSRP/VRRP failover.'],
+      ['Proxy ARP Reply','Unicast → solicitante',          '0x0806', '2', 'Router responde con su MAC por hosts en otras redes.'],
+      ['ARP Estático',   'N/A — sin tráfico',              '—',      '—', 'Age = "-". Configurado manualmente. Inmune a ARP Poisoning.'],
+      ['ARP Timeout',    'N/A',                             '—',      '—', 'Default Cisco IOS: 14400 seg (4 horas). Configurable por interfaz.'],
+      ['DAI Drop',       'N/A — descartado',                '—',      '—', 'IP+MAC no coincide con tabla DHCP Snooping → frame descartado.']
     ];
-
-    var html = '<h3 style="font-family:Orbitron,sans-serif;font-size:.85rem;color:#00d4aa;letter-spacing:2px;margin-bottom:12px;text-transform:uppercase;">Tipos de Mensajes y Variantes ARP</h3>';
+    
+    let html = '<h3 style="font-family:Orbitron,sans-serif;font-size:.85rem;color:#00d4aa;letter-spacing:2px;margin-bottom:12px;text-transform:uppercase;">Tipos de Mensajes y Variantes ARP</h3>';
     html += '<div class="table-wrap"><table class="ref-table"><thead><tr>';
-    for (var i = 0; i < h1.length; i++) { html += '<th>' + h1[i] + '</th>'; }
+    for (var i = 0; i < h1.length; i++) {
+      html += '<th>' + h1[i] + '</th>';
+    }
     html += '</tr></thead><tbody>';
     for (var i = 0; i < d1.length; i++) {
       html += '<tr>';
-      for (var j = 0; j < d1[i].length; j++) { html += '<td>' + d1[i][j] + '</td>'; }
+      for (var j = 0; j < d1[i].length; j++) {
+        html += '<td>' + d1[i][j] + '</td>';
+      }
       html += '</tr>';
     }
     html += '</tbody></table></div>';
-
-    var h2 = ['Campo ARP','Tamaño','En Request','En Reply','Descripción'];
-    var d2 = [
-      ['Hardware Type (HTYPE)','2 bytes','0x0001 (Ethernet)','0x0001','Tipo de red física.'],
-      ['Protocol Type (PTYPE)','2 bytes','0x0800 (IPv4)','0x0800','Protocolo de capa 3.'],
-      ['HW / Proto Length (HLEN/PLEN)','1+1 bytes','6 / 4','6 / 4','Longitud de MAC (6) y de IP (4).'],
-      ['Operation (Opcode)','2 bytes','1 (Request)','2 (Reply)','Tipo de operación ARP.'],
-      ['Sender Hardware Address','6 bytes','MAC del que pregunta','MAC del que responde','MAC del emisor.'],
-      ['Sender Protocol Address','4 bytes','IP del que pregunta','IP del que responde','IP del emisor.'],
-      ['Target Hardware Address','6 bytes','00:00:00:00:00:00','MAC buscada','En Request: desconocida. En Reply: la MAC.'],
-      ['Target Protocol Address','4 bytes','IP que se resuelve','IP que se resolvió','IP objetivo.']
+    
+    const h2 = ['Campo ARP', 'Tamaño', 'En Request', 'En Reply', 'Descripción'];
+    const d2 = [
+      ['Hardware Type (HTYPE)',         '2 bytes', '0x0001 (Ethernet)',     '0x0001',             'Tipo de red física.'],
+      ['Protocol Type (PTYPE)',         '2 bytes', '0x0800 (IPv4)',         '0x0800',             'Protocolo de capa 3.'],
+      ['HW / Proto Length (HLEN/PLEN)', '1+1 bytes','6 / 4',               '6 / 4',             'Longitud de MAC (6) y de IP (4).'],
+      ['Operation (Opcode)',            '2 bytes', '1 (Request)',           '2 (Reply)',          'Tipo de operación ARP.'],
+      ['Sender Hardware Address',       '6 bytes', 'MAC del que pregunta',  'MAC del que responde','MAC del emisor del mensaje.'],
+      ['Sender Protocol Address',       '4 bytes', 'IP del que pregunta',   'IP del que responde', 'IP del emisor del mensaje.'],
+      ['Target Hardware Address',       '6 bytes', '00:00:00:00:00:00',    'MAC buscada',         'En Request: desconocida. En Reply: la MAC respondida.'],
+      ['Target Protocol Address',       '4 bytes', 'IP que se resuelve',   'IP que se resolvió',  'IP objetivo de la resolución.']
     ];
-    html += '<h3 style="font-family:Orbitron,sans-serif;font-size:.85rem;color:#00d4aa;letter-spacing:2px;margin:24px 0 12px;text-transform:uppercase;">Estructura del Paquete ARP — 28 bytes</h3>';
+    
+    html += '<h3 style="font-family:Orbitron,sans-serif;font-size:.85rem;color:#00d4aa;letter-spacing:2px;margin:24px 0 12px;text-transform:uppercase;">Estructura del Paquete ARP — 28 bytes</h3>';
     html += '<div class="table-wrap"><table class="ref-table"><thead><tr>';
-    for (var i = 0; i < h2.length; i++) { html += '<th>' + h2[i] + '</th>'; }
+    for (var i = 0; i < h2.length; i++) {
+      html += '<th>' + h2[i] + '</th>';
+    }
     html += '</tr></thead><tbody>';
     for (var i = 0; i < d2.length; i++) {
       html += '<tr>';
-      for (var j = 0; j < d2[i].length; j++) { html += '<td>' + d2[i][j] + '</td>'; }
+      for (var j = 0; j < d2[i].length; j++) {
+        html += '<td>' + d2[i][j] + '</td>';
+      }
       html += '</tr>';
     }
     html += '</tbody></table></div>';
-
-    var h3 = ['Comando','Modo','Descripción'];
-    var d3 = [
-      ['show arp','Privilegiado','Tabla ARP completa con Age, MAC e interfaz.'],
-      ['show ip arp','Privilegiado','Tabla ARP formato IP (equivalente a show arp).'],
-      ['show arp [IP]','Privilegiado','Entrada ARP de una IP específica.'],
-      ['show interfaces [int] | include ARP','Privilegiado','Timeout ARP configurado en esa interfaz.'],
-      ['clear arp-cache','Privilegiado','Eliminar todas las entradas ARP dinámicas.'],
-      ['clear arp interface [int]','Privilegiado','Eliminar ARP de una interfaz específica.'],
-      ['debug arp','Privilegiado','Muestra ARP enviados/recibidos en tiempo real.'],
-      ['undebug all','Privilegiado','Desactiva todos los debugs.'],
-      ['arp [IP] [MAC] arpa','Config global','Agregar entrada ARP estática permanente.'],
-      ['no arp [IP] [MAC] arpa','Config global','Eliminar entrada ARP estática.'],
-      ['arp timeout [seg]','Config‑if','Configura TTL de entradas ARP en la interfaz.'],
-      ['ip proxy-arp / no ip proxy-arp','Config‑if','Habilita o deshabilita Proxy ARP.'],
-      ['ip arp inspection vlan [x]','Config global','Habilita DAI en la VLAN.'],
-      ['ip arp inspection trust','Config‑if','Marca el puerto como trusted para DAI.'],
-      ['arp access-list [nombre]','Config global','Crea ARP ACL para hosts estáticos.'],
-      ['ip arp inspection filter [ACL] vlan [x]','Config global','Aplica ARP ACL a DAI.'],
-      ['show ip arp inspection','Privilegiado','Estado general de DAI por VLAN.'],
-      ['show ip arp inspection statistics vlan [x]','Privilegiado','Contadores de ARPs forwarded/dropped por DAI.'],
-      ['show ip dhcp snooping binding','Privilegiado','Tabla de vinculaciones DHCP Snooping (base de DAI).']
+    
+    const h3 = ['Comando', 'Modo', 'Descripción'];
+    const d3 = [
+      ['show arp',                                   'Privilegiado', 'Tabla ARP completa con Age, MAC e interfaz.'],
+      ['show ip arp',                                'Privilegiado', 'Tabla ARP formato IP (equivalente a show arp).'],
+      ['show arp [IP]',                              'Privilegiado', 'Entrada ARP de una IP específica.'],
+      ['show interfaces [int] | include ARP',        'Privilegiado', 'Timeout ARP configurado en esa interfaz.'],
+      ['clear arp-cache',                            'Privilegiado', 'Elimina todas las entradas dinámicas. Estáticas permanecen.'],
+      ['clear arp interface [int]',                  'Privilegiado', 'Elimina entradas ARP de una interfaz específica.'],
+      ['debug arp',                                  'Privilegiado', 'Muestra ARPs enviados y recibidos en tiempo real.'],
+      ['undebug all',                                'Privilegiado', 'Desactiva todos los debugs activos.'],
+      ['arp [IP] [MAC] arpa',                        'Config global', 'Agrega entrada ARP estática permanente.'],
+      ['no arp [IP] [MAC] arpa',                     'Config global', 'Elimina entrada ARP estática.'],
+      ['arp timeout [segundos]',                     'Config-if',    'Configura TTL de entradas ARP en esa interfaz.'],
+      ['ip proxy-arp / no ip proxy-arp',             'Config-if',    'Habilita o deshabilita Proxy ARP.'],
+      ['ip arp inspection vlan [x]',                 'Config global', 'Habilita DAI en la VLAN indicada.'],
+      ['ip arp inspection trust',                    'Config-if',    'Marca el puerto como trusted para DAI (uplinks/trunks).'],
+      ['arp access-list [nombre]',                   'Config global', 'Crea ARP ACL para hosts con IP estática en DAI.'],
+      ['ip arp inspection filter [ACL] vlan [x]',   'Config global', 'Aplica ARP ACL a DAI para hosts estáticos.'],
+      ['show ip arp inspection',                     'Privilegiado', 'Estado general de DAI por VLAN.'],
+      ['show ip arp inspection statistics vlan [x]','Privilegiado', 'Contadores de ARPs forwarded/dropped por DAI.'],
+      ['show ip dhcp snooping binding',              'Privilegiado', 'Tabla de vinculaciones DHCP Snooping (base de DAI).']
     ];
+    
     html += '<h3 style="font-family:Orbitron,sans-serif;font-size:.85rem;color:#00d4aa;letter-spacing:2px;margin:24px 0 12px;text-transform:uppercase;">Comandos Cisco IOS — ARP y DAI</h3>';
     html += '<div class="table-wrap"><table class="ref-table"><thead><tr>';
-    for (var i = 0; i < h3.length; i++) { html += '<th>' + h3[i] + '</th>'; }
+    for (var i = 0; i < h3.length; i++) {
+      html += '<th>' + h3[i] + '</th>';
+    }
     html += '</tr></thead><tbody>';
     for (var i = 0; i < d3.length; i++) {
       html += '<tr>';
-      for (var j = 0; j < d3[i].length; j++) { html += '<td>' + d3[i][j] + '</td>'; }
+      for (var j = 0; j < d3[i].length; j++) {
+        html += '<td>' + d3[i][j] + '</td>';
+      }
       html += '</tr>';
     }
     html += '</tbody></table></div>';
-
+    
     var refDiv = document.getElementById('refTableARP');
-    if (refDiv) { refDiv.innerHTML = html; }
+    if (refDiv) refDiv.innerHTML = html;
   }
 
-  /* ---------- 3️⃣  Generación del Quiz ---------- */
   function initQuiz() {
-    var questions = [
+    const questions = [
       {
-        q : 'Un host quiere comunicarse con 192.168.1.50. Después de verificar su tabla ARP, no encuentra la entrada. ¿Cuál es el PRIMER paso que realiza?',
-        opts : ['Envía un ICMP Echo Request (ping) directamente a la IP destino',
-                'Envía un ARP Request como broadcast FF:FF:FF:FF:FF:FF con Target IP = 192.168.1.50',
-                'Consulta al servidor DNS para resolver la dirección IP',
-                'Envía el paquete al default gateway directamente sin resolver la MAC'],
-        ans : 1,
-        exp : 'Al no encontrar la entrada en su caché ARP, el host debe resolver la MAC. Envía un ARP Request como broadcast L2 (FF:FF:FF:FF:FF:FF) con Target IP = 192.168.1.50. TODOS los hosts del segmento reciben este mensaje, pero solo el dueño de 192.168.1.50 responde.'
+        q: 'Un host quiere comunicarse con 192.168.1.50. Después de verificar su tabla ARP, no encuentra la entrada. ¿Cuál es el PRIMER paso que realiza?',
+        opts: ['Envía un ICMP Echo Request (ping) directamente a la IP destino','Envía un ARP Request como broadcast FF:FF:FF:FF:FF:FF con Target IP = 192.168.1.50','Consulta al servidor DNS para resolver la dirección IP','Envía el paquete al default gateway directamente sin resolver la MAC'],
+        ans: 1,
+        exp: 'Al no encontrar la entrada en su caché ARP, el host debe resolver la MAC. Envía un ARP Request como broadcast L2 (FF:FF:FF:FF:FF:FF) con Target IP = 192.168.1.50. TODOS los hosts del segmento reciben este mensaje, pero solo el dueño de 192.168.1.50 responde.'
       },
       {
-        q : 'En Cisco IOS, un ping muestra el resultado .!!!!. ¿Cuál es la causa del primer punto?',
-        opts : ['La interfaz destino está apagada o no responde',
-                'El router debió resolver la MAC vía ARP antes de enviar el ICMP — el primer paquete superó el timeout mientras esperaba el ARP Reply',
-                'La ruta hacia el destino no existe en la tabla de routing',
-                'Una ACL está bloqueando específicamente el primer paquete'],
-        ans : 1,
-        exp : 'El primer "." es completamente normal en Cisco IOS. El router no tenía la entrada ARP para el destino, así que envió un ARP Request y esperó el Reply antes de encapsular el paquete ICMP. El proceso tarda menos de 2 s (timeout de IOS). Los siguientes pings usan la caché ARP y son exitosos.'
+        q: 'En Cisco IOS, un ping muestra el resultado .!!!!. ¿Cuál es la causa del primer punto?',
+        opts: ['La interfaz destino está apagada o no responde','El router debió resolver la MAC vía ARP antes de enviar el ICMP — el primer paquete superó el timeout mientras esperaba el ARP Reply','La ruta hacia el destino no existe en la tabla de routing','Una ACL está bloqueando específicamente el primer paquete'],
+        ans: 1,
+        exp: 'El primer "." es completamente normal en Cisco IOS. El router no tenía la entrada ARP para el destino, así que envió un ARP Request y esperó el Reply antes de encapsular el paquete ICMP. Este proceso tarda menos de 2 segundos (timeout de IOS). Los siguientes pings usan la MAC cacheada y son exitosos.'
       },
       {
-        q : '¿Cuál es el propósito del ARP Gratuito (Gratuitous ARP)?',
-        opts : ['Resolver la MAC del default gateway',
-                'Enviar una solicitud donde Sender IP = Target IP para anunciar su propia IP o detectar duplicados',
-                'Eliminar entradas expiradas de la tabla ARP',
-                'Responder por hosts en otras redes (Proxy ARP)'],
-        ans : 1,
-        exp : 'El GARP se caracteriza porque Sender IP = Target IP (el host hace ARP de su propia IP). Se usa para: 1) Anunciar su presencia al iniciar, 2) Detectar IP duplicada, 3) Actualizar cachés después de cambio de MAC, 4) En HSRP/VRRP para notificar cambio de router activo.'
+        q: '¿Cuál es el propósito del ARP Gratuito (Gratuitous ARP)?',
+        opts: ['Resolver la MAC del default gateway','Enviar una solicitud donde Sender IP = Target IP para anunciar su propia IP o detectar duplicados','Eliminar entradas expiradas de la tabla ARP','Responder por hosts en otras redes (Proxy ARP)'],
+        ans: 1,
+        exp: 'El GARP se caracteriza porque Sender IP = Target IP (el host hace ARP de su propia IP). Se usa para: 1) Anunciar su presencia al iniciar, 2) Detectar IPs duplicadas (si alguien responde, hay conflicto), 3) Actualizar cachés vecinas después de cambio de MAC, 4) En HSRP/VRRP para notificar cambio de router activo.'
       },
       {
-        q : '¿Qué tipo de mensaje usa ARP Reply?',
-        opts : ['Broadcast a FF:FF:FF:FF:FF:FF — para que todos actualicen su caché',
-                'Multicast al grupo 224.0.0.1 — solo routers y hosts IGMP',
-                'Unicast directamente al host que envió el ARP Request',
-                'Anycast al servidor ARP más cercano en la red'],
-        ans : 2,
-        exp : 'El ARP Reply se envía como UNICAST directamente al host que hizo el Request. Esto es posible porque el ARP Request incluía el Sender MAC del solicitante. Sólo el Request es broadcast — el Reply va directo, sin inundar la red.'
+        q: '¿Qué tipo de mensaje usa ARP Reply?',
+        opts: ['Broadcast a FF:FF:FF:FF:FF:FF — para que todos actualicen su caché','Multicast al grupo 224.0.0.1 — solo routers y hosts IGMP','Unicast directamente al host que envió el ARP Request','Anycast al servidor ARP más cercano en la red'],
+        ans: 2,
+        exp: 'El ARP Reply se envía como UNICAST directamente al host que hizo el Request. Esto es posible porque el ARP Request incluía el Sender MAC del solicitante. Solo el Request es broadcast — el Reply va directo, sin inundar la red.'
       },
       {
-        q : 'Un administrador ejecuta "show arp" y ve una entrada con Age = "-". ¿Qué significa esto?',
-        opts : ['La entrada expiró y será eliminada en el próximo ciclo de limpieza',
-                'Es una entrada estática o la IP propia del router — es permanente y no expira',
-                'Hay un error de sincronización en la tabla ARP',
-                'La dirección MAC está incompleta o no pudo resolverse'],
-        ans : 1,
-        exp : 'En el output de "show arp", el campo Age "-" indica una entrada ESTÁTICA. Para las entradas propias del router (sus propias interfaces), también aparece "-" porque son permanentes. Las entradas dinámicas muestran minutos transcurridos.'
+        q: 'Un administrador ejecuta "show arp" y ve una entrada con Age = "-". ¿Qué significa esto?',
+        opts: ['La entrada expiró y será eliminada en el próximo ciclo de limpieza','Es una entrada estática o la IP propia del router — es permanente y no expira','Hay un error de sincronización en la tabla ARP','La dirección MAC está incompleta o no pudo resolverse'],
+        ans: 1,
+        exp: 'En el output de "show arp", el campo Age "-" indica una entrada ESTÁTICA. Para las entradas propias del router (sus propias interfaces), también aparece "-" porque son permanentes. Las entradas dinámicas muestran el tiempo en minutos transcurrido desde que se aprendió.'
       },
       {
-        q : '¿Cuál es el EtherType de ARP en un frame Ethernet?',
-        opts : ['0x0800 — Identifica el payload como IPv4',
-                '0x0806 — Identifica el payload como ARP',
-                '0x8100 — Indica frame con etiqueta VLAN 802.1Q',
-                '0x86DD — Identifica el payload como IPv6'],
-        ans : 1,
-        exp : 'ARP tiene EtherType 0x0806. Los demás: 0x0800 = IPv4, 0x8100 = 802.1Q VLAN tag, 0x86DD = IPv6.'
+        q: '¿Cuál es el EtherType de ARP en un frame Ethernet?',
+        opts: ['0x0800 — Identifica el payload como IPv4','0x0806 — Identifica el payload como ARP','0x8100 — Indica frame con etiqueta VLAN 802.1Q','0x86DD — Identifica el payload como IPv6'],
+        ans: 1,
+        exp: 'ARP tiene EtherType 0x0806. Los demás: 0x0800 = IPv4, 0x8100 = 802.1Q VLAN tag, 0x86DD = IPv6. El EtherType permite al receptor saber qué protocolo lleva el payload del frame Ethernet, sin necesidad de inspeccionar el contenido.'
       },
       {
-        q : '¿Qué característica de ARP lo hace vulnerable a ataques de envenenamiento (ARP Poisoning)?',
-        opts : ['Porque usa broadcast que todos los hosts del segmento reciben',
-                'Porque no tiene ningún mecanismo de autenticación — cualquier host puede enviar ARP Replies con información falsa y los receptores la aceptan sin verificación',
-                'Porque el TTL de las entradas ARP es demasiado largo en Cisco IOS',
-                'Porque opera simultáneamente en capa 2 y capa 3 sin protección'],
-        ans : 1,
-        exp : 'La vulnerabilidad fundamental de ARP es la AUSENCIA de autenticación. ARP simplemente acepta cualquier Reply que recibe; un atacante puede enviar Replies falsos y envenenar la caché de la víctima.'
+        q: '¿Qué característica de ARP lo hace vulnerable a ataques de envenenamiento (ARP Poisoning)?',
+        opts: ['Porque usa broadcast que todos los hosts del segmento reciben','Porque no tiene ningún mecanismo de autenticación — cualquier host puede enviar ARP Replies con información falsa y los receptores la aceptan sin verificación','Porque el TTL de las entradas ARP es demasiado largo en Cisco IOS','Porque opera simultáneamente en capa 2 y capa 3 sin protección'],
+        ans: 1,
+        exp: 'La vulnerabilidad fundamental de ARP es la AUSENCIA de autenticación. ARP simplemente acepta y procesa cualquier Reply que recibe, sin verificar si el remitente es legítimo. Un atacante puede enviar ARP Replies falsos afirmando que su MAC corresponde a la IP del gateway, envenenando la caché de las víctimas.'
       },
       {
-        q : 'Un switch tiene Dynamic ARP Inspection (DAI) configurado. Un host con IP estática pierde conectividad. ¿Por qué?',
-        opts : ['DAI es incompatible con IPs estáticas por diseño de protocolo',
-                'El host no tiene entrada en la tabla DHCP Snooping que DAI usa para validar sus mensajes ARP',
-                'La VLAN del host fue desactivada en el switch durante la configuración de DAI',
-                'El timeout ARP del host y de DAI expiraron simultáneamente'],
-        ans : 1,
-        exp : 'DAI valida los mensajes ARP contra la tabla DHCP Snooping. Los hosts estáticos no aparecen allí (no usaron DHCP), por lo que sus ARPs son rechazados. La solución es crear una ARP ACL y aplicarla con "ip arp inspection filter".'
+        q: 'Un switch tiene Dynamic ARP Inspection (DAI) configurado. Un host con IP estática pierde conectividad. ¿Por qué?',
+        opts: ['DAI es incompatible con IPs estáticas por diseño de protocolo','El host no tiene entrada en la tabla DHCP Snooping que DAI usa para validar sus mensajes ARP','La VLAN del host fue desactivada en el switch durante la configuración de DAI','El timeout ARP del host y de DAI expiraron simultáneamente'],
+        ans: 1,
+        exp: 'DAI valida los mensajes ARP contra la tabla de DHCP Snooping binding. Los hosts con IP estática NO tienen entrada en esa tabla (porque no usaron DHCP), por lo que sus mensajes ARP son rechazados por DAI. La solución es crear una ARP ACL manual con "arp access-list" y aplicarla a DAI con "ip arp inspection filter" para los hosts estáticos.'
       },
       {
-        q : 'PC‑A (192.168.1.10) quiere hacer ping a PC‑C (172.16.0.5). ¿Por cuál IP hará PC‑A el ARP Request?',
-        opts : ['172.16.0.5 — la IP destino final, sin importar en qué red esté',
-                '192.168.1.10 — su propia IP (esto sería un Gratuitous ARP)',
-                '192.168.1.1 — la IP del default gateway, porque el destino está en otra red',
-                'No realiza ARP alguno — encapsula el paquete y lo envía directamente'],
-        ans : 2,
-        exp : 'Cuando el destino está en una red diferente, el host origen hace ARP por la IP del DEFAULT GATEWAY, no por la IP destino final. PC‑A primero resuelve la MAC del router (192.168.1.1). Después encapsula el paquete IP (destino 172.16.0.5) dentro del frame hacia el router.'
+        q: 'PC-A (192.168.1.10) quiere hacer ping a PC-C (172.16.0.5). ¿Por cuál IP hará PC-A el ARP Request?',
+        opts: ['172.16.0.5 — la IP destino final, sin importar en qué red esté','192.168.1.10 — su propia IP (esto sería un Gratuitous ARP)','192.168.1.1 — la IP del default gateway, porque el destino está en otra red','No realiza ARP alguno — encapsula el paquete y lo envía directamente'],
+        ans: 2,
+        exp: 'Cuando el destino está en una red diferente, el host origen hace ARP por la IP del DEFAULT GATEWAY, no por la IP destino final. PC-A sabe que 172.16.0.5 no está en 192.168.1.0/24, así que necesita el router. Una vez que tiene la MAC del gateway, encapsula el paquete IP (que sí lleva la IP destino 172.16.0.5) dentro de un frame hacia el router.'
       },
       {
-        q : '¿Cuál es el comando correcto para limpiar la tabla ARP dinámica en un router Cisco?',
-        opts : ['Router# clear arp',
-                'Router# flush arp-table',
-                'Router# clear arp-cache',
-                'Router# no arp dynamic all'],
-        ans : 2,
-        exp : '"clear arp‑cache" es el comando correcto en Cisco IOS para eliminar todas las entradas ARP dinámicas. Las entradas estáticas (Age = "-") permanecen.'
+        q: '¿Cuál es el comando correcto para limpiar la tabla ARP dinámica en un router Cisco?',
+        opts: ['Router# clear arp','Router# flush arp-table','Router# clear arp-cache','Router# no arp dynamic all'],
+        ans: 2,
+        exp: '"clear arp-cache" es el comando correcto en Cisco IOS para eliminar todas las entradas ARP dinámicas. Las entradas estáticas (Age = "-") permanecen. Este comando es útil cuando se sospecha de ARP Poisoning o cuando se cambia hardware de red y las cachés tienen MACs obsoletas.'
       }
     ];
 
     var container = document.getElementById('quizContainerARP');
-    if (!container) return;               /* nada que hacer */
-
-    var html = '';
+    if (!container) return;
+    
+    // Verificar si ya existe contenido (para no regenerar si ya está)
+    if (container.innerHTML.trim() !== '') return;
+    
+    let html = '';
     for (var i = 0; i < questions.length; i++) {
       var q = questions[i];
       var optsHtml = '';
       for (var j = 0; j < q.opts.length; j++) {
         optsHtml += '<button class="quiz-opt" data-qi="' + i + '" data-sel="' + j + '" data-ans="' + q.ans + '">' + q.opts[j] + '</button>';
       }
-      html += '<div class="quiz-question" id="qq' + i + '">';
-      html +=   '<div class="quiz-q-num">PREGUNTA ' + (i + 1) + ' DE ' + questions.length + '</div>';
-      html +=   '<div class="quiz-q-text">' + q.q + '</div>';
-      html +=   '<div class="quiz-opts">' + optsHtml + '</div>';
-      html += '</div>';
+      html += '<div class="quiz-question" id="qq' + i + '">' +
+        '<div class="quiz-q-num">PREGUNTA ' + (i+1) + ' DE ' + questions.length + '</div>' +
+        '<div class="quiz-q-text">' + q.q + '</div>' +
+        '<div class="quiz-opts">' + optsHtml + '</div>' +
+        '</div>';
     }
     container.innerHTML = html;
 
-    /* Guardar explicaciones en un objeto global */
+    // Guardar explicaciones en objeto separado (evita problemas de comillas en HTML)
     window._arpExp = {};
-    for (var i = 0; i < questions.length; i++) {
-      window._arpExp[i] = questions[i].exp;
+    for (var i = 0; i < questions.length; i++) { 
+      window._arpExp[i] = questions[i].exp; 
     }
 
-    /* Asignar listener a cada opción */
-    var opts = container.querySelectorAll('.quiz-opt');
-    for (var i = 0; i < opts.length; i++) {
-      opts[i].addEventListener('click', function () {
+    // Asignar eventos con addEventListener (sin onclick inline)
+    var buttons = container.querySelectorAll('.quiz-opt');
+    for (var k = 0; k < buttons.length; k++) {
+      buttons[k].addEventListener('click', function() {
         var qi  = parseInt(this.getAttribute('data-qi'), 10);
         var sel = parseInt(this.getAttribute('data-sel'), 10);
         var ans = parseInt(this.getAttribute('data-ans'), 10);
@@ -550,41 +1201,48 @@ var ARPQuiz = (function () {
     }
   }
 
-  /* ---------- 4️⃣  Respuesta a una pregunta ---------- */
   function answerQ(qi, sel, correct, exp) {
     var qDiv = document.getElementById('qq' + qi);
     var btns = qDiv.querySelectorAll('.quiz-opt');
-
-    for (var i = 0; i < btns.length; i++) { btns[i].disabled = true; }
-
+    for (var i = 0; i < btns.length; i++) { 
+      btns[i].disabled = true; 
+    }
     btns[sel].classList.add(sel === correct ? 'correct' : 'wrong');
-    if (sel !== correct) { btns[correct].classList.add('correct'); }
-
-    var expl = document.createElement('div');
-    expl.className = 'quiz-explanation';
-    expl.innerHTML = '<strong>' + (sel === correct ? '✅ Correcto!' : '❌ Incorrecto.') + '</strong> ' + exp;
-    qDiv.appendChild(expl);
+    if (sel !== correct) btns[correct].classList.add('correct');
+    var expDiv = document.createElement('div');
+    expDiv.className = 'quiz-explanation';
+    expDiv.innerHTML = '<strong>' + (sel===correct ? '✅ Correcto!' : '❌ Incorrecto.') + '</strong> ' + exp;
+    qDiv.appendChild(expDiv);
   }
 
-  /* ---------- 5️⃣  INICIALIZACIÓN ---------- */
-  function runApp() {
-    console.log('ARPQuiz – runApp executed');
+  // Inicialización cuando el DOM está listo
+  function init() {
     buildRefTable();
-    initQuiz();   // Si la página abre directamente en la pestaña Quiz, el contenido ya está listo
+    // No llamamos initQuiz aquí porque se llama cuando se abre la pestaña
   }
 
-  // Esperamos a que *todo* el documento (incluido main.js) se haya cargado
-  if (document.readyState === 'loading') {
-    window.addEventListener('load', runApp);
-  } else {
-    runApp();
-  }
-
-  /* ---------- Exportar la función pública que usan los botones ---------- */
+  // API pública
   return {
-    showTabArp : showTabArp
+    showTabArp: showTabArp,
+    init: init
   };
+  
 })();
+
+// Inicializar cuando la ventana esté completamente cargada (después de main.js)
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', function() {
+    // Esperar a que todo esté listo
+    setTimeout(function() {
+      ARPQuiz.init();
+    }, 100);
+  });
+} else {
+  setTimeout(function() {
+    ARPQuiz.init();
+  }, 100);
+}
 </script>
 </body>
 </html>
+```
