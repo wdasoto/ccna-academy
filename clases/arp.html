@@ -1116,17 +1116,31 @@ function initQuiz() {
   const container = document.getElementById('quizContainerARP');
   let html = '';
   questions.forEach((q, i) => {
-    const expSafe = q.exp.replace(/'/g, "&#39;").replace(/"/g, "&quot;");
+    let optsHtml = '';
+    q.opts.forEach(function(o, j) {
+      optsHtml += '<button class="quiz-opt" data-qi="' + i + '" data-sel="' + j + '" data-ans="' + q.ans + '">' + o + '</button>';
+    });
     html += '<div class="quiz-question" id="qq' + i + '">' +
       '<div class="quiz-q-num">PREGUNTA ' + (i+1) + ' DE ' + questions.length + '</div>' +
       '<div class="quiz-q-text">' + q.q + '</div>' +
-      '<div class="quiz-opts">' +
-      q.opts.map(function(o,j) {
-        return '<button class="quiz-opt" onclick="answerQ(' + i + ',' + j + ',' + q.ans + ',\'' + expSafe + '\')">' + o + '</button>';
-      }).join('') +
-      '</div></div>';
+      '<div class="quiz-opts">' + optsHtml + '</div>' +
+      '</div>';
   });
   container.innerHTML = html;
+
+  // Guardar explicaciones en objeto separado (evita problemas de comillas en HTML)
+  window._arpExp = {};
+  questions.forEach(function(q, i) { window._arpExp[i] = q.exp; });
+
+  // Asignar eventos con addEventListener (sin onclick inline)
+  container.querySelectorAll('.quiz-opt').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var qi  = parseInt(this.getAttribute('data-qi'));
+      var sel = parseInt(this.getAttribute('data-sel'));
+      var ans = parseInt(this.getAttribute('data-ans'));
+      answerQ(qi, sel, ans, window._arpExp[qi]);
+    });
+  });
 }
 
 function answerQ(qi, sel, correct, exp) {
@@ -1137,7 +1151,7 @@ function answerQ(qi, sel, correct, exp) {
   if (sel !== correct) btns[correct].classList.add('correct');
   const expDiv = document.createElement('div');
   expDiv.className = 'quiz-explanation';
-  expDiv.innerHTML = `<strong>${sel===correct?'✅ Correcto!':'❌ Incorrecto.'}</strong> ${exp}`;
+  expDiv.innerHTML = '<strong>' + (sel===correct ? '✅ Correcto!' : '❌ Incorrecto.') + '</strong> ' + exp;
   qDiv.appendChild(expDiv);
 }
 
