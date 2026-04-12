@@ -1001,10 +1001,9 @@ function buildRefTable() {
     ['DAI Drop',       'N/A — descartado',                '—',      '—', 'IP+MAC no coincide con tabla DHCP Snooping → frame descartado.'],
   ];
   let html = '<h3 style="font-family:Orbitron,sans-serif;font-size:.85rem;color:#00d4aa;letter-spacing:2px;margin-bottom:12px;text-transform:uppercase;">Tipos de Mensajes y Variantes ARP</h3>';
-  html += '<div class="table-wrap"><table class="ref-table"><thead><tr>' + h1.map(h=>'<th>'+h+'</th>').join('') + '</tr></thead><tbody>';
-  d1.forEach(r => { html += '<tr>' + r.map(c=>'<td>'+c+'</td>').join('') + '</tr>'; });
+  html += '<div class="table-wrap"><table class="ref-table"><thead><tr>' + h1.map(h=>`<th>${h}</th>`).join('') + '</tr></thead><tbody>';
+  d1.forEach(r => { html += '<tr>' + r.map(c=>`<td>${c}</td>`).join('') + '</tr>'; });
   html += '</tbody></table></div>';
-  
   const h2 = ['Campo ARP', 'Tamaño', 'En Request', 'En Reply', 'Descripción'];
   const d2 = [
     ['Hardware Type (HTYPE)',         '2 bytes', '0x0001 (Ethernet)',     '0x0001',             'Tipo de red física.'],
@@ -1017,10 +1016,9 @@ function buildRefTable() {
     ['Target Protocol Address',       '4 bytes', 'IP que se resuelve',   'IP que se resolvió',  'IP objetivo de la resolución.'],
   ];
   html += '<h3 style="font-family:Orbitron,sans-serif;font-size:.85rem;color:#00d4aa;letter-spacing:2px;margin:24px 0 12px;text-transform:uppercase;">Estructura del Paquete ARP — 28 bytes</h3>';
-  html += '<div class="table-wrap"><table class="ref-table"><thead><tr>' + h2.map(h=>'<th>'+h+'</th>').join('') + '</tr></thead><tbody>';
-  d2.forEach(r => { html += '<tr>' + r.map(c=>'<td>'+c+'</td>').join('') + '</tr>'; });
+  html += '<div class="table-wrap"><table class="ref-table"><thead><tr>' + h2.map(h=>`<th>${h}</th>`).join('') + '</tr></thead><tbody>';
+  d2.forEach(r => { html += '<tr>' + r.map(c=>`<td>${c}</td>`).join('') + '</tr>'; });
   html += '</tbody></table></div>';
-  
   const h3 = ['Comando', 'Modo', 'Descripción'];
   const d3 = [
     ['show arp',                                   'Privilegiado', 'Tabla ARP completa con Age, MAC e interfaz.'],
@@ -1044,12 +1042,10 @@ function buildRefTable() {
     ['show ip dhcp snooping binding',              'Privilegiado', 'Tabla de vinculaciones DHCP Snooping (base de DAI).'],
   ];
   html += '<h3 style="font-family:Orbitron,sans-serif;font-size:.85rem;color:#00d4aa;letter-spacing:2px;margin:24px 0 12px;text-transform:uppercase;">Comandos Cisco IOS — ARP y DAI</h3>';
-  html += '<div class="table-wrap"><table class="ref-table"><thead><tr>' + h3.map(h=>'<th>'+h+'</th>').join('') + '</tr></thead><tbody>';
-  d3.forEach(r => { html += '<tr>' + r.map(c=>'<td>'+c+'</td>').join('') + '</tr>'; });
+  html += '<div class="table-wrap"><table class="ref-table"><thead><tr>' + h3.map(h=>`<th>${h}</th>`).join('') + '</tr></thead><tbody>';
+  d3.forEach(r => { html += '<tr>' + r.map(c=>`<td>${c}</td>`).join('') + '</tr>'; });
   html += '</tbody></table></div>';
-  
-  const el = document.getElementById('refTableARP');
-  if (el) el.innerHTML = html;
+  document.getElementById('refTableARP').innerHTML = html;
 }
 
 // ── QUIZ ──────────────────────────────────────
@@ -1118,64 +1114,34 @@ function initQuiz() {
   ];
 
   const container = document.getElementById('quizContainerARP');
-  if (!container) {
-    console.error('Error: No se encontró el contenedor #quizContainerARP');
-    return;
-  }
-  
-  // Generar HTML sin onclick inline para evitar problemas con comillas
   let html = '';
   questions.forEach((q, i) => {
-    html += '<div class="quiz-question" id="qq'+i+'">';
-    html += '<div class="quiz-q-num">PREGUNTA '+(i+1)+' DE '+questions.length+'</div>';
-    html += '<div class="quiz-q-text">'+q.q+'</div>';
-    html += '<div class="quiz-opts">';
-    q.opts.forEach((o,j) => {
-      html += '<button class="quiz-opt" data-qi="'+i+'" data-sel="'+j+'" data-correct="'+q.ans+'">'+o+'</button>';
-    });
-    html += '</div></div>';
+    // Escapamos las comillas simples en la explicación para que no rompan el onclick
+    const escapedExp = q.exp.replace(/'/g, "\\'");
+    
+    html += `<div class="quiz-question" id="qq${i}">
+      <div class="quiz-q-num">PREGUNTA ${i+1} DE ${questions.length}</div>
+      <div class="quiz-q-text">${q.q}</div>
+      <div class="quiz-opts">
+        ${q.opts.map((o,j) => `
+          <button class="quiz-opt" onclick="answerQ(${i},${j},${q.ans},'${escapedExp}')">
+            ${o}
+          </button>`).join('')}
+      </div>
+    </div>`;
   });
-  
   container.innerHTML = html;
-  
-  // Agregar explicaciones como data-exp de forma segura después de crear los elementos
-  questions.forEach((q, i) => {
-    const qDiv = document.getElementById('qq'+i);
-    if (qDiv) {
-      qDiv.dataset.exp = q.exp;
-    }
-  });
-  
-  // Agregar event listeners
-  container.querySelectorAll('.quiz-opt').forEach(btn => {
-    btn.addEventListener('click', function() {
-      const qi = parseInt(this.getAttribute('data-qi'));
-      const sel = parseInt(this.getAttribute('data-sel'));
-      const correct = parseInt(this.getAttribute('data-correct'));
-      const qDiv = document.getElementById('qq'+qi);
-      const exp = qDiv ? qDiv.dataset.exp : '';
-      answerQ(qi, sel, correct, exp);
-    });
-  });
 }
 
 function answerQ(qi, sel, correct, exp) {
-  const qDiv = document.getElementById('qq'+qi);
-  if (!qDiv) return;
-  
+  const qDiv = document.getElementById('qq' + qi);
   const btns = qDiv.querySelectorAll('.quiz-opt');
   btns.forEach(b => b.disabled = true);
-  
-  if (sel === correct) {
-    btns[sel].classList.add('correct');
-  } else {
-    btns[sel].classList.add('wrong');
-    if (btns[correct]) btns[correct].classList.add('correct');
-  }
-  
+  btns[sel].classList.add(sel === correct ? 'correct' : 'wrong');
+  if (sel !== correct) btns[correct].classList.add('correct');
   const expDiv = document.createElement('div');
   expDiv.className = 'quiz-explanation';
-  expDiv.innerHTML = '<strong>'+(sel===correct?'✅ Correcto!':'❌ Incorrecto.')+'</strong> '+(exp||'');
+  expDiv.innerHTML = `<strong>${sel===correct?'✅ Correcto!':'❌ Incorrecto.'}</strong> ${exp}`;
   qDiv.appendChild(expDiv);
 }
 
