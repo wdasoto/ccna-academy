@@ -1001,8 +1001,8 @@ function buildRefTable() {
     ['DAI Drop',       'N/A — descartado',                '—',      '—', 'IP+MAC no coincide con tabla DHCP Snooping → frame descartado.'],
   ];
   let html = '<h3 style="font-family:Orbitron,sans-serif;font-size:.85rem;color:#00d4aa;letter-spacing:2px;margin-bottom:12px;text-transform:uppercase;">Tipos de Mensajes y Variantes ARP</h3>';
-  html += '<div class="table-wrap"><table class="ref-table"><thead><tr>' + h1.map(h=>`<th>${h}</th>`).join('') + '</tr></thead><tbody>';
-  d1.forEach(r => { html += '<tr>' + r.map(c=>`<td>${c}</td>`).join('') + '</tr>'; });
+  html += '<div class="table-wrap"><table class="ref-table"><thead><tr>' + h1.map(h=>'<th>'+h+'</th>').join('') + '</tr></thead><tbody>';
+  d1.forEach(r => { html += '<tr>' + r.map(c=>'<td>'+c+'</td>').join('') + '</tr>'; });
   html += '</tbody></table></div>';
   
   const h2 = ['Campo ARP', 'Tamaño', 'En Request', 'En Reply', 'Descripción'];
@@ -1017,8 +1017,8 @@ function buildRefTable() {
     ['Target Protocol Address',       '4 bytes', 'IP que se resuelve',   'IP que se resolvió',  'IP objetivo de la resolución.'],
   ];
   html += '<h3 style="font-family:Orbitron,sans-serif;font-size:.85rem;color:#00d4aa;letter-spacing:2px;margin:24px 0 12px;text-transform:uppercase;">Estructura del Paquete ARP — 28 bytes</h3>';
-  html += '<div class="table-wrap"><table class="ref-table"><thead><tr>' + h2.map(h=>`<th>${h}</th>`).join('') + '</tr></thead><tbody>';
-  d2.forEach(r => { html += '<tr>' + r.map(c=>`<td>${c}</td>`).join('') + '</tr>'; });
+  html += '<div class="table-wrap"><table class="ref-table"><thead><tr>' + h2.map(h=>'<th>'+h+'</th>').join('') + '</tr></thead><tbody>';
+  d2.forEach(r => { html += '<tr>' + r.map(c=>'<td>'+c+'</td>').join('') + '</tr>'; });
   html += '</tbody></table></div>';
   
   const h3 = ['Comando', 'Modo', 'Descripción'];
@@ -1044,8 +1044,8 @@ function buildRefTable() {
     ['show ip dhcp snooping binding',              'Privilegiado', 'Tabla de vinculaciones DHCP Snooping (base de DAI).'],
   ];
   html += '<h3 style="font-family:Orbitron,sans-serif;font-size:.85rem;color:#00d4aa;letter-spacing:2px;margin:24px 0 12px;text-transform:uppercase;">Comandos Cisco IOS — ARP y DAI</h3>';
-  html += '<div class="table-wrap"><table class="ref-table"><thead><tr>' + h3.map(h=>`<th>${h}</th>`).join('') + '</tr></thead><tbody>';
-  d3.forEach(r => { html += '<tr>' + r.map(c=>`<td>${c}</td>`).join('') + '</tr>'; });
+  html += '<div class="table-wrap"><table class="ref-table"><thead><tr>' + h3.map(h=>'<th>'+h+'</th>').join('') + '</tr></thead><tbody>';
+  d3.forEach(r => { html += '<tr>' + r.map(c=>'<td>'+c+'</td>').join('') + '</tr>'; });
   html += '</tbody></table></div>';
   
   const el = document.getElementById('refTableARP');
@@ -1123,36 +1123,44 @@ function initQuiz() {
     return;
   }
   
+  // Generar HTML sin onclick inline para evitar problemas con comillas
   let html = '';
   questions.forEach((q, i) => {
-    // Escapar comillas para el atributo data-exp
-    const expEscaped = q.exp.replace(/"/g, '&quot;').replace(/'/g, "&apos;");
-    
-    html += `<div class="quiz-question" id="qq${i}">
-      <div class="quiz-q-num">PREGUNTA ${i+1} DE ${questions.length}</div>
-      <div class="quiz-q-text">${q.q}</div>
-      <div class="quiz-opts">
-        ${q.opts.map((o,j) => `<button class="quiz-opt" data-qi="${i}" data-sel="${j}" data-correct="${q.ans}" data-exp="${expEscaped}">${o}</button>`).join('')}
-      </div>
-    </div>`;
+    html += '<div class="quiz-question" id="qq'+i+'">';
+    html += '<div class="quiz-q-num">PREGUNTA '+(i+1)+' DE '+questions.length+'</div>';
+    html += '<div class="quiz-q-text">'+q.q+'</div>';
+    html += '<div class="quiz-opts">';
+    q.opts.forEach((o,j) => {
+      html += '<button class="quiz-opt" data-qi="'+i+'" data-sel="'+j+'" data-correct="'+q.ans+'">'+o+'</button>';
+    });
+    html += '</div></div>';
   });
   
   container.innerHTML = html;
   
-  // Agregar event listeners después de renderizar
+  // Agregar explicaciones como data-exp de forma segura después de crear los elementos
+  questions.forEach((q, i) => {
+    const qDiv = document.getElementById('qq'+i);
+    if (qDiv) {
+      qDiv.dataset.exp = q.exp;
+    }
+  });
+  
+  // Agregar event listeners
   container.querySelectorAll('.quiz-opt').forEach(btn => {
     btn.addEventListener('click', function() {
       const qi = parseInt(this.getAttribute('data-qi'));
       const sel = parseInt(this.getAttribute('data-sel'));
       const correct = parseInt(this.getAttribute('data-correct'));
-      const exp = this.getAttribute('data-exp');
+      const qDiv = document.getElementById('qq'+qi);
+      const exp = qDiv ? qDiv.dataset.exp : '';
       answerQ(qi, sel, correct, exp);
     });
   });
 }
 
 function answerQ(qi, sel, correct, exp) {
-  const qDiv = document.getElementById('qq' + qi);
+  const qDiv = document.getElementById('qq'+qi);
   if (!qDiv) return;
   
   const btns = qDiv.querySelectorAll('.quiz-opt');
@@ -1167,7 +1175,7 @@ function answerQ(qi, sel, correct, exp) {
   
   const expDiv = document.createElement('div');
   expDiv.className = 'quiz-explanation';
-  expDiv.innerHTML = `<strong>${sel===correct?'✅ Correcto!':'❌ Incorrecto.'}</strong> ${exp}`;
+  expDiv.innerHTML = '<strong>'+(sel===correct?'✅ Correcto!':'❌ Incorrecto.')+'</strong> '+(exp||'');
   qDiv.appendChild(expDiv);
 }
 
