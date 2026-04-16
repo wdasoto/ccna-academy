@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>M8 · Automatización de Redes — Python · JSON · REST APIs · Ansible | CCNA Academy</title>
+  <meta name="description" content="Módulo 8 CCNA: Automatización de redes con Python, JSON, REST APIs y Ansible. Domain 6 del examen CCNA 200-301.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+
+<div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
+<nav class="ccna-drawer" id="ccnaDrawer">
+  <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
+  <div class="drawer-section"><div class="drawer-section-title">General</div>
+    <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M1 · Fundamentos</div>
+    <a href="fundamentos.html"        class="drawer-link"><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
+    <a href="subnetting.html"         class="drawer-link"><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
+    <a href="ipv6.html"               class="drawer-link"><span class="dl-icon">6️⃣</span> IPv6</a>
+    <a href="arp.html"                class="drawer-link"><span class="dl-icon">📡</span> ARP</a>
+    <a href="rip.html"                class="drawer-link"><span class="dl-icon">🔄</span> RIP</a>
+    <a href="protocolos-internet.html" class="drawer-link"><span class="dl-icon">🌍</span> Protocolos Internet</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M2 · Dispositivos Cisco</div>
+    <a href="router.html"             class="drawer-link"><span class="dl-icon">📡</span> Routers Cisco</a>
+    <a href="switches-cisco.html"     class="drawer-link"><span class="dl-icon">🔀</span> Switches Cisco</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M3 · Switching</div>
+    <a href="vlan.html"               class="drawer-link"><span class="dl-icon">🏷️</span> VLANs</a>
+    <a href="inter-vlan-routing.html" class="drawer-link"><span class="dl-icon">🔁</span> Inter-VLAN Routing</a>
+    <a href="stp.html"                class="drawer-link"><span class="dl-icon">🌳</span> STP</a>
+    <a href="etherchannel.html"       class="drawer-link"><span class="dl-icon">🔗</span> EtherChannel</a>
+    <a href="port-security.html"      class="drawer-link"><span class="dl-icon">🔒</span> Port Security</a>
+    <a href="cdp-lldp.html"           class="drawer-link"><span class="dl-icon">🔍</span> CDP / LLDP</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M4 · Routing</div>
+    <a href="routing.html"            class="drawer-link"><span class="dl-icon">🗺️</span> Routing Estático</a>
+    <a href="ospf.html"               class="drawer-link"><span class="dl-icon">⭕</span> OSPF</a>
+    <a href="eigrp.html"              class="drawer-link"><span class="dl-icon">⚡</span> EIGRP</a>
+    <a href="ospfv2-masterclass.html" class="drawer-link"><span class="dl-icon">🎯</span> OSPFv2 Masterclass</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M5 · Servicios IP</div>
+    <a href="dhcp.html"               class="drawer-link"><span class="dl-icon">📋</span> DHCP</a>
+    <a href="nat.html"                class="drawer-link"><span class="dl-icon">🔄</span> NAT / PAT</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M6 · Seguridad</div>
+    <a href="acl.html"                class="drawer-link"><span class="dl-icon">🛡️</span> ACLs</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M7 · WAN &amp; QoS</div>
+    <a href="wan.html"                class="drawer-link"><span class="dl-icon">🌍</span> WAN</a>
+    <a href="qos.html"                class="drawer-link"><span class="dl-icon">📊</span> QoS</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M8 · Automatización</div>
+    <a href="m8-automatizacion.html"  class="drawer-link active"><span class="dl-icon">🤖</span> M8 — Vista General</a>
+    <a href="python-redes.html"       class="drawer-link"><span class="dl-icon">🐍</span> Python para Redes</a>
+    <a href="json-datos.html"         class="drawer-link"><span class="dl-icon">📋</span> JSON y Datos</a>
+    <a href="rest-apis.html"          class="drawer-link"><span class="dl-icon">🌐</span> REST APIs</a>
+    <a href="ansible-redes.html"      class="drawer-link"><span class="dl-icon">⚙️</span> Ansible</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">⚡ Herramientas</div>
+    <a href="asistente.html"          class="drawer-link"><span class="dl-icon">🤖</span> Asistente IA</a>
+    <a href="netbot.html"             class="drawer-link"><span class="dl-icon">⚙️</span> NetBot Config</a>
+    <a href="calculadora.html"        class="drawer-link"><span class="dl-icon">🧮</span> Calculadora IP</a>
+    <a href="laboratorios-pkt.html"   class="drawer-link"><span class="dl-icon">🧪</span> Labs Packet Tracer</a>
+    <a href="../banco-preguntas.html" class="drawer-link"><span class="dl-icon">📝</span> Banco de Preguntas</a></div>
+</nav>
+
+<header class="navbar">
+  <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
+  <a href="../index.html" class="navbar-brand">CISCO<span> ACADEMY</span></a>
+  <div class="navbar-spacer"></div>
+  <a href="../index.html" class="navbar-link">← Inicio</a>
+</header>
+<script src="../assets/main.js" defer></script>
+<div class="nav-spacer"></div>
+
+<!-- HERO -->
+<section class="m8-hero">
+  <div class="m8-hero-inner">
+    <div class="m8-badge">M8 · AUTOMATIZACIÓN DE REDES · CCNA 200-301 DOMAIN 6</div>
+    <h1 class="m8-title">Automatización<br><span class="m8-title-accent">&amp; Programabilidad</span></h1>
+    <p class="m8-subtitle">El futuro de las redes es código. Aprende a automatizar configuraciones, consumir APIs y gestionar infraestructura con las herramientas que definen la ingeniería de redes moderna.</p>
+    <div class="m8-stats">
+      <div class="m8-stat"><span class="m8-stat-n">4</span><span class="m8-stat-l">Herramientas</span></div>
+      <div class="m8-stat"><span class="m8-stat-n">~10%</span><span class="m8-stat-l">Del examen CCNA</span></div>
+      <div class="m8-stat"><span class="m8-stat-n">Domain 6</span><span class="m8-stat-l">Network Automation</span></div>
+      <div class="m8-stat"><span class="m8-stat-n">2026</span><span class="m8-stat-l">Habilidad clave</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- GRID DE LAS 4 HERRAMIENTAS -->
+<div class="m8-wrap">
+
+  <div class="m8-section-hdr">
+    <div class="m8-section-tag">◈ ELIGE TU HERRAMIENTA</div>
+    <h2 class="m8-section-title">4 PILARES DE LA AUTOMATIZACIÓN</h2>
+    <p class="m8-section-sub">Cada herramienta tiene su propia ruta de clases. Puedes seguirlas en orden o ir directamente al tema que necesites.</p>
+  </div>
+
+  <div class="m8-grid">
+
+    <!-- PYTHON -->
+    <a href="python-redes.html" class="m8-card m8-py">
+      <div class="m8-card-top">
+        <div class="m8-card-icon">🐍</div>
+        <div class="m8-card-meta">
+          <div class="m8-card-tag">HERRAMIENTA 1</div>
+          <div class="m8-card-name">Python para Redes</div>
+        </div>
+        <div class="m8-card-arrow">→</div>
+      </div>
+      <p class="m8-card-desc">Automatiza la configuración y verificación de dispositivos Cisco con Python. Desde conexiones SSH básicas hasta scripts para gestionar cientos de routers.</p>
+      <div class="m8-card-topics">
+        <span class="m8-topic py">Sintaxis básica Python</span>
+        <span class="m8-topic py">Netmiko — SSH automation</span>
+        <span class="m8-topic py">NAPALM — multi-vendor</span>
+        <span class="m8-topic py">Paramiko</span>
+        <span class="m8-topic py">Scripts de verificación</span>
+        <span class="m8-topic py">Backup automático IOS</span>
+      </div>
+      <div class="m8-card-footer">
+        <span class="m8-card-badge py">🐍 Python 3.x</span>
+        <span class="m8-card-count" id="py-count">Cargando clases...</span>
+      </div>
+    </a>
+
+    <!-- JSON -->
+    <a href="json-datos.html" class="m8-card m8-json">
+      <div class="m8-card-top">
+        <div class="m8-card-icon">📋</div>
+        <div class="m8-card-meta">
+          <div class="m8-card-tag">HERRAMIENTA 2</div>
+          <div class="m8-card-name">JSON &amp; Datos</div>
+        </div>
+        <div class="m8-card-arrow">→</div>
+      </div>
+      <p class="m8-card-desc">Entiende los formatos de datos que usan todas las APIs de red. JSON es el lenguaje universal de las APIs modernas y YANG/XML el de NETCONF.</p>
+      <div class="m8-card-topics">
+        <span class="m8-topic json">Estructura JSON</span>
+        <span class="m8-topic json">Parsing con Python</span>
+        <span class="m8-topic json">JSON vs XML vs YAML</span>
+        <span class="m8-topic json">YANG data models</span>
+        <span class="m8-topic json">json.loads / json.dumps</span>
+        <span class="m8-topic json">Validación de datos</span>
+      </div>
+      <div class="m8-card-footer">
+        <span class="m8-card-badge json">📋 JSON · XML · YAML</span>
+        <span class="m8-card-count" id="json-count">Cargando clases...</span>
+      </div>
+    </a>
+
+    <!-- REST APIs -->
+    <a href="rest-apis.html" class="m8-card m8-rest">
+      <div class="m8-card-top">
+        <div class="m8-card-icon">🌐</div>
+        <div class="m8-card-meta">
+          <div class="m8-card-tag">HERRAMIENTA 3</div>
+          <div class="m8-card-name">REST APIs</div>
+        </div>
+        <div class="m8-card-arrow">→</div>
+      </div>
+      <p class="m8-card-desc">Gestiona dispositivos y plataformas de red a través de HTTP. RESTCONF para IOS-XE, DNA Center API para campus y Meraki para cloud networking.</p>
+      <div class="m8-card-topics">
+        <span class="m8-topic rest">HTTP GET POST PUT DELETE</span>
+        <span class="m8-topic rest">RESTCONF (RFC 8040)</span>
+        <span class="m8-topic rest">NETCONF (RFC 6241)</span>
+        <span class="m8-topic rest">Cisco DNA Center API</span>
+        <span class="m8-topic rest">Meraki Dashboard API</span>
+        <span class="m8-topic rest">Postman &amp; Python requests</span>
+      </div>
+      <div class="m8-card-footer">
+        <span class="m8-card-badge rest">🌐 HTTP · RESTCONF · NETCONF</span>
+        <span class="m8-card-count" id="rest-count">Cargando clases...</span>
+      </div>
+    </a>
+
+    <!-- ANSIBLE -->
+    <a href="ansible-redes.html" class="m8-card m8-ans">
+      <div class="m8-card-top">
+        <div class="m8-card-icon">⚙️</div>
+        <div class="m8-card-meta">
+          <div class="m8-card-tag">HERRAMIENTA 4</div>
+          <div class="m8-card-name">Ansible</div>
+        </div>
+        <div class="m8-card-arrow">→</div>
+      </div>
+      <p class="m8-card-desc">Gestión declarativa de infraestructura de red. Sin agentes, sin código complejo — solo YAML. Configura 500 routers con el mismo esfuerzo que uno.</p>
+      <div class="m8-card-topics">
+        <span class="m8-topic ans">Arquitectura agentless</span>
+        <span class="m8-topic ans">Playbooks YAML</span>
+        <span class="m8-topic ans">Inventarios dinámicos</span>
+        <span class="m8-topic ans">Módulos cisco.ios.*</span>
+        <span class="m8-topic ans">Roles y Templates</span>
+        <span class="m8-topic ans">Ansible Vault</span>
+      </div>
+      <div class="m8-card-footer">
+        <span class="m8-card-badge ans">⚙️ Ansible · YAML · IaC</span>
+        <span class="m8-card-count" id="ans-count">Cargando clases...</span>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- CONTEXTO CCNA -->
+  <div class="m8-ccna-box">
+    <div class="m8-ccna-left">
+      <div class="m8-ccna-tag">🎯 EXAMEN CCNA 200-301</div>
+      <h3 class="m8-ccna-title">¿Qué entra en el examen?</h3>
+      <p class="m8-ccna-desc">El dominio <strong>6.0 Automation and Programmability</strong> representa aproximadamente el <strong>10% del examen</strong>. Es uno de los temas con mayor crecimiento en importancia en las últimas versiones del examen.</p>
+      <div class="m8-exam-topics">
+        <div class="m8-exam-item"><span class="m8-exam-num">6.1</span><span>Explain how automation impacts network management</span></div>
+        <div class="m8-exam-item"><span class="m8-exam-num">6.2</span><span>Compare traditional networks with controller-based networking</span></div>
+        <div class="m8-exam-item"><span class="m8-exam-num">6.3</span><span>Describe controller-based, software defined architectures (overlay, underlay, fabric)</span></div>
+        <div class="m8-exam-item"><span class="m8-exam-num">6.4</span><span>Compare traditional campus vs SD-Access solutions</span></div>
+        <div class="m8-exam-item"><span class="m8-exam-num">6.5</span><span>Describe characteristics of REST-based APIs (CRUD, HTTP verbs, data encoding)</span></div>
+        <div class="m8-exam-item"><span class="m8-exam-num">6.6</span><span>Recognize the capabilities of configuration management tools (Puppet, Chef, Ansible)</span></div>
+        <div class="m8-exam-item"><span class="m8-exam-num">6.7</span><span>Recognize components of JSON-encoded data</span></div>
+      </div>
+    </div>
+    <div class="m8-ccna-right">
+      <div class="m8-progress-title">Cobertura por herramienta</div>
+      <div class="m8-progress-item">
+        <div class="m8-progress-label"><span>🐍 Python</span><span>6.1 · 6.2</span></div>
+        <div class="m8-progress-bar"><div class="m8-progress-fill py" style="width:85%"></div></div>
+      </div>
+      <div class="m8-progress-item">
+        <div class="m8-progress-label"><span>📋 JSON</span><span>6.7</span></div>
+        <div class="m8-progress-bar"><div class="m8-progress-fill json" style="width:95%"></div></div>
+      </div>
+      <div class="m8-progress-item">
+        <div class="m8-progress-label"><span>🌐 REST APIs</span><span>6.3 · 6.5</span></div>
+        <div class="m8-progress-bar"><div class="m8-progress-fill rest" style="width:90%"></div></div>
+      </div>
+      <div class="m8-progress-item">
+        <div class="m8-progress-label"><span>⚙️ Ansible</span><span>6.4 · 6.6</span></div>
+        <div class="m8-progress-bar"><div class="m8-progress-fill ans" style="width:88%"></div></div>
+      </div>
+      <div class="m8-ccna-note">
+        <strong>Tip CCNA:</strong> Las preguntas de automatización son conceptuales y de identificación — no necesitas escribir código en el examen, pero sí entender qué hace cada herramienta y cuándo usarla.
+      </div>
+    </div>
+  </div>
+
+  <!-- RUTA DE ESTUDIO M8 -->
+  <div class="m8-path-section">
+    <div class="m8-section-hdr" style="margin-bottom:24px;">
+      <div class="m8-section-tag">🗺️ RUTA SUGERIDA</div>
+      <h2 class="m8-section-title">¿POR DÓNDE EMPEZAR EN M8?</h2>
+    </div>
+    <div class="m8-path">
+      <a href="python-redes.html" class="m8-path-item">
+        <span class="m8-path-num">01</span>
+        <span class="m8-path-icon">🐍</span>
+        <div class="m8-path-info">
+          <div class="m8-path-name">Python para Redes — Fundamentos</div>
+          <div class="m8-path-sub">Variables · Listas · Funciones · Loops · SSH con Netmiko</div>
+        </div>
+        <span class="m8-path-arrow">→</span>
+      </a>
+      <a href="json-datos.html" class="m8-path-item">
+        <span class="m8-path-num">02</span>
+        <span class="m8-path-icon">📋</span>
+        <div class="m8-path-info">
+          <div class="m8-path-name">JSON — El formato universal de APIs</div>
+          <div class="m8-path-sub">Estructura · Tipos · Parsing Python · YANG · Diferencias XML/YAML</div>
+        </div>
+        <span class="m8-path-arrow">→</span>
+      </a>
+      <a href="rest-apis.html" class="m8-path-item">
+        <span class="m8-path-num">03</span>
+        <span class="m8-path-icon">🌐</span>
+        <div class="m8-path-info">
+          <div class="m8-path-name">REST APIs — HTTP y RESTCONF</div>
+          <div class="m8-path-sub">HTTP Methods · Status codes · RESTCONF IOS-XE · DNA Center</div>
+        </div>
+        <span class="m8-path-arrow">→</span>
+      </a>
+      <a href="ansible-redes.html" class="m8-path-item">
+        <span class="m8-path-num">04</span>
+        <span class="m8-path-icon">⚙️</span>
+        <div class="m8-path-info">
+          <div class="m8-path-name">Ansible — Infraestructura como código</div>
+          <div class="m8-path-sub">Playbooks · Inventarios · cisco.ios modules · Vault</div>
+        </div>
+        <span class="m8-path-arrow">→</span>
+      </a>
+    </div>
+  </div>
+
+</div><!-- /.m8-wrap -->
+
+<style>
+/* ── HERO ── */
+.m8-hero{background:linear-gradient(135deg,#06080f 0%,#080f1a 40%,#0a1020 100%);padding:64px 24px 56px;border-bottom:1px solid rgba(0,212,170,.15);position:relative;overflow:hidden;}
+.m8-hero::before{content:'';position:absolute;top:-80px;right:-100px;width:560px;height:560px;border-radius:50%;background:radial-gradient(circle,rgba(0,212,170,.07) 0%,transparent 70%);pointer-events:none;}
+.m8-hero::after{content:'';position:absolute;bottom:-60px;left:-60px;width:360px;height:360px;border-radius:50%;background:radial-gradient(circle,rgba(56,189,248,.04) 0%,transparent 70%);pointer-events:none;}
+.m8-hero-inner{max-width:920px;margin:0 auto;position:relative;z-index:1;}
+.m8-badge{font-family:'Share Tech Mono',monospace;font-size:.63rem;color:#00d4aa;letter-spacing:3px;text-transform:uppercase;margin-bottom:18px;}
+.m8-title{font-family:'Orbitron',sans-serif;font-size:clamp(2rem,5vw,3.2rem);font-weight:900;letter-spacing:3px;color:#c2d0e8;line-height:1.05;margin-bottom:18px;}
+.m8-title-accent{background:linear-gradient(135deg,#00d4aa,#38bdf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.m8-subtitle{font-size:1rem;color:#6b7a9a;line-height:1.75;margin-bottom:32px;max-width:680px;}
+.m8-stats{display:flex;gap:16px;flex-wrap:wrap;}
+.m8-stat{background:rgba(0,212,170,.06);border:1px solid rgba(0,212,170,.12);border-radius:10px;padding:12px 20px;display:flex;flex-direction:column;align-items:center;min-width:90px;}
+.m8-stat-n{font-family:'Orbitron',sans-serif;font-size:1.4rem;font-weight:900;background:linear-gradient(135deg,#00d4aa,#38bdf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;}
+.m8-stat-l{font-family:'Share Tech Mono',monospace;font-size:.58rem;color:#4a5780;margin-top:4px;text-transform:uppercase;letter-spacing:1px;text-align:center;}
+
+/* ── WRAP & SECCIONES ── */
+.m8-wrap{max-width:1100px;margin:0 auto;padding:40px 20px 60px;}
+.m8-section-hdr{text-align:center;margin-bottom:36px;}
+.m8-section-tag{font-family:'Share Tech Mono',monospace;font-size:.62rem;color:#00d4aa;letter-spacing:3px;text-transform:uppercase;margin-bottom:10px;}
+.m8-section-title{font-family:'Orbitron',sans-serif;font-size:clamp(1rem,2.5vw,1.3rem);color:#c2d0e8;letter-spacing:3px;margin-bottom:10px;}
+.m8-section-sub{font-size:.87rem;color:#4a5780;max-width:600px;margin:0 auto;line-height:1.65;}
+
+/* ── GRID CARDS ── */
+.m8-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px;margin-bottom:48px;}
+.m8-card{background:#0d1220;border-radius:14px;padding:24px 20px;text-decoration:none;display:flex;flex-direction:column;gap:12px;transition:all .22s;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.05);}
+.m8-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;opacity:0;transition:opacity .2s;}
+.m8-card:hover{transform:translateY(-4px);}
+.m8-card:hover::before{opacity:1;}
+.m8-py  {border-color:rgba(55,118,171,.15);}  .m8-py:hover{border-color:rgba(55,118,171,.35);box-shadow:0 12px 32px rgba(55,118,171,.1);}  .m8-py::before{background:linear-gradient(90deg,#3776ab,#ffd43b);}
+.m8-json{border-color:rgba(251,191,36,.15);}  .m8-json:hover{border-color:rgba(251,191,36,.35);box-shadow:0 12px 32px rgba(251,191,36,.08);} .m8-json::before{background:linear-gradient(90deg,#fbbf24,#f59e0b);}
+.m8-rest{border-color:rgba(56,189,248,.15);}  .m8-rest:hover{border-color:rgba(56,189,248,.35);box-shadow:0 12px 32px rgba(56,189,248,.08);}  .m8-rest::before{background:linear-gradient(90deg,#38bdf8,#0ea5e9);}
+.m8-ans {border-color:rgba(239,68,68,.15);}   .m8-ans:hover{border-color:rgba(239,68,68,.35);box-shadow:0 12px 32px rgba(239,68,68,.08);}    .m8-ans::before{background:linear-gradient(90deg,#ef4444,#dc2626);}
+
+.m8-card-top{display:flex;align-items:center;gap:12px;}
+.m8-card-icon{font-size:2.2rem;width:52px;height:52px;display:flex;align-items:center;justify-content:center;border-radius:10px;flex-shrink:0;
+  background:rgba(0,212,170,.06);border:1px solid rgba(0,212,170,.1);}
+.m8-py  .m8-card-icon{background:rgba(55,118,171,.1);border-color:rgba(55,118,171,.2);}
+.m8-json .m8-card-icon{background:rgba(251,191,36,.1);border-color:rgba(251,191,36,.2);}
+.m8-rest .m8-card-icon{background:rgba(56,189,248,.1);border-color:rgba(56,189,248,.2);}
+.m8-ans  .m8-card-icon{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.2);}
+.m8-card-meta{flex:1;}
+.m8-card-tag{font-family:'Share Tech Mono',monospace;font-size:.58rem;color:#374060;letter-spacing:2px;text-transform:uppercase;margin-bottom:3px;}
+.m8-card-name{font-family:'Orbitron',sans-serif;font-size:.95rem;color:#c2d0e8;font-weight:700;}
+.m8-card-arrow{font-size:1.1rem;color:#374060;transition:all .2s;}
+.m8-card:hover .m8-card-arrow{color:#00d4aa;transform:translateX(4px);}
+.m8-card-desc{font-size:.83rem;color:#6b7a9a;line-height:1.65;flex:1;}
+.m8-card-topics{display:flex;flex-wrap:wrap;gap:6px;}
+.m8-topic{font-family:'Share Tech Mono',monospace;font-size:.58rem;padding:3px 8px;border-radius:4px;}
+.m8-topic.py  {background:rgba(55,118,171,.08);border:1px solid rgba(55,118,171,.2);color:#5b9bd5;}
+.m8-topic.json{background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);color:#d4a019;}
+.m8-topic.rest{background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.2);color:#38bdf8;}
+.m8-topic.ans {background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:#f87171;}
+.m8-card-footer{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.04);}
+.m8-card-badge{font-family:'Share Tech Mono',monospace;font-size:.6rem;padding:3px 9px;border-radius:20px;}
+.m8-card-badge.py  {background:rgba(55,118,171,.1);border:1px solid rgba(55,118,171,.25);color:#5b9bd5;}
+.m8-card-badge.json{background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.25);color:#fbbf24;}
+.m8-card-badge.rest{background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.25);color:#38bdf8;}
+.m8-card-badge.ans {background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);color:#f87171;}
+.m8-card-count{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:#374060;}
+
+/* ── CCNA BOX ── */
+.m8-ccna-box{display:grid;grid-template-columns:1fr 1fr;gap:32px;background:linear-gradient(135deg,rgba(0,212,170,.04),rgba(56,189,248,.04));border:1px solid rgba(0,212,170,.12);border-radius:16px;padding:32px;margin-bottom:48px;}
+.m8-ccna-tag{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:#00d4aa;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
+.m8-ccna-title{font-family:'Orbitron',sans-serif;font-size:1rem;color:#c2d0e8;margin-bottom:12px;letter-spacing:2px;}
+.m8-ccna-desc{font-size:.85rem;color:#6b7a9a;line-height:1.7;margin-bottom:20px;}
+.m8-ccna-desc strong{color:#c2d0e8;}
+.m8-exam-topics{display:flex;flex-direction:column;gap:8px;}
+.m8-exam-item{display:flex;gap:12px;align-items:flex-start;font-size:.8rem;color:#6b7a9a;line-height:1.5;}
+.m8-exam-num{font-family:'Share Tech Mono',monospace;font-size:.7rem;color:#00d4aa;background:rgba(0,212,170,.08);border:1px solid rgba(0,212,170,.15);border-radius:4px;padding:2px 8px;white-space:nowrap;flex-shrink:0;}
+.m8-progress-title{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#4a5780;letter-spacing:2px;text-transform:uppercase;margin-bottom:20px;}
+.m8-progress-item{margin-bottom:16px;}
+.m8-progress-label{display:flex;justify-content:space-between;font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#6b7a9a;margin-bottom:6px;}
+.m8-progress-bar{height:6px;background:#090d1a;border-radius:3px;overflow:hidden;}
+.m8-progress-fill{height:100%;border-radius:3px;transition:width 1s ease;}
+.m8-progress-fill.py  {background:linear-gradient(90deg,#3776ab,#ffd43b);}
+.m8-progress-fill.json{background:linear-gradient(90deg,#fbbf24,#f59e0b);}
+.m8-progress-fill.rest{background:linear-gradient(90deg,#38bdf8,#0ea5e9);}
+.m8-progress-fill.ans {background:linear-gradient(90deg,#ef4444,#dc2626);}
+.m8-ccna-note{margin-top:20px;padding:12px 16px;background:rgba(251,191,36,.05);border-left:3px solid #fbbf24;border-radius:6px;font-size:.78rem;color:#8294b8;line-height:1.6;}
+.m8-ccna-note strong{color:#fbbf24;}
+
+/* ── PATH ── */
+.m8-path-section{margin-bottom:40px;}
+.m8-path{display:flex;flex-direction:column;gap:10px;}
+.m8-path-item{display:flex;align-items:center;gap:16px;background:#0d1220;border:1px solid rgba(0,212,170,.08);border-radius:10px;padding:16px 20px;text-decoration:none;transition:all .18s;}
+.m8-path-item:hover{border-color:rgba(0,212,170,.25);background:rgba(0,212,170,.03);}
+.m8-path-num{font-family:'Orbitron',sans-serif;font-size:.7rem;color:#00d4aa;background:rgba(0,212,170,.1);border:1px solid rgba(0,212,170,.2);border-radius:6px;padding:4px 8px;min-width:36px;text-align:center;flex-shrink:0;}
+.m8-path-icon{font-size:1.3rem;width:32px;text-align:center;flex-shrink:0;}
+.m8-path-info{flex:1;}
+.m8-path-name{font-size:.88rem;color:#a0b0cc;font-weight:600;margin-bottom:2px;}
+.m8-path-sub{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#374060;}
+.m8-path-arrow{font-size:.85rem;color:#374060;transition:all .18s;}
+.m8-path-item:hover .m8-path-arrow{color:#00d4aa;transform:translateX(4px);}
+
+@media(max-width:680px){
+  .m8-ccna-box{grid-template-columns:1fr;}
+  .m8-grid{grid-template-columns:1fr;}
+  .m8-stats{gap:8px;}
+  .m8-stat{min-width:70px;padding:10px 12px;}
+}
+</style>
+
+<script>
+// Contadores dinámicos de clases por herramienta
+// Se actualizan aquí cuando se creen nuevas clases
+const classCounts = {
+  'py-count':   '📚 Clases disponibles',
+  'json-count': '📚 Clases disponibles',
+  'rest-count': '📚 Clases disponibles',
+  'ans-count':  '📚 Clases disponibles'
+};
+Object.entries(classCounts).forEach(([id, txt]) => {
+  const el = document.getElementById(id);
+  if (el) el.textContent = txt;
+});
+</script>
+</body>
+</html>
