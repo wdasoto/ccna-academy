@@ -1,0 +1,253 @@
+# Topología Hub vs Switch — Dominios de Colisión
+
+Objetivos del Laboratorio
+
+Comprender la diferencia entre hubs y switches
+
+Analizar dominios de colisión en cada tecnología
+
+Observar el comportamiento ante tráfico simultáneo
+
+Identificar ventajas del switching sobre el hub
+
+
+Topología Propuesta
+
+
+PC1 ---- Hub ---- PC2
+         |
+       PC-A
+
+PC3 ---- Switch ---- PC4
+          |
+        PC-B📋 Copiar
+
+
+Configuración Paso a Paso
+
+
+Configuración de Red Hub (Dominio de Colisión Único)
+
+
+
+# Configuración de PCs conectados al Hub
+PC1: IP 192.168.1.1/24
+PC2: IP 192.168.1.2/24  
+PC-A: IP 192.168.1.3/24
+
+# Gateway (no necesario para este lab)
+Default Gateway: Ninguno
+
+
+Configuración de Red Switch (Múltiples Dominios de Colisión)
+
+
+
+# Configuración de PCs conectados al Switch
+PC3: IP 192.168.2.1/24
+PC4: IP 192.168.2.2/24
+PC-B: IP 192.168.2.3/24
+
+# Gateway (no necesario para este lab)  
+Default Gateway: Ninguno
+
+
+Análisis de Dominios de Colisión
+
+
+Red con Hub
+
+
+DOMINIO DE COLISIÓN ÚNICO:
+Todos los dispositivos (PC1, PC2, PC-A) comparten el mismo dominio de colisión
+
+
+Características:
+Half-Duplex - Solo puede enviar O recibir
+
+10 Mbps compartidos entre todos los puertos
+
+CSMA/CD activo para detectar colisiones
+
+Colisiones frecuentes con tráfico simultáneo
+
+
+Red con Switch
+
+
+DOMINIOS DE COLISIÓN SEPARADOS:
+Cada puerto del switch es un dominio de colisión independiente
+
+
+Características:
+Full-Duplex - Puede enviar Y recibir simultáneamente
+
+100 Mbps dedicados por puerto
+
+Sin colisiones entre puertos
+
+Tabla MAC para switching inteligente
+
+
+Pruebas de Tráfico Simultáneo
+
+
+Prueba 1: Ping Simultáneo en Red Hub
+
+
+
+# Desde PC1 ejecutar ping continuo a PC2
+PC1> ping -t 192.168.1.2
+
+# Simultáneamente desde PC-A ejecutar ping a PC2  
+PC-A> ping -t 192.168.1.2
+
+# Observar en Simulation Mode:
+# - Colisiones detectadas
+# - Retransmisiones
+# - Tiempos de respuesta variables
+
+
+Prueba 2: Ping Simultáneo en Red Switch
+
+
+
+# Desde PC3 ejecutar ping continuo a PC4
+PC3> ping -t 192.168.2.2
+
+# Simultáneamente desde PC-B ejecutar ping a PC4
+PC-B> ping -t 192.168.2.2  
+
+# Observar en Simulation Mode:
+# - Sin colisiones
+# - Switching eficiente
+# - Tiempos consistentes
+
+
+Verificación y Análisis
+
+
+Comandos de Verificación en Switch
+
+
+
+# Ver tabla MAC del switch
+Switch> show mac-address-table
+
+# Ver estadísticas de interfaces
+Switch> show interfaces
+Switch> show interfaces fastEthernet 0/1
+
+# Ver contadores de colisiones (deben ser 0)
+Switch> show interfaces fastEthernet 0/1 | include collision
+
+
+Observaciones Esperadas
+
+
+#### En la Red Hub:
+
+Colisiones: Visibles en modo simulación cuando hay tráfico simultáneo
+
+CSMA/CD: Los dispositivos esperan antes de transmitir
+
+Ancho de banda: 10 Mbps compartidos entre todos
+
+Eficiencia: Decrece con más dispositivos activos
+
+
+
+#### En la Red Switch:
+
+Sin colisiones: Cada puerto es un dominio separado
+
+Full-duplex: Transmisión bidireccional simultánea
+
+Ancho de banda: 100 Mbps dedicados por puerto
+
+Aprendizaje MAC: Tabla dinámica de direcciones
+
+
+
+Comparativa Técnica
+
+
+| Característica | Hub | Switch |
+|---|---|---|
+| Dominios de Colisión | 1 (compartido) | 1 por puerto |
+| Método de Acceso | CSMA/CD | Store-and-Forward |
+| Duplex | Half | Full |
+| Ancho de Banda | Compartido | Dedicado |
+| Colisiones | Frecuentes | Ninguna |
+| Tabla MAC | No | Sí |
+| Costo | Bajo | Medio |
+| Escalabilidad | Limitada | Alta |
+
+Configuración Avanzada del Switch
+
+
+
+# Configuración básica del switch para observación
+Switch> enable
+Switch# configure terminal
+Switch(config)# hostname SW-LAB
+SW-LAB(config)# 
+
+# Configurar descripción en interfaces
+SW-LAB(config)# interface fastEthernet 0/1
+SW-LAB(config-if)# description PC3-Workstation
+SW-LAB(config-if)# duplex full
+SW-LAB(config-if)# speed 100
+
+SW-LAB(config-if)# interface fastEthernet 0/2  
+SW-LAB(config-if)# description PC4-Workstation
+SW-LAB(config-if)# duplex full
+SW-LAB(config-if)# speed 100
+
+SW-LAB(config-if)# interface fastEthernet 0/3
+SW-LAB(config-if)# description PC-B-Workstation  
+SW-LAB(config-if)# duplex full
+SW-LAB(config-if)# speed 100
+SW-LAB(config-if)# exit
+SW-LAB(config)# exit
+
+
+Conclusiones del Laboratorio
+
+
+
+VENTAJAS DEL SWITCH:
+
+
+Elimina dominios de colisión por puerto
+
+Mejora significativa en rendimiento
+
+Comunicación full-duplex
+
+Ancho de banda dedicado
+
+Escalabilidad superior
+
+
+
+
+
+LIMITACIONES DEL HUB:
+
+
+Un solo dominio de colisión
+
+Colisiones frecuentes con múltiples dispositivos
+
+Half-duplex únicamente
+
+Ancho de banda compartido
+
+Tecnología obsoleta
+
+
+
+
+Impacto en Redes Reales:
+Los switches reemplazaron completamente a los hubs debido a su superioridad técnica. En redes modernas, cada puerto switch elimina colisiones y maximiza el rendimiento disponible.
