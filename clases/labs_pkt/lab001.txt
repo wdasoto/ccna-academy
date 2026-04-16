@@ -1,0 +1,183 @@
+# Laboratorio: Conexión PC a PC con Cable Cruzado
+
+📋 Objetivos
+
+Conectar dos PCs directamente usando cable cruzado
+
+Configurar direccionamiento IP estático
+
+Verificar conectividad con ping
+
+Entender cuándo usar cables cruzados vs directos
+
+
+🌐 Topología
+
+PC1 ←---(Cable Cruzado)---→ PC2📋 Copiar
+
+
+
+Nota:
+Los cables cruzados se usan para conectar dispositivos del mismo tipo (PC-PC, Switch-Switch, Router-Router)
+
+
+📝 Configuración Paso a Paso
+
+
+Paso 1: Configurar PC1
+
+
+1. Hacer clic en PC1
+2. Ir a la pestaña Desktop → IP Configuration
+3. Configurar los siguientes parámetros:
+
+IP Address: 192.168.1.10
+Subnet Mask: 255.255.255.0
+Default Gateway: (dejar vacío)
+DNS Server: (dejar vacío)
+
+
+Paso 2: Configurar PC2
+
+
+1. Hacer clic en PC2
+2. Ir a la pestaña Desktop → IP Configuration
+3. Configurar los siguientes parámetros:
+
+IP Address: 192.168.1.20
+Subnet Mask: 255.255.255.0
+Default Gateway: (dejar vacío)
+DNS Server: (dejar vacío)
+
+
+Paso 3: Conectar con Cable Cruzado
+
+
+1. Seleccionar el cable cruzado (copper cross-over) en Packet Tracer
+2. Conectar FastEthernet0 de PC1 con FastEthernet0 de PC2
+3. Esperar a que los enlaces se pongan verdes (up/up)
+
+
+Importante:
+En dispositivos modernos, Auto-MDIX permite usar cables directos, pero para propósitos educativos usamos cable cruzado
+
+
+✅ Verificación de Conectividad
+
+
+Desde PC1:
+
+
+1. Ir a Desktop → Command Prompt
+2. Ejecutar los siguientes comandos:
+
+# Verificar configuración IP
+C:\> ipconfig
+
+# Hacer ping a PC2
+C:\> ping 192.168.1.20
+
+# Ping extendido para verificar latencia
+C:\> ping -t 192.168.1.20
+
+
+Desde PC2:
+
+
+# Verificar configuración IP
+C:\> ipconfig
+
+# Hacer ping a PC1
+C:\> ping 192.168.1.10
+
+# Verificar tabla ARP
+C:\> arp -a
+
+
+📊 Resultados Esperados
+
+
+Ping Exitoso:
+
+C:\>ping 192.168.1.20
+
+Pinging 192.168.1.20 with 32 bytes of data:
+
+Reply from 192.168.1.20: bytes=32 time<1ms TTL=128
+Reply from 192.168.1.20: bytes=32 time<1ms TTL=128
+Reply from 192.168.1.20: bytes=32 time<1ms TTL=128
+Reply from 192.168.1.20: bytes=32 time<1ms TTL=128
+
+Ping statistics for 192.168.1.20:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss)
+
+
+🔍 Conceptos Clave
+
+
+¿Cuándo usar Cable Cruzado?
+
+
+
+PC ↔ PC Conexión directa entre computadoras
+
+Switch ↔ Switch Interconexión de switches (sin uplink)
+
+Router ↔ Router Conexión directa entre routers
+
+Hub ↔ Hub Interconexión de hubs antiguos
+
+
+
+¿Cuándo usar Cable Directo?
+
+
+
+PC ↔ Switch Conexión normal a la red
+
+Router ↔ Switch Interconexión estándar
+
+PC ↔ Hub Conexión a concentrador
+
+
+
+🛠️ Troubleshooting
+
+
+Si el ping falla:
+
+
+1. Verificar cables: Asegurar que sea cable cruzado
+2. Verificar IPs: Confirmar que estén en la misma subred
+3. Verificar interfaces: Links deben estar up/up (verde)
+4. Verificar firewall: En PCs reales, deshabilitar firewall
+
+Comandos adicionales de verificación:
+
+
+# Verificar conectividad de capa 2
+C:\> ping -l 1472 192.168.1.20
+
+# Traceroute (en este caso 1 salto)
+C:\> tracert 192.168.1.20
+
+# Verificar estadísticas de interfaz (Windows real)
+C:\> netstat -e
+
+
+📚 Puntos de Aprendizaje
+
+
+
+Éxito del Lab:
+Este laboratorio demuestra la comunicación más básica en redes - dos dispositivos conectados directamente a nivel de capa 2 y 3 del modelo OSI.
+
+
+Capas OSI involucradas:
+
+Capa 1 (Física): Cable cruzado y señales eléctricas
+
+Capa 2 (Enlace): Direcciones MAC y tramas Ethernet
+
+Capa 3 (Red): Direcciones IP y protocolo ICMP (ping)
+
