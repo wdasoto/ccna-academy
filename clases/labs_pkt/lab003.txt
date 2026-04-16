@@ -1,0 +1,168 @@
+# Configuración Inicial de Router Cisco
+
+Objetivos del Laboratorio
+
+Configurar hostname y contraseñas de seguridad
+
+Establecer banner de acceso
+
+Configurar interfaces con direccionamiento IP
+
+Verificar conectividad básica
+
+
+Topología Sugerida
+
+PC1 (192.168.1.10/24) ---- [Fa0/0] Router [Fa0/1] ---- PC2 (192.168.2.10/24)📋 Copiar
+
+
+Configuración Paso a Paso
+
+
+1. Configuración Básica del Router
+
+
+
+! === CONFIGURACIÓN INICIAL ===
+Router> enable
+Router# configure terminal
+
+! Configurar hostname
+Router(config)# hostname R1
+
+! Configurar contraseña para modo privilegiado
+R1(config)# enable secret cisco123
+
+! Configurar contraseña para consola
+R1(config)# line console 0
+R1(config-line)# password console123
+R1(config-line)# login
+R1(config-line)# exit
+
+! Configurar contraseña para VTY (Telnet/SSH)
+R1(config)# line vty 0 4
+R1(config-line)# password vty123
+R1(config-line)# login
+R1(config-line)# exit
+
+! Banner de mensaje del día
+R1(config)# banner motd #
+**
+*    ACCESO AUTORIZADO SOLAMENTE        *
+*    Router R1 - CCNA Academy           *
+*    Desconectese si no esta autorizado *
+**
+#
+
+
+2. Configuración de Interfaces
+
+
+
+! === CONFIGURACIÓN DE INTERFACES ===
+
+! Configurar FastEthernet 0/0 para PC1
+R1(config)# interface fastEthernet 0/0
+R1(config-if)# description  Enlace a PC1 
+R1(config-if)# ip address 192.168.1.1 255.255.255.0
+R1(config-if)# no shutdown
+R1(config-if)# exit
+
+! Configurar FastEthernet 0/1 para PC2
+R1(config)# interface fastEthernet 0/1
+R1(config-if)# description  Enlace a PC2 
+R1(config-if)# ip address 192.168.2.1 255.255.255.0
+R1(config-if)# no shutdown
+R1(config-if)# exit
+
+! Guardar configuración
+R1(config)# exit
+R1# copy running-config startup-config
+
+
+Configuración de las PCs
+
+
+PC1:
+
+IP: 192.168.1.10
+
+Máscara: 255.255.255.0
+
+Gateway: 192.168.1.1
+
+
+PC2:
+
+IP: 192.168.2.10
+
+Máscara: 255.255.255.0
+
+Gateway: 192.168.2.1
+
+
+Comandos de Verificación
+
+
+
+! === VERIFICACIÓN DE LA CONFIGURACIÓN ===
+
+! Verificar interfaces
+R1# show ip interface brief
+
+! Ver configuración de interfaces activas
+R1# show running-config interface fastEthernet 0/0
+R1# show running-config interface fastEthernet 0/1
+
+! Verificar tabla de routing
+R1# show ip route
+
+! Probar conectividad desde el router
+R1# ping 192.168.1.10
+R1# ping 192.168.2.10
+
+! Ver estadísticas de interfaces
+R1# show interfaces
+
+
+Explicación de Comandos Clave
+
+
+
+enable secret:
+Encripta la contraseña usando MD5, más seguro que "enable password"
+
+
+
+no shutdown:
+Activa la interfaz (por defecto están administrativamente down)
+
+
+
+Importante:
+Siempre usar "copy run start" para guardar la configuración permanentemente
+
+
+Pruebas de Conectividad
+
+
+1. Desde PC1: ping 192.168.1.1 (gateway)
+2. Desde PC1: ping 192.168.2.10 (PC2)
+3. Desde PC2: ping 192.168.2.1 (gateway)
+4. Desde PC2: ping 192.168.1.10 (PC1)
+
+Solución de Problemas Comunes
+
+
+
+Interface down/down: Verificar cable y comando "no shutdown"
+
+No hay conectividad: Verificar IPs, máscaras y gateway en PCs
+
+Ping falla entre redes: Verificar que el router tenga IP forwarding habilitado
+
+
+
+
+¡Configuración Completada!
+El router ahora tiene seguridad básica, interfaces configuradas y debería permitir comunicación entre las dos redes.
