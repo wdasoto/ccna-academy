@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TextFSM & Parsing IOS — M8 Tema 5 | CCNA Academy</title>
+  <meta name="description" content="Parsing de outputs Cisco IOS con TextFSM y ntc-templates. Convierte salida de show commands en datos estructurados Python para automatización de redes. M8 CCNA Academy.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── HERO acento Python ── */
+.class-hero { background: linear-gradient(135deg, #06080f 0%, #08100a 40%, #0a0d18 100%); }
+
+/* ── TIPOS DE DATOS GRID ── */
+.py-types-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:10px; margin:16px 0; }
+.py-type-card { background:#090d1a; border:1px solid rgba(55,118,171,.15); border-radius:10px; padding:14px 10px; text-align:center; }
+.py-type-icon { font-size:1.5rem; margin-bottom:6px; }
+.py-type-name { font-family:'Orbitron',sans-serif; font-size:.72rem; color:#5b9bd5; margin-bottom:4px; letter-spacing:1px; }
+.py-type-ex   { font-family:'Share Tech Mono',monospace; font-size:.65rem; color:#00d4aa; margin-bottom:4px; background:rgba(0,212,170,.06); padding:2px 6px; border-radius:4px; }
+.py-type-use  { font-size:.68rem; color:#374060; line-height:1.4; }
+
+/* ── BASE CLASS STYLES (clonado de ARP) ── */
+body{font-family:'Exo 2',sans-serif;background:#07090f;color:#e2e8f0;}
+.class-hero{padding:56px 24px 48px;border-bottom:1px solid rgba(0,212,170,.08);position:relative;overflow:hidden;}
+.class-hero::before{content:'';position:absolute;top:-60px;right:-80px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(55,118,171,.06) 0%,transparent 70%);pointer-events:none;}
+.class-hero-inner{max-width:900px;margin:0 auto;position:relative;z-index:1;}
+.class-badge{font-family:'Share Tech Mono',monospace;font-size:.63rem;color:#00d4aa;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;}
+.class-title{font-family:'Orbitron',sans-serif;font-size:clamp(1.6rem,3.8vw,2.6rem);font-weight:900;letter-spacing:3px;color:#c2d0e8;margin-bottom:12px;line-height:1.1;}
+.class-subtitle{font-size:.92rem;color:#6b7a9a;line-height:1.72;margin-bottom:20px;max-width:700px;}
+.class-meta{display:flex;gap:12px;flex-wrap:wrap;}
+.meta-item{font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#374060;padding:4px 10px;border:1px solid rgba(0,212,170,.1);border-radius:4px;}
+.py1-tabs-wrap{max-width:1100px;margin:0 auto;padding:0 16px 40px;}
+.py1-tabs-bar{display:flex;gap:4px;padding:20px 0 0;flex-wrap:wrap;border-bottom:1px solid rgba(0,212,170,.1);margin-bottom:0;}
+.py1-tab-btn{padding:8px 13px;border-radius:8px 8px 0 0;font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#4a5780;background:none;border:1px solid transparent;cursor:pointer;transition:all .18s;white-space:nowrap;border-bottom:none;}
+.py1-tab-btn:hover{color:#c2d0e8;background:rgba(55,118,171,.05);}
+.py1-tab-btn.py1-active{color:#5b9bd5;background:#0d1220;border-color:rgba(55,118,171,.25);border-bottom:1px solid #0d1220;}
+.py1-tab-content{display:none;background:#0d1220;border:1px solid rgba(0,212,170,.08);border-top:none;border-radius:0 0 12px 12px;padding:32px;}
+.py1-tab-content.py1-active{display:block;}
+.content-block{max-width:880px;}
+.section-title{font-family:'Orbitron',sans-serif;font-size:.95rem;color:#5b9bd5;letter-spacing:2px;margin:28px 0 14px;padding-bottom:8px;border-bottom:1px solid rgba(55,118,171,.15);}
+.section-title:first-child{margin-top:0;}
+p{color:#8294b8;line-height:1.75;margin-bottom:14px;font-size:.9rem;}
+ul,ol{color:#8294b8;padding-left:1.4rem;margin-bottom:14px;font-size:.9rem;}
+li{margin-bottom:5px;line-height:1.65;}
+strong{color:#c2d0e8;}
+code{font-family:'Share Tech Mono',monospace;font-size:.82rem;background:rgba(55,118,171,.1);color:#5b9bd5;padding:1px 6px;border-radius:4px;border:1px solid rgba(55,118,171,.2);}
+
+/* INFO BOXES */
+.info-box{border-radius:8px;padding:14px 18px;margin:18px 0;border-left:3px solid;}
+.info-box.tip{background:rgba(55,118,171,.06);border-color:#5b9bd5;}
+.info-box.warning{background:rgba(251,191,36,.05);border-color:#fbbf24;}
+.info-box-title{font-family:'Share Tech Mono',monospace;font-size:.73rem;color:#5b9bd5;margin-bottom:8px;}
+.info-box.warning .info-box-title{color:#fbbf24;}
+
+/* CODE BLOCKS */
+.code-block{background:#050810;border:1px solid rgba(55,118,171,.15);border-left:3px solid #3776ab;border-radius:8px;padding:0;margin:16px 0;overflow:hidden;}
+.code-label{background:rgba(55,118,171,.08);padding:8px 16px;font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#4a5780;letter-spacing:2px;text-transform:uppercase;border-bottom:1px solid rgba(55,118,171,.1);}
+.code-block pre{margin:0;padding:18px;overflow-x:auto;}
+.code-block code{background:none;border:none;padding:0;color:#a8b4c8;font-size:.79rem;line-height:1.8;display:block;}
+
+/* SYNTAX HIGHLIGHTING */
+.cmt{color:#3a4a60;font-style:italic;}
+.kw {color:#c792ea;}
+.fn {color:#82aaff;}
+.str{color:#c3e88d;}
+.num{color:#f78c6c;}
+
+/* CONCEPT GRID */
+.concept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin:16px 0;}
+.concept-card{background:#090d1a;border:1px solid rgba(0,212,170,.1);border-radius:10px;padding:16px;}
+.concept-icon{font-size:1.8rem;margin-bottom:8px;}
+.concept-card h3{font-family:'Share Tech Mono',monospace;font-size:.77rem;color:#00d4aa;margin-bottom:8px;}
+.concept-card p{font-size:.8rem;margin:0;}
+
+/* REF TABLE */
+.table-wrap{overflow-x:auto;margin:16px 0;}
+.ref-table{width:100%;border-collapse:collapse;font-size:.8rem;}
+.ref-table th{background:#090d1a;color:#5b9bd5;font-family:'Share Tech Mono',monospace;font-size:.67rem;padding:10px 12px;text-align:left;border:1px solid rgba(55,118,171,.15);letter-spacing:1px;}
+.ref-table td{padding:9px 12px;border:1px solid rgba(255,255,255,.04);color:#8294b8;}
+.ref-table tr:hover td{background:rgba(55,118,171,.03);}
+.ref-table code{font-size:.77rem;}
+
+/* QUIZ */
+.quiz-question{background:#090d1a;border:1px solid rgba(55,118,171,.12);border-radius:10px;padding:20px;margin-bottom:14px;}
+.quiz-q-num{font-family:'Share Tech Mono',monospace;font-size:.62rem;color:#374060;margin-bottom:8px;}
+.quiz-q-text{font-size:.9rem;color:#c2d0e8;margin-bottom:14px;line-height:1.6;}
+.quiz-opts{display:flex;flex-direction:column;gap:7px;}
+.quiz-opt{padding:10px 14px;border-radius:7px;border:1px solid rgba(55,118,171,.12);background:#0d1220;color:#6b7a9a;cursor:pointer;font-size:.84rem;text-align:left;transition:all .15s;font-family:'Exo 2',sans-serif;}
+.quiz-opt:hover:not(:disabled){border-color:rgba(55,118,171,.4);color:#c2d0e8;}
+.quiz-opt.correct{border-color:#34d399;background:rgba(52,211,153,.08);color:#34d399;}
+.quiz-opt.wrong{border-color:#f87171;background:rgba(248,113,113,.08);color:#f87171;}
+.quiz-explanation{margin-top:10px;padding:10px 14px;background:rgba(55,118,171,.07);border-left:3px solid #5b9bd5;border-radius:6px;font-size:.82rem;color:#a0aec0;line-height:1.65;}
+
+/* Navbar y Drawer */
+.navbar{position:fixed;top:0;left:0;right:0;height:56px;background:#080a10;border-bottom:1px solid rgba(0,212,170,.1);display:flex;align-items:center;padding:0 24px;z-index:1000;}
+.navbar-toggle{background:none;border:1px solid rgba(0,212,170,.3);color:#00d4aa;padding:6px 12px;border-radius:6px;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:.75rem;margin-right:16px;}
+.navbar-brand{font-family:'Orbitron',sans-serif;font-weight:700;color:#00d4aa;text-decoration:none;font-size:1.1rem;}
+.navbar-brand span{color:#5b9bd5;}
+.navbar-spacer{flex:1;}
+.navbar-link{color:#6b7a9a;text-decoration:none;font-size:.8rem;transition:color .2s;}
+.navbar-link:hover{color:#c2d0e8;}
+.nav-spacer{height:56px;}
+.ccna-drawer{position:fixed;top:0;left:0;bottom:0;width:280px;background:#0d1220;border-right:1px solid rgba(55,118,171,.2);transform:translateX(-100%);transition:transform .3s;z-index:2000;overflow-y:auto;}
+.ccna-drawer.open{transform:translateX(0);}
+.ccna-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);opacity:0;visibility:hidden;transition:all .3s;z-index:1500;}
+.ccna-overlay.show{opacity:1;visibility:visible;}
+.drawer-header{padding:20px;border-bottom:1px solid rgba(55,118,171,.2);display:flex;justify-content:space-between;align-items:center;}
+.drawer-header h2{font-family:'Orbitron',sans-serif;font-size:.8rem;color:#5b9bd5;margin:0;letter-spacing:2px;}
+.drawer-close{background:none;border:none;color:#6b7a9a;font-size:1.2rem;cursor:pointer;}
+.drawer-section{padding:16px;border-bottom:1px solid rgba(55,118,171,.1);}
+.drawer-section-title{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#374060;margin-bottom:12px;letter-spacing:1px;text-transform:uppercase;}
+.drawer-link{display:block;padding:10px 12px;color:#8294b8;text-decoration:none;font-size:.85rem;border-radius:6px;transition:all .2s;margin-bottom:4px;}
+.drawer-link:hover{background:rgba(55,118,171,.1);color:#c2d0e8;}
+.drawer-link.active{background:rgba(55,118,171,.2);color:#5b9bd5;border-left:3px solid #5b9bd5;}
+.dl-icon{margin-right:8px;}
+
+@media(max-width:680px){
+  .py1-tab-btn{font-size:.6rem;padding:6px 9px;}
+  .py1-tab-content{padding:18px 12px;}
+  .py-types-grid{grid-template-columns:repeat(3,1fr);}
+  .concept-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
+<nav class="ccna-drawer" id="ccnaDrawer">
+  <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
+  <div class="drawer-section"><div class="drawer-section-title">General</div>
+    <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M1 · Fundamentos</div>
+    <a href="fundamentos.html" class="drawer-link"><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
+    <a href="subnetting.html"  class="drawer-link"><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
+    <a href="ipv6.html"        class="drawer-link"><span class="dl-icon">6️⃣</span> IPv6</a>
+    <a href="arp.html"         class="drawer-link"><span class="dl-icon">📡</span> ARP</a>
+    <a href="rip.html"         class="drawer-link"><span class="dl-icon">🔄</span> RIP</a>
+    <a href="protocolos-internet.html" class="drawer-link"><span class="dl-icon">🌍</span> Protocolos Internet</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M2 · Dispositivos Cisco</div>
+    <a href="router.html"         class="drawer-link"><span class="dl-icon">📡</span> Routers Cisco</a>
+    <a href="switches-cisco.html" class="drawer-link"><span class="dl-icon">🔀</span> Switches Cisco</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M3 · Switching</div>
+    <a href="vlan.html"               class="drawer-link"><span class="dl-icon">🏷️</span> VLANs</a>
+    <a href="inter-vlan-routing.html" class="drawer-link"><span class="dl-icon">🔁</span> Inter-VLAN Routing</a>
+    <a href="stp.html"                class="drawer-link"><span class="dl-icon">🌳</span> STP</a>
+    <a href="etherchannel.html"       class="drawer-link"><span class="dl-icon">🔗</span> EtherChannel</a>
+    <a href="port-security.html"      class="drawer-link"><span class="dl-icon">🔒</span> Port Security</a>
+    <a href="cdp-lldp.html"           class="drawer-link"><span class="dl-icon">🔍</span> CDP / LLDP</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M4 · Routing</div>
+    <a href="routing.html"            class="drawer-link"><span class="dl-icon">🗺️</span> Routing Estático</a>
+    <a href="ospf.html"               class="drawer-link"><span class="dl-icon">⭕</span> OSPF</a>
+    <a href="eigrp.html"              class="drawer-link"><span class="dl-icon">⚡</span> EIGRP</a>
+    <a href="ospfv2-masterclass.html" class="drawer-link"><span class="dl-icon">🎯</span> OSPFv2 Masterclass</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M5 · Servicios IP</div>
+    <a href="dhcp.html" class="drawer-link"><span class="dl-icon">📋</span> DHCP</a>
+    <a href="nat.html"  class="drawer-link"><span class="dl-icon">🔄</span> NAT / PAT</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M6 · Seguridad</div>
+    <a href="acl.html" class="drawer-link"><span class="dl-icon">🛡️</span> ACLs</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M7 · WAN &amp; QoS</div>
+    <a href="wan.html" class="drawer-link"><span class="dl-icon">🌍</span> WAN</a>
+    <a href="qos.html" class="drawer-link"><span class="dl-icon">📊</span> QoS</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M8 · Automatización</div>
+    <a href="m8-automatizacion.html" class="drawer-link"><span class="dl-icon">🤖</span> M8 — Vista General</a>
+    <a href="python-redes.html"      class="drawer-link"><span class="dl-icon">🐍</span> Python para Redes</a>
+    <a href="python-tema1.html"      class="drawer-link"><span class="dl-icon">01</span> Python Esencial</a>
+    <a href="python-tema2.html"      class="drawer-link"><span class="dl-icon">02</span> Netmiko SSH</a>
+    <a href="python-tema3.html"      class="drawer-link"><span class="dl-icon">03</span> NAPALM</a>
+    <a href="python-tema5.html"      class="drawer-link active"><span class="dl-icon">05</span> TextFSM Parsing</a>
+    <a href="json-datos.html"        class="drawer-link"><span class="dl-icon">📋</span> JSON y Datos</a>
+    <a href="rest-apis.html"         class="drawer-link"><span class="dl-icon">🌐</span> REST APIs</a>
+    <a href="ansible-redes.html"     class="drawer-link"><span class="dl-icon">⚙️</span> Ansible</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">⚡ Herramientas</div>
+    <a href="asistente.html"          class="drawer-link"><span class="dl-icon">🤖</span> Asistente IA</a>
+    <a href="netbot.html"             class="drawer-link"><span class="dl-icon">⚙️</span> NetBot Config</a>
+    <a href="calculadora.html"        class="drawer-link"><span class="dl-icon">🧮</span> Calculadora IP</a>
+    <a href="laboratorios-pkt.html"   class="drawer-link"><span class="dl-icon">🧪</span> Labs Packet Tracer</a>
+    <a href="../banco-preguntas.html" class="drawer-link"><span class="dl-icon">📝</span> Banco de Preguntas</a></div>
+</nav>
+
+<header class="navbar">
+  <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
+  <a href="../index.html" class="navbar-brand">CISCO<span> ACADEMY</span></a>
+  <div class="navbar-spacer"></div>
+  <a href="python-redes.html" class="navbar-link">← Python</a>
+</header>
+<div class="nav-spacer"></div>
+
+<!-- HERO -->
+<section class="class-hero" style="border-bottom:1px solid rgba(55,118,171,.2);">
+  <div class="class-hero-inner">
+    <div class="class-badge" style="color:#5b9bd5;">M8 · AUTOMATIZACIÓN · TEMA 5 DE 7 · TEXTFSM PARSING</div>
+    <h1 class="class-title">Parsing de Outputs IOS con <span class="class-title-accent" style="background:linear-gradient(135deg,#3776ab,#ffd43b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">TextFSM</span></h1>
+    <p class="class-subtitle">Convierte la salida de show commands (texto desestructurado) en datos estructurados Python listos para procesar, comparar y reportar. Domina TextFSM, ntc-templates y parsing avanzado de equipos Cisco.</p>
+    <div class="class-meta">
+      <span class="meta-item" style="border-color:rgba(55,118,171,.2);color:#5b9bd5;">🐍 Python 3.x</span>
+      <span class="meta-item">🎯 CCNA Domain 6.2</span>
+      <span class="meta-item">⏱ ~90 min lectura</span>
+      <span class="meta-item">🔍 Regex Patterns</span>
+      <span class="meta-item">🧪 Proyecto Audit</span>
+    </div>
+  </div>
+</section>
+
+<!-- TABS -->
+<div class="py1-tabs-wrap">
+  <div class="py1-tabs-bar">
+    <button class="py1-tab-btn py1-active" onclick="showTabPy5('intro',this)">🔍 Intro</button>
+    <button class="py1-tab-btn" onclick="showTabPy5('textfsm-basico',this)">📄 TextFSM</button>
+    <button class="py1-tab-btn" onclick="showTabPy5('ntc-templates',this)">📚 ntc-templates</button>
+    <button class="py1-tab-btn" onclick="showTabPy5('show-ip-route',this)">🗺️ Show IP Route</button>
+    <button class="py1-tab-btn" onclick="showTabPy5('show-interfaces',this)">🔌 Interfaces</button>
+    <button class="py1-tab-btn" onclick="showTabPy5('parsing-avanzado',this)">⚡ Avanzado</button>
+    <button class="py1-tab-btn" onclick="showTabPy5('integracion',this)">🔗 Integración</button>
+    <button class="py1-tab-btn" onclick="showTabPy5('proyecto',this)">🚀 Proyecto</button>
+    <button class="py1-tab-btn" onclick="showTabPy5('referencia',this)">📊 Referencia</button>
+    <button class="py1-tab-btn" onclick="showTabPy5('quiz',this)">🎯 Quiz</button>
+  </div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 1 — INTRO
+═══════════════════════════════════════════ -->
+<div id="tab-intro" class="py1-tab-content py1-active">
+<div class="content-block">
+  <h2 class="section-title">El Problema del Texto Plano</h2>
+  <p>Cuando ejecutas <code>show ip route</code> o <code>show interfaces</code> vía SSH, recibes texto plano diseñado para humanos, no para máquinas. Es fácil de leer, pero imposible de procesar programáticamente sin lógica compleja de <code>split()</code>, <code>find()</code> y regex enrevesados.</p>
+  <p>TextFSM soluciona esto: convierte el output semi-estructurado de Cisco IOS en listas de diccionarios Python perfectamente estructurados. Una tabla de rutas se convierte en objetos con campos <code>protocol</code>, <code>network</code>, <code>next_hop</code>, <code>metric</code>.</p>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Por qué TextFSM es estándar en networking</div>
+    <p>Desarrollado por Google para sus operaciones de red masiva. Cisco, Juniper, Arista — todos los outputs de CLI pueden parsearse con TextFSM. La librería <code>ntc-templates</code> contiene más de 500 templates pre-escritos y probados en producción.</p>
+  </div>
+
+  <h2 class="section-title">Antes vs Después de TextFSM</h2>
+  <div class="concept-grid">
+    <div class="concept-card" style="border-color:rgba(248,113,113,.2);">
+      <div class="concept-icon">📄</div>
+      <h3 style="color:#f87171;">Output Crudo (String)</h3>
+      <p style="font-size:.75rem;line-height:1.6;color:#6b7a9a;">
+        Gateway of last resort...<br>
+        O 10.0.0.0/8 [110/2] via 192.168.1.1...<br>
+        C 192.168.1.0/24 is directly...
+      </p>
+      <p style="margin-top:10px;"><strong>Difícil de procesar:</strong> Requiere regex complejos y es frágil ante cambios de formato entre versiones IOS.</p>
+    </div>
+    <div class="concept-card" style="border-color:rgba(52,211,153,.2);">
+      <div class="concept-icon">📊</div>
+      <h3 style="color:#34d399;">Con TextFSM (Lista de Dicts)</h3>
+      <p style="font-size:.75rem;line-height:1.6;color:#6b7a9a;">
+        [<br>
+        &nbsp;&nbsp;{proto:"O", net:"10.0.0.0/8", nh:"192.168.1.1", metric:2},<br>
+        &nbsp;&nbsp;{proto:"C", net:"192.168.1.0/24", nh:"", metric:0}<br>
+        ]
+      </p>
+      <p style="margin-top:10px;"><strong>Listo para usar:</strong> Iterar, filtrar, exportar a JSON/Excel, comparar con inventories.</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">Arquitectura de Parsing</h2>
+  <p>TextFSM funciona mediante <strong>templates</strong>: archivos de texto con reglas que describen cómo extraer campos del output. Cada template define:</p>
+  <ul>
+    <li><strong>Values:</strong> Variables a extraer (ej: <code>IP_Address</code>, <code>Status</code>)</li>
+    <li><strong>States:</strong> Máquina de estados que recorre línea por línea</li>
+    <li><strong>Reglas Regex:</strong> Patrones que identifican qué líneas procesar y qué capturar</li>
+  </ul>
+
+  <div class="code-block">
+    <div class="code-label">Concepto: Template → Parsed Data</div>
+    <pre><code><span class="cmt"># 1. Tienes un output de show command</span>
+output_raw = <span class="str">"""
+Interface              IP-Address      OK? Method Status                Protocol
+GigabitEthernet0/0    192.168.1.1     YES manual up                    up
+GigabitEthernet0/1    unassigned      YES unset  administratively down down
+"""</span>
+
+<span class="cmt"># 2. Aplicas un template de TextFSM</span>
+<span class="kw">import</span> textfsm
+<span class="kw">with</span> <span class="fn">open</span>(<span class="str">"cisco_ios_show_ip_interface_brief.template"</span>) <span class="kw">as</span> tpl:
+    parser = textfsm.TextFSM(tpl)
+    resultados = parser.ParseText(output_raw)
+
+<span class="cmt"># 3. Obtienes datos estructurados</span>
+<span class="fn">print</span>(resultados)
+<span class="cmt"># [['GigabitEthernet0/0', '192.168.1.1', 'YES', 'manual', 'up', 'up'],
+#  ['GigabitEthernet0/1', 'unassigned', 'YES', 'unset', 'down', 'down']]</span></code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 2 — TEXTFSM BÁSICO
+═══════════════════════════════════════════ -->
+<div id="tab-textfsm-basico" class="py1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Anatomía de un Template TextFSM</h2>
+  <p>Un template tiene dos secciones principales: la declaración de <strong>Values</strong> (variables a capturar) y la sección de <strong>States</strong> (reglas de parsing con regex).</p>
+
+  <div class="code-block">
+    <div class="code-label">cisco_ios_show_version.template — Estructura básica</div>
+    <pre><code><span class="cmt">Value VERSION (.+)
+Value HOSTNAME (\S+)
+Value UPTIME (.+)
+Value IMAGE_FILE (\S+)
+Value SERIAL (\S+)
+
+Start
+  ^Cisco IOS Software.*Version ${VERSION}
+  ^${HOSTNAME} uptime is ${UPTIME}
+  ^System image file is "${IMAGE_FILE}"
+  ^Processor board ID ${SERIAL}
+  ^#</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Declaración de Values</h2>
+  <p>La sintaxis es: <code>Value [Options] Nombre Regex</code></p>
+  
+  <div class="code-block">
+    <div class="code-label">Tipos de Values y modificadores</div>
+    <pre><code><span class="cmt"># Value simple — captura cualquier cosa hasta el final de línea</span>
+<span class="kw">Value</span> DESCRIPTION (.+)
+
+<span class="cmt"># Value con restricción — solo dígitos</span>
+<span class="kw">Value</span> VLAN_ID (\d+)
+
+<span class="cmt"># Value con opción Required — debe aparecer en cada registro</span>
+<span class="kw">Value</span> <span class="fn">Required</span> IP_ADDRESS (\S+)
+
+<span class="cmt"># Value que captura lista (multivalue) — útil para múltiples IPs</span>
+<span class="kw">Value</span> <span class="fn">List</span> NEXT_HOPS (\S+)
+
+<span class="cmt"># Value opcional — puede o no existir</span>
+<span class="kw">Value</span> STATUS (up|down|administratively down)</code></pre>
+  </div>
+
+  <h2 class="section-title">States y Reglas</h2>
+  <p>TextFSM procesa el input línea por línea. Cada regla tiene la forma: <code>^Regex$</code> → Acción.</p>
+  
+  <div class="code-block">
+    <div class="code-label">Ejemplo: Parsear tabla de interfaces</div>
+    <pre><code><span class="kw">Value</span> INTF (\S+)
+<span class="kw">Value</span> IP (\S+)
+<span class="kw">Value</span> STATUS (up|down|administratively down)
+<span class="kw">Value</span> PROTOCOL (up|down)
+
+<span class="fn">Start</span>
+  <span class="str">^${INTF}\s+${IP}\s+\S+\s+\S+\s+${STATUS}\s+${PROTOCOL}</span> <span class="kw">-></span> Record
+  <span class="str">^Interface</span> <span class="kw">-></span> Skip
+  <span class="str">^$</span> <span class="kw">-></span> Skip
+  <span class="str">^.+</span> <span class="kw">-></span> Error</code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Keywords especiales en States</div>
+    <ul>
+      <li><code>Record</code>: Guarda los values actuales y empieza un nuevo registro</li>
+      <li><code>Next</code>: Continúa al siguiente match sin guardar</li>
+      <li><code>Skip</code>: Ignora la línea</li>
+      <li><code>Error</code>: Línea no reconocida — útil para detectar formatos inesperados</li>
+      <li><code>Continue</code>: Sigue procesando la misma línea con más reglas</li>
+    </ul>
+  </div>
+
+  <h2 class="section-title">Máquina de Estados Avanzada</h2>
+  <p>Cuando el output tiene secciones diferentes (ej: encabezado, tabla, resumen), usas múltiples estados:</p>
+
+  <div class="code-block">
+    <div class="code-label">cisco_ios_show_ip_route.template — Múltiples estados</div>
+    <pre><code><span class="kw">Value</span> PROTOCOL (C|O|B|D|S|U|M|i|L)
+<span class="kw">Value</span> NETWORK (\S+)
+<span class="kw">Value</span> MASK (\d+)
+<span class="kw">Value</span> DISTANCE (\d+)
+<span class="kw">Value</span> METRIC (\d+)
+<span class="kw">Value</span> NEXTHOP (\S+)
+<span class="kw">Value</span> INTERFACE (\S+)
+
+<span class="fn">Start</span>
+  <span class="str">^Codes:</span> <span class="kw">-></span> HeaderDescription
+
+<span class="fn">HeaderDescription</span>
+  <span class="str">^\s+\S+</span> <span class="kw">-></span> Continue
+  <span class="str">^Gateway of last resort</span> <span class="kw">-></span> Routes
+
+<span class="fn">Routes</span>
+  <span class="str">^${PROTOCOL}\s+${NETWORK}/${MASK}</span> <span class="kw">-></span> Continue
+  <span class="str">^\s+\[${DISTANCE}/${METRIC}\] via ${NEXTHOP}, ${INTERFACE}</span> <span class="kw">-></span> Record
+  <span class="str">^\s*$$</span> <span class="kw">-></span> Done
+
+<span class="fn">Done</span></code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 3 — NTC-TEMPLATES
+═══════════════════════════════════════════ -->
+<div id="tab-ntc-templates" class="py1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">ntc-templates: Templates Probados en Producción</h2>
+  <p>Escribir templates TextFSM desde cero es tedioso y propenso a errores. El proyecto <strong>ntc-templates</strong> (Network To Code) mantiene una biblioteca de más de 500 templates probados para Cisco, Juniper, Arista, HP, Dell, y más.</p>
+
+  <div class="code-block">
+    <div class="code-label">Instalación y uso básico</div>
+    <pre><code><span class="cmt"># Instalación</span>
+pip install ntc-templates
+
+<span class="cmt"># Uso con TextFSM</span>
+<span class="kw">import</span> textfsm
+<span class="kw">from</span> ntc_templates.parse <span class="kw">import</span> parse_output
+
+<span class="cmt"># Obtienes output de un dispositivo (vía Netmiko, por ejemplo)</span>
+output = <span class="str">"""
+Interface              IP-Address      OK? Method Status                Protocol
+GigabitEthernet0/0    192.168.1.1     YES manual up                    up
+GigabitEthernet0/1    10.0.0.1        YES manual up                    up
+"""</span>
+
+<span class="cmt"># Parseo automático — ntc-templates selecciona el template correcto</span>
+resultado = parse_output(platform=<span class="str">"cisco_ios"</span>, command=<span class="str">"show ip interface brief"</span>, data=output)
+
+<span class="fn">print</span>(resultado)
+<span class="cmt"># [
+#   {'interface': 'GigabitEthernet0/0', 'ip_address': '192.168.1.1', ...},
+#   {'interface': 'GigabitEthernet0/1', 'ip_address': '10.0.0.1', ...}
+# ]</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Estructura de Datos Normalizada</h2>
+  <p>ntc-templates convierte todo a <strong>diccionarios con keys en snake_case</strong>. Campos comunes:</p>
+  
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead>
+        <tr><th>Comando</th><th>Keys típicas</th><th>Tipo de datos</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>show ip interface brief</td><td>interface, ip_address, status, protocol, method</td><td>str, str, str, str, str</td></tr>
+        <tr><td>show interfaces</td><td>interface, link_status, protocol_status, description, mtu, bandwidth</td><td>str, str, str, str, int, int</td></tr>
+        <tr><td>show ip route</td><td>protocol, network, mask, distance, metric, next_hop, interface</td><td>str, str, int, int, int, str, str</td></tr>
+        <tr><td>show version</td><td>version, hostname, uptime, serial_number, hardware, config_register</td><td>str, str, str, str, str, str</td></tr>
+        <tr><td>show cdp neighbors</td><td>neighbor_name, local_port, neighbor_port, capability, platform</td><td>str, str, str, str, str</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚠️ Manejo de Errores con ntc-templates</div>
+    <p>Si el output no coincide con ningún template conocido, <code>parse_output</code> lanza una excepción. Siempre envuelve en <code>try/except</code> cuando parseas outputs de dispositivos desconocidos o versiones de IOS no estándar.</p>
+  </div>
+
+  <h2 class="section-title">Listado de Templates Disponibles</h2>
+  <p>Puedes listar qué comandos soporta tu instalación:</p>
+
+  <div class="code-block">
+    <div class="code-label">Explorar templates instalados</div>
+    <pre><code><span class="kw">import</span> ntc_templates
+<span class="kw">import</span> os
+
+<span class="cmt"># Ruta donde se instalan los templates</span>
+template_dir = os.path.dirname(ntc_templates.__file__) + <span class="str">"/templates"</span>
+
+<span class="cmt"># Listar templates disponibles para Cisco IOS</span>
+cisco_templates = [f <span class="kw">for</span> f <span class="kw">in</span> os.listdir(template_dir) <span class="kw">if</span> f.startswith(<span class="str">"cisco_ios"</span>)]
+<span class="fn">print</span>(<span class="fn">sorted</span>(cisco_templates)[:<span class="num">10</span>])
+<span class="cmt"># [
+#   'cisco_ios_show_access-list.template',
+#   'cisco_ios_show_cdp_neighbors.template',
+#   'cisco_ios_show_interfaces.template',
+#   'cisco_ios_show_ip_interface_brief.template',
+#   'cisco_ios_show_ip_route.template',
+#   ...
+# ]</span></code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 4 — SHOW IP ROUTE
+═══════════════════════════════════════════ -->
+<div id="tab-show-ip-route" class="py1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Caso Real: Parsear "show ip route"</h2>
+  <p>La tabla de routing es uno de los outputs más complejos: tiene múltiples protocolos (C, O, B, D), rutas con múltiples next-hops, summary routes, etc. Es el ejemplo perfecto para aprender parsing avanzado.</p>
+
+  <div class="code-block">
+    <div class="code-label">Output típico de show ip route</div>
+    <pre><code>Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area
+Gateway of last resort is 192.168.1.254 to network 0.0.0.0
+
+O    10.0.0.0/8 [110/2] via 192.168.1.2, 00:15:23, GigabitEthernet0/0
+C    192.168.1.0/24 is directly connected, GigabitEthernet0/0
+L    192.168.1.1/32 is directly connected, GigabitEthernet0/0
+O IA 172.16.0.0/16 [110/3] via 192.168.1.2, 00:10:05, GigabitEthernet0/0
+      [110/3] via 192.168.1.3, 00:10:05, GigabitEthernet0/0</code></pre>
+  </div>
+
+  <h2 class="section-title">Template TextFSM para Rutas</h2>
+  <div class="code-block">
+    <div class="code-label">cisco_ios_show_ip_route.template</div>
+    <pre><code><span class="kw">Value</span> PROTOCOL (C|O|B|D|S|U|L|i|M|R)
+<span class="kw">Value</span> SUB_TYPE (E2|E1|IA|N1|N2)
+<span class="kw">Value</span> NETWORK (\d+\.\d+\.\d+\.\d+)
+<span class="kw">Value</span> MASK (\d+)
+<span class="kw">Value</span> DISTANCE (\d+)
+<span class="kw">Value</span> METRIC (\d+)
+<span class="kw">Value</span> <span class="fn">List</span> NEXTHOP_IP (\d+\.\d+\.\d+\.\d+)
+<span class="kw">Value</span> <span class="fn">List</span> NEXTHOP_IF (\S+)
+
+<span class="fn">Start</span>
+  <span class="str">^Codes:</span> <span class="kw">-></span> Codes
+
+<span class="fn">Codes</span>
+  <span class="str">^Gateway\s+of\s+last</span> <span class="kw">-></span> Routes
+  <span class="str">^\s+\S+\s+-</span> <span class="kw">-></span> Codes
+
+<span class="fn">Routes</span>
+  <span class="str">^${PROTOCOL}\s*${SUB_TYPE}?\s*${NETWORK}/${MASK}</span> <span class="kw">-></span> Continue
+  <span class="str">^\s+\[${DISTANCE}/${METRIC}\]\s+via\s+${NEXTHOP_IP}(?:,\s+\S+)?,\s+${NEXTHOP_IF}</span> <span class="kw">-></span> Record
+  <span class="str">^\s+\[${DISTANCE}/${METRIC}\]\s+via\s+${NEXTHOP_IP}</span> <span class="kw">-></span> Record
+  <span class="str">^${PROTOCOL}\s+\S+</span> <span class="kw">-></span> Continue.Record</code></pre>
+  </div>
+
+  <h2 class="section-title">Procesamiento en Python</h2>
+  <div class="code-block">
+    <div class="code-label">Analizar rutas específicas</div>
+    <pre><code><span class="kw">from</span> ntc_templates.parse <span class="kw">import</span> parse_output
+
+output_route = <span class="str">"""...output de show ip route..."""</span>
+
+rutas = parse_output(platform=<span class="str">"cisco_ios"</span>, command=<span class="str">"show ip route"</span>, data=output_route)
+
+<span class="cmt"># Filtrar solo rutas OSPF</span>
+rutas_ospf = [r <span class="kw">for</span> r <span class="kw">in</span> rutas <span class="kw">if</span> r[<span class="str">'protocol'</span>] == <span class="str">'O'</span>]
+
+<span class="cmt"># Encontrar rutas con múltiples next-hops (ECMP)</span>
+rutas_ecmp = [r <span class="kw">for</span> r <span class="kw">in</span> rutas <span class="kw">if</span> <span class="fn">len</span>(r[<span class="str">'nexthop_ip'</span>]) > <span class="num">1</span>]
+
+<span class="cmt"># Calcular distancia administrativa promedio</span>
+distancias = [<span class="fn">int</span>(r[<span class="str">'distance'</span>]) <span class="kw">for</span> r <span class="kw">in</span> rutas <span class="kw">if</span> r[<span class="str">'distance'</span>]]
+prom_dist = <span class="fn">sum</span>(distancias) / <span class="fn">len</span>(distancias)
+
+<span class="cmt"># Verificar cobertura de red 10.0.0.0/8</span>
+red_10 = [r <span class="kw">for</span> r <span class="kw">in</span> rutas <span class="kw">if</span> r[<span class="str">'network'</span>].startswith(<span class="str">'10.'</span>)]
+
+<span class="fn">print</span>(<span class="str">f"Total rutas: {len(rutas)} | OSPF: {len(rutas_ospf)} | ECMP: {len(rutas_ecmp)}"</span>)</code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Truco: Detectar rutas flotantes</div>
+    <p>Compara el <code>distance</code> de rutas estáticas vs dinámicas. Si tienes una ruta estática con distance 250 y una OSPF con 110, la OSPF gana. Usa TextFSM para auditificar distancias administrativas inconsistentes en tu red.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 5 — SHOW INTERFACES
+═══════════════════════════════════════════ -->
+<div id="tab-show-interfaces" class="py1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Parseo de Interfaces y Estados</h2>
+  <p>Los comandos <code>show interfaces</code> y <code>show ip interface brief</code> son los más ejecutados. Con TextFSM puedes detectar interfaces down, errores de CRC, utilización de ancho de banda, y descripciones ausentes.</p>
+
+  <div class="code-block">
+    <div class="code-label">show ip interface brief — Estructura simple</div>
+    <pre><code><span class="kw">Value</span> INTF (\S+)
+<span class="kw">Value</span> IPADDR (\S+)
+<span class="kw">Value</span> STATUS (up|down|administratively down)
+<span class="kw">Value</span> PROTO (up|down)
+
+<span class="fn">Start</span>
+  <span class="str">^Interface\s+IP-Address</span> <span class="kw">-></span> Skip
+  <span class="str">^${INTF}\s+${IPADDR}\s+\S+\s+\S+\s+${STATUS}\s+${PROTO}</span> <span class="kw">-></span> Record
+  <span class="str">^.+</span> <span class="kw">-></span> Error</code></pre>
+  </div>
+
+  <h2 class="section-title">show interfaces (Detallado)</h2>
+  <p>Este output tiene secciones: hardware, MTU, BW, contadores de input/output, errores. Requiere múltiples states.</p>
+
+  <div class="code-block">
+    <div class="code-label">Extracción de métricas críticas</div>
+    <pre><code><span class="kw">from</span> ntc_templates.parse <span class="kw">import</span> parse_output
+
+output = <span class="str">"""
+GigabitEthernet0/0 is up, line protocol is up 
+  Hardware is iGbE, address is 5254.0012.3456 (bia 5254.0012.3456)
+  Description: ENLACE_PRINCIPAL
+  MTU 1500 bytes, BW 1000000 Kbit/sec, DLY 10 usec, 
+     reliability 255/255, txload 1/255, rxload 1/255
+  ...
+  5 minute input rate 1000 bits/sec, 2 packets/sec
+  5 minute output rate 2000 bits/sec, 4 packets/sec
+  ...
+     0 runts, 0 giants, 0 throttles 
+     0 input errors, 0 CRC, 0 frame, 0 overrun, 0 ignored
+"""</span>
+
+interfaces = parse_output(platform=<span class="str">"cisco_ios"</span>, command=<span class="str">"show interfaces"</span>, data=output)
+
+<span class="cmt"># Auditar interfaces sin descripción</span>
+sin_desc = [i <span class="kw">for</span> i <span class="kw">in</span> interfaces <span class="kw">if</span> <span class="kw">not</span> i.get(<span class="str">'description'</span>)]
+
+<span class="cmt"># Interfaces con errores de input</span>
+con_errores = [i <span class="kw">for</span> i <span class="kw">in</span> interfaces 
+               <span class="kw">if</span> <span class="fn">int</span>(i.get(<span class="str">'input_errors'</span>, <span class="num">0</span>)) > <span class="num">0</span>]
+
+<span class="cmt"># Interfaces con baja BW (menos de 100Mbps)</span>
+low_bw = [i <span class="kw">for</span> i <span class="kw">in</span> interfaces 
+          <span class="kw">if</span> <span class="str">'100'</span> <span class="kw">in</span> i.get(<span class="str">'bandwidth'</span>, <span class="str">''</span>)]
+
+<span class="fn">print</span>(<span class="str">f"⚠️ Interfaces sin descripción: {len(sin_desc)}"</span>)
+<span class="fn">print</span>(<span class="str">f"🔴 Interfaces con errores: {len(con_errores)}"</span>)</code></pre>
+  </div>
+
+  <h2 class="section-title">Validación de Estado de Capa 1 y 2</h2>
+  <p>Patrón útil para reportes de disponibilidad:</p>
+
+  <div class="code-block">
+    <div class="code-label">Matriz de estados de interfaz</div>
+    <pre><code><span class="kw">def</span> <span class="fn">clasificar_interfaz</span>(intf_data):
+    status = intf_data.get(<span class="str">'link_status'</span>, <span class="str">''</span>)
+    protocol = intf_data.get(<span class="str">'protocol_status'</span>, <span class="str">''</span>)
+    
+    <span class="kw">if</span> status == <span class="str">'up'</span> <span class="kw">and</span> protocol == <span class="str">'up'</span>:
+        <span class="kw">return</span> <span class="str">'✅ Operacional'</span>
+    <span class="kw">elif</span> status == <span class="str">'administratively down'</span>:
+        <span class="kw">return</span> <span class="str">'⛔ Administratively Down'</span>
+    <span class="kw">elif</span> status == <span class="str">'down'</span>:
+        <span class="kw">return</span> <span class="str">'🔴 Capa 1 Down'</span>
+    <span class="kw">else</span>:
+        <span class="kw">return</span> <span class="str">'⚠️ Check Manual'</span>
+
+<span class="cmt"># Aplicar a todo el inventario</span>
+<span class="kw">for</span> intf <span class="kw">in</span> interfaces:
+    estado = clasificar_interfaz(intf)
+    <span class="fn">print</span>(<span class="str">f"{intf['interface']:<span class="num">25</span>} {estado}"</span>)</code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 6 — PARSING AVANZADO
+═══════════════════════════════════════════ -->
+<div id="tab-parsing-avanzado" class="py1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Técnicas Avanzadas de Parsing</h2>
+  
+  <h3>1. Captura de Múltiples Valores (List)</h3>
+  <p>Cuando un registro tiene múltiples valores del mismo tipo (ej: varios next-hops ECMP, múltiples IPs en <code>show aliases</code>), usa el modificador <code>List</code>.</p>
+
+  <div class="code-block">
+    <div class="code-label">Value List para ECMP</div>
+    <pre><code><span class="kw">Value</span> <span class="fn">List</span> NEXTHOPS (\d+\.\d+\.\d+\.\d+)
+
+<span class="fn">Start</span>
+  <span class="str">^  via \S+ \(\S+, ${NEXTHOPS}\)</span> <span class="kw">-></span> Continue
+  <span class="str">^  via \S+ \(\S+, ${NEXTHOPS}\)</span> <span class="kw">-></span> Record</code></pre>
+  </div>
+
+  <h3>2. Estados Anidados y Saltos Condicionales</h3>
+  <p>Para outputs que cambian formato según la configuración (ej: <code>show running-config</code> con secciones de interface, router, line):</p>
+
+  <div class="code-block">
+    <div class="code-label">Navegación por secciones</div>
+    <pre><code><span class="fn">Start</span>
+  <span class="str">^interface</span> <span class="kw">-></span> InterfaceSection
+  <span class="str">^router ospf</span> <span class="kw">-></span> OspfSection
+  <span class="str">^line con</span> <span class="kw">-></span> LineSection
+
+<span class="fn">InterfaceSection</span>
+  <span class="str">^!</span> <span class="kw">-></span> Start
+  <span class="str">^ ip address</span> <span class="kw">-></span> Continue.Record
+
+<span class="fn">OspfSection</span>
+  <span class="str">^!</span> <span class="kw">-></span> Start
+  <span class="str">^ network</span> <span class="kw">-></span> Continue.Record</code></pre>
+  </div>
+
+  <h3>3. Filldown — Herencia de Valores</h3>
+  <p>El modificador <code>Filldown</code> mantiene el último valor capturado para las siguientes líneas. Útil cuando solo aparece el nombre de la interfaz una vez pero hay múltiples subentradas.</p>
+
+  <div class="code-block">
+    <div class="code-label">Ejemplo: Filldown para interfaces</div>
+    <pre><code><span class="kw">Value</span> <span class="fn">Filldown</span> INTF (\S+)
+<span class="kw">Value</span> IP (\d+\.\d+\.\d+\.\d+)
+
+<span class="fn">Start</span>
+  <span class="str">^interface ${INTF}</span>
+  <span class="str">^ ip address ${IP}</span> <span class="kw">-></span> Record</code></pre>
+  </div>
+
+  <h3>4. Expresiones Regulares Avanzadas</h3>
+  <table class="ref-table">
+    <thead>
+      <tr><th>Patrón</th><th>Uso</th><th>Ejemplo</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>(\S+)</code></td><td>Cualquier string sin espacios</td><td>Nombres de interfaz</td></tr>
+      <tr><td><code>(\d+\.\d+\.\d+\.\d+)</code></td><td>IPv4</td><td>Direcciones IP</td></tr>
+      <tr><td><code>(\d+)</code></td><td>Números enteros</td><td>VLANs, métricas</td></tr>
+      <tr><td><code>(.+?)</code></td><td>Lazy match (mínimo posible)</td><td>Descripciones</td></tr>
+      <tr><td><code>([^,]+)</code></td><td>Todo hasta la coma</td><td>Campos CSV-like</td></tr>
+      <tr><td><code>(?:regex)</code></td><td>Non-capturing group</td><td>Separadores opcionales</td></tr>
+    </tbody>
+  </table>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚠️ Debugging de Templates</div>
+    <p>Usa <code>textfsm.parser.TextFSM</code> con <code>print(parser.header)</code> para ver las columnas detectadas. Si una línea no hace match, TextFSM la ignora silenciosamente a menos que uses la regla <code>^.+ -> Error</code> al final.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 7 — INTEGRACIÓN
+═══════════════════════════════════════════ -->
+<div id="tab-integracion" class="py1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Integración con Netmiko y Automatización</h2>
+  <p>TextFSM brilla cuando se combina con librerías de conexión. Netmiko tiene soporte nativo para TextFSM mediante el parámetro <code>use_textfsm=True</code>.</p>
+
+  <div class="code-block">
+    <div class="code-label">Netmiko + TextFSM nativo</div>
+    <pre><code><span class="kw">from</span> netmiko <span class="kw">import</span> ConnectHandler
+<span class="kw">import</span> json
+
+device = {
+    <span class="str">"device_type"</span>: <span class="str">"cisco_ios"</span>,
+    <span class="str">"host"</span>: <span class="str">"192.168.1.1"</span>,
+    <span class="str">"username"</span>: <span class="str">"admin"</span>,
+    <span class="str">"password"</span>: <span class="str">"cisco123"</span>,
+}
+
+connection = ConnectHandler(**device)
+
+<span class="cmt"># use_textfsm=True activa parsing automático vía ntc-templates</span>
+interfaces = connection.send_command(
+    <span class="str">"show ip interface brief"</span>, 
+    use_textfsm=<span class="kw">True</span>
+)
+
+<span class="fn">print</span>(json.dumps(interfaces, indent=<span class="num">2</span>))
+<span class="cmt"># [
+#   {
+#     "intf": "GigabitEthernet0/0",
+#     "ipaddr": "192.168.1.1",
+#     "status": "up",
+#     "proto": "up"
+#   }
+# ]</span>
+
+connection.disconnect()</code></pre>
+  </div>
+
+  <h2 class="section-title">Flujo Completo: Conexión → Parse → Análisis → Reporte</h2>
+  <div class="code-block">
+    <div class="code-label">Auditoría de rutas en múltiples routers</div>
+    <pre><code><span class="kw">from</span> netmiko <span class="kw">import</span> ConnectHandler
+<span class="kw">from</span> ntc_templates.parse <span class="kw">import</span> parse_output
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+
+routers = [<span class="str">"10.0.0.1"</span>, <span class="str">"10.0.0.2"</span>, <span class="str">"10.0.0.3"</span>]
+credenciales = {<span class="str">"username"</span>: <span class="str">"admin"</span>, <span class="str">"password"</span>: <span class="str">"cisco123"</span>, <span class="str">"device_type"</span>: <span class="str">"cisco_ios"</span>}
+
+todas_las_rutas = []
+
+<span class="kw">for</span> router <span class="kw">in</span> routers:
+    <span class="fn">print</span>(<span class="str">f"Conectando a {router}..."</span>)
+    dev = {<span class="str">"host"</span>: router, **credenciales}
+    
+    <span class="kw">try</span>:
+        <span class="kw">with</span> ConnectHandler(**dev) <span class="kw">as</span> conn:
+            output = conn.send_command(<span class="str">"show ip route"</span>)
+            
+            <span class="cmt"># Parse con TextFSM</span>
+            rutas = parse_output(platform=<span class="str">"cisco_ios"</span>, 
+                               command=<span class="str">"show ip route"</span>, 
+                               data=output)
+            
+            <span class="cmt"># Agregar metadata del router</span>
+            <span class="kw">for</span> r <span class="kw">in</span> rutas:
+                r[<span class="str">'router_source'</span>] = router
+            
+            todas_las_rutas.extend(rutas)
+            
+    <span class="kw">except</span> Exception <span class="kw">as</span> e:
+        <span class="fn">print</span>(<span class="str">f"Error en {router}: {e}"</span>)
+
+<span class="cmt"># Análisis con Pandas</span>
+df = pd.DataFrame(todas_las_rutas)
+
+<span class="cmt"># Análisis: Rutas inconsistentes (misma red, diferentes next-hops)</span>
+agrupadas = df.groupby(<span class="str">'network'</span>)[<span class="str">'nexthop_ip'</span>].nunique()
+inconsistentes = agrupadas[agrupadas > <span class="num">1</span>]
+
+<span class="fn">print</span>(<span class="str">f"\nRedes con rutas inconsistentes: {len(inconsistentes)}"</span>)
+<span class="kw">for</span> red <span class="kw">in</span> inconsistentes.index:
+    <span class="fn">print</span>(<span class="str">f"  ⚠️  {red} tiene rutas diferentes según el router"</span>)</code></pre>
+  </div>
+
+  <h2 class="section-title">Exportar a Excel/JSON para Reportes</h2>
+  <div class="code-block">
+    <div class="code-label">Generación de reportes ejecutivos</div>
+    <pre><code><span class="kw">import</span> json
+<span class="kw">from</span> datetime <span class="kw">import</span> datetime
+
+reporte = {
+    <span class="str">"fecha"</span>: datetime.now().isoformat(),
+    <span class="str">"total_rutas"</span>: <span class="fn">len</span>(todas_las_rutas),
+    <span class="str">"routers_analizados"</span>: routers,
+    <span class="str">"protocolos"</span>: <span class="fn">list</span>(<span class="fn">set</span>(r[<span class="str">'protocol'</span>] <span class="kw">for</span> r <span class="kw">in</span> todas_las_rutas)),
+    <span class="str">"datos"</span>: todas_las_rutas
+}
+
+<span class="cmt"># JSON para APIs</span>
+<span class="kw">with</span> <span class="fn">open</span>(<span class="str">"routing_audit.json"</span>, <span class="str">"w"</span>) <span class="kw">as</span> f:
+    json.dump(reporte, f, indent=<span class="num">2</span>)
+
+<span class="cmt"># Excel para equipos de operaciones</span>
+df.to_excel(<span class="str">"routing_table.xlsx"</span>, index=<span class="kw">False</span>)</code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 8 — PROYECTO
+═══════════════════════════════════════════ -->
+<div id="tab-proyecto" class="py1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">🚀 Proyecto Final — Auditoría de Interfaces con TextFSM</h2>
+  <p>Script completo de producción que conecta a múltiples switches, parsea interfaces, detecta problemas de capa física, valida descripciones, y genera un reporte HTML profesional.</p>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Qué incluye este proyecto</div>
+    <p>Conexión SSH con Netmiko, parsing con TextFSM/ntc-templates, análisis de datos (interfaces sin desc, errores CRC, estado admin-down no documentado), generación de reporte HTML con estadísticas, y manejo de errores robusto.</p>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">auditoria_interfaces.py — Sistema completo (120 líneas)</div>
+    <pre><code><span class="cmt">#!/usr/bin/env python3
+"""
+auditoria_interfaces.py
+─────────────────────────────────────────────────
+Auditoría automatizada de interfaces Cisco IOS
+usando TextFSM para parseo estructurado.
+
+Requisitos: pip install netmiko ntc-templates jinja2
+─────────────────────────────────────────────────
+"""</span>
+
+<span class="kw">from</span> netmiko <span class="kw">import</span> ConnectHandler
+<span class="kw">from</span> ntc_templates.parse <span class="kw">import</span> parse_output
+<span class="kw">from</span> jinja2 <span class="kw">import</span> Template
+<span class="kw">from</span> datetime <span class="kw">import</span> datetime
+<span class="kw">import</span> sys
+
+<span class="cmt"># ══════════════════════════════════════════════════════
+# CONFIGURACIÓN DE DISPOSITIVOS
+# ══════════════════════════════════════════════════════</span>
+DISPOSITIVOS = [
+    {<span class="str">"host"</span>: <span class="str">"192.168.1.10"</span>, <span class="str">"nombre"</span>: <span class="str">"SW-CORE-01"</span>},
+    {<span class="str">"host"</span>: <span class="str">"192.168.1.11"</span>, <span class="str">"nombre"</span>: <span class="str">"SW-ACC-01"</span>},
+    {<span class="str">"host"</span>: <span class="str">"192.168.1.12"</span>, <span class="str">"nombre"</span>: <span class="str">"SW-ACC-02"</span>},
+]
+
+CREDENTIALS = {
+    <span class="str">"device_type"</span>: <span class="str">"cisco_ios"</span>,
+    <span class="str">"username"</span>: <span class="str">"admin"</span>,
+    <span class="str">"password"</span>: <span class="str">"Cisco123"</span>,
+    <span class="str">"secret"</span>: <span class="str">"Cisco123"</span>,
+}
+
+<span class="cmt"># ══════════════════════════════════════════════════════
+# FUNCIONES DE ANÁLISIS
+# ══════════════════════════════════════════════════════</span>
+
+<span class="kw">def</span> <span class="fn">auditar_switch</span>(dispositivo):
+    <span class="str">"""Conecta, parsea y analiza interfaces de un switch"""</span>
+    host = dispositivo[<span class="str">'host'</span>]
+    nombre = dispositivo[<span class="str">'nombre'</span>]
+    
+    <span class="fn">print</span>(<span class="str">f"\n🔍 Auditando {nombre} ({host})..."</span>)
+    
+    config = {**CREDENTIALS, <span class="str">"host"</span>: host}
+    hallazgos = []
+    
+    <span class="kw">try</span>:
+        <span class="kw">with</span> ConnectHandler(**config) <span class="kw">as</span> conn:
+            conn.enable()
+            
+            <span class="cmt"># Obtener y parsear interfaces</span>
+            output = conn.send_command(<span class="str">"show interfaces"</span>)
+            interfaces = parse_output(
+                platform=<span class="str">"cisco_ios"</span>,
+                command=<span class="str">"show interfaces"</span>,
+                data=output
+            )
+            
+            <span class="cmt"># Análisis de cada interfaz</span>
+            <span class="kw">for</span> intf <span class="kw">in</span> interfaces:
+                problemas = []
+                
+                <span class="cmt"># Check 1: Sin descripción</span>
+                desc = intf.get(<span class="str">'description'</span>, <span class="str">''</span>)
+                <span class="kw">if</span> <span class="kw">not</span> desc <span class="kw">and</span> intf[<span class="str">'interface'</span>].startswith(<span class="str">'Gi'</span>):
+                    problemas.append(<span class="str">"Sin descripción"</span>)
+                
+                <span class="cmt"># Check 2: Errores de input</span>
+                input_errors = <span class="fn">int</span>(intf.get(<span class="str">'input_errors'</span>, <span class="num">0</span>))
+                <span class="kw">if</span> input_errors > <span class="num">0</span>:
+                    problemas.append(<span class="str">f"Input errors: {input_errors}"</span>)
+                
+                <span class="cmt"># Check 3: CRC errors</span>
+                crc = <span class="fn">int</span>(intf.get(<span class="str">'crc_errors'</span>, <span class="num">0</span>))
+                <span class="kw">if</span> crc > <span class="num">0</span>:
+                    problemas.append(<span class="str">f"CRC errors: {crc}"</span>)
+                
+                <span class="cmt"># Check 4: Administratively Down sin ser loopback</span>
+                link = intf.get(<span class="str">'link_status'</span>, <span class="str">''</span>)
+                <span class="kw">if</span> link == <span class="str">'administratively down'</span> <span class="kw">and</span> <span class="str">'Loopback'</span> <span class="kw">not</span> <span class="kw">in</span> intf[<span class="str">'interface'</span>]:
+                    <span class="kw">if</span> <span class="kw">not</span> desc <span class="kw">or</span> <span class="str">'MANTENIMIENTO'</span> <span class="kw">not</span> <span class="kw">in</span> desc.upper():
+                        problemas.append(<span class="str">"Admin-down sin tag de mantenimiento"</span>)
+                
+                <span class="kw">if</span> problemas:
+                    hallazgos.append({
+                        <span class="str">'interface'</span>: intf[<span class="str">'interface'</span>],
+                        <span class="str">'problemas'</span>: <span class="str">'; '</span>.join(problemas),
+                        <span class="str">'estado'</span>: link,
+                        <span class="str">'descripcion'</span>: desc <span class="kw">or</span> <span class="str">'N/A'</span>
+                    })
+                    
+    <span class="kw">except</span> Exception <span class="kw">as</span> e:
+        <span class="fn">print</span>(<span class="str">f"❌ Error en {nombre}: {e}"</span>)
+        <span class="kw">return</span> {<span class="str">'nombre'</span>: nombre, <span class="str">'host'</span>: host, <span class="str">'error'</span>: <span class="fn">str</span>(e), <span class="str">'hallazgos'</span>: []}
+    
+    <span class="fn">print</span>(<span class="str">f"✅ {nombre}: {len(hallazgos)} problemas encontrados"</span>)
+    <span class="kw">return</span> {
+        <span class="str">'nombre'</span>: nombre,
+        <span class="str">'host'</span>: host,
+        <span class="str">'total_interfaces'</span>: <span class="fn">len</span>(interfaces),
+        <span class="str">'hallazgos'</span>: hallazgos
+    }
+
+<span class="cmt"># ══════════════════════════════════════════════════════
+# GENERACIÓN DE REPORTE HTML
+# ══════════════════════════════════════════════════════</span>
+
+HTML_TEMPLATE = <span class="str">"""
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Auditoría de Interfaces - {{ fecha }}&lt;/title&gt;
+    &lt;style&gt;
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        h1 { color: #333; }
+        .device { margin: 20px 0; border: 1px solid #ddd; padding: 15px; border-radius: 5px; }
+        .device h2 { margin-top: 0; color: #2c5aa0; }
+        table { border-collapse: collapse; width: 100%; margin-top: 10px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .critical { color: #d9534f; font-weight: bold; }
+        .warning { color: #f0ad4e; }
+        .ok { color: #5cb85c; }
+        .summary { background: #f9f9f9; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;🔍 Reporte de Auditoría de Interfaces&lt;/h1&gt;
+    &lt;div class="summary"&gt;
+        &lt;strong&gt;Fecha:&lt;/strong&gt; {{ fecha }}&lt;br&gt;
+        &lt;strong&gt;Dispositivos analizados:&lt;/strong&gt; {{ total_devices }}&lt;br&gt;
+        &lt;strong&gt;Total problemas detectados:&lt;/strong&gt; {{ total_problemas }}
+    &lt;/div&gt;
+    
+    {% for dev in dispositivos %}
+    &lt;div class="device"&gt;
+        &lt;h2&gt;{{ dev.nombre }} ({{ dev.host }})&lt;/h2&gt;
+        {% if dev.hallazgos %}
+        &lt;table&gt;
+            &lt;tr&gt;
+                &lt;th&gt;Interfaz&lt;/th&gt;
+                &lt;th&gt;Estado&lt;/th&gt;
+                &lt;th&gt;Descripción&lt;/th&gt;
+                &lt;th&gt;Problemas detectados&lt;/th&gt;
+            &lt;/tr&gt;
+            {% for h in dev.hallazgos %}
+            &lt;tr&gt;
+                &lt;td&gt;{{ h.interface }}&lt;/td&gt;
+                &lt;td&gt;{{ h.estado }}&lt;/td&gt;
+                &lt;td&gt;{{ h.descripcion }}&lt;/td&gt;
+                &lt;td class="critical"&gt;{{ h.problemas }}&lt;/td&gt;
+            &lt;/tr&gt;
+            {% endfor %}
+        &lt;/table&gt;
+        {% else %}
+        &lt;p class="ok"&gt;✅ Sin problemas detectados&lt;/p&gt;
+        {% endif %}
+    &lt;/div&gt;
+    {% endfor %}
+&lt;/body&gt;
+&lt;/html&gt;
+"""</span>
+
+<span class="kw">def</span> <span class="fn">generar_reporte</span>(resultados):
+    <span class="str">"""Genera archivo HTML con resultados"""</span>
+    total_problemas = <span class="fn">sum</span>(<span class="fn">len</span>(r[<span class="str">'hallazgos'</span>]) <span class="kw">for</span> r <span class="kw">in</span> resultados)
+    
+    template = Template(HTML_TEMPLATE)
+    html = template.render(
+        fecha=datetime.now().strftime(<span class="str">"%Y-%m-%d %H:%M:%S"</span>),
+        dispositivos=resultados,
+        total_devices=<span class="fn">len</span>(resultados),
+        total_problemas=total_problemas
+    )
+    
+    filename = <span class="str">f"auditoria_interfaces_{datetime.now().strftime('%Y%m%d_%H%M')}.html"</span>
+    <span class="kw">with</span> <span class="fn">open</span>(filename, <span class="str">'w'</span>) <span class="kw">as</span> f:
+        f.write(html)
+    
+    <span class="fn">print</span>(<span class="str">f"\n📄 Reporte generado: {filename}"</span>)
+
+<span class="cmt"># ══════════════════════════════════════════════════════
+# EJECUCIÓN PRINCIPAL
+# ══════════════════════════════════════════════════════</span>
+
+<span class="kw">if</span> __name__ == <span class="str">"__main__"</span>:
+    <span class="fn">print</span>(<span class="str">"="</span>*<span class="num">60</span>)
+    <span class="fn">print</span>(<span class="str">"  SISTEMA DE AUDITORÍA DE INTERFACES CISCO"</span>)
+    <span class="fn">print</span>(<span class="str">"="</span>*<span class="num">60</span>)
+    
+    resultados = []
+    <span class="kw">for</span> dev <span class="kw">in</span> DISPOSITIVOS:
+        resultado = auditar_switch(dev)
+        resultados.append(resultado)
+    
+    <span class="cmt"># Resumen en consola</span>
+    <span class="fn">print</span>(<span class="str">"\n"</span> + <span class="str">"="</span>*<span class="num">60</span>)
+    <span class="fn">print</span>(<span class="str">"RESUMEN DE AUDITORÍA"</span>)
+    <span class="fn">print</span>(<span class="str">"="</span>*<span class="num">60</span>)
+    <span class="kw">for</span> r <span class="kw">in</span> resultados:
+        num = <span class="fn">len</span>(r[<span class="str">'hallazgos'</span>])
+        status = <span class="str">"🔴"</span> <span class="kw">if</span> num > <span class="num">0</span> <span class="kw">else</span> <span class="str">"🟢"</span>
+        <span class="fn">print</span>(<span class="str">f"{status} {r['nombre']:<span class="num">20</span>}: {num} problemas"</span>)
+    
+    <span class="cmt"># Generar reporte HTML</span>
+    generar_reporte(resultados)</code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 9 — REFERENCIA
+═══════════════════════════════════════════ -->
+<div id="tab-referencia" class="py1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Tabla de Referencia — TextFSM & Parsing</h2>
+  <div id="refTablePy5">
+    <!-- Generado por JS -->
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 10 — QUIZ
+═══════════════════════════════════════════ -->
+<div id="tab-quiz" class="py1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Quiz — TextFSM y Parsing de Outputs</h2>
+  <p style="font-size:.83rem;color:#6b7a9a;margin-bottom:20px;">10 preguntas de parsing estructurado. Domina la conversión de texto plano a datos útiles.</p>
+  <div id="quizContainerPy5">
+    <!-- Generado por JS -->
+  </div>
+</div>
+</div>
+
+</div><!-- /.tabs-wrap -->
+
+<script>
+// ── NAVEGACIÓN DRAWER ────────────────────────────────
+function ccnaToggle() {
+  document.getElementById('ccnaDrawer').classList.toggle('open');
+  document.getElementById('ccnaOverlay').classList.toggle('show');
+}
+function ccnaClose() {
+  document.getElementById('ccnaDrawer').classList.remove('open');
+  document.getElementById('ccnaOverlay').classList.remove('show');
+}
+
+// ── TABS ──────────────────────────────────────────────
+function showTabPy5(id, btn) {
+  document.querySelectorAll('.py1-tab-content').forEach(t => t.classList.remove('py1-active'));
+  document.querySelectorAll('.py1-tab-btn').forEach(b => b.classList.remove('py1-active'));
+  document.getElementById('tab-' + id).classList.add('py1-active');
+  if (btn) btn.classList.add('py1-active');
+}
+
+// ── TABLA DE REFERENCIA ──────────────────────────────
+function buildRefTable() {
+  const container = document.getElementById('refTablePy5');
+  if (!container) return;
+  
+  const secciones = [
+    {
+      titulo: 'TEXTFSM MODIFIERS',
+      cols: ['Modificador','Uso','Ejemplo'],
+      filas: [
+        ['<code>Required</code>','Debe existir en cada registro','<code>Value Required IP (\\S+)</code>'],
+        ['<code>List</code>','Captura múltiples valores','<code>Value List HOPS (\\S+)</code>'],
+        ['<code>Filldown</code>','Herencia de valor entre líneas','<code>Value Filldown INTF (\\S+)</code>'],
+        ['<code>Key</code>','Identificador único del registro','<code>Value Key VLAN (\\d+)</code>'],
+      ]
+    },
+    {
+      titulo: 'ESTADOS Y ACCIONES',
+      cols: ['Acción','Función','Uso típico'],
+      filas: [
+        ['<code>Record</code>','Guarda valores actuales y resetea','Al completar un registro'],
+        ['<code>Continue</code>','Sigue procesando misma línea','Múltiples matches por línea'],
+        ['<code>Next</code>','Pasa a siguiente línea sin guardar','Saltar headers'],
+        ['<code>Skip</code>','Ignora línea actual','Comentarios o separadores'],
+        ['<code>Error</code>','Lanza error si match falla','Detectar formatos inválidos'],
+      ]
+    },
+    {
+      titulo: 'REGEX COMUNES EN NETWORKING',
+      cols: ['Patrón','Captura','Ejemplo'],
+      filas: [
+        ['<code>(\\S+)</code>','String sin espacios','Nombre interfaz'],
+        ['<code>(\\d+)</code>','Números enteros','VLAN, métrica, MTU'],
+        ['<code>([\\d\\.]+)</code>','IP o número decimal','Direcciones IP'],
+        ['<code>(\\d+\\.\\d+\\.\\d+\\.\\d+)</code>','IPv4 estricta','Next-hop'],
+        ['<code>(.+)</code>','Todo hasta final','Descripción'],
+        ['<code>(.+?)</code>','Lazy match mínimo','Campo entre delimitadores'],
+      ]
+    },
+    {
+      titulo: 'NTC-TEMPLATES COMANDOS',
+      cols: ['Comando','Keys retornadas','Uso'],
+      filas: [
+        ['show ip interface brief','interface, ip_address, status, protocol','Inventario rápido'],
+        ['show interfaces','interface, link_status, input_errors, crc_errors...','Troubleshooting físico'],
+        ['show ip route','protocol, network, mask, distance, metric...','Análisis de routing'],
+        ['show cdp neighbors','neighbor, local_interface, neighbor_interface','Diagramas de topología'],
+        ['show version','version, hostname, uptime, serial_number','Inventario de activos'],
+      ]
+    }
+  ];
+
+  let html = '';
+  secciones.forEach(sec => {
+    html += `<h3 style="font-family:Orbitron,sans-serif;font-size:.8rem;color:#5b9bd5;letter-spacing:2px;margin:24px 0 10px;text-transform:uppercase;">▸ ${sec.titulo}</h3>`;
+    html += `<div class="table-wrap"><table class="ref-table"><thead><tr>${sec.cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>`;
+    sec.filas.forEach(f => { html += '<tr>' + f.map(c=>`<td>${c}</td>`).join('') + '</tr>'; });
+    html += '</tbody></table></div>';
+  });
+  container.innerHTML = html;
+}
+
+// ── QUIZ ─────────────────────────────────────────────
+function initQuiz() {
+  const container = document.getElementById('quizContainerPy5');
+  if (!container) return;
+
+  const qs = [
+    {
+      q: '¿Qué hace el modificador <code>Value List</code> en un template TextFSM?',
+      opts: ['Convierte el valor a lista Python automáticamente','Captura múltiples ocurrencias del mismo valor en un registro','Indica que el valor es obligatorio','Divide el valor por comas'],
+      ans: 1,
+      exp: '<code>List</code> permite capturar múltiples valores del mismo tipo (ej: múltiples next-hops en una ruta ECMP) y los almacena como lista Python.'
+    },
+    {
+      q: 'En TextFSM, ¿qué significa la acción <code>-> Record</code> al final de una regla?',
+      opts: ['Registra un error en el log','Guarda los values actuales como un registro completo y los resetea','Envía el registro a una base de datos','Continúa procesando la siguiente línea'],
+      ans: 1,
+      exp: '<code>Record</code> indica que se ha completado un registro lógico. Guarda los values actuales en el resultado y resetea los valores para el siguiente registro.'
+    },
+    {
+      q: '¿Cuál es la ventaja de usar <code>ntc-templates</code> sobre escribir templates desde cero?',
+      opts: ['Es más rápido ejecutarse','Viene con 500+ templates probados en producción para múltiples vendors','No requiere instalar textfsm','Convierte automáticamente a YAML'],
+      ans: 1,
+      exp: 'ntc-templates es una biblioteca mantenida por la comunidad con templates probados para Cisco, Juniper, Arista, etc. Ahorra horas de debug de regex.'
+    },
+    {
+      q: '¿Cómo capturas una dirección IP IPv4 en un regex de TextFSM?',
+      opts: ['<code>(\\w+)</code>','<code>(\\d+)</code>','<code>(\\d+\\.\\d+\\.\\d+\\.\\d+)</code>','<code>(.*)</code>'],
+      ans: 2,
+      exp: 'El patrón <code>(\\d+\\.\\d+\\.\\d+\\.\\d+)</code> captura exactamente 4 grupos de dígitos separados por puntos, validando el formato IPv4.'
+    },
+    {
+      q: '¿Qué parámetro de Netmiko activa el parsing automático con TextFSM?',
+      opts: ['<code>parse_textfsm=True</code>','<code>use_textfsm=True</code>','<code>textfsm_template=True</code>','<code>structured_data=True</code>'],
+      ans: 1,
+      exp: '<code>use_textfsm=True</code> indica a Netmiko que use ntc-templates para parsear el output y retornar una lista de diccionarios en lugar de un string.'
+    },
+    {
+      q: 'Para outputs con secciones diferentes (ej: interfaces, luego routes), TextFSM usa:',
+      opts: ['Múltiples archivos de template','Variables globales','Múltiples States (máquina de estados)','Expresiones regulares únicamente'],
+      ans: 2,
+      exp: 'Los States permiten definir contextos diferentes. Ej: <code>Start</code> -> <code>InterfaceSection</code> -> <code>RouteSection</code>, cada uno con sus propias reglas de parsing.'
+    },
+    {
+      q: '¿Qué hace <code>Value Filldown INTF</code>?',
+      opts: ['Llena el valor con ceros a la izquierda','Mantiene el último valor capturado para las siguientes líneas hasta que cambie','Convierte el valor a mayúsculas','Repite el valor en todas las filas del output'],
+      ans: 1,
+      exp: '<code>Filldown</code> es útil cuando el nombre de interfaz aparece una vez y luego vienen múltiples líneas de detalle. Hereda el valor hasta encontrar uno nuevo.'
+    },
+    {
+      q: 'Si tienes una ruta con dos next-hops (ECMP), ¿cómo almacenas ambos en un solo registro?',
+      opts: ['Usando Value Required','Usando Value List','Usando dos templates diferentes','TextFSM no soporta ECMP'],
+      ans: 1,
+      exp: '<code>Value List NEXT_HOP</code> captura ambos next-hops en una lista [<code>"10.0.0.2", "10.0.0.3"</code>], manteniendo un único registro por prefijo.'
+    },
+    {
+      q: '¿Qué sucede si una línea del output no coincide con ninguna regla del template?',
+      opts: ['TextFSM lanza un error y detiene el parsing','La línea se ignora silenciosamente','Se crea un registro vacío','Se usa la regla anterior'],
+      ans: 1,
+      exp: 'Por defecto, TextFSM ignora líneas que no hacen match. Para detectar esto, agrega <code>^.+ -> Error</code> al final del state para capturar líneas inesperadas.'
+    },
+    {
+      q: 'Después de parsear con ntc-templates, ¿qué tipo de dato recibes?',
+      opts: ['Un string JSON','Una lista de diccionarios Python','Un objeto XML','Un DataFrame de pandas automáticamente'],
+      ans: 1,
+      exp: '<code>parse_output()</code> retorna una lista donde cada elemento es un diccionario con las keys definidas en el template (ej: <code>{"interface": "Gi0/0", "status": "up"}</code>).'
+    }
+  ];
+
+  let html = '';
+  qs.forEach((q, i) => {
+    html += `<div class="quiz-question" id="qpy${i}">
+      <div class="quiz-q-num">PREGUNTA ${i+1} DE ${qs.length} · M8 TextFSM Tema 5</div>
+      <div class="quiz-q-text">${q.q}</div>
+      <div class="quiz-opts">
+        ${q.opts.map((o,j) => `<button class="quiz-opt" data-qi="${i}" data-sel="${j}" data-ans="${q.ans}">${o}</button>`).join('')}
+      </div>
+    </div>`;
+  });
+  container.innerHTML = html;
+
+  window._py5Exp = {};
+  qs.forEach((q, i) => { window._py5Exp[i] = q.exp; });
+
+  container.querySelectorAll('.quiz-opt').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const qi  = parseInt(this.dataset.qi);
+      const sel = parseInt(this.dataset.sel);
+      const ans = parseInt(this.dataset.ans);
+      const qDiv = document.getElementById('qpy' + qi);
+      const btns = qDiv.querySelectorAll('.quiz-opt');
+      
+      btns.forEach(b => b.disabled = true);
+      btns[sel].classList.add(sel === ans ? 'correct' : 'wrong');
+      if (sel !== ans) btns[ans].classList.add('correct');
+      
+      const expDiv = document.createElement('div');
+      expDiv.className = 'quiz-explanation';
+      expDiv.innerHTML = `<strong>${sel===ans ? '✅ Correcto!' : '❌ Incorrecto.'}</strong> ${window._py5Exp[qi]}`;
+      qDiv.appendChild(expDiv);
+    });
+  });
+}
+
+// ── INICIALIZACIÓN ────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  buildRefTable();
+  initQuiz();
+});
+</script>
+</body>
+</html>
