@@ -1156,206 +1156,200 @@ code{font-family:'Share Tech Mono',monospace;font-size:.82rem;background:rgba(55
 </style>
 
 <script>
-// ── TABS ─────────────────────────────────────
-function showTabArp(id, btn) {
+// ── TABS ──────────────────────────────────────────────
+function showTabPy1(id, btn) {
   document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('tab-' + id).classList.add('active');
   if (btn) btn.classList.add('active');
 }
 
-// ── REFERENCE TABLE ───────────────────────────
+// ── TABLA DE REFERENCIA ──────────────────────────────
 function buildRefTable() {
-  const h1 = ['Tipo de Mensaje', 'Destino Frame L2', 'EtherType', 'Opcode', 'Descripción clave'];
-  const d1 = [
-    ['ARP Request',    'Broadcast — FF:FF:FF:FF:FF:FF', '0x0806', '1', 'Pregunta: ¿Quién tiene la IP X? Target MAC = 00:00:00:00:00:00'],
-    ['ARP Reply',      'Unicast → solicitante',          '0x0806', '2', 'Responde: La IP X está en la MAC Y. Sender MAC = respuesta.'],
-    ['Gratuitous ARP', 'Broadcast — FF:FF:FF:FF:FF:FF', '0x0806', '1 ó 2', 'Sender IP = Target IP. Anuncio, duplicados, HSRP/VRRP failover.'],
-    ['Proxy ARP Reply','Unicast → solicitante',          '0x0806', '2', 'Router responde con su MAC por hosts en otras redes.'],
-    ['ARP Estático',   'N/A — sin tráfico',              '—',      '—', 'Age = "-". Configurado manualmente. Inmune a ARP Poisoning.'],
-    ['ARP Timeout',    'N/A',                             '—',      '—', 'Default Cisco IOS: 14400 seg (4 horas). Configurable por interfaz.'],
-    ['DAI Drop',       'N/A — descartado',                '—',      '—', 'IP+MAC no coincide con tabla DHCP Snooping → frame descartado.'],
+  const secciones = [
+    {
+      titulo: 'TIPOS DE DATOS',
+      cols: ['Tipo','Ejemplo networking','Función en red'],
+      filas: [
+        ['str','<code>"192.168.1.1"</code>', 'IPs, hostnames, comandos IOS, outputs de show'],
+        ['int','<code>22</code>, <code>4094</code>','Puertos, VLANs, contadores, prefijos CIDR'],
+        ['float','<code>45.8</code>','CPU%, latencia, BW utilizado'],
+        ['bool','<code>True</code> / <code>False</code>','Estado up/down, flags de configuración'],
+        ['None','<code>None</code>','Sin valor, sin respuesta de dispositivo'],
+        ['list','<code>["10.0.0.1","10.0.0.2"]</code>','Inventarios, comandos, VLANs, IPs'],
+        ['dict','<code>{"host":"10.0.0.1"}</code>','Dispositivos Netmiko, inventario completo'],
+      ]
+    },
+    {
+      titulo: 'MÉTODOS DE STRING ESENCIALES',
+      cols: ['Método','Ejemplo','Resultado'],
+      filas: [
+        ['<code>.strip()</code>','<code>"  ip addr  ".strip()</code>','<code>"ip addr"</code> — quita espacios'],
+        ['<code>.split()</code>','<code>"a b c".split()</code>','<code>[\'a\',\'b\',\'c\']</code>'],
+        ['<code>.split(sep)</code>','<code>"192.168.1.1".split(".")</code>','<code>[\'192\',\'168\',\'1\',\'1\']</code>'],
+        ['<code>.replace()</code>','<code>"up".replace("up","UP")</code>','<code>"UP"</code>'],
+        ['<code>.startswith()</code>','<code>"Gi0/0".startswith("Gi")</code>','<code>True</code>'],
+        ['<code>in</code>','<code>"up" in "status: up"</code>','<code>True</code>'],
+        ['<code>f-string</code>','<code>f"IP: {ip}"</code>','Interpolación de variables'],
+        ['<code>f"{n:&lt;20}"</code>','<code>f"{"R1":&lt;20}"</code>','Alineación izquierda 20 chars'],
+      ]
+    },
+    {
+      titulo: 'MÉTODOS DE LISTA ESENCIALES',
+      cols: ['Método','Uso en networking','Notas'],
+      filas: [
+        ['<code>.append(x)</code>','Añadir IP/comando al final','Modifica la lista original'],
+        ['<code>.insert(i, x)</code>','Insertar en posición específica','0 = al inicio'],
+        ['<code>.remove(x)</code>','Quitar IP por valor','Error si no existe'],
+        ['<code>.pop()</code>','Sacar el último elemento','Retorna el elemento'],
+        ['<code>len(lista)</code>','Total de dispositivos','Función, no método'],
+        ['<code>sorted(lista)</code>','Ordenar IPs o VLANs','Retorna nueva lista'],
+        ['<code>[x for x in l]</code>','List comprehension','Crear listas en una línea'],
+        ['<code>x in lista</code>','¿Existe esta IP en la lista?','Retorna bool'],
+      ]
+    },
+    {
+      titulo: 'FUNCIONES INTEGRADAS ÚTILES PARA REDES',
+      cols: ['Función','Ejemplo','Uso'],
+      filas: [
+        ['<code>print()</code>','<code>print(f"IP: {ip}")</code>','Mostrar resultados y reportes'],
+        ['<code>len()</code>','<code>len(routers)</code>','Contar dispositivos'],
+        ['<code>range()</code>','<code>range(1, 255)</code>','Generar secuencias de hosts/VLANs'],
+        ['<code>enumerate()</code>','<code>enumerate(routers, 1)</code>','Índice + valor en loop'],
+        ['<code>zip()</code>','<code>zip(hostnames, ips)</code>','Combinar dos listas'],
+        ['<code>int()</code>','<code>int("22")</code>','Convertir string a número'],
+        ['<code>str()</code>','<code>str(vlan)</code>','Convertir número a string'],
+        ['<code>type()</code>','<code>type(variable)</code>','Verificar tipo de dato'],
+        ['<code>sorted()</code>','<code>sorted(vlans)</code>','Ordenar sin modificar original'],
+        ['<code>max()/min()</code>','<code>max(vlans)</code>','Máximo/mínimo de una colección'],
+      ]
+    },
+    {
+      titulo: 'PATRONES DE CÓDIGO PARA NETWORKING',
+      cols: ['Patrón','Código','Uso'],
+      filas: [
+        ['Dispositivo Netmiko','<code>{"device_type":"cisco_ios","host":"IP"}</code>','Estructura para conectar'],
+        ['Loop sobre routers','<code>for ip in routers: ...</code>','Iterar toda la red'],
+        ['Dict comprehension','<code>{h:i for h,i in zip(hosts,ips)}</code>','Crear inventario rápido'],
+        ['List comprehension','<code>[f"vlan {v}" for v in vlans]</code>','Generar comandos IOS'],
+        ['Manejo de errores','<code>try: ... except Exception as e:</code>','Conexiones que pueden fallar'],
+        ['Función con default','<code>def func(ip, port=22):</code>','Parámetros opcionales'],
+        ['Retorno múltiple','<code>return ip, prefijo, hosts</code>','Retornar varios valores'],
+        ['Guard clause','<code>if __name__ == "__main__":</code>','Punto de entrada del script'],
+      ]
+    }
   ];
-  let html = '<h3 style="font-family:Orbitron,sans-serif;font-size:.85rem;color:#00d4aa;letter-spacing:2px;margin-bottom:12px;text-transform:uppercase;">Tipos de Mensajes y Variantes ARP</h3>';
-  html += '<div class="table-wrap"><table class="ref-table"><thead><tr>' + h1.map(h=>'<th>'+h+'</th>').join('') + '</tr></thead><tbody>';
-  d1.forEach(r => { html += '<tr>' + r.map(c=>'<td>'+c+'</td>').join('') + '</tr>'; });
-  html += '</tbody></table></div>';
-  
-  const h2 = ['Campo ARP', 'Tamaño', 'En Request', 'En Reply', 'Descripción'];
-  const d2 = [
-    ['Hardware Type (HTYPE)',         '2 bytes', '0x0001 (Ethernet)',     '0x0001',             'Tipo de red física.'],
-    ['Protocol Type (PTYPE)',         '2 bytes', '0x0800 (IPv4)',         '0x0800',             'Protocolo de capa 3.'],
-    ['HW / Proto Length (HLEN/PLEN)', '1+1 bytes','6 / 4',               '6 / 4',             'Longitud de MAC (6) y de IP (4).'],
-    ['Operation (Opcode)',            '2 bytes', '1 (Request)',           '2 (Reply)',          'Tipo de operación ARP.'],
-    ['Sender Hardware Address',       '6 bytes', 'MAC del que pregunta',  'MAC del que responde','MAC del emisor del mensaje.'],
-    ['Sender Protocol Address',       '4 bytes', 'IP del que pregunta',   'IP del que responde', 'IP del emisor del mensaje.'],
-    ['Target Hardware Address',       '6 bytes', '00:00:00:00:00:00',    'MAC buscada',         'En Request: desconocida. En Reply: la MAC respondida.'],
-    ['Target Protocol Address',       '4 bytes', 'IP que se resuelve',   'IP que se resolvió',  'IP objetivo de la resolución.'],
-  ];
-  html += '<h3 style="font-family:Orbitron,sans-serif;font-size:.85rem;color:#00d4aa;letter-spacing:2px;margin:24px 0 12px;text-transform:uppercase;">Estructura del Paquete ARP — 28 bytes</h3>';
-  html += '<div class="table-wrap"><table class="ref-table"><thead><tr>' + h2.map(h=>'<th>'+h+'</th>').join('') + '</tr></thead><tbody>';
-  d2.forEach(r => { html += '<tr>' + r.map(c=>'<td>'+c+'</td>').join('') + '</tr>'; });
-  html += '</tbody></table></div>';
-  
-  const h3 = ['Comando', 'Modo', 'Descripción'];
-  const d3 = [
-    ['show arp',                                   'Privilegiado', 'Tabla ARP completa con Age, MAC e interfaz.'],
-    ['show ip arp',                                'Privilegiado', 'Tabla ARP formato IP (equivalente a show arp).'],
-    ['show arp [IP]',                              'Privilegiado', 'Entrada ARP de una IP específica.'],
-    ['show interfaces [int] | include ARP',        'Privilegiado', 'Timeout ARP configurado en esa interfaz.'],
-    ['clear arp-cache',                            'Privilegiado', 'Elimina todas las entradas dinámicas. Estáticas permanecen.'],
-    ['clear arp interface [int]',                  'Privilegiado', 'Elimina entradas ARP de una interfaz específica.'],
-    ['debug arp',                                  'Privilegiado', 'Muestra ARPs enviados y recibidos en tiempo real.'],
-    ['undebug all',                                'Privilegiado', 'Desactiva todos los debugs activos.'],
-    ['arp [IP] [MAC] arpa',                        'Config global', 'Agrega entrada ARP estática permanente.'],
-    ['no arp [IP] [MAC] arpa',                     'Config global', 'Elimina entrada ARP estática.'],
-    ['arp timeout [segundos]',                     'Config-if',    'Configura TTL de entradas ARP en esa interfaz.'],
-    ['ip proxy-arp / no ip proxy-arp',             'Config-if',    'Habilita o deshabilita Proxy ARP.'],
-    ['ip arp inspection vlan [x]',                 'Config global', 'Habilita DAI en la VLAN indicada.'],
-    ['ip arp inspection trust',                    'Config-if',    'Marca el puerto como trusted para DAI (uplinks/trunks).'],
-    ['arp access-list [nombre]',                   'Config global', 'Crea ARP ACL para hosts con IP estática en DAI.'],
-    ['ip arp inspection filter [ACL] vlan [x]',   'Config global', 'Aplica ARP ACL a DAI para hosts estáticos.'],
-    ['show ip arp inspection',                     'Privilegiado', 'Estado general de DAI por VLAN.'],
-    ['show ip arp inspection statistics vlan [x]','Privilegiado', 'Contadores de ARPs forwarded/dropped por DAI.'],
-    ['show ip dhcp snooping binding',              'Privilegiado', 'Tabla de vinculaciones DHCP Snooping (base de DAI).'],
-  ];
-  html += '<h3 style="font-family:Orbitron,sans-serif;font-size:.85rem;color:#00d4aa;letter-spacing:2px;margin:24px 0 12px;text-transform:uppercase;">Comandos Cisco IOS — ARP y DAI</h3>';
-  html += '<div class="table-wrap"><table class="ref-table"><thead><tr>' + h3.map(h=>'<th>'+h+'</th>').join('') + '</tr></thead><tbody>';
-  d3.forEach(r => { html += '<tr>' + r.map(c=>'<td>'+c+'</td>').join('') + '</tr>'; });
-  html += '</tbody></table></div>';
-  
-  const el = document.getElementById('refTableARP');
-  if (el) el.innerHTML = html;
+
+  let html = '';
+  secciones.forEach(sec => {
+    html += `<h3 style="font-family:Orbitron,sans-serif;font-size:.8rem;color:#5b9bd5;letter-spacing:2px;margin:24px 0 10px;text-transform:uppercase;">▸ ${sec.titulo}</h3>`;
+    html += `<div class="table-wrap"><table class="ref-table"><thead><tr>${sec.cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>`;
+    sec.filas.forEach(f => { html += '<tr>' + f.map(c=>`<td>${c}</td>`).join('') + '</tr>'; });
+    html += '</tbody></table></div>';
+  });
+  document.getElementById('refTablePy1').innerHTML = html;
 }
 
-// ── QUIZ ──────────────────────────────────────
+// ── QUIZ ─────────────────────────────────────────────
 function initQuiz() {
-  const questions = [
+  const qs = [
     {
-      q: 'Un host quiere comunicarse con 192.168.1.50. Después de verificar su tabla ARP, no encuentra la entrada. ¿Cuál es el PRIMER paso que realiza?',
-      opts: ['Envía un ICMP Echo Request (ping) directamente a la IP destino','Envía un ARP Request como broadcast FF:FF:FF:FF:FF:FF con Target IP = 192.168.1.50','Consulta al servidor DNS para resolver la dirección IP','Envía el paquete al default gateway directamente sin resolver la MAC'],
+      q: '¿Cuál es la forma correcta de declarar una variable en Python que guarda la IP de un router?',
+      opts: ['var ip_router = "10.0.0.1"','ip_router = "10.0.0.1"','string ip_router = "10.0.0.1"','ip_router: str = "10.0.0.1" (obligatorio)'],
       ans: 1,
-      exp: 'Al no encontrar la entrada en su caché ARP, el host debe resolver la MAC. Envía un ARP Request como broadcast L2 (FF:FF:FF:FF:FF:FF) con Target IP = 192.168.1.50. TODOS los hosts del segmento reciben este mensaje, pero solo el dueño de 192.168.1.50 responde.'
+      exp: 'Python no necesita declaración de tipo. La forma correcta es simplemente <code>ip_router = "10.0.0.1"</code>. Las comillas indican que es un string automáticamente (tipado dinámico). La opción con anotación de tipo <code>ip_router: str = "10.0.0.1"</code> es válida pero opcional en Python moderno.'
     },
     {
-      q: 'En Cisco IOS, un ping muestra el resultado .!!!!. ¿Cuál es la causa del primer punto?',
-      opts: ['La interfaz destino está apagada o no responde','El router debió resolver la MAC vía ARP antes de enviar el ICMP — el primer paquete superó el timeout mientras esperaba el ARP Reply','La ruta hacia el destino no existe en la tabla de routing','Una ACL está bloqueando específicamente el primer paquete'],
-      ans: 1,
-      exp: 'El primer "." es completamente normal en Cisco IOS. El router no tenía la entrada ARP para el destino, así que envió un ARP Request y esperó el Reply antes de encapsular el paquete ICMP. Este proceso tarda menos de 2 segundos (timeout de IOS). Los siguientes pings usan la MAC cacheada y son exitosos.'
-    },
-    {
-      q: '¿Cuál es el propósito del ARP Gratuito (Gratuitous ARP)?',
-      opts: ['Resolver la MAC del default gateway','Enviar una solicitud donde Sender IP = Target IP para anunciar su propia IP o detectar duplicados','Eliminar entradas expiradas de la tabla ARP','Responder por hosts en otras redes (Proxy ARP)'],
-      ans: 1,
-      exp: 'El GARP se caracteriza porque Sender IP = Target IP (el host hace ARP de su propia IP). Se usa para: 1) Anunciar su presencia al iniciar, 2) Detectar IPs duplicadas (si alguien responde, hay conflicto), 3) Actualizar cachés vecinas después de cambio de MAC, 4) En HSRP/VRRP para notificar cambio de router activo.'
-    },
-    {
-      q: '¿Qué tipo de mensaje usa ARP Reply?',
-      opts: ['Broadcast a FF:FF:FF:FF:FF:FF — para que todos actualicen su caché','Multicast al grupo 224.0.0.1 — solo routers y hosts IGMP','Unicast directamente al host que envió el ARP Request','Anycast al servidor ARP más cercano en la red'],
+      q: 'Tienes la cadena: <code>output = "GigabitEthernet0/0 is up"</code>. ¿Cómo verificas si la interfaz está activa?',
+      opts: ['output.find("up") == True','output.contains("up")','if "up" in output: ...','output.check("up")'],
       ans: 2,
-      exp: 'El ARP Reply se envía como UNICAST directamente al host que hizo el Request. Esto es posible porque el ARP Request incluía el Sender MAC del solicitante. Solo el Request es broadcast — el Reply va directo, sin inundar la red.'
+      exp: 'El operador <code>in</code> verifica si una subcadena existe dentro de un string y retorna True o False. La sintaxis correcta es <code>"up" in output</code>. No existe <code>.contains()</code> en Python (es Java). <code>.find()</code> retorna el índice (-1 si no existe), no un booleano directamente.'
     },
     {
-      q: 'Un administrador ejecuta "show arp" y ve una entrada con Age = "-". ¿Qué significa esto?',
-      opts: ['La entrada expiró y será eliminada en el próximo ciclo de limpieza','Es una entrada estática o la IP propia del router — es permanente y no expira','Hay un error de sincronización en la tabla ARP','La dirección MAC está incompleta o no pudo resolverse'],
-      ans: 1,
-      exp: 'En el output de "show arp", el campo Age "-" indica una entrada ESTÁTICA. Para las entradas propias del router (sus propias interfaces), también aparece "-" porque son permanentes. Las entradas dinámicas muestran el tiempo en minutos transcurrido desde que se aprendió.'
-    },
-    {
-      q: '¿Cuál es el EtherType de ARP en un frame Ethernet?',
-      opts: ['0x0800 — Identifica el payload como IPv4','0x0806 — Identifica el payload como ARP','0x8100 — Indica frame con etiqueta VLAN 802.1Q','0x86DD — Identifica el payload como IPv6'],
-      ans: 1,
-      exp: 'ARP tiene EtherType 0x0806. Los demás: 0x0800 = IPv4, 0x8100 = 802.1Q VLAN tag, 0x86DD = IPv6. El EtherType permite al receptor saber qué protocolo lleva el payload del frame Ethernet, sin necesidad de inspeccionar el contenido.'
-    },
-    {
-      q: '¿Qué característica de ARP lo hace vulnerable a ataques de envenenamiento (ARP Poisoning)?',
-      opts: ['Porque usa broadcast que todos los hosts del segmento reciben','Porque no tiene ningún mecanismo de autenticación — cualquier host puede enviar ARP Replies con información falsa y los receptores la aceptan sin verificación','Porque el TTL de las entradas ARP es demasiado largo en Cisco IOS','Porque opera simultáneamente en capa 2 y capa 3 sin protección'],
-      ans: 1,
-      exp: 'La vulnerabilidad fundamental de ARP es la AUSENCIA de autenticación. ARP simplemente acepta y procesa cualquier Reply que recibe, sin verificar si el remitente es legítimo. Un atacante puede enviar ARP Replies falsos afirmando que su MAC corresponde a la IP del gateway, envenenando la caché de las víctimas.'
-    },
-    {
-      q: 'Un switch tiene Dynamic ARP Inspection (DAI) configurado. Un host con IP estática pierde conectividad. ¿Por qué?',
-      opts: ['DAI es incompatible con IPs estáticas por diseño de protocolo','El host no tiene entrada en la tabla DHCP Snooping que DAI usa para validar sus mensajes ARP','La VLAN del host fue desactivada en el switch durante la configuración de DAI','El timeout ARP del host y de DAI expiraron simultáneamente'],
-      ans: 1,
-      exp: 'DAI valida los mensajes ARP contra la tabla de DHCP Snooping binding. Los hosts con IP estática NO tienen entrada en esa tabla (porque no usaron DHCP), por lo que sus mensajes ARP son rechazados por DAI. La solución es crear una ARP ACL manual con "arp access-list" y aplicarla a DAI con "ip arp inspection filter" para los hosts estáticos.'
-    },
-    {
-      q: 'PC-A (192.168.1.10) quiere hacer ping a PC-C (172.16.0.5). ¿Por cuál IP hará PC-A el ARP Request?',
-      opts: ['172.16.0.5 — la IP destino final, sin importar en qué red esté','192.168.1.10 — su propia IP (esto sería un Gratuitous ARP)','192.168.1.1 — la IP del default gateway, porque el destino está en otra red','No realiza ARP alguno — encapsula el paquete y lo envía directamente'],
+      q: '¿Cuál es el resultado de <code>["192.168.1.1", "192.168.1.2", "192.168.1.3"][-1]</code>?',
+      opts: ['"192.168.1.1"','Error — índice inválido','"192.168.1.3"','None'],
       ans: 2,
-      exp: 'Cuando el destino está en una red diferente, el host origen hace ARP por la IP del DEFAULT GATEWAY, no por la IP destino final. PC-A sabe que 172.16.0.5 no está en 192.168.1.0/24, así que necesita el router. Una vez que tiene la MAC del gateway, encapsula el paquete IP (que sí lleva la IP destino 172.16.0.5) dentro de un frame hacia el router.'
+      exp: 'En Python, los índices negativos cuentan desde el final. <code>[-1]</code> retorna el ÚLTIMO elemento, que es <code>"192.168.1.3"</code>. <code>[-2]</code> sería <code>"192.168.1.2"</code>. Esto es muy útil para obtener el último router de una lista o el último comando de una secuencia.'
     },
     {
-      q: '¿Cuál es el comando correcto para limpiar la tabla ARP dinámica en un router Cisco?',
-      opts: ['Router# clear arp','Router# flush arp-table','Router# clear arp-cache','Router# no arp dynamic all'],
+      q: 'Necesitas construir el comando IOS <code>ip address 10.0.0.1 255.255.255.0</code> usando variables Python. ¿Cuál es la mejor forma?',
+      opts: ['cmd = "ip address" + ip + " " + mask','cmd = f"ip address {ip} {mask}"','cmd = "ip address %s %s" % ip, mask','cmd = format("ip address", ip, mask)'],
+      ans: 1,
+      exp: 'Los f-strings (format strings, Python 3.6+) son la forma moderna y más limpia. <code>f"ip address {ip} {mask}"</code> inserta las variables directamente. La concatenación con + también funciona pero es más verbosa y propensa a errores. Los f-strings son el estándar en código de networking Python moderno.'
+    },
+    {
+      q: '¿Cuál es la diferencia entre <code>lista.append(x)</code> y <code>lista + [x]</code>?',
+      opts: ['Son exactamente iguales','append modifica la lista original; + crea una nueva lista sin modificar la original','append es más lento que +','+ solo funciona con strings, no con listas'],
+      ans: 1,
+      exp: '<code>.append()</code> modifica la lista IN-PLACE (la modifica directamente en memoria, más eficiente para listas grandes de IPs). <code>lista + [x]</code> crea una NUEVA lista sin modificar la original. En networking, cuando construyes una lista de comandos iterativamente, <code>.append()</code> es más eficiente y el patrón más usado.'
+    },
+    {
+      q: '¿Cómo iteras sobre todos los dispositivos de este diccionario obteniendo clave Y valor simultáneamente? <code>red = {"R1": "10.0.0.1", "R2": "10.0.0.2"}</code>',
+      opts: ['for item in red: ...','for key in red.keys(): value = red[key] ...','for hostname, ip in red.items(): ...','for i in range(len(red)): ...'],
       ans: 2,
-      exp: '"clear arp-cache" es el comando correcto en Cisco IOS para eliminar todas las entradas ARP dinámicas. Las entradas estáticas (Age = "-") permanecen. Este comando es útil cuando se sospecha de ARP Poisoning o cuando se cambia hardware de red y las cachés tienen MACs obsoletas.'
+      exp: '<code>.items()</code> retorna pares (clave, valor) que puedes desempaquetar directamente en variables. <code>for hostname, ip in red.items():</code> es el patrón más limpio y pythónico. Es el equivalente de iterar sobre una tabla con nombre y dato al mismo tiempo — fundamental para procesar inventarios de red.'
+    },
+    {
+      q: '¿Cuántos hosts útiles tiene una red /26?',
+      opts: ['64','62','30','126'],
+      ans: 1,
+      exp: 'Con el código Python <code>2**(32-26) - 2 = 2**6 - 2 = 64 - 2 = 62</code>. Se restan 2 porque la dirección de red y el broadcast no son asignables. Una red /26 tiene 64 direcciones totales: .0 (red), .1–.62 (hosts), .63 (broadcast). La función <code>calcular_hosts(prefijo)</code> del proyecto implementa exactamente esto.'
+    },
+    {
+      q: 'En Python, ¿cuál es el propósito del bloque <code>if __name__ == "__main__": main()</code> al final de un script?',
+      opts: ['Es obligatorio — sin esto Python no ejecuta el script','Permite que el script funcione también como módulo importable sin ejecutar main() automáticamente','Es un estilo antiguo, Python moderno no lo necesita','Evita que el script use demasiada memoria RAM'],
+      ans: 1,
+      exp: 'Este patrón tiene dos comportamientos: 1) Si ejecutas el script directamente (<code>python script.py</code>), <code>__name__</code> vale <code>"__main__"</code> y se llama a <code>main()</code>. 2) Si otro script hace <code>import script</code>, <code>__name__</code> vale el nombre del módulo y <code>main()</code> NO se ejecuta automáticamente. Esto permite reutilizar las funciones del script como librería.'
+    },
+    {
+      q: '¿Qué hace el método <code>.get("clave", "valor_default")</code> en un diccionario?',
+      opts: ['Lanza un error si la clave no existe','Retorna el valor si la clave existe, o el valor_default si no existe — sin lanzar error','Crea la clave con valor_default si no existe','Es equivalente a dict["clave"]'],
+      ans: 1,
+      exp: '<code>.get()</code> es el acceso SEGURO a diccionarios. Si la clave no existe, retorna <code>None</code> (o el default que especifiques) en lugar de lanzar <code>KeyError</code>. En networking esto es crítico: al parsear respuestas de APIs o diccionarios de dispositivos, algunas claves pueden no estar presentes y <code>.get()</code> evita que el script se rompa.'
+    },
+    {
+      q: 'Necesitas generar una lista con los primeros 10 comandos VLAN: ["vlan 10", "vlan 20", ..., "vlan 100"]. ¿Cuál es la forma más pytónica?',
+      opts: ['vlans = []; for i in range(1,11): vlans.append("vlan "+str(i*10))','vlans = ["vlan 10", "vlan 20", "vlan 30", "vlan 40", "vlan 50", "vlan 60", "vlan 70", "vlan 80", "vlan 90", "vlan 100"]','vlans = [f"vlan {i}" for i in range(10, 110, 10)]','No es posible generar listas dinámicamente'],
+      ans: 2,
+      exp: 'La list comprehension <code>[f"vlan {i}" for i in range(10, 110, 10)]</code> es la forma más pytónica y concisa. <code>range(10, 110, 10)</code> genera 10, 20, 30, ..., 100 (el 110 no se incluye). El resultado es exactamente la lista requerida en una sola línea limpia. Las list comprehensions son consideradas una de las características más poderosas de Python para networking.'
     }
   ];
 
-  const container = document.getElementById('quizContainerARP');
-  if (!container) {
-    console.error('Error: No se encontró el contenedor #quizContainerARP');
-    return;
-  }
-  
-  // Generar HTML sin onclick inline para evitar problemas con comillas
+  const container = document.getElementById('quizContainerPy1');
   let html = '';
-  questions.forEach((q, i) => {
-    html += '<div class="quiz-question" id="qq'+i+'">';
-    html += '<div class="quiz-q-num">PREGUNTA '+(i+1)+' DE '+questions.length+'</div>';
-    html += '<div class="quiz-q-text">'+q.q+'</div>';
-    html += '<div class="quiz-opts">';
-    q.opts.forEach((o,j) => {
-      html += '<button class="quiz-opt" data-qi="'+i+'" data-sel="'+j+'" data-correct="'+q.ans+'">'+o+'</button>';
-    });
-    html += '</div></div>';
+  qs.forEach((q, i) => {
+    html += `<div class="quiz-question" id="qpy${i}">
+      <div class="quiz-q-num">PREGUNTA ${i+1} DE ${qs.length} · M8 Python Tema 1</div>
+      <div class="quiz-q-text">${q.q}</div>
+      <div class="quiz-opts">
+        ${q.opts.map((o,j) => `<button class="quiz-opt" data-qi="${i}" data-sel="${j}" data-ans="${q.ans}">${o}</button>`).join('')}
+      </div>
+    </div>`;
   });
-  
   container.innerHTML = html;
-  
-  // Agregar explicaciones como data-exp de forma segura después de crear los elementos
-  questions.forEach((q, i) => {
-    const qDiv = document.getElementById('qq'+i);
-    if (qDiv) {
-      qDiv.dataset.exp = q.exp;
-    }
-  });
-  
-  // Agregar event listeners
+
+  window._py1Exp = {};
+  qs.forEach((q, i) => { window._py1Exp[i] = q.exp; });
+
   container.querySelectorAll('.quiz-opt').forEach(btn => {
     btn.addEventListener('click', function() {
-      const qi = parseInt(this.getAttribute('data-qi'));
-      const sel = parseInt(this.getAttribute('data-sel'));
-      const correct = parseInt(this.getAttribute('data-correct'));
-      const qDiv = document.getElementById('qq'+qi);
-      const exp = qDiv ? qDiv.dataset.exp : '';
-      answerQ(qi, sel, correct, exp);
+      const qi  = parseInt(this.dataset.qi);
+      const sel = parseInt(this.dataset.sel);
+      const ans = parseInt(this.dataset.ans);
+      const qDiv = document.getElementById('qpy' + qi);
+      const btns = qDiv.querySelectorAll('.quiz-opt');
+      btns.forEach(b => b.disabled = true);
+      btns[sel].classList.add(sel === ans ? 'correct' : 'wrong');
+      if (sel !== ans) btns[ans].classList.add('correct');
+      const expDiv = document.createElement('div');
+      expDiv.className = 'quiz-explanation';
+      expDiv.innerHTML = `<strong>${sel===ans ? '✅ Correcto!' : '❌ Incorrecto.'}</strong> ${window._py1Exp[qi]}`;
+      qDiv.appendChild(expDiv);
     });
   });
 }
 
-function answerQ(qi, sel, correct, exp) {
-  const qDiv = document.getElementById('qq'+qi);
-  if (!qDiv) return;
-  
-  const btns = qDiv.querySelectorAll('.quiz-opt');
-  btns.forEach(b => b.disabled = true);
-  
-  if (sel === correct) {
-    btns[sel].classList.add('correct');
-  } else {
-    btns[sel].classList.add('wrong');
-    if (btns[correct]) btns[correct].classList.add('correct');
-  }
-  
-  const expDiv = document.createElement('div');
-  expDiv.className = 'quiz-explanation';
-  expDiv.innerHTML = '<strong>'+(sel===correct?'✅ Correcto!':'❌ Incorrecto.')+'</strong> '+(exp||'');
-  qDiv.appendChild(expDiv);
-}
-
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', () => {
   buildRefTable();
   initQuiz();
 });
