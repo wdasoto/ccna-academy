@@ -1,0 +1,1480 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proyecto Final — Gestor de Red | M8 Tema 7 | CCNA Academy</title>
+  <meta name="description" content="Proyecto integrador de automatización de redes: script completo con backup, verificación, parsing y reportes HTML. Integra Netmiko, NAPALM y TextFSM.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── HERO acento Python ── */
+.class-hero { background: linear-gradient(135deg, #06080f 0%, #08100a 40%, #0a0d18 100%); }
+
+/* ── TIPOS DE DATOS GRID ── */
+.py-types-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:10px; margin:16px 0; }
+.py-type-card { background:#090d1a; border:1px solid rgba(55,118,171,.15); border-radius:10px; padding:14px 10px; text-align:center; }
+.py-type-icon { font-size:1.5rem; margin-bottom:6px; }
+.py-type-name { font-family:'Orbitron',sans-serif; font-size:.72rem; color:#5b9bd5; margin-bottom:4px; letter-spacing:1px; }
+.py-type-ex   { font-family:'Share Tech Mono',monospace; font-size:.65rem; color:#00d4aa; margin-bottom:4px; background:rgba(0,212,170,.06); padding:2px 6px; border-radius:4px; }
+.py-type-use  { font-size:.68rem; color:#374060; line-height:1.4; }
+
+/* ── BASE CLASS STYLES (clonado de ARP) ── */
+body{font-family:'Exo 2',sans-serif;background:#07090f;color:#e2e8f0;}
+.class-hero{padding:56px 24px 48px;border-bottom:1px solid rgba(0,212,170,.08);position:relative;overflow:hidden;}
+.class-hero::before{content:'';position:absolute;top:-60px;right:-80px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(55,118,171,.06) 0%,transparent 70%);pointer-events:none;}
+.class-hero-inner{max-width:900px;margin:0 auto;position:relative;z-index:1;}
+.class-badge{font-family:'Share Tech Mono',monospace;font-size:.63rem;color:#00d4aa;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;}
+.class-title{font-family:'Orbitron',sans-serif;font-size:clamp(1.6rem,3.8vw,2.6rem);font-weight:900;letter-spacing:3px;color:#c2d0e8;margin-bottom:12px;line-height:1.1;}
+.class-subtitle{font-size:.92rem;color:#6b7a9a;line-height:1.72;margin-bottom:20px;max-width:700px;}
+.class-meta{display:flex;gap:12px;flex-wrap:wrap;}
+.meta-item{font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#374060;padding:4px 10px;border:1px solid rgba(0,212,170,.1);border-radius:4px;}
+.py1-tabs-wrap{max-width:1100px;margin:0 auto;padding:0 16px 40px;}
+.py1-tabs-bar{display:flex;gap:4px;padding:20px 0 0;flex-wrap:wrap;border-bottom:1px solid rgba(0,212,170,.1);margin-bottom:0;}
+.py1-tab-btn{padding:8px 13px;border-radius:8px 8px 0 0;font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#4a5780;background:none;border:1px solid transparent;cursor:pointer;transition:all .18s;white-space:nowrap;border-bottom:none;}
+.py1-tab-btn:hover{color:#c2d0e8;background:rgba(55,118,171,.05);}
+.py1-tab-btn.py1-active{color:#5b9bd5;background:#0d1220;border-color:rgba(55,118,171,.25);border-bottom:1px solid #0d1220;}
+.py1-tab-content{display:none;background:#0d1220;border:1px solid rgba(0,212,170,.08);border-top:none;border-radius:0 0 12px 12px;padding:32px;}
+.py1-tab-content.py1-active{display:block;}
+.content-block{max-width:880px;}
+.section-title{font-family:'Orbitron',sans-serif;font-size:.95rem;color:#5b9bd5;letter-spacing:2px;margin:28px 0 14px;padding-bottom:8px;border-bottom:1px solid rgba(55,118,171,.15);}
+.section-title:first-child{margin-top:0;}
+p{color:#8294b8;line-height:1.75;margin-bottom:14px;font-size:.9rem;}
+ul,ol{color:#8294b8;padding-left:1.4rem;margin-bottom:14px;font-size:.9rem;}
+li{margin-bottom:5px;line-height:1.65;}
+strong{color:#c2d0e8;}
+code{font-family:'Share Tech Mono',monospace;font-size:.82rem;background:rgba(55,118,171,.1);color:#5b9bd5;padding:1px 6px;border-radius:4px;border:1px solid rgba(55,118,171,.2);}
+
+/* INFO BOXES */
+.info-box{border-radius:8px;padding:14px 18px;margin:18px 0;border-left:3px solid;}
+.info-box.tip{background:rgba(55,118,171,.06);border-color:#5b9bd5;}
+.info-box.warning{background:rgba(251,191,36,.05);border-color:#fbbf24;}
+.info-box-title{font-family:'Share Tech Mono',monospace;font-size:.73rem;color:#5b9bd5;margin-bottom:8px;}
+.info-box.warning .info-box-title{color:#fbbf24;}
+
+/* CODE BLOCKS */
+.code-block{background:#050810;border:1px solid rgba(55,118,171,.15);border-left:3px solid #3776ab;border-radius:8px;padding:0;margin:16px 0;overflow:hidden;}
+.code-label{background:rgba(55,118,171,.08);padding:8px 16px;font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#4a5780;letter-spacing:2px;text-transform:uppercase;border-bottom:1px solid rgba(55,118,171,.1);}
+.code-block pre{margin:0;padding:18px;overflow-x:auto;}
+.code-block code{background:none;border:none;padding:0;color:#a8b4c8;font-size:.79rem;line-height:1.8;display:block;}
+
+/* SYNTAX HIGHLIGHTING */
+.cmt{color:#3a4a60;font-style:italic;}
+.kw {color:#c792ea;}
+.fn {color:#82aaff;}
+.str{color:#c3e88d;}
+.num{color:#f78c6c;}
+
+/* CONCEPT GRID */
+.concept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin:16px 0;}
+.concept-card{background:#090d1a;border:1px solid rgba(0,212,170,.1);border-radius:10px;padding:16px;}
+.concept-icon{font-size:1.8rem;margin-bottom:8px;}
+.concept-card h3{font-family:'Share Tech Mono',monospace;font-size:.77rem;color:#00d4aa;margin-bottom:8px;}
+.concept-card p{font-size:.8rem;margin:0;}
+
+/* REF TABLE */
+.table-wrap{overflow-x:auto;margin:16px 0;}
+.ref-table{width:100%;border-collapse:collapse;font-size:.8rem;}
+.ref-table th{background:#090d1a;color:#5b9bd5;font-family:'Share Tech Mono',monospace;font-size:.67rem;padding:10px 12px;text-align:left;border:1px solid rgba(55,118,171,.15);letter-spacing:1px;}
+.ref-table td{padding:9px 12px;border:1px solid rgba(255,255,255,.04);color:#8294b8;}
+.ref-table tr:hover td{background:rgba(55,118,171,.03);}
+.ref-table code{font-size:.77rem;}
+
+/* QUIZ */
+.quiz-question{background:#090d1a;border:1px solid rgba(55,118,171,.12);border-radius:10px;padding:20px;margin-bottom:14px;}
+.quiz-q-num{font-family:'Share Tech Mono',monospace;font-size:.62rem;color:#374060;margin-bottom:8px;}
+.quiz-q-text{font-size:.9rem;color:#c2d0e8;margin-bottom:14px;line-height:1.6;}
+.quiz-opts{display:flex;flex-direction:column;gap:7px;}
+.quiz-opt{padding:10px 14px;border-radius:7px;border:1px solid rgba(55,118,171,.12);background:#0d1220;color:#6b7a9a;cursor:pointer;font-size:.84rem;text-align:left;transition:all .15s;font-family:'Exo 2',sans-serif;}
+.quiz-opt:hover:not(:disabled){border-color:rgba(55,118,171,.4);color:#c2d0e8;}
+.quiz-opt.correct{border-color:#34d399;background:rgba(52,211,153,.08);color:#34d399;}
+.quiz-opt.wrong{border-color:#f87171;background:rgba(248,113,113,.08);color:#f87171;}
+.quiz-explanation{margin-top:10px;padding:10px 14px;background:rgba(55,118,171,.07);border-left:3px solid #5b9bd5;border-radius:6px;font-size:.82rem;color:#a0aec0;line-height:1.65;}
+
+/* Navbar y Drawer */
+.navbar{position:fixed;top:0;left:0;right:0;height:56px;background:#080a10;border-bottom:1px solid rgba(0,212,170,.1);display:flex;align-items:center;padding:0 24px;z-index:1000;}
+.navbar-toggle{background:none;border:1px solid rgba(0,212,170,.3);color:#00d4aa;padding:6px 12px;border-radius:6px;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:.75rem;margin-right:16px;}
+.navbar-brand{font-family:'Orbitron',sans-serif;font-weight:700;color:#00d4aa;text-decoration:none;font-size:1.1rem;}
+.navbar-brand span{color:#5b9bd5;}
+.navbar-spacer{flex:1;}
+.navbar-link{color:#6b7a9a;text-decoration:none;font-size:.8rem;transition:color .2s;}
+.navbar-link:hover{color:#c2d0e8;}
+.nav-spacer{height:56px;}
+.ccna-drawer{position:fixed;top:0;left:0;bottom:0;width:280px;background:#0d1220;border-right:1px solid rgba(55,118,171,.2);transform:translateX(-100%);transition:transform .3s;z-index:2000;overflow-y:auto;}
+.ccna-drawer.open{transform:translateX(0);}
+.ccna-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);opacity:0;visibility:hidden;transition:all .3s;z-index:1500;}
+.ccna-overlay.show{opacity:1;visibility:visible;}
+.drawer-header{padding:20px;border-bottom:1px solid rgba(55,118,171,.2);display:flex;justify-content:space-between;align-items:center;}
+.drawer-header h2{font-family:'Orbitron',sans-serif;font-size:.8rem;color:#5b9bd5;margin:0;letter-spacing:2px;}
+.drawer-close{background:none;border:none;color:#6b7a9a;font-size:1.2rem;cursor:pointer;}
+.drawer-section{padding:16px;border-bottom:1px solid rgba(55,118,171,.1);}
+.drawer-section-title{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#374060;margin-bottom:12px;letter-spacing:1px;text-transform:uppercase;}
+.drawer-link{display:block;padding:10px 12px;color:#8294b8;text-decoration:none;font-size:.85rem;border-radius:6px;transition:all .2s;margin-bottom:4px;}
+.drawer-link:hover{background:rgba(55,118,171,.1);color:#c2d0e8;}
+.drawer-link.active{background:rgba(55,118,171,.2);color:#5b9bd5;border-left:3px solid #5b9bd5;}
+.dl-icon{margin-right:8px;}
+
+@media(max-width:680px){
+  .py1-tab-btn{font-size:.6rem;padding:6px 9px;}
+  .py1-tab-content{padding:18px 12px;}
+  .py-types-grid{grid-template-columns:repeat(3,1fr);}
+  .concept-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
+<nav class="ccna-drawer" id="ccnaDrawer">
+  <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
+  <div class="drawer-section"><div class="drawer-section-title">General</div>
+    <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M1 · Fundamentos</div>
+    <a href="fundamentos.html" class="drawer-link"><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
+    <a href="subnetting.html"  class="drawer-link"><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
+    <a href="ipv6.html"        class="drawer-link"><span class="dl-icon">6️⃣</span> IPv6</a>
+    <a href="arp.html"         class="drawer-link"><span class="dl-icon">📡</span> ARP</a>
+    <a href="rip.html"         class="drawer-link"><span class="dl-icon">🔄</span> RIP</a>
+    <a href="protocolos-internet.html" class="drawer-link"><span class="dl-icon">🌍</span> Protocolos Internet</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M2 · Dispositivos Cisco</div>
+    <a href="router.html"         class="drawer-link"><span class="dl-icon">📡</span> Routers Cisco</a>
+    <a href="switches-cisco.html" class="drawer-link"><span class="dl-icon">🔀</span> Switches Cisco</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M3 · Switching</div>
+    <a href="vlan.html"               class="drawer-link"><span class="dl-icon">🏷️</span> VLANs</a>
+    <a href="inter-vlan-routing.html" class="drawer-link"><span class="dl-icon">🔁</span> Inter-VLAN Routing</a>
+    <a href="stp.html"                class="drawer-link"><span class="dl-icon">🌳</span> STP</a>
+    <a href="etherchannel.html"       class="drawer-link"><span class="dl-icon">🔗</span> EtherChannel</a>
+    <a href="port-security.html"      class="drawer-link"><span class="dl-icon">🔒</span> Port Security</a>
+    <a href="cdp-lldp.html"           class="drawer-link"><span class="dl-icon">🔍</span> CDP / LLDP</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M4 · Routing</div>
+    <a href="routing.html"            class="drawer-link"><span class="dl-icon">🗺️</span> Routing Estático</a>
+    <a href="ospf.html"               class="drawer-link"><span class="dl-icon">⭕</span> OSPF</a>
+    <a href="eigrp.html"              class="drawer-link"><span class="dl-icon">⚡</span> EIGRP</a>
+    <a href="ospfv2-masterclass.html" class="drawer-link"><span class="dl-icon">🎯</span> OSPFv2 Masterclass</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M5 · Servicios IP</div>
+    <a href="dhcp.html" class="drawer-link"><span class="dl-icon">📋</span> DHCP</a>
+    <a href="nat.html"  class="drawer-link"><span class="dl-icon">🔄</span> NAT / PAT</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M6 · Seguridad</div>
+    <a href="acl.html" class="drawer-link"><span class="dl-icon">🛡️</span> ACLs</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M7 · WAN &amp; QoS</div>
+    <a href="wan.html" class="drawer-link"><span class="dl-icon">🌍</span> WAN</a>
+    <a href="qos.html" class="drawer-link"><span class="dl-icon">📊</span> QoS</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M8 · Automatización</div>
+    <a href="m8-automatizacion.html" class="drawer-link"><span class="dl-icon">🤖</span> M8 — Vista General</a>
+    <a href="python-redes.html"      class="drawer-link"><span class="dl-icon">🐍</span> Python para Redes</a>
+    <a href="python-tema1.html"      class="drawer-link"><span class="dl-icon">01</span> Python Esencial</a>
+    <a href="python-tema2.html"      class="drawer-link"><span class="dl-icon">02</span> Netmiko SSH</a>
+    <a href="python-tema3.html"      class="drawer-link"><span class="dl-icon">03</span> NAPALM</a>
+    <a href="python-tema5.html"      class="drawer-link"><span class="dl-icon">05</span> TextFSM Parsing</a>
+    <a href="python-tema6.html"      class="drawer-link"><span class="dl-icon">06</span> Auditoría Compliance</a>
+    <a href="python-tema7.html"      class="drawer-link active"><span class="dl-icon">07</span> Proyecto Final</a>
+    <a href="json-datos.html"        class="drawer-link"><span class="dl-icon">📋</span> JSON y Datos</a>
+    <a href="rest-apis.html"         class="drawer-link"><span class="dl-icon">🌐</span> REST APIs</a>
+    <a href="ansible-redes.html"     class="drawer-link"><span class="dl-icon">⚙️</span> Ansible</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">⚡ Herramientas</div>
+    <a href="asistente.html"          class="drawer-link"><span class="dl-icon">🤖</span> Asistente IA</a>
+    <a href="netbot.html"             class="drawer-link"><span class="dl-icon">⚙️</span> NetBot Config</a>
+    <a href="calculadora.html"        class="drawer-link"><span class="dl-icon">🧮</span> Calculadora IP</a>
+    <a href="laboratorios-pkt.html"   class="drawer-link"><span class="dl-icon">🧪</span> Labs Packet Tracer</a>
+    <a href="../banco-preguntas.html" class="drawer-link"><span class="dl-icon">📝</span> Banco de Preguntas</a></div>
+</nav>
+
+<header class="navbar">
+  <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
+  <a href="../index.html" class="navbar-brand">CISCO<span> ACADEMY</span></a>
+  <div class="navbar-spacer"></div>
+  <a href="python-redes.html" class="navbar-link">← Python</a>
+</header>
+<div class="nav-spacer"></div>
+
+<!-- HERO -->
+<section class="class-hero" style="border-bottom:1px solid rgba(55,118,171,.2);">
+  <div class="class-hero-inner">
+    <div class="class-badge" style="color:#5b9bd5;">M8 · AUTOMATIZACIÓN · TEMA 7 DE 7 · PROYECTO INTEGRADOR</div>
+    <h1 class="class-title">Proyecto Final — <span class="class-title-accent" style="background:linear-gradient(135deg,#3776ab,#ffd43b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Gestor de Red Completo</span></h1>
+    <p class="class-subtitle">Integra todo lo aprendido: script completo que conecta a N dispositivos, hace backup, verifica configuración, parsea outputs y genera reporte HTML profesional. El resultado de los Temas 1-6 en un sistema de producción.</p>
+    <div class="class-meta">
+      <span class="meta-item" style="border-color:rgba(55,118,171,.2);color:#5b9bd5;">🐍 Python 3.x</span>
+      <span class="meta-item">🎯 CCNA Domain 6.4</span>
+      <span class="meta-item">⏱ ~120 min práctica</span>
+      <span class="meta-item">📦 Netmiko + NAPALM + TextFSM</span>
+      <span class="meta-item">🌐 Reporte HTML Dinámico</span>
+    </div>
+  </div>
+</section>
+
+<!-- TABS -->
+<div class="py1-tabs-wrap">
+  <div class="py1-tabs-bar">
+    <button class="py1-tab-btn py1-active" onclick="showTabPy7('intro',this)">🎓 Intro</button>
+    <button class="py1-tab-btn" onclick="showTabPy7('arquitectura',this)">🏗️ Arquitectura</button>
+    <button class="py1-tab-btn" onclick="showTabPy7('inventario',this)">📋 Inventario</button>
+    <button class="py1-tab-btn" onclick="showTabPy7('conexiones',this)">🔌 Conexiones</button>
+    <button class="py1-tab-btn" onclick="showTabPy7('backup',this)">💾 Backup</button>
+    <button class="py1-tab-btn" onclick="showTabPy7('parser',this)">🔍 Parser</button>
+    <button class="py1-tab-btn" onclick="showTabPy7('reporte',this)">📊 Reporte</button>
+    <button class="py1-tab-btn" onclick="showTabPy7('ejecucion',this)">⚡ Ejecución</button>
+    <button class="py1-tab-btn" onclick="showTabPy7('proyecto',this)">🚀 Código Completo</button>
+    <button class="py1-tab-btn" onclick="showTabPy7('quiz',this)">🎯 Quiz</button>
+  </div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 1 — INTRO
+═══════════════════════════════════════════ -->
+<div id="tab-intro" class="py1-tab-content py1-active">
+<div class="content-block">
+  <h2 class="section-title">El Proyecto Integrador</h2>
+  <p>Este es el momento de unir todo: Python esencial, Netmiko para conexiones, TextFSM para parsear, NAPALM para configuraciones estandarizadas, y generación de reportes. El resultado es un <strong>sistema de gestión de red completo</strong> que cualquier empresa usaría en producción.</p>
+
+  <div class="concept-grid">
+    <div class="concept-card" style="border-color:rgba(55,118,171,.2);">
+      <div class="concept-icon">🔄</div>
+      <h3 style="color:#5b9bd5;">Conecta</h3>
+      <p>SSH a routers, switches y firewalls usando Netmiko con manejo de errores robusto y timeouts configurables.</p>
+    </div>
+    <div class="concept-card" style="border-color:rgba(55,118,171,.2);">
+      <div class="concept-icon">💾</div>
+      <h3 style="color:#5b9bd5;">Respalda</h3>
+      <p>Backup automático de configuraciones con timestamp, almacenamiento organizado y validación de integridad.</p>
+    </div>
+    <div class="concept-card" style="border-color:rgba(55,118,171,.2);">
+      <div class="concept-icon">🔍</div>
+      <h3 style="color:#5b9bd5;">Verifica</h3>
+      <p>Parseo con TextFSM de interfaces, rutas y vecinos. Comparación contra baseline de seguridad.</p>
+    </div>
+    <div class="concept-card" style="border-color:rgba(55,118,171,.2);">
+      <div class="concept-icon">📊</div>
+      <h3 style="color:#5b9bd5;">Reporta</h3>
+      <p>Dashboard HTML profesional con estado de salud, gráficos de cumplimiento y detalles por dispositivo.</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">Flujo de Trabajo del Sistema</h2>
+  <div class="code-block">
+    <div class="code-label">Pipeline de Automatización</div>
+    <pre><code><span class="cmt"># 1. CARGAR INVENTARIO (YAML)</span>
+<span class="cmt">#    ├── Hosts, credenciales, roles (core/dist/acc)</span>
+<span class="cmt">#    └── Parámetros de conexión</span>
+
+<span class="cmt"># 2. ESCANEAR RED (THREADS)</span>
+<span class="cmt">#    ├── Conectar vía SSH (Netmiko)</span>
+<span class="cmt">#    ├── Backup de startup-config</span>
+<span class="cmt">#    └── Recolectar: show ip int brief, show ver, show ip route</span>
+
+<span class="cmt"># 3. PROCESAR DATOS</span>
+<span class="cmt">#    ├── Parsear con TextFSM/ntc-templates</span>
+<span class="cmt">#    ├── Verificar compliance (SSH v2, ACLs, NTP)</span>
+<span class="cmt">#    └── Detectar anomalías (dup IPs, interfaces down)</span>
+
+<span class="cmt"># 4. GENERAR EVIDENCIA</span>
+<span class="cmt">#    ├── Reporte HTML con Jinja2</span>
+<span class="cmt">#    ├── JSON para APIs</span>
+<span class="cmt">#    └── CSV para Excel</span>
+
+<span class="cmt"># 5. ALMACENAR Y NOTIFICAR</span>
+<span class="cmt">#    ├── Backups en directorios datados</span>
+<span class="cmt">#    └── Alertas si hay desviaciones críticas</span></code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Requisitos Previos</div>
+    <p>Para ejecutar este proyecto necesitas: <code>pip install netmiko napalm ntc-templates jinja2 pyyaml</code>. Asegúrate de tener acceso SSH a dispositivos de laboratorio (Cisco IOSv/CSR) o simuladores con soporte SSH.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 2 — ARQUITECTURA
+═══════════════════════════════════════════ -->
+<div id="tab-arquitectura" class="py1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Arquitectura del Sistema</h2>
+  <p>Diseño modular que separa responsabilidades: datos (inventario), lógica de red (conectores), procesamiento (parsers) y presentación (reportes).</p>
+
+  <div class="code-block">
+    <div class="code-label">Estructura de archivos del proyecto</div>
+    <pre><code>network_manager/
+├── inventory/
+│   └── devices.yml          <span class="cmt"># Inventario de dispositivos</span>
+├── backups/                 <span class="cmt"># Backups diarios (auto-generado)</span>
+├── templates/
+│   └── report_template.html <span class="cmt"># Plantilla Jinja2</span>
+├── outputs/
+│   └── audit_20240115.html  <span class="cmt"># Reportes generados</span>
+├── network_manager.py       <span class="cmt"># Script principal</span>
+├── connectors.py            <span class="cmt"># Módulo de conexión</span>
+├── parsers.py               <span class="cmt"># Módulo de parseo</span>
+└── reporter.py              <span class="cmt"># Módulo de reportes</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Diagrama de Clases</h2>
+  <div class="code-block">
+    <div class="code-label">Diseño Orientado a Objetos</div>
+    <pre><code><span class="kw">class</span> <span class="fn">Device</span>:
+    <span class="str">"""Representa un dispositivo de red"""</span>
+    - host, username, password, device_type, role
+    - connect()
+    - get_config()
+    - get_facts()
+
+<span class="kw">class</span> <span class="fn">BackupManager</span>:
+    <span class="str">"""Gestiona backups de configuraciones"""</span>
+    - backup_path
+    - save_config(device, config)
+    - validate_backup(file)
+
+<span class="kw">class</span> <span class="fn">ComplianceChecker</span>:
+    <span class="str">"""Verifica políticas de seguridad"""</span>
+    - check_ssh_version(config)
+    - check_acl_interfaces(config)
+    - generate_score()
+
+<span class="kw">class</span> <span class="fn">ReportGenerator</span>:
+    <span class="str">"""Genera reportes en múltiples formatos"""</span>
+    - render_html(data)
+    - render_json(data)
+    - send_email(report)</code></pre>
+  </div>
+
+  <h2 class="section-title">Configuración Global</h2>
+  <div class="code-block">
+    <div class="code-label">config.py — Constantes del sistema</div>
+    <pre><code><span class="kw">import</span> os
+<span class="kw">from</span> datetime <span class="kw">import</span> datetime
+
+<span class="cmt"># Paths</span>
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+BACKUP_DIR = os.path.join(BASE_DIR, <span class="str">"backups"</span>, datetime.now().strftime(<span class="str">"%Y-%m-%d"</span>))
+REPORT_DIR = os.path.join(BASE_DIR, <span class="str">"outputs"</span>)
+
+<span class="cmt"># Crear directorios si no existen</span>
+os.makedirs(BACKUP_DIR, exist_ok=<span class="kw">True</span>)
+os.makedirs(REPORT_DIR, exist_ok=<span class="kw">True</span>)
+
+<span class="cmt"># Configuración de conexión</span>
+DEFAULT_TIMEOUT = <span class="num">30</span>
+MAX_THREADS = <span class="num">5</span>  <span class="cmt"># Para ejecución paralela</span>
+
+<span class="cmt"># Comandos a recolectar por tipo de dispositivo</span>
+COMMANDS = {
+    <span class="str">"cisco_ios"</span>: [
+        <span class="str">"show ip interface brief"</span>,
+        <span class="str">"show version"</span>,
+        <span class="str">"show ip route"</span>,
+        <span class="str">"show cdp neighbors"</span>,
+        <span class="str">"show running-config"</span>
+    ],
+    <span class="str">"cisco_nxos"</span>: [
+        <span class="str">"show ip interface brief"</span>,
+        <span class="str">"show version"</span>,
+        <span class="str">"show running-config"</span>
+    ]
+}</code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 3 — INVENTARIO
+═══════════════════════════════════════════ -->
+<div id="tab-inventario" class="py1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Gestión de Inventario (YAML)</h2>
+  <p>Separar datos de código es fundamental. Usamos YAML para definir dispositivos, facilitando actualizaciones sin tocar el código Python.</p>
+
+  <div class="code-block">
+    <div class="code-label">inventory/devices.yml</div>
+    <pre><code><span class="cmt"># Inventario de red corporativa</span>
+<span class="fn">defaults</span>:
+  username: admin
+  password: cisco123
+  device_type: cisco_ios
+
+<span class="fn">core_routers</span>:
+  - hostname: R1-CORE
+    host: 10.0.0.1
+    role: core
+    site: HQ
+    
+  - hostname: R2-CORE
+    host: 10.0.0.2
+    role: core
+    site: HQ
+
+<span class="fn">distribution</span>:
+  - hostname: SW-DIST-1
+    host: 10.0.0.10
+    role: distribution
+    site: HQ
+    
+  - hostname: SW-DIST-2
+    host: 10.0.0.11
+    role: distribution
+    site: HQ
+
+<span class="fn">access_switches</span>:
+  - hostname: SW-ACC-FL1
+    host: 10.0.1.10
+    role: access
+    site: HQ
+    
+  - hostname: SW-ACC-FL2
+    host: 10.0.1.11
+    role: access
+    site: HQ
+
+<span class="fn">firewalls</span>:
+  - hostname: FW-EDGE
+    host: 192.168.255.1
+    device_type: cisco_asa
+    role: security</code></pre>
+  </div>
+
+  <h2 class="section-title">Cargador de Inventario</h2>
+  <div class="code-block">
+    <div class="code-label">inventory_loader.py</div>
+    <pre><code><span class="kw">import</span> yaml
+<span class="kw">from</span> dataclasses <span class="kw">import</span> dataclass
+<span class="kw">from</span> typing <span class="kw">import</span> <span class="fn">List</span>, <span class="fn">Optional</span>
+
+<span class="kw">@dataclass</span>
+<span class="kw">class</span> <span class="fn">NetworkDevice</span>:
+    hostname: <span class="fn">str</span>
+    host: <span class="fn">str</span>
+    role: <span class="fn">str</span>
+    site: <span class="fn">str</span>
+    device_type: <span class="fn">str</span>
+    username: <span class="fn">str</span>
+    password: <span class="fn">str</span>
+    status: <span class="fn">str</span> = <span class="str">"unknown"</span>  <span class="cmt"># Para tracking</span>
+
+<span class="kw">class</span> <span class="fn">InventoryManager</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, inventory_file):
+        self.inventory_file = inventory_file
+        self.devices: <span class="fn">List</span>[NetworkDevice] = []
+        self._load()
+    
+    <span class="kw">def</span> <span class="fn">_load</span>(self):
+        <span class="str">"""Carga YAML y crea objetos Device"""</span>
+        <span class="kw">with</span> <span class="fn">open</span>(self.inventory_file) <span class="kw">as</span> f:
+            data = yaml.safe_load(f)
+        
+        defaults = data.get(<span class="str">'defaults'</span>, {})
+        
+        <span class="kw">for</span> group, devices <span class="kw">in</span> data.items():
+            <span class="kw">if</span> group == <span class="str">'defaults'</span>:
+                <span class="kw">continue</span>
+            
+            <span class="kw">for</span> dev <span class="kw">in</span> devices:
+                <span class="cmt"># Merge con defaults</span>
+                device_config = {**defaults, **dev}
+                
+                self.devices.append(NetworkDevice(
+                    hostname=device_config[<span class="str">'hostname'</span>],
+                    host=device_config[<span class="str">'host'</span>],
+                    role=device_config.get(<span class="str">'role'</span>, <span class="str">'unknown'</span>),
+                    site=device_config.get(<span class="str">'site'</span>, <span class="str">'default'</span>),
+                    device_type=device_config[<span class="str">'device_type'</span>],
+                    username=device_config[<span class="str">'username'</span>],
+                    password=device_config[<span class="str">'password'</span>]
+                ))
+    
+    <span class="kw">def</span> <span class="fn">get_by_role</span>(self, role: <span class="fn">str</span>) -> <span class="fn">List</span>[NetworkDevice]:
+        <span class="kw">return</span> [d <span class="kw">for</span> d <span class="kw">in</span> self.devices <span class="kw">if</span> d.role == role]
+    
+    <span class="kw">def</span> <span class="fn">get_all</span>(self) -> <span class="fn">List</span>[NetworkDevice]:
+        <span class="kw">return</span> self.devices</code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 4 — CONEXIONES
+═══════════════════════════════════════════ -->
+<div id="tab-conexiones" class="py1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Módulo de Conexiones Multi-Vendor</h2>
+  <p>Abstracción que permite usar Netmiko para Cisco IOS/ASA y NAPALM para operaciones estandarizadas (get_facts).</p>
+
+  <div class="code-block">
+    <div class="code-label">connectors.py — Capa de conexión</div>
+    <pre><code><span class="kw">from</span> netmiko <span class="kw">import</span> ConnectHandler, NetMikoTimeoutException, NetMikoAuthenticationException
+<span class="kw">from</span> napalm <span class="kw">import</span> get_network_driver
+<span class="kw">import</span> logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+<span class="kw">class</span> <span class="fn">ConnectionManager</span>:
+    <span class="str">"""Gestiona conexiones SSH con reintentos y logging"""</span>
+    
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, device):
+        self.device = device
+        self.connection = <span class="kw">None</span>
+        self.connected = <span class="kw">False</span>
+    
+    <span class="kw">def</span> <span class="fn">connect_netmiko</span>(self, retries=<span class="num">3</span>):
+        <span class="str">"""Conexión SSH con reintentos"""</span>
+        device_params = {
+            <span class="str">"device_type"</span>: self.device.device_type,
+            <span class="str">"host"</span>: self.device.host,
+            <span class="str">"username"</span>: self.device.username,
+            <span class="str">"password"</span>: self.device.password,
+            <span class="str">"timeout"</span>: <span class="num">30</span>,
+            <span class="str">"secret"</span>: self.device.password  <span class="cmt"># Para enable</span>
+        }
+        
+        <span class="kw">for</span> attempt <span class="kw">in</span> <span class="fn">range</span>(retries):
+            <span class="kw">try</span>:
+                logger.info(<span class="str">f"Conectando a {self.device.hostname} (intento {attempt+1})"</span>)
+                self.connection = ConnectHandler(**device_params)
+                self.connection.enable()  <span class="cmt"># Entrar a privileged mode</span>
+                self.connected = <span class="kw">True</span>
+                self.device.status = <span class="str">"connected"</span>
+                <span class="kw">return</span> <span class="kw">True</span>
+                
+            <span class="kw">except</span> NetMikoTimeoutException:
+                logger.error(<span class="str">f"Timeout en {self.device.hostname}"</span>)
+            <span class="kw">except</span> NetMikoAuthenticationException:
+                logger.error(<span class="str">f"Auth failed en {self.device.hostname}"</span>)
+                <span class="kw">break</span>  <span class="cmt"># No reintentar auth</span>
+            <span class="kw">except</span> Exception <span class="kw">as</span> e:
+                logger.error(<span class="str">f"Error en {self.device.hostname}: {e}"</span>)
+        
+        self.device.status = <span class="str">"failed"</span>
+        <span class="kw">return</span> <span class="kw">False</span>
+    
+    <span class="kw">def</span> <span class="fn">disconnect</span>(self):
+        <span class="kw">if</span> self.connection:
+            self.connection.disconnect()
+            self.connected = <span class="kw">False</span>
+    
+    <span class="kw">def</span> <span class="fn">send_command</span>(self, command, use_textfsm=<span class="kw">False</span>):
+        <span class="str">"""Envía comando y retorna output estructurado si se pide"""</span>
+        <span class="kw">if</span> <span class="kw">not</span> self.connected:
+            <span class="kw">raise</span> Exception(<span class="str">"No conectado"</span>)
+        
+        <span class="kw">try</span>:
+            output = self.connection.send_command(
+                command, 
+                use_textfsm=use_textfsm,
+                delay_factor=<span class="num">2</span>
+            )
+            <span class="kw">return</span> output
+        <span class="kw">except</span> Exception <span class="kw">as</span> e:
+            logger.error(<span class="str">f"Error enviando comando: {e}"</span>)
+            <span class="kw">return</span> <span class="kw">None</span>
+    
+    <span class="kw">def</span> <span class="fn">get_config</span>(self, config_type=<span class="str">"running"</span>):
+        <span class="str">"""Obtiene configuración del dispositivo"""</span>
+        <span class="kw">if</span> config_type == <span class="str">"running"</span>:
+            <span class="kw">return</span> self.connection.send_command(<span class="str">"show running-config"</span>)
+        <span class="kw">return</span> <span class="kw">None</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Ejecución Paralela</h2>
+  <div class="code-block">
+    <div class="code-label">Parallel executor para múltiples dispositivos</div>
+    <pre><code><span class="kw">from</span> concurrent.futures <span class="kw">import</span> ThreadPoolExecutor, as_completed
+
+<span class="kw">def</span> <span class="fn">process_device</span>(device, commands):
+    <span class="str">"""Procesa un dispositivo: conecta, colecta, desconecta"""</span>
+    results = {
+        <span class="str">"hostname"</span>: device.hostname,
+        <span class="str">"host"</span>: device.host,
+        <span class="str">"commands"</span>: {},
+        <span class="str">"config"</span>: <span class="kw">None</span>,
+        <span class="str">"errors"</span>: []
+    }
+    
+    conn = ConnectionManager(device)
+    
+    <span class="kw">if</span> <span class="kw">not</span> conn.connect_netmiko():
+        results[<span class="str">"errors"</span>].append(<span class="str">"Connection failed"</span>)
+        <span class="kw">return</span> results
+    
+    <span class="kw">try</span>:
+        <span class="cmt"># Backup</span>
+        results[<span class="str">"config"</span>] = conn.get_config()
+        
+        <span class="cmt"># Comandos de verificación</span>
+        <span class="kw">for</span> cmd <span class="kw">in</span> commands:
+            output = conn.send_command(cmd, use_textfsm=<span class="kw">True</span>)
+            results[<span class="str">"commands"</span>][cmd] = output
+            
+    <span class="kw">except</span> Exception <span class="kw">as</span> e:
+        results[<span class="str">"errors"</span>].append(<span class="fn">str</span>(e))
+    <span class="kw">finally</span>:
+        conn.disconnect()
+    
+    <span class="kw">return</span> results
+
+<span class="cmt"># Ejecutar en paralelo</span>
+<span class="kw">def</span> <span class="fn">run_parallel_audit</span>(devices, commands, max_workers=<span class="num">5</span>):
+    all_results = []
+    
+    <span class="kw">with</span> ThreadPoolExecutor(max_workers=max_workers) <span class="kw">as</span> executor:
+        future_to_device = {
+            executor.submit(process_device, dev, commands): dev 
+            <span class="kw">for</span> dev <span class="kw">in</span> devices
+        }
+        
+        <span class="kw">for</span> future <span class="kw">in</span> as_completed(future_to_device):
+            result = future.result()
+            all_results.append(result)
+    
+    <span class="kw">return</span> all_results</code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 5 — BACKUP
+═══════════════════════════════════════════ -->
+<div id="tab-backup" class="py1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Sistema de Backups Automatizados</h2>
+  <p>Backup diario con organización por fecha, validación de integridad (hash), y retención automática.</p>
+
+  <div class="code-block">
+    <div class="code-label">backup_manager.py</div>
+    <pre><code><span class="kw">import</span> os
+<span class="kw">import</span> hashlib
+<span class="kw">from</span> datetime <span class="kw">import</span> datetime
+<span class="kw">from</span> pathlib <span class="kw">import</span> Path
+
+<span class="kw">class</span> <span class="fn">BackupManager</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, base_path=<span class="str">"backups"</span>):
+        self.base_path = Path(base_path)
+        self.today = datetime.now().strftime(<span class="str">"%Y-%m-%d"</span>)
+        self.backup_dir = self.base_path / self.today
+        self.backup_dir.mkdir(parents=<span class="kw">True</span>, exist_ok=<span class="kw">True</span>)
+    
+    <span class="kw">def</span> <span class="fn">save_config</span>(self, hostname, config):
+        <span class="str">"""Guarda configuración con metadata"""</span>
+        timestamp = datetime.now().strftime(<span class="str">"%H%M%S"</span>)
+        filename = <span class="str">f"{hostname}_{timestamp}.cfg"</span>
+        filepath = self.backup_dir / filename
+        
+        <span class="cmt"># Guardar</span>
+        <span class="kw">with</span> <span class="fn">open</span>(filepath, <span class="str">'w'</span>) <span class="kw">as</span> f:
+            f.write(config)
+        
+        <span class="cmt"># Calcular hash para integridad</span>
+        file_hash = self._calculate_hash(filepath)
+        
+        <span class="cmt"># Metadata</span>
+        meta = {
+            <span class="str">"hostname"</span>: hostname,
+            <span class="str">"timestamp"</span>: datetime.now().isoformat(),
+            <span class="str">"file"</span>: <span class="fn">str</span>(filepath),
+            <span class="str">"hash_md5"</span>: file_hash,
+            <span class="str">"size_bytes"</span>: os.path.getsize(filepath)
+        }
+        
+        <span class="cmt"># Guardar metadata</span>
+        meta_file = self.backup_dir / <span class="str">f"{hostname}_{timestamp}.json"</span>
+        <span class="kw">import</span> json
+        <span class="kw">with</span> <span class="fn">open</span>(meta_file, <span class="str">'w'</span>) <span class="kw">as</span> f:
+            json.dump(meta, f, indent=<span class="num">2</span>)
+        
+        <span class="kw">return</span> meta
+    
+    <span class="kw">def</span> <span class="fn">_calculate_hash</span>(self, filepath):
+        <span class="str">"""MD5 para verificar integridad"""</span>
+        hash_md5 = hashlib.md5()
+        <span class="kw">with</span> <span class="fn">open</span>(filepath, <span class="str">"rb"</span>) <span class="kw">as</span> f:
+            <span class="kw">for</span> chunk <span class="kw">in</span> <span class="fn">iter</span>(<span class="kw">lambda</span>: f.read(<span class="num">4096</span>), b<span class="str">""</span>):
+                hash_md5.update(chunk)
+        <span class="kw">return</span> hash_md5.hexdigest()
+    
+    <span class="kw">def</span> <span class="fn">cleanup_old_backups</span>(self, days=<span class="num">30</span>):
+        <span class="str">"""Elimina backups antiguos"""</span>
+        <span class="kw">from</span> datetime <span class="kw">import</span> timedelta
+        
+        cutoff = datetime.now() - timedelta(days=days)
+        
+        <span class="kw">for</span> item <span class="kw">in</span> self.base_path.iterdir():
+            <span class="kw">if</span> item.is_dir():
+                <span class="kw">try</span>:
+                    dir_date = datetime.strptime(item.name, <span class="str">"%Y-%m-%d"</span>)
+                    <span class="kw">if</span> dir_date < cutoff:
+                        <span class="kw">import</span> shutil
+                        shutil.rmtree(item)
+                        <span class="fn">print</span>(<span class="str">f"Eliminado backup antiguo: {item.name}"</span>)
+                <span class="kw">except</span> ValueError:
+                    <span class="kw">pass</span>  <span class="cmt"># No es directorio de fecha</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Diff de Configuraciones</h2>
+  <div class="code-block">
+    <div class="code-label">Comparar con baseline</div>
+    <pre><code><span class="kw">import</span> difflib
+
+<span class="kw">def</span> <span class="fn">compare_to_baseline</span>(running_config, baseline_file):
+    <span class="str">"""Compara config actual vs estándar"""</span>
+    <span class="kw">with</span> <span class="fn">open</span>(baseline_file) <span class="kw">as</span> f:
+        baseline = f.readlines()
+    
+    running = running_config.splitlines(keepends=<span class="kw">True</span>)
+    
+    diff = difflib.unified_diff(
+        baseline, running,
+        fromfile=<span class="str">'baseline'</span>,
+        tofile=<span class="str">'running'</span>,
+        lineterm=<span class="str">''</span>
+    )
+    
+    <span class="kw">return</span> <span class="str">''</span>.join(diff)</code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 6 — PARSER
+═══════════════════════════════════════════ -->
+<div id="tab-parser" class="py1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Motor de Análisis y Parseo</h2>
+  <p>Procesar los outputs recolectados para extraer métricas de salud y verificar compliance.</p>
+
+  <div class="code-block">
+    <div class="code-label">data_analyzer.py</div>
+    <pre><code><span class="kw">from</span> ntc_templates.parse <span class="kw">import</span> parse_output
+
+<span class="kw">class</span> <span class="fn">NetworkAnalyzer</span>:
+    <span class="str">"""Analiza datos recolectados y detecta problemas"""</span>
+    
+    <span class="kw">def</span> <span class="fn">analyze_interfaces</span>(self, raw_output, platform=<span class="str">"cisco_ios"</span>):
+        <span class="str">"""Analiza estado de interfaces"""</span>
+        <span class="kw">try</span>:
+            parsed = parse_output(
+                platform=platform,
+                command=<span class="str">"show ip interface brief"</span>,
+                data=raw_output
+            )
+            
+            stats = {
+                <span class="str">"total"</span>: <span class="fn">len</span>(parsed),
+                <span class="str">"up_up"</span>: <span class="num">0</span>,
+                <span class="str">"down_down"</span>: <span class="num">0</span>,
+                <span class="str">"admin_down"</span>: <span class="num">0</span>,
+                <span class="str">"issues"</span>: []
+            }
+            
+            <span class="kw">for</span> intf <span class="kw">in</span> parsed:
+                status = intf.get(<span class="str">'status'</span>, <span class="str">''</span>)
+                protocol = intf.get(<span class="str">'protocol'</span>, <span class="str">''</span>)
+                
+                <span class="kw">if</span> status == <span class="str">'up'</span> <span class="kw">and</span> protocol == <span class="str">'up'</span>:
+                    stats[<span class="str">'up_up'</span>] += <span class="num">1</span>
+                <span class="kw">elif</span> status == <span class="str">'administratively down'</span>:
+                    stats[<span class="str">'admin_down'</span>] += <span class="num">1</span>
+                <span class="kw">elif</span> status == <span class="str">'down'</span>:
+                    stats[<span class="str">'down_down'</span>] += <span class="num">1</span>
+                    <span class="cmt"># Detectar problemas</span>
+                    <span class="kw">if</span> intf.get(<span class="str">'ip_address'</span>) != <span class="str">'unassigned'</span>:
+                        stats[<span class="str">'issues'</span>].append(
+                            <span class="str">f"{intf['interface']}: IP asignada pero interfaz down"</span>
+                        )
+            
+            <span class="kw">return</span> stats
+            
+        <span class="kw">except</span> Exception <span class="kw">as</span> e:
+            <span class="kw">return</span> {<span class="str">"error"</span>: <span class="fn">str</span>(e)}
+    
+    <span class="kw">def</span> <span class="fn">check_compliance</span>(self, config_text):
+        <span class="str">"""Verifica políticas de seguridad básicas"""</span>
+        checks = {
+            <span class="str">"ssh_v2"</span>: <span class="str">"ip ssh version 2"</span> <span class="kw">in</span> config_text,
+            <span class="str">"no_telnet"</span>: <span class="str">"transport input telnet"</span> <span class="kw">not</span> <span class="kw">in</span> config_text,
+            <span class="str">"password_encryption"</span>: <span class="str">"service password-encryption"</span> <span class="kw">in</span> config_text,
+            <span class="str">"ntp_configured"</span>: <span class="str">"ntp server"</span> <span class="kw">in</span> config_text,
+            <span class="str">"logging_buffered"</span>: <span class="str">"logging buffered"</span> <span class="kw">in</span> config_text
+        }
+        
+        score = <span class="fn">sum</span>(<span class="num">1</span> <span class="kw">for</span> v <span class="kw">in</span> checks.values() <span class="kw">if</span> v) / <span class="fn">len</span>(checks) * <span class="num">100</span>
+        
+        <span class="kw">return</span> {
+            <span class="str">"checks"</span>: checks,
+            <span class="str">"score"</span>: <span class="fn">round</span>(score, <span class="num">1</span>),
+            <span class="str">"compliant"</span>: score == <span class="num">100</span>
+        }
+    
+    <span class="kw">def</span> <span class="fn">extract_version_info</span>(self, raw_output):
+        <span class="str">"""Extrae información de versión"""</span>
+        parsed = parse_output(
+            platform=<span class="str">"cisco_ios"</span>,
+            command=<span class="str">"show version"</span>,
+            data=raw_output
+        )
+        <span class="kw">return</span> parsed[<span class="num">0</span>] <span class="kw">if</span> parsed <span class="kw">else</span> {}</code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 7 — REPORTE
+═══════════════════════════════════════════ -->
+<div id="tab-reporte" class="py1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Generador de Reportes HTML Profesionales</h2>
+  <p>Dashboard ejecutivo con resumen de salud, métricas de compliance, y detalles por dispositivo.</p>
+
+  <div class="code-block">
+    <div class="code-label">templates/report.html (Jinja2)</div>
+    <pre><code><span class="cmt">&lt;!-- Template para reporte ejecutivo --&gt;</span>
+<span class="kw">&lt;!DOCTYPE html&gt;</span>
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Network Audit Report {{ date }}&lt;/title&gt;
+    &lt;style&gt;
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 20px; background: #f0f2f5; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                  color: white; padding: 30px; border-radius: 10px; margin-bottom: 20px; }
+        .summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .metric { font-size: 36px; font-weight: bold; color: #667eea; }
+        .label { color: #666; font-size: 14px; text-transform: uppercase; }
+        .device-table { width: 100%; background: white; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #667eea; color: white; }
+        .status-ok { color: #10b981; font-weight: bold; }
+        .status-warn { color: #f59e0b; font-weight: bold; }
+        .status-error { color: #ef4444; font-weight: bold; }
+        .progress-bar { width: 100%; height: 20px; background: #e5e7eb; border-radius: 10px; overflow: hidden; }
+        .progress-fill { height: 100%; background: #10b981; transition: width 0.3s; }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class="header"&gt;
+        &lt;h1&gt;🌐 Network Infrastructure Audit&lt;/h1&gt;
+        &lt;p&gt;Generated: {{ date }} | Total Devices: {{ summary.total_devices }}&lt;/p&gt;
+    &lt;/div&gt;
+    
+    &lt;div class="summary-grid"&gt;
+        &lt;div class="card"&gt;
+            &lt;div class="metric"&gt;{{ summary.online }}&lt;/div&gt;
+            &lt;div class="label"&gt;Devices Online&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class="card"&gt;
+            &lt;div class="metric"&gt;{{ summary.compliant }}%&lt;/div&gt;
+            &lt;div class="label"&gt;Compliance Score&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class="card"&gt;
+            &lt;div class="metric"&gt;{{ summary.backups }}&lt;/div&gt;
+            &lt;div class="label"&gt;Backups Taken&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class="card"&gt;
+            &lt;div class="metric"&gt;{{ summary.issues }}&lt;/div&gt;
+            &lt;div class="label"&gt;Issues Found&lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;table class="device-table"&gt;
+        &lt;thead&gt;
+            &lt;tr&gt;
+                &lt;th&gt;Hostname&lt;/th&gt;
+                &lt;th&gt;IP Address&lt;/th&gt;
+                &lt;th&gt;Status&lt;/th&gt;
+                &lt;th&gt;Compliance&lt;/th&gt;
+                &lt;th&gt;Interfaces Up&lt;/th&gt;
+                &lt;th&gt;Issues&lt;/th&gt;
+            &lt;/tr&gt;
+        &lt;/thead&gt;
+        &lt;tbody&gt;
+            {% for device in devices %}
+            &lt;tr&gt;
+                &lt;td&gt;{{ device.hostname }}&lt;/td&gt;
+                &lt;td&gt;{{ device.ip }}&lt;/td&gt;
+                &lt;td class="status-{{ 'ok' if device.status == 'online' else 'error' }}"&gt;
+                    {{ device.status }}
+                &lt;/td&gt;
+                &lt;td&gt;
+                    &lt;div class="progress-bar"&gt;
+                        &lt;div class="progress-fill" style="width: {{ device.compliance_score }}%"&gt;&lt;/div&gt;
+                    &lt;/div&gt;
+                    {{ device.compliance_score }}%
+                &lt;/td&gt;
+                &lt;td&gt;{{ device.interfaces_up }}/{{ device.interfaces_total }}&lt;/td&gt;
+                &lt;td&gt;
+                    {% if device.issues %}
+                        &lt;ul&gt;
+                        {% for issue in device.issues %}
+                            &lt;li&gt;{{ issue }}&lt;/li&gt;
+                        {% endfor %}
+                        &lt;/ul&gt;
+                    {% else %}
+                        &lt;span class="status-ok"&gt;✓ None&lt;/span&gt;
+                    {% endif %}
+                &lt;/td&gt;
+            &lt;/tr&gt;
+            {% endfor %}
+        &lt;/tbody&gt;
+    &lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;</span></code></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">report_generator.py</div>
+    <pre><code><span class="kw">from</span> jinja2 <span class="kw">import</span> Environment, FileSystemLoader
+<span class="kw">from</span> datetime <span class="kw">import</span> datetime
+<span class="kw">import</span> json
+
+<span class="kw">class</span> <span class="fn">ReportGenerator</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, template_dir=<span class="str">"templates"</span>):
+        self.env = Environment(loader=FileSystemLoader(template_dir))
+        self.template = self.env.get_template(<span class="str">"report.html"</span>)
+    
+    <span class="kw">def</span> <span class="fn">generate_html</span>(self, data, output_file):
+        <span class="str">"""Genera reporte HTML"""</span>
+        report_data = {
+            <span class="str">"date"</span>: datetime.now().strftime(<span class="str">"%Y-%m-%d %H:%M:%S"</span>),
+            <span class="str">"summary"</span>: self._calculate_summary(data),
+            <span class="str">"devices"</span>: data
+        }
+        
+        html_output = self.template.render(**report_data)
+        
+        <span class="kw">with</span> <span class="fn">open</span>(output_file, <span class="str">'w'</span>, encoding=<span class="str">'utf-8'</span>) <span class="kw">as</span> f:
+            f.write(html_output)
+        
+        <span class="kw">return</span> output_file
+    
+    <span class="kw">def</span> <span class="fn">generate_json</span>(self, data, output_file):
+        <span class="str">"""Exporta datos en JSON para APIs"""</span>
+        <span class="kw">with</span> <span class="fn">open</span>(output_file, <span class="str">'w'</span>) <span class="kw">as</span> f:
+            json.dump(data, f, indent=<span class="num">2</span>, default=<span class="fn">str</span>)
+    
+    <span class="kw">def</span> <span class="fn">_calculate_summary</span>(self, data):
+        <span class="str">"""Calcula métricas agregadas"""</span>
+        total = <span class="fn">len</span>(data)
+        online = <span class="fn">sum</span>(<span class="num">1</span> <span class="kw">for</span> d <span class="kw">in</span> data <span class="kw">if</span> d.get(<span class="str">'status'</span>) == <span class="str">'online'</span>)
+        avg_compliance = <span class="fn">sum</span>(d.get(<span class="str">'compliance_score'</span>, <span class="num">0</span>) <span class="kw">for</span> d <span class="kw">in</span> data) / total <span class="kw">if</span> total > <span class="num">0</span> <span class="kw">else</span> <span class="num">0</span>
+        total_issues = <span class="fn">sum</span>(<span class="fn">len</span>(d.get(<span class="str">'issues'</span>, [])) <span class="kw">for</span> d <span class="kw">in</span> data)
+        
+        <span class="kw">return</span> {
+            <span class="str">"total_devices"</span>: total,
+            <span class="str">"online"</span>: online,
+            <span class="str">"compliant"</span>: <span class="fn">round</span>(avg_compliance, <span class="num">1</span>),
+            <span class="str">"backups"</span>: <span class="fn">sum</span>(<span class="num">1</span> <span class="kw">for</span> d <span class="kw">in</span> data <span class="kw">if</span> d.get(<span class="str">'backup_taken'</span>)),
+            <span class="str">"issues"</span>: total_issues
+        }</code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 8 — EJECUCION
+═══════════════════════════════════════════ -->
+<div id="tab-ejecucion" class="py1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Orquestación y Ejecución</h2>
+  <p>Cómo poner todo junto: el script principal que coordina inventario, conexiones, backups, análisis y reportes.</p>
+
+  <div class="code-block">
+    <div class="code-label">main.py — Orquestador principal</div>
+    <pre><code><span class="cmt">#!/usr/bin/env python3
+"""
+Network Manager - Sistema Integrado de Gestión
+──────────────────────────────────────────────
+Ejecución: python main.py --inventory inventory/devices.yml
+"""</span>
+
+<span class="kw">import</span> argparse
+<span class="kw">import</span> logging
+<span class="kw">from</span> datetime <span class="kw">import</span> datetime
+
+<span class="cmt"># Módulos propios</span>
+<span class="kw">from</span> inventory_loader <span class="kw">import</span> InventoryManager
+<span class="kw">from</span> connectors <span class="kw">import</span> process_device
+<span class="kw">from</span> backup_manager <span class="kw">import</span> BackupManager
+<span class="kw">from</span> data_analyzer <span class="kw">import</span> NetworkAnalyzer
+<span class="kw">from</span> report_generator <span class="kw">import</span> ReportGenerator
+<span class="kw">from</span> config <span class="kw">import</span> COMMANDS, BACKUP_DIR, REPORT_DIR
+
+<span class="cmt"># Setup logging</span>
+logging.basicConfig(
+    level=logging.INFO,
+    format=<span class="str">'%(asctime)s - %(name)s - %(levelname)s - %(message)s'</span>,
+    handlers=[
+        logging.FileHandler(<span class="str">'network_manager.log'</span>),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger(__name__)
+
+<span class="kw">def</span> <span class="fn">main</span>():
+    parser = argparse.ArgumentParser(description=<span class="str">'Network Management System'</span>)
+    parser.add_argument(<span class="str">'--inventory'</span>, required=<span class="kw">True</span>, help=<span class="str">'Path to YAML inventory'</span>)
+    parser.add_argument(<span class="str">'--parallel'</span>, type=<span class="fn">int</span>, default=<span class="num">5</span>, help=<span class="str">'Max parallel threads'</span>)
+    args = parser.parse_args()
+    
+    <span class="fn">print</span>(<span class="str">"="</span>*<span class="num">60</span>)
+    <span class="fn">print</span>(<span class="str">"  NETWORK MANAGER v2.0 - Sistema Integrado"</span>)
+    <span class="fn">print</span>(<span class="str">"="</span>*<span class="num">60</span>)
+    
+    <span class="cmt"># 1. Cargar inventario</span>
+    logger.info(<span class="str">"Cargando inventario..."</span>)
+    inventory = InventoryManager(args.inventory)
+    devices = inventory.get_all()
+    logger.info(<span class="str">f"Encontrados {len(devices)} dispositivos"</span>)
+    
+    <span class="cmt"># 2. Preparar managers</span>
+    backup_mgr = BackupManager(BACKUP_DIR)
+    analyzer = NetworkAnalyzer()
+    
+    <span class="cmt"># 3. Ejecutar auditoría</span>
+    logger.info(<span class="str">"Iniciando auditoría de dispositivos..."</span>)
+    
+    <span class="kw">from</span> concurrent.futures <span class="kw">import</span> ThreadPoolExecutor, as_completed
+    
+    results = []
+    <span class="kw">with</span> ThreadPoolExecutor(max_workers=args.parallel) <span class="kw">as</span> executor:
+        future_to_device = {
+            executor.submit(process_device, dev, COMMANDS[dev.device_type]): dev 
+            <span class="kw">for</span> dev <span class="kw">in</span> devices
+        }
+        
+        <span class="kw">for</span> future <span class="kw">in</span> as_completed(future_to_device):
+            device = future_to_device[future]
+            <span class="kw">try</span>:
+                raw_data = future.result()
+                
+                <span class="cmt"># Procesar datos</span>
+                processed = process_results(raw_data, backup_mgr, analyzer)
+                results.append(processed)
+                
+            <span class="kw">except</span> Exception <span class="kw">as</span> e:
+                logger.error(<span class="str">f"Error procesando {device.hostname}: {e}"</span>)
+                results.append({
+                    <span class="str">"hostname"</span>: device.hostname,
+                    <span class="str">"ip"</span>: device.host,
+                    <span class="str">"status"</span>: <span class="str">"error"</span>,
+                    <span class="str">"error"</span>: <span class="fn">str</span>(e)
+                })
+    
+    <span class="cmt"># 4. Generar reportes</span>
+    timestamp = datetime.now().strftime(<span class="str">"%Y%m%d_%H%M%S"</span>)
+    
+    reporter = ReportGenerator()
+    
+    <span class="cmt"># HTML Report</span>
+    html_file = <span class="str">f"{REPORT_DIR}/report_{timestamp}.html"</span>
+    reporter.generate_html(results, html_file)
+    <span class="fn">print</span>(<span class="str">f"\n📄 Reporte HTML generado: {html_file}"</span>)
+    
+    <span class="cmt"># JSON Export</span>
+    json_file = <span class="str">f"{REPORT_DIR}/data_{timestamp}.json"</span>
+    reporter.generate_json(results, json_file)
+    
+    <span class="cmt"># Cleanup viejo</span>
+    backup_mgr.cleanup_old_backups(days=<span class="num">30</span>)
+    
+    <span class="fn">print</span>(<span class="str">"\n✅ Auditoría completada exitosamente"</span>)
+
+<span class="kw">def</span> <span class="fn">process_results</span>(raw_data, backup_mgr, analyzer):
+    <span class="str">"""Procesa datos crudos y enriquece el resultado"""</span>
+    result = {
+        <span class="str">"hostname"</span>: raw_data[<span class="str">'hostname'</span>],
+        <span class="str">"ip"</span>: raw_data[<span class="str">'host'</span>],
+        <span class="str">"status"</span>: <span class="str">"online"</span> <span class="kw">if</span> <span class="kw">not</span> raw_data.get(<span class="str">'errors'</span>) <span class="kw">else</span> <span class="str">"error"</span>,
+        <span class="str">"issues"</span>: raw_data.get(<span class="str">'errors'</span>, [])
+    }
+    
+    <span class="cmt"># Backup</span>
+    <span class="kw">if</span> raw_data.get(<span class="str">'config'</span>):
+        meta = backup_mgr.save_config(raw_data[<span class="str">'hostname'</span>], raw_data[<span class="str">'config'</span>])
+        result[<span class="str">'backup_taken'</span>] = <span class="kw">True</span>
+        result[<span class="str">'backup_file'</span>] = meta[<span class="str">'file'</span>]
+    
+    <span class="cmt"># Análisis de interfaces</span>
+    <span class="kw">if</span> <span class="str">'show ip interface brief'</span> <span class="kw">in</span> raw_data.get(<span class="str">'commands'</span>, {}):
+        intf_data = analyzer.analyze_interfaces(
+            raw_data[<span class="str">'commands'</span>][<span class="str">'show ip interface brief'</span>]
+        )
+        result[<span class="str">'interfaces_total'</span>] = intf_data.get(<span class="str">'total'</span>, <span class="num">0</span>)
+        result[<span class="str">'interfaces_up'</span>] = intf_data.get(<span class="str">'up_up'</span>, <span class="num">0</span>)
+        result[<span class="str">'issues'</span>].extend(intf_data.get(<span class="str">'issues'</span>, []))
+    
+    <span class="cmt"># Compliance</span>
+    <span class="kw">if</span> raw_data.get(<span class="str">'config'</span>):
+        compliance = analyzer.check_compliance(raw_data[<span class="str">'config'</span>])
+        result[<span class="str">'compliance_score'</span>] = compliance[<span class="str">'score'</span>]
+        result[<span class="str">'compliance_details'</span>] = compliance[<span class="str">'checks'</span>]
+    
+    <span class="kw">return</span> result
+
+<span class="kw">if</span> __name__ == <span class="str">"__main__"</span>:
+    main()</code></pre>
+  </div>
+
+  <h2 class="section-title">Uso del Sistema</h2>
+  <div class="code-block">
+    <div class="code-label">Ejecución y salida esperada</div>
+    <pre><code>$ python main.py --inventory inventory/devices.yml --parallel 10
+
+============================================================
+  NETWORK MANAGER v2.0 - Sistema Integrado
+============================================================
+
+2024-01-15 14:30:15 - Cargando inventario...
+2024-01-15 14:30:15 - Encontrados 6 dispositivos
+2024-01-15 14:30:15 - Iniciando auditoría de dispositivos...
+2024-01-15 14:30:16 - Conectando a R1-CORE (intento 1)
+2024-01-15 14:30:17 - Conectando a SW-DIST-1 (intento 1)
+...
+2024-01-15 14:30:25 - Backup guardado: backups/2024-01-15/R1-CORE_143025.cfg
+2024-01-15 14:30:26 - Backup guardado: backups/2024-01-15/SW-DIST-1_143026.cfg
+
+📄 Reporte HTML generado: outputs/report_20240115_143030.html
+✅ Auditoría completada exitosamente</code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 9 — PROYECTO COMPLETO
+═══════════════════════════════════════════ -->
+<div id="tab-proyecto" class="py1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">🚀 Código Completo del Proyecto</h2>
+  <p>Script monolítico listo para ejecutar (versión simplificada para un solo archivo):</p>
+
+  <div class="code-block">
+    <div class="code-label">network_manager_complete.py (200 líneas)</div>
+    <pre><code><span class="cmt">#!/usr/bin/env python3
+"""
+Network Manager Complete - Proyecto Final CCNA Academy
+Integra: Netmiko + NAPALM + TextFSM + Jinja2
+──────────────────────────────────────────────────────
+Uso: python network_manager_complete.py
+Requiere: pip install netmiko ntc-templates jinja2 pyyaml
+"""</span>
+
+<span class="kw">import</span> yaml
+<span class="kw">import</span> json
+<span class="kw">import</span> logging
+<span class="kw">from</span> datetime <span class="kw">import</span> datetime
+<span class="kw">from</span> pathlib <span class="kw">import</span> Path
+<span class="kw">from</span> concurrent.futures <span class="kw">import</span> ThreadPoolExecutor, as_completed
+
+<span class="kw">from</span> netmiko <span class="kw">import</span> ConnectHandler
+<span class="kw">from</span> ntc_templates.parse <span class="kw">import</span> parse_output
+<span class="kw">from</span> jinja2 <span class="kw">import</span> Template
+
+<span class="cmt"># Configuración</span>
+logging.basicConfig(level=logging.INFO, format=<span class="str">'%(levelname)s: %(message)s'</span>)
+logger = logging.getLogger(__name__)
+
+INVENTORY = [
+    {<span class="str">"hostname"</span>: <span class="str">"R1"</span>, <span class="str">"host"</span>: <span class="str">"192.168.1.1"</span>, <span class="str">"device_type"</span>: <span class="str">"cisco_ios"</span>, 
+     <span class="str">"username"</span>: <span class="str">"admin"</span>, <span class="str">"password"</span>: <span class="str">"cisco123"</span>},
+    {<span class="str">"hostname"</span>: <span class="str">"SW1"</span>, <span class="str">"host"</span>: <span class="str">"192.168.1.10"</span>, <span class="str">"device_type"</span>: <span class="str">"cisco_ios"</span>,
+     <span class="str">"username"</span>: <span class="str">"admin"</span>, <span class="str">"password"</span>: <span class="str">"cisco123"</span>},
+]
+
+COMMANDS = [<span class="str">"show ip interface brief"</span>, <span class="str">"show version"</span>, <span class="str">"show running-config"</span>]
+
+HTML_TEMPLATE = <span class="str">"""
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Network Report {{date}}</title>
+    <style>
+        body { font-family: Arial; margin: 40px; background: #f5f5f5; }
+        .header { background: #2c3e50; color: white; padding: 20px; border-radius: 8px; }
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: 20px 0; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .metric { font-size: 32px; font-weight: bold; color: #27ae60; }
+        table { width: 100%; background: white; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #34495e; color: white; }
+        .status-ok { color: #27ae60; }
+        .status-error { color: #e74c3c; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Network Infrastructure Report</h1>
+        <p>Generated: {{date}}</p>
+    </div>
+    <div class="grid">
+        <div class="card">
+            <div class="metric">{{stats.total}}</div>
+            <div>Total Devices</div>
+        </div>
+        <div class="card">
+            <div class="metric">{{stats.online}}</div>
+            <div>Online</div>
+        </div>
+        <div class="card">
+            <div class="metric">{{stats.avg_compliance}}%</div>
+            <div>Avg Compliance</div>
+        </div>
+    </div>
+    <table>
+        <tr><th>Hostname</th><th>IP</th><th>Status</th><th>Compliance</th><th>Backup</th></tr>
+        {% for d in devices %}
+        <tr>
+            <td>{{d.hostname}}</td>
+            <td>{{d.ip}}</td>
+            <td class="status-{{'ok' if d.status=='online' else 'error'}}">{{d.status}}</td>
+            <td>{{d.compliance}}%</td>
+            <td>{{'✓' if d.backup else '✗'}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
+"""</span>
+
+<span class="kw">class</span> <span class="fn">NetworkManager</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+        self.results = []
+        self.backup_dir = Path(<span class="str">"backups"</span>) / datetime.now().strftime(<span class="str">"%Y%m%d"</span>)
+        self.backup_dir.mkdir(parents=<span class="kw">True</span>, exist_ok=<span class="kw">True</span>)
+    
+    <span class="kw">def</span> <span class="fn">audit_device</span>(self, device):
+        <span class="str">"""Audita un dispositivo individual"""</span>
+        result = {
+            <span class="str">"hostname"</span>: device[<span class="str">'hostname'</span>],
+            <span class="str">"ip"</span>: device[<span class="str">'host'</span>],
+            <span class="str">"status"</span>: <span class="str">"error"</span>,
+            <span class="str">"compliance"</span>: <span class="num">0</span>,
+            <span class="str">"backup"</span>: <span class="kw">False</span>,
+            <span class="str">"issues"</span>: []
+        }
+        
+        <span class="kw">try</span>:
+            logger.info(<span class="str">f"Conectando a {device['hostname']}..."</span>)
+            
+            <span class="kw">with</span> ConnectHandler(**{k: v <span class="kw">for</span> k, v <span class="kw">in</span> device.items() 
+                                  <span class="kw">if</span> k <span class="kw">in</span> [<span class="str">'device_type'</span>, <span class="str">'host'</span>, <span class="str">'username'</span>, <span class="str">'password'</span>]}) <span class="kw">as</span> conn:
+                
+                conn.enable()
+                result[<span class="str">"status"</span>] = <span class="str">"online"</span>
+                
+                <span class="cmt"># Backup</span>
+                config = conn.send_command(<span class="str">"show running-config"</span>)
+                backup_file = self.backup_dir / <span class="str">f"{device['hostname']}.cfg"</span>
+                <span class="kw">with</span> <span class="fn">open</span>(backup_file, <span class="str">'w'</span>) <span class="kw">as</span> f:
+                    f.write(config)
+                result[<span class="str">"backup"</span>] = <span class="kw">True</span>
+                
+                <span class="cmt"># Compliance checks</span>
+                checks = [
+                    <span class="str">"ip ssh version 2"</span> <span class="kw">in</span> config,
+                    <span class="str">"service password-encryption"</span> <span class="kw">in</span> config,
+                    <span class="str">"ntp server"</span> <span class="kw">in</span> config,
+                    <span class="str">"no ip http server"</span> <span class="kw">in</span> config
+                ]
+                result[<span class="str">"compliance"</span>] = <span class="fn">int</span>(<span class="fn">sum</span>(checks)/<span class="fn">len</span>(checks)*<span class="num">100</span>)
+                
+                <span class="cmt"># Parse interfaces</span>
+                output = conn.send_command(<span class="str">"show ip interface brief"</span>, use_textfsm=<span class="kw">True</span>)
+                <span class="kw">if</span> <span class="fn">isinstance</span>(output, <span class="fn">list</span>):
+                    up = <span class="fn">sum</span>(<span class="num">1</span> <span class="kw">for</span> i <span class="kw">in</span> output <span class="kw">if</span> i.get(<span class="str">'status'</span>)==<span class="str">'up'</span>)
+                    result[<span class="str">"interfaces_up"</span>] = up
+                
+        <span class="kw">except</span> Exception <span class="kw">as</span> e:
+            logger.error(<span class="str">f"Error en {device['hostname']}: {e}"</span>)
+            result[<span class="str">"issues"</span>].append(<span class="fn">str</span>(e))
+        
+        <span class="kw">return</span> result
+    
+    <span class="kw">def</span> <span class="fn">run_audit</span>(self, max_workers=<span class="num">3</span>):
+        <span class="str">"""Ejecuta auditoría en paralelo"""</span>
+        <span class="kw">with</span> ThreadPoolExecutor(max_workers=max_workers) <span class="kw">as</span> executor:
+            futures = {executor.submit(self.audit_device, d): d <span class="kw">for</span> d <span class="kw">in</span> INVENTORY}
+            <span class="kw">for</span> future <span class="kw">in</span> as_completed(futures):
+                self.results.append(future.result())
+    
+    <span class="kw">def</span> <span class="fn">generate_report</span>(self):
+        <span class="str">"""Genera reporte HTML"""</span>
+        stats = {
+            <span class="str">"total"</span>: <span class="fn">len</span>(self.results),
+            <span class="str">"online"</span>: <span class="fn">sum</span>(<span class="num">1</span> <span class="kw">for</span> r <span class="kw">in</span> self.results <span class="kw">if</span> r[<span class="str">'status'</span>]==<span class="str">'online'</span>),
+            <span class="str">"avg_compliance"</span>: <span class="fn">int</span>(<span class="fn">sum</span>(r[<span class="str">'compliance'</span>] <span class="kw">for</span> r <span class="kw">in</span> self.results)/<span class="fn">len</span>(self.results))
+        }
+        
+        template = Template(HTML_TEMPLATE)
+        html = template.render(
+            date=datetime.now().strftime(<span class="str">"%Y-%m-%d %H:%M"</span>),
+            devices=self.results,
+            stats=stats
+        )
+        
+        report_file = <span class="str">f"report_{datetime.now().strftime('%Y%m%d_%H%M')}.html"</span>
+        <span class="kw">with</span> <span class="fn">open</span>(report_file, <span class="str">'w'</span>) <span class="kw">as</span> f:
+            f.write(html)
+        
+        <span class="fn">print</span>(<span class="str">f"\n✅ Reporte generado: {report_file}"</span>)
+        <span class="fn">print</span>(<span class="str">f"📁 Backups guardados en: {self.backup_dir}"</span>)
+
+<span class="kw">if</span> __name__ == <span class="str">"__main__"</span>:
+    manager = NetworkManager()
+    manager.run_audit()
+    manager.generate_report()</code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">🎓 Entregables del Proyecto</div>
+    <ul>
+      <li>✅ Conexión SSH simultánea a múltiples dispositivos</li>
+      <li>✅ Backup automatizado con organización por fecha</li>
+      <li>✅ Verificación de compliance (SSH v2, encriptación, NTP)</li>
+      <li>✅ Parseo estructurado de interfaces con TextFSM</li>
+      <li>✅ Reporte HTML profesional con métricas de salud</li>
+      <li>✅ Manejo de errores y logging completo</li>
+    </ul>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 10 — QUIZ
+═══════════════════════════════════════════ -->
+<div id="tab-quiz" class="py1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Quiz — Proyecto Final Integrador</h2>
+  <p style="font-size:.83rem;color:#6b7a9a;margin-bottom:20px;">10 preguntas sobre arquitectura de sistemas de automatización de red.</p>
+  <div id="quizContainerPy7">
+    <!-- Generado por JS -->
+  </div>
+</div>
+</div>
+
+</div><!-- /.tabs-wrap -->
+
+<script>
+// ── NAVEGACIÓN DRAWER ────────────────────────────────
+function ccnaToggle() {
+  document.getElementById('ccnaDrawer').classList.toggle('open');
+  document.getElementById('ccnaOverlay').classList.toggle('show');
+}
+function ccnaClose() {
+  document.getElementById('ccnaDrawer').classList.remove('open');
+  document.getElementById('ccnaOverlay').classList.remove('show');
+}
+
+// ── TABS ──────────────────────────────────────────────
+function showTabPy7(id, btn) {
+  document.querySelectorAll('.py1-tab-content').forEach(t => t.classList.remove('py1-active'));
+  document.querySelectorAll('.py1-tab-btn').forEach(b => b.classList.remove('py1-active'));
+  document.getElementById('tab-' + id).classList.add('py1-active');
+  if (btn) btn.classList.add('py1-active');
+}
+
+// ── QUIZ ─────────────────────────────────────────────
+function initQuiz() {
+  const container = document.getElementById('quizContainerPy7');
+  if (!container) return;
+
+  const qs = [
+    {
+      q: '¿Cuál es la ventaja de usar ThreadPoolExecutor en el proyecto?',
+      opts: ['Reduce el uso de memoria RAM','Permite ejecutar conexiones SSH a múltiples dispositivos simultáneamente','Encripta las contraseñas automáticamente','Elimina la necesidad de manejo de errores'],
+      ans: 1,
+      exp: 'ThreadPoolExecutor permite paralelizar las conexiones SSH, reduciendo el tiempo total de auditoría de N minutos a N/threads minutos.'
+    },
+    {
+      q: '¿Por qué separar el inventario en un archivo YAML?',
+      opts: ['YAML es más rápido que JSON','Permite modificar dispositivos sin cambiar código Python','Es requerido por Netmiko','Para comprimir los backups'],
+      ans: 1,
+      exp: 'Separar datos (inventario) de código (lógica) es una buena práctica de ingeniería de software. Permite actualizar la red sin riesgo de introducir bugs en el código.'
+    },
+    {
+      q: 'En el template Jinja2, ¿qué hace {% for d in devices %}?',
+      opts: ['Define una función','Itera sobre la lista de dispositivos para generar filas de tabla','Importa un módulo Python','Conecta a la base de datos'],
+      ans: 1,
+      exp: 'Jinja2 usa sintaxis similar a Python. {% for %} itera sobre la lista pasada desde Python para generar HTML dinámico (una fila por dispositivo).'
+    },
+    {
+      q: '¿Qué función cumple backup_mgr.cleanup_old_backups(days=30)?',
+      opts: ['Elimina dispositivos antiguos del inventario','Borra backups con más de 30 días para ahorrar espacio','Desconecta sesiones SSH inactivas','Comprime los archivos de log'],
+      ans: 1,
+      exp: 'Rotación de backups es crucial en producción. Esta función implementa retención automática, eliminando archivos antiguos para gestionar almacenamiento.'
+    },
+    {
+      q: '¿Cuál es el propósito de calculate_hash() en el BackupManager?',
+      opts: ['Encriptar la configuración','Verificar integridad del archivo (detectar corrupción)','Comprimir el backup','Generar contraseñas aleatorias'],
+      ans: 1,
+      exp: 'El hash MD5 actúa como "huella digital" del archivo. Permite verificar que el backup no se corrompió durante la transferencia o almacenamiento.'
+    },
+    {
+      q: '¿Qué significa "Policy as Code" en el contexto del compliance checker?',
+      opts: ['Escribir políticas en papel','Definir reglas de seguridad en archivos versionables (YAML)','Usar solo comandos CLI','Deshabilitar la seguridad'],
+      ans: 1,
+      exp: 'Policy as Code define el estado deseado en archivos (YAML), permitiendo versionar los cambios de política en Git y auditar quién modificó qué regla.'
+    },
+    {
+      q: '¿Por qué usamos use_textfsm=True en send_command()?',
+      opts: ['Para encriptar la conexión','Para convertir el output texto plano en estructuras Python (listas/diccionarios)','Para hacer backup automático','Para conectarse más rápido'],
+      ans: 1,
+      exp: 'use_textfsm=True activa el parser que convierte outputs como "show ip int brief" en listas de diccionarios con keys como "interface", "status", "ip_address".'
+    },
+    {
+      q: 'En el diagrama de clases, ¿qué responsabilidad tiene ConnectionManager?',
+      opts: ['Generar reportes HTML','Gestionar conexiones SSH con reintentos y manejo de errores','Parsear configuraciones','Almacenar inventario'],
+      ans: 1,
+      exp: 'ConnectionManager encapsula toda la lógica de conectividad: reintentos, timeouts, excepciones de autenticación, y limpieza de conexiones.'
+    },
+    {
+      q: '¿Qué ventaja tiene generar el reporte en JSON además de HTML?',
+      opts: ['JSON es más bonito','Permite integración con APIs y otros sistemas (SIEM, dashboards)','Ocupa menos disco','No requiere librerías'],
+      ans: 1,
+      exp: 'JSON es el formato estándar para APIs. Permite que otros sistemas (como Grafana, Splunk o scripts de análisis) consuman los datos de auditoría.'
+    },
+    {
+      q: '¿Qué hace exist_ok=True en mkdir(parents=True, exist_ok=True)?',
+      opts: ['Sobrescribe archivos existentes','No lanza error si el directorio ya existe (idempotencia)','Crea un backup del directorio','Verifica permisos de escritura'],
+      ans: 1,
+      exp: 'exist_ok=True hace la operación idempotente: si el directorio existe, no falla. Esencial para scripts que pueden ejecutarse múltiples veces.'
+    }
+  ];
+
+  let html = '';
+  qs.forEach((q, i) => {
+    html += `<div class="quiz-question" id="qpy${i}">
+      <div class="quiz-q-num">PREGUNTA ${i+1} DE ${qs.length} · M8 Proyecto Final</div>
+      <div class="quiz-q-text">${q.q}</div>
+      <div class="quiz-opts">
+        ${q.opts.map((o,j) => `<button class="quiz-opt" data-qi="${i}" data-sel="${j}" data-ans="${q.ans}">${o}</button>`).join('')}
+      </div>
+    </div>`;
+  });
+  container.innerHTML = html;
+
+  window._py7Exp = {};
+  qs.forEach((q, i) => { window._py7Exp[i] = q.exp; });
+
+  container.querySelectorAll('.quiz-opt').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const qi  = parseInt(this.dataset.qi);
+      const sel = parseInt(this.dataset.sel);
+      const ans = parseInt(this.dataset.ans);
+      const qDiv = document.getElementById('qpy' + qi);
+      const btns = qDiv.querySelectorAll('.quiz-opt');
+      
+      btns.forEach(b => b.disabled = true);
+      btns[sel].classList.add(sel === ans ? 'correct' : 'wrong');
+      if (sel !== ans) btns[ans].classList.add('correct');
+      
+      const expDiv = document.createElement('div');
+      expDiv.className = 'quiz-explanation';
+      expDiv.innerHTML = `<strong>${sel===ans ? '✅ Correcto!' : '❌ Incorrecto.'}</strong> ${window._py7Exp[qi]}`;
+      qDiv.appendChild(expDiv);
+    });
+  });
+}
+
+// ── INICIALIZACIÓN ────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  initQuiz();
+});
+</script>
+</body>
+</html>
+```
