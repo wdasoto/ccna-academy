@@ -1,0 +1,866 @@
+Aquí tienes el archivo **`python-tema3.html`** completo — clonado de la estructura visual pero con contenido específico de **NAPALM (Network Automation and Programmability Abstraction Layer)**. Lista para usar:
+
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NAPALM Multi-Vendor — M8 Tema 3 | CCNA Academy</title>
+  <meta name="description" content="Domina NAPALM: abstracción multi-vendor para automatizar Cisco, Juniper, Arista y más. Mismos comandos para cualquier plataforma. get_facts, get_interfaces, configuración idempotente.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── HERO acento NAPALM (naranja/púrpura multi-vendor) ── */
+.class-hero { background: linear-gradient(135deg, #06080f 0%, #1a0f2e 40%, #0a0d18 100%); }
+
+/* ── CSS base idéntico con ajustes de color para NAPALM ── */
+.py-types-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:10px; margin:16px 0; }
+.py-type-card { background:#090d1a; border:1px solid rgba(245,158,11,.15); border-radius:10px; padding:14px 10px; text-align:center; }
+.py-type-icon { font-size:1.5rem; margin-bottom:6px; }
+.py-type-name { font-family:'Orbitron',sans-serif; font-size:.72rem; color:#f59e0b; margin-bottom:4px; letter-spacing:1px; }
+.py-type-ex   { font-family:'Share Tech Mono',monospace; font-size:.65rem; color:#a78bfa; margin-bottom:4px; background:rgba(167,139,250,.06); padding:2px 6px; border-radius:4px; }
+.py-type-use  { font-size:.68rem; color:#374060; line-height:1.4; }
+
+/* ── BASE STYLES ── */
+body{font-family:'Exo 2',sans-serif;background:#07090f;color:#e2e8f0;}
+.class-hero{padding:56px 24px 48px;border-bottom:1px solid rgba(245,158,11,.08);position:relative;overflow:hidden;}
+.class-hero::before{content:'';position:absolute;top:-60px;right:-80px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(245,158,11,.06) 0%,transparent 70%);pointer-events:none;}
+.class-hero-inner{max-width:900px;margin:0 auto;position:relative;z-index:1;}
+.class-badge{font-family:'Share Tech Mono',monospace;font-size:.63rem;color:#f59e0b;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;}
+.class-title{font-family:'Orbitron',sans-serif;font-size:clamp(1.6rem,3.8vw,2.6rem);font-weight:900;letter-spacing:3px;color:#c2d0e8;margin-bottom:12px;line-height:1.1;}
+.class-subtitle{font-size:.92rem;color:#6b7a9a;line-height:1.72;margin-bottom:20px;max-width:700px;}
+.class-meta{display:flex;gap:12px;flex-wrap:wrap;}
+.meta-item{font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#374060;padding:4px 10px;border:1px solid rgba(245,158,11,.1);border-radius:4px;}
+.py3-tabs-wrap{max-width:1100px;margin:0 auto;padding:0 16px 40px;}
+.py3-tabs-bar{display:flex;gap:4px;padding:20px 0 0;flex-wrap:wrap;border-bottom:1px solid rgba(245,158,11,.1);margin-bottom:0;}
+.py3-tab-btn{padding:8px 13px;border-radius:8px 8px 0 0;font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#4a5780;background:none;border:1px solid transparent;cursor:pointer;transition:all .18s;white-space:nowrap;border-bottom:none;}
+.py3-tab-btn:hover{color:#c2d0e8;background:rgba(245,158,11,.05);}
+.py3-tab-btn.py3-active{color:#f59e0b;background:#0d1220;border-color:rgba(245,158,11,.25);border-bottom:1px solid #0d1220;}
+.py3-tab-content{display:none;background:#0d1220;border:1px solid rgba(245,158,11,.08);border-top:none;border-radius:0 0 12px 12px;padding:32px;}
+.py3-tab-content.py3-active{display:block;}
+.content-block{max-width:880px;}
+.section-title{font-family:'Orbitron',sans-serif;font-size:.95rem;color:#f59e0b;letter-spacing:2px;margin:28px 0 14px;padding-bottom:8px;border-bottom:1px solid rgba(245,158,11,.15);}
+.section-title:first-child{margin-top:0;}
+p{color:#8294b8;line-height:1.75;margin-bottom:14px;font-size:.9rem;}
+ul,ol{color:#8294b8;padding-left:1.4rem;margin-bottom:14px;font-size:.9rem;}
+li{margin-bottom:5px;line-height:1.65;}
+strong{color:#c2d0e8;}
+code{font-family:'Share Tech Mono',monospace;font-size:.82rem;background:rgba(245,158,11,.1);color:#f59e0b;padding:1px 6px;border-radius:4px;border:1px solid rgba(245,158,11,.2);}
+
+/* INFO BOXES */
+.info-box{border-radius:8px;padding:14px 18px;margin:18px 0;border-left:3px solid;}
+.info-box.tip{background:rgba(245,158,11,.06);border-color:#f59e0b;}
+.info-box.warning{background:rgba(139,92,246,.05);border-color:#8b5cf6;}
+.info-box-title{font-family:'Share Tech Mono',monospace;font-size:.73rem;color:#f59e0b;margin-bottom:8px;}
+.info-box.warning .info-box-title{color:#8b5cf6;}
+
+/* CODE BLOCKS */
+.code-block{background:#050810;border:1px solid rgba(245,158,11,.15);border-left:3px solid #f59e0b;border-radius:8px;padding:0;margin:16px 0;overflow:hidden;}
+.code-label{background:rgba(245,158,11,.08);padding:8px 16px;font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#4a5780;letter-spacing:2px;text-transform:uppercase;border-bottom:1px solid rgba(245,158,11,.1);}
+.code-block pre{margin:0;padding:18px;overflow-x:auto;}
+.code-block code{background:none;border:none;padding:0;color:#a8b4c8;font-size:.79rem;line-height:1.8;display:block;}
+
+/* SYNTAX HIGHLIGHTING */
+.cmt{color:#3a4a60;font-style:italic;}
+.kw {color:#c792ea;}
+.fn {color:#82aaff;}
+.str{color:#c3e88d;}
+.num{color:#f78c6c;}
+
+/* CONCEPT GRID */
+.concept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin:16px 0;}
+.concept-card{background:#090d1a;border:1px solid rgba(139,92,246,.1);border-radius:10px;padding:16px;}
+.concept-icon{font-size:1.8rem;margin-bottom:8px;}
+.concept-card h3{font-family:'Share Tech Mono',monospace;font-size:.77rem;color:#f59e0b;margin-bottom:8px;}
+.concept-card p{font-size:.8rem;margin:0;}
+
+/* REF TABLE */
+.table-wrap{overflow-x:auto;margin:16px 0;}
+.ref-table{width:100%;border-collapse:collapse;font-size:.8rem;}
+.ref-table th{background:#090d1a;color:#f59e0b;font-family:'Share Tech Mono',monospace;font-size:.67rem;padding:10px 12px;text-align:left;border:1px solid rgba(245,158,11,.15);letter-spacing:1px;}
+.ref-table td{padding:9px 12px;border:1px solid rgba(255,255,255,.04);color:#8294b8;}
+.ref-table tr:hover td{background:rgba(245,158,11,.03);}
+.ref-table code{font-size:.77rem;}
+
+/* QUIZ */
+.quiz-question{background:#090d1a;border:1px solid rgba(245,158,11,.12);border-radius:10px;padding:20px;margin-bottom:14px;}
+.quiz-q-num{font-family:'Share Tech Mono',monospace;font-size:.62rem;color:#374060;margin-bottom:8px;}
+.quiz-q-text{font-size:.9rem;color:#c2d0e8;margin-bottom:14px;line-height:1.6;}
+.quiz-opts{display:flex;flex-direction:column;gap:7px;}
+.quiz-opt{padding:10px 14px;border-radius:7px;border:1px solid rgba(245,158,11,.12);background:#0d1220;color:#6b7a9a;cursor:pointer;font-size:.84rem;text-align:left;transition:all .15s;font-family:'Exo 2',sans-serif;}
+.quiz-opt:hover:not(:disabled){border-color:rgba(245,158,11,.4);color:#c2d0e8;}
+.quiz-opt.correct{border-color:#34d399;background:rgba(52,211,153,.08);color:#34d399;}
+.quiz-opt.wrong{border-color:#f87171;background:rgba(248,113,113,.08);color:#f87171;}
+.quiz-explanation{margin-top:10px;padding:10px 14px;background:rgba(245,158,11,.07);border-left:3px solid #f59e0b;border-radius:6px;font-size:.82rem;color:#a0aec0;line-height:1.65;}
+
+/* Navbar y Drawer */
+.navbar{position:fixed;top:0;left:0;right:0;height:56px;background:#080a10;border-bottom:1px solid rgba(245,158,11,.1);display:flex;align-items:center;padding:0 24px;z-index:1000;}
+.navbar-toggle{background:none;border:1px solid rgba(245,158,11,.3);color:#f59e0b;padding:6px 12px;border-radius:6px;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:.75rem;margin-right:16px;}
+.navbar-brand{font-family:'Orbitron',sans-serif;font-weight:700;color:#f59e0b;text-decoration:none;font-size:1.1rem;}
+.navbar-brand span{color:#8b5cf6;}
+.navbar-spacer{flex:1;}
+.navbar-link{color:#6b7a9a;text-decoration:none;font-size:.8rem;transition:color .2s;}
+.navbar-link:hover{color:#c2d0e8;}
+.nav-spacer{height:56px;}
+.ccna-drawer{position:fixed;top:0;left:0;bottom:0;width:280px;background:#0d1220;border-right:1px solid rgba(245,158,11,.2);transform:translateX(-100%);transition:transform .3s;z-index:2000;overflow-y:auto;}
+.ccna-drawer.open{transform:translateX(0);}
+.ccna-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);opacity:0;visibility:hidden;transition:all .3s;z-index:1500;}
+.ccna-overlay.show{opacity:1;visibility:visible;}
+.drawer-header{padding:20px;border-bottom:1px solid rgba(245,158,11,.2);display:flex;justify-content:space-between;align-items:center;}
+.drawer-header h2{font-family:'Orbitron',sans-serif;font-size:.8rem;color:#f59e0b;margin:0;letter-spacing:2px;}
+.drawer-close{background:none;border:none;color:#6b7a9a;font-size:1.2rem;cursor:pointer;}
+.drawer-section{padding:16px;border-bottom:1px solid rgba(245,158,11,.1);}
+.drawer-section-title{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#374060;margin-bottom:12px;letter-spacing:1px;text-transform:uppercase;}
+.drawer-link{display:block;padding:10px 12px;color:#8294b8;text-decoration:none;font-size:.85rem;border-radius:6px;transition:all .2s;margin-bottom:4px;}
+.drawer-link:hover{background:rgba(245,158,11,.1);color:#c2d0e8;}
+.drawer-link.active{background:rgba(245,158,11,.2);color:#f59e0b;border-left:3px solid #f59e0b;}
+.dl-icon{margin-right:8px;}
+
+@media(max-width:680px){
+  .py3-tab-btn{font-size:.6rem;padding:6px 9px;}
+  .py3-tab-content{padding:18px 12px;}
+  .py-types-grid{grid-template-columns:repeat(2,1fr);}
+  .concept-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
+<nav class="ccna-drawer" id="ccnaDrawer">
+  <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
+  <div class="drawer-section"><div class="drawer-section-title">General</div>
+    <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M8 · Automatización</div>
+    <a href="python-redes.html"      class="drawer-link"><span class="dl-icon">🐍</span> Python para Redes</a>
+    <a href="python-tema1.html"      class="drawer-link"><span class="dl-icon">01</span> Python Esencial</a>
+    <a href="python-tema2.html"      class="drawer-link"><span class="dl-icon">02</span> Netmiko SSH</a>
+    <a href="python-tema3.html"      class="drawer-link active"><span class="dl-icon">03</span> NAPALM</a>
+    <a href="json-datos.html"        class="drawer-link"><span class="dl-icon">📋</span> JSON y Datos</a>
+    <a href="rest-apis.html"         class="drawer-link"><span class="dl-icon">🌐</span> REST APIs</a>
+    <a href="ansible-redes.html"     class="drawer-link"><span class="dl-icon">⚙️</span> Ansible</a></div>
+</nav>
+
+<header class="navbar">
+  <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
+  <a href="../index.html" class="navbar-brand">CISCO<span> ACADEMY</span></a>
+  <div class="navbar-spacer"></div>
+  <a href="python-redes.html" class="navbar-link">← Python</a>
+</header>
+<div class="nav-spacer"></div>
+
+<!-- HERO -->
+<section class="class-hero" style="border-bottom:1px solid rgba(245,158,11,.2);">
+  <div class="class-hero-inner">
+    <div class="class-badge" style="color:#f59e0b;">M8 · AUTOMATIZACIÓN · TEMA 3 DE 7 · NAPALM</div>
+    <h1 class="class-title"><span style="background:linear-gradient(135deg,#f59e0b,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">NAPALM</span> — Multi-Vendor</h1>
+    <p class="class-subtitle">Network Automation and Programmability Abstraction Layer. Una API unificada que funciona idénticamente en Cisco IOS, NX-OS, Juniper JunOS, Arista EOS y más. Un código para gobernarlos a todos: get_facts, get_interfaces, configuración idempotente y validación automática.</p>
+    <div class="class-meta">
+      <span class="meta-item" style="border-color:rgba(245,158,11,.2);color:#f59e0b;">🌐 Multi-vendor</span>
+      <span class="meta-item">🎯 CCNA Domain 6.1</span>
+      <span class="meta-item">⏱ ~90 min lectura</span>
+      <span class="meta-item">📊 Abstracción unificada</span>
+      <span class="meta-item">✅ Config idempotente</span>
+    </div>
+  </div>
+</section>
+
+<!-- TABS -->
+<div class="py3-tabs-wrap">
+  <div class="py3-tabs-bar">
+    <button class="py3-tab-btn py3-active" onclick="showTabPy3('intro',this)">🌐 Intro</button>
+    <button class="py3-tab-btn" onclick="showTabPy3('drivers',this)">🔌 Drivers</button>
+    <button class="py3-tab-btn" onclick="showTabPy3('facts',this)">📊 get_facts</button>
+    <button class="py3-tab-btn" onclick="showTabPy3('interfaces',this)">🔎 get_interfaces</button>
+    <button class="py3-tab-btn" onclick="showTabPy3('configuracion',this)">⚙️ Configuración</button>
+    <button class="py3-tab-btn" onclick="showTabPy3('merge',this)">🔀 load_merge_config</button>
+    <button class="py3-tab-btn" onclick="showTabPy3('validacion',this)">✅ Validación</button>
+    <button class="py3-tab-btn" onclick="showTabPy3('proyecto',this)">🚀 Proyecto</button>
+    <button class="py3-tab-btn" onclick="showTabPy3('referencia',this)">📋 Referencia</button>
+    <button class="py3-tab-btn" onclick="showTabPy3('quiz',this)">🎯 Quiz</button>
+  </div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 1 — INTRO
+═══════════════════════════════════════════ -->
+<div id="tab-intro" class="py3-tab-content py3-active">
+<div class="content-block">
+  <h2 class="section-title">¿Por qué NAPALM?</h2>
+  <p>Netmiko te permite hablar con dispositivos, pero cada uno habla un dialecto diferente. NAPALM (Network Automation and Programmability Abstraction Layer) es el <strong>traductor universal</strong>: le pides "dame los facts" o "aplica esta config" y él se encarga de traducir a los comandos específicos de Cisco, Juniper, Arista o Arista.</p>
+  
+  <p>Desarrollado por David Barroso y el equipo de Spotify, es la librería preferida cuando tienes <strong>redes heterogéneas</strong> y necesitas consistencia absoluta.</p>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">🎯</div>
+      <h3>Abstracción Total</h3>
+      <p>Mismo código Python para IOS, NXOS, JunOS, EOS. Cambias solo el driver, el resto es idéntico.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🔄</div>
+      <h3>Configuración Idempotente</h3>
+      <p>Aplica cambios solo si son necesarios. Valida antes de commitear. Rollback automático si falla.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">📋</div>
+      <h3>Datos Estructurados</h3>
+      <p>Todo devuelve diccionarios Python listos para usar. No más parsear strings de "show" manualmente.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🔒</div>
+      <h3>Validación Integrada</h3>
+      <p>Compara configuración candidata vs running antes de aplicar. Evita errores humanos en producción.</p>
+    </div>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Instalación</div>
+    <p>Instala el core y los drivers que necesites:</p>
+    <code style="display:block;margin:10px 0;padding:10px;background:#050810;border-radius:4px;">
+pip install napalm<br>
+pip install napalm-ios        # Para Cisco IOS<br>
+pip install napalm-junos      # Para Juniper<br>
+pip install napalm-eos        # Para Arista
+    </code>
+  </div>
+
+  <h2 class="section-title">Arquitectura de NAPALM</h2>
+  <div class="code-block">
+    <div class="code-label">conceptos_napalm.py</div>
+    <pre><code><span class="cmt"># 1. IMPORTAR DRIVER ESPECÍFICO</span>
+<span class="kw">from</span> napalm <span class="kw">import</span> get_network_driver
+
+<span class="cmt"># 2. SELECCIONAR DRIVER (cisco_ios, junos, eos, nxos, etc.)</span>
+driver = get_network_driver(<span class="str">"cisco_ios"</span>)
+
+<span class="cmt"># 3. CREAR INSTANCIA DEL DISPOSITIVO</span>
+device = driver(
+    hostname=<span class="str">"192.168.1.1"</span>,
+    username=<span class="str">"admin"</span>,
+    password=<span class="str">"Cisco123"</span>,
+    optional_args={<span class="str">"dest_host_system"</span>: <span class="str">"scp"</span>}  <span class="cmt"># Opciones específicas</span>
+)
+
+<span class="cmt"># 4. CONEXIÓN Y OPERACIONES</span>
+device.open()           <span class="cmt"># Abrir sesión</span>
+facts = device.get_facts()
+device.close()          <span class="cmt"># Cerrar sesión</span>
+
+<span class="cmt"># MÉTODOS PRINCIPALES:
+#   get_facts()              → Info general (hostname, modelo, uptime, etc.)
+#   get_interfaces()         → Estado de todas las interfaces
+#   get_interfaces_ip()      → IPs configuradas
+#   get_config()             → Running-config y startup-config
+#   load_merge_candidate()   → Cargar config adicional (merge)
+#   load_replace_candidate() → Reemplazar config completa
+#   compare_config()         → Mostrar diff de cambios
+#   commit_config()          → Aplicar cambios
+#   discard_config()         → Descartar cambios no aplicados</span></code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 2 — DRIVERS
+═══════════════════════════════════════════ -->
+<div id="tab-drivers" class="py3-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Drivers Multi-Vendor</h2>
+  <p>NAPALM soporta los principales fabricantes mediante drivers específicos. La magia está en que <strong>cambiar de vendor es cambiar una sola línea</strong>.</p>
+
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead>
+        <tr><th>Vendor</th><th>Driver</th><th>Protocolo</th><th>Notas</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Cisco IOS</td><td><code>ios</code></td><td>SSH</td><td>Routers/switches tradicionales</td></tr>
+        <tr><td>Cisco IOS-XR</td><td><code>iosxr</code></td><td>SSH</td><td>Plataformas carrier (ASR, CRS)</td></tr>
+        <tr><td>Cisco NXOS</td><td><code>nxos</code></td><td>NX-API o SSH</td><td>Nexus switches</td></tr>
+        <tr><td>Juniper JunOS</td><td><code>junos</code></td><td>NETCONF/SSH</td><td>Ex/QFX/MX/PTX series</td></tr>
+        <tr><td>Arista EOS</td><td><code>eos</code></td><td>eAPI (HTTP) o SSH</td><td>Recomendado eAPI</td></tr>
+        <tr><td>HPE Comware</td><td><code>comware</code></td><td>NETCONF</td><td>Switches HP/3Com</td></tr>
+        <tr><td>Fortinet</td><td><code>fortios</code></td><td>HTTP API</td><td>Firewalls FortiGate</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="section-title">Código Multi-Vendor Real</h2>
+  <div class="code-block">
+    <div class="code-label">multivendor_template.py</div>
+    <pre><code><span class="kw">from</span> napalm <span class="kw">import</span> get_network_driver
+
+<span class="kw">def</span> <span class="fn">obtener_info_router</span>(vendor, ip, user, pwd):
+    <span class="str">"""
+    Funciona idénticamente para Cisco, Juniper o Arista.
+    Cambia solo el driver, el código permanece igual.
+    """</span>
+    driver = get_network_driver(vendor)
+    device = driver(hostname=ip, username=user, password=pwd)
+    
+    <span class="kw">try</span>:
+        device.open()
+        facts = device.get_facts()
+        interfaces = device.get_interfaces()
+        
+        <span class="kw">return</span> {
+            <span class="str">"vendor"</span>: vendor,
+            <span class="str">"hostname"</span>: facts[<span class="str">"hostname"</span>],
+            <span class="str">"model"</span>: facts[<span class="str">"model"</span>],
+            <span class="str">"interface_count"</span>: <span class="fn">len</span>(interfaces),
+            <span class="str">"uptime"</span>: facts[<span class="str">"uptime"</span>],
+        }
+    <span class="kw">finally</span>:
+        device.close()
+
+<span class="cmt"># Uso con Cisco IOS</span>
+cisco_data = obtener_info_router(<span class="str">"ios"</span>, <span class="str">"192.168.1.1"</span>, <span class="str">"admin"</span>, <span class="str">"pass"</span>)
+
+<span class="cmt"># Uso con Juniper (misma función)</span>
+juniper_data = obtener_info_router(<span class="str">"junos"</span>, <span class="str">"10.0.0.1"</span>, <span class="str">"admin"</span>, <span class="str">"pass"</span>)
+
+<span class="cmt"># Uso con Arista EOS (misma función)</span>
+arista_data = obtener_info_router(<span class="str">"eos"</span>, <span class="str">"172.16.0.1"</span>, <span class="str">"admin"</span>, <span class="str">"pass"</span>)</code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 3 — GET_FACTS
+═══════════════════════════════════════════ -->
+<div id="tab-facts" class="py3-tab-content">
+<div class="content-block">
+  <h2 class="section-title">get_facts() — Información del dispositivo</h2>
+  <p>Devuelve un diccionario estandarizado con información básica del equipo, independientemente del fabricante.</p>
+
+  <div class="code-block">
+    <div class="code-label">get_facts_demo.py</div>
+    <pre><code><span class="kw">from</span> napalm <span class="kw">import</span> get_network_driver
+
+driver = get_network_driver(<span class="str">"ios"</span>)
+device = driver(<span class="str">"192.168.1.1"</span>, <span class="str">"admin"</span>, <span class="str">"Cisco123"</span>)
+
+device.open()
+facts = device.get_facts()
+device.close()
+
+<span class="cmt"># Estructura estandarizada de facts</span>
+<span class="fn">print</span>(<span class="str">f"Hostname: {facts['hostname']}"</span>)
+<span class="fn">print</span>(<span class="str">f"Modelo: {facts['model']}"</span>)
+<span class="fn">print</span>(<span class="str">f"Vendor: {facts['vendor']}"</span>)
+<span class="fn">print</span>(<span class="str">f"OS Version: {facts['os_version']}"</span>)
+<span class="fn">print</span>(<span class="str">f"Serial: {facts['serial_number']}"</span>)
+<span class="fn">print</span>(<span class="str">f"Uptime: {facts['uptime']} segundos"</span>)
+<span class="fn">print</span>(<span class="str">f"Interfaces: {facts['interface_list']}"</span>)  <span class="cmt"># Lista de nombres</span></code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">📊 Estructura común de facts (todos los vendors)</div>
+    <ul>
+      <li><code>hostname</code>: Nombre del dispositivo</li>
+      <li><code>fqdn</code>: Fully Qualified Domain Name</li>
+      <li><code>model</code>: Modelo del hardware</li>
+      <li><code>serial_number</code>: SN del chasis</li>
+      <li><code>os_version</code>: Versión del sistema operativo</li>
+      <li><code>vendor</code>: Fabricante (Cisco, Juniper, Arista...)</li>
+      <li><code>uptime</code>: Tiempo encendido en segundos</li>
+      <li><code>interface_list</code>: Lista de interfaces disponibles</li>
+    </ul>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 4 — GET_INTERFACES
+═══════════════════════════════════════════ -->
+<div id="tab-interfaces" class="py3-tab-content">
+<div class="content-block">
+  <h2 class="section-title">get_interfaces() — Estado detallado</h2>
+  <p>Obtiene información completa de todas las interfaces: estado administrativo, velocidad, descripción, últimos cambios.</p>
+
+  <div class="code-block">
+    <div class="code-label">monitoreo_interfaces.py</div>
+    <pre><code><span class="kw">from</span> napalm <span class="kw">import</span> get_network_driver
+
+driver = get_network_driver(<span class="str">"ios"</span>)
+device = driver(<span class="str">"10.0.0.1"</span>, <span class="str">"admin"</span>, <span class="str">"pass"</span>)
+
+device.open()
+interfaces = device.get_interfaces()
+
+<span class="cmt"># Filtrar interfaces UP</span>
+interfaces_up = {
+    name: info <span class="kw">for</span> name, info <span class="kw">in</span> interfaces.items() 
+    <span class="kw">if</span> info[<span class="str">"is_up"</span>] <span class="kw">and</span> info[<span class="str">"is_enabled"</span>]
+}
+
+<span class="cmt"># Buscar interfaces con errores (ejemplo conceptual)</span>
+<span class="kw">for</span> intf, data <span class="kw">in</span> interfaces.items():
+    <span class="kw">if</span> <span class="str">"error"</span> <span class="kw">in</span> data[<span class="str">"description"</span>].lower():
+        <span class="fn">print</span>(<span class="str">f"⚠️  {intf}: {data['description']}"</span>)
+
+device.close()</code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">🔎 Campos devueltos por interfaz</div>
+    <p><code>is_up</code> (bool), <code>is_enabled</code> (bool), <code>description</code> (str), <code>last_flapped</code> (float), <code>speed</code> (int en Mbps), <code>mtu</code> (int).</p>
+  </div>
+
+  <h2 class="section-title">get_interfaces_ip()</h2>
+  <div class="code-block">
+    <div class="code-label">inventario_ips.py</div>
+    <pre><code>ips = device.get_interfaces_ip()
+
+<span class="kw">for</span> interface, data <span class="kw">in</span> ips.items():
+    <span class="kw">for</span> ip, prefix <span class="kw">in</span> data[<span class="str">"ipv4"</span>].items():
+        <span class="fn">print</span>(<span class="str">f"{interface}: {ip}/{prefix['prefix_length']}"</span>)</code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 5 — CONFIGURACIÓN
+═══════════════════════════════════════════ -->
+<div id="tab-configuracion" class="py3-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Obtener y gestionar configuración</h2>
+  
+  <h3 class="section-title" style="font-size:.85rem;">get_config() — Backups</h3>
+  <div class="code-block">
+    <div class="code-label">backup_napalm.py</div>
+    <pre><code><span class="kw">from</span> napalm <span class="kw">import</span> get_network_driver
+<span class="kw">import</span> datetime
+
+driver = get_network_driver(<span class="str">"ios"</span>)
+device = driver(<span class="str">"192.168.1.1"</span>, <span class="str">"admin"</span>, <span class="str">"pass"</span>)
+
+device.open()
+config = device.get_config()  <span class="cmt"># Devuelve running y startup</span>
+
+<span class="cmt"># Guardar running-config</span>
+timestamp = datetime.datetime.now().strftime(<span class="str">"%Y%m%d_%H%M"</span>)
+<span class="kw">with</span> <span class="fn">open</span>(<span class="str">f"backup_{device.get_facts()['hostname']}_{timestamp}.cfg"</span>, <span class="str">"w"</span>) <span class="kw">as</span> f:
+    f.write(config[<span class="str">"running"</span>])
+
+device.close()</code></pre>
+  </div>
+
+  <h3 class="section-title" style="font-size:.85rem;">load_replace_candidate() — Reemplazo completo</h3>
+  <div class="code-block">
+    <div class="code-label">config_replace.py</div>
+    <pre><code><span class="cmt"># Reemplazar toda la configuración (peligroso, pero útil para golden config)</span>
+device.open()
+
+<span class="cmt"># Cargar archivo de configuración completa</span>
+device.load_replace_candidate(filename=<span class="str">"golden_config.cfg"</span>)
+
+<span class="cmt"># Ver qué cambiaría antes de aplicar</span>print(device.compare_config())
+
+<span class="cmt"># Si todo se ve bien, aplicar</span>device.commit_config()
+<span class="cmt"># O descartar: device.discard_config()</span>
+
+device.close()</code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 6 — LOAD_MERGE_CONFIG
+═══════════════════════════════════════════ -->
+<div id="tab-merge" class="py3-tab-content">
+<div class="content-block">
+  <h2 class="section-title">load_merge_candidate() — Cambios parciales</h2>
+  <p>El método más usado: aplica configuración adicional sin borrar lo existente. Ideal para añadir VLANs, interfaces, o rutas.</p>
+
+  <div class="code-block">
+    <div class="code-label">merge_config.py</div>
+    <pre><code><span class="kw">from</span> napalm <span class="kw">import</span> get_network_driver
+
+driver = get_network_driver(<span class="str">"ios"</span>)
+device = driver(<span class="str">"10.0.0.1"</span>, <span class="str">"admin"</span>, <span class="str">"pass"</span>)
+
+config_nueva = <span class="str">"""
+vlan 50
+ name VLAN_PRUEBA_NAPALM
+interface GigabitEthernet0/1
+ description CONFIGURADA_VIA_NAPALM
+"""</span>
+
+device.open()
+
+<span class="cmt"># Cargar cambios candidatos</span>
+device.load_merge_candidate(config=config_nueva)
+<span class="cmt"># O desde archivo: device.load_merge_candidate(filename="cambios.cfg")</span>
+
+<span class="cmt"># REVISAR SIEMPRE ANTES DE COMMITEAR</span>
+diff = device.compare_config()
+<span class="fn">print</span>(<span class="str">"Cambios a aplicar:\n"</span>, diff)
+
+<span class="kw">if</span> <span class="str">"vlan 50"</span> <span class="kw">in</span> diff:
+    <span class="fn">print</span>(<span class="str">"✅ Vlan 50 será creada"</span>)
+    device.commit_config()
+    <span class="fn">print</span>(<span class="str">"🎉 Cambios aplicados"</span>)
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="str">"⚠️ No hay cambios detectados o ya existe"</span>)
+    device.discard_config()
+
+device.close()</code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚠️ Idempotencia</div>
+    <p>NAPALM es idempotente: si intentas crear VLAN 50 y ya existe, no falla ni duplica. Pero siempre usa <code>compare_config()</code> para auditar antes de commitear.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 7 — VALIDACIÓN
+═══════════════════════════════════════════ -->
+<div id="tab-validacion" class="py3-tab-content">
+<div class="content-block">
+  <h2 class="section-title">compare_config() y confirmación</h2>
+  <p>Flujo de trabajo profesional: cargar → comparar → validar → commitear (o rollback).</p>
+
+  <div class="code-block">
+    <div class="code-label">workflow_seguro.py</div>
+    <pre><code><span class="kw">def</span> <span class="fn">aplicar_cambios_seguro</span>(device, config, confirmar=<span class="kw">False</span>):
+    <span class="str">"""
+    Workflow seguro con validación manual o automática.
+    """</span>
+    device.open()
+    
+    <span class="kw">try</span>:
+        <span class="cmt"># 1. Cargar candidato</span>
+        device.load_merge_candidate(config=config)
+        
+        <span class="cmt"># 2. Obtener diff</span>
+        diff = device.compare_config()
+        
+        <span class="kw">if</span> <span class="kw">not</span> diff:
+            <span class="fn">print</span>(<span class="str">"ℹ️ No hay cambios para aplicar"</span>)
+            <span class="kw">return</span> <span class="str">"no_changes"</span>
+        
+        <span class="fn">print</span>(<span class="str">"Diff detectado:\n"</span>, diff)
+        
+        <span class="cmt"># 3. Validación manual o automática</span>
+        <span class="kw">if</span> confirmar <span class="kw">or</span> <span class="fn">input</span>(<span class="str">"¿Aplicar cambios? (y/n): "</span>) == <span class="str">"y"</span>:
+            device.commit_config()
+            <span class="fn">print</span>(<span class="str">"✅ Configuración aplicada"</span>)
+            
+            <span class="cmt"># 4. Verificación post-commit (opcional)</span>
+            new_facts = device.get_facts()
+            <span class="fn">print</span>(<span class="str">f"Uptime tras cambio: {new_facts['uptime']}"</span>)
+            <span class="kw">return</span> <span class="str">"success"</span>
+        <span class="kw">else</span>:
+            device.discard_config()
+            <span class="fn">print</span>(<span class="str">"❌ Cambios descartados"</span>)
+            <span class="kw">return</span> <span class="str">"discarded"</span>
+            
+    <span class="kw">except</span> Exception <span class="kw">as</span> e:
+        device.discard_config()
+        <span class="fn">print</span>(<span class="str">f"🚨 Error: {e}. Config descartada."</span>)
+        <span class="kw">return</span> <span class="str">"error"</span>
+        
+    <span class="kw">finally</span>:
+        device.close()</code></pre>
+  </div>
+
+  <h2 class="section-title">Rollback automático</h2>
+  <div class="code-block">
+    <div class="code-label">rollback_demo.py</div>
+    <pre><code><span class="cmt"># Si algo sale mal, vuelve atrás</span>
+<span class="kw">try</span>:
+    device.commit_config()
+    <span class="cmt"># Verificar servicio...</span>
+    <span class="kw">if</span> <span class="kw">not</span> verificar_conectividad():
+        <span class="kw">raise</span> Exception(<span class="str">"Servicio caído tras cambio"</span>)
+<span class="kw">except</span>:
+    device.rollback()  <span class="cmt"># Vuelve a la config anterior</span>
+    <span class="fn">print</span>(<span class="str">"⏪ Rollback ejecutado"</span>)</code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 8 — PROYECTO
+═══════════════════════════════════════════ -->
+<div id="tab-proyecto" class="py3-tab-content">
+<div class="content-block">
+  <h2 class="section-title">🚀 Proyecto: Cambio multi-vendor masivo</h2>
+  <p>Script que aplica la misma configuración (NTP, SNMP, banner) a routers Cisco, Juniper y Arista simultáneamente usando la misma función.</p>
+
+  <div class="code-block">
+    <div class="code-label">proyecto_multivendor.py</div>
+    <pre><code><span class="kw">from</span> napalm <span class="kw">import</span> get_network_driver
+<span class="kw">import</span> yaml
+
+<span class="cmt"># Inventario heterogéneo</span>
+inventario = [
+    {<span class="str">"vendor"</span>: <span class="str">"ios"</span>, <span class="str">"ip"</span>: <span class="str">"192.168.1.1"</span>, <span class="str">"user"</span>: <span class="str">"admin"</span>, <span class="str">"pass"</span>: <span class="str">"cisco123"</span>},
+       {<span class="str">"vendor"</span>: <span class="str">"junos"</span>, <span class="str">"ip"</span>: <span class="str">"10.0.0.1"</span>, <span class="str">"user"</span>: <span class="str">"root"</span>, <span class="str">"pass"</span>: <span class="str">"juniper123"</span>},
+    {<span class="str">"vendor"</span>: <span class="str">"eos"</span>, <span class="str">"ip"</span>: <span class="str">"172.16.0.1"</span>, <span class="str">"user"</span>: <span class="str">"admin"</span>, <span class="str">"pass"</span>: <span class="str">"arista123"</span>},
+]
+
+<span class="cmt"># Configuración deseada (plantilla Jinja2 o string simple)</span>
+plantilla_ntp = <span class="str">"""
+ntp server {{ ntp_server }}
+"""</span>
+
+<span class="kw">def</span> <span class="fn">configurar_dispositivo</span>(device_info):
+    <span class="str">"""Aplica config estándar a cualquier vendor"""</span>
+    vendor = device_info[<span class="str">"vendor"</span>]
+    
+    <span class="cmt"># Obtener driver apropiado</span>
+    driver = get_network_driver(vendor)
+    device = driver(
+        hostname=device_info[<span class="str">"ip"</span>],
+        username=device_info[<span class="str">"user"</span>],
+        password=device_info[<span class="str">"pass"</span>],
+        optional_args={<span class="str">"port"</span>: <span class="num">22</span> <span class="kw">if</span> vendor != <span class="str">"eos"</span> <span class="kw">else</span> <span class="num">443</span>}
+    )
+    
+    <span class="kw">try</span>:
+        device.open()
+        <span class="fn">print</span>(<span class="str">f"\n🔌 Conectado a {device_info['ip']} ({vendor})"</span>)
+        
+        <span class="cmt"># Obtener facts antes</span>
+        facts = device.get_facts()
+        <span class="fn">print</span>(<span class="str">f"   Hostname: {facts['hostname']}, Modelo: {facts['model']}"</span>)
+        
+        <span class="cmt"># Preparar config específica por vendor</span>
+        <span class="kw">if</span> vendor == <span class="str">"ios"</span>:
+            config = <span class="str">"ntp server 10.0.0.1\nntp server 10.0.0.2\n"</span>
+        <span class="kw">elif</span> vendor == <span class="str">"junos"</span>:
+            config = <span class="str">"set system ntp server 10.0.0.1\nset system ntp server 10.0.0.2\n"</span>
+        <span class="kw">elif</span> vendor == <span class="str">"eos"</span>:
+            config = <span class="str">"ntp server 10.0.0.1\nntp server 10.0.0.2\n"</span>
+        
+        <span class="cmt"># Aplicar</span>
+        device.load_merge_candidate(config=config)
+        diff = device.compare_config()
+        
+        <span class="kw">if</span> diff:
+            <span class="fn">print</span>(<span class="str">f"   Cambios detectados:\n{diff}"</span>)
+            device.commit_config()
+            <span class="fn">print</span>(<span class="str">"   ✅ Configuración aplicada"</span>)
+        <span class="kw">else</span>:
+            <span class="fn">print</span>(<span class="str">"   ℹ️ Sin cambios (ya estaba configurado)"</span>)
+            
+        <span class="kw">return</span> {<span class="str">"ip"</span>: device_info[<span class="str">"ip"</span>], <span class="str">"status"</span>: <span class="str">"success"</span>}
+        
+    <span class="kw">except</span> Exception <span class="kw">as</span> e:
+        <span class="fn">print</span>(<span class="str">f"   ❌ Error: {e}"</span>)
+        <span class="kw">return</span> {<span class="str">"ip"</span>: device_info[<span class="str">"ip"</span>], <span class="str">"status"</span>: <span class="str">"error"</span>, <span class="str">"error"</span>: <span class="fn">str</span>(e)}
+    <span class="kw">finally</span>:
+        device.close()
+
+<span class="cmt"># Ejecutar en todos los dispositivos</span>
+<span class="fn">print</span>(<span class="str">"🚀 Iniciando configuración multi-vendor...\n"</span>)
+resultados = [configurar_dispositivo(d) <span class="kw">for</span> d <span class="kw">in</span> inventario]
+
+<span class="cmt"># Reporte final</span>
+exitos = [r <span class="kw">for</span> r <span class="kw">in</span> resultados <span class="kw">if</span> r[<span class="str">"status"</span>] == <span class="str">"success"</span>]
+<span class="fn">print</span>(<span class="str">f"\n🏁 Completado: {len(exitos)}/{len(inventario)} dispositivos configurados"</span>)</code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">🎯 Ventaja clave</div>
+    <p>Un solo script Python gestionó equipos de 3 vendors diferentes sin duplicar código. La lógica de negocio (qué configurar) está separada de la implementación del vendor gracias a NAPALM.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 9 — REFERENCIA
+═══════════════════════════════════════════ -->
+<div id="tab-referencia" class="py3-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Referencia rápida NAPALM</h2>
+  <div id="refTablePy3"></div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 10 — QUIZ
+═══════════════════════════════════════════ -->
+<div id="tab-quiz" class="py3-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Quiz — NAPALM Multi-Vendor</h2>
+  <p style="font-size:.83rem;color:#6b7a9a;margin-bottom:20px;">10 preguntas sobre abstracción multi-vendor, drivers y gestión de configuración.</p>
+  <div id="quizContainerPy3"></div>
+</div>
+</div>
+
+</div><!-- /.tabs-wrap -->
+
+<script>
+// ── NAVEGACIÓN DRAWER ────────────────────────────────
+function ccnaToggle() {
+  document.getElementById('ccnaDrawer').classList.toggle('open');
+  document.getElementById('ccnaOverlay').classList.toggle('show');
+}
+function ccnaClose() {
+  document.getElementById('ccnaDrawer').classList.remove('open');
+  document.getElementById('ccnaOverlay').classList.remove('show');
+}
+
+// ── TABS ──────────────────────────────────────────────
+function showTabPy3(id, btn) {
+  document.querySelectorAll('.py3-tab-content').forEach(t => t.classList.remove('py3-active'));
+  document.querySelectorAll('.py3-tab-btn').forEach(b => b.classList.remove('py3-active'));
+  document.getElementById('tab-' + id).classList.add('py3-active');
+  if (btn) btn.classList.add('py3-active');
+}
+
+// ── TABLA DE REFERENCIA ──────────────────────────────
+function buildRefTable() {
+  const container = document.getElementById('refTablePy3');
+  if (!container) return;
+  
+  const secciones = [
+    {
+      titulo: 'MÉTODOS PRINCIPALES',
+      cols: ['Método','Retorno','Descripción'],
+      filas: [
+        ['<code>get_network_driver()</code>','Clase Driver','Obtiene driver específico del vendor'],
+        ['<code>get_facts()</code>','Dict','Info general del dispositivo'],
+        ['<code>get_interfaces()</code>','Dict','Estado de interfaces'],
+        ['<code>get_interfaces_ip()</code>','Dict','IPs configuradas por interfaz'],
+        ['<code>get_config()</code>','Dict','Running y startup config'],
+        ['<code>load_merge_candidate()</code>','None','Cargar config adicional'],
+        ['<code>load_replace_candidate()</code>','None','Reemplazar config completa'],
+        ['<code>compare_config()</code>','String','Diff entre candidato y running'],
+        ['<code>commit_config()</code>','None','Aplicar cambios'],
+        ['<code>discard_config()</code>','None','Descartar candidato'],
+        ['<code>rollback()</code>','None','Revertir último commit'],
+      ]
+    },
+    {
+      titulo: 'DRIVERS SOPORTADOS',
+      cols: ['Driver','Protocolo','Plataformas'],
+      filas: [
+        ['<code>ios</code>','SSH','Cisco IOS/IOS-XE'],
+        ['<code>iosxr</code>','SSH','Cisco IOS-XR'],
+        ['<code>nxos</code>','NX-API','Cisco Nexus'],
+        ['<code>junos</code>','NETCONF/SSH','Juniper JunOS'],
+        ['<code>eos</code>','eAPI/SSH','Arista EOS'],
+        ['<code>comware</code>','NETCONF','HPE Comware'],
+      ]
+    },
+    {
+      titulo: 'CAMPOS DE FACTS COMUNES',
+      cols: ['Campo','Tipo','Ejemplo'],
+      filas: [
+        ['<code>hostname</code>','String','"R1-CORE"'],
+        ['<code>model</code>','String','"ISR4321/K9"'],
+        ['<code>vendor</code>','String','"Cisco"'],
+        ['<code>os_version</code>','String','"16.9.5"'],
+        ['<code>serial_number</code>','String','"FTX123456"'],
+        ['<code>uptime</code>','Int (segundos)','<code>1209600</code>'],
+        ['<code>interface_list</code>','Lista','<code>["Gi0/0", "Gi0/1"]</code>'],
+      ]
+    }
+  ];
+
+  let html = '';
+  secciones.forEach(sec => {
+    html += `<h3 style="font-family:Orbitron,sans-serif;font-size:.8rem;color:#f59e0b;letter-spacing:2px;margin:24px 0 10px;text-transform:uppercase;">▸ ${sec.titulo}</h3>`;
+    html += `<div class="table-wrap"><table class="ref-table"><thead><tr>${sec.cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>`;
+    sec.filas.forEach(f => { html += '<tr>' + f.map(c=>`<td>${c}</td>`).join('') + '</tr>'; });
+    html += '</tbody></table></div>';
+  });
+  container.innerHTML = html;
+}
+
+// ── QUIZ ─────────────────────────────────────────────
+function initQuiz() {
+  const container = document.getElementById('quizContainerPy3');
+  if (!container) return;
+
+  const qs = [
+    {
+      q: '¿Qué función se usa para obtener el driver específico de un vendor en NAPALM?',
+      opts: ['get_driver()','get_network_driver()','napalm_driver()','load_driver()'],
+      ans: 1,
+      exp: '<code>get_network_driver("ios")</code> retorna la clase driver específica para Cisco IOS. Es el punto de entrada único para cualquier vendor.'
+    },
+    {
+      q: '¿Cuál es la principal ventaja de NAPALM sobre Netmiko?',
+      opts: ['Es más rápido','Abstracción multi-vendor: mismo código para diferentes fabricantes','Usa solo SSH','No requiere credenciales'],
+      ans: 1,
+      exp: 'NAPALM proporciona una API unificada. Cambias el driver (ios, junos, eos) pero el código Python (get_facts, get_interfaces) permanece idéntico.'
+    },
+    {
+      q: '¿Qué método devuelve un diccionario con hostname, modelo, versión y uptime?',
+      opts: ['get_info()','get_facts()','get_device()','get_status()'],
+      ans: 1,
+      exp: '<code>get_facts()</code> retorna información estandarizada del dispositivo en formato diccionario, independientemente del vendor.'
+    },
+    {
+      q: 'Para cargar configuración adicional sin borrar la existente, ¿qué método usas?',
+      opts: ['load_replace_candidate()','load_merge_candidate()','add_config()','append_config()'],
+      ans: 1,
+      exp: '<code>load_merge_candidate()</code> añade configuración a la existente (como "configure terminal" + comandos). <code>load_replace_candidate</code> reemplaza todo.'
+    },
+    {
+      q: '¿Qué método DEBES llamar antes de commit_config() para ver los cambios que se aplicarán?',
+      opts: ['preview_config()','compare_config()','diff_config()','show_candidate()'],
+      ans: 1,
+      exp: '<code>compare_config()</code> retorna un string con el diff (diferencias) entre la configuración candidata y la running-config actual. Es obligatorio para validación.'
+    },
+    {
+      q: '¿Qué driver usarías para un switch Arista EOS?',
+      opts: ['arista','eos','arista_eos','aeos'],
+      ans: 1,
+      exp: 'El driver correcto es <code>eos</code>. Se usa: <code>get_network_driver("eos")</code>. Por defecto usa eAPI (HTTP), opcionalmente SSH.'
+    },
+    {
+      q: 'Si necesitas revertir cambios recién aplicados por un error, ¿qué método usas?',
+      opts: ['undo()','rollback()','revert()','discard_config()'],
+      ans: 1,
+      exp: '<code>rollback()</code> revierte al estado anterior al último commit. Disponible en la mayoría de drivers (no todos lo soportan igual).'
+    },
+    {
+      q: '¿Cuál es el flujo correcto para aplicar configuración segura?',
+      opts: ['open → commit → close','open → load → commit → close','open → load → compare → commit → close','load → open → compare → commit'],
+      ans: 2,
+      exp: 'Flujo seguro: 1) open(), 2) load_merge_candidate(), 3) compare_config() (revisar), 4) commit_config(), 5) close(). Siempre revisar antes de commitear.'
+    },
+    {
+      q: '¿Qué retorna get_interfaces()?',
+      opts: ['Lista de nombres','Diccionario con detalles por interfaz','String con show ip interface brief','Solo interfaces UP'],
+      ans: 1,
+      exp: 'Retorna un dict donde cada clave es el nombre de interfaz y el valor es otro dict con is_up, is_enabled, description, speed, etc.'
+    },
+    {
+      q: '¿NAPALM es idempotente?',
+      opts: ['No, siempre duplica configuración','Sí, detecta si config ya existe y no la duplica','Solo con Cisco','Solo si usas modo replace'],
+      ans: 1,
+      exp: 'Sí, es idempotente. Si intentas crear VLAN 10 y ya existe, no falla ni duplica. Además compare_config() mostrará vacío si no hay cambios reales.'
+    }
+  ];
+
+  let html = '';
+  qs.forEach((q, i) => {
+    html += `<div class="quiz-question" id="qpy3-${i}">
+      <div class="quiz-q-num">PREGUNTA ${i+1} DE ${qs.length} · M8 NAPALM</div>
+      <div class="quiz-q-text">${q.q}</div>
+      <div class="quiz-opts">
+        ${q.opts.map((o,j) => `<button class="quiz-opt" data-qi="${i}" data-sel="${j}" data-ans="${q.ans}">${o}</button>`).join('')}
+      </div>
+    </div>`;
+  });
+  container.innerHTML = html;
+
+  window._py3Exp = {};
+  qs.forEach((q, i) => { window._py3Exp[i] = q.exp; });
+
+  container.querySelectorAll('.quiz-opt').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const qi  = parseInt(this.dataset.qi);
+      const sel = parseInt(this.dataset.sel);
+      const ans = parseInt(this.dataset.ans);
+      const qDiv = document.get
