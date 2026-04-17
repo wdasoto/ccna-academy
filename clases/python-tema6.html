@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auditoría y Compliance — M8 Tema 6 | CCNA Academy</title>
+  <meta name="description" content="Automatiza verificaciones de cumplimiento en redes Cisco: SSH v2, ACLs, NTP, configuraciones standard. Genera reportes automáticos de auditoría y alertas.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── HERO acento Python ── */
+.class-hero { background: linear-gradient(135deg, #06080f 0%, #08100a 40%, #0a0d18 100%); }
+
+/* ── TIPOS DE DATOS GRID ── */
+.py-types-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:10px; margin:16px 0; }
+.py-type-card { background:#090d1a; border:1px solid rgba(55,118,171,.15); border-radius:10px; padding:14px 10px; text-align:center; }
+.py-type-icon { font-size:1.5rem; margin-bottom:6px; }
+.py-type-name { font-family:'Orbitron',sans-serif; font-size:.72rem; color:#5b9bd5; margin-bottom:4px; letter-spacing:1px; }
+.py-type-ex   { font-family:'Share Tech Mono',monospace; font-size:.65rem; color:#00d4aa; margin-bottom:4px; background:rgba(0,212,170,.06); padding:2px 6px; border-radius:4px; }
+.py-type-use  { font-size:.68rem; color:#374060; line-height:1.4; }
+
+/* ── BASE CLASS STYLES (clonado de ARP) ── */
+body{font-family:'Exo 2',sans-serif;background:#07090f;color:#e2e8f0;}
+.class-hero{padding:56px 24px 48px;border-bottom:1px solid rgba(0,212,170,.08);position:relative;overflow:hidden;}
+.class-hero::before{content:'';position:absolute;top:-60px;right:-80px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(55,118,171,.06) 0%,transparent 70%);pointer-events:none;}
+.class-hero-inner{max-width:900px;margin:0 auto;position:relative;z-index:1;}
+.class-badge{font-family:'Share Tech Mono',monospace;font-size:.63rem;color:#00d4aa;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;}
+.class-title{font-family:'Orbitron',sans-serif;font-size:clamp(1.6rem,3.8vw,2.6rem);font-weight:900;letter-spacing:3px;color:#c2d0e8;margin-bottom:12px;line-height:1.1;}
+.class-subtitle{font-size:.92rem;color:#6b7a9a;line-height:1.72;margin-bottom:20px;max-width:700px;}
+.class-meta{display:flex;gap:12px;flex-wrap:wrap;}
+.meta-item{font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#374060;padding:4px 10px;border:1px solid rgba(0,212,170,.1);border-radius:4px;}
+.py1-tabs-wrap{max-width:1100px;margin:0 auto;padding:0 16px 40px;}
+.py1-tabs-bar{display:flex;gap:4px;padding:20px 0 0;flex-wrap:wrap;border-bottom:1px solid rgba(0,212,170,.1);margin-bottom:0;}
+.py1-tab-btn{padding:8px 13px;border-radius:8px 8px 0 0;font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#4a5780;background:none;border:1px solid transparent;cursor:pointer;transition:all .18s;white-space:nowrap;border-bottom:none;}
+.py1-tab-btn:hover{color:#c2d0e8;background:rgba(55,118,171,.05);}
+.py1-tab-btn.py1-active{color:#5b9bd5;background:#0d1220;border-color:rgba(55,118,171,.25);border-bottom:1px solid #0d1220;}
+.py1-tab-content{display:none;background:#0d1220;border:1px solid rgba(0,212,170,.08);border-top:none;border-radius:0 0 12px 12px;padding:32px;}
+.py1-tab-content.py1-active{display:block;}
+.content-block{max-width:880px;}
+.section-title{font-family:'Orbitron',sans-serif;font-size:.95rem;color:#5b9bd5;letter-spacing:2px;margin:28px 0 14px;padding-bottom:8px;border-bottom:1px solid rgba(55,118,171,.15);}
+.section-title:first-child{margin-top:0;}
+p{color:#8294b8;line-height:1.75;margin-bottom:14px;font-size:.9rem;}
+ul,ol{color:#8294b8;padding-left:1.4rem;margin-bottom:14px;font-size:.9rem;}
+li{margin-bottom:5px;line-height:1.65;}
+strong{color:#c2d0e8;}
+code{font-family:'Share Tech Mono',monospace;font-size:.82rem;background:rgba(55,118,171,.1);color:#5b9bd5;padding:1px 6px;border-radius:4px;border:1px solid rgba(55,118,171,.2);}
+
+/* INFO BOXES */
+.info-box{border-radius:8px;padding:14px 18px;margin:18px 0;border-left:3px solid;}
+.info-box.tip{background:rgba(55,118,171,.06);border-color:#5b9bd5;}
+.info-box.warning{background:rgba(251,191,36,.05);border-color:#fbbf24;}
+.info-box-title{font-family:'Share Tech Mono',monospace;font-size:.73rem;color:#5b9bd5;margin-bottom:8px;}
+.info-box.warning .info-box-title{color:#fbbf24;}
+
+/* CODE BLOCKS */
+.code-block{background:#050810;border:1px solid rgba(55,118,171,.15);border-left:3px solid #3776ab;border-radius:8px;padding:0;margin:16px 0;overflow:hidden;}
+.code-label{background:rgba(55,118,171,.08);padding:8px 16px;font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#4a5780;letter-spacing:2px;text-transform:uppercase;border-bottom:1px solid rgba(55,118,171,.1);}
+.code-block pre{margin:0;padding:18px;overflow-x:auto;}
+.code-block code{background:none;border:none;padding:0;color:#a8b4c8;font-size:.79rem;line-height:1.8;display:block;}
+
+/* SYNTAX HIGHLIGHTING */
+.cmt{color:#3a4a60;font-style:italic;}
+.kw {color:#c792ea;}
+.fn {color:#82aaff;}
+.str{color:#c3e88d;}
+.num{color:#f78c6c;}
+
+/* CONCEPT GRID */
+.concept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin:16px 0;}
+.concept-card{background:#090d1a;border:1px solid rgba(0,212,170,.1);border-radius:10px;padding:16px;}
+.concept-icon{font-size:1.8rem;margin-bottom:8px;}
+.concept-card h3{font-family:'Share Tech Mono',monospace;font-size:.77rem;color:#00d4aa;margin-bottom:8px;}
+.concept-card p{font-size:.8rem;margin:0;}
+
+/* REF TABLE */
+.table-wrap{overflow-x:auto;margin:16px 0;}
+.ref-table{width:100%;border-collapse:collapse;font-size:.8rem;}
+.ref-table th{background:#090d1a;color:#5b9bd5;font-family:'Share Tech Mono',monospace;font-size:.67rem;padding:10px 12px;text-align:left;border:1px solid rgba(55,118,171,.15);letter-spacing:1px;}
+.ref-table td{padding:9px 12px;border:1px solid rgba(255,255,255,.04);color:#8294b8;}
+.ref-table tr:hover td{background:rgba(55,118,171,.03);}
+.ref-table code{font-size:.77rem;}
+
+/* QUIZ */
+.quiz-question{background:#090d1a;border:1px solid rgba(55,118,171,.12);border-radius:10px;padding:20px;margin-bottom:14px;}
+.quiz-q-num{font-family:'Share Tech Mono',monospace;font-size:.62rem;color:#374060;margin-bottom:8px;}
+.quiz-q-text{font-size:.9rem;color:#c2d0e8;margin-bottom:14px;line-height:1.6;}
+.quiz-opts{display:flex;flex-direction:column;gap:7px;}
+.quiz-opt{padding:10px 14px;border-radius:7px;border:1px solid rgba(55,118,171,.12);background:#0d1220;color:#6b7a9a;cursor:pointer;font-size:.84rem;text-align:left;transition:all .15s;font-family:'Exo 2',sans-serif;}
+.quiz-opt:hover:not(:disabled){border-color:rgba(55,118,171,.4);color:#c2d0e8;}
+.quiz-opt.correct{border-color:#34d399;background:rgba(52,211,153,.08);color:#34d399;}
+.quiz-opt.wrong{border-color:#f87171;background:rgba(248,113,113,.08);color:#f87171;}
+.quiz-explanation{margin-top:10px;padding:10px 14px;background:rgba(55,118,171,.07);border-left:3px solid #5b9bd5;border-radius:6px;font-size:.82rem;color:#a0aec0;line-height:1.65;}
+
+/* Navbar y Drawer */
+.navbar{position:fixed;top:0;left:0;right:0;height:56px;background:#080a10;border-bottom:1px solid rgba(0,212,170,.1);display:flex;align-items:center;padding:0 24px;z-index:1000;}
+.navbar-toggle{background:none;border:1px solid rgba(0,212,170,.3);color:#00d4aa;padding:6px 12px;border-radius:6px;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:.75rem;margin-right:16px;}
+.navbar-brand{font-family:'Orbitron',sans-serif;font-weight:700;color:#00d4aa;text-decoration:none;font-size:1.1rem;}
+.navbar-brand span{color:#5b9bd5;}
+.navbar-spacer{flex:1;}
+.navbar-link{color:#6b7a9a;text-decoration:none;font-size:.8rem;transition:color .2s;}
+.navbar-link:hover{color:#c2d0e8;}
+.nav-spacer{height:56px;}
+.ccna-drawer{position:fixed;top:0;left:0;bottom:0;width:280px;background:#0d1220;border-right:1px solid rgba(55,118,171,.2);transform:translateX(-100%);transition:transform .3s;z-index:2000;overflow-y:auto;}
+.ccna-drawer.open{transform:translateX(0);}
+.ccna-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);opacity:0;visibility:hidden;transition:all .3s;z-index:1500;}
+.ccna-overlay.show{opacity:1;visibility:visible;}
+.drawer-header{padding:20px;border-bottom:1px solid rgba(55,118,171,.2);display:flex;justify-content:space-between;align-items:center;}
+.drawer-header h2{font-family:'Orbitron',sans-serif;font-size:.8rem;color:#5b9bd5;margin:0;letter-spacing:2px;}
+.drawer-close{background:none;border:none;color:#6b7a9a;font-size:1.2rem;cursor:pointer;}
+.drawer-section{padding:16px;border-bottom:1px solid rgba(55,118,171,.1);}
+.drawer-section-title{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#374060;margin-bottom:12px;letter-spacing:1px;text-transform:uppercase;}
+.drawer-link{display:block;padding:10px 12px;color:#8294b8;text-decoration:none;font-size:.85rem;border-radius:6px;transition:all .2s;margin-bottom:4px;}
+.drawer-link:hover{background:rgba(55,118,171,.1);color:#c2d0e8;}
+.drawer-link.active{background:rgba(55,118,171,.2);color:#5b9bd5;border-left:3px solid #5b9bd5;}
+.dl-icon{margin-right:8px;}
+
+@media(max-width:680px){
+  .py1-tab-btn{font-size:.6rem;padding:6px 9px;}
+  .py1-tab-content{padding:18px 12px;}
+  .py-types-grid{grid-template-columns:repeat(3,1fr);}
+  .concept-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
+<nav class="ccna-drawer" id="ccnaDrawer">
+  <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
+  <div class="drawer-section"><div class="drawer-section-title">General</div>
+    <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M1 · Fundamentos</div>
+    <a href="fundamentos.html" class="drawer-link"><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
+    <a href="subnetting.html"  class="drawer-link"><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
+    <a href="ipv6.html"        class="drawer-link"><span class="dl-icon">6️⃣</span> IPv6</a>
+    <a href="arp.html"         class="drawer-link"><span class="dl-icon">📡</span> ARP</a>
+    <a href="rip.html"         class="drawer-link"><span class="dl-icon">🔄</span> RIP</a>
+    <a href="protocolos-internet.html" class="drawer-link"><span class="dl-icon">🌍</span> Protocolos Internet</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M2 · Dispositivos Cisco</div>
+    <a href="router.html"         class="drawer-link"><span class="dl-icon">📡</span> Routers Cisco</a>
+    <a href="switches-cisco.html" class="drawer-link"><span class="dl-icon">🔀</span> Switches Cisco</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M3 · Switching</div>
+    <a href="vlan.html"               class="drawer-link"><span class="dl-icon">🏷️</span> VLANs</a>
+    <a href="inter-vlan-routing.html" class="drawer-link"><span class="dl-icon">🔁</span> Inter-VLAN Routing</a>
+    <a href="stp.html"                class="drawer-link"><span class="dl-icon">🌳</span> STP</a>
+    <a href="etherchannel.html"       class="drawer-link"><span class="dl-icon">🔗</span> EtherChannel</a>
+    <a href="port-security.html"      class="drawer-link"><span class="dl-icon">🔒</span> Port Security</a>
+    <a href="cdp-lldp.html"           class="drawer-link"><span class="dl-icon">🔍</span> CDP / LLDP</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M4 · Routing</div>
+    <a href="routing.html"            class="drawer-link"><span class="dl-icon">🗺️</span> Routing Estático</a>
+    <a href="ospf.html"               class="drawer-link"><span class="dl-icon">⭕</span> OSPF</a>
+    <a href="eigrp.html"              class="drawer-link"><span class="dl-icon">⚡</span> EIGRP</a>
+    <a href="ospfv2-masterclass.html" class="drawer-link"><span class="dl-icon">🎯</span> OSPFv2 Masterclass</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M5 · Servicios IP</div>
+    <a href="dhcp.html" class="drawer-link"><span class="dl-icon">📋</span> DHCP</a>
+    <a href="nat.html"  class="drawer-link"><span class="dl-icon">🔄</span> NAT / PAT</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M6 · Seguridad</div>
+    <a href="acl.html" class="drawer-link"><span class="dl-icon">🛡️</span> ACLs</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M7 · WAN &amp; QoS</div>
+    <a href="wan.html" class="drawer-link"><span class="dl-icon">🌍</span> WAN</a>
+    <a href="qos.html" class="drawer-link"><span class="dl-icon">📊</span> QoS</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M8 · Automatización</div>
+    <a href="m8-automatizacion.html" class="drawer-link"><span class="dl-icon">🤖</span> M8 — Vista General</a>
+    <a href="python-redes.html"      class="drawer-link"><span class="dl-icon">🐍</span> Python para Redes</a>
+    <a href="python-tema1.html"      class="drawer-link"><span class="dl-icon">01</span> Python Esencial</a>
+    <a href="python-tema2.html"      class="drawer-link"><span class="dl-icon">02</span> Netmiko SSH</a>
+    <a href="python-tema3.html"      class="drawer-link"><span class="dl-icon">03</span> NAPALM</a>
+    <a href="python-tema5.html"      class="drawer-link"><span class="dl-icon">05</span> TextFSM Parsing</a>
+    <a href="python-tema6.html"      class="drawer-link active"><span class="dl-icon">06</span> Auditoría Compliance</a>
+    <a href="json-datos.html"        class="drawer-link"><span class="dl-icon">📋</span> JSON y Datos</a>
+    <a href="rest-apis.html"         class="drawer-link"><span class="dl-icon">🌐</span> REST APIs</a>
+    <a href="ansible-redes.html"     class="drawer-link"><span class="dl-icon">⚙️</span> Ansible</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">⚡ Herramientas</div>
+    <a href="asistente.html"          class="drawer-link"><span class="dl-icon">🤖</span> Asistente IA</a>
+    <a href="netbot.html"             class="drawer-link"><span class="dl-icon">⚙️</span> NetBot Config</a>
+    <a href="calculadora.html"        class="drawer-link"><span class="dl-icon">🧮</span> Calculadora IP</a>
+    <a href="laboratorios-pkt.html"   class="drawer-link"><span class="dl-icon">🧪</span> Labs Packet Tracer</a>
+    <a href="../banco-preguntas.html" class="drawer-link"><span class="dl-icon">📝</span> Banco de Preguntas</a></div>
+</nav>
+
+<header class="navbar">
+  <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
+  <a href="../index.html" class="navbar-brand">CISCO<span> ACADEMY</span></a>
+  <div class="navbar-spacer"></div>
+  <a href="python-redes.html" class="navbar-link">← Python</a>
+</header>
+<div class="nav-spacer"></div>
+
+<!-- HERO -->
+<section class="class-hero" style="border-bottom:1px solid rgba(55,118,171,.2);">
+  <div class="class-hero-inner">
+    <div class="class-badge" style="color:#5b9bd5;">M8 · AUTOMATIZACIÓN · TEMA 6 DE 7 · COMPLIANCE</div>
+    <h1 class="class-title">Scripts de <span class="class-title-accent" style="background:linear-gradient(135deg,#3776ab,#ffd43b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Verificación y Auditoría</span></h1>
+    <p class="class-subtitle">Automatiza verificaciones de cumplimiento: comprueba que todos los routers tienen SSH v2, ACLs correctas, NTP configurado y genera reportes automáticos. Construye sistemas de auditoría continua para infraestructura crítica.</p>
+    <div class="class-meta">
+      <span class="meta-item" style="border-color:rgba(55,118,171,.2);color:#5b9bd5;">🐍 Python 3.x</span>
+      <span class="meta-item">🎯 CCNA Domain 6.3</span>
+      <span class="meta-item">⏱ ~90 min lectura</span>
+      <span class="meta-item">📊 Reportes HTML/JSON</span>
+      <span class="meta-item">🚨 Sistema de Alertas</span>
+    </div>
+  </div>
+</section>
+
+<!-- TABS -->
+<div class="py1-tabs-wrap">
+  <div class="py1-tabs-bar">
+    <button class="py1-tab-btn py1-active" onclick="showTabPy6('intro',this)">🎯 Intro</button>
+    <button class="py1-tab-btn" onclick="showTabPy6('ssh-audit',this)">🔐 SSH Audit</button>
+    <button class="py1-tab-btn" onclick="showTabPy6('acl-check',this)">🛡️ ACL Check</button>
+    <button class="py1-tab-btn" onclick="showTabPy6('ntp-verify',this)">⏰ NTP Verify</button>
+    <button class="py1-tab-btn" onclick="showTabPy6('compliance',this)">⚖️ Compliance</button>
+    <button class="py1-tab-btn" onclick="showTabPy6('reportes',this)">📈 Reportes</button>
+    <button class="py1-tab-btn" onclick="showTabPy6('alertas',this)">🚨 Alertas</button>
+    <button class="py1-tab-btn" onclick="showTabPy6('proyecto',this)">🚀 Proyecto</button>
+    <button class="py1-tab-btn" onclick="showTabPy6('referencia',this)">📊 Referencia</button>
+    <button class="py1-tab-btn" onclick="showTabPy6('quiz',this)">🎯 Quiz</button>
+  </div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 1 — INTRO
+═══════════════════════════════════════════ -->
+<div id="tab-intro" class="py1-tab-content py1-active">
+<div class="content-block">
+  <h2 class="section-title">El Problema del Compliance Manual</h2>
+  <p>Verificar manualmente que 500 routers cumplen con las políticas de seguridad es imposible. ¿Todos tienen SSH v2? ¿Las ACLs están aplicadas en las interfaces correctas? ¿El NTP está sincronizado? ¿Hay contraseñas por defecto?<p>
+
+  <p>La auditoría manual consume semanas, es propenso a errores humanos, y al terminar, los datos ya están desactualizados. Los scripts de verificación automatizada transforman este proceso: en minutos sabes el estado de cumplimiento de toda tu red, con evidencia documentada y trazable.</p>
+
+  <div class="concept-grid">
+    <div class="concept-card" style="border-color:rgba(248,113,113,.2);">
+      <div class="concept-icon">😰</div>
+      <h3 style="color:#f87171;">Auditoría Manual</h3>
+      <p>• SSH a cada router uno por uno<br>
+         • Copiar-pegar outputs a Excel<br>
+         • Comparar visualmente configs<br>
+         • 40 horas para 500 dispositivos<br>
+         • Errores por fatiga humana</p>
+    </div>
+    <div class="concept-card" style="border-color:rgba(52,211,153,.2);">
+      <div class="concept-icon">🤖</div>
+      <h3 style="color:#34d399;">Auditoría Automatizada</h3>
+      <p>• Script conecta a todos vía SSH<br>
+         • Parseo estructurado con TextFSM<br>
+         • Comparación contra baseline<br>
+         • 5 minutos para 500 dispositivos<br>
+         • Reporte HTML/JSON automático</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">Arquitectura de un Sistema de Compliance</h2>
+  <p>Un sistema de auditoría robusto tiene cuatro capas:</p>
+  
+  <div class="code-block">
+    <div class="code-label">Arquitectura de verificación automatizada</div>
+    <pre><code><span class="cmt"># 1. INVENTARIO: Lista de dispositivos y sus credenciales</span>
+<span class="cmt"># 2. BASELINE: Configuración estándar esperada (JSON/YAML)</span>
+<span class="cmt"># 3. COLECTOR: SSH + comandos de verificación (Netmiko)</span>
+<span class="cmt"># 4. PARSER: Extracción de datos relevantes (TextFSM)</span>
+<span class="cmt"># 5. ANALYZER: Comparación contra políticas</span>
+<span class="cmt"># 6. REPORTER: Generación de evidencia y métricas</span>
+<span class="cmt"># 7. ALERTER: Notificación de desviaciones críticas</span></code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Framework de Seguridad Cisco</div>
+    <p>Estos scripts implementan verificaciones de <strong>Cisco SAFE</strong> y <strong>NIST Cybersecurity Framework</strong>: identificar protecciones (SSH, ACLs), detectar configuraciones inseguras (Telnet abierto, SNMP public), y responder con reportes de remediación priorizados.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 2 — SSH AUDIT
+═══════════════════════════════════════════ -->
+<div id="tab-ssh-audit" class="py1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Auditoría de SSH — Seguridad de Acceso</h2>
+  <p>Verificar que todos los dispositivos usen SSH v2 (no Telnet ni SSH v1), con autenticación por clave pública, timeouts apropiados, y accesos restringidos.</p>
+
+  <div class="code-block">
+    <div class="code-label">ssh_audit.py — Verificación completa de SSH</div>
+    <pre><code><span class="kw">from</span> netmiko <span class="kw">import</span> ConnectHandler
+<span class="kw">from</span> ntc_templates.parse <span class="kw">import</span> parse_output
+
+<span class="kw">def</span> <span class="fn">auditar_ssh</span>(device_params):
+    <span class="str">"""Verifica configuración SSH en un dispositivo Cisco"""</span>
+    hallazgos = {
+        <span class="str">"dispositivo"</span>: device_params[<span class="str">"host"</span>],
+        <span class="str">"compliance"</span>: <span class="kw">True</span>,
+        <span class="str">"errores"</span>: [],
+        <span class="str">"config_ssh"</span>: {}
+    }
+    
+    <span class="kw">try</span>:
+        <span class="kw">with</span> ConnectHandler(**device_params) <span class="kw">as</span> conn:
+            <span class="cmt"># Obtener configuración de líneas VTY</span>
+            vty_config = conn.send_command(<span class="str">"show run | sec line vty"</span>)
+            
+            <span class="cmt"># Verificar SSH vs Telnet</span>
+            <span class="kw">if</span> <span class="str">"transport input telnet"</span> <span class="kw">in</span> vty_config.lower():
+                hallazgos[<span class="str">"compliance"</span>] = <span class="kw">False</span>
+                hallazgos[<span class="str">"errores"</span>].append(<span class="str">"CRÍTICO: Telnet habilitado en VTY"</span>)
+            
+            <span class="kw">if</span> <span class="str">"transport input ssh"</span> <span class="kw">not</span> <span class="kw">in</span> vty_config.lower():
+                hallazgos[<span class="str">"compliance"</span>] = <span class="kw">False</span>
+                hallazgos[<span class="str">"errores"</span>].append(<span class="str">"WARNING: SSH no forzado en VTY"</span>)
+            
+            <span class="cmt"># Verificar versión SSH</span>
+            ssh_version = conn.send_command(<span class="str">"show ip ssh"</span>)
+            <span class="kw">if</span> <span class="str">"SSH Enabled - version 2.0"</span> <span class="kw">not</span> <span class="kw">in</span> ssh_version:
+                hallazgos[<span class="str">"compliance"</span>] = <span class="kw">False</span>
+                hallazgos[<span class="str">"errores"</span>].append(<span class="str">"CRÍTICO: No usa SSHv2 exclusivamente"</span>)
+            
+            <span class="cmt"># Verificar timeout y exec-timeout</span>
+            <span class="kw">if</span> <span class="str">"exec-timeout"</span> <span class="kw">not</span> <span class="kw">in</span> vty_config:
+                hallazgos[<span class="str">"compliance"</span>] = <span class="kw">False</span>
+                hallazgos[<span class="str">"errores"</span>].append(<span class="str">"WARNING: Sin timeout de sesión configurado"</span>)
+            <span class="kw">else</span>:
+                <span class="cmt"># Extraer minutos de timeout</span>
+                <span class="kw">import</span> re
+                timeout_match = re.search(<span class="str">r"exec-timeout (\d+)"</span>, vty_config)
+                <span class="kw">if</span> timeout_match:
+                    mins = <span class="fn">int</span>(timeout_match.group(<span class="num">1</span>))
+                    <span class="kw">if</span> mins > <span class="num">10</span>:
+                        hallazgos[<span class="str">"errores"</span>].append(<span class="str">f"INFO: Timeout muy alto ({mins} min)"</span>)
+            
+            <span class="cmt"># Verificar ACL en VTY (restringir acceso)</span>
+            <span class="kw">if</span> <span class="str">"access-class"</span> <span class="kw">not</span> <span class="kw">in</span> vty_config:
+                hallazgos[<span class="str">"compliance"</span>] = <span class="kw">False</span>
+                hallazgos[<span class="str">"errores"</span>].append(<span class="str">"CRÍTICO: Sin ACL de acceso en VTY"</span>)
+            
+    <span class="kw">except</span> Exception <span class="kw">as</span> e:
+        hallazgos[<span class="str">"compliance"</span>] = <span class="kw">False</span>
+        hallazgos[<span class="str">"errores"</span>].append(<span class="str">f"ERROR DE CONEXIÓN: {str(e)}"</span>)
+    
+    <span class="kw">return</span> hallazgos
+
+<span class="cmt"># Ejecutar en múltiples dispositivos</span>
+routers = [<span class="str">"192.168.1.1"</span>, <span class="str">"192.168.1.2"</span>, <span class="str">"192.168.1.3"</span>]
+resultados_ssh = []
+
+<span class="kw">for</span> ip <span class="kw">in</span> routers:
+    device = {
+        <span class="str">"device_type"</span>: <span class="str">"cisco_ios"</span>,
+        <span class="str">"host"</span>: ip,
+        <span class="str">"username"</span>: <span class="str">"admin"</span>,
+        <span class="str">"password"</span>: <span class="str">"cisco123"</span>
+    }
+    resultados_ssh.append(auditar_ssh(device))</code></pre>
+  </div>
+
+  <h2 class="section-title">Validación de Criptografía</h2>
+  <div class="code-block">
+    <div class="code-label">Verificar algoritmos fuertes</div>
+    <pre><code><span class="kw">def</span> <span class="fn">validar_criptografia</span>(conn):
+    <span class="str">"""Verifica que no se usen algoritmos débiles"""</span>
+    issues = []
+    
+    <span class="cmt"># Verificar configuración de cifrado</span>
+    crypto_cfg = conn.send_command(<span class="str">"show run | include crypto"</span>)
+    
+    <span class="kw">if</span> <span class="str">"ip ssh version 2"</span> <span class="kw">not</span> <span class="kw">in</span> crypto_cfg:
+        issues.append(<span class="str">"SSH v1 permitido"</span>)
+    
+    <span class="cmt"># Verificar tamaño de clave RSA</span>
+    rsa_info = conn.send_command(<span class="str">"show crypto key mypubkey rsa"</span>)
+    <span class="kw">if</span> <span class="str">"2048"</span> <span class="kw">not</span> <span class="kw">in</span> rsa_info <span class="kw">and</span> <span class="str">"4096"</span> <span class="kw">not</span> <span class="kw">in</span> rsa_info:
+        issues.append(<span class="str">"Clave RSA < 2048 bits"</span>)
+    
+    <span class="kw">return</span> issues</code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 3 — ACL CHECK
+═══════════════════════════════════════════ -->
+<div id="tab-acl-check" class="py1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Verificación de ACLs — Perímetro Seguro</h2>
+  <p>Las ACLs son la primera línea de defensa. Verificar que existen, están aplicadas en las interfaces correctas, y no tienen reglas peligrosas (any any, deny ip any any sin log, etc.).</p>
+
+  <div class="code-block">
+    <div class="code-label">acl_audit.py — Análisis de Access Lists</div>
+    <pre><code><span class="kw">def</span> <span class="fn">auditar_acls</span>(conn, device_name):
+    <span class="str">"""Audita ACLs en un dispositivo Cisco"""</span>
+    reporte = {
+        <span class="str">"device"</span>: device_name,
+        <span class="str">"acls_definidas"</span>: [],
+        <span class="str">"acls_aplicadas"</span>: {},
+        <span class="str">"problemas"</span>: [],
+        <span class="str">"compliance_score"</span>: <span class="num">100</span>
+    }
+    
+    <span class="cmt"># Obtener todas las ACLs</span>
+    acls = conn.send_command(<span class="str">"show ip access-lists"</span>, use_textfsm=<span class="kw">True</span>)
+    
+    <span class="cmt"># Verificar ACLs en interfaces</span>
+    interfaces = conn.send_command(
+        <span class="str">"show ip interface brief"</span>, 
+        use_textfsm=<span class="kw">True</span>
+    )
+    
+    <span class="cmt"># Obtener configuración completa de interfaces</span>
+    config_int = conn.send_command(<span class="str">"show run | section interface"</span>)
+    
+    <span class="kw">for</span> acl <span class="kw">in</span> acls:
+        acl_name = acl.get(<span class="str">'acl_name'</span>)
+        reporte[<span class="str">"acls_definidas"</span>].append(acl_name)
+        
+        <span class="cmt"># Verificar reglas peligrosas</span>
+        <span class="kw">if</span> <span class="str">"permit ip any any"</span> <span class="kw">in</span> str(acl):
+            reporte[<span class="str">"problemas"</span>].append({
+                <span class="str">"severidad"</span>: <span class="str">"ALTA"</span>,
+                <span class="str">"acl"</span>: acl_name,
+                <span class="str">"issue"</span>: <span class="str">"Permite todo tráfico (any any)"</span>
+            })
+            reporte[<span class="str">"compliance_score"</span>] -= <span class="num">50</span>
+        
+        <span class="cmt"># Verificar logging en denies</span>
+        <span class="kw">if</span> <span class="str">"deny"</span> <span class="kw">in</span> str(acl) <span class="kw">and</span> <span class="str">"log"</span> <span class="kw">not</span> <span class="kw">in</span> str(acl):
+            reporte[<span class="str">"problemas"</span>].append({
+                <span class="str">"severidad"</span>: <span class="str">"MEDIA"</span>,
+                <span class="str">"acl"</span>: acl_name,
+                <span class="str">"issue"</span>: <span class="str">"Reglas deny sin logging"</span>
+            })
+    
+    <span class="cmt"># Verificar ACLs aplicadas en interfaces WAN</span>
+    <span class="kw">for</span> intf <span class="kw">in</span> interfaces:
+        int_name = intf[<span class="str">'interface'</span>]
+        <span class="kw">if</span> <span class="str">"Gig"</span> <span class="kw">in</span> int_name <span class="kw">or</span> <span class="str">"Eth"</span> <span class="kw">in</span> int_name:
+            <span class="cmt"># Verificar si tiene ACL aplicada</span>
+            int_detail = conn.send_command(<span class="str">f"show run interface {int_name}"</span>)
+            
+            <span class="kw">if</span> <span class="str">"ip access-group"</span> <span class="kw">not</span> <span class="kw">in</span> int_detail:
+                <span class="kw">if</span> <span class="str">"ip address"</span> <span class="kw">in</span> int_detail:  <span class="cmt"># Solo si tiene IP (no switchports)</span>
+                    reporte[<span class="str">"problemas"</span>].append({
+                        <span class="str">"severidad"</span>: <span class="str">"ALTA"</span>,
+                        <span class="str">"interface"</span>: int_name,
+                        <span class="str">"issue"</span>: <span class="str">"Interface con IP sin ACL aplicada"</span>
+                    })
+    
+    <span class="kw">return</span> reporte</code></pre>
+  </div>
+
+  <h2 class="section-title">Validación de Reglas Específicas</h2>
+  <div class="code-block">
+    <div class="code-label">Chequeos de seguridad en ACLs</div>
+    <pre><code><span class="kw">def</span> <span class="fn">validar_reglas_acl</span>(acl_entries):
+    <span class="str">"""Valida reglas individuales contra políticas"""</span>
+    violations = []
+    
+    <span class="kw">for</span> entry <span class="kw">in</span> acl_entries:
+        <span class="cmt"># No permitir redes internas en ACLs externas</span>
+        <span class="kw">if</span> entry[<span class="str">'action'</span>] == <span class="str">'permit'</span> <span class="kw">and</span> \
+           entry[<span class="str">'src_ip'</span>] == <span class="str">'any'</span> <span class="kw">and</span> \
+           entry[<span class="str">'dst_ip'</span>] == <span class="str">'any'</span>:
+            violations.append(<span class="str">"Regla permit any any detectada"</span>)
+        
+        <span class="cmt"># Puerto Telnet (23) abierto</span>
+        <span class="kw">if</span> entry.get(<span class="str">'dst_port'</span>) == <span class="str">'23'</span> <span class="kw">or</span> entry.get(<span class="str">'src_port'</span>) == <span class="str">'23'</span>:
+            violations.append(<span class="str">"Puerto Telnet (23) permitido"</span>)
+        
+        <span class="cmt"># SNMP público</span>
+        <span class="kw">if</span> entry.get(<span class="str">'dst_port'</span>) == <span class="str">'161'</span> <span class="kw">and</span> entry[<span class="str">'src_ip'</span>] == <span class="str">'any'</span>:
+            violations.append(<span class="str">"SNMP abierto a cualquier origen"</span>)
+    
+    <span class="kw">return</span> violations</code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 4 — NTP VERIFY
+═══════════════════════════════════════════ -->
+<div id="tab-ntp-verify" class="py1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Verificación de NTP — Integridad Temporal</h2>
+  <p>La sincronización horaria es crítica para correlacionar logs, certificados válidos, y troubleshooting. Verificar que todos los dispositivos usan NTP, están sincronizados, y tienen timezone correcto.</p>
+
+  <div class="code-block">
+    <div class="code-label">ntp_audit.py — Verificación de sincronización</div>
+    <pre><code><span class="kw">def</span> <span class="fn">auditar_ntp</span>(conn, device_name):
+    <span class="str">"""Verifica configuración NTP"""</span>
+    status = {
+        <span class="str">"device"</span>: device_name,
+        <span class="str">"ntp_configured"</span>: <span class="kw">False</span>,
+        <span class="str">"synchronized"</span>: <span class="kw">False</span>,
+        <span class="str">"stratum"</span>: <span class="kw">None</span>,
+        <span class="str">"servers"</span>: [],
+        <span class="str">"issues"</span>: []
+    }
+    
+    <span class="cmt"># Verificar servidores NTP configurados</span>
+    ntp_config = conn.send_command(<span class="str">"show run | include ntp server"</span>)
+    <span class="kw">if</span> <span class="str">"ntp server"</span> <span class="kw">in</span> ntp_config:
+        status[<span class="str">"ntp_configured"</span>] = <span class="kw">True</span>
+        <span class="cmt"># Extraer IPs de servidores</span>
+        <span class="kw">import</span> re
+        servers = re.findall(<span class="str">r"ntp server (\S+)"</span>, ntp_config)
+        status[<span class="str">"servers"</span>] = servers
+    <span class="kw">else</span>:
+        status[<span class="str">"issues"</span>].append(<span class="str">"No hay servidores NTP configurados"</span>)
+    
+    <span class="cmt"># Verificar estado de sincronización</span>
+    ntp_assoc = conn.send_command(<span class="str">"show ntp associations"</span>)
+    <span class="kw">if</span> <span class="str">"*"</span> <span class="kw">in</span> ntp_assoc <span class="kw">or</span> <span class="str">"~"</span> <span class="kw">in</span> ntp_assoc:
+        status[<span class="str">"synchronized"</span>] = <span class="kw">True</span>
+        
+        <span class="cmt"># Obtener stratum</span>
+        ntp_detail = conn.send_command(<span class="str">"show ntp status"</span>)
+        stratum_match = re.search(<span class="str">r"stratum (\d+)"</span>, ntp_detail)
+        <span class="kw">if</span> stratum_match:
+            status[<span class="str">"stratum"</span>] = <span class="fn">int</span>(stratum_match.group(<span class="num">1</span>))
+            <span class="kw">if</span> status[<span class="str">"stratum"</span>] > <span class="num">4</span>:
+                status[<span class="str">"issues"</span>].append(<span class="str">f"Stratum muy alto ({status['stratum']})"</span>)
+    <span class="kw">else</span>:
+        status[<span class="str">"issues"</span>].append(<span class="str">"No sincronizado con fuente NTP"</span>)
+    
+    <span class="cmt"># Verificar timezone</span>
+    clock_config = conn.send_command(<span class="str">"show run | include clock timezone"</span>)
+    <span class="kw">if</span> <span class="kw">not</span> clock_config:
+        status[<span class="str">"issues"</span>].append(<span class="str">"Timezone no configurado"</span>)
+    
+    <span class="kw">return</span> status</code></pre>
+  </div>
+
+  <h2 class="section-title">Validación de Timestamp en Logs</h2>
+  <div class="code-block">
+    <div class="code-label">Verificar logging timestamps</div>
+    <pre><code><span class="kw">def</span> <span class="fn">validar_logging</span>(conn):
+    <span class="str">"""Asegura que el logging incluya timestamps"""</span>
+    config = conn.send_command(<span class="str">"show run | include service timestamps"</span>)
+    
+    checks = {
+        <span class="str">"debug_timestamps"</span>: <span class="str">"service timestamps debug"</span> <span class="kw">in</span> config,
+        <span class="str">"log_timestamps"</span>: <span class="str">"service timestamps log"</span> <span class="kw">in</span> config,
+        <span class="str">"datetime"</span>: <span class="str">"datetime"</span> <span class="kw">in</span> config
+    }
+    
+    missing = [k <span class="kw">for</span> k, v <span class="kw">in</span> checks.items() <span class="kw">if</span> <span class="kw">not</span> v]
+    <span class="kw">return</span> <span class="fn">len</span>(missing) == <span class="num">0</span>, missing</code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 5 — COMPLIANCE FRAMEWORK
+═══════════════════════════════════════════ -->
+<div id="tab-compliance" class="py1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Framework de Compliance Automatizado</h2>
+  <p>Definir el "estado deseado" como código (Policy as Code) y verificar automáticamente contra configuraciones reales.</p>
+
+  <div class="code-block">
+    <div class="code-label">baseline_policy.yaml — Configuración estándar</div>
+    <pre><code><span class="cmt"># Políticas de seguridad base para routers Cisco</span>
+security_baseline:
+  ssh:
+    version: <span class="num">2</span>
+    timeout: <span class="num">10</span>
+    auth_retries: <span class="num">3</span>
+    vty_acl: <span class="str">"VTY-ACCESS"</span>
+  
+  console:
+    timeout: <span class="num">5</span>
+    password_required: <span class="kw">true</span>
+  
+  global:
+    service_password_encryption: <span class="kw">true</span>
+    no_ip_http_server: <span class="kw">true</span>
+    banner_motd: <span class="str">"AUTHORIZED ACCESS ONLY"</span>
+  
+  ntp:
+    servers:
+      - <span class="str">"10.0.0.1"</span>
+      - <span class="str">"10.0.0.2"</span>
+    stratum_max: <span class="num">3</span>
+  
+  interfaces:
+    shutdown_unused: <span class="kw">true</span>
+    description_required: <span class="kw">true</span></code></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">compliance_engine.py — Motor de comparación</div>
+    <pre><code><span class="kw">import</span> yaml
+<span class="kw">from</span> dataclasses <span class="kw">import</span> dataclass
+
+<span class="kw">@dataclass</span>
+<span class="kw">class</span> <span class="fn">ComplianceCheck</span>:
+    check_name: <span class="fn">str</span>
+    expected: <span class="fn">str</span>
+    actual: <span class="fn">str</span>
+    passed: <span class="fn">bool</span>
+    remediation: <span class="fn">str</span>
+
+<span class="kw">class</span> <span class="fn">ComplianceEngine</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, policy_file):
+        <span class="kw">with</span> <span class="fn">open</span>(policy_file) <span class="kw">as</span> f:
+            self.policy = yaml.safe_load(f)
+    
+    <span class="kw">def</span> <span class="fn">check_ssh_compliance</span>(self, device_config):
+        <span class="str">"""Compara config SSH contra baseline"""</span>
+        results = []
+        
+        <span class="cmt"># Check SSH version</span>
+        ssh_ver = <span class="num">1</span> <span class="kw">if</span> <span class="str">"ip ssh version 2"</span> <span class="kw">not</span> <span class="kw">in</span> device_config <span class="kw">else</span> <span class="num">2</span>
+        results.append(ComplianceCheck(
+            check_name=<span class="str">"SSH Version"</span>,
+            expected=<span class="str">"2"</span>,
+            actual=<span class="fn">str</span>(ssh_ver),
+            passed=ssh_ver == <span class="num">2</span>,
+            remediation=<span class="str">"configure terminal\nip ssh version 2"</span>
+        ))
+        
+        <span class="cmt"># Check timeout</span>
+        <span class="kw">import</span> re
+        timeout_match = re.search(<span class="str">r"exec-timeout (\d+)"</span>, device_config)
+        actual_timeout = <span class="fn">int</span>(timeout_match.group(<span class="num">1</span>)) <span class="kw">if</span> timeout_match <span class="kw">else</span> <span class="num">0</span>
+        expected = self.policy[<span class="str">'security_baseline'</span>][<span class="str">'ssh'</span>][<span class="str">'timeout'</span>]
+        
+        results.append(ComplianceCheck(
+            check_name=<span class="str">"VTY Timeout"</span>,
+            expected=<span class="fn">str</span>(expected),
+            actual=<span class="fn">str</span>(actual_timeout),
+            passed=actual_timeout <= expected,
+            remediation=<span class="str">f"line vty 0 4\nexec-timeout {expected}"</span>
+        ))
+        
+        <span class="kw">return</span> results
+    
+    <span class="kw">def</span> <span class="fn">generate_remediation_script</span>(self, failed_checks):
+        <span class="str">"""Genera script de corrección"""</span>
+        script = [<span class="str">"! Script de remediación generado automáticamente"</span>]
+        <span class="kw">for</span> check <span class="kw">in</span> failed_checks:
+            <span class="kw">if</span> <span class="kw">not</span> check.passed:
+                script.append(<span class="str">f"! Fix: {check.check_name}"</span>)
+                script.append(check.remediation)
+                script.append(<span class="str">"!"</span>)
+        <span class="kw">return</span> <span class="str">"\n"</span>.join(script)</code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 6 — REPORTES
+═══════════════════════════════════════════ -->
+<div id="tab-reportes" class="py1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Generación de Reportes Ejecutivos</h2>
+  <p>Convertir datos técnicos de compliance en reportes comprensibles para auditores y management: dashboards HTML, Excel para análisis, y JSON para integración con SIEM.</p>
+
+  <div class="code-block">
+    <div class="code-label">Generación multi-formato</div>
+    <pre><code><span class="kw">import</span> json
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">from</span> datetime <span class="kw">import</span> datetime
+<span class="kw">from</span> jinja2 <span class="kw">import</span> Template
+
+<span class="kw">class</span> <span class="fn">ReportGenerator</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, audit_results):
+        self.results = audit_results
+        self.timestamp = datetime.now().isoformat()
+    
+    <span class="kw">def</span> <span class="fn">to_json</span>(self, filename):
+        <span class="str">"""Exporta para integración con otros sistemas"""</span>
+        <span class="kw">with</span> <span class="fn">open</span>(filename, <span class="str">'w'</span>) <span class="kw">as</span> f:
+            json.dump({
+                <span class="str">"audit_date"</span>: self.timestamp,
+                <span class="str">"summary"</span>: self._get_summary(),
+                <span class="str">"details"</span>: self.results
+            }, f, indent=<span class="num">2</span>)
+    
+    <span class="kw">def</span> <span class="fn">to_excel</span>(self, filename):
+        <span class="str">"""Reporte para equipos de operaciones"""</span>
+        <span class="cmt"># Crear DataFrame con resultados</span>
+        rows = []
+        <span class="kw">for</span> device <span class="kw">in</span> self.results:
+            rows.append({
+                <span class="str">"Device"</span>: device[<span class="str">'device'</span>],
+                <span class="str">"Compliance %"</span>: device.get(<span class="str">'compliance_score'</span>, <span class="num">0</span>),
+                <span class="str">"Critical Issues"</span>: <span class="fn">len</span>([e <span class="kw">for</span> e <span class="kw">in</span> device.get(<span class="str">'errores'</span>, []) 
+                                      <span class="kw">if</span> <span class="str">"CRÍTICO"</span> <span class="kw">in</span> e]),
+                <span class="str">"Status"</span>: <span class="str">"PASS"</span> <span class="kw">if</span> device.get(<span class="str">'compliance'</span>) <span class="kw">else</span> <span class="str">"FAIL"</span>
+            })
+        
+        df = pd.DataFrame(rows)
+        
+        <span class="cmt"># Crear Excel con formato condicional</span>
+        <span class="kw">with</span> pd.ExcelWriter(filename, engine=<span class="str">'xlsxwriter'</span>) <span class="kw">as</span> writer:
+            df.to_excel(writer, sheet_name=<span class="str">'Compliance'</span>, index=<span class="kw">False</span>)
+            workbook = writer.book
+            worksheet = writer.sheets[<span class="str">'Compliance'</span>]
+            
+            <span class="cmt"># Formato rojo para FAIL</span>
+            red_format = workbook.add_format({
+                <span class="str">'bg_color'</span>: <span class="str">'#FFC7CE'</span>,
+                <span class="str">'font_color'</span>: <span class="str">'#9C0006'</span>
+            })
+            worksheet.conditional_format(<span class="str">'D2:D1000'</span>, {
+                <span class="str">'type'</span>: <span class="str">'cell'</span>,
+                <span class="str">'criteria'</span>: <span class="str">'equal to'</span>,
+                <span class="str">'value'</span>: <span class="str">'"FAIL"'</span>,
+                <span class="str">'format'</span>: red_format
+            })
+    
+    <span class="kw">def</span> <span class="fn">to_html_executive</span>(self, filename):
+        <span class="str">"""Dashboard HTML para ejecutivos"""</span>
+        template = Template(<span class="str">"""
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Compliance Report {{ date }}&lt;/title&gt;
+    &lt;style&gt;
+        body { font-family: Arial, sans-serif; margin: 40px; background: #f5f5f5; }
+        .header { background: #2c3e50; color: white; padding: 20px; border-radius: 8px; }
+        .metric { display: inline-block; margin: 20px; padding: 20px; background: white; 
+                  border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .score { font-size: 48px; font-weight: bold; color: #27ae60; }
+        .fail { color: #e74c3c; }
+        table { width: 100%; background: white; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #34495e; color: white; }
+        .critical { background: #ffebee; color: #c62828; font-weight: bold; }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class="header"&gt;
+        &lt;h1&gt;🛡️ Network Compliance Report&lt;/h1&gt;
+        &lt;p&gt;Generated: {{ date }}&lt;/p&gt;
+    &lt;/div&gt;
+    
+    &lt;div class="metric"&gt;
+        &lt;h3&gt;Compliance Score&lt;/h3&gt;
+        &lt;div class="score {% if overall_score < 80 %}fail{% endif %}"&gt;
+            {{ overall_score }}%
+        &lt;/div&gt;
+    &lt;/div&gt;
+    
+    &lt;div class="metric"&gt;
+        &lt;h3&gt;Devices Audited&lt;/h3&gt;
+        &lt;div class="score"&gt;{{ total_devices }}&lt;/div&gt;
+    &lt;/div&gt;
+    
+    &lt;div class="metric"&gt;
+        &lt;h3&gt;Critical Issues&lt;/h3&gt;
+        &lt;div class="score fail"&gt;{{ total_critical }}&lt;/div&gt;
+    &lt;/div&gt;
+    
+    &lt;table&gt;
+        &lt;tr&gt;
+            &lt;th&gt;Device&lt;/th&gt;
+            &lt;th&gt;Status&lt;/th&gt;
+            &lt;th&gt;Score&lt;/th&gt;
+            &lt;th&gt;Issues Found&lt;/th&gt;
+        &lt;/tr&gt;
+        {% for device in devices %}
+        &lt;tr&gt;
+            &lt;td&gt;{{ device.device }}&lt;/td&gt;
+            &lt;td class="{% if not device.compliance %}critical{% endif %}"&gt;
+                {{ "PASS" if device.compliance else "FAIL" }}
+            &lt;/td&gt;
+            &lt;td&gt;{{ device.compliance_score }}%&lt;/td&gt;
+            &lt;td&gt;{{ device.errores|join(", ") }}&lt;/td&gt;
+        &lt;/tr&gt;
+        {% endfor %}
+    &lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+        """</span>)
+        
+        html = template.render(
+            date=self.timestamp,
+            devices=self.results,
+            overall_score=self._calculate_overall(),
+            total_devices=<span class="fn">len</span>(self.results),
+            total_critical=self._count_critical()
+        )
+        
+        <span class="kw">with</span> <span class="fn">open</span>(filename, <span class="str">'w'</span>) <span class="kw">as</span> f:
+            f.write(html)
+    
+    <span class="kw">def</span> <span class="fn">_calculate_overall</span>(self):
+        <span class="kw">if</span> <span class="kw">not</span> self.results:
+            <span class="kw">return</span> <span class="num">0</span>
+        <span class="kw">return</span> <span class="fn">round</span>(<span class="fn">sum</span>(r.get(<span class="str">'compliance_score'</span>, <span class="num">0</span>) <span class="kw">for</span> r <span class="kw">in</span> self.results) / <span class="fn">len</span>(self.results))</code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 7 — ALERTAS
+═══════════════════════════════════════════ -->
+<div id="tab-alertas" class="py1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Sistema de Alertas y Notificaciones</h2>
+  <p>Detectar desviaciones críticas en tiempo real y notificar vía email, Slack, SMS o webhook a los equipos de seguridad.</p>
+
+  <div class="code-block">
+    <div class="code-label">alert_manager.py — Gestión de alertas</div>
+    <pre><code><span class="kw">import</span> smtplib
+<span class="kw">from</span> email.mime.text <span class="kw">import</span> MIMEText
+<span class="kw">from</span> datetime <span class="kw">import</span> datetime
+<span class="kw">import</span> requests
+
+<span class="kw">class</span> <span class="fn">AlertManager</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, config):
+        self.config = config
+        self.critical_threshold = config.get(<span class="str">'critical_threshold'</span>, <span class="num">90</span>)
+    
+    <span class="kw">def</span> <span class="fn">process_audit_results</span>(self, results):
+        <span class="str">"""Analiza resultados y dispara alertas si es necesario"""</span>
+        alerts = []
+        
+        <span class="kw">for</span> device <span class="kw">in</span> results:
+            score = device.get(<span class="str">'compliance_score'</span>, <span class="num">100</span>)
+            
+            <span class="cmt"># Alerta por score bajo</span>
+            <span class="kw">if</span> score < <span class="num">50</span>:
+                alerts.append({
+                    <span class="str">"severity"</span>: <span class="str">"CRITICAL"</span>,
+                    <span class="str">"device"</span>: device[<span class="str">'device'</span>],
+                    <span class="str">"message"</span>: <span class="str">f"Compliance score crítico: {score}%"</span>,
+                    <span class="str">"timestamp"</span>: datetime.now().isoformat()
+                })
+            
+            <span class="cmt"># Alerta por errores específicos</span>
+            <span class="kw">for</span> error <span class="kw">in</span> device.get(<span class="str">'errores'</span>, []):
+                <span class="kw">if</span> <span class="str">"Telnet"</span> <span class="kw">in</span> error <span class="kw">or</span> <span class="str">"ACL"</span> <span class="kw">in</span> error:
+                    alerts.append({
+                        <span class="str">"severity"</span>: <span class="str">"HIGH"</span>,
+                        <span class="str">"device"</span>: device[<span class="str">'device'</span>],
+                        <span class="str">"message"</span>: error,
+                        <span class="str">"category"</span>: <span class="str">"Security"</span>
+                    })
+        
+        <span class="kw">if</span> alerts:
+            self._send_notifications(alerts)
+        
+        <span class="kw">return</span> alerts
+    
+    <span class="kw">def</span> <span class="fn">_send_notifications</span>(self, alerts):
+        <span class="str">"""Envía alertas por múltiples canales"""</span>
+        <span class="cmt"># Email</span>
+        <span class="kw">if</span> self.config.get(<span class="str">'email_enabled'</span>):
+            self._send_email(alerts)
+        
+        <span class="cmt"># Slack</span>
+        <span class="kw">if</span> self.config.get(<span class="str">'slack_webhook'</span>):
+            self._send_slack(alerts)
+        
+        <span class="cmt"># SMS (via Twilio o similar)</span>
+        <span class="kw">if</span> self.config.get(<span class="str">'sms_enabled'</span>):
+            self._send_sms(alerts)
+    
+    <span class="kw">def</span> <span class="fn">_send_slack</span>(self, alerts):
+        <span class="str">"""Notifica a Slack via webhook"""</span>
+        webhook_url = self.config[<span class="str">'slack_webhook'</span>]
+        
+        <span class="kw">for</span> alert <span class="kw">in</span> alerts:
+            color = <span class="str">"#ff0000"</span> <span class="kw">if</span> alert[<span class="str">'severity'</span>] == <span class="str">"CRITICAL"</span> <span class="kw">else</span> <span class="str">"#ff9900"</span>
+            
+            payload = {
+                <span class="str">"attachments"</span>: [{
+                    <span class="str">"color"</span>: color,
+                    <span class="str">"title"</span>: <span class="str">f"🚨 {alert['severity']} Security Alert"</span>,
+                    <span class="str">"text"</span>: <span class="str">f"Device: {alert['device']}\n{alert['message']}"</span>,
+                    <span class="str">"footer"</span>: <span class="str">"Network Compliance System"</span>,
+                    <span class="str">"ts"</span>: <span class="fn">int</span>(datetime.now().timestamp())
+                }]
+            }
+            
+            requests.post(webhook_url, json=payload)</code></pre>
+  </div>
+
+  <h2 class="section-title">Programación de Auditorías</h2>
+  <div class="code-block">
+    <div class="code-label">scheduler.py — Ejecución periódica</div>
+    <pre><code><span class="kw">from</span> apscheduler.schedulers.blocking <span class="kw">import</span> BlockingScheduler
+<span class="kw">from</span> datetime <span class="kw">import</span> datetime
+
+<span class="kw">def</span> <span class="fn">job_auditoria_diaria</span>():
+    <span class="str">"""Ejecuta auditoría completa y envía reporte"""</span>
+    <span class="fn">print</span>(<span class="str">f"[{datetime.now()}] Iniciando auditoría programada..."</span>)
+    
+    <span class="cmt"># Ejecutar checks</span>
+    results = run_compliance_audit()
+    
+    <span class="cmt"># Generar reporte</span>
+    reporter = ReportGenerator(results)
+    reporter.to_html_executive(<span class="str">"daily_report.html"</span>)
+    
+    <span class="cmt"># Verificar alertas</span>
+    alert_mgr = AlertManager(config)
+    alert_mgr.process_audit_results(results)
+
+<span class="cmt"># Configurar scheduler</span>
+scheduler = BlockingScheduler()
+scheduler.add_job(job_auditoria_diaria, <span class="str">'cron'</span>, hour=<span class="num">8</span>, minute=<span class="num">0</span>)  <span class="cmt"># 8:00 AM diario</span>
+scheduler.add_job(job_auditoria_diaria, <span class="str">'interval'</span>, hours=<span class="num">6</span>)  <span class="cmt"># Cada 6 horas</span>
+
+<span class="fn">print</span>(<span class="str">"Scheduler iniciado. Presiona Ctrl+C para detener."</span>)
+scheduler.start()</code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 8 — PROYECTO
+═══════════════════════════════════════════ -->
+<div id="tab-proyecto" class="py1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">🚀 Proyecto Final — Sistema de Compliance Enterprise</h2>
+  <p>Script completo que integra todo: inventario, verificación SSH/ACL/NTP, motor de políticas, reportes HTML/Excel, y alertas automáticas.</p>
+
+  <div class="code-block">
+    <div class="code-label">compliance_system.py — Sistema integral (150 líneas)</div>
+    <pre><code><span class="cmt">#!/usr/bin/env python3
+"""
+Sistema de Auditoría de Compliance Cisco
+─────────────────────────────────────────
+Verifica: SSH, ACLs, NTP, Logging, Interfaces
+Genera: Reportes HTML/Excel, Alertas Slack
+─────────────────────────────────────────
+"""</span>
+
+<span class="kw">import</span> yaml
+<span class="kw">import</span> json
+<span class="kw">from</span> datetime <span class="kw">import</span> datetime
+<span class="kw">from</span> dataclasses <span class="kw">import</span> dataclass, asdict
+<span class="kw">from</span> typing <span class="kw">import</span> <span class="fn">List</span>
+<span class="kw">from</span> netmiko <span class="kw">import</span> ConnectHandler
+<span class="kw">from</span> ntc_templates.parse <span class="kw">import</span> parse_output
+
+<span class="kw">@dataclass</span>
+<span class="kw">class</span> <span class="fn">AuditResult</span>:
+    device: <span class="fn">str</span>
+    compliant: <span class="fn">bool</span>
+    score: <span class="fn">int</span>
+    checks: <span class="fn">dict</span>
+    violations: <span class="fn">List</span>[<span class="fn">str</span>]
+    remediation: <span class="fn">List</span>[<span class="fn">str</span>]
+
+<span class="kw">class</span> <span class="fn">ComplianceAuditor</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, policy_file=<span class="str">"policy.yaml"</span>):
+        <span class="kw">with</span> <span class="fn">open</span>(policy_file) <span class="kw">as</span> f:
+            self.policy = yaml.safe_load(f)
+    
+    <span class="kw">def</span> <span class="fn">audit_device</span>(self, device_params):
+        <span class="str">"""Audita un dispositivo completo"""</span>
+        results = {
+            <span class="str">"ssh_ok"</span>: <span class="kw">False</span>,
+            <span class="str">"acl_ok"</span>: <span class="kw">False</span>,
+            <span class="str">"ntp_ok"</span>: <span class="kw">False</span>,
+            <span class="str">"logging_ok"</span>: <span class="kw">False</span>
+        }
+        violations = []
+        remediation = []
+        
+        <span class="kw">try</span>:
+            <span class="kw">with</span> ConnectHandler(**device_params) <span class="kw">as</span> conn:
+                conn.enable()
+                
+                <span class="cmt"># 1. SSH Audit</span>
+                ssh_check = self._check_ssh(conn)
+                results[<span class="str">"ssh_ok"</span>] = <span class="fn">len</span>(ssh_check) == <span class="num">0</span>
+                violations.extend(ssh_check)
+                
+                <span class="cmt"># 2. ACL Audit</span>
+                acl_check = self._check_acls(conn)
+                results[<span class="str">"acl_ok"</span>] = <span class="fn">len</span>(acl_check) == <span class="num">0</span>
+                violations.extend(acl_check)
+                
+                <span class="cmt"># 3. NTP Audit</span>
+                ntp_check = self._check_ntp(conn)
+                results[<span class="str">"ntp_ok"</span>] = <span class="fn">len</span>(ntp_check) == <span class="num">0</span>
+                violations.extend(ntp_check)
+                
+                <span class="cmt"># Generar comandos de remediación</span>
+                remediation = self._generate_fixes(violations)
+                
+        <span class="kw">except</span> Exception <span class="kw">as</span> e:
+            violations.append(<span class="str">f"Connection error: {str(e)}"</span>)
+        
+        <span class="cmt"># Calcular score</span>
+        score = <span class="fn">sum</span>([<span class="num">25</span> <span class="kw">for</span> v <span class="kw">in</span> results.values() <span class="kw">if</span> v])
+        
+        <span class="kw">return</span> AuditResult(
+            device=device_params[<span class="str">'host'</span>],
+            compliant=<span class="fn">len</span>(violations) == <span class="num">0</span>,
+            score=score,
+            checks=results,
+            violations=violations,
+            remediation=remediation
+        )
+    
+    <span class="kw">def</span> <span class="fn">_check_ssh</span>(self, conn):
+        issues = []
+        cfg = conn.send_command(<span class="str">"show run | sec line vty"</span>)
+        
+        <span class="kw">if</span> <span class="str">"transport input ssh"</span> <span class="kw">not</span> <span class="kw">in</span> cfg:
+            issues.append(<span class="str">"SSH no forzado en VTY"</span>)
+        <span class="kw">if</span> <span class="str">"access-class"</span> <span class="kw">not</span> <span class="kw">in</span> cfg:
+            issues.append(<span class="str">"VTY sin ACL de acceso"</span>)
+        
+        <span class="kw">return</span> issues
+    
+    <span class="kw">def</span> <span class="fn">_check_acls</span>(self, conn):
+        issues = []
+        <span class="cmt"># Implementación simplificada</span>
+        acls = conn.send_command(<span class="str">"show ip access-lists"</span>, use_textfsm=<span class="kw">True</span>)
+        <span class="kw">for</span> acl <span class="kw">in</span> acls:
+            <span class="kw">if</span> <span class="str">"permit ip any any"</span> <span class="kw">in</span> str(acl):
+                issues.append(<span class="str">f"ACL {acl.get('acl_name')}: permit any any"</span>)
+        <span class="kw">return</span> issues
+    
+    <span class="kw">def</span> <span class="fn">_check_ntp</span>(self, conn):
+        issues = []
+        ntp_cfg = conn.send_command(<span class="str">"show run | include ntp"</span>)
+        <span class="kw">if</span> <span class="kw">not</span> ntp_cfg:
+            issues.append(<span class="str">"NTP no configurado"</span>)
+        <span class="kw">return</span> issues
+    
+    <span class="kw">def</span> <span class="fn">_generate_fixes</span>(self, violations):
+        fixes = []
+        <span class="kw">for</span> v <span class="kw">in</span> violations:
+            <span class="kw">if</span> <span class="str">"SSH"</span> <span class="kw">in</span> v:
+                fixes.append(<span class="str">"line vty 0 4\n transport input ssh"</span>)
+            <span class="kw">elif</span> <span class="str">"NTP"</span> <span class="kw">in</span> v:
+                fixes.append(<span class="str">"ntp server 10.0.0.1"</span>)
+        <span class="kw">return</span> fixes
+
+<span class="cmt"># EJECUCIÓN PRINCIPAL</span>
+<span class="kw">if</span> __name__ == <span class="str">"__main__"</span>:
+    auditor = ComplianceAuditor()
+    
+    inventory = [
+        {<span class="str">"device_type"</span>: <span class="str">"cisco_ios"</span>, <span class="str">"host"</span>: <span class="str">"192.168.1.1"</span>, 
+         <span class="str">"username"</span>: <span class="str">"admin"</span>, <span class="str">"password"</span>: <span class="str">"cisco123"</span>},
+        {<span class="str">"device_type"</span>: <span class="str">"cisco_ios"</span>, <span class="str">"host"</span>: <span class="str">"192.168.1.2"</span>, 
+         <span class="str">"username"</span>: <span class="str">"admin"</span>, <span class="str">"password"</span>: <span class="str">"cisco123"</span>}
+    ]
+    
+    results = []
+    <span class="kw">for</span> dev <span class="kw">in</span> inventory:
+        result = auditor.audit_device(dev)
+        results.append(asdict(result))
+        <span class="fn">print</span>(<span class="str">f"Audit {dev['host']}: {'PASS' if result.compliant else 'FAIL'} ({result.score}%)"</span>)
+    
+    <span class="cmt"># Guardar JSON</span>
+    <span class="kw">with</span> <span class="fn">open</span>(<span class="str">f"audit_{datetime.now().strftime('%Y%m%d')}.json"</span>, <span class="str">'w'</span>) <span class="kw">as</span> f:
+        json.dump(results, f, indent=<span class="num">2</span>)</code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 9 — REFERENCIA
+═══════════════════════════════════════════ -->
+<div id="tab-referencia" class="py1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Tabla de Referencia — Compliance & Auditoría</h2>
+  <div id="refTablePy6">
+    <!-- Generado por JS -->
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 10 — QUIZ
+═══════════════════════════════════════════ -->
+<div id="tab-quiz" class="py1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Quiz — Auditoría y Compliance</h2>
+  <p style="font-size:.83rem;color:#6b7a9a;margin-bottom:20px;">10 preguntas sobre verificación automatizada de seguridad en redes.</p>
+  <div id="quizContainerPy6">
+    <!-- Generado por JS -->
+  </div>
+</div>
+</div>
+
+</div><!-- /.tabs-wrap -->
+
+<script>
+// ── NAVEGACIÓN DRAWER ────────────────────────────────
+function ccnaToggle() {
+  document.getElementById('ccnaDrawer').classList.toggle('open');
+  document.getElementById('ccnaOverlay').classList.toggle('show');
+}
+function ccnaClose() {
+  document.getElementById('ccnaDrawer').classList.remove('open');
+  document.getElementById('ccnaOverlay').classList.remove('show');
+}
+
+// ── TABS ──────────────────────────────────────────────
+function showTabPy6(id, btn) {
+  document.querySelectorAll('.py1-tab-content').forEach(t => t.classList.remove('py1-active'));
+  document.querySelectorAll('.py1-tab-btn').forEach(b => b.classList.remove('py1-active'));
+  document.getElementById('tab-' + id).classList.add('py1-active');
+  if (btn) btn.classList.add('py1-active');
+}
+
+// ── TABLA DE REFERENCIA ──────────────────────────────
+function buildRefTable() {
+  const container = document.getElementById('refTablePy6');
+  if (!container) return;
+  
+  const secciones = [
+    {
+      titulo: 'CHECKS DE SEGURIDAD',
+      cols: ['Elemento','Comando Verificación','Política Recomendada'],
+      filas: [
+        ['SSH Version','<code>show ip ssh</code>','Versión 2 exclusiva'],
+        ['VTY Transport','<code>show run | sec line vty</code>','<code>transport input ssh</code>'],
+        ['VTY Timeout','<code>show run | sec line vty</code>','<code>exec-timeout 10</code>'],
+        ['VTY ACL','<code>show run | sec line vty</code>','<code>access-class VTY-IN in</code>'],
+        ['NTP Sync','<code>show ntp status</code>','Synchronized, Stratum < 4'],
+        ['NTP Servers','<code>show run | inc ntp</code>','Al menos 2 servidores'],
+        ['ACL Interfaces','<code>show ip interface</code>','ACLs en todas las WAN'],
+        ['Password Encryption','<code>show run | inc service password</code>','Habilitado'],
+        ['Console Timeout','<code>show run | sec line con</code>','<code>exec-timeout 5 0</code>'],
+      ]
+    },
+    {
+      titulo: 'SEVERIDAD DE HALLAZGOS',
+      cols: ['Nivel','Ejemplo','Acción'],
+      filas: [
+        ['CRÍTICO','Telnet habilitado','Remediación inmediata'],
+        ['ALTO','VTY sin ACL','Remediación 24h'],
+        ['MEDIO','Timeout > 10 min','Remediación planificada'],
+        ['BAJO','Stratum NTP alto','Monitoreo'],
+        ['INFO','Descripción de interfaz vacía','Documentar'],
+      ]
+    },
+    {
+      titulo: 'FORMATOS DE REPORTE',
+      cols: ['Formato','Uso','Librería'],
+      filas: [
+        ['JSON','Integración SIEM/API','json'],
+        ['Excel','Análisis operaciones','pandas'],
+        ['HTML','Dashboard ejecutivos','jinja2'],
+        ['YAML','Config Baseline','pyyaml'],
+        ['PDF','Entregables auditoría','reportlab'],
+      ]
+    }
+  ];
+
+  let html = '';
+  secciones.forEach(sec => {
+    html += `<h3 style="font-family:Orbitron,sans-serif;font-size:.8rem;color:#5b9bd5;letter-spacing:2px;margin:24px 0 10px;text-transform:uppercase;">▸ ${sec.titulo}</h3>`;
+    html += `<div class="table-wrap"><table class="ref-table"><thead><tr>${sec.cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>`;
+    sec.filas.forEach(f => { html += '<tr>' + f.map(c=>`<td>${c}</td>`).join('') + '</tr>'; });
+    html += '</tbody></table></div>';
+  });
+  container.innerHTML = html;
+}
+
+// ── QUIZ ─────────────────────────────────────────────
+function initQuiz() {
+  const container = document.getElementById('quizContainerPy6');
+  if (!container) return;
+
+  const qs = [
+    {
+      q: '¿Qué comando verifica que SSH v2 está habilitado exclusivamente?',
+      opts: ['<code>show ssh</code>','<code>show ip ssh</code>','<code>show crypto key</code>','<code>show line vty</code>'],
+      ans: 1,
+      exp: '<code>show ip ssh</code> muestra la versión habilitada. Debe indicar "SSH Enabled - version 2.0".'
+    },
+    {
+      q: '¿Qué indica un stratum NTP de 16?',
+      opts: ['Servidor primario (atómico)','Sincronización perfecta','No sincronizado','Servidor secundario'],
+      ans: 2,
+      exp: 'Stratum 16 indica que el reloj no está sincronizado. Stratum 1 es un servidor con reloj de referencia (GPS/radio), y valores más altos indican niveles jerárquicos de sincronización.'
+    },
+    {
+      q: 'En una auditoría de ACLs, ¿qué regla es considerada CRÍTICA?',
+      opts: ['<code>deny ip any any log</code>','<code>permit tcp any any eq 443</code>','<code>permit ip any any</code>','<code>deny ip 10.0.0.0 0.255.255.255 any</code>'],
+      ans: 2,
+      exp: '<code>permit ip any any</code> permite todo el tráfico, invalidando la seguridad de perímetro. Es una regla "shadow" que anula controles y debe remediarse inmediatamente.'
+    },
+    {
+      q: '¿Cuál es el propósito de <code>exec-timeout</code> en líneas VTY?',
+      opts: ['Limitar el número de conexiones SSH','Cerrar sesiones inactivas automáticamente','Forzar autenticación cada 10 minutos','Limitar la velocidad de conexión'],
+      ans: 1,
+      exp: '<code>exec-timeout 10 0</code> cierra la sesión después de 10 minutos de inactividad, reduciendo el riesgo de sesiones abandonadas abiertas.'
+    },
+    {
+      q: '¿Qué información NO es relevante para un reporte de compliance?',
+      opts: ['Porcentaje de dispositivos compliant','Lista de violaciones críticas','Detalle de tablas ARP','Score de seguridad por dispositivo'],
+      ans: 2,
+      exp: 'Las tablas ARP son información operativa transitoria. Los reportes de compliance se enfocan en configuraciones estáticas de seguridad (SSH, ACLs, NTP), no en datos dinámicos de red.'
+    },
+    {
+      q: '¿Qué significa "Policy as Code" en automatización de red?',
+      opts: ['Escribir políticas en papel','Definir configuraciones estándar en archivos YAML/JSON auditables','Usar solo comandos CLI','Documentar en wikis'],
+      ans: 1,
+      exp: 'Policy as Code define el estado deseado de la red en archivos versionables (YAML), permitiendo validación automática y GitOps para infraestructura.'
+    },
+    {
+      q: '¿Cuál es la mejor práctica para VTY ACLs?',
+      opts: ['Permitir any any para no bloquear administradores','Restringir a subnets de management específicas','Deshabilitar VTYs','Usar solo autenticación local'],
+      ans: 1,
+      exp: 'Las VTY deben tener <code>access-class</code> aplicadas restringiendo el acceso a las subnets de management (ej: 10.0.0.0/24), no aceptar conexiones desde cualquier origen.'
+    },
+    {
+      q: 'Un dispositivo tiene SSH v2, NTP sync, ACLs correctas, pero logging deshabilitado. ¿Cuál es su compliance score aproximado?',
+      opts: ['100%','75%','25%','0%'],
+      ans: 1,
+      exp: 'Falta 1 de 4 controles críticos (~25%), por lo tanto el score sería aproximadamente 75%. Los reportes deben ponderar controles críticos vs opcionales.'
+    },
+    {
+      q: '¿Qué herramienta Python permite scheduling de auditorías periódicas?',
+      opts: ['Time','Sleep','APScheduler','Cron (solo Linux)'],
+      ans: 2,
+      exp: 'APScheduler (Advanced Python Scheduler) permite programar jobs complejos en Python sin depender del cron del sistema operativo, facilitando la portabilidad.'
+    },
+    {
+      q: '¿Qué debe incluir un sistema de alertas para compliance?',
+      opts: ['Solo email','Notificación inmediata de violaciones críticas vía múltiples canales','Reportes mensuales','Logs locales únicamente'],
+      ans: 1,
+      exp: 'Un sistema de alertas efectivo notifica inmediatamente (Slack, email, SMS) cuando se detectan violaciones CRÍTICAS (ej: Telnet habilitado), no espera al reporte mensual.'
+    }
+  ];
+
+  let html = '';
+  qs.forEach((q, i) => {
+    html += `<div class="quiz-question" id="qpy${i}">
+      <div class="quiz-q-num">PREGUNTA ${i+1} DE ${qs.length} · M8 Compliance Tema 6</div>
+      <div class="quiz-q-text">${q.q}</div>
+      <div class="quiz-opts">
+        ${q.opts.map((o,j) => `<button class="quiz-opt" data-qi="${i}" data-sel="${j}" data-ans="${q.ans}">${o}</button>`).join('')}
+      </div>
+    </div>`;
+  });
+  container.innerHTML = html;
+
+  window._py6Exp = {};
+  qs.forEach((q, i) => { window._py6Exp[i] = q.exp; });
+
+  container.querySelectorAll('.quiz-opt').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const qi  = parseInt(this.dataset.qi);
+      const sel = parseInt(this.dataset.sel);
+      const ans = parseInt(this.dataset.ans);
+      const qDiv = document.getElementById('qpy' + qi);
+      const btns = qDiv.querySelectorAll('.quiz-opt');
+      
+      btns.forEach(b => b.disabled = true);
+      btns[sel].classList.add(sel === ans ? 'correct' : 'wrong');
+      if (sel !== ans) btns[ans].classList.add('correct');
+      
+      const expDiv = document.createElement('div');
+      expDiv.className = 'quiz-explanation';
+      expDiv.innerHTML = `<strong>${sel===ans ? '✅ Correcto!' : '❌ Incorrecto.'}</strong> ${window._py6Exp[qi]}`;
+      qDiv.appendChild(expDiv);
+    });
+  });
+}
+
+// ── INICIALIZACIÓN ────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  buildRefTable();
+  initQuiz();
+});
+</script>
+</body>
+</html>
+
