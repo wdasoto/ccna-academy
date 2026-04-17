@@ -863,4 +863,31 @@ function initQuiz() {
       const qi  = parseInt(this.dataset.qi);
       const sel = parseInt(this.dataset.sel);
       const ans = parseInt(this.dataset.ans);
-      const qDiv = document.get
+            const qDiv = document.getElementById('qpy3-' + qi);
+      const btns = qDiv.querySelectorAll('.quiz-opt');
+      
+      // Deshabilitar todos los botones de esta pregunta
+      btns.forEach(b => b.disabled = true);
+      
+      // Marcar selección
+      btns[sel].classList.add(sel === ans ? 'correct' : 'wrong');
+      if (sel !== ans) btns[ans].classList.add('correct');
+      
+      // Mostrar explicación
+      const expDiv = document.createElement('div');
+      expDiv.className = 'quiz-explanation';
+      expDiv.innerHTML = `<strong>${sel===ans ? '✅ Correcto!' : '❌ Incorrecto.'}</strong> ${window._py3Exp[qi]}`;
+      qDiv.appendChild(expDiv);
+    });
+  });
+}
+
+// ── INICIALIZACIÓN ────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  buildRefTable();
+  initQuiz();
+});
+</script>
+</body>
+</html>
+
