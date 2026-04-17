@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fundamentos de JSON — Tema 1 | JSON y Datos | CCNA Academy</title>
+  <meta name="description" content="Sintaxis JSON desde cero para networking: objetos, arrays, tipos de datos (string, number, boolean, null), anidamiento y validación RFC 7159. Ejemplos con configuraciones Cisco y APIs de red.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── HERO acento JSON (Dorado/Ámbar) ── */
+.class-hero { background: linear-gradient(135deg, #06080f 0%, #0f0d05 40%, #0a0d18 100%); }
+
+/* ── TIPOS DE DATOS JSON GRID ── */
+.json-types-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:10px; margin:16px 0; }
+.json-type-card { background:#090d1a; border:1px solid rgba(251,191,36,.15); border-radius:10px; padding:14px 10px; text-align:center; }
+.json-type-icon { font-size:1.5rem; margin-bottom:6px; }
+.json-type-name { font-family:'Orbitron',sans-serif; font-size:.72rem; color:#fbbf24; margin-bottom:4px; letter-spacing:1px; }
+.json-type-ex   { font-family:'Share Tech Mono',monospace; font-size:.65rem; color:#fbbf24; margin-bottom:4px; background:rgba(251,191,36,.08); padding:2px 6px; border-radius:4px; }
+.json-type-use  { font-size:.68rem; color:#4a5780; line-height:1.4; }
+
+/* ── BASE CLASS STYLES (clonado de Python Tema 1) ── */
+body{font-family:'Exo 2',sans-serif;background:#07090f;color:#e2e8f0;}
+.class-hero{padding:56px 24px 48px;border-bottom:1px solid rgba(251,191,36,.08);position:relative;overflow:hidden;}
+.class-hero::before{content:'';position:absolute;top:-60px;right:-80px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(251,191,36,.06) 0%,transparent 70%);pointer-events:none;}
+.class-hero-inner{max-width:900px;margin:0 auto;position:relative;z-index:1;}
+.class-badge{font-family:'Share Tech Mono',monospace;font-size:.63rem;color:#fbbf24;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;}
+.class-title{font-family:'Orbitron',sans-serif;font-size:clamp(1.6rem,3.8vw,2.6rem);font-weight:900;letter-spacing:3px;color:#c2d0e8;margin-bottom:12px;line-height:1.1;}
+.class-subtitle{font-size:.92rem;color:#6b7a9a;line-height:1.72;margin-bottom:20px;max-width:700px;}
+.class-meta{display:flex;gap:12px;flex-wrap:wrap;}
+.meta-item{font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#374060;padding:4px 10px;border:1px solid rgba(251,191,36,.1);border-radius:4px;}
+.json1-tabs-wrap{max-width:1100px;margin:0 auto;padding:0 16px 40px;}
+.json1-tabs-bar{display:flex;gap:4px;padding:20px 0 0;flex-wrap:wrap;border-bottom:1px solid rgba(251,191,36,.1);margin-bottom:0;}
+.json1-tab-btn{padding:8px 13px;border-radius:8px 8px 0 0;font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#4a5780;background:none;border:1px solid transparent;cursor:pointer;transition:all .18s;white-space:nowrap;border-bottom:none;}
+.json1-tab-btn:hover{color:#c2d0e8;background:rgba(251,191,36,.05);}
+.json1-tab-btn.json1-active{color:#fbbf24;background:#0d1220;border-color:rgba(251,191,36,.25);border-bottom:1px solid #0d1220;}
+.json1-tab-content{display:none;background:#0d1220;border:1px solid rgba(251,191,36,.08);border-top:none;border-radius:0 0 12px 12px;padding:32px;}
+.json1-tab-content.json1-active{display:block;}
+.content-block{max-width:880px;}
+.section-title{font-family:'Orbitron',sans-serif;font-size:.95rem;color:#fbbf24;letter-spacing:2px;margin:28px 0 14px;padding-bottom:8px;border-bottom:1px solid rgba(251,191,36,.15);}
+.section-title:first-child{margin-top:0;}
+p{color:#8294b8;line-height:1.75;margin-bottom:14px;font-size:.9rem;}
+ul,ol{color:#8294b8;padding-left:1.4rem;margin-bottom:14px;font-size:.9rem;}
+li{margin-bottom:5px;line-height:1.65;}
+strong{color:#c2d0e8;}
+code{font-family:'Share Tech Mono',monospace;font-size:.82rem;background:rgba(251,191,36,.1);color:#fbbf24;padding:1px 6px;border-radius:4px;border:1px solid rgba(251,191,36,.2);}
+
+/* INFO BOXES */
+.info-box{border-radius:8px;padding:14px 18px;margin:18px 0;border-left:3px solid;}
+.info-box.tip{background:rgba(251,191,36,.06);border-color:#fbbf24;}
+.info-box.warning{background:rgba(248,113,113,.05);border-color:#f87171;}
+.info-box-title{font-family:'Share Tech Mono',monospace;font-size:.73rem;color:#fbbf24;margin-bottom:8px;}
+.info-box.warning .info-box-title{color:#f87171;}
+
+/* CODE BLOCKS */
+.code-block{background:#050810;border:1px solid rgba(251,191,36,.15);border-left:3px solid #fbbf24;border-radius:8px;padding:0;margin:16px 0;overflow:hidden;}
+.code-label{background:rgba(251,191,36,.08);padding:8px 16px;font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#6b7a9a;letter-spacing:2px;text-transform:uppercase;border-bottom:1px solid rgba(251,191,36,.1);}
+.code-block pre{margin:0;padding:18px;overflow-x:auto;}
+.code-block code{background:none;border:none;padding:0;color:#a8b4c8;font-size:.79rem;line-height:1.8;display:block;}
+
+/* SYNTAX HIGHLIGHTING */
+.cmt{color:#3a4a60;font-style:italic;}
+.kw {color:#c792ea;}
+.fn {color:#82aaff;}
+.str{color:#c3e88d;}
+.num{color:#f78c6c;}
+.key{color:#fbbf24;}
+.bool{color:#ff5370;}
+.null{color:#82aaff;}
+
+/* CONCEPT GRID */
+.concept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin:16px 0;}
+.concept-card{background:#090d1a;border:1px solid rgba(251,191,36,.1);border-radius:10px;padding:16px;}
+.concept-icon{font-size:1.8rem;margin-bottom:8px;}
+.concept-card h3{font-family:'Share Tech Mono',monospace;font-size:.77rem;color:#fbbf24;margin-bottom:8px;}
+.concept-card p{font-size:.8rem;margin:0;}
+
+/* REF TABLE */
+.table-wrap{overflow-x:auto;margin:16px 0;}
+.ref-table{width:100%;border-collapse:collapse;font-size:.8rem;}
+.ref-table th{background:#090d1a;color:#fbbf24;font-family:'Share Tech Mono',monospace;font-size:.67rem;padding:10px 12px;text-align:left;border:1px solid rgba(251,191,36,.15);letter-spacing:1px;}
+.ref-table td{padding:9px 12px;border:1px solid rgba(255,255,255,.04);color:#8294b8;}
+.ref-table tr:hover td{background:rgba(251,191,36,.03);}
+.ref-table code{font-size:.77rem;}
+
+/* QUIZ */
+.quiz-question{background:#090d1a;border:1px solid rgba(251,191,36,.12);border-radius:10px;padding:20px;margin-bottom:14px;}
+.quiz-q-num{font-family:'Share Tech Mono',monospace;font-size:.62rem;color:#374060;margin-bottom:8px;}
+.quiz-q-text{font-size:.9rem;color:#c2d0e8;margin-bottom:14px;line-height:1.6;}
+.quiz-opts{display:flex;flex-direction:column;gap:7px;}
+.quiz-opt{padding:10px 14px;border-radius:7px;border:1px solid rgba(251,191,36,.12);background:#0d1220;color:#6b7a9a;cursor:pointer;font-size:.84rem;text-align:left;transition:all .15s;font-family:'Exo 2',sans-serif;}
+.quiz-opt:hover:not(:disabled){border-color:rgba(251,191,36,.4);color:#c2d0e8;}
+.quiz-opt.correct{border-color:#34d399;background:rgba(52,211,153,.08);color:#34d399;}
+.quiz-opt.wrong{border-color:#f87171;background:rgba(248,113,113,.08);color:#f87171;}
+.quiz-explanation{margin-top:10px;padding:10px 14px;background:rgba(251,191,36,.07);border-left:3px solid #fbbf24;border-radius:6px;font-size:.82rem;color:#a0aec0;line-height:1.65;}
+
+/* Navbar y Drawer */
+.navbar{position:fixed;top:0;left:0;right:0;height:56px;background:#080a10;border-bottom:1px solid rgba(251,191,36,.1);display:flex;align-items:center;padding:0 24px;z-index:1000;}
+.navbar-toggle{background:none;border:1px solid rgba(251,191,36,.3);color:#fbbf24;padding:6px 12px;border-radius:6px;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:.75rem;margin-right:16px;}
+.navbar-brand{font-family:'Orbitron',sans-serif;font-weight:700;color:#00d4aa;text-decoration:none;font-size:1.1rem;}
+.navbar-brand span{color:#5b9bd5;}
+.navbar-spacer{flex:1;}
+.navbar-link{color:#6b7a9a;text-decoration:none;font-size:.8rem;transition:color .2s;}
+.navbar-link:hover{color:#c2d0e8;}
+.nav-spacer{height:56px;}
+.ccna-drawer{position:fixed;top:0;left:0;bottom:0;width:280px;background:#0d1220;border-right:1px solid rgba(251,191,36,.2);transform:translateX(-100%);transition:transform .3s;z-index:2000;overflow-y:auto;}
+.ccna-drawer.open{transform:translateX(0);}
+.ccna-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);opacity:0;visibility:hidden;transition:all .3s;z-index:1500;}
+.ccna-overlay.show{opacity:1;visibility:visible;}
+.drawer-header{padding:20px;border-bottom:1px solid rgba(251,191,36,.2);display:flex;justify-content:space-between;align-items:center;}
+.drawer-header h2{font-family:'Orbitron',sans-serif;font-size:.8rem;color:#fbbf24;margin:0;letter-spacing:2px;}
+.drawer-close{background:none;border:none;color:#6b7a9a;font-size:1.2rem;cursor:pointer;}
+.drawer-section{padding:16px;border-bottom:1px solid rgba(251,191,36,.1);}
+.drawer-section-title{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#374060;margin-bottom:12px;letter-spacing:1px;text-transform:uppercase;}
+.drawer-link{display:block;padding:10px 12px;color:#8294b8;text-decoration:none;font-size:.85rem;border-radius:6px;transition:all .2s;margin-bottom:4px;}
+.drawer-link:hover{background:rgba(251,191,36,.1);color:#c2d0e8;}
+.drawer-link.active{background:rgba(251,191,36,.2);color:#fbbf24;border-left:3px solid #fbbf24;}
+.dl-icon{margin-right:8px;}
+
+/* Validation Visual */
+.valid-json { color: #34d399; }
+.invalid-json { color: #f87171; }
+.json-visual { background: #050810; border: 1px solid rgba(251,191,36,.1); border-radius: 8px; padding: 16px; font-family: 'Share Tech Mono', monospace; font-size: .85rem; line-height: 1.6; }
+
+@media(max-width:680px){
+  .json1-tab-btn{font-size:.6rem;padding:6px 9px;}
+  .json1-tab-content{padding:18px 12px;}
+  .json-types-grid{grid-template-columns:repeat(3,1fr);}
+  .concept-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
+<nav class="ccna-drawer" id="ccnaDrawer">
+  <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
+  <div class="drawer-section"><div class="drawer-section-title">General</div>
+    <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M1 · Fundamentos</div>
+    <a href="fundamentos.html" class="drawer-link"><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
+    <a href="subnetting.html"  class="drawer-link"><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
+    <a href="ipv6.html"        class="drawer-link"><span class="dl-icon">6️⃣</span> IPv6</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M8 · Automatización</div>
+    <a href="m8-automatizacion.html" class="drawer-link"><span class="dl-icon">🤖</span> M8 — Vista General</a>
+    <a href="python-redes.html"      class="drawer-link"><span class="dl-icon">🐍</span> Python para Redes</a>
+    <a href="json-datos.html"        class="drawer-link"><span class="dl-icon">📋</span> JSON y Datos — Índice</a>
+    <a href="json-tema1.html"        class="drawer-link active"><span class="dl-icon">01</span> Fundamentos JSON</a>
+    <a href="json-tema2.html"        class="drawer-link"><span class="dl-icon">02</span> Parsing con Python</a>
+    <a href="json-tema3.html"        class="drawer-link"><span class="dl-icon">03</span> JSON vs XML vs YAML</a>
+    <a href="json-tema4.html"        class="drawer-link"><span class="dl-icon">04</span> YANG Data Models</a>
+    <a href="rest-apis.html"         class="drawer-link"><span class="dl-icon">🌐</span> REST APIs</a></div>
+</nav>
+
+<header class="navbar">
+  <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
+  <a href="../index.html" class="navbar-brand">CISCO<span> ACADEMY</span></a>
+  <div class="navbar-spacer"></div>
+  <a href="json-datos.html" class="navbar-link">← JSON y Datos</a>
+</header>
+<div class="nav-spacer"></div>
+
+<!-- HERO -->
+<section class="class-hero" style="border-bottom:1px solid rgba(251,191,36,.2);">
+  <div class="class-hero-inner">
+    <div class="class-badge" style="color:#fbbf24;">M8 · AUTOMATIZACIÓN · TEMA 1 DE 6 · JSON Y DATOS</div>
+    <h1 class="class-title">Fundamentos de <span style="background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">JSON</span></h1>
+    <p class="class-subtitle">Domina la sintaxis JSON desde cero — el lenguaje de datos universal de las APIs modernas. Objetos, arrays, tipos de datos, anidamiento y validación RFC 7159, con ejemplos reales de configuraciones de red Cisco y respuestas de APIs.</p>
+    <div class="class-meta">
+      <span class="meta-item" style="border-color:rgba(251,191,36,.2);color:#fbbf24;">📋 RFC 7159</span>
+      <span class="meta-item">🎯 CCNA Domain 6.7</span>
+      <span class="meta-item">⏱ ~60 min lectura</span>
+      <span class="meta-item">🔤 Sintaxis estricta</span>
+      <span class="meta-item">🧪 Validador incluido</span>
+    </div>
+  </div>
+</section>
+
+<!-- TABS -->
+<div class="json1-tabs-wrap">
+  <div class="json1-tabs-bar">
+    <button class="json1-tab-btn json1-active" onclick="showTabJson1('intro',this)">📋 Intro</button>
+    <button class="json1-tab-btn" onclick="showTabJson1('objetos',this)">🗂️ Objetos</button>
+    <button class="json1-tab-btn" onclick="showTabJson1('arrays',this)">📚 Arrays</button>
+    <button class="json1-tab-btn" onclick="showTabJson1('tipos',this)">🔤 Tipos</button>
+    <button class="json1-tab-btn" onclick="showTabJson1('anidamiento',this)">🏗️ Anidamiento</button>
+    <button class="json1-tab-btn" onclick="showTabJson1('validacion',this)">✅ Validación</button>
+    <button class="json1-tab-btn" onclick="showTabJson1('red',this)">🌐 JSON en Red</button>
+    <button class="json1-tab-btn" onclick="showTabJson1('referencia',this)">📊 Referencia</button>
+    <button class="json1-tab-btn" onclick="showTabJson1('quiz',this)">🎯 Quiz</button>
+  </div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 1 — INTRO
+═══════════════════════════════════════════ -->
+<div id="tab-intro" class="json1-tab-content json1-active">
+<div class="content-block">
+  <h2 class="section-title">¿Qué es JSON y por qué en Redes?</h2>
+  <p><strong>JSON (JavaScript Object Notation)</strong> es el formato de intercambio de datos dominante en la industria. Inventado por Douglas Crockford en 2001, se estandarizó como <strong>RFC 7159</strong> en 2014. En networking, es el lenguaje que hablan Cisco DNA Center, RESTCONF, Meraki Dashboard y prácticamente cualquier API REST moderna.</p>
+  <p>La clave de JSON es su simplicidad brutal: seis tipos de construcciones gramaticales que representan cualquier estructura de datos. Es "auto-documentado" — un humano puede leerlo sin esquema previo — y "auto-validable" — una máquina puede verificar su sintaxis sin ambigüedades.</p>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 JSON en el examen CCNA (Domain 6.7)</div>
+    <p>El examen CCNA 200-301 evalúa tu capacidad para identificar componentes JSON: distinguir objetos ({}) de arrays ([]), reconocer tipos de datos válidos (string, number, boolean, null, object, array), y detectar errores de sintaxis como comillas simples o comas finales. No escribirás JSON complejo, pero debes leerlo con fluidez.</p>
+  </div>
+
+  <h2 class="section-title">Sintaxis General — Las 6 Estructuras</h2>
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">🗂️</div>
+      <h3>Objeto {}</h3>
+      <p>Colección desordenada de pares <code>clave: valor</code>. Equivalente a diccionarios en Python o hash maps.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">📚</div>
+      <h3>Array []</h3>
+      <p>Lista ordenada de valores. Equivalente a listas en Python. Indexada numéricamente desde 0.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">" "</div>
+      <h3>String</h3>
+      <p>Texto Unicode entre comillas dobles obligatorias. Comillas simples (' ') son inválidas en JSON.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">123</div>
+      <h3>Number</h3>
+      <p>Números enteros o decimales. No hay distinción entre int y float. Notación científica permitida.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">✅</div>
+      <h3>Boolean</h3>
+      <p>Valores lógicos: <code>true</code> o <code>false</code>. En minúsculas obligatoriamente (diferente de Python).</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">∅</div>
+      <h3>Null</h3>
+      <p>Valor vacío explícito. Representa ausencia de dato. En minúscula: <code>null</code>.</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">Primer ejemplo: Router en JSON</h2>
+  <div class="code-block">
+    <div class="code-label">router.json — Estructura básica de dispositivo</div>
+    <pre><code>{
+  <span class="key">"hostname"</span>: <span class="str">"R1-CORE"</span>,
+  <span class="key">"ip_management"</span>: <span class="str">"192.168.1.1"</span>,
+  <span class="key">"modelo"</span>: <span class="str">"Cisco ISR 4321"</span>,
+  <span class="key">"version_ios"</span>: <span class="str">"16.9.4"</span>,
+  <span class="key">"interfaces_up"</span>: <span class="num">4</span>,
+  <span class="key">"ssh_habilitado"</span>: <span class="bool">true</span>,
+  <span class="key">"ultimo_backup"</span>: <span class="null">null</span>
+}</code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚡ Diferencias críticas con Python</div>
+    <ul>
+      <li>JSON usa <strong>comillas dobles</strong> (") obligatoriamente. Python permite simples (').</li>
+      <li>JSON <strong>no permite comentarios</strong>. Python sí (# o """).</li>
+      <li>JSON <strong>no permite coma final</strong> en el último elemento. Python lo tolera.</li>
+      <li>JSON booleanos son <code>true/false</code> (minúscula). Python usa <code>True/False</code> (mayúscula inicial).</li>
+      <li>JSON null es <code>null</code>. Python usa <code>None</code>.</li>
+    </ul>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 2 — OBJETOS
+═══════════════════════════════════════════ -->
+<div id="tab-objetos" class="json1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Objetos JSON — Pares Clave-Valor</h2>
+  <p>Un objeto JSON es una colección desordenada de pares <code>clave: valor</code> encerrados entre llaves <code>{}</code>. Las claves deben ser strings (entre comillas dobles). Los valores pueden ser cualquier tipo JSON válido. Los pares se separan con comas.</p>
+
+  <div class="code-block">
+    <div class="code-label">Sintaxis de objeto — Reglas estrictas</div>
+    <pre><code>{
+  <span class="str">"clave"</span>: <span class="str">"valor"</span>,
+  <span class="str">"otra_clave"</span>: <span class="num">123</span>,
+  <span class="str">"clave_final"</span>: <span class="bool">true</span>
+}</code></pre>
+  </div>
+
+  <h2 class="section-title">Configuración de Interfaz como Objeto</h2>
+  <div class="code-block">
+    <div class="code-label">interfaz.json — Objeto de configuración Cisco</div>
+    <pre><code>{
+  <span class="key">"nombre"</span>: <span class="str">"GigabitEthernet0/0"</span>,
+  <span class="key">"ip_address"</span>: <span class="str">"192.168.1.1"</span>,
+  <span class="key">"subnet_mask"</span>: <span class="str">"255.255.255.0"</span>,
+  <span class="key">"estado"</span>: <span class="str">"up"</span>,
+  <span class="key">"protocolo"</span>: <span class="str">"up"</span>,
+  <span class="key">"mtu"</span>: <span class="num">1500</span>,
+  <span class="key">"duplex"</span>: <span class="str">"full"</span>,
+  <span class="key">"speed"</span>: <span class="num">1000</span>,
+  <span class="key">"descripcion"</span>: <span class="str">"Enlace principal a Internet"</span>,
+  <span class="key">"shutdown"</span>: <span class="bool">false</span>
+}</code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Claves JSON — Buenas prácticas</div>
+    <ul>
+      <li>Sin espacios: usa <code>snake_case</code> o <code>camelCase</code>. Ej: <code>ip_address</code> o <code>ipAddress</code>.</li>
+      <li>Únicas dentro del mismo objeto: no puedes repetir una clave.</li>
+      <li>Case-sensitive: <code>HostName</code> y <code>hostname</code> son claves diferentes.</li>
+      <li>Evita caracteres especiales excepto guiones bajos (_) en APIs empresariales.</li>
+    </ul>
+  </div>
+
+  <h2 class="section-title">Acceso en Python (adelanto Tema 2)</h2>
+  <div class="code-block">
+    <div class="code-label">Acceso a datos del objeto</div>
+    <pre><code><span class="kw">import</span> json
+
+<span class="cmt"># Parsear JSON a diccionario Python</span>
+<span class="kw">with</span> <span class="fn">open</span>(<span class="str">'interfaz.json'</span>) <span class="kw">as</span> f:
+    interfaz = json.<span class="fn">load</span>(f)
+
+<span class="cmt"># Acceder por clave (como diccionario Python)</span>
+<span class="fn">print</span>(interfaz[<span class="str">"ip_address"</span>])     <span class="cmt"># "192.168.1.1"</span>
+<span class="fn">print</span>(interfaz[<span class="str">"speed"</span>])            <span class="cmt"># 1000</span>
+<span class="fn">print</span>(interfaz.<span class="fn">get</span>(<span class="str">"vlan"</span>, <span class="str">"N/A"</span>)) <span class="cmt"># "N/A" (clave no existe, default)</span></code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 3 — ARRAYS
+═══════════════════════════════════════════ -->
+<div id="tab-arrays" class="json1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Arrays JSON — Listas Ordenadas</h2>
+  <p>Un array es una colección ordenada de valores encerrados entre corchetes <code>[]</code>. Los valores pueden ser de cualquier tipo (incluso mezclados, aunque no es recomendado) y se separan con comas. El orden se preserva siempre.</p>
+
+  <div class="code-block">
+    <div class="code-label">Sintaxis de array</div>
+    <pre><code>[
+  <span class="str">"valor1"</span>,
+  <span class="str">"valor2"</span>,
+  <span class="num">123</span>,
+  <span class="bool">true</span>,
+  <span class="null">null</span>
+]</code></pre>
+  </div>
+
+  <h2 class="section-title">Arrays en Configuración de Red</h2>
+  <div class="code-block">
+    <div class="code-label">vlans.json — Array de VLANs</div>
+    <pre><code>{
+  <span class="key">"switch_hostname"</span>: <span class="str">"SW1-ACC"</span>,
+  <span class="key">"vlans"</span>: [
+    {
+      <span class="key">"id"</span>: <span class="num">10</span>,
+      <span class="key">"nombre"</span>: <span class="str">"DATOS"</span>,
+      <span class="key">"color"</span>: <span class="str">"blue"</span>
+    },
+    {
+      <span class="key">"id"</span>: <span class="num">20</span>,
+      <span class="key">"nombre"</span>: <span class="str">"VOZ"</span>,
+      <span class="key">"color"</span>: <span class="str">"green"</span>
+    },
+    {
+      <span class="key">"id"</span>: <span class="num">30</span>,
+      <span class="key">"nombre"</span>: <span class="str">"MGMT"</span>,
+      <span class="key">"color"</span>: <span class="str">"yellow"</span>
+    }
+  ],
+  <span class="key">"puertos_trunk"</span>: [<span class="str">"Gi0/24"</span>, <span class="str">"Gi0/25"</span>, <span class="str">"Gi0/26"</span>],
+  <span class="key">"ips_permitidas"</span>: [<span class="str">"192.168.1.0/24"</span>, <span class="str">"10.0.0.0/8"</span>]
+}</code></pre>
+  </div>
+
+  <h2 class="section-title">Tabla de Rutas como Array</h2>
+  <div class="code-block">
+    <div class="code-label">routing_table.json — Array de objetos route</div>
+    <pre><code>{
+  <span class="key">"router"</span>: <span class="str">"R1-CORE"</span>,
+  <span class="key">"routes"</span>: [
+    {
+      <span class="key">"destino"</span>: <span class="str">"192.168.1.0/24"</span>,
+      <span class="key">"next_hop"</span>: <span class="str">"10.0.0.2"</span>,
+      <span class="key">"protocolo"</span>: <span class="str">"OSPF"</span>,
+      <span class="key">"metrica"</span>: <span class="num">110</span>,
+      <span class="key">"interfaz_salida"</span>: <span class="str">"Gi0/0"</span>,
+      <span class="key">"activa"</span>: <span class="bool">true</span>
+    },
+    {
+      <span class="key">"destino"</span>: <span class="str">"10.0.0.0/30"</span>,
+      <span class="key">"next_hop"</span>: <span class="str">"connected"</span>,
+      <span class="key">"protocolo"</span>: <span class="str">"C"</span>,
+      <span class="key">"interfaz_salida"</span>: <span class="str">"Gi0/0"</span>,
+      <span class="key">"activa"</span>: <span class="bool">true</span>
+    },
+    {
+      <span class="key">"destino"</span>: <span class="str">"0.0.0.0/0"</span>,
+      <span class="key">"next_hop"</span>: <span class="str">"203.0.113.1"</span>,
+      <span class="key">"protocolo"</span>: <span class="str">"S"</span>,
+      <span class="key">"administrative_distance"</span>: <span class="num">1</span>,
+      <span class="key">"activa"</span>: <span class="bool">true</span>
+    }
+  ]
+}</code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Indexación de Arrays</div>
+    <p>Los arrays JSON son accedidos por índice numérico (base 0). En Python, <code>data["routes"][0]</code> accede al primer elemento del array. Los arrays JSON son equivalentes a listas de Python.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 4 — TIPOS
+═══════════════════════════════════════════ -->
+<div id="tab-tipos" class="json1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Los 6 Tipos de Datos JSON (RFC 7159)</h2>
+  <p>JSON es agnóstico al lenguaje, pero define exactamente seis tipos de valores. Cualquier dato que intercambies debe ser representable con estas construcciones.</p>
+
+  <div class="json-types-grid">
+    <div class="json-type-card">
+      <div class="json-type-icon">"</div>
+      <div class="json-type-name">string</div>
+      <div class="json-type-ex"><code>"Cisco123"</code></div>
+      <div class="json-type-use">Texto Unicode entre " ". Escape con \.</div>
+    </div>
+    <div class="json-type-card">
+      <div class="json-type-icon">123</div>
+      <div class="json-type-name">number</div>
+      <div class="json-type-ex"><code>-42, 3.14, 1e10</code></div>
+      <div class="json-type-use">Entero o decimal. Sin comillas.</div>
+    </div>
+    <div class="json-type-card">
+      <div class="json-type-icon">{}</div>
+      <div class="json-type-name">object</div>
+      <div class="json-type-ex"><code>{"k": "v"}</code></div>
+      <div class="json-type-use">Colección clave-valor.</div>
+    </div>
+    <div class="json-type-card">
+      <div class="json-type-icon">[]</div>
+      <div class="json-type-name">array</div>
+      <div class="json-type-ex"><code>[1, 2, 3]</code></div>
+      <div class="json-type-use">Lista ordenada.</div>
+    </div>
+    <div class="json-type-card">
+      <div class="json-type-icon" style="color:#ff5370;">tf</div>
+      <div class="json-type-name">boolean</div>
+      <div class="json-type-ex"><code>true</code> / <code>false</code></div>
+      <div class="json-type-use">Lógicos. Minúsculas.</div>
+    </div>
+    <div class="json-type-card">
+      <div class="json-type-icon">ø</div>
+      <div class="json-type-name">null</div>
+      <div class="json-type-ex"><code>null</code></div>
+      <div class="json-type-use">Valor nulo explícito.</div>
+    </div>
+  </div>
+
+  <h2 class="section-title">Strings — Reglas de Escape</h2>
+  <div class="code-block">
+    <div class="code-label">Caracteres especiales que requieren escape con \</div>
+    <pre><code>{
+  <span class="key">"descripcion"</span>: <span class="str">"Router \"Principal\" de la sede\nLínea 2\tTabulado"</span>,
+  <span class="key">"ruta_windows"</span>: <span class="str">"C:\\Users\\Admin\\config.txt"</span>,
+  <span class="key">"comilla_simple"</span>: <span class="str">"It's working"</span>,
+  <span class="key">"backspace"</span>: <span class="str">"Borrar\bX"</span>,
+  <span class="key">"unicode"</span>: <span class="str">"Símbolo: \u2713 (check)"</span>
+}</code></pre>
+  </div>
+
+  <h2 class="section-title">Números — Precisión y Límites</h2>
+  <div class="code-block">
+    <div class="code-label">Números válidos en JSON</div>
+    <pre><code>{
+  <span class="key">"vlan_id"</span>: <span class="num">4094</span>,
+  <span class="key">"temperatura"</span>: <span class="num">-5.5</span>,
+  <span class="key">"latencia_ms"</span>: <span class="num">1.23</span>,
+  <span class="key">"ancho_banda"</span>: <span class="num">1.25e9</span>,
+  <span class="key">"contador"</span>: <span class="num">0</span>
+}</code></pre>
+  </div>
+  <div class="info-box warning">
+    <div class="info-box-title">⚡ Números en JSON vs Python</div>
+    <p>JSON no distingue entre int y float (todo es number). Python convertirá <code>42</code> en <code>int</code> y <code>42.0</code> en <code>float</code>. JSON no admite <code>NaN</code>, <code>Infinity</code> o <code>-Infinity</code> (aunque algunos parsers los toleran, violan RFC 7159).</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 5 — ANIDAMIENTO
+═══════════════════════════════════════════ -->
+<div id="tab-anidamiento" class="json1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Anidamiento Profundo — Estructuras Complejas</h2>
+  <p>La verdadera potencia de JSON radica en combinar objetos y arrays arbitrariamente. Un objeto puede contener arrays, que contienen objetos, que contienen más arrays... Esto representa cualquier topología de red jerárquica.</p>
+
+  <div class="code-block">
+    <div class="code-label">topologia_completa.json — Red enterprise anidada</div>
+    <pre><code>{
+  <span class="key">"datacenter"</span>: {
+    <span class="key">"nombre"</span>: <span class="str">"DC-Principal"</span>,
+    <span class="key">"routers_core"</span>: [
+      {
+        <span class="key">"hostname"</span>: <span class="str">"R1-CORE"</span>,
+        <span class="key">"interfaces"</span>: [
+          {
+            <span class="key">"nombre"</span>: <span class="str">"Gi0/0"</span>,
+            <span class="key">"ip"</span>: <span class="str">"10.0.0.1/30"</span>,
+            <span class="key">"vecinos_ospf"</span>: [
+              {<span class="key">"router_id"</span>: <span class="str">"2.2.2.2"</span>, <span class="key">"estado"</span>: <span class="str">"FULL"</span>},
+              {<span class="key">"router_id"</span>: <span class="str">"3.3.3.3"</span>, <span class="key">"estado"</span>: <span class="str">"FULL"</span>}
+            ]
+          }
+        ],
+        <span class="key">"bgp_peers"</span>: [
+          {<span class="key">"as"</span>: <span class="num">64512</span>, <span class="key">"ip"</span>: <span class="str">"198.51.100.1"</span>, <span class="key">"estado"</span>: <span class="str">"Established"</span>}
+        ]
+      }
+    ]
+  }
+}</code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Navegación de estructuras anidadas</div>
+    <p>Para acceder al estado del primer vecino OSPF de R1-CORE en Python:</p>
+    <code style="background:rgba(251,191,36,.1);padding:8px;display:block;margin:10px 0;">data["datacenter"]["routers_core"][0]["interfaces"][0]["vecinos_ospf"][0]["estado"]</code>
+    <p>Resultado: <code>"FULL"</code></p>
+  </div>
+
+  <h2 class="section-title">Inventario Multi-Sitio</h2>
+  <div class="code-block">
+    <div class="code-label">red_global.json — Anidamiento de sitios</div>
+    <pre><code>{
+  <span class="key">"empresa"</span>: <span class="str">"ACME Corp"</span>,
+  <span class="key">"sitios"</span>: [
+    {
+      <span class="key">"nombre"</span>: <span class="str">"Sede_Central"</span>,
+      <span class="key">"dispositivos"</span>: {
+        <span class="key">"routers"</span>: [{<span class="key">"host"</span>: <span class="str">"R1"</span>, <span class="key">"ip"</span>: <span class="str">"10.1.1.1"</span>}],
+        <span class="key">"switches"</span>: [{<span class="key">"host"</span>: <span class="str">"SW1"</span>, <span class="key">"capas"</span>: <span class="num">3</span>}]
+      }
+    },
+    {
+      <span class="key">"nombre"</span>: <span class="str">"Sucursal_A"</span>,
+      <span class="key">"dispositivos"</span>: {
+        <span class="key">"routers"</span>: [{<span class="key">"host"</span>: <span class="str">"R10"</span>, <span class="key">"ip"</span>: <span class="str">"10.10.1.1"</span>}],
+        <span class="key">"switches"</span>: [{<span class="key">"host"</span>: <span class="str">"SW10"</span>, <span class="key">"capas"</span>: <span class="num">2</span>}]
+      }
+    }
+  ]
+}</code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 6 — VALIDACIÓN
+═══════════════════════════════════════════ -->
+<div id="tab-validacion" class="json1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Validación RFC 7159 — Errores Comunes</h2>
+  <p>JSON es estricto. Un solo error de sintaxis hace que todo el documento sea inválido. Aquí los errores más comunes que debes evitar en el examen CCNA y en producción.</p>
+
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead>
+        <tr>
+          <th>Error</th>
+          <th>Ejemplo inválido ❌</th>
+          <th>Corrección válida ✅</th>
+          <th>Explicación</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Comillas simples</td>
+          <td><code>{'key': 'value'}</code></td>
+          <td><code>{"key": "value"}</code></td>
+          <td>JSON solo permite comillas dobles</td>
+        </tr>
+        <tr>
+          <td>Coma final</td>
+          <td><code>{"a": 1,}</code></td>
+          <td><code>{"a": 1}</code></td>
+          <td>No puede haber coma después del último elemento</td>
+        </tr>
+        <tr>
+          <td>Comentarios</td>
+          <td><code>{// comentario<br>"a": 1}</code></td>
+          <td><code>{"a": 1}</code></td>
+          <td>JSON no admite comentarios</td>
+        </tr>
+        <tr>
+          <td>Números con ceros iniciales</td>
+          <td><code>{"vlan": 0010}</code></td>
+          <td><code>{"vlan": 10}</code></td>
+          <td>Los números no pueden empezar con 0 (excepto 0 mismo)</td>
+        </tr>
+        <tr>
+          <td>Booleanos mayúsculas</td>
+          <td><code>{"activo": True}</code></td>
+          <td><code>{"activo": true}</code></td>
+          <td>Debe ser <code>true</code>/<code>false</code> minúsculas</td>
+        </tr>
+        <tr>
+          <td>Null mayúscula</td>
+          <td><code>{"valor": NULL}</code></td>
+          <td><code>{"valor": null}</code></td>
+          <td>Debe ser <code>null</code> minúscula</td>
+        </tr>
+        <tr>
+          <td>Sin comillas en clave</td>
+          <td><code>{clave: "valor"}</code></td>
+          <td><code>{"clave": "valor"}</code></td>
+          <td>Las claves deben ser strings entre comillas</td>
+        </tr>
+        <tr>
+          <td>Trailing comma en array</td>
+          <td><code>[1, 2, 3,]</code></td>
+          <td><code>[1, 2, 3]</code></td>
+          <td>Sin coma después del último elemento</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="section-title">Validadores Online y Herramientas</h2>
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">🌐</div>
+      <h3>jsonlint.com</h3>
+      <p>Pega tu JSON y valida sintaxis con mensajes de error descriptivos. Útil para depurar.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🐍</div>
+      <h3>json.tool (Python)</h3>
+      <p>Desde terminal: <code>python -m json.tool archivo.json</code>. Valida y formatea.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🔧</div>
+      <h3>Postman / Insomnia</h3>
+      <p>Validan automáticamente respuestas JSON de APIs REST y destacan errores.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">📝</div>
+      <h3>VS Code</h3>
+      <p>Extensiones como "JSON" dan autocompletado y validación en tiempo real.</p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">Validación con Python (try/except)</div>
+    <pre><code><span class="kw">import</span> json
+
+<span class="kw">def</span> <span class="fn">validar_json</span>(cadena):
+    <span class="kw">try</span>:
+        json.<span class="fn">loads</span>(cadena)
+        <span class="kw">return</span> <span class="str">"✅ JSON válido"</span>
+    <span class="kw">except</span> json.JSONDecodeError <span class="kw">as</span> e:
+        <span class="kw">return</span> <span class="str">f"❌ Error: {e}"</span>
+
+<span class="cmt"># Tests</span>
+<span class="fn">print</span>(<span class="fn">validar_json</span>(<span class="str">'{"nombre": "R1", "up": true}'</span>))        <span class="cmt"># ✅ Válido</span>
+<span class="fn">print</span>(<span class="fn">validar_json</span>(<span class="str">"{'nombre': 'R1'}"</span>))                     <span class="cmt"># ❌ Comillas simples</span>
+<span class="fn">print</span>(<span class="fn">validar_json</span>(<span class="str">'{"nombre": "R1",}'</span>))                    <span class="cmt"># ❌ Coma final</span></code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 7 — JSON EN RED
+═══════════════════════════════════════════ -->
+<div id="tab-red" class="json1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">JSON en APIs de Red Reales</h2>
+  <p>Ejemplos reales de respuestas JSON de Cisco IOS-XE RESTCONF, DNA Center y Meraki. Estas estructuras son exactamente las que recibirás al automatizar.</p>
+
+  <div class="code-block">
+    <div class="code-label">RESTCONF: Respuesta de interfaz (Cisco IOS-XE)</div>
+    <pre><code>{
+  <span class="key">"ietf-interfaces:interface"</span>: {
+    <span class="key">"name"</span>: <span class="str">"GigabitEthernet1"</span>,
+    <span class="key">"description"</span>: <span class="str">"Uplink to Core"</span>,
+    <span class="key">"type"</span>: <span class="str">"iana-if-type:ethernetCsmacd"</span>,
+    <span class="key">"enabled"</span>: <span class="bool">true</span>,
+    <span class="key">"ietf-ip:ipv4"</span>: {
+      <span class="key">"address"</span>: [
+        {
+          <span class="key">"ip"</span>: <span class="str">"203.0.113.1"</span>,
+          <span class="key">"netmask"</span>: <span class="str">"255.255.255.0"</span>
+        }
+      ]
+    }
+  }
+}</code></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">Meraki API: Dispositivo de red</div>
+    <pre><code>[
+  {
+    <span class="key">"name"</span>: <span class="str">"MX-Office-01"</span>,
+    <span class="key">"serial"</span>: <span class="str">"Q2XX-XXXX-XXXX"</span>,
+    <span class="key">"mac"</span>: <span class="str">"00:18:0a:xx:xx:xx"</span>,
+    <span class="key">"networkId"</span>: <span class="str">"L_1234567890"</span>,
+    <span class="key">"model"</span>: <span class="str">"MX68CW"</span>,
+    <span class="key">"wan1Ip"</span>: <span class="str">"198.51.100.10"</span>,
+    <span class="key">"lanIp"</span>: <span class="str">"192.168.128.1"</span>,
+    <span class="key">"tags"</span>: [<span class="str">"firewall"</span>, <span class="str">"production"</span>],
+    <span class="key">"configurationUpdatedAt"</span>: <span class="str">"2024-01-15T10:30:00Z"</span>
+  }
+]</code></pre>
+  </div>
+
+  <h2 class="section-title">YANG + JSON = RESTCONF</h2>
+  <p>RESTCONF usa JSON como codificación por defecto para transportar datos modelados por YANG. Las claves siguen el modelo YANG (namespaces como <code>ietf-interfaces:</code>).</p>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Clave para el examen CCNA</div>
+    <p>Si ves una pregunta con <code>{"clave": "valor"}</code> es JSON. Si ves <code>&lt;clave&gt;valor&lt;/clave&gt;</code> es XML (NETCONF). RESTCONF usa JSON; NETCONF usa XML.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 8 — REFERENCIA
+═══════════════════════════════════════════ -->
+<div id="tab-referencia" class="json1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Tabla de Referencia Rápida — JSON</h2>
+  
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead>
+        <tr>
+          <th>Tipo/Concepto</th>
+          <th>Sintaxis JSON</th>
+          <th>Ejemplo en Red</th>
+          <th>Equivalente Python</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>String</td>
+          <td><code>"texto"</code></td>
+          <td><code>"192.168.1.1"</code></td>
+          <td><code>str</code></td>
+        </tr>
+        <tr>
+          <td>Number</td>
+          <td><code>42</code> o <code>3.14</code></td>
+          <td><code>1500</code> (MTU)</td>
+          <td><code>int</code> o <code>float</code></td>
+        </tr>
+        <tr>
+          <td>Boolean</td>
+          <td><code>true</code> / <code>false</code></td>
+          <td><code>true</code> (interface up)</td>
+          <td><code>True</code> / <code>False</code></td>
+        </tr>
+        <tr>
+          <td>Null</td>
+          <td><code>null</code></td>
+          <td><code>null</code> (sin IP)</td>
+          <td><code>None</code></td>
+        </tr>
+        <tr>
+          <td>Object</td>
+          <td><code>{"k": "v"}</code></td>
+          <td>Un router completo</td>
+          <td><code>dict</code></td>
+        </tr>
+        <tr>
+          <td>Array</td>
+          <td><code>[1, 2, 3]</code></td>
+          <td>Lista de interfaces</td>
+          <td><code>list</code></td>
+        </tr>
+        <tr>
+          <td>Clave</td>
+          <td>String entre ""</td>
+          <td><code>"hostname"</code></td>
+          <td>Key del dict</td>
+        </tr>
+        <tr>
+          <td>Escape</td>
+          <td><code>\" \\ \n</code></td>
+          <td><code>"Router \"A\""</code></td>
+          <td>Mismos escapes</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="section-title">Diferencias Clave: JSON vs Python Dict</h2>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead>
+        <tr>
+          <th>Característica</th>
+          <th>JSON</th>
+          <th>Python Dict</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Comillas</td>
+          <td>Dobles obligatorias ""</td>
+          <td>Simples o dobles permitidas</td>
+        </tr>
+        <tr>
+          <td>Booleanos</td>
+          <td><code>true</code> / <code>false</code></td>
+          <td><code>True</code> / <code>False</code></td>
+        </tr>
+        <tr>
+          <td>Nulo</td>
+          <td><code>null</code></td>
+          <td><code>None</code></td>
+        </tr>
+        <tr>
+          <td>Comentarios</td>
+          <td>No permitidos</td>
+          <td># o """ permitidos</td>
+        </tr>
+        <tr>
+          <td>Coma final</td>
+          <td>Prohibida</td>
+          <td>Permitida</td>
+        </tr>
+        <tr>
+          <td>Claves sin comillas</td>
+          <td>Prohibido</td>
+          <td>Permitido (si son identificadores válidos)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 9 — QUIZ
+═══════════════════════════════════════════ -->
+<div id="tab-quiz" class="json1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Quiz — Fundamentos de JSON</h2>
+  <p style="font-size:.83rem;color:#6b7a9a;margin-bottom:20px;">10 preguntas estilo CCNA Domain 6.7. Identifica estructuras válidas, detecta errores de sintaxis y reconoce tipos de datos.</p>
+  <div id="quizContainerJson1">
+    <!-- JS generated -->
+  </div>
+</div>
+</div>
+
+</div><!-- /.tabs-wrap -->
+
+<script>
+// ── NAVEGACIÓN DRAWER ────────────────────────────────
+function ccnaToggle() {
+  document.getElementById('ccnaDrawer').classList.toggle('open');
+  document.getElementById('ccnaOverlay').classList.toggle('show');
+}
+function ccnaClose() {
+  document.getElementById('ccnaDrawer').classList.remove('open');
+  document.getElementById('ccnaOverlay').classList.remove('show');
+}
+
+// ── TABS ──────────────────────────────────────────────
+function showTabJson1(id, btn) {
+  document.querySelectorAll('.json1-tab-content').forEach(t => t.classList.remove('json1-active'));
+  document.querySelectorAll('.json1-tab-btn').forEach(b => b.classList.remove('json1-active'));
+  document.getElementById('tab-' + id).classList.add('json1-active');
+  if (btn) btn.classList.add('json1-active');
+}
+
+// ── QUIZ ───────────────────────────────────────────────
+function initQuizJson1() {
+  const container = document.getElementById('quizContainerJson1');
+  if (!container) return;
+
+  const qs = [
+    {
+      q: '¿Cuál de los siguientes es un JSON válido según RFC 7159?',
+      opts: ['{"nombre": \'Router1\'}','{"nombre": "Router1"}',"{nombre: \"Router1\"}",'{"nombre": "Router1",}'],
+      ans: 1,
+      exp: 'JSON requiere comillas dobles (") tanto para claves como valores. No permite comillas simples (\'), comentarios, ni comas finales después del último elemento.'
+    },
+    {
+      q: 'En JSON, ¿cuál es el valor booleano correcto para representar que una interfaz está activa?',
+      opts: ['TRUE','True','true','1'],
+      ans: 2,
+      exp: 'Los booleanos en JSON deben ir en minúsculas: <code>true</code> o <code>false</code>. Difiere de Python (True/False) y de otros lenguajes.'
+    },
+    {
+      q: '¿Qué representa el valor <code>null</code> en JSON?',
+      opts: ['Cero (0)','Un string vacío ("")','Ausencia intencional de valor','Error de sintaxis'],
+      ans: 2,
+      exp: '<code>null</code> representa la ausencia explícita de valor (equivalente a <code>None</code> en Python o <code>NULL</code> en bases de datos). Es distinto de 0 o "".'
+    },
+    {
+      q: 'Observa: <code>{"vlans": [10, 20, 30]}</code>. ¿Qué tipo de dato es el valor de la clave "vlans"?',
+      opts: ['Object','Array','String','Number'],
+      ans: 1,
+      exp: 'Los corchetes [] denotan un array (lista ordenada). Los objetos usan llaves {}. En este caso es un array de números.'
+    },
+    {
+      q: '¿Cuál es el error en este JSON? <code>{"ip": "192.168.1.1", "mask": "255.255.255.0",}</code>',
+      opts: ['Las IPs no pueden ir entre comillas','La coma final después de "mask"','No hay error','Falta el tipo de dato'],
+      ans: 1,
+      exp: 'JSON es estricto: no permite coma (trailing comma) después del último par clave-valor. Esta es una diferencia clave con Python.'
+    },
+    {
+      q: 'En una respuesta RESTCONF de Cisco IOS-XE, ves: <code>{"ietf-interfaces:interfaces": {...}}</code>. ¿Qué significa el prefijo "ietf-interfaces:"?',
+      opts: ['Es un error de sintaxis','Es un namespace YANG','Es un comentario','Es una variable de entorno'],
+      ans: 1,
+      exp: 'RESTCONF usa namespaces basados en modelos YANG para evitar colisiones de nombres. El formato <code>modulo:nombre</code> es estándar en APIs de red.'
+    },
+    {
+      q: '¿Cuál de estos números JSON es inválido?',
+      opts: ['42','-17','3.14159','01'],
+      ans: 3,
+      exp: 'JSON no permite ceros iniciales en números (excepto para el dígito 0 solo). "01" es inválido; debe escribirse como "1". Esto evita confusiones octales.'
+    },
+    {
+      q: '¿Cómo escaparías correctamente una comilla doble dentro de un string JSON?',
+      opts: ['\\"','""',"'",'\\'],
+      ans: 0,
+      exp: 'Se usa backslash (\\) para escapar: <code>\"</code> representa un caracter de comilla doble literal dentro del string.'
+    },
+    {
+      q: '¿Qué estructura JSON representaría mejor una tabla de rutas con múltiples entradas?',
+      opts: ['Un objeto con una clave "routes" que contiene un array de objetos','Un string largo con todas las rutas','Un número que representa la cantidad de rutas','Un objeto anidado sin array'],
+      ans: 0,
+      exp: 'La estructura estándar es un array de objetos, donde cada objeto es una ruta con sus propiedades (destino, next-hop, etc.). Esto permite iterar fácilmente.'
+    },
+    {
+      q: 'Según el estándar RFC 7159, ¿JSON admite comentarios estilo JavaScript (// o /* */)?',
+      opts: ['Sí, en todas sus formas','Solo comentarios de línea (//)','Solo comentarios de bloque (/* */)','No, JSON no admite comentarios'],
+      ans: 3,
+      exp: 'JSON es puramente datos, sin metadatos. No admite comentarios de ningún tipo (aunque algunos parsers "relajados" como json5 sí los permiten, violan el estándar).'
+    }
+  ];
+
+  let html = '';
+  qs.forEach((q, i) => {
+    html += `<div class="quiz-question" id="qjson${i}">
+      <div class="quiz-q-num">PREGUNTA ${i+1} DE ${qs.length} · JSON FUNDAMENTOS</div>
+      <div class="quiz-q-text">${q.q}</div>
+      <div class="quiz-opts">
+        ${q.opts.map((o,j) => `<button class="quiz-opt" data-qi="${i}" data-sel="${j}" data-ans="${q.ans}">${o}</button>`).join('')}
+      </div>
+    </div>`;
+  });
+  container.innerHTML = html;
+
+  window._json1Exp = {};
+  qs.forEach((q, i) => { window._json1Exp[i] = q.exp; });
+
+  container.querySelectorAll('.quiz-opt').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const qi  = parseInt(this.dataset.qi);
+      const sel = parseInt(this.dataset.sel);
+      const ans = parseInt(this.dataset.ans);
+      const qDiv = document.getElementById('qjson' + qi);
+      const btns = qDiv.querySelectorAll('.quiz-opt');
+      
+      btns.forEach(b => b.disabled = true);
+      btns[sel].classList.add(sel === ans ? 'correct' : 'wrong');
+      if (sel !== ans) btns[ans].classList.add('correct');
+      
+      const expDiv = document.createElement('div');
+      expDiv.className = 'quiz-explanation';
+      expDiv.innerHTML = `<strong>${sel===ans ? '✅ Correcto!' : '❌ Incorrecto.'}</strong> ${window._json1Exp[qi]}`;
+      qDiv.appendChild(expDiv);
+    });
+  });
+}
+
+// ── INIT ─────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  initQuizJson1();
+});
+</script>
+</body>
+</html>
