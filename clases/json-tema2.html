@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Parsing JSON con Python — Tema 2 | JSON y Datos | CCNA Academy</title>
+  <meta name="description" content="Convierte JSON a diccionarios Python y viceversa. json.loads(), json.dumps(), json.load() y manejo de errores en respuestas de APIs de red. M8 Automatización CCNA.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── HERO acento JSON (Dorado/Ámbar) ── */
+.class-hero { background: linear-gradient(135deg, #06080f 0%, #0f0d05 40%, #0a0d18 100%); }
+
+/* ── JSON METHODS GRID ── */
+.json-methods-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:12px; margin:20px 0; }
+.json-method-card { background:#090d1a; border:1px solid rgba(251,191,36,.15); border-radius:10px; padding:18px 14px; position:relative; overflow:hidden; }
+.json-method-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,#fbbf24,transparent); opacity:.5; }
+.json-method-name { font-family:'Share Tech Mono',monospace; font-size:.85rem; color:#fbbf24; margin-bottom:8px; font-weight:700; }
+.json-method-sig { font-family:'Share Tech Mono',monospace; font-size:.7rem; color:#6b7a9a; background:rgba(251,191,36,.05); padding:6px 10px; border-radius:6px; margin-bottom:10px; display:block; }
+.json-method-desc { font-size:.75rem; color:#8294b8; line-height:1.5; }
+
+/* ── BASE CLASS STYLES ── */
+body{font-family:'Exo 2',sans-serif;background:#07090f;color:#e2e8f0;}
+.class-hero{padding:56px 24px 48px;border-bottom:1px solid rgba(251,191,36,.08);position:relative;overflow:hidden;}
+.class-hero::before{content:'';position:absolute;top:-60px;right:-80px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(251,191,36,.06) 0%,transparent 70%);pointer-events:none;}
+.class-hero-inner{max-width:900px;margin:0 auto;position:relative;z-index:1;}
+.class-badge{font-family:'Share Tech Mono',monospace;font-size:.63rem;color:#fbbf24;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;}
+.class-title{font-family:'Orbitron',sans-serif;font-size:clamp(1.6rem,3.8vw,2.6rem);font-weight:900;letter-spacing:3px;color:#c2d0e8;margin-bottom:12px;line-height:1.1;}
+.class-subtitle{font-size:.92rem;color:#6b7a9a;line-height:1.72;margin-bottom:20px;max-width:700px;}
+.class-meta{display:flex;gap:12px;flex-wrap:wrap;}
+.meta-item{font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#374060;padding:4px 10px;border:1px solid rgba(251,191,36,.1);border-radius:4px;}
+.json2-tabs-wrap{max-width:1100px;margin:0 auto;padding:0 16px 40px;}
+.json2-tabs-bar{display:flex;gap:4px;padding:20px 0 0;flex-wrap:wrap;border-bottom:1px solid rgba(251,191,36,.1);margin-bottom:0;}
+.json2-tab-btn{padding:8px 13px;border-radius:8px 8px 0 0;font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#4a5780;background:none;border:1px solid transparent;cursor:pointer;transition:all .18s;white-space:nowrap;border-bottom:none;}
+.json2-tab-btn:hover{color:#c2d0e8;background:rgba(251,191,36,.05);}
+.json2-tab-btn.json2-active{color:#fbbf24;background:#0d1220;border-color:rgba(251,191,36,.25);border-bottom:1px solid #0d1220;}
+.json2-tab-content{display:none;background:#0d1220;border:1px solid rgba(251,191,36,.08);border-top:none;border-radius:0 0 12px 12px;padding:32px;}
+.json2-tab-content.json2-active{display:block;}
+.content-block{max-width:880px;}
+.section-title{font-family:'Orbitron',sans-serif;font-size:.95rem;color:#fbbf24;letter-spacing:2px;margin:28px 0 14px;padding-bottom:8px;border-bottom:1px solid rgba(251,191,36,.15);}
+.section-title:first-child{margin-top:0;}
+p{color:#8294b8;line-height:1.75;margin-bottom:14px;font-size:.9rem;}
+ul,ol{color:#8294b8;padding-left:1.4rem;margin-bottom:14px;font-size:.9rem;}
+li{margin-bottom:5px;line-height:1.65;}
+strong{color:#c2d0e8;}
+code{font-family:'Share Tech Mono',monospace;font-size:.82rem;background:rgba(251,191,36,.1);color:#fbbf24;padding:1px 6px;border-radius:4px;border:1px solid rgba(251,191,36,.2);}
+
+/* INFO BOXES */
+.info-box{border-radius:8px;padding:14px 18px;margin:18px 0;border-left:3px solid;}
+.info-box.tip{background:rgba(251,191,36,.06);border-color:#fbbf24;}
+.info-box.warning{background:rgba(248,113,113,.05);border-color:#f87171;}
+.info-box.danger{background:rgba(248,113,113,.08);border-color:#f87171;}
+.info-box-title{font-family:'Share Tech Mono',monospace;font-size:.73rem;color:#fbbf24;margin-bottom:8px;}
+.info-box.warning .info-box-title{color:#f87171;}
+
+/* CODE BLOCKS */
+.code-block{background:#050810;border:1px solid rgba(251,191,36,.15);border-left:3px solid #fbbf24;border-radius:8px;padding:0;margin:16px 0;overflow:hidden;}
+.code-label{background:rgba(251,191,36,.08);padding:8px 16px;font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#6b7a9a;letter-spacing:2px;text-transform:uppercase;border-bottom:1px solid rgba(251,191,36,.1);}
+.code-block pre{margin:0;padding:18px;overflow-x:auto;}
+.code-block code{background:none;border:none;padding:0;color:#a8b4c8;font-size:.79rem;line-height:1.8;display:block;}
+
+/* SYNTAX HIGHLIGHTING */
+.cmt{color:#3a4a60;font-style:italic;}
+.kw {color:#c792ea;}
+.fn {color:#82aaff;}
+.str{color:#c3e88d;}
+.num{color:#f78c6c;}
+.key{color:#fbbf24;}
+.bool{color:#ff5370;}
+.null{color:#82aaff;}
+
+/* CONCEPT GRID */
+.concept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin:16px 0;}
+.concept-card{background:#090d1a;border:1px solid rgba(251,191,36,.1);border-radius:10px;padding:16px;}
+.concept-icon{font-size:1.8rem;margin-bottom:8px;}
+.concept-card h3{font-family:'Share Tech Mono',monospace;font-size:.77rem;color:#fbbf24;margin-bottom:8px;}
+.concept-card p{font-size:.8rem;margin:0;}
+
+/* REF TABLE */
+.table-wrap{overflow-x:auto;margin:16px 0;}
+.ref-table{width:100%;border-collapse:collapse;font-size:.8rem;}
+.ref-table th{background:#090d1a;color:#fbbf24;font-family:'Share Tech Mono',monospace;font-size:.67rem;padding:10px 12px;text-align:left;border:1px solid rgba(251,191,36,.15);letter-spacing:1px;}
+.ref-table td{padding:9px 12px;border:1px solid rgba(255,255,255,.04);color:#8294b8;}
+.ref-table tr:hover td{background:rgba(251,191,36,.03);}
+.ref-table code{font-size:.77rem;}
+
+/* QUIZ */
+.quiz-question{background:#090d1a;border:1px solid rgba(251,191,36,.12);border-radius:10px;padding:20px;margin-bottom:14px;}
+.quiz-q-num{font-family:'Share Tech Mono',monospace;font-size:.62rem;color:#374060;margin-bottom:8px;}
+.quiz-q-text{font-size:.9rem;color:#c2d0e8;margin-bottom:14px;line-height:1.6;}
+.quiz-opts{display:flex;flex-direction:column;gap:7px;}
+.quiz-opt{padding:10px 14px;border-radius:7px;border:1px solid rgba(251,191,36,.12);background:#0d1220;color:#6b7a9a;cursor:pointer;font-size:.84rem;text-align:left;transition:all .15s;font-family:'Exo 2',sans-serif;}
+.quiz-opt:hover:not(:disabled){border-color:rgba(251,191,36,.4);color:#c2d0e8;}
+.quiz-opt.correct{border-color:#34d399;background:rgba(52,211,153,.08);color:#34d399;}
+.quiz-opt.wrong{border-color:#f87171;background:rgba(248,113,113,.08);color:#f87171;}
+.quiz-explanation{margin-top:10px;padding:10px 14px;background:rgba(251,191,36,.07);border-left:3px solid #fbbf24;border-radius:6px;font-size:.82rem;color:#a0aec0;line-height:1.65;}
+
+/* Navbar y Drawer */
+.navbar{position:fixed;top:0;left:0;right:0;height:56px;background:#080a10;border-bottom:1px solid rgba(251,191,36,.1);display:flex;align-items:center;padding:0 24px;z-index:1000;}
+.navbar-toggle{background:none;border:1px solid rgba(251,191,36,.3);color:#fbbf24;padding:6px 12px;border-radius:6px;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:.75rem;margin-right:16px;}
+.navbar-brand{font-family:'Orbitron',sans-serif;font-weight:700;color:#00d4aa;text-decoration:none;font-size:1.1rem;}
+.navbar-brand span{color:#5b9bd5;}
+.navbar-spacer{flex:1;}
+.navbar-link{color:#6b7a9a;text-decoration:none;font-size:.8rem;transition:color .2s;}
+.navbar-link:hover{color:#c2d0e8;}
+.nav-spacer{height:56px;}
+.ccna-drawer{position:fixed;top:0;left:0;bottom:0;width:280px;background:#0d1220;border-right:1px solid rgba(251,191,36,.2);transform:translateX(-100%);transition:transform .3s;z-index:2000;overflow-y:auto;}
+.ccna-drawer.open{transform:translateX(0);}
+.ccna-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);opacity:0;visibility:hidden;transition:all .3s;z-index:1500;}
+.ccna-overlay.show{opacity:1;visibility:visible;}
+.drawer-header{padding:20px;border-bottom:1px solid rgba(251,191,36,.2);display:flex;justify-content:space-between;align-items:center;}
+.drawer-header h2{font-family:'Orbitron',sans-serif;font-size:.8rem;color:#fbbf24;margin:0;letter-spacing:2px;}
+.drawer-close{background:none;border:none;color:#6b7a9a;font-size:1.2rem;cursor:pointer;}
+.drawer-section{padding:16px;border-bottom:1px solid rgba(251,191,36,.1);}
+.drawer-section-title{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#374060;margin-bottom:12px;letter-spacing:1px;text-transform:uppercase;}
+.drawer-link{display:block;padding:10px 12px;color:#8294b8;text-decoration:none;font-size:.85rem;border-radius:6px;transition:all .2s;margin-bottom:4px;}
+.drawer-link:hover{background:rgba(251,191,36,.1);color:#c2d0e8;}
+.drawer-link.active{background:rgba(251,191,36,.2);color:#fbbf24;border-left:3px solid #fbbf24;}
+.dl-icon{margin-right:8px;}
+
+@media(max-width:680px){
+  .json2-tab-btn{font-size:.6rem;padding:6px 9px;}
+  .json2-tab-content{padding:18px 12px;}
+  .json-methods-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
+<nav class="ccna-drawer" id="ccnaDrawer">
+  <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
+  <div class="drawer-section"><div class="drawer-section-title">General</div>
+    <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M1 · Fundamentos</div>
+    <a href="fundamentos.html" class="drawer-link"><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
+    <a href="subnetting.html"  class="drawer-link"><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M8 · Automatización</div>
+    <a href="m8-automatizacion.html" class="drawer-link"><span class="dl-icon">🤖</span> M8 — Vista General</a>
+    <a href="python-redes.html"      class="drawer-link"><span class="dl-icon">🐍</span> Python para Redes</a>
+    <a href="json-datos.html"        class="drawer-link"><span class="dl-icon">📋</span> JSON y Datos — Índice</a>
+    <a href="json-tema1.html"        class="drawer-link"><span class="dl-icon">01</span> Fundamentos JSON</a>
+    <a href="json-tema2.html"        class="drawer-link active"><span class="dl-icon">02</span> Parsing con Python</a>
+    <a href="json-tema3.html"        class="drawer-link"><span class="dl-icon">03</span> JSON vs XML vs YAML</a>
+    <a href="rest-apis.html"         class="drawer-link"><span class="dl-icon">🌐</span> REST APIs</a></div>
+</nav>
+
+<header class="navbar">
+  <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
+  <a href="../index.html" class="navbar-brand">CISCO<span> ACADEMY</span></a>
+  <div class="navbar-spacer"></div>
+  <a href="json-datos.html" class="navbar-link">← JSON y Datos</a>
+</header>
+<div class="nav-spacer"></div>
+
+<!-- HERO -->
+<section class="class-hero" style="border-bottom:1px solid rgba(251,191,36,.2);">
+  <div class="class-hero-inner">
+    <div class="class-badge" style="color:#fbbf24;">M8 · AUTOMATIZACIÓN · TEMA 2 DE 6 · JSON Y DATOS</div>
+    <h1 class="class-title">Parsing <span style="background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">JSON con Python</span></h1>
+    <p class="class-subtitle">Convierte JSON a diccionarios Python y viceversa. Domina <code>json.loads()</code>, <code>json.dumps()</code> y <code>json.load()</code>. Accede a datos anidados, extrae información de arrays y maneja errores profesionalmente en respuestas de APIs de red.</p>
+    <div class="class-meta">
+      <span class="meta-item" style="border-color:rgba(251,191,36,.2);color:#fbbf24;">🐍 Python json</span>
+      <span class="meta-item">🎯 CCNA Domain 6.7</span>
+      <span class="meta-item">⏱ ~65 min lectura</span>
+      <span class="meta-item">🔄 Bidireccional</span>
+      <span class="meta-item">🛡️ Manejo de errores</span>
+    </div>
+  </div>
+</section>
+
+<!-- TABS -->
+<div class="json2-tabs-wrap">
+  <div class="json2-tabs-bar">
+    <button class="json2-tab-btn json2-active" onclick="showTabJson2('intro',this)">🐍 Intro</button>
+    <button class="json2-tab-btn" onclick="showTabJson2('loads',this)">📥 loads()</button>
+    <button class="json2-tab-btn" onclick="showTabJson2('dumps',this)">📤 dumps()</button>
+    <button class="json2-tab-btn" onclick="showTabJson2('archivos',this)">📂 Archivos</button>
+    <button class="json2-tab-btn" onclick="showTabJson2('anidados',this)">🏗️ Anidados</button>
+    <button class="json2-tab-btn" onclick="showTabJson2('errores',this)">🛡️ Errores</button>
+    <button class="json2-tab-btn" onclick="showTabJson2('api',this)">🌐 APIs Reales</button>
+    <button class="json2-tab-btn" onclick="showTabJson2('referencia',this)">📊 Referencia</button>
+    <button class="json2-tab-btn" onclick="showTabJson2('quiz',this)">🎯 Quiz</button>
+  </div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 1 — INTRO
+═══════════════════════════════════════════ -->
+<div id="tab-intro" class="json2-tab-content json2-active">
+<div class="content-block">
+  <h2 class="section-title">El Módulo json de Python</h2>
+  <p>Python incluye soporte nativo para JSON mediante el módulo estándar <code>json</code>. No necesitas instalar nada (<code>pip install</code>). Este módulo proporciona dos funciones esenciales para el networking: parsear respuestas de APIs (de JSON a Python) y generar configuraciones (de Python a JSON).</p>
+
+  <div class="json-methods-grid">
+    <div class="json-method-card">
+      <div class="json-method-name">json.loads()</div>
+      <code class="json-method-sig">string → dict</code>
+      <div class="json-method-desc">Parsea un string JSON (de una API) y lo convierte en diccionario Python.</div>
+    </div>
+    <div class="json-method-card">
+      <div class="json-method-name">json.dumps()</div>
+      <code class="json-method-sig">dict → string</code>
+      <div class="json-method-desc">Convierte un diccionario Python a string JSON formateado, listo para enviar.</div>
+    </div>
+    <div class="json-method-card">
+      <div class="json-method-name">json.load()</div>
+      <code class="json-method-sig">file → dict</code>
+      <div class="json-method-desc">Lee directamente desde un archivo .json y lo convierte a estructura Python.</div>
+    </div>
+    <div class="json-method-card">
+      <div class="json-method-name">json.dump()</div>
+      <code class="json-method-sig">dict → file</code>
+      <div class="json-method-desc">Guarda un diccionario Python directamente a un archivo .json.</div>
+    </div>
+  </div>
+
+  <h2 class="section-title">Importación y Conceptos Clave</h2>
+  <div class="code-block">
+    <div class="code-label">Importación estándar</div>
+    <pre><code><span class="kw">import</span> json
+
+<span class="cmt"># Verificar versión (útil para debugging)</span>
+<span class="fn">print</span>(json.__version__)  <span class="cmt"># 2.0.9 (ejemplo)</span></code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Analogía: JSON ↔ Python</div>
+    <ul>
+      <li>JSON <code>{"a": "b"}</code> se convierte en Python <code>{"a": "b"}</code> (dict)</li>
+      <li>JSON <code>[1, 2, 3]</code> se convierte en Python <code>[1, 2, 3]</code> (list)</li>
+      <li>JSON <code>"texto"</code> se convierte en Python <code>"texto"</code> (str)</li>
+      <li>JSON <code>true/false</code> se convierte en Python <code>True/False</code> (bool)</li>
+      <li>JSON <code>null</code> se convierte en Python <code>None</code> (NoneType)</li>
+    </ul>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 2 — LOADS()
+═══════════════════════════════════════════ -->
+<div id="tab-loads" class="json2-tab-content">
+<div class="content-block">
+  <h2 class="section-title">json.loads() — De API a Python</h2>
+  <p>Cuando haces una petición HTTP a una API REST (RESTCONF, DNA Center, Meraki), recibes un string. <code>json.loads()</code> convierte ese string en estructuras Python nativas que puedes manipular.</p>
+
+  <div class="code-block">
+    <div class="code-label">Respuesta de API → Diccionario Python</div>
+    <pre><code><span class="kw">import</span> json
+
+<span class="cmt"># Simulación de respuesta de API (string JSON)</span>
+respuesta_api = <span class="str">'''
+{
+  "hostname": "R1-CORE",
+  "ip_mgmt": "192.168.1.1",
+  "modelo": "ISR4321",
+  "uptime_seconds": 452340,
+  "interfaces_up": 4,
+  "os_version": "16.9.4",
+  "configurado": true,
+  "ultimo_error": null
+}
+'''</span>
+
+<span class="cmt"># Convertir string JSON a diccionario Python</span>
+router = json.<span class="fn">loads</span>(respuesta_api)
+
+<span class="cmt"># Ahora es un diccionario Python normal</span>
+<span class="fn">print</span>(router[<span class="str">"hostname"</span>])       <span class="cmt"># R1-CORE</span>
+<span class="fn">print</span>(router[<span class="str">"ip_mgmt"</span>])        <span class="cmt"># 192.168.1.1</span>
+<span class="fn">print</span>(router[<span class="str">"uptime_seconds"</span>]) <span class="cmt"># 452340 (int, no string)</span>
+<span class="fn">print</span>(router[<span class="str">"configurado"</span>])     <span class="cmt"># True (bool Python, no string)</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Trabajando con Arrays</h2>
+  <div class="code-block">
+    <div class="code-label">Lista de interfaces desde API</div>
+    <pre><code>json_interfaces = <span class="str">'''
+{
+  "device": "SW1-ACC",
+  "interfaces": [
+    {"name": "Gi0/1", "vlan": 10, "status": "up"},
+    {"name": "Gi0/2", "vlan": 20, "status": "down"},
+    {"name": "Gi0/3", "vlan": 10, "status": "up"}
+  ]
+}
+'''</span>
+
+data = json.<span class="fn">loads</span>(json_interfaces)
+
+<span class="cmt"># Acceder al array</span>
+<span class="kw">for</span> intf <span class="kw">in</span> data[<span class="str">"interfaces"</span>]:
+    <span class="kw">if</span> intf[<span class="str">"status"</span>] == <span class="str">"up"</span>:
+        <span class="fn">print</span>(<span class="str">f"✅ {intf['name']} en VLAN {intf['vlan']}"</span>)</code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Tip: Validación implícita</div>
+    <p>Si <code>json.loads()</code> no lanza excepción, el JSON es sintácticamente válido (RFC 7159). Esto es útil para validar datos antes de procesarlos.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 3 — DUMPS()
+═══════════════════════════════════════════ -->
+<div id="tab-dumps" class="json2-tab-content">
+<div class="content-block">
+  <h2 class="section-title">json.dumps() — De Python a JSON</h2>
+  <p>Cuando necesitas enviar datos a una API o guardar configuraciones, conviertes diccionarios Python a strings JSON. El parámetro <code>indent</code> es esencial para debugging y legibilidad.</p>
+
+  <div class="code-block">
+    <div class="code-label">Diccionario → String JSON formateado</div>
+    <pre><code><span class="kw">import</span> json
+
+<span class="cmt"># Configuración de red en Python</span>
+config_router = {
+    <span class="str">"hostname"</span>: <span class="str">"R2-DIST"</span>,
+    <span class="str">"interfaces"</span>: [
+        {<span class="str">"name"</span>: <span class="str">"Gi0/0"</span>, <span class="str">"ip"</span>: <span class="str">"10.0.0.2/30"</span>, <span class="str">"ospf"</span>: <span class="kw">True</span>},
+        {<span class="str">"name"</span>: <span class="str">"Gi0/1"</span>, <span class="str">"ip"</span>: <span class="str">"192.168.2.1/24"</span>, <span class="str">"ospf"</span>: <span class="kw">False</span>}
+    ],
+    <span class="str">"vlans"</span>: [<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>],
+    <span class="str">"ssh_enabled"</span>: <span class="kw">True</span>,
+    <span class="str">"ultimo_backup"</span>: <span class="kw">None</span>
+}
+
+<span class="cmt"># Convertir a JSON string (sin formato)</span>
+json_compacto = json.<span class="fn">dumps</span>(config_router)
+<span class="fn">print</span>(json_compacto)  <span class="cmt"># Una línea, difícil de leer</span>
+
+<span class="cmt"># Convertir con indentación (formato "pretty print")</span>
+json_formateado = json.<span class="fn">dumps</span>(config_router, indent=<span class="num">2</span>)
+<span class="fn">print</span>(json_formateado)</code></pre>
+  </div>
+
+  <h2 class="section-title">Parámetros clave de dumps()</h2>
+  <div class="code-block">
+    <div class="code-label">Opciones avanzadas de serialización</div>
+    <pre><code><span class="cmt"># Ordenar claves alfabéticamente (útil para comparar configs)</span>
+json.<span class="fn">dumps</span>(config, indent=<span class="num">2</span>, sort_keys=<span class="kw">True</span>)
+
+<span class="cmt"># Separadores personalizados (más compacto)</span>
+json.<span class="fn">dumps</span>(config, separators=(<span class="str">','</span>, <span class="str">':'</span>))  <span class="cmt"># Sin espacios</span>
+
+<span class="cmt"># Asegurar ASCII (escapar caracteres especiales)</span>
+json.<span class="fn">dumps</span>(data, ensure_ascii=<span class="kw">True</span>)
+
+<span class="cmt"># Permitir tipos no estándar (fechas, sets) con default</span>
+<span class="kw">def</span> <span class="fn">serializar_fechas</span>(obj):
+    <span class="kw">if</span> <span class="fn">isinstance</span>(obj, datetime):
+        <span class="kw">return</span> obj.isoformat()
+    <span class="kw">raise</span> TypeError(<span class="str">f"Tipo no serializable: {type(obj)}"</span>)
+
+json.<span class="fn">dumps</span>(datos_con_fecha, default=serializar_fechas)</code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚡ Diferencias en la salida</div>
+    <ul>
+      <li>Python <code>True</code> → JSON <code>true</code> (minúscula)</li>
+      <li>Python <code>None</code> → JSON <code>null</code></li>
+      <li>Python tuples <code>(1,2)</code> → JSON arrays <code>[1,2]</code> (pérdida de inmutabilidad)</li>
+      <li>Python sets <code>{1,2}</code> → Error (no serializable directamente)</li>
+    </ul>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 4 — ARCHIVOS
+═══════════════════════════════════════════ -->
+<div id="tab-archivos" class="json2-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Lectura y Escritura de Archivos</h2>
+  <p>Para inventarios persistentes y configuraciones guardadas, usa <code>json.load()</code> (lee archivo) y <code>json.dump()</code> (escribe archivo).</p>
+
+  <div class="code-block">
+    <div class="code-label">Leer inventario desde archivo JSON</div>
+    <pre><code><span class="kw">import</span> json
+<span class="kw">from</span> pathlib <span class="kw">import</span> Path
+
+<span class="cmt"># Leer archivo inventory.json</span>
+<span class="kw">with</span> <span class="fn">open</span>(<span class="str">'inventory/network_inventory.json'</span>, <span class="str">'r'</span>, encoding=<span class="str">'utf-8'</span>) <span class="kw">as</span> f:
+    inventario = json.<span class="fn">load</span>(f)  <span class="cmt"># Nota: load() no loads()</span>
+
+<span class="cmt"># Procesar</span>
+<span class="kw">for</span> device <span class="kw">in</span> inventario[<span class="str">'devices'</span>]:
+    <span class="fn">print</span>(<span class="str">f"Conectando a {device['hostname']}..."</span>)</code></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">Guardar reporte a archivo JSON</div>
+    <pre><code><span class="kw">from</span> datetime <span class="kw">import</span> datetime
+
+reporte = {
+    <span class="str">"fecha_generacion"</span>: datetime.now().isoformat(),
+    <span class="str">"dispositivos_escaneados"</span>: <span class="num">50</span>,
+    <span class="str">"dispositivos_ok"</span>: <span class="num">48</span>,
+    <span class="str">"errores_detectados"</span>: [
+        {<span class="str">"host"</span>: <span class="str">"SW5"</span>, <span class="str">"error"</span>: <span class="str">"SSH timeout"</span>},
+        {<span class="str">"host"</span>: <span class="str">"R3"</span>, <span class="str">"error"</span>: <span class="str">"Auth failed"</span>}
+    ]
+}
+
+<span class="cmt"># Crear directorio si no existe</span>
+Path(<span class="str">'reports'</span>).mkdir(exist_ok=<span class="kw">True</span>)
+
+<span class="cmt"># Guardar archivo</span>
+<span class="kw">with</span> <span class="fn">open</span>(<span class="str">'reports/scan_20240115.json'</span>, <span class="str">'w'</span>, encoding=<span class="str">'utf-8'</span>) <span class="kw">as</span> f:
+    json.<span class="fn">dump</span>(reporte, f, indent=<span class="num">2</span>, ensure_ascii=<span class="kw">False</span>)</code></pre>
+  </div>
+
+  <h2 class="section-title">Patrón: Configuración por Defecto</h2>
+  <div class="code-block">
+    <div class="code-label">Cargar config con valores default</div>
+    <pre><code><span class="kw">def</span> <span class="fn">cargar_config</span>(ruta=<span class="str">'config/settings.json'</span>):
+    <span class="str">"""Carga JSON o retorna config por defecto si no existe"""</span>
+    config_default = {
+        <span class="str">"timeout_ssh"</span>: <span class="num">30</span>,
+        <span class="str">"max_retries"</span>: <span class="num">3</span>,
+        <span class="str">"logging_level"</span>: <span class="str">"INFO"</span>
+    }
+    
+    <span class="kw">try</span>:
+        <span class="kw">with</span> <span class="fn">open</span>(ruta) <span class="kw">as</span> f:
+            <span class="kw">return</span> json.<span class="fn">load</span>(f)
+    <span class="kw">except</span> FileNotFoundError:
+        <span class="fn">print</span>(<span class="str">f"⚠️  {ruta} no encontrado. Usando defaults."</span>)
+        <span class="kw">return</span> config_default</code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 5 — ANIDADOS
+═══════════════════════════════════════════ -->
+<div id="tab-anidados" class="json2-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Navegación de Estructuras Anidadas</h2>
+  <p>Las respuestas de APIs de red (RESTCONF, DNA Center) son profundamente anidadas: objetos dentro de arrays dentro de objetos. Aprende a navegar estas estructuras sin perder la cordura.</p>
+
+  <div class="code-block">
+    <div class="code-label">Ejemplo complejo: Respuesta RESTCONF Cisco</div>
+    <pre><code>restconf_response = <span class="str">'''
+{
+  "ietf-interfaces:interfaces": {
+    "interface": [
+      {
+        "name": "GigabitEthernet1",
+        "ietf-ip:ipv4": {
+          "address": [
+            {"ip": "192.168.1.1", "netmask": "255.255.255.0"},
+            {"ip": "10.0.0.1", "netmask": "255.255.255.252"}
+          ]
+        },
+        "statistics": {
+          "in-octets": 1543200,
+          "out-octets": 890000
+        }
+      }
+    ]
+  }
+}
+'''</span>
+
+data = json.<span class="fn">loads</span>(restconf_response)
+
+<span class="cmt"># Acceso seguro a datos anidados</span>
+interfaces = data.<span class="fn">get</span>(<span class="str">"ietf-interfaces:interfaces"</span>, {}).<span class="fn">get</span>(<span class="str">"interface"</span>, [])
+<span class="kw">if</span> interfaces:
+    primer_intf = interfaces[<span class="num">0</span>]
+    nombre = primer_intf[<span class="str">"name"</span>]
+    ips = primer_intf[<span class="str">"ietf-ip:ipv4"</span>][<span class="str">"address"</span>]
+    
+    <span class="kw">for</span> ip_config <span class="kw">in</span> ips:
+        <span class="fn">print</span>(<span class="str">f"{nombre}: {ip_config['ip']}/{ip_config['netmask']}"</span>)</code></pre>
+  </div>
+
+  <h2 class="section-title">Extracción Masiva con List Comprehensions</h2>
+  <div class="code-block">
+    <div class="code-label">Extraer todas las IPs de una respuesta</div>
+    <pre><code><span class="cmt"># Suponiendo 'data' con múltiples interfaces</span>
+todas_las_ips = [
+    addr[<span class="str">"ip"</span>] 
+    <span class="kw">for</span> intf <span class="kw">in</span> data[<span class="str">"ietf-interfaces:interfaces"</span>][<span class="str">"interface"</span>]
+    <span class="kw">for</span> addr <span class="kw">in</span> intf.<span class="fn">get</span>(<span class="str">"ietf-ip:ipv4"</span>, {}).<span class="fn">get</span>(<span class="str">"address"</span>, [])
+    <span class="kw">if</span> <span class="str">"ip"</span> <span class="kw">in</span> addr
+]
+
+<span class="cmt"># Interfaces que están UP</span>
+interfaces_up = [
+    intf[<span class="str">"name"</span>] 
+    <span class="kw">for</span> intf <span class="kw">in</span> data[<span class="str">"interface"</span>]
+    <span class="kw">if</span> intf.<span class="fn">get</span>(<span class="str">"admin-status"</span>) == <span class="str">"up"</span>
+]</code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Patrón defensivo: .get() con defaults</div>
+    <p>Usa <code>.get("clave", {})</code> en lugar de <code>["clave"]</code> cuando no estés seguro de que la clave exista. Evita <code>KeyError</code> en estructuras variables de APIs.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 6 — ERRORES
+═══════════════════════════════════════════ -->
+<div id="tab-errores" class="json2-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Manejo de Errores en Parsing</h2>
+  <p>Las APIs pueden devolver HTML de error en lugar de JSON, o JSON malformado. Tu código debe ser resiliente.</p>
+
+  <div class="code-block">
+    <div class="code-label">Manejo profesional de errores</div>
+    <pre><code><span class="kw">import</span> json
+<span class="kw">from</span> json <span class="kw">import</span> JSONDecodeError
+
+<span class="kw">def</span> <span class="fn">parsear_respuesta_api</span>(respuesta_texto):
+    <span class="str">"""
+    Parsea JSON de API con manejo robusto de errores.
+    Retorna (exito: bool, datos: dict|None, error: str|None)
+    """</span>
+    <span class="kw">try</span>:
+        <span class="cmt"># Intento 1: Parsear directamente</span>
+        datos = json.<span class="fn">loads</span>(respuesta_texto)
+        <span class="kw">return</span> <span class="kw">True</span>, datos, <span class="kw">None</span>
+        
+    <span class="kw">except</span> JSONDecodeError <span class="kw">as</span> e:
+        <span class="cmt"># Error de sintaxis JSON</span>
+        error_msg = <span class="str">f"JSON inválido: {e.msg} en línea {e.lineno}"</span>
+        <span class="kw">return</span> <span class="kw">False</span>, <span class="kw">None</span>, error_msg
+        
+    <span class="kw">except</span> Exception <span class="kw">as</span> e:
+        <span class="cmt"># Otros errores (encoding, memory, etc)</span>
+        <span class="kw">return</span> <span class="kw">False</span>, <span class="kw">None</span>, <span class="fn">str</span>(e)
+
+<span class="cmt"># Uso</span>
+exito, datos, error = <span class="fn">parsear_respuesta_api</span>(respuesta_api)
+<span class="kw">if</span> exito:
+    <span class="fn">procesar_datos</span>(datos)
+<span class="kw">else</span>:
+    <span class="fn">loggear_error</span>(error)</code></pre>
+  </div>
+
+  <h2 class="section-title">Errores HTTP vs JSON</h2>
+  <div class="code-block">
+    <div class="code-label">Detectar HTML de error (404, 500)</div>
+    <pre><code><span class="kw">import</span> requests
+
+<span class="kw">def</span> <span class="fn">obtener_json_api</span>(url):
+    <span class="kw">try</span>:
+        response = requests.<span class="fn">get</span>(url, timeout=<span class="num">10</span>)
+        response.<span class="fn">raise_for_status</span>()  <span class="cmt"># Lanza excepción en 4xx/5xx</span>
+        
+        <span class="cmt"># Verificar que sea JSON, no HTML</span>
+        content_type = response.headers.<span class="fn">get</span>(<span class="str">'content-type'</span>, <span class="str">''</span>)
+        <span class="kw">if</span> <span class="str">'application/json'</span> <span class="kw">not</span> <span class="kw">in</span> content_type:
+            <span class="kw">return</span> <span class="kw">None</span>, <span class="str">f"Respuesta no es JSON: {content_type}"</span>
+            
+        <span class="kw">return</span> response.<span class="fn">json</span>(), <span class="kw">None</span>  <span class="cmt"># requests tiene .json() integrado</span>
+        
+    <span class="kw">except</span> requests.RequestException <span class="kw">as</span> e:
+        <span class="kw">return</span> <span class="kw">None</span>, <span class="fn">f</span><span class="str">"Error de red: {e}"</span></code></pre>
+  </div>
+
+  <div class="info-box danger">
+    <div class="info-box-title">🛡️ Seguridad: Nunca uses eval()</div>
+    <p>Nunca conviertas JSON con <code>eval()</code> o <code>ast.literal_eval()</code> sin validación. <code>json.loads()</code> es seguro contra código malicioso. <code>eval()</code> ejecutaría cualquier código Python.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 7 — APIs REALES
+═══════════════════════════════════════════ -->
+<div id="tab-api" class="json2-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Ejemplo Completo: API Real</h2>
+  <p>Flujo completo: Autenticación → GET → Parseo → Extracción → Acción.</p>
+
+  <div class="code-block">
+    <div class="code-label">Consultar Meraki API y procesar JSON</div>
+    <pre><code><span class="kw">import</span> json
+<span class="kw">import</span> requests
+
+<span class="kw">def</span> <span class="fn">obtener_organizaciones_meraki</span>(api_key):
+    url = <span class="str">"https://api.meraki.com/api/v1/organizations"</span>
+    headers = {
+        <span class="str">"X-Cisco-Meraki-API-Key"</span>: api_key,
+        <span class="str">"Content-Type"</span>: <span class="str">"application/json"</span>
+    }
+    
+    <span class="kw">try</span>:
+        response = requests.<span class="fn">get</span>(url, headers=headers, timeout=<span class="num">30</span>)
+        response.<span class="fn">raise_for_status</span>()
+        
+        <span class="cmt"># Parseo automático (requests internamente usa json.loads)</span>
+        orgs = response.<span class="fn">json</span>()
+        
+        <span class="cmt"># Procesar datos</span>
+        resultado = []
+        <span class="kw">for</span> org <span class="kw">in</span> orgs:
+            resultado.append({
+                <span class="str">"id"</span>: org[<span class="str">"id"</span>],
+                <span class="str">"nombre"</span>: org[<span class="str">"name"</span>],
+                <span class="str">"url"</span>: org.<span class="fn">get</span>(<span class="str">"url"</span>, <span class="str">"N/A"</span>)
+            })
+        
+        <span class="cmt"># Guardar como JSON formateado</span>
+        <span class="kw">with</span> <span class="fn">open</span>(<span class="str">"meraki_orgs.json"</span>, <span class="str">"w"</span>) <span class="kw">as</span> f:
+            json.<span class="fn">dump</span>(resultado, f, indent=<span class="num">2</span>)
+            
+        <span class="kw">return</span> resultado
+        
+    <span class="kw">except</span> json.JSONDecodeError:
+        <span class="fn">print</span>(<span class="str">"❌ La API no devolvió JSON válido"</span>)
+    <span class="kw">except</span> requests.RequestException <span class="kw">as</span> e:
+        <span class="fn">print</span>(<span class="str">f</span><span class="str">"❌ Error de conexión: {e}"</span>)</code></pre>
+  </div>
+
+  <h2 class="section-title">Proyecto Práctico: Inventario desde API</h2>
+  <div class="code-block">
+    <div class="code-label">Guardar estado de red en JSON</div>
+    <pre><code><span class="kw">def</span> <span class="fn">backup_configuracion</span>(dispositivos, filename=<span class="str">"backup.json"</span>):
+    <span class="str">"""
+    Recibe lista de dispositivos, obtiene config vía API y guarda todo.
+    """</span>
+    backup_completo = {
+        <span class="str">"timestamp"</span>: datetime.now().isoformat(),
+        <span class="str">"total_devices"</span>: <span class="fn">len</span>(dispositivos),
+        <span class="str">"configs"</span>: []
+    }
+    
+    <span class="kw">for</span> dev <span class="kw">in</span> dispositivos:
+        <span class="kw">try</span>:
+            config = <span class="fn">obtener_config_via_api</span>(dev)
+            backup_completo[<span class="str">"configs"</span>].append({
+                <span class="str">"hostname"</span>: dev[<span class="str">"hostname"</span>],
+                <span class="str">"config"</span>: config,
+                <span class="str">"status"</span>: <span class="str">"success"</span>
+            })
+        <span class="kw">except</span> Exception <span class="kw">as</span> e:
+            backup_completo[<span class="str">"configs"</span>].append({
+                <span class="str">"hostname"</span>: dev[<span class="str">"hostname"</span>],
+                <span class="str">"error"</span>: <span class="fn">str</span>(e),
+                <span class="str">"status"</span>: <span class="str">"failed"</span>
+            })
+    
+    <span class="cmt"># Guardar todo como JSON indentado</span>
+    <span class="kw">with</span> <span class="fn">open</span>(filename, <span class="str">"w"</span>) <span class="kw">as</span> f:
+        json.<span class="fn">dump</span>(backup_completo, f, indent=<span class="num">2</span>, sort_keys=<span class="kw">True</span>)
+    
+    <span class="kw">return</span> backup_completo</code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 8 — REFERENCIA
+═══════════════════════════════════════════ -->
+<div id="tab-referencia" class="json2-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Tabla de Referencia — Módulo json</h2>
+  
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead>
+        <tr>
+          <th>Función</th>
+          <th>Entrada</th>
+          <th>Salida</th>
+          <th>Uso típico</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>json.loads(s)</code></td>
+          <td>String JSON</td>
+          <td>dict/list</td>
+          <td>Parsear respuesta HTTP API</td>
+        </tr>
+        <tr>
+          <td><code>json.dumps(obj)</code></td>
+          <td>dict/list</td>
+          <td>String JSON</td>
+          <td>Preparar datos para enviar a API</td>
+        </tr>
+        <tr>
+          <td><code>json.load(fp)</code></td>
+          <td>Archivo (read)</td>
+          <td>dict/list</td>
+          <td>Leer inventario desde disco</td>
+        </tr>
+        <tr>
+          <td><code>json.dump(obj, fp)</code></td>
+          <td>dict/list + archivo</td>
+          <td>Archivo JSON</td>
+          <td>Guardar reportes/configuraciones</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="section-title">Parámetros Importantes</h2>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead>
+        <tr>
+          <th>Parámetro</th>
+          <th>Función</th>
+          <th>Descripción</th>
+          <th>Ejemplo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>indent</code></td>
+          <td>dumps/dump</td>
+          <td>Espacios de indentación para pretty-print</td>
+          <td><code>indent=2</code>, <code>indent=4</code></td>
+        </tr>
+        <tr>
+          <td><code>sort_keys</code></td>
+          <td>dumps/dump</td>
+          <td>Ordenar claves alfabéticamente</td>
+          <td><code>sort_keys=True</code></td>
+        </tr>
+        <tr>
+          <td><code>ensure_ascii</code></td>
+          <td>dumps/dump</td>
+          <td>Escapar caracteres Unicode vs dejar como UTF-8</td>
+          <td><code>ensure_ascii=False</code> (recomendado)</td>
+        </tr>
+        <tr>
+          <td><code>separators</code></td>
+          <td>dumps</td>
+          <td>Separadores compactos (item, key)</td>
+          <td><code>(',', ':')</code> para mínimo tamaño</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="section-title">Excepciones del módulo json</h2>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead>
+        <tr>
+          <th>Excepción</th>
+          <th>Cuándo ocurre</th>
+          <th>Cómo manejar</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>json.JSONDecodeError</code></td>
+          <td>String no es JSON válido</td>
+          <td>try/except, loggear, usar default</td>
+        </tr>
+        <tr>
+          <td><code>TypeError</code></td>
+          <td>Objeto no serializable (datetime, set)</td>
+          <td>Convertir antes o usar <code>default=func</code></td>
+        </tr>
+        <tr>
+          <td><code>FileNotFoundError</code></td>
+          <td>Archivo no existe (load)</td>
+          <td>Verificar con <code>Path.exists()</code> o try/except</td>
+        </tr>
+        <tr>
+          <td><code>UnicodeDecodeError</code></td>
+          <td>Archivo con encoding incorrecto</td>
+          <td>Especificar <code>encoding='utf-8'</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 9 — QUIZ
+═══════════════════════════════════════════ -->
+<div id="tab-quiz" class="json2-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Quiz — Parsing JSON con Python</h2>
+  <p style="font-size:.83rem;color:#6b7a9a;margin-bottom:20px;">10 preguntas prácticas sobre json.loads(), json.dumps(), manejo de archivos y errores. Estilo CCNA Domain 6.</p>
+  <div id="quizContainerJson2">
+    <!-- JS generated -->
+  </div>
+</div>
+</div>
+
+</div><!-- /.tabs-wrap -->
+
+<script>
+// ── NAVEGACIÓN DRAWER ────────────────────────────────
+function ccnaToggle() {
+  document.getElementById('ccnaDrawer').classList.toggle('open');
+  document.getElementById('ccnaOverlay').classList.toggle('show');
+}
+function ccnaClose() {
+  document.getElementById('ccnaDrawer').classList.remove('open');
+  document.getElementById('ccnaOverlay').classList.remove('show');
+}
+
+// ── TABS ──────────────────────────────────────────────
+function showTabJson2(id, btn) {
+  document.querySelectorAll('.json2-tab-content').forEach(t => t.classList.remove('json2-active'));
+  document.querySelectorAll('.json2-tab-btn').forEach(b => b.classList.remove('json2-active'));
+  document.getElementById('tab-' + id).classList.add('json2-active');
+  if (btn) btn.classList.add('json2-active');
+}
+
+// ── QUIZ ───────────────────────────────────────────────
+function initQuizJson2() {
+  const container = document.getElementById('quizContainerJson2');
+  if (!container) return;
+
+  const qs = [
+    {
+      q: '¿Qué función convierte un string JSON (de una API) a un diccionario Python?',
+      opts: ['json.dump()', 'json.dumps()', 'json.load()', 'json.loads()'],
+      ans: 3,
+      exp: '<code>json.loads()</code> (load string) parsea un string JSON y lo convierte a objeto Python. Es la función más usada al consumir APIs REST.'
+    },
+    {
+      q: 'Tienes un diccionario Python y necesitas enviarlo como JSON a una API. ¿Qué función usas?',
+      opts: ['json.loads()', 'json.load()', 'json.dumps()', 'str(dict)'],
+      ans: 2,
+      exp: '<code>json.dumps()</code> (dump string) serializa un objeto Python a string JSON. El parámetro <code>indent=2</code> lo hace legible.'
+    },
+    {
+      q: 'Para guardar un diccionario Python directamente a un archivo "config.json", usas:',
+      opts: ['json.dumps() y write()', 'json.dump()', 'json.load()', 'print(file=config.json)'],
+      ans: 1,
+      exp: '<code>json.dump(obj, fp)</code> recibe el objeto y un file pointer (archivo abierto). A diferencia de dumps(), escribe directamente a disco.'
+    },
+    {
+      q: '¿Cuál es la diferencia entre json.load() y json.loads()?',
+      opts: ['Ninguna, son alias', 'load() lee archivos, loads() parsea strings', 'load() es más rápido', 'loads() solo funciona con listas'],
+      ans: 1,
+      exp: '<code>json.load(fp)</code> lee desde un archivo (file pointer). <code>json.loads(s)</code> parsea desde un string. La "s" al final indica "string".'
+    },
+    {
+      q: 'Al hacer json.dumps(data, indent=2), ¿qué sucede?',
+      opts: ['Comprime el JSON', 'Lo formatea con indentación de 2 espacios', 'Solo guarda 2 elementos', 'Genera error si hay más de 2 niveles'],
+      ans: 1,
+      exp: 'El parámetro <code>indent</code> agrega saltos de línea y espacios para "pretty-print". Esencial para debugging y archivos de configuración legibles.'
+    },
+    {
+      q: 'Una API devuelve "error": true en JSON. ¿Cómo accedes a ese valor en Python?',
+      opts: ['data["error"] == True', 'data["error"] == true', 'data.get("error") es True', 'Ambas A y C son válidas'],
+      ans: 3,
+      exp: 'JSON <code>true</code> se convierte a Python <code>True</code> (mayúscula). Ambas opciones funcionan, pero C es más seguro (evita KeyError).'
+    },
+    {
+      q: '¿Qué excepción capturas cuando el string recibido no es JSON válido?',
+      opts: ['ValueError', 'SyntaxError', 'json.JSONDecodeError', 'TypeError'],
+      ans: 2,
+      exp: '<code>json.JSONDecodeError</code> es la excepción específica para errores de parsing. Proporciona detalles como línea y columna del error.'
+    },
+    {
+      q: 'Para leer "inventario.json" y convertirlo a Python, el código correcto es:',
+      opts: ['with open("inv.json") as f: data = json.load(f)', 'data = json.loads("inventario.json")', 'data = json.load("inventario.json")', 'data = open("inventario.json").json()'],
+      ans: 0,
+      exp: 'Se debe abrir el archivo con <code>open()</code> y pasar el file object a <code>json.load()</code>. <code>loads()</code> recibe strings, no nombres de archivo.'
+    },
+    {
+      q: 'Tienes datos = {"ip": "192.168.1.1", "mask": "255.255.255.0"}. ¿Cómo conviertes solo la IP a JSON?',
+      opts: ['json.dumps(data["ip"])', 'json.loads(data["ip"])', 'No se puede, debe ser el dict completo', 'json.dumps(data, keys=["ip"])'],
+      ans: 0,
+      exp: 'Puedes serializar cualquier objeto JSON válido, incluso solo un string. <code>json.dumps(data["ip"])</code> retornará <code>"\\"192.168.1.1\\""</code> (string JSON).'
+    },
+    {
+      q: '¿Cuál es el resultado de json.dumps({"active": True})?',
+      opts: ['{"active": True}', '{"active": true}', "{'active': True}", "Error"],
+      ans: 1,
+      exp: 'Python <code>True</code> (mayúscula) se serializa como JSON <code>true</code> (minúscula). Las claves siempre van entre comillas dobles en JSON.'
+    }
+  ];
+
+  let html = '';
+  qs.forEach((q, i) => {
+    html += `<div class="quiz-question" id="qjson2${i}">
+      <div class="quiz-q-num">PREGUNTA ${i+1} DE ${qs.length} · PARSING JSON</div>
+      <div class="quiz-q-text">${q.q}</div>
+      <div class="quiz-opts">
+        ${q.opts.map((o,j) => `<button class="quiz-opt" data-qi="${i}" data-sel="${j}" data-ans="${q.ans}">${o}</button>`).join('')}
+      </div>
+    </div>`;
+  });
+  container.innerHTML = html;
+
+  window._json2Exp = {};
+  qs.forEach((q, i) => { window._json2Exp[i] = q.exp; });
+
+  container.querySelectorAll('.quiz-opt').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const qi  = parseInt(this.dataset.qi);
+      const sel = parseInt(this.dataset.sel);
+      const ans = parseInt(this.dataset.ans);
+      const qDiv = document.getElementById('qjson2' + qi);
+      const btns = qDiv.querySelectorAll('.quiz-opt');
+      
+      btns.forEach(b => b.disabled = true);
+      btns[sel].classList.add(sel === ans ? 'correct' : 'wrong');
+      if (sel !== ans) btns[ans].classList.add('correct');
+      
+      const expDiv = document.createElement('div');
+      expDiv.className = 'quiz-explanation';
+      expDiv.innerHTML = `<strong>${sel===ans ? '✅ Correcto!' : '❌ Incorrecto.'}</strong> ${window._json2Exp[qi]}`;
+      qDiv.appendChild(expDiv);
+    });
+  });
+}
+
+// ── INIT ─────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  initQuizJson2();
+});
+</script>
+</body>
+</html>
