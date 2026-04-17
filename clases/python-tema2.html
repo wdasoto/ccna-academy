@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Netmiko SSH Automation — M8 Tema 2 | CCNA Academy</title>
+  <meta name="description" content="Domina Netmiko: la librería Python más usada para automatizar dispositivos Cisco vía SSH. ConnectHandler, send_command, send_config_set y manejo de errores con ejemplos reales.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── HERO acento Netmiko (verde SSH) ── */
+.class-hero { background: linear-gradient(135deg, #06080f 0%, #081a12 40%, #0a0d18 100%); }
+
+/* ── CSS idéntico al tema 1 (reutilizado) ── */
+.py-types-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:10px; margin:16px 0; }
+.py-type-card { background:#090d1a; border:1px solid rgba(0,212,170,.15); border-radius:10px; padding:14px 10px; text-align:center; }
+.py-type-icon { font-size:1.5rem; margin-bottom:6px; }
+.py-type-name { font-family:'Orbitron',sans-serif; font-size:.72rem; color:#00d4aa; margin-bottom:4px; letter-spacing:1px; }
+.py-type-ex   { font-family:'Share Tech Mono',monospace; font-size:.65rem; color:#5b9bd5; margin-bottom:4px; background:rgba(91,155,213,.06); padding:2px 6px; border-radius:4px; }
+.py-type-use  { font-size:.68rem; color:#374060; line-height:1.4; }
+
+/* ── BASE STYLES ── */
+body{font-family:'Exo 2',sans-serif;background:#07090f;color:#e2e8f0;}
+.class-hero{padding:56px 24px 48px;border-bottom:1px solid rgba(0,212,170,.08);position:relative;overflow:hidden;}
+.class-hero::before{content:'';position:absolute;top:-60px;right:-80px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(0,212,170,.06) 0%,transparent 70%);pointer-events:none;}
+.class-hero-inner{max-width:900px;margin:0 auto;position:relative;z-index:1;}
+.class-badge{font-family:'Share Tech Mono',monospace;font-size:.63rem;color:#00d4aa;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;}
+.class-title{font-family:'Orbitron',sans-serif;font-size:clamp(1.6rem,3.8vw,2.6rem);font-weight:900;letter-spacing:3px;color:#c2d0e8;margin-bottom:12px;line-height:1.1;}
+.class-subtitle{font-size:.92rem;color:#6b7a9a;line-height:1.72;margin-bottom:20px;max-width:700px;}
+.class-meta{display:flex;gap:12px;flex-wrap:wrap;}
+.meta-item{font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#374060;padding:4px 10px;border:1px solid rgba(0,212,170,.1);border-radius:4px;}
+.py2-tabs-wrap{max-width:1100px;margin:0 auto;padding:0 16px 40px;}
+.py2-tabs-bar{display:flex;gap:4px;padding:20px 0 0;flex-wrap:wrap;border-bottom:1px solid rgba(0,212,170,.1);margin-bottom:0;}
+.py2-tab-btn{padding:8px 13px;border-radius:8px 8px 0 0;font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#4a5780;background:none;border:1px solid transparent;cursor:pointer;transition:all .18s;white-space:nowrap;border-bottom:none;}
+.py2-tab-btn:hover{color:#c2d0e8;background:rgba(0,212,170,.05);}
+.py2-tab-btn.py2-active{color:#00d4aa;background:#0d1220;border-color:rgba(0,212,170,.25);border-bottom:1px solid #0d1220;}
+.py2-tab-content{display:none;background:#0d1220;border:1px solid rgba(0,212,170,.08);border-top:none;border-radius:0 0 12px 12px;padding:32px;}
+.py2-tab-content.py2-active{display:block;}
+.content-block{max-width:880px;}
+.section-title{font-family:'Orbitron',sans-serif;font-size:.95rem;color:#00d4aa;letter-spacing:2px;margin:28px 0 14px;padding-bottom:8px;border-bottom:1px solid rgba(0,212,170,.15);}
+.section-title:first-child{margin-top:0;}
+p{color:#8294b8;line-height:1.75;margin-bottom:14px;font-size:.9rem;}
+ul,ol{color:#8294b8;padding-left:1.4rem;margin-bottom:14px;font-size:.9rem;}
+li{margin-bottom:5px;line-height:1.65;}
+strong{color:#c2d0e8;}
+code{font-family:'Share Tech Mono',monospace;font-size:.82rem;background:rgba(0,212,170,.1);color:#00d4aa;padding:1px 6px;border-radius:4px;border:1px solid rgba(0,212,170,.2);}
+
+/* INFO BOXES */
+.info-box{border-radius:8px;padding:14px 18px;margin:18px 0;border-left:3px solid;}
+.info-box.tip{background:rgba(0,212,170,.06);border-color:#00d4aa;}
+.info-box.warning{background:rgba(248,113,113,.05);border-color:#f87171;}
+.info-box-title{font-family:'Share Tech Mono',monospace;font-size:.73rem;color:#00d4aa;margin-bottom:8px;}
+.info-box.warning .info-box-title{color:#f87171;}
+
+/* CODE BLOCKS */
+.code-block{background:#050810;border:1px solid rgba(0,212,170,.15);border-left:3px solid #00d4aa;border-radius:8px;padding:0;margin:16px 0;overflow:hidden;}
+.code-label{background:rgba(0,212,170,.08);padding:8px 16px;font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#4a5780;letter-spacing:2px;text-transform:uppercase;border-bottom:1px solid rgba(0,212,170,.1);}
+.code-block pre{margin:0;padding:18px;overflow-x:auto;}
+.code-block code{background:none;border:none;padding:0;color:#a8b4c8;font-size:.79rem;line-height:1.8;display:block;}
+
+/* SYNTAX HIGHLIGHTING (ajustado para Netmiko) */
+.cmt{color:#3a4a60;font-style:italic;}
+.kw {color:#c792ea;}
+.fn {color:#82aaff;}
+.str{color:#c3e88d;}
+.num{color:#f78c6c;}
+
+/* CONCEPT GRID */
+.concept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin:16px 0;}
+.concept-card{background:#090d1a;border:1px solid rgba(0,212,170,.1);border-radius:10px;padding:16px;}
+.concept-icon{font-size:1.8rem;margin-bottom:8px;}
+.concept-card h3{font-family:'Share Tech Mono',monospace;font-size:.77rem;color:#00d4aa;margin-bottom:8px;}
+.concept-card p{font-size:.8rem;margin:0;}
+
+/* REF TABLE */
+.table-wrap{overflow-x:auto;margin:16px 0;}
+.ref-table{width:100%;border-collapse:collapse;font-size:.8rem;}
+.ref-table th{background:#090d1a;color:#00d4aa;font-family:'Share Tech Mono',monospace;font-size:.67rem;padding:10px 12px;text-align:left;border:1px solid rgba(0,212,170,.15);letter-spacing:1px;}
+.ref-table td{padding:9px 12px;border:1px solid rgba(255,255,255,.04);color:#8294b8;}
+.ref-table tr:hover td{background:rgba(0,212,170,.03);}
+.ref-table code{font-size:.77rem;}
+
+/* QUIZ */
+.quiz-question{background:#090d1a;border:1px solid rgba(0,212,170,.12);border-radius:10px;padding:20px;margin-bottom:14px;}
+.quiz-q-num{font-family:'Share Tech Mono',monospace;font-size:.62rem;color:#374060;margin-bottom:8px;}
+.quiz-q-text{font-size:.9rem;color:#c2d0e8;margin-bottom:14px;line-height:1.6;}
+.quiz-opts{display:flex;flex-direction:column;gap:7px;}
+.quiz-opt{padding:10px 14px;border-radius:7px;border:1px solid rgba(0,212,170,.12);background:#0d1220;color:#6b7a9a;cursor:pointer;font-size:.84rem;text-align:left;transition:all .15s;font-family:'Exo 2',sans-serif;}
+.quiz-opt:hover:not(:disabled){border-color:rgba(0,212,170,.4);color:#c2d0e8;}
+.quiz-opt.correct{border-color:#34d399;background:rgba(52,211,153,.08);color:#34d399;}
+.quiz-opt.wrong{border-color:#f87171;background:rgba(248,113,113,.08);color:#f87171;}
+.quiz-explanation{margin-top:10px;padding:10px 14px;background:rgba(0,212,170,.07);border-left:3px solid #00d4aa;border-radius:6px;font-size:.82rem;color:#a0aec0;line-height:1.65;}
+
+/* Navbar y Drawer (idénticos) */
+.navbar{position:fixed;top:0;left:0;right:0;height:56px;background:#080a10;border-bottom:1px solid rgba(0,212,170,.1);display:flex;align-items:center;padding:0 24px;z-index:1000;}
+.navbar-toggle{background:none;border:1px solid rgba(0,212,170,.3);color:#00d4aa;padding:6px 12px;border-radius:6px;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:.75rem;margin-right:16px;}
+.navbar-brand{font-family:'Orbitron',sans-serif;font-weight:700;color:#00d4aa;text-decoration:none;font-size:1.1rem;}
+.navbar-brand span{color:#5b9bd5;}
+.navbar-spacer{flex:1;}
+.navbar-link{color:#6b7a9a;text-decoration:none;font-size:.8rem;transition:color .2s;}
+.navbar-link:hover{color:#c2d0e8;}
+.nav-spacer{height:56px;}
+.ccna-drawer{position:fixed;top:0;left:0;bottom:0;width:280px;background:#0d1220;border-right:1px solid rgba(0,212,170,.2);transform:translateX(-100%);transition:transform .3s;z-index:2000;overflow-y:auto;}
+.ccna-drawer.open{transform:translateX(0);}
+.ccna-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);opacity:0;visibility:hidden;transition:all .3s;z-index:1500;}
+.ccna-overlay.show{opacity:1;visibility:visible;}
+.drawer-header{padding:20px;border-bottom:1px solid rgba(0,212,170,.2);display:flex;justify-content:space-between;align-items:center;}
+.drawer-header h2{font-family:'Orbitron',sans-serif;font-size:.8rem;color:#00d4aa;margin:0;letter-spacing:2px;}
+.drawer-close{background:none;border:none;color:#6b7a9a;font-size:1.2rem;cursor:pointer;}
+.drawer-section{padding:16px;border-bottom:1px solid rgba(0,212,170,.1);}
+.drawer-section-title{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#374060;margin-bottom:12px;letter-spacing:1px;text-transform:uppercase;}
+.drawer-link{display:block;padding:10px 12px;color:#8294b8;text-decoration:none;font-size:.85rem;border-radius:6px;transition:all .2s;margin-bottom:4px;}
+.drawer-link:hover{background:rgba(0,212,170,.1);color:#c2d0e8;}
+.drawer-link.active{background:rgba(0,212,170,.2);color:#00d4aa;border-left:3px solid #00d4aa;}
+.dl-icon{margin-right:8px;}
+
+@media(max-width:680px){
+  .py2-tab-btn{font-size:.6rem;padding:6px 9px;}
+  .py2-tab-content{padding:18px 12px;}
+  .py-types-grid{grid-template-columns:repeat(2,1fr);}
+  .concept-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
+<nav class="ccna-drawer" id="ccnaDrawer">
+  <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
+  <div class="drawer-section"><div class="drawer-section-title">General</div>
+    <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M8 · Automatización</div>
+    <a href="python-redes.html"      class="drawer-link"><span class="dl-icon">🐍</span> Python para Redes</a>
+    <a href="python-tema1.html"      class="drawer-link"><span class="dl-icon">01</span> Python Esencial</a>
+    <a href="python-tema2.html"      class="drawer-link active"><span class="dl-icon">02</span> Netmiko SSH</a>
+    <a href="python-tema3.html"      class="drawer-link"><span class="dl-icon">03</span> NAPALM</a>
+    <a href="json-datos.html"        class="drawer-link"><span class="dl-icon">📋</span> JSON y Datos</a>
+    <a href="rest-apis.html"         class="drawer-link"><span class="dl-icon">🌐</span> REST APIs</a>
+    <a href="ansible-redes.html"     class="drawer-link"><span class="dl-icon">⚙️</span> Ansible</a></div>
+</nav>
+
+<header class="navbar">
+  <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
+  <a href="../index.html" class="navbar-brand">CISCO<span> ACADEMY</span></a>
+  <div class="navbar-spacer"></div>
+  <a href="python-redes.html" class="navbar-link">← Python</a>
+</header>
+<div class="nav-spacer"></div>
+
+<!-- HERO -->
+<section class="class-hero" style="border-bottom:1px solid rgba(0,212,170,.2);">
+  <div class="class-hero-inner">
+    <div class="class-badge" style="color:#00d4aa;">M8 · AUTOMATIZACIÓN · TEMA 2 DE 7 · NETMIKO</div>
+    <h1 class="class-title"><span style="background:linear-gradient(135deg,#00d4aa,#00a884);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Netmiko</span> — SSH Automation</h1>
+    <p class="class-subtitle">La librería Python más usada para conectarse a dispositivos Cisco por SSH. Envía comandos show, configura interfaces y automatiza tareas de red con solo unas líneas de código. Compatible con IOS, IOS-XE, NXOS, XR y 30+ plataformas.</p>
+    <div class="class-meta">
+      <span class="meta-item" style="border-color:rgba(0,212,170,.2);color:#00d4aa;">🔌 SSH + IOS</span>
+      <span class="meta-item">🎯 CCNA Domain 6.1</span>
+      <span class="meta-item">⏱ ~90 min lectura</span>
+      <span class="meta-item">💻 Labs prácticos</span>
+      <span class="meta-item">🔐 Seguridad SSH</span>
+    </div>
+  </div>
+</section>
+
+<!-- TABS -->
+<div class="py2-tabs-wrap">
+  <div class="py2-tabs-bar">
+    <button class="py2-tab-btn py2-active" onclick="showTabPy2('intro',this)">🔌 Intro</button>
+    <button class="py2-tab-btn" onclick="showTabPy2('primeros-pasos',this)">⚡ Primeros Pasos</button>
+    <button class="py2-tab-btn" onclick="showTabPy2('show-commands',this)">📊 Show Commands</button>
+    <button class="py2-tab-btn" onclick="showTabPy2('configuracion',this)">⚙️ Configuración</button>
+    <button class="py2-tab-btn" onclick="showTabPy2('errores',this)">🛡️ Manejo de Errores</button>
+    <button class="py2-tab-btn" onclick="showTabPy2('multiples',this)">🌐 Múltiples Devices</button>
+    <button class="py2-tab-btn" onclick="showTabPy2('avanzado',this)">🚀 Patrones Avanzados</button>
+    <button class="py2-tab-btn" onclick="showTabPy2('proyecto',this)">📁 Proyecto Final</button>
+    <button class="py2-tab-btn" onclick="showTabPy2('referencia',this)">📋 Referencia</button>
+    <button class="py2-tab-btn" onclick="showTabPy2('quiz',this)">🎯 Quiz</button>
+  </div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 1 — INTRO
+═══════════════════════════════════════════ -->
+<div id="tab-intro" class="py2-tab-content py2-active">
+<div class="content-block">
+  <h2 class="section-title">¿Por qué Netmiko?</h2>
+  <p>Netmiko es la <strong>librería estándar de oro</strong> para automatización de red en Python. Desarrollada por Kirk Byers, simplifica el uso de Paramiko (SSH puro) agregando inteligencia específica para equipos de red: maneja automáticamente los prompts de enable mode, soporta diferentes plataformas (Cisco, Arista, Juniper, etc.) y hace que enviar comandos sea tan fácil como llamar una función.</p>
+  
+  <p>Si en el Tema 1 aprendiste a manipular datos de red, en este tema aprenderás a <strong>tocar equipos reales</strong> vía SSH. Es el puente entre Python y tu infraestructura física.</p>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">🔐</div>
+      <h3>SSH Seguro</h3>
+      <p>Conexiones SSHv2 con manejo automático de claves, banners y timeouts. Más robusto que Telnet y scriptable.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">📱</div>
+      <h3>Multi-Plataforma</h3>
+      <p>Soporta Cisco IOS, IOS-XE, NXOS, XR, Arista EOS, Juniper JunOS, HP Comware y 30+ sistemas más.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">⚡</div>
+      <h3>Simple pero Poderoso</h3>
+      <p>Una sola función <code>send_command()</code> ejecuta show commands y devuelve el output listo para parsear.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🏭</div>
+      <h3>Producción Real</h3>
+      <p>Usado por Netflix, Google, Cisco TAC y miles de empresas para gestionar miles de dispositivos diariamente.</p>
+    </div>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Instalación rápida</div>
+    <p>Instala Netmiko desde pip (requiere Python 3.7+):</p>
+    <code style="display:block;margin:10px 0;padding:10px;background:#050810;border-radius:4px;">pip install netmiko</code>
+    <p>También instala dependencias automáticamente: Paramiko (SSH), SCP, y TextFSM para parseo de templates.</p>
+  </div>
+
+  <h2 class="section-title">Arquitectura de Netmiko</h2>
+  <div class="code-block">
+    <div class="code-label">conceptos_clave.py</div>
+    <pre><code><span class="cmt"># 1. CONNECTHANDLER — El corazón de Netmiko</span>
+<span class="kw">from</span> netmiko <span class="kw">import</span> ConnectHandler
+
+<span class="cmt"># Diccionario con credenciales y parámetros de conexión</span>
+cisco3 = {
+    <span class="str">"device_type"</span>: <span class="str">"cisco_ios"</span>,      <span class="cmt"># Identificador de plataforma</span>
+    <span class="str">"host"</span>: <span class="str">"192.168.1.1"</span>,           <span class="cmt"># IP o hostname</span>
+    <span class="str">"username"</span>: <span class="str">"admin"</span>,           <span class="cmt"># SSH username</span>
+    <span class="str">"password"</span>: <span class="str">"Cisco123"</span>,        <span class="cmt"># SSH password</span>
+    <span class="str">"secret"</span>: <span class="str">"EnablePass"</span>,        <span class="cmt"># Enable password (opcional)</span>
+    <span class="str">"port"</span>: <span class="num">22</span>,                     <span class="cmt"># Puerto SSH (default 22)</span>
+    <span class="str">"timeout"</span>: <span class="num">60</span>,                 <span class="cmt"># Timeout de conexión</span>
+}
+
+<span class="cmt"># 2. CONTEXT MANAGER (recomendado) — Cierra automático</span>
+<span class="kw">with</span> ConnectHandler(**cisco3) <span class="kw">as</span> conn:
+    output = conn.send_command(<span class="str">"show ip int brief"</span>)
+    <span class="fn">print</span>(output)
+
+<span class="cmt"># 3. MÉTODOS PRINCIPALES:
+#    send_command()        → Ejecuta show commands
+#    send_config_set()     → Envía comandos de configuración
+#    send_config_from_file() → Carga configuración desde archivo
+#    disconnect()          → Cierra sesión (automático con 'with')</span></code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 2 — PRIMEROS PASOS
+═══════════════════════════════════════════ -->
+<div id="tab-primeros-pasos" class="py2-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Tu primera conexión SSH</h2>
+  <p>Vamos a conectar a un router Cisco real (o Packet Tracer con SSH habilitado) y extraer información básica. Este es el patrón fundamental que usarás en el 90% de tus scripts.</p>
+
+  <div class="code-block">
+    <div class="code-label">primer_ssh.py — Conexión básica y show version</div>
+    <pre><code><span class="kw">from</span> netmiko <span class="kw">import</span> ConnectHandler
+
+<span class="cmt"># Definir parámetros del dispositivo</span>
+router = {
+    <span class="str">"device_type"</span>: <span class="str">"cisco_ios"</span>,
+    <span class="str">"host"</span>: <span class="str">"192.168.1.1"</span>,
+    <span class="str">"username"</span>: <span class="str">"admin"</span>,
+    <span class="str">"password"</span>: <span class="str">"Cisco123"</span>,
+    <span class="str">"secret"</span>: <span class="str">"enablepass"</span>,  <span class="cmt"># Si requiere enable</span>
+}
+
+<span class="cmt"># Establecer conexión usando context manager (with)</span>
+<span class="kw">with</span> ConnectHandler(**router) <span class="kw">as</span> conn:
+    <span class="cmt"># Si el dispositivo requiere modo enable (privileged)</span>
+    conn.enable()  <span class="cmt"># Ejecuta "enable" usando el secret</span>
+    
+    <span class="cmt"># Enviar comando show</span>
+    output = conn.send_command(<span class="str">"show version"</span>)
+    
+    <span class="cmt"># Parsear información básica</span>
+    <span class="kw">if</span> <span class="str">"Cisco IOS Software"</span> <span class="kw">in</span> output:
+        <span class="fn">print</span>(<span class="str">"✅ Conexión exitosa — Dispositivo Cisco identificado"</span>)
+    
+    <span class="cmt"># Guardar output en archivo</span>
+    <span class="kw">with</span> <span class="fn">open</span>(<span class="str">"backup_version.txt"</span>, <span class="str">"w"</span>) <span class="kw">as</span> f:
+        f.write(output)
+
+<span class="fn">print</span>(<span class="str">"🔒 Sesión cerrada automáticamente por el context manager"</span>)</code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚠️ Requisitos previos en el router</div>
+    <p>El dispositivo debe tener configurado:</p>
+    <ul>
+      <li>Hostname e IP reachable desde tu PC</li>
+      <li>SSH habilitado: <code>ip ssh version 2</code>, <code>crypto key generate rsa</code></li>
+      <li>Usuario local con privilegio: <code>username admin privilege 15 secret Cisco123</code></li>
+      <li>VTY lines: <code>line vty 0 4 → transport input ssh → login local</code></li>
+    </ul>
+  </div>
+
+  <h2 class="section-title">Plataformas soportadas (device_type)</h2>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead>
+        <tr><th>Plataforma</th><th>device_type</th><th>Notas</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Cisco IOS</td><td><code>cisco_ios</code></td><td>Routers y switches tradicionales</td></tr>
+        <tr><td>Cisco IOS-XE</td><td><code>cisco_xe</code></td><td>Catalyst 9000, ISR 4k/1k</td></tr>
+        <tr><td>Cisco NXOS</td><td><code>cisco_nxos</code></td><td>Nexus switches (usa SSH, no Telnet)</td></tr>
+        <tr><td>Cisco IOS-XR</td><td><code>cisco_xr</code></td><td> routers ASR/CRS</td></tr>
+        <tr><td>Arista EOS</td><td><code>arista_eos</code></td><td>Comandos similares a Cisco</td></tr>
+        <tr><td>Juniper JunOS</td><td><code>juniper_junos</code></td><td>Configura con set commands</td></tr>
+        <tr><td>HP ProCurve</td><td><code>hp_procurve</code></td><td>Switches HP/Aruba</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 3 — SHOW COMMANDS
+═══════════════════════════════════════════ -->
+<div id="tab-show-commands" class="py2-tab-content">
+<div class="content-block">
+  <h2 class="section-title">send_command() — Obtener información</h2>
+  <p>El método más usado en Netmiko. Ejecuta comandos <code>show</code>, espera el prompt automáticamente y devuelve el output como string listo para procesar.</p>
+
+  <div class="code-block">
+    <div class="code-label">show_commands.py — Parseo de información de red</div>
+    <pre><code><span class="kw">from</span> netmiko <span class="kw">import</span> ConnectHandler
+
+cisco_router = {
+    <span class="str">"device_type"</span>: <span class="str">"cisco_ios"</span>,
+    <span class="str">"host"</span>: <span class="str">"10.0.0.1"</span>,
+    <span class="str">"username"</span>: <span class="str">"admin"</span>,
+    <span class="str">"password"</span>: <span class="str">"Cisco123"</span>,
+}
+
+<span class="kw">with</span> ConnectHandler(**cisco_router) <span class="kw">as</span> net_connect:
+    <span class="cmt"># --- Comando básico ---</span>
+    interfaces = net_connect.send_command(<span class="str">"show ip interface brief"</span>)
+    <span class="fn">print</span>(interfaces)
+    
+    <span class="cmt"># --- Uso de strip_prompt para limpieza ---</span>
+    hostname = net_connect.send_command(
+        <span class="str">"show run | i hostname"</span>, 
+        strip_prompt=<span class="kw">True</span>, 
+        strip_command=<span class="kw">True</span>
+    )
+    <span class="cmt"># strip_prompt=True elimina "Router#>" del final
+    # strip_command=True elimina el comando del inicio del output</span>
+    
+    <span class="cmt"># --- Parámetros avanzados ---</span>
+    <span class="cmt"># expect_string: cambia el prompt esperado (útil para submenús)</span>
+    output = net_connect.send_command(
+        <span class="str">"show running-config"</span>,
+        expect_string=<span class="str">"Router#"</span>,  <span class="cmt"># Espera este prompt específico</span>
+        delay_factor=<span class="num">2</span>               <span class="cmt"># Espera 2x el tiempo default</span>
+    )
+    
+    <span class="cmt"># --- Verificar estado específico ---</span>
+    <span class="kw">if</span> <span class="str">"up"</span> <span class="kw">in</span> interfaces <span class="kw">and</span> <span class="str">"down"</span> <span class="kw">not</span> <span class="kw">in</span> interfaces.split(<span class="str">"\n"</span>)[<span class="num">1</span>]:
+        <span class="fn">print</span>(<span class="str">"✅ Interfaz principal está UP"</span>)</code></pre>
+  </div>
+
+  <h2 class="section-title">Automatización de verificaciones</h2>
+  <div class="code-block">
+    <div class="code-label">network_audit.py — Script de auditoría de red</div>
+    <pre><code><span class="kw">def</span> <span class="fn">auditar_router</span>(ip, usuario, password):
+    <span class="str">"""Retorna diccionario con datos del router"""</span>
+    device = {
+        <span class="str">"device_type"</span>: <span class="str">"cisco_ios"</span>,
+        <span class="str">"host"</span>: ip,
+        <span class="str">"username"</span>: usuario,
+        <span class="str">"password"</span>: password,
+    }
+    
+    <span class="kw">with</span> ConnectHandler(**device) <span class="kw">as</span> conn:
+        conn.enable()
+        
+        <span class="cmt"># Recolectar datos</span>
+        version = conn.send_command(<span class="str">"show version"</span>)
+        interfaces = conn.send_command(<span class="str">"show ip interface brief"</span>)
+        routes = conn.send_command(<span class="str">"show ip route"</span>)
+        
+        <span class="cmt"># Parsear versión IOS</span>
+        ios_version = <span class="str">"Unknown"</span>
+        <span class="kw">for</span> line <span class="kw">in</span> version.split(<span class="str">"\n"</span>):
+            <span class="kw">if</span> <span class="str">"Version"</span> <span class="kw">in</span> line <span class="kw">and</span> <span class="str">"Software"</span> <span class="kw">in</span> line:
+                ios_version = line.split(<span class="str">"Version"</span>)[<span class="num">1</span>].split()[<span class="num">0</span>]
+                <span class="kw">break</span>
+        
+        <span class="cmt"># Contar interfaces UP</span>
+        up_count = interfaces.count(<span class="str">"up                     up"</span>)
+        
+        <span class="kw">return</span> {
+            <span class="str">"ip"</span>: ip,
+            <span class="str">"ios_version"</span>: ios_version,
+            <span class="str">"interfaces_up"</span>: up_count,
+            <span class="str">"has_routes"</span>: <span class="str">"C"</span> <span class="kw">in</span> routes,  <span class="cmt"># Tiene rutas conectadas</span>
+        }
+
+<span class="cmt"># Usar la función</span>
+resultado = auditar_router(<span class="str">"192.168.1.1"</span>, <span class="str">"admin"</span>, <span class="str">"Cisco123"</span>)
+<span class="fn">print</span>(<span class="str">f"Versión IOS: {resultado['ios_version']}"</span>)
+<span class="fn">print</span>(<span class="str">f"Interfaces activas: {resultado['interfaces_up']}"</span>)</code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 4 — CONFIGURACIÓN
+═══════════════════════════════════════════ -->
+<div id="tab-configuracion" class="py2-tab-content">
+<div class="content-block">
+  <h2 class="section-title">send_config_set() — Cambios de configuración</h2>
+  <p>Envía comandos de configuración al dispositivo. Netmiko maneja automáticamente el cambio al modo configuration (<code>configure terminal</code>) y el retorno al modo privileged.</p>
+
+  <div class="code-block">
+    <div class="code-label">configuracion_basica.py — Configurar interfaces y VLANs</div>
+    <pre><code><span class="kw">from</span> netmiko <span class="kw">import</span> ConnectHandler
+
+cisco_switch = {
+    <span class="str">"device_type"</span>: <span class="str">"cisco_ios"</span>,
+    <span class="str">"host"</span>: <span class="str">"10.0.0.10"</span>,
+    <span class="str">"username"</span>: <span class="str">"admin"</span>,
+    <span class="str">"password"</span>: <span class="str">"Cisco123"</span>,
+}
+
+comandos_vlan = [
+    <span class="str">"vlan 10"</span>,
+    <span class="str">" name VLAN_DATOS"</span>,
+    <span class="str">"vlan 20"</span>,
+    <span class="str">" name VLAN_VOZ"</span>,
+    <span class="str">"vlan 30"</span>,
+    <span class="str">" name VLAN_MGMT"</span>,
+]
+
+comandos_interfaz = [
+    <span class="str">"interface GigabitEthernet0/1"</span>,
+    <span class="str">" description CONEXION-SERVIDOR"</span>,
+    <span class="str">" switchport mode access"</span>,
+    <span class="str">" switchport access vlan 10"</span>,
+    <span class="str">" spanning-tree portfast"</span>,
+    <span class="str">" no shutdown"</span>,
+]
+
+<span class="kw">with</span> ConnectHandler(**cisco_switch) <span class="kw">as</span> net_connect:
+    <span class="cmt"># Enviar configuración de VLANs</span>
+    output_vlan = net_connect.send_config_set(comandos_vlan)
+    <span class="fn">print</span>(<span class="str">"VLANs configuradas:"</span>)
+    <span class="fn">print</span>(output_vlan)
+    
+    <span class="cmt"># Enviar configuración de interfaz</span>
+    output_int = net_connect.send_config_set(comandos_interfaz)
+    
+    <span class="cmt"># Verificar cambios</span>
+    verificacion = net_connect.send_command(<span class="str">"show vlan brief"</span>)
+    <span class="fn">print</span>(verificacion)</code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Modo exit_config_mode</div>
+    <p>Por defecto, Netmiko ejecuta <code>end</code> o <code>exit</code> automáticamente después de <code>send_config_set()</code> para salir del modo configuración. Si necesitas permanecer en config mode (raro), usa <code>exit_config_mode=False</code>.</p>
+  </div>
+
+  <h2 class="section-title">Configuración desde archivo</h2>
+  <div class="code-block">
+    <div class="code-label">config_template.txt + script</div>
+    <pre><code><span class="cmt"># Archivo: cambios_switch.txt</span>
+<span class="str">"""
+hostname SW-ACCESS-01
+ip domain-name empresa.local
+ntp server 10.0.0.1
+ntp server 10.0.0.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+"""</span>
+
+<span class="cmt"># Script Python</span>
+<span class="kw">with</span> ConnectHandler(**device) <span class="kw">as</span> conn:
+    <span class="cmt"># Cargar configuración desde archivo</span>
+    output = conn.send_config_from_file(<span class="str">"cambios_switch.txt"</span>)
+    
+    <span class="cmt"># Guardar configuración (write memory)</span>
+    save_output = conn.save_config()  <span class="cmt"># Equivalente a 'wr' o 'copy run start'</span>
+    <span class="fn">print</span>(<span class="str">f"Configuración guardada: {save_output}"</span>)</code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 5 — MANEJO DE ERRORES
+═══════════════════════════════════════════ -->
+<div id="tab-errores" class="py2-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Excepciones y troubleshooting</h2>
+  <p>En redes reales, los dispositivos fallan, las credenciales expiran y los timeouts ocurren. Netmiko proporciona excepciones específicas para manejar estos casos elegantemente.</p>
+
+  <div class="code-block">
+    <div class="code-label">manejo_errores.py — Script robusto para producción</div>
+    <pre><code><span class="kw">from</span> netmiko <span class="kw">import</span> ConnectHandler, NetmikoTimeoutException, NetmikoAuthenticationException
+
+<span class="kw">def</span> <span class="fn">conectar_seguro</span>(device_params):
+    <span class="str">"""Intenta conectar con manejo completo de errores"""</span>
+    <span class="kw">try</span>:
+        connection = ConnectHandler(**device_params)
+        <span class="kw">return</span> connection, <span class="str">"success"</span>
+        
+    <span class="kw">except</span> NetmikoTimeoutException:
+        <span class="cmt"># Dispositivo no responde (apagado, firewall, ruta incorrecta)</span>
+        <span class="fn">print</span>(<span class="str">f"⏱️  Timeout: {device_params['host']} no responde (puerto 22 cerrado o host down)"</span>)
+        <span class="kw">return</span> <span class="kw">None</span>, <span class="str">"timeout"</span>
+        
+    <span class="kw">except</span> NetmikoAuthenticationException:
+        <span class="cmt"># Credenciales inválidas</span>
+        <span class="fn">print</span>(<span class="str">f"🔐 Auth Failed: Usuario o password incorrecto para {device_params['host']}"</span>)
+        <span class="kw">return</span> <span class="kw">None</span>, <span class="str">"authentication"</span>
+        
+    <span class="kw">except</span> Exception <span class="kw">as</span> e:
+        <span class="cmt"># Otros errores (DNS, red, etc.)</span>
+        <span class="fn">print</span>(<span class="str">f"❌ Error general en {device_params['host']}: {str(e)}"</span>)
+        <span class="kw">return</span> <span class="kw">None</span>, <span class="str">"error"</span>
+
+<span class="cmt"># Uso en producción</span>
+router = {<span class="str">"device_type"</span>: <span class="str">"cisco_ios"</span>, <span class="str">"host"</span>: <span class="str">"192.168.1.1"</span>, <span class="str">"username"</span>: <span class="str">"admin"</span>, <span class="str">"password"</span>: <span class="str">"Cisco123"</span>}
+
+conn, status = conectar_seguro(router)
+<span class="kw">if</span> status == <span class="str">"success"</span>:
+    <span class="kw">with</span> conn:
+        output = conn.send_command(<span class="str">"show uptime"</span>)
+        <span class="fn">print</span>(output)
+<span class="kw">else</span>:
+    <span class="cmt"># Lógica de fallback: email, log, siguiente router, etc.</span>
+    <span class="fn">print</span>(<span class="str">"Saltando dispositivo..."</span>)</code></pre>
+  </div>
+
+  <h2 class="section-title">Delay Factor y Timing</h2>
+  <p>Dispositivos lentos o comandos largos (como <code>show tech-support</code>) pueden necesitar más tiempo.</p>
+  
+  <div class="code-block">
+    <div class="code-label">timing_avanzado.py</div>
+    <pre><code><span class="kw">with</span> ConnectHandler(**device) <span class="kw">as</span> conn:
+    <span class="cmt"># Comando largo que tarda en ejecutarse</span>
+    output = conn.send_command(
+        <span class="str">"show tech-support"</span>,
+        delay_factor=<span class="num">4</span>,           <span class="cmt"># Espera 4x el tiempo normal</span>
+        max_loops=<span class="num">500</span>,            <span class="cmt"># Más iteraciones de búsqueda de prompt</span>
+        strip_prompt=<span class="kw">False</span>,       <span class="cmt"># Mantener el prompt en el output</span>
+        strip_command=<span class="kw">False</span>      <span class="cmt"># Mantener el comando en el output</span>
+    )</code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 6 — MÚLTIPLES DISPOSITIVOS
+═══════════════════════════════════════════ -->
+<div id="tab-multiples" class="py2-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Automatización a escala</h2>
+  <p>El verdadero poder de Netmiko se revela cuando configuras cientos de dispositivos simultáneamente usando loops y funciones.</p>
+
+  <div class="code-block">
+    <div class="code-label">bulk_config.py — Cambio masivo de contraseñas</div>
+    <pre><code><span class="kw">from</span> netmiko <span class="kw">import</span> ConnectHandler
+<span class="kw">import</span> getpass  <span class="cmt"># Oculta password en input</span>
+
+<span class="cmt"># Inventario de dispositivos</span>
+sucursales = [
+    {<span class="str">"device_type"</span>: <span class="str">"cisco_ios"</span>, <span class="str">"host"</span>: <span class="str">"10.1.1.1"</span>, <span class="str">"username"</span>: <span class="str">"admin"</span>},
+    {<span class="str">"device_type"</span>: <span class="str">"cisco_ios"</span>, <span class="str">"host"</span>: <span class="str">"10.1.2.1"</span>, <span class="str">"username"</span>: <span class="str">"admin"</span>},
+    {<span class="str">"device_type"</span>: <span class="str">"cisco_ios"</span>, <span class="str">"host"</span>: <span class="str">"10.1.3.1"</span>, <span class="str">"username"</span>: <span class="str">"admin"</span>},
+]
+
+password = getpass.getpass(<span class="str">"Ingrese password SSH: "</span>)
+nuevo_banner = <span class="str">"Acceso solo autorizado - Area Tecnica"</span>
+
+<span class="kw">for</span> sw <span class="kw">in</span> sucursales:
+    sw[<span class="str">"password"</span>] = password  <span class="cmt"># Agregar password al dict</span>
+    
+    <span class="kw">try</span>:
+        <span class="kw">with</span> ConnectHandler(**sw) <span class="kw">as</span> conn:
+            <span class="fn">print</span>(<span class="str">f"\n🔧 Procesando {sw['host']}..."</span>)
+            
+            <span class="cmt"># Cambiar banner</span>
+            commands = [
+                <span class="str">f"banner motd #{nuevo_banner}#"</span>,
+                <span class="str">"service password-encryption"</span>,
+            ]
+            output = conn.send_config_set(commands)
+            
+            <span class="cmt"># Verificar cambio</span>
+            verify = conn.send_command(<span class="str">"show banner motd"</span>)
+            
+            <span class="kw">if</span> nuevo_banner <span class="kw">in</span> verify:
+                <span class="fn">print</span>(<span class="str">f"✅ {sw['host']}: Banner actualizado"</span>)
+                conn.save_config()
+            <span class="kw">else</span>:
+                <span class="fn">print</span>(<span class="str">f"⚠️  {sw['host']}: No se confirmó el cambio"</span>)
+                
+    <span class="kw">except</span> Exception <span class="kw">as</span> e:
+        <span class="fn">print</span>(<span class="str">f"❌ {sw['host']}: Error - {e}"</span>)
+
+<span class="fn">print</span>(<span class="str">"\n🏁 Proceso completado"</span>)</code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Consejo para producción</div>
+    <p>Para cientos de dispositivos, considera usar <strong>multiprocessing</strong> o <strong>threading</strong> para conectar en paralelo. Netmiko soporta esto nativamente, pero recuerda que cada thread mantiene una sesión SSH separada.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 7 — PATRONES AVANZADOS
+═══════════════════════════════════════════ -->
+<div id="tab-avanzado" class="py2-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Técnicas avanzadas</h2>
+  
+  <h3 class="section-title" style="font-size:.85rem;">Configuración con plantillas Jinja2</h3>
+  <div class="code-block">
+    <div class="code-label">jinja2_netmiko.py — Configuración dinámica</div>
+    <pre><code><span class="kw">from</span> jinja2 <span class="kw">import</span> Template
+<span class="kw">from</span> netmiko <span class="kw">import</span> ConnectHandler
+
+<span class="cmt"># Plantilla para interfaces</span>
+template_str = <span class="str">"""
+interface {{ interface }}
+ description {{ descripcion }}
+ ip address {{ ip }} {{ mascara }}
+ no shutdown
+"""</span>
+
+<span class="cmt"># Datos variables</span>
+datos = {
+    <span class="str">"interface"</span>: <span class="str">"GigabitEthernet0/1"</span>,
+    <span class="str">"descripcion"</span>: <span class="str">"ENLACE-WAN-ISP"</span>,
+    <span class="str">"ip"</span>: <span class="str">"203.0.113.1"</span>,
+    <span class="str">"mascara"</span>: <span class="str">"255.255.255.252"</span>
+}
+
+<span class="cmt"># Renderizar configuración</span>
+template = Template(template_str)
+config_rendered = template.render(datos).strip().split(<span class="str">"\n"</span>)
+
+<span class="cmt"># Enviar a dispositivo</span>
+<span class="kw">with</span> ConnectHandler(**router) <span class="kw">as</span> conn:
+    output = conn.send_config_set(config_rendered)
+    <span class="fn">print</span>(output)</code></pre>
+  </div>
+
+  <h3 class="section-title" style="font-size:.85rem;">Comandos con expect_string (submenús)</h3>
+  <div class="code-block">
+    <div class="code-label">submenu_config.py — Para configuraciones interactivas</div>
+    <pre><code><span class="cmt"># Cuando un comando cambia el prompt (ej. router rip, config-if)</span>
+<span class="kw">with</span> ConnectHandler(**router) <span class="kw">as</span> conn:
+    <span class="cmt"># Entrar a modo configuración específico</span>
+    conn.send_command(<span class="str">"router ospf 1"</span>, expect_string=<span class="str">"config-router"</span>)
+    
+    <span class="cmt"># Enviar comandos dentro de ese submodo</span>
+    conn.send_command(<span class="str">"network 10.0.0.0 0.0.0.255 area 0"</span>, expect_string=<span class="str">"config-router"</span>)
+    conn.send_command(<span class="str">"exit"</span>, expect_string=<span class="str">"config"</span>)  <span class="cmt"># Salir al config general</span></code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 8 — PROYECTO FINAL
+══════════════════════════════════════════════════════ -->
+<div id="tab-proyecto" class="py2-tab-content">
+<div class="content-block">
+  <h2 class="section-title">🚀 Proyecto: Backup masivo de configuraciones</h2>
+  <p>Script completo que conecta a múltiples dispositivos, extrae la configuración running-config, la guarda con timestamp y genera un reporte de estado.</p>
+
+  <div class="code-block">
+    <div class="code-label">backup_masivo.py — Solución de producción</div>
+    <pre><code><span class="kw">import</span> datetime
+<span class="kw">from</span> netmiko <span class="kw">import</span> ConnectHandler
+<span class="kw">from</span> netmiko.exceptions <span class="kw">import</span> NetmikoTimeoutException, NetmikoAuthenticationException
+<span class="kw">import</span> os
+
+<span class="cmt"># Crear directorio de backups si no existe</span>
+backup_dir = <span class="str">"backups"</span>
+os.makedirs(backup_dir, exist_ok=<span class="kw">True</span>)
+
+<span class="cmt"># Inventario</span>
+devices = [
+    {<span class="str">"device_type"</span>: <span class="str">"cisco_ios"</span>, <span class="str">"host"</span>: <span class="str">"192.168.1.1"</span>, <span class="str">"username"</span>: <span class="str">"admin"</span>, <span class="str">"password"</span>: <span class="str">"Cisco123"</span>, <span class="str">"name"</span>: <span class="str">"R1-CORE"</span>},
+    {<span class="str">"device_type"</span>: <span class="str">"cisco_ios"</span>, <span class="str">"host"</span>: <span class="str">"192.168.1.2"</span>, <span class="str">"username"</span>: <span class="str">"admin"</span>, <span class="str">"password"</span>: <span class="str">"Cisco123"</span>, <span class="str">"name"</span>: <span class="str">"R2-DIST"</span>},
+    {<span class="str">"device_type"</span>: <span class="str">"cisco_nxos"</span>, <span class="str">"host"</span>: <span class="str">"10.0.0.10"</span>, <span class="str">"username"</span>: <span class="str">"admin"</span>, <span class="str">"password"</span>: <span class="str">"Cisco123"</span>, <span class="str">"name"</span>: <span class="str">"NX9K-1"</span>},
+]
+
+timestamp = datetime.datetime.now().strftime(<span class="str">"%Y%m%d_%H%M"</span>)
+
+<span class="fn">print</span>(<span class="str">f"🚀 Iniciando backup masivo - {timestamp}\n"</span>)
+
+<span class="kw">for</span> dev <span class="kw">in</span> devices:
+    <span class="kw">try</span>:
+        <span class="fn">print</span>(<span class="str">f"📡 Conectando a {dev['name']} ({dev['host']})..."</span>)
+        
+        <span class="kw">with</span> ConnectHandler(**dev) <span class="kw">as</span> conn:
+            <span class="cmt"># Obtener configuración</span>
+            <span class="kw">if</span> dev[<span class="str">"device_type"</span>] == <span class="str">"cisco_nxos"</span>:
+                config = conn.send_command(<span class="str">"show running-config"</span>)
+            <span class="kw">else</span>:
+                config = conn.send_command(<span class="str">"show running-config"</span>)
+            
+            <span class="cmt"># Guardar archivo</span>
+            filename = <span class="str">f"{backup_dir}/{dev['name']}_{timestamp}.cfg"</span>
+            <span class="kw">with</span> <span class="fn">open</span>(filename, <span class="str">"w"</span>) <span class="kw">as</span> f:
+                f.write(config)
+            
+            <span class="fn">print</span>(<span class="str">f"   ✅ Backup guardado: {filename}"</span>)
+            
+    <span class="kw">except</span> (NetmikoTimeoutException, NetmikoAuthenticationException) <span class="kw">as</span> e:
+        <span class="fn">print</span>(<span class="str">f"   ❌ Error en {dev['name']}: {str(e)}"</span>)
+
+<span class="fn">print</span>(<span class="str">f"\n🏁 Proceso completado. Archivos guardados en ./{backup_dir}/"</span>)</code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">📝 Mejoras sugeridas para producción</div>
+    <ul>
+      <li>Agregar logging a archivo en lugar de print</li>
+      <li>Usar getpass para ocultar contraseñas</li>
+      <li>Leer inventario desde CSV o YAML</li>
+      <li>Agregar verificación de checksum (MD5) de la configuración</li>
+      <li>Integrar con Git para versionado de configuraciones</li>
+    </ul>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 9 — REFERENCIA
+═══════════════════════════════════════════ -->
+<div id="tab-referencia" class="py2-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Referencia rápida Netmiko</h2>
+  <div id="refTablePy2"></div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 10 — QUIZ
+═══════════════════════════════════════════ -->
+<div id="tab-quiz" class="py2-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Quiz — Netmiko SSH Automation</h2>
+  <p style="font-size:.83rem;color:#6b7a9a;margin-bottom:20px;">10 preguntas sobre conexiones SSH, manejo de errores y automatización de dispositivos.</p>
+  <div id="quizContainerPy2"></div>
+</div>
+</div>
+
+</div><!-- /.tabs-wrap -->
+
+<script>
+// ── NAVEGACIÓN DRAWER ────────────────────────────────
+function ccnaToggle() {
+  document.getElementById('ccnaDrawer').classList.toggle('open');
+  document.getElementById('ccnaOverlay').classList.toggle('show');
+}
+function ccnaClose() {
+  document.getElementById('ccnaDrawer').classList.remove('open');
+  document.getElementById('ccnaOverlay').classList.remove('show');
+}
+
+// ── TABS ──────────────────────────────────────────────
+function showTabPy2(id, btn) {
+  document.querySelectorAll('.py2-tab-content').forEach(t => t.classList.remove('py2-active'));
+  document.querySelectorAll('.py2-tab-btn').forEach(b => b.classList.remove('py2-active'));
+  document.getElementById('tab-' + id).classList.add('py2-active');
+  if (btn) btn.classList.add('py2-active');
+}
+
+// ── TABLA DE REFERENCIA ──────────────────────────────
+function buildRefTable() {
+  const container = document.getElementById('refTablePy2');
+  if (!container) return;
+  
+  const secciones = [
+    {
+      titulo: 'CONNECTHANDLER PARÁMETROS',
+      cols: ['Parámetro','Ejemplo','Descripción'],
+      filas: [
+        ['<code>device_type</code>','<code>"cisco_ios"</code>','Identificador de plataforma (obligatorio)'],
+        ['<code>host</code>','<code>"192.168.1.1"</code>','IP o hostname del dispositivo'],
+        ['<code>username</code>','<code>"admin"</code>','Usuario SSH'],
+        ['<code>password</code>','<code>"Cisco123"</code>','Password SSH'],
+        ['<code>secret</code>','<code>"enable"</code>','Password para modo enable'],
+        ['<code>port</code>','<code>22</code>','Puerto SSH (default 22)'],
+        ['<code>timeout</code>','<code>60</code>','Timeout de conexión en segundos'],
+        ['<code>session_timeout</code>','<code>120</code>','Timeout de sesión activa'],
+      ]
+    },
+    {
+      titulo: 'MÉTODOS PRINCIPALES',
+      cols: ['Método','Uso','Notas'],
+      filas: [
+        ['<code>send_command()</code>','Ejecutar show commands','Devuelve string con output'],
+        ['<code>send_config_set()</code>','Enviar lista de comandos config','Entra automático a config mode'],
+        ['<code>send_config_from_file()</code>','Cargar config desde archivo','Leer archivo .txt'],
+        ['<code>enable()</code>','Entrar a privileged mode','Usa el secret definido'],
+        ['<code>exit_enable_mode()</code>','Salir de enable','Volver a user mode'],
+        ['<code>disconnect()</code>','Cerrar conexión SSH','Automático con context manager'],
+        ['<code>find_prompt()</code>','Detectar prompt actual','Útil para debugging'],
+        ['<code>strip_ansi_escape_codes</code>','Limpiar códigos de color','Para switches con colores'],
+      ]
+    },
+    {
+      titulo: 'EXCEPCIONES COMUNES',
+      cols: ['Excepción','Cuándo ocurre','Solución'],
+      filas: [
+        ['<code>NetmikoTimeoutException</code>','Host no responde','Verificar IP, firewall, SSH habilitado'],
+        ['<code>NetmikoAuthenticationException</code>','Usuario/pass incorrecto','Verificar credenciales'],
+        ['<code>ReadTimeout</code>','Comando tarda demasiado','Aumentar delay_factor'],
+        ['<code>ConnectionException</code>','Error de red general','Verificar conectividad IP'],
+      ]
+    },
+    {
+      titulo: 'DEVICE TYPES COMUNES',
+      cols: ['Plataforma','device_type','Notas'],
+      filas: [
+        ['Cisco IOS','<code>cisco_ios</code>','Routers/Switches tradicionales'],
+        ['Cisco IOS-XE','<code>cisco_xe</code>','Catalyst 9k, ISR 4k'],
+        ['Cisco NXOS','<code>cisco_nxos</code>','Nexus switches'],
+        ['Cisco IOS-XR','<code>cisco_xr</code>','ASR, CRS routers'],
+        ['Arista EOS','<code>arista_eos</code>','Switches Arista'],
+        ['Juniper JunOS','<code>juniper_junos</code>','Routers Juniper'],
+        ['HP Comware','<code>hp_comware</code>','Switches HP/3Com'],
+        ['Linux','<code>linux</code>','Servidores Linux genéricos'],
+      ]
+    }
+  ];
+
+  let html = '';
+  secciones.forEach(sec => {
+    html += `<h3 style="font-family:Orbitron,sans-serif;font-size:.8rem;color:#00d4aa;letter-spacing:2px;margin:24px 0 10px;text-transform:uppercase;">▸ ${sec.titulo}</h3>`;
+    html += `<div class="table-wrap"><table class="ref-table"><thead><tr>${sec.cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>`;
+    sec.filas.forEach(f => { html += '<tr>' + f.map(c=>`<td>${c}</td>`).join('') + '</tr>'; });
+    html += '</tbody></table></div>';
+  });
+  container.innerHTML = html;
+}
+
+// ── QUIZ ─────────────────────────────────────────────
+function initQuiz() {
+  const container = document.getElementById('quizContainerPy2');
+  if (!container) return;
+
+  const qs = [
+    {
+      q: '¿Qué función de Netmiko se usa para establecer la conexión SSH inicial?',
+      opts: ['SSHClient()','ConnectHandler()','create_connection()','open_ssh()'],
+      ans: 1,
+      exp: '<code>ConnectHandler()</code> es la clase principal de Netmiko que establece la conexión SSH. Recibe un diccionario con device_type, host, username, password, etc.'
+    },
+    {
+      q: '¿Cuál es la forma recomendada de manejar la conexión para que se cierre automáticamente?',
+      opts: ['Usar try/finally manualmente','Usar el context manager: <code>with ConnectHandler(...) as conn:</code>','Llamar conn.close() al final','No es necesario cerrarla, Python lo hace solo'],
+      ans: 1,
+      exp: 'El context manager <code>with</code> asegura que <code>disconnect()</code> se llame automáticamente al salir del bloque, incluso si hay errores. Es el patrón más seguro.'
+    },
+    {
+      q: '¿Qué método envía comandos de configuración (configure terminal) al dispositivo?',
+      opts: ['send_command()','send_config_set()','write_config()','configure()'],
+      ans: 1,
+      exp: '<code>send_config_set()</code> recibe una lista de comandos, entra automáticamente al modo configuración, ejecuta los comandos y sale del modo config.'
+    },
+    {
+      q: '¿Cómo se maneja una conexión cuando el dispositivo no responde (timeout)?',
+      opts: ['TimeoutError genérico de Python','NetmikoTimeoutException','ConnectionRefusedError','SSHException'],
+      ans: 1,
+      exp: 'Netmiko define <code>NetmikoTimeoutException</code> específicamente para cuando el host no responde en el puerto 22 o el tiempo de espera agota.'
+    },
+    {
+      q: 'Para un switch Cisco Nexus (NXOS), ¿cuál es el device_type correcto?',
+      opts: ['cisco_ios','cisco_nexus','cisco_nxos','nxos_cisco'],
+      ans: 2,
+      exp: 'El identificador correcto es <code>cisco_nxos</code>. Netmiko usa esto para saber qué comandos específicos usar (ej. NXOS usa "show running-config" vs "show run").'
+    },
+    {
+      q: '¿Qué parámetro de send_command() aumenta el tiempo de espera para comandos lentos?',
+      opts: ['timeout','wait_time','delay_factor','max_wait'],
+      ans: 2,
+      exp: '<code>delay_factor</code> multiplica el tiempo de espera base. Un valor de 4 espera 4 veces el tiempo normal, útil para <code>show tech-support</code>.'
+    },
+    {
+      q: '¿Qué sucede si intentas ejecutar send_config_set sin proporcionar password ni secret en el dispositivo?',
+      opts: ['Funciona igual si el device no requiere auth','Netmiko solicita interactivamente','Falla con NetmikoAuthenticationException','Se cuelga indefinidamente'],
+      ans: 2,
+      exp: 'Si faltan credenciales o son incorrectas, Netmiko lanza <code>NetmikoAuthenticationException</code> durante el establecimiento de la conexión SSH.'
+    },
+    {
+      q: '¿Cuál es la diferencia entre strip_prompt=True y strip_command=True?',
+      opts: ['Son lo mismo','strip_prompt quita el prompt del final; strip_command quita el comando del inicio','strip_prompt es para prompts de usuario; strip_command para enable','No existen esos parámetros'],
+      ans: 1,
+      exp: '<code>strip_prompt</code> elimina el prompt del router (ej. "Router#>") del output. <code>strip_command</code> elimina la línea del comando ejecutado del inicio del output.'
+    },
+    {
+      q: '¿Cómo se guarda la configuración en un dispositivo Cisco usando Netmiko?',
+      opts: ['send_command("write memory")','send_config_set(["write memory"])','save_config()','Las opciones A y C son válidas'],
+      ans: 3,
+      exp: 'Netmiko proporciona el método <code>save_config()</code> que hace "write memory" o "copy run start" según la plataforma. También puedes usar send_command manualmente.'
+    },
+    {
+      q: '¿Qué librería usa Netmiko internamente para el protocolo SSH?',
+      opts: ['Paramiko','PySSH','OpenSSH bindings','Twisted'],
+      ans: 0,
+      exp: 'Netmiko está construido sobre <strong>Paramiko</strong>, que es la implementación SSH pura de Python. Netmiko agrega la capa de abstracción específica para equipos de red.'
+    }
+  ];
+
+  let html = '';
+  qs.forEach((q, i) => {
+    html += `<div class="quiz-question" id="qpy2-${i}">
+      <div class="quiz-q-num">PREGUNTA ${i+1} DE ${qs.length} · M8 Netmiko</div>
+      <div class="quiz-q-text">${q.q}</div>
+      <div class="quiz-opts">
+        ${q.opts.map((o,j) => `<button class="quiz-opt" data-qi="${i}" data-sel="${j}" data-ans="${q.ans}">${o}</button>`).join('')}
+      </div>
+    </div>`;
+  });
+  container.innerHTML = html;
+
+  window._py2Exp = {};
+  qs.forEach((q, i) => { window._py2Exp[i] = q.exp; });
+
+  container.querySelectorAll('.quiz-opt').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const qi  = parseInt(this.dataset.qi);
+      const sel = parseInt(this.dataset.sel);
+      const ans = parseInt(this.dataset.ans);
+      const qDiv = document.getElementById('qpy2-' + qi);
+      const btns = qDiv.querySelectorAll('.quiz-opt');
+      btns.forEach(b => b.disabled = true);
+      btns[sel].classList.add(sel === ans ? 'correct' : 'wrong');
+      if (sel !== ans) btns[ans].classList.add('correct');
+      const expDiv = document.createElement('div');
+      expDiv.className = 'quiz-explanation';
+      expDiv.innerHTML = `<strong>${sel===ans ? '✅ Correcto!' : '❌ Incorrecto.'}</strong> ${window._py2Exp[qi]}`;
+      qDiv.appendChild(expDiv);
+    });
+  });
+}
+
+// ── INICIALIZACIÓN ────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  buildRefTable();
+  initQuiz();
+});
+</script>
+</body>
+</html>
