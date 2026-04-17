@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ansible — M8 Automatización | CCNA Academy</title>
+  <meta name="description" content="Aprende Python para automatización de redes Cisco. Netmiko, NAPALM, scripting SSH, backup automático y más. CCNA 200-301 Domain 6.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
+<nav class="ccna-drawer" id="ccnaDrawer">
+  <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
+  <div class="drawer-section"><div class="drawer-section-title">General</div>
+    <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M1 · Fundamentos</div>
+    <a href="fundamentos.html" class="drawer-link"><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
+    <a href="subnetting.html"  class="drawer-link"><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
+    <a href="ipv6.html"        class="drawer-link"><span class="dl-icon">6️⃣</span> IPv6</a>
+    <a href="arp.html"         class="drawer-link"><span class="dl-icon">📡</span> ARP</a>
+    <a href="rip.html"         class="drawer-link"><span class="dl-icon">🔄</span> RIP</a>
+    <a href="protocolos-internet.html" class="drawer-link"><span class="dl-icon">🌍</span> Protocolos Internet</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M2 · Dispositivos Cisco</div>
+    <a href="router.html"        class="drawer-link"><span class="dl-icon">📡</span> Routers Cisco</a>
+    <a href="switches-cisco.html" class="drawer-link"><span class="dl-icon">🔀</span> Switches Cisco</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M3 · Switching</div>
+    <a href="vlan.html"               class="drawer-link"><span class="dl-icon">🏷️</span> VLANs</a>
+    <a href="inter-vlan-routing.html" class="drawer-link"><span class="dl-icon">🔁</span> Inter-VLAN Routing</a>
+    <a href="stp.html"                class="drawer-link"><span class="dl-icon">🌳</span> STP</a>
+    <a href="etherchannel.html"       class="drawer-link"><span class="dl-icon">🔗</span> EtherChannel</a>
+    <a href="port-security.html"      class="drawer-link"><span class="dl-icon">🔒</span> Port Security</a>
+    <a href="cdp-lldp.html"           class="drawer-link"><span class="dl-icon">🔍</span> CDP / LLDP</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M4 · Routing</div>
+    <a href="routing.html"            class="drawer-link"><span class="dl-icon">🗺️</span> Routing Estático</a>
+    <a href="ospf.html"               class="drawer-link"><span class="dl-icon">⭕</span> OSPF</a>
+    <a href="eigrp.html"              class="drawer-link"><span class="dl-icon">⚡</span> EIGRP</a>
+    <a href="ospfv2-masterclass.html" class="drawer-link"><span class="dl-icon">🎯</span> OSPFv2 Masterclass</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M5 · Servicios IP</div>
+    <a href="dhcp.html" class="drawer-link"><span class="dl-icon">📋</span> DHCP</a>
+    <a href="nat.html"  class="drawer-link"><span class="dl-icon">🔄</span> NAT / PAT</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M6 · Seguridad</div>
+    <a href="acl.html" class="drawer-link"><span class="dl-icon">🛡️</span> ACLs</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M7 · WAN &amp; QoS</div>
+    <a href="wan.html" class="drawer-link"><span class="dl-icon">🌍</span> WAN</a>
+    <a href="qos.html" class="drawer-link"><span class="dl-icon">📊</span> QoS</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M8 · Automatización</div>
+    <a href="m8-automatizacion.html" class="drawer-link"><span class="dl-icon">🤖</span> M8 — Vista General</a>
+    <a href="python-redes.html"      class="drawer-link"><span class="dl-icon">🐍</span> Python para Redes</a>
+    <a href="json-datos.html"        class="drawer-link"><span class="dl-icon">📋</span> JSON y Datos</a>
+    <a href="rest-apis.html"         class="drawer-link"><span class="dl-icon">🌐</span> REST APIs</a>
+    <a href="ansible-redes.html"     class="drawer-link active"><span class="dl-icon">⚙️</span> Ansible</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">⚡ Herramientas</div>
+    <a href="asistente.html"          class="drawer-link"><span class="dl-icon">🤖</span> Asistente IA</a>
+    <a href="netbot.html"             class="drawer-link"><span class="dl-icon">⚙️</span> NetBot Config</a>
+    <a href="calculadora.html"        class="drawer-link"><span class="dl-icon">🧮</span> Calculadora IP</a>
+    <a href="laboratorios-pkt.html"   class="drawer-link"><span class="dl-icon">🧪</span> Labs Packet Tracer</a>
+    <a href="../banco-preguntas.html" class="drawer-link"><span class="dl-icon">📝</span> Banco de Preguntas</a></div>
+</nav>
+<header class="navbar">
+  <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
+  <a href="../index.html" class="navbar-brand">CISCO<span> ACADEMY</span></a>
+  <div class="navbar-spacer"></div>
+  <a href="m8-automatizacion.html" class="navbar-link">← M8</a>
+</header>
+<script src="../assets/main.js" defer></script>
+<div class="nav-spacer"></div>
+
+<!-- HERO -->
+<section class="hub-hero hub-py">
+  <div class="hub-hero-inner">
+    <div class="hub-breadcrumb"><a href="../index.html">Inicio</a> <span>›</span> <a href="m8-automatizacion.html">M8 Automatización</a> <span>›</span> <span>Python</span></div>
+    <div class="hub-badge">M8 · HERRAMIENTA 4 DE 4 · CCNA DOMAIN 6</div>
+    <div class="hub-hero-content">
+      <div class="hub-hero-icon">⚙️</div>
+      <div>
+        <h1 class="hub-title">Ansible <span class="hub-title-sub">Redes</span></h1>
+        <p class="hub-subtitle">Infraestructura como código para redes. Gestiona cientos de dispositivos simultáneamente con playbooks YAML declarativos, sin instalar ningún agente en los routers o switches Cisco.</p>
+      </div>
+    </div>
+    <div class="hub-stats">
+      <div class="hub-stat"><span class="hub-stat-n">7</span><span class="hub-stat-l">Temas</span></div>
+      <div class="hub-stat"><span class="hub-stat-n">Agentless</span><span class="hub-stat-l">Arquitectura</span></div>
+      <div class="hub-stat"><span class="hub-stat-n">Playbooks</span><span class="hub-stat-l">Método</span></div>
+      <div class="hub-stat"><span class="hub-stat-n">CCNA 6.6</span><span class="hub-stat-l">Examen</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- GRID DE TEMAS -->
+<div class="hub-wrap">
+  <div class="hub-grid-hdr">
+    <div class="hub-grid-tag">⚙️ ANSIBLE · 7 TEMAS COMPLETOS</div>
+    <h2 class="hub-grid-title">ELIGE TU TEMA</h2>
+    <p class="hub-grid-sub">Sigue la secuencia recomendada o accede directamente al tema que necesitas.</p>
+  </div>
+
+  <div class="hub-grid">
+
+    <a href="ansible-tema1.html" class="hub-card hub-card-ansible">
+      <div class="hub-card-num">01</div>
+      <div class="hub-card-icon">⚙️</div>
+      <div class="hub-card-body">
+        <div class="hub-card-name">Ansible — Arquitectura y Conceptos</div>
+        <p class="hub-card-desc">Qué es Ansible, por qué es agentless (sin instalar nada en los dispositivos), arquitectura Control Node/Managed Nodes, y la diferencia con Chef y Puppet.</p>
+        <div class="hub-card-tags">
+          <span class="hub-tag ansible">Agentless</span><span class="hub-tag ansible">Control Node</span><span class="hub-tag ansible">SSH</span><span class="hub-tag ansible">vs Chef/Puppet</span>
+        </div>
+      </div>
+      <div class="hub-card-footer">
+        <span class="hub-card-badge ansible">⚙️ Arquitectura base</span>
+        <span class="hub-card-arrow ansible">→</span>
+      </div>
+    </a>
+
+    <a href="ansible-tema2.html" class="hub-card hub-card-ansible">
+      <div class="hub-card-num">02</div>
+      <div class="hub-card-icon">📄</div>
+      <div class="hub-card-body">
+        <div class="hub-card-name">Inventarios y Variables</div>
+        <p class="hub-card-desc">Define qué dispositivos gestiona Ansible: inventarios estáticos en INI/YAML, grupos de dispositivos (routers, switches, firewalls), variables por host y por grupo.</p>
+        <div class="hub-card-tags">
+          <span class="hub-tag ansible">inventory.ini</span><span class="hub-tag ansible">host_vars</span><span class="hub-tag ansible">group_vars</span><span class="hub-tag ansible">Grupos</span>
+        </div>
+      </div>
+      <div class="hub-card-footer">
+        <span class="hub-card-badge ansible">📄 Inventarios</span>
+        <span class="hub-card-arrow ansible">→</span>
+      </div>
+    </a>
+
+    <a href="ansible-tema3.html" class="hub-card hub-card-ansible">
+      <div class="hub-card-num">03</div>
+      <div class="hub-card-icon">📋</div>
+      <div class="hub-card-body">
+        <div class="hub-card-name">Playbooks YAML — Escribir Automatizaciones</div>
+        <p class="hub-card-desc">La unidad central de Ansible. Escribe plays y tasks en YAML para configurar cientos de dispositivos Cisco simultáneamente con el mismo esfuerzo que uno.</p>
+        <div class="hub-card-tags">
+          <span class="hub-tag ansible">Plays</span><span class="hub-tag ansible">Tasks</span><span class="hub-tag ansible">Handlers</span><span class="hub-tag ansible">When/Loop</span>
+        </div>
+      </div>
+      <div class="hub-card-footer">
+        <span class="hub-card-badge ansible">📋 Playbooks YAML</span>
+        <span class="hub-card-arrow ansible">→</span>
+      </div>
+    </a>
+
+    <a href="ansible-tema4.html" class="hub-card hub-card-ansible">
+      <div class="hub-card-num">04</div>
+      <div class="hub-card-icon">🔌</div>
+      <div class="hub-card-body">
+        <div class="hub-card-name">Módulos cisco.ios — Automatización IOS</div>
+        <p class="hub-card-desc">La colección oficial de Ansible para Cisco IOS. Usa ios_command, ios_config, ios_facts, ios_interfaces y ios_vlans para gestionar routers y switches Cisco.</p>
+        <div class="hub-card-tags">
+          <span class="hub-tag ansible">ios_command</span><span class="hub-tag ansible">ios_config</span><span class="hub-tag ansible">ios_facts</span><span class="hub-tag ansible">ios_interfaces</span>
+        </div>
+      </div>
+      <div class="hub-card-footer">
+        <span class="hub-card-badge ansible">🔌 cisco.ios.*</span>
+        <span class="hub-card-arrow ansible">→</span>
+      </div>
+    </a>
+
+    <a href="ansible-tema5.html" class="hub-card hub-card-ansible">
+      <div class="hub-card-num">05</div>
+      <div class="hub-card-icon">📁</div>
+      <div class="hub-card-body">
+        <div class="hub-card-name">Roles, Templates Jinja2 y Ansible Vault</div>
+        <p class="hub-card-desc">Organiza playbooks complejos con roles reutilizables, genera configuraciones dinámicas con templates Jinja2, y protege credenciales con Ansible Vault.</p>
+        <div class="hub-card-tags">
+          <span class="hub-tag ansible">Roles</span><span class="hub-tag ansible">Jinja2</span><span class="hub-tag ansible">ansible-vault</span><span class="hub-tag ansible">Templates</span>
+        </div>
+      </div>
+      <div class="hub-card-footer">
+        <span class="hub-card-badge ansible">📁 Roles + Vault</span>
+        <span class="hub-card-arrow ansible">→</span>
+      </div>
+    </a>
+
+    <a href="ansible-tema6.html" class="hub-card hub-card-ansible">
+      <div class="hub-card-num">06</div>
+      <div class="hub-card-icon">🔍</div>
+      <div class="hub-card-body">
+        <div class="hub-card-name">Ansible para Troubleshooting y Auditoría</div>
+        <p class="hub-card-desc">Usa Ansible para verificar configuraciones, auditar compliance de seguridad y generar reportes automáticos de toda la infraestructura de red en minutos.</p>
+        <div class="hub-card-tags">
+          <span class="hub-tag ansible">ios_facts</span><span class="hub-tag ansible">assert</span><span class="hub-tag ansible">debug</span><span class="hub-tag ansible">Compliance</span>
+        </div>
+      </div>
+      <div class="hub-card-footer">
+        <span class="hub-card-badge ansible">🔍 Auditoría</span>
+        <span class="hub-card-arrow ansible">→</span>
+      </div>
+    </a>
+
+    <a href="ansible-tema7.html" class="hub-card hub-card-ansible">
+      <div class="hub-card-num">07</div>
+      <div class="hub-card-icon">🚀</div>
+      <div class="hub-card-body">
+        <div class="hub-card-name">Proyecto — Despliegue Masivo de Red</div>
+        <p class="hub-card-desc">Playbook completo que configura VLANs, IPs, OSPF, SSH y políticas de seguridad en una red de 10 dispositivos desde cero, en menos de 2 minutos.</p>
+        <div class="hub-card-tags">
+          <span class="hub-tag ansible">Proyecto integrador</span><span class="hub-tag ansible">10 dispositivos</span><span class="hub-tag ansible">Idempotente</span><span class="hub-tag ansible">IaC</span>
+        </div>
+      </div>
+      <div class="hub-card-footer">
+        <span class="hub-card-badge ansible" style="background:rgba(0,212,170,.15);border-color:rgba(0,212,170,.4);color:#00d4aa;">🚀 Proyecto final</span>
+        <span class="hub-card-arrow ansible">→</span>
+      </div>
+    </a>
+
+  </div><!-- /.hub-grid -->
+
+  <!-- INFO BOX CCNA -->
+  <div class="hub-info-box ansible">
+    <div class="hub-info-icon">🎯</div>
+    <div>
+      <div class="hub-info-title">Lo que entra en el examen CCNA sobre Ansible</div>
+      <p class="hub-info-text">El examen CCNA 200-301 pide reconocer las capacidades de las herramientas de gestión de configuración (Domain 6.6): Ansible (agentless, YAML, SSH), Puppet (agente, Ruby DSL) y Chef (agente, Ruby). La pregunta típica es: ¿Cuál herramienta es agentless? → Ansible. También evalúa IaC (Infrastructure as Code) y la diferencia entre gestión tradicional y automatizada.</p>
+    </div>
+  </div>
+</div>
+
+<style>
+/* ── DRAWER ACTIVE STATE ── */
+.hub-breadcrumb{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#374060;margin-bottom:14px;}
+.hub-breadcrumb a{color:#4a5780;text-decoration:none;transition:color .15s;}
+.hub-breadcrumb a:hover{color:#00d4aa;}
+.hub-breadcrumb span{margin:0 6px;color:#374060;}
+
+/* ── HERO ── */
+.hub-hero{padding:56px 24px 48px;border-bottom:1px solid rgba(255,255,255,.05);position:relative;overflow:hidden;}
+.hub-hero::before{content:'';position:absolute;top:-80px;right:-80px;width:480px;height:480px;border-radius:50%;background:radial-gradient(circle,rgba(55,118,171,.08) 0%,transparent 70%);pointer-events:none;}
+.hub-py{background:linear-gradient(135deg,#06080f 0%,#080d18 60%,#0a1020 100%);}
+.hub-hero-inner{max-width:920px;margin:0 auto;position:relative;z-index:1;}
+.hub-badge{font-family:'Share Tech Mono',monospace;font-size:.62rem;color:#ef4444;letter-spacing:3px;text-transform:uppercase;margin-bottom:20px;}
+.hub-hero-content{display:flex;align-items:flex-start;gap:20px;margin-bottom:28px;}
+.hub-hero-icon{font-size:3.5rem;width:80px;height:80px;display:flex;align-items:center;justify-content:center;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);border-radius:16px;flex-shrink:0;}
+.hub-title{font-family:'Orbitron',sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:900;color:#c2d0e8;line-height:1.1;margin-bottom:10px;letter-spacing:2px;}
+.hub-title-sub{background:linear-gradient(135deg,#ef4444,#dc2626);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hub-subtitle{font-size:.92rem;color:#6b7a9a;line-height:1.72;max-width:680px;}
+.hub-stats{display:flex;gap:14px;flex-wrap:wrap;}
+.hub-stat{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.15);border-radius:10px;padding:10px 18px;display:flex;flex-direction:column;align-items:center;min-width:80px;}
+.hub-stat-n{font-family:'Orbitron',sans-serif;font-size:1.2rem;font-weight:700;color:#ef4444;line-height:1.1;}
+.hub-stat-l{font-family:'Share Tech Mono',monospace;font-size:.58rem;color:#374060;margin-top:3px;text-align:center;text-transform:uppercase;letter-spacing:1px;}
+
+/* ── WRAP ── */
+.hub-wrap{max-width:1100px;margin:0 auto;padding:40px 20px 60px;}
+.hub-grid-hdr{text-align:center;margin-bottom:36px;}
+.hub-grid-tag{font-family:'Share Tech Mono',sans-serif;font-size:.62rem;color:#ef4444;letter-spacing:3px;text-transform:uppercase;margin-bottom:10px;}
+.hub-grid-title{font-family:'Orbitron',sans-serif;font-size:clamp(.95rem,2.5vw,1.25rem);color:#c2d0e8;letter-spacing:3px;margin-bottom:10px;}
+.hub-grid-sub{font-size:.85rem;color:#4a5780;max-width:560px;margin:0 auto;line-height:1.65;}
+
+/* ── CARDS ── */
+.hub-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-bottom:40px;}
+.hub-card{background:#0d1220;border-radius:14px;padding:22px 20px;text-decoration:none;display:flex;flex-direction:column;gap:10px;transition:all .2s;position:relative;overflow:hidden;}
+.hub-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;opacity:0;transition:opacity .2s;}
+.hub-card:hover{transform:translateY(-3px);}
+.hub-card:hover::before{opacity:1;}
+.hub-card-ansible{border:1px solid rgba(239,68,68,.15);}
+.hub-card-ansible:hover{border-color:rgba(239,68,68,.4);box-shadow:0 12px 32px rgba(239,68,68,.1);}
+.hub-card-ansible::before{background:linear-gradient(90deg,#ef4444,#dc2626);}
+.hub-card-num{font-family:'Orbitron',sans-serif;font-size:.6rem;color:#374060;letter-spacing:2px;}
+.hub-card-icon{font-size:2rem;}
+.hub-card-body{flex:1;}
+.hub-card-name{font-family:'Exo 2',sans-serif;font-size:.95rem;font-weight:700;color:#c2d0e8;margin-bottom:7px;line-height:1.3;}
+.hub-card-desc{font-size:.8rem;color:#6b7a9a;line-height:1.6;}
+.hub-card-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px;}
+.hub-tag{font-family:'Share Tech Mono',monospace;font-size:.58rem;padding:2px 8px;border-radius:4px;}
+.hub-tag.ansible{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:#ef4444;}
+.hub-card-footer{display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid rgba(255,255,255,.04);}
+.hub-card-badge{font-family:'Share Tech Mono',monospace;font-size:.6rem;padding:3px 9px;border-radius:20px;}
+.hub-card-badge.ansible{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);color:#ef4444;}
+.hub-card-arrow{font-size:1rem;font-weight:700;transition:transform .2s;}
+.hub-card-arrow.ansible{color:#ef4444;}
+.hub-card:hover .hub-card-arrow{transform:translateX(5px);}
+
+/* ── INFO BOX ── */
+.hub-info-box{display:flex;gap:20px;padding:24px 28px;border-radius:12px;margin-top:8px;}
+.hub-info-box.ansible{background:rgba(239,68,68,.05);border:1px solid rgba(239,68,68,.15);}
+.hub-info-icon{font-size:2rem;flex-shrink:0;margin-top:2px;}
+.hub-info-title{font-family:'Share Tech Mono',monospace;font-size:.72rem;color:#ef4444;margin-bottom:8px;letter-spacing:1px;text-transform:uppercase;}
+.hub-info-text{font-size:.83rem;color:#6b7a9a;line-height:1.7;}
+.hub-info-text strong{color:#c2d0e8;}
+
+@media(max-width:680px){
+  .hub-hero-content{flex-direction:column;gap:14px;}
+  .hub-grid{grid-template-columns:1fr;}
+  .hub-stats{gap:8px;}
+}
+</style>
+</body>
+</html>

@@ -57,8 +57,8 @@ EXCLUIDOS = {
     'json-datos.html',
     'rest-apis.html',
     'ansible-redes.html',
-
-    
+    'banco-preguntas.html',
+    'laboratorios-pkt.html',
 }
 
 # ═══════════════════════════════════════════════════════════════════════

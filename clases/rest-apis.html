@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>REST APIs — M8 Automatización | CCNA Academy</title>
+  <meta name="description" content="Aprende Python para automatización de redes Cisco. Netmiko, NAPALM, scripting SSH, backup automático y más. CCNA 200-301 Domain 6.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
+<nav class="ccna-drawer" id="ccnaDrawer">
+  <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
+  <div class="drawer-section"><div class="drawer-section-title">General</div>
+    <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M1 · Fundamentos</div>
+    <a href="fundamentos.html" class="drawer-link"><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
+    <a href="subnetting.html"  class="drawer-link"><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
+    <a href="ipv6.html"        class="drawer-link"><span class="dl-icon">6️⃣</span> IPv6</a>
+    <a href="arp.html"         class="drawer-link"><span class="dl-icon">📡</span> ARP</a>
+    <a href="rip.html"         class="drawer-link"><span class="dl-icon">🔄</span> RIP</a>
+    <a href="protocolos-internet.html" class="drawer-link"><span class="dl-icon">🌍</span> Protocolos Internet</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M2 · Dispositivos Cisco</div>
+    <a href="router.html"        class="drawer-link"><span class="dl-icon">📡</span> Routers Cisco</a>
+    <a href="switches-cisco.html" class="drawer-link"><span class="dl-icon">🔀</span> Switches Cisco</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M3 · Switching</div>
+    <a href="vlan.html"               class="drawer-link"><span class="dl-icon">🏷️</span> VLANs</a>
+    <a href="inter-vlan-routing.html" class="drawer-link"><span class="dl-icon">🔁</span> Inter-VLAN Routing</a>
+    <a href="stp.html"                class="drawer-link"><span class="dl-icon">🌳</span> STP</a>
+    <a href="etherchannel.html"       class="drawer-link"><span class="dl-icon">🔗</span> EtherChannel</a>
+    <a href="port-security.html"      class="drawer-link"><span class="dl-icon">🔒</span> Port Security</a>
+    <a href="cdp-lldp.html"           class="drawer-link"><span class="dl-icon">🔍</span> CDP / LLDP</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M4 · Routing</div>
+    <a href="routing.html"            class="drawer-link"><span class="dl-icon">🗺️</span> Routing Estático</a>
+    <a href="ospf.html"               class="drawer-link"><span class="dl-icon">⭕</span> OSPF</a>
+    <a href="eigrp.html"              class="drawer-link"><span class="dl-icon">⚡</span> EIGRP</a>
+    <a href="ospfv2-masterclass.html" class="drawer-link"><span class="dl-icon">🎯</span> OSPFv2 Masterclass</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M5 · Servicios IP</div>
+    <a href="dhcp.html" class="drawer-link"><span class="dl-icon">📋</span> DHCP</a>
+    <a href="nat.html"  class="drawer-link"><span class="dl-icon">🔄</span> NAT / PAT</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M6 · Seguridad</div>
+    <a href="acl.html" class="drawer-link"><span class="dl-icon">🛡️</span> ACLs</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M7 · WAN &amp; QoS</div>
+    <a href="wan.html" class="drawer-link"><span class="dl-icon">🌍</span> WAN</a>
+    <a href="qos.html" class="drawer-link"><span class="dl-icon">📊</span> QoS</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M8 · Automatización</div>
+    <a href="m8-automatizacion.html" class="drawer-link"><span class="dl-icon">🤖</span> M8 — Vista General</a>
+    <a href="python-redes.html"      class="drawer-link"><span class="dl-icon">🐍</span> Python para Redes</a>
+    <a href="json-datos.html"        class="drawer-link"><span class="dl-icon">📋</span> JSON y Datos</a>
+    <a href="rest-apis.html"         class="drawer-link active"><span class="dl-icon">🌐</span> REST APIs</a>
+    <a href="ansible-redes.html"     class="drawer-link"><span class="dl-icon">⚙️</span> Ansible</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">⚡ Herramientas</div>
+    <a href="asistente.html"          class="drawer-link"><span class="dl-icon">🤖</span> Asistente IA</a>
+    <a href="netbot.html"             class="drawer-link"><span class="dl-icon">⚙️</span> NetBot Config</a>
+    <a href="calculadora.html"        class="drawer-link"><span class="dl-icon">🧮</span> Calculadora IP</a>
+    <a href="laboratorios-pkt.html"   class="drawer-link"><span class="dl-icon">🧪</span> Labs Packet Tracer</a>
+    <a href="../banco-preguntas.html" class="drawer-link"><span class="dl-icon">📝</span> Banco de Preguntas</a></div>
+</nav>
+<header class="navbar">
+  <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
+  <a href="../index.html" class="navbar-brand">CISCO<span> ACADEMY</span></a>
+  <div class="navbar-spacer"></div>
+  <a href="m8-automatizacion.html" class="navbar-link">← M8</a>
+</header>
+<script src="../assets/main.js" defer></script>
+<div class="nav-spacer"></div>
+
+<!-- HERO -->
+<section class="hub-hero hub-py">
+  <div class="hub-hero-inner">
+    <div class="hub-breadcrumb"><a href="../index.html">Inicio</a> <span>›</span> <a href="m8-automatizacion.html">M8 Automatización</a> <span>›</span> <span>Python</span></div>
+    <div class="hub-badge">M8 · HERRAMIENTA 3 DE 4 · CCNA DOMAIN 6</div>
+    <div class="hub-hero-content">
+      <div class="hub-hero-icon">🌐</div>
+      <div>
+        <h1 class="hub-title">REST <span class="hub-title-sub">para Redes</span></h1>
+        <p class="hub-subtitle">El estándar de comunicación entre software moderno. Gestiona dispositivos Cisco, controladores SD-WAN y plataformas cloud con llamadas HTTP desde cualquier lenguaje o herramienta.</p>
+      </div>
+    </div>
+    <div class="hub-stats">
+      <div class="hub-stat"><span class="hub-stat-n">7</span><span class="hub-stat-l">Temas</span></div>
+      <div class="hub-stat"><span class="hub-stat-n">RFC 8040</span><span class="hub-stat-l">RESTCONF</span></div>
+      <div class="hub-stat"><span class="hub-stat-n">NETCONF</span><span class="hub-stat-l">Protocolo</span></div>
+      <div class="hub-stat"><span class="hub-stat-n">CCNA 6.5</span><span class="hub-stat-l">Examen</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- GRID DE TEMAS -->
+<div class="hub-wrap">
+  <div class="hub-grid-hdr">
+    <div class="hub-grid-tag">🌐 REST APIs · 7 TEMAS COMPLETOS</div>
+    <h2 class="hub-grid-title">ELIGE TU TEMA</h2>
+    <p class="hub-grid-sub">Sigue la secuencia recomendada o accede directamente al tema que necesitas.</p>
+  </div>
+
+  <div class="hub-grid">
+
+    <a href="rest-tema1.html" class="hub-card hub-card-rest">
+      <div class="hub-card-num">01</div>
+      <div class="hub-card-icon">🌐</div>
+      <div class="hub-card-body">
+        <div class="hub-card-name">HTTP y REST — Fundamentos</div>
+        <p class="hub-card-desc">Los verbos HTTP (GET, POST, PUT, PATCH, DELETE), códigos de estado (2xx, 4xx, 5xx), headers y el modelo cliente-servidor en el contexto de APIs de red.</p>
+        <div class="hub-card-tags">
+          <span class="hub-tag rest">GET POST PUT DELETE</span><span class="hub-tag rest">Status codes</span><span class="hub-tag rest">Headers</span><span class="hub-tag rest">REST CRUD</span>
+        </div>
+      </div>
+      <div class="hub-card-footer">
+        <span class="hub-card-badge rest">🌐 HTTP fundamentals</span>
+        <span class="hub-card-arrow rest">→</span>
+      </div>
+    </a>
+
+    <a href="rest-tema2.html" class="hub-card hub-card-rest">
+      <div class="hub-card-num">02</div>
+      <div class="hub-card-icon">🔧</div>
+      <div class="hub-card-body">
+        <div class="hub-card-name">RESTCONF — REST para Dispositivos IOS-XE</div>
+        <p class="hub-card-desc">El protocolo estándar (RFC 8040) que lleva REST a los dispositivos Cisco. Configura interfaces, obtén rutas y gestiona OSPF en IOS-XE con llamadas HTTP.</p>
+        <div class="hub-card-tags">
+          <span class="hub-tag rest">RFC 8040</span><span class="hub-tag rest">YANG paths</span><span class="hub-tag rest">IOS-XE</span><span class="hub-tag rest">application/yang-data+json</span>
+        </div>
+      </div>
+      <div class="hub-card-footer">
+        <span class="hub-card-badge rest">🔧 RESTCONF RFC 8040</span>
+        <span class="hub-card-arrow rest">→</span>
+      </div>
+    </a>
+
+    <a href="rest-tema3.html" class="hub-card hub-card-rest">
+      <div class="hub-card-num">03</div>
+      <div class="hub-card-icon">📡</div>
+      <div class="hub-card-body">
+        <div class="hub-card-name">NETCONF — Gestión con XML y SSH</div>
+        <p class="hub-card-desc">El protocolo de gestión de red estándar (RFC 6241). Usa SSH + XML para operaciones get-config, edit-config, commit y lock sobre datastores: running, startup, candidate.</p>
+        <div class="hub-card-tags">
+          <span class="hub-tag rest">RFC 6241</span><span class="hub-tag rest">get-config</span><span class="hub-tag rest">edit-config</span><span class="hub-tag rest">ncclient Python</span>
+        </div>
+      </div>
+      <div class="hub-card-footer">
+        <span class="hub-card-badge rest">📡 NETCONF RFC 6241</span>
+        <span class="hub-card-arrow rest">→</span>
+      </div>
+    </a>
+
+    <a href="rest-tema4.html" class="hub-card hub-card-rest">
+      <div class="hub-card-num">04</div>
+      <div class="hub-card-icon">🏢</div>
+      <div class="hub-card-body">
+        <div class="hub-card-name">Cisco DNA Center API</div>
+        <p class="hub-card-desc">La API del controlador Cisco Intent-Based Networking. Obtén inventario de red, topología, métricas de salud y aplica políticas a través de REST desde Python.</p>
+        <div class="hub-card-tags">
+          <span class="hub-tag rest">DNA Center</span><span class="hub-tag rest">Intent API</span><span class="hub-tag rest">Token auth</span><span class="hub-tag rest">Device inventory</span>
+        </div>
+      </div>
+      <div class="hub-card-footer">
+        <span class="hub-card-badge rest">🏢 DNA Center</span>
+        <span class="hub-card-arrow rest">→</span>
+      </div>
+    </a>
+
+    <a href="rest-tema5.html" class="hub-card hub-card-rest">
+      <div class="hub-card-num">05</div>
+      <div class="hub-card-icon">☁️</div>
+      <div class="hub-card-body">
+        <div class="hub-card-name">Meraki Dashboard API</div>
+        <p class="hub-card-desc">API REST de Cisco Meraki para gestión cloud. Administra redes, dispositivos, VLANs y clientes wireless de toda la organización con llamadas HTTP simples.</p>
+        <div class="hub-card-tags">
+          <span class="hub-tag rest">Meraki</span><span class="hub-tag rest">API Key</span><span class="hub-tag rest">Organizations</span><span class="hub-tag rest">Networks</span>
+        </div>
+      </div>
+      <div class="hub-card-footer">
+        <span class="hub-card-badge rest">☁️ Meraki Cloud</span>
+        <span class="hub-card-arrow rest">→</span>
+      </div>
+    </a>
+
+    <a href="rest-tema6.html" class="hub-card hub-card-rest">
+      <div class="hub-card-num">06</div>
+      <div class="hub-card-icon">🐍</div>
+      <div class="hub-card-body">
+        <div class="hub-card-name">APIs con Python — Librería requests</div>
+        <p class="hub-card-desc">Consume cualquier API REST desde Python con la librería requests. Autenticación básica y por token, manejo de respuestas JSON y errores HTTP en redes reales.</p>
+        <div class="hub-card-tags">
+          <span class="hub-tag rest">requests.get()</span><span class="hub-tag rest">headers</span><span class="hub-tag rest">json()</span><span class="hub-tag rest">verify=False</span>
+        </div>
+      </div>
+      <div class="hub-card-footer">
+        <span class="hub-card-badge rest">🐍 Python requests</span>
+        <span class="hub-card-arrow rest">→</span>
+      </div>
+    </a>
+
+    <a href="rest-tema7.html" class="hub-card hub-card-rest">
+      <div class="hub-card-num">07</div>
+      <div class="hub-card-icon">🚀</div>
+      <div class="hub-card-body">
+        <div class="hub-card-name">Proyecto — Dashboard de Red vía APIs</div>
+        <p class="hub-card-desc">Construye un dashboard que consulta múltiples APIs (DNA Center + RESTCONF) y genera un informe HTML con estado de dispositivos, interfaces y alertas activas.</p>
+        <div class="hub-card-tags">
+          <span class="hub-tag rest">Dashboard</span><span class="hub-tag rest">Multi-API</span><span class="hub-tag rest">Reporte HTML</span><span class="hub-tag rest">Alertas</span>
+        </div>
+      </div>
+      <div class="hub-card-footer">
+        <span class="hub-card-badge rest" style="background:rgba(0,212,170,.15);border-color:rgba(0,212,170,.4);color:#00d4aa;">🚀 Proyecto final</span>
+        <span class="hub-card-arrow rest">→</span>
+      </div>
+    </a>
+
+  </div><!-- /.hub-grid -->
+
+  <!-- INFO BOX CCNA -->
+  <div class="hub-info-box rest">
+    <div class="hub-info-icon">🎯</div>
+    <div>
+      <div class="hub-info-title">Lo que entra en el examen CCNA sobre REST APIs</div>
+      <p class="hub-info-text">El examen CCNA 200-301 exige conocer las características de las APIs REST (Domain 6.5): verbos HTTP CRUD, codificación de datos, códigos de estado, y la diferencia entre RESTCONF y NETCONF. También evalúa arquitecturas SDN, SD-Access y el rol del controlador (6.3, 6.4). Las preguntas son conceptuales: identificar qué verbo HTTP usar para cada operación CRUD.</p>
+    </div>
+  </div>
+</div>
+
+<style>
+/* ── DRAWER ACTIVE STATE ── */
+.hub-breadcrumb{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#374060;margin-bottom:14px;}
+.hub-breadcrumb a{color:#4a5780;text-decoration:none;transition:color .15s;}
+.hub-breadcrumb a:hover{color:#00d4aa;}
+.hub-breadcrumb span{margin:0 6px;color:#374060;}
+
+/* ── HERO ── */
+.hub-hero{padding:56px 24px 48px;border-bottom:1px solid rgba(255,255,255,.05);position:relative;overflow:hidden;}
+.hub-hero::before{content:'';position:absolute;top:-80px;right:-80px;width:480px;height:480px;border-radius:50%;background:radial-gradient(circle,rgba(55,118,171,.08) 0%,transparent 70%);pointer-events:none;}
+.hub-py{background:linear-gradient(135deg,#06080f 0%,#080d18 60%,#0a1020 100%);}
+.hub-hero-inner{max-width:920px;margin:0 auto;position:relative;z-index:1;}
+.hub-badge{font-family:'Share Tech Mono',monospace;font-size:.62rem;color:#38bdf8;letter-spacing:3px;text-transform:uppercase;margin-bottom:20px;}
+.hub-hero-content{display:flex;align-items:flex-start;gap:20px;margin-bottom:28px;}
+.hub-hero-icon{font-size:3.5rem;width:80px;height:80px;display:flex;align-items:center;justify-content:center;background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.2);border-radius:16px;flex-shrink:0;}
+.hub-title{font-family:'Orbitron',sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:900;color:#c2d0e8;line-height:1.1;margin-bottom:10px;letter-spacing:2px;}
+.hub-title-sub{background:linear-gradient(135deg,#38bdf8,#0ea5e9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hub-subtitle{font-size:.92rem;color:#6b7a9a;line-height:1.72;max-width:680px;}
+.hub-stats{display:flex;gap:14px;flex-wrap:wrap;}
+.hub-stat{background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.15);border-radius:10px;padding:10px 18px;display:flex;flex-direction:column;align-items:center;min-width:80px;}
+.hub-stat-n{font-family:'Orbitron',sans-serif;font-size:1.2rem;font-weight:700;color:#38bdf8;line-height:1.1;}
+.hub-stat-l{font-family:'Share Tech Mono',monospace;font-size:.58rem;color:#374060;margin-top:3px;text-align:center;text-transform:uppercase;letter-spacing:1px;}
+
+/* ── WRAP ── */
+.hub-wrap{max-width:1100px;margin:0 auto;padding:40px 20px 60px;}
+.hub-grid-hdr{text-align:center;margin-bottom:36px;}
+.hub-grid-tag{font-family:'Share Tech Mono',sans-serif;font-size:.62rem;color:#38bdf8;letter-spacing:3px;text-transform:uppercase;margin-bottom:10px;}
+.hub-grid-title{font-family:'Orbitron',sans-serif;font-size:clamp(.95rem,2.5vw,1.25rem);color:#c2d0e8;letter-spacing:3px;margin-bottom:10px;}
+.hub-grid-sub{font-size:.85rem;color:#4a5780;max-width:560px;margin:0 auto;line-height:1.65;}
+
+/* ── CARDS ── */
+.hub-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-bottom:40px;}
+.hub-card{background:#0d1220;border-radius:14px;padding:22px 20px;text-decoration:none;display:flex;flex-direction:column;gap:10px;transition:all .2s;position:relative;overflow:hidden;}
+.hub-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;opacity:0;transition:opacity .2s;}
+.hub-card:hover{transform:translateY(-3px);}
+.hub-card:hover::before{opacity:1;}
+.hub-card-rest{border:1px solid rgba(56,189,248,.15);}
+.hub-card-rest:hover{border-color:rgba(56,189,248,.4);box-shadow:0 12px 32px rgba(56,189,248,.1);}
+.hub-card-rest::before{background:linear-gradient(90deg,#38bdf8,#0ea5e9);}
+.hub-card-num{font-family:'Orbitron',sans-serif;font-size:.6rem;color:#374060;letter-spacing:2px;}
+.hub-card-icon{font-size:2rem;}
+.hub-card-body{flex:1;}
+.hub-card-name{font-family:'Exo 2',sans-serif;font-size:.95rem;font-weight:700;color:#c2d0e8;margin-bottom:7px;line-height:1.3;}
+.hub-card-desc{font-size:.8rem;color:#6b7a9a;line-height:1.6;}
+.hub-card-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px;}
+.hub-tag{font-family:'Share Tech Mono',monospace;font-size:.58rem;padding:2px 8px;border-radius:4px;}
+.hub-tag.rest{background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.2);color:#38bdf8;}
+.hub-card-footer{display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid rgba(255,255,255,.04);}
+.hub-card-badge{font-family:'Share Tech Mono',monospace;font-size:.6rem;padding:3px 9px;border-radius:20px;}
+.hub-card-badge.rest{background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.25);color:#38bdf8;}
+.hub-card-arrow{font-size:1rem;font-weight:700;transition:transform .2s;}
+.hub-card-arrow.rest{color:#38bdf8;}
+.hub-card:hover .hub-card-arrow{transform:translateX(5px);}
+
+/* ── INFO BOX ── */
+.hub-info-box{display:flex;gap:20px;padding:24px 28px;border-radius:12px;margin-top:8px;}
+.hub-info-box.rest{background:rgba(56,189,248,.05);border:1px solid rgba(56,189,248,.15);}
+.hub-info-icon{font-size:2rem;flex-shrink:0;margin-top:2px;}
+.hub-info-title{font-family:'Share Tech Mono',monospace;font-size:.72rem;color:#38bdf8;margin-bottom:8px;letter-spacing:1px;text-transform:uppercase;}
+.hub-info-text{font-size:.83rem;color:#6b7a9a;line-height:1.7;}
+.hub-info-text strong{color:#c2d0e8;}
+
+@media(max-width:680px){
+  .hub-hero-content{flex-direction:column;gap:14px;}
+  .hub-grid{grid-template-columns:1fr;}
+  .hub-stats{gap:8px;}
+}
+</style>
+</body>
+</html>
