@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proyecto — Inventario Automatizado en JSON — M8 Tema 6 | CCNA Academy</title>
+  <meta name="description" content="Genera automáticamente un inventario de red completo en formato JSON: dispositivos, interfaces, IPs, versiones IOS y estado. Netmiko + json.dumps + archivos. M8 CCNA Academy.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── HERO acento JSON/Golden ── */
+.class-hero { background: linear-gradient(135deg, #06080f 0%, #0a1210 40%, #0a0f18 100%); }
+
+/* ── TIPOS DE DATOS GRID ── */
+.py-types-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:10px; margin:16px 0; }
+.py-type-card { background:#090d1a; border:1px solid rgba(251,191,36,.15); border-radius:10px; padding:14px 10px; text-align:center; }
+.py-type-icon { font-size:1.5rem; margin-bottom:6px; }
+.py-type-name { font-family:'Orbitron',sans-serif; font-size:.72rem; color:#fbbf24; margin-bottom:4px; letter-spacing:1px; }
+.py-type-ex   { font-family:'Share Tech Mono',monospace; font-size:.65rem; color:#00d4aa; margin-bottom:4px; background:rgba(0,212,170,.06); padding:2px 6px; border-radius:4px; }
+.py-type-use  { font-size:.68rem; color:#374060; line-height:1.4; }
+
+/* ── BASE CLASS STYLES (clonado) ── */
+body{font-family:'Exo 2',sans-serif;background:#07090f;color:#e2e8f0;}
+.class-hero{padding:56px 24px 48px;border-bottom:1px solid rgba(251,191,36,.08);position:relative;overflow:hidden;}
+.class-hero::before{content:'';position:absolute;top:-60px;right:-80px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(251,191,36,.06) 0%,transparent 70%);pointer-events:none;}
+.class-hero-inner{max-width:900px;margin:0 auto;position:relative;z-index:1;}
+.class-badge{font-family:'Share Tech Mono',monospace;font-size:.63rem;color:#fbbf24;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;}
+.class-title{font-family:'Orbitron',sans-serif;font-size:clamp(1.6rem,3.8vw,2.6rem);font-weight:900;letter-spacing:3px;color:#c2d0e8;margin-bottom:12px;line-height:1.1;}
+.class-subtitle{font-size:.92rem;color:#6b7a9a;line-height:1.72;margin-bottom:20px;max-width:700px;}
+.class-meta{display:flex;gap:12px;flex-wrap:wrap;}
+.meta-item{font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#374060;padding:4px 10px;border:1px solid rgba(251,191,36,.1);border-radius:4px;}
+.py1-tabs-wrap{max-width:1100px;margin:0 auto;padding:0 16px 40px;}
+.py1-tabs-bar{display:flex;gap:4px;padding:20px 0 0;flex-wrap:wrap;border-bottom:1px solid rgba(251,191,36,.1);margin-bottom:0;}
+.py1-tab-btn{padding:8px 13px;border-radius:8px 8px 0 0;font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#4a5780;background:none;border:1px solid transparent;cursor:pointer;transition:all .18s;white-space:nowrap;border-bottom:none;}
+.py1-tab-btn:hover{color:#c2d0e8;background:rgba(251,191,36,.05);}
+.py1-tab-btn.py1-active{color:#fbbf24;background:#0d1220;border-color:rgba(251,191,36,.25);border-bottom:1px solid #0d1220;}
+.py1-tab-content{display:none;background:#0d1220;border:1px solid rgba(251,191,36,.08);border-top:none;border-radius:0 0 12px 12px;padding:32px;}
+.py1-tab-content.py1-active{display:block;}
+.content-block{max-width:880px;}
+.section-title{font-family:'Orbitron',sans-serif;font-size:.95rem;color:#fbbf24;letter-spacing:2px;margin:28px 0 14px;padding-bottom:8px;border-bottom:1px solid rgba(251,191,36,.15);}
+.section-title:first-child{margin-top:0;}
+p{color:#8294b8;line-height:1.75;margin-bottom:14px;font-size:.9rem;}
+ul,ol{color:#8294b8;padding-left:1.4rem;margin-bottom:14px;font-size:.9rem;}
+li{margin-bottom:5px;line-height:1.65;}
+strong{color:#c2d0e8;}
+code{font-family:'Share Tech Mono',monospace;font-size:.82rem;background:rgba(251,191,36,.1);color:#fbbf24;padding:1px 6px;border-radius:4px;border:1px solid rgba(251,191,36,.2);}
+
+/* INFO BOXES */
+.info-box{border-radius:8px;padding:14px 18px;margin:18px 0;border-left:3px solid;}
+.info-box.tip{background:rgba(251,191,36,.06);border-color:#fbbf24;}
+.info-box.warning{background:rgba(248,113,113,.05);border-color:#f87171;}
+.info-box.success{background:rgba(52,211,153,.06);border-color:#34d399;}
+.info-box-title{font-family:'Share Tech Mono',monospace;font-size:.73rem;color:#fbbf24;margin-bottom:8px;}
+.info-box.warning .info-box-title{color:#f87171;}
+.info-box.success .info-box-title{color:#34d399;}
+
+/* CODE BLOCKS */
+.code-block{background:#050810;border:1px solid rgba(251,191,36,.15);border-left:3px solid #fbbf24;border-radius:8px;padding:0;margin:16px 0;overflow:hidden;}
+.code-label{background:rgba(251,191,36,.08);padding:8px 16px;font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#4a5780;letter-spacing:2px;text-transform:uppercase;border-bottom:1px solid rgba(251,191,36,.1);}
+.code-block pre{margin:0;padding:18px;overflow-x:auto;}
+.code-block code{background:none;border:none;padding:0;color:#a8b4c8;font-size:.79rem;line-height:1.8;display:block;}
+
+/* SYNTAX HIGHLIGHTING */
+.cmt{color:#3a4a60;font-style:italic;}
+.kw {color:#c792ea;}
+.fn {color:#82aaff;}
+.str{color:#c3e88d;}
+.num{color:#f78c6c;}
+.key{color:#fbbf24;}
+
+/* CONCEPT GRID */
+.concept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin:16px 0;}
+.concept-card{background:#090d1a;border:1px solid rgba(251,191,36,.1);border-radius:10px;padding:16px;}
+.concept-icon{font-size:1.8rem;margin-bottom:8px;}
+.concept-card h3{font-family:'Share Tech Mono',monospace;font-size:.77rem;color:#fbbf24;margin-bottom:8px;}
+.concept-card p{font-size:.8rem;margin:0;}
+
+/* JSON PREVIEW */
+.json-preview{background:#0a0e17;border:1px solid rgba(251,191,36,.2);border-radius:8px;padding:16px;font-family:'Share Tech Mono',monospace;font-size:.75rem;line-height:1.6;overflow-x:auto;}
+.json-key{color:#fbbf24;}
+.json-string{color:#c3e88d;}
+.json-number{color:#f78c6c;}
+.json-boolean{color:#c792ea;}
+
+/* REF TABLE */
+.table-wrap{overflow-x:auto;margin:16px 0;}
+.ref-table{width:100%;border-collapse:collapse;font-size:.8rem;}
+.ref-table th{background:#090d1a;color:#fbbf24;font-family:'Share Tech Mono',monospace;font-size:.67rem;padding:10px 12px;text-align:left;border:1px solid rgba(251,191,36,.15);letter-spacing:1px;}
+.ref-table td{padding:9px 12px;border:1px solid rgba(255,255,255,.04);color:#8294b8;}
+.ref-table tr:hover td{background:rgba(251,191,36,.03);}
+.ref-table code{font-size:.77rem;}
+
+/* QUIZ */
+.quiz-question{background:#090d1a;border:1px solid rgba(251,191,36,.12);border-radius:10px;padding:20px;margin-bottom:14px;}
+.quiz-q-num{font-family:'Share Tech Mono',monospace;font-size:.62rem;color:#374060;margin-bottom:8px;}
+.quiz-q-text{font-size:.9rem;color:#c2d0e8;margin-bottom:14px;line-height:1.6;}
+.quiz-opts{display:flex;flex-direction:column;gap:7px;}
+.quiz-opt{padding:10px 14px;border-radius:7px;border:1px solid rgba(251,191,36,.12);background:#0d1220;color:#6b7a9a;cursor:pointer;font-size:.84rem;text-align:left;transition:all .15s;font-family:'Exo 2',sans-serif;}
+.quiz-opt:hover:not(:disabled){border-color:rgba(251,191,36,.4);color:#c2d0e8;}
+.quiz-opt.correct{border-color:#34d399;background:rgba(52,211,153,.08);color:#34d399;}
+.quiz-opt.wrong{border-color:#f87171;background:rgba(248,113,113,.08);color:#f87171;}
+.quiz-explanation{margin-top:10px;padding:10px 14px;background:rgba(251,191,36,.07);border-left:3px solid #fbbf24;border-radius:6px;font-size:.82rem;color:#a0aec0;line-height:1.65;}
+
+/* Navbar y Drawer */
+.navbar{position:fixed;top:0;left:0;right:0;height:56px;background:#080a10;border-bottom:1px solid rgba(251,191,36,.1);display:flex;align-items:center;padding:0 24px;z-index:1000;}
+.navbar-toggle{background:none;border:1px solid rgba(251,191,36,.3);color:#fbbf24;padding:6px 12px;border-radius:6px;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:.75rem;margin-right:16px;}
+.navbar-brand{font-family:'Orbitron',sans-serif;font-weight:700;color:#fbbf24;text-decoration:none;font-size:1.1rem;}
+.navbar-brand span{color:#5b9bd5;}
+.navbar-spacer{flex:1;}
+.navbar-link{color:#6b7a9a;text-decoration:none;font-size:.8rem;transition:color .2s;}
+.navbar-link:hover{color:#c2d0e8;}
+.nav-spacer{height:56px;}
+.ccna-drawer{position:fixed;top:0;left:0;bottom:0;width:280px;background:#0d1220;border-right:1px solid rgba(251,191,36,.2);transform:translateX(-100%);transition:transform .3s;z-index:2000;overflow-y:auto;}
+.ccna-drawer.open{transform:translateX(0);}
+.ccna-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);opacity:0;visibility:hidden;transition:all .3s;z-index:1500;}
+.ccna-overlay.show{opacity:1;visibility:visible;}
+.drawer-header{padding:20px;border-bottom:1px solid rgba(251,191,36,.2);display:flex;justify-content:space-between;align-items:center;}
+.drawer-header h2{font-family:'Orbitron',sans-serif;font-size:.8rem;color:#fbbf24;margin:0;letter-spacing:2px;}
+.drawer-close{background:none;border:none;color:#6b7a9a;font-size:1.2rem;cursor:pointer;}
+.drawer-section{padding:16px;border-bottom:1px solid rgba(251,191,36,.1);}
+.drawer-section-title{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#374060;margin-bottom:12px;letter-spacing:1px;text-transform:uppercase;}
+.drawer-link{display:block;padding:10px 12px;color:#8294b8;text-decoration:none;font-size:.85rem;border-radius:6px;transition:all .2s;margin-bottom:4px;}
+.drawer-link:hover{background:rgba(251,191,36,.1);color:#c2d0e8;}
+.drawer-link.active{background:rgba(251,191,36,.2);color:#fbbf24;border-left:3px solid #fbbf24;}
+.dl-icon{margin-right:8px;}
+
+@media(max-width:680px){
+  .py1-tab-btn{font-size:.6rem;padding:6px 9px;}
+  .py1-tab-content{padding:18px 12px;}
+  .py-types-grid{grid-template-columns:repeat(3,1fr);}
+  .concept-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
+<nav class="ccna-drawer" id="ccnaDrawer">
+  <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
+  <div class="drawer-section"><div class="drawer-section-title">General</div>
+    <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M1 · Fundamentos</div>
+    <a href="fundamentos.html" class="drawer-link"><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
+    <a href="subnetting.html"  class="drawer-link"><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
+    <a href="ipv6.html"        class="drawer-link"><span class="dl-icon">6️⃣</span> IPv6</a>
+    <a href="arp.html"         class="drawer-link"><span class="dl-icon">📡</span> ARP</a>
+    <a href="rip.html"         class="drawer-link"><span class="dl-icon">🔄</span> RIP</a>
+    <a href="protocolos-internet.html" class="drawer-link"><span class="dl-icon">🌍</span> Protocolos Internet</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M2 · Dispositivos Cisco</div>
+    <a href="router.html"         class="drawer-link"><span class="dl-icon">📡</span> Routers Cisco</a>
+    <a href="switches-cisco.html" class="drawer-link"><span class="dl-icon">🔀</span> Switches Cisco</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M3 · Switching</div>
+    <a href="vlan.html"               class="drawer-link"><span class="dl-icon">🏷️</span> VLANs</a>
+    <a href="inter-vlan-routing.html" class="drawer-link"><span class="dl-icon">🔁</span> Inter-VLAN Routing</a>
+    <a href="stp.html"                class="drawer-link"><span class="dl-icon">🌳</span> STP</a>
+    <a href="etherchannel.html"       class="drawer-link"><span class="dl-icon">🔗</span> EtherChannel</a>
+    <a href="port-security.html"      class="drawer-link"><span class="dl-icon">🔒</span> Port Security</a>
+    <a href="cdp-lldp.html"           class="drawer-link"><span class="dl-icon">🔍</span> CDP / LLDP</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M4 · Routing</div>
+    <a href="routing.html"            class="drawer-link"><span class="dl-icon">🗺️</span> Routing Estático</a>
+    <a href="ospf.html"               class="drawer-link"><span class="dl-icon">⭕</span> OSPF</a>
+    <a href="eigrp.html"              class="drawer-link"><span class="dl-icon">⚡</span> EIGRP</a>
+    <a href="ospfv2-masterclass.html" class="drawer-link"><span class="dl-icon">🎯</span> OSPFv2 Masterclass</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M5 · Servicios IP</div>
+    <a href="dhcp.html" class="drawer-link"><span class="dl-icon">📋</span> DHCP</a>
+    <a href="nat.html"  class="drawer-link"><span class="dl-icon">🔄</span> NAT / PAT</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M6 · Seguridad</div>
+    <a href="acl.html" class="drawer-link"><span class="dl-icon">🛡️</span> ACLs</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M7 · WAN &amp; QoS</div>
+    <a href="wan.html" class="drawer-link"><span class="dl-icon">🌍</span> WAN</a>
+    <a href="qos.html" class="drawer-link"><span class="dl-icon">📊</span> QoS</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M8 · Automatización</div>
+    <a href="m8-automatizacion.html" class="drawer-link"><span class="dl-icon">🤖</span> M8 — Vista General</a>
+    <a href="python-redes.html"      class="drawer-link"><span class="dl-icon">🐍</span> Python para Redes</a>
+    <a href="json-datos.html"        class="drawer-link"><span class="dl-icon">📋</span> JSON y Datos</a>
+    <a href="rest-apis.html"         class="drawer-link"><span class="dl-icon">🌐</span> REST APIs</a>
+    <a href="ansible-redes.html"     class="drawer-link"><span class="dl-icon">⚙️</span> Ansible</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">⚡ Herramientas</div>
+    <a href="asistente.html"          class="drawer-link"><span class="dl-icon">🤖</span> Asistente IA</a>
+    <a href="netbot.html"             class="drawer-link"><span class="dl-icon">⚙️</span> NetBot Config</a>
+    <a href="calculadora.html"        class="drawer-link"><span class="dl-icon">🧮</span> Calculadora IP</a>
+    <a href="../laboratorios-pkt.html"   class="drawer-link"><span class="dl-icon">🧪</span> Labs Packet Tracer</a>
+    <a href="../banco-preguntas.html" class="drawer-link"><span class="dl-icon">📝</span> Banco de Preguntas</a></div>
+/a></div>
+</nav>
+
+<header class="navbar">
+  <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
+  <a href="../index.html" class="navbar-brand">CISCO<span> ACADEMY</span></a>
+  <div class="navbar-spacer"></div>
+  <a href="json-datos.html" class="navbar-link">← JSON y Datos</a>
+</header>
+<div class="nav-spacer"></div>
+
+<!-- HERO -->
+<section class="class-hero" style="border-bottom:1px solid rgba(251,191,36,.2);">
+  <div class="class-hero-inner">
+    <div class="class-badge" style="color:#fbbf24;">M8 · AUTOMATIZACIÓN · TEMA 6 DE 7 · PROYECTO FINAL JSON</div>
+    <h1 class="class-title">Proyecto — <span class="class-title-accent" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Inventario Automatizado en JSON</span></h1>
+    <p class="class-subtitle">Genera automáticamente un inventario de red completo en formato JSON: dispositivos, interfaces, IPs, versiones IOS y estado. Conexión real vía Netmiko, serialización profesional con json.dumps y persistencia en archivos.</p>
+    <div class="class-meta">
+      <span class="meta-item" style="border-color:rgba(251,191,36,.2);color:#fbbf24;">🗂️ Proyecto Final</span>
+      <span class="meta-item">🎯 CCNA Domain 6.2</span>
+      <span class="meta-item">⏱ ~120 min desarrollo</span>
+      <span class="meta-item">💾 Archivo .json real</span>
+      <span class="meta-item">🔌 Netmiko Live</span>
+    </div>
+  </div>
+</section>
+
+<!-- TABS -->
+<div class="py1-tabs-wrap">
+  <div class="py1-tabs-bar">
+    <button class="py1-tab-btn py1-active" onclick="showTabPy1('intro',this)">🎯 Intro</button>
+    <button class="py1-tab-btn" onclick="showTabPy1('esquema',this)">📐 Esquema</button>
+    <button class="py1-tab-btn" onclick="showTabPy1('netmiko',this)">🔌 Netmiko</button>
+    <button class="py1-tab-btn" onclick="showTabPy1('serializa',this)">📝 JSON</button>
+    <button class="py1-tab-btn" onclick="showTabPy1('archivos',this)">💾 Archivos</button>
+    <button class="py1-tab-btn" onclick="showTabPy1('proyecto',this)">🚀 Proyecto</button>
+    <button class="py1-tab-btn" onclick="showTabPy1('referencia',this)">📊 Referencia</button>
+    <button class="py1-tab-btn" onclick="showTabPy1('quiz',this)">🎯 Quiz</button>
+  </div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 1 — INTRO
+═══════════════════════════════════════════ -->
+<div id="tab-intro" class="py1-tab-content py1-active">
+<div class="content-block">
+  <h2 class="section-title">El Golden JSON: Tu Fuente de Verdad</h2>
+  <p>En infraestructuras modernas, el inventario de red no vive en hojas de Excel estáticas ni en documentos Word desactualizados. Vive en un archivo JSON que se regenera automáticamente cada hora, consumido por sistemas de monitoreo, automatización y orquestación.</p>
+  <p>Este proyecto es el pilar de <strong>NetDevOps</strong>: extraes datos reales de dispositivos Cisco mediante SSH (Netmiko), los estructuras en diccionarios Python, los serializas a JSON legible y lo persistes en disco. El resultado es un <em>single source of truth</em> que alimenta cualquier sistema downstream.</p>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">📊</div>
+      <h3>Estructura Anidada</h3>
+      <p>Diseña un schema JSON que incluya dispositivos, interfaces, IPs y metadatos de versiones IOS.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">⚡</div>
+      <h3>Extracción Real</h3>
+      <p>Conecta a routers y switches vía Netmiko para obtener show commands y parsear outputs.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">💾</div>
+      <h3>Persistencia</h3>
+      <p>Usa <code>json.dumps()</code> con indentación y <code>open()</code> para guardar en disco.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🔄</div>
+      <h3>Automatización</h3>
+      <p>Genera el inventario periódicamente vía cron/scheduler para mantener datos frescos.</p>
+    </div>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Arquitectura del Proyecto</div>
+    <p><strong>Entrada:</strong> Lista de dispositivos (IP, credenciales)<br>
+    <strong>Proceso:</strong> Conexión SSH → Comandos show → Parseo → Diccionarios<br>
+    <strong>Salida:</strong> Archivo <code>inventario_red.json</code> con timestamp y estructura jerárquica</p>
+  </div>
+
+  <h2 class="section-title">El Schema JSON Objetivo</h2>
+  <p>Así se verá el archivo generado. Una estructura clara, tipada y extensible:</p>
+  
+  <div class="json-preview">
+{
+  <span class="json-key">"timestamp"</span>: <span class="json-string">"2024-01-15T14:30:00"</span>,
+  <span class="json-key">"generado_por"</span>: <span class="json-string">"net_inventory.py v1.0"</span>,
+  <span class="json-key">"total_dispositivos"</span>: <span class="json-number">3</span>,
+  <span class="json-key">"dispositivos"</span>: [
+    {
+      <span class="json-key">"hostname"</span>: <span class="json-string">"R1-CORE"</span>,
+      <span class="json-key">"ip_mgmt"</span>: <span class="json-string">"192.168.1.1"</span>,
+      <span class="json-key">"version_ios"</span>: <span class="json-string">"16.9.4"</span>,
+      <span class="json-key">"modelo"</span>: <span class="json-string">"ISR4321"</span>,
+      <span class="json-key">"estado_conexion"</span>: <span class="json-string">"success"</span>,
+      <span class="json-key">"interfaces"</span>: [
+        {<span class="json-key">"nombre"</span>: <span class="json-string">"Gi0/0/0"</span>, <span class="json-key">"ip"</span>: <span class="json-string">"10.0.0.1"</span>, <span class="json-key">"estado"</span>: <span class="json-string">"up"</span>},
+        {<span class="json-key">"nombre"</span>: <span class="json-string">"Gi0/0/1"</span>, <span class="json-key">"ip"</span>: <span class="json-string">"unassigned"</span>, <span class="json-key">"estado"</span>: <span class="json-string">"down"</span>}
+      ],
+      <span class="json-key">"rutas_estaticas"</span>: <span class="json-number">5</span>,
+      <span class="json-key">"vecinos_cdp"</span>: [<span class="json-string">"SW1-ACC"</span>, <span class="json-string">"SW2-ACC"</span>]
+    }
+  ]
+}
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 2 — ESQUEMA
+═══════════════════════════════════════════ -->
+<div id="tab-esquema" class="py1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Diseño de la Estructura de Datos</h2>
+  <p>Antes de escribir código de red, diseñamos el esquema de datos. En Python, esto se traduce en diccionarios anidados y listas. Cada dispositivo es un dict; las interfaces son una lista de dicts dentro del dispositivo.</p>
+
+  <div class="code-block">
+    <div class="code-label">Esquema Python → JSON</div>
+    <pre><code><span class="cmt"># Estructura maestra del inventario</span>
+inventario = {
+    <span class="str">"timestamp"</span>: <span class="str">""</span>,           <span class="cmt"># ISO 8601 cuando se generó</span>
+    <span class="str">"generado_por"</span>: <span class="str">"script_v1.0"</span>,
+    <span class="str">"total_dispositivos"</span>: <span class="num">0</span>,
+    <span class="str">"dispositivos"</span>: []         <span class="cmt"># Lista de dicts, cada uno un device</span>
+}
+
+<span class="cmt"># Template de un dispositivo individual</span>
+device_template = {
+    <span class="str">"hostname"</span>: <span class="str">""</span>,
+    <span class="str">"ip_mgmt"</span>: <span class="str">""</span>,
+    <span class="str">"estado_conexion"</span>: <span class="str">"pending"</span>,  <span class="cmt"># success / failed / timeout</span>
+    <span class="str">"error_msg"</span>: <span class="kw">None</span>,          <span class="cmt"># Si falló, aquí el mensaje</span>
+    <span class="str">"version_ios"</span>: <span class="kw">None</span>,
+    <span class="str">"modelo"</span>: <span class="kw">None</span>,
+    <span class="str">"uptime"</span>: <span class="kw">None</span>,
+    <span class="str">"interfaces"</span>: [],             <span class="cmt"># Lista de interfaces</span>
+    <span class="str">"configuracion_sanitizada"</span>: <span class="kw">None</span>  <span class="cmt"># Backup config</span>
+}
+
+<span class="cmt"># Template de interfaz</span>
+interface_template = {
+    <span class="str">"nombre"</span>: <span class="str">""</span>,
+    <span class="str">"ip"</span>: <span class="kw">None</span>,
+    <span class="str">"mascara"</span>: <span class="kw">None</span>,
+    <span class="str">"estado_linea"</span>: <span class="str">"unknown"</span>,  <span class="cmt"># up / down / administratively down</span>
+    <span class="str">"protocolo"</span>: <span class="str">"unknown"</span>,
+    <span class="str">"descripcion"</span>: <span class="kw">None</span>,
+    <span class="str">"mtu"</span>: <span class="num">1500</span>,
+    <span class="str">"errores_entrada"</span>: <span class="num">0</span>,
+    <span class="str">"errores_salida"</span>: <span class="num">0</span>
+}</code></pre>
+  </div>
+
+  <h2 class="section-title">Funciones Constructoras</h2>
+  <p>Creamos funciones factory para garantizar que cada dispositivo tenga la misma estructura, evitando claves faltantes:</p>
+
+  <div class="code-block">
+    <div class="code-label">constructores.py — Fábrica de estructuras</div>
+    <pre><code><span class="kw">import</span> copy
+<span class="kw">from</span> datetime <span class="kw">import</span> datetime
+
+<span class="kw">def</span> <span class="fn">nuevo_inventario</span>():
+    <span class="str">"""Retorna el diccionario raíz vacío"""</span>
+    <span class="kw">return</span> {
+        <span class="str">"timestamp"</span>: datetime.now().isoformat(),
+        <span class="str">"generado_por"</span>: <span class="str">"ccna_inventory_generator/1.0"</span>,
+        <span class="str">"total_dispositivos"</span>: <span class="num">0</span>,
+        <span class="str">"dispositivos"</span>: []
+    }
+
+<span class="kw">def</span> <span class="fn">agregar_dispositivo</span>(inventario, hostname, ip_mgmt):
+    <span class="str">"""Crea y agrega un dispositivo al inventario"""</span>
+    device = {
+        <span class="str">"hostname"</span>: hostname,
+        <span class="str">"ip_mgmt"</span>: ip_mgmt,
+        <span class="str">"estado_conexion"</span>: <span class="str">"pending"</span>,
+        <span class="str">"error_msg"</span>: <span class="kw">None</span>,
+        <span class="str">"version_ios"</span>: <span class="kw">None</span>,
+        <span class="str">"modelo"</span>: <span class="kw">None</span>,
+        <span class="str">"uptime"</span>: <span class="kw">None</span>,
+        <span class="str">"interfaces"</span>: [],
+        <span class="str">"rutas"</span>: []
+    }
+    inventario[<span class="str">"dispositivos"</span>].append(device)
+    inventario[<span class="str">"total_dispositivos"</span>] = <span class="fn">len</span>(inventario[<span class="str">"dispositivos"</span>])
+    <span class="kw">return</span> device  <span class="cmt"># Retorna referencia para modificar</span>
+
+<span class="cmt"># Uso</span>
+inv = nuevo_inventario()
+dev = agregar_dispositivo(inv, <span class="str">"R1-CORE"</span>, <span class="str">"192.168.1.1"</span>)
+dev[<span class="str">"version_ios"</span>] = <span class="str">"16.9.4"</span>  <span class="cmt"># Modifica directamente</span></code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 3 — NETMIKO
+═══════════════════════════════════════════ -->
+<div id="tab-netmiko" class="py1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Extracción de Datos con Netmiko</h2>
+  <p>Conectamos a los dispositivos y ejecutamos comandos específicos para poblar nuestro schema. Usamos <code>textFSM</code> (implícito en Netmiko) o parseo manual para estructurar los outputs.</p>
+
+  <div class="code-block">
+    <div class="code-label">cisco_collector.py — Obtención de datos estructurados</div>
+    <pre><code><span class="kw">from</span> netmiko <span class="kw">import</span> ConnectHandler
+<span class="kw">import</span> re
+
+<span class="kw">def</span> <span class="fn">obtener_info_basica</span>(conn):
+    <span class="str">"""Extrae hostname, versión y modelo de show version"""</span>
+    output = conn.send_command(<span class="str">"show version"</span>)
+    
+    info = {}
+    <span class="cmt"># Parseo con regex para IOS-XE / IOS</span>
+    hostname_match = re.search(<span class="str">r'hostname\s+(\S+)'</span>, output, re.I)
+    <span class="kw">if</span> hostname_match:
+        info[<span class="str">"hostname"</span>] = hostname_match.group(<span class="num">1</span>)
+    
+    version_match = re.search(<span class="str">r'Version\s+(\d+\.\d+)'</span>, output)
+    <span class="kw">if</span> version_match:
+        info[<span class="str">"version_ios"</span>] = version_match.group(<span class="num">1</span>)
+    
+    modelo_match = re.search(<span class="str">r'cisco\s+(\S+).*processor'</span>, output, re.I)
+    <span class="kw">if</span> modelo_match:
+        info[<span class="str">"modelo"</span>] = modelo_match.group(<span class="num">1</span>)
+    
+    <span class="kw">return</span> info
+
+<span class="kw">def</span> <span class="fn">obtener_interfaces_json</span>(conn):
+    <span class="str">"""Extrae interfaces de show ip interface brief"""</span>
+    output = conn.send_command(<span class="str">"show ip interface brief"</span>, use_textfsm=<span class="kw">True</span>)
+    <span class="cmt"># Netmiko con textFSM devuelve lista de diccionarios directamente</span>
+    interfaces = []
+    
+    <span class="kw">for</span> intf <span class="kw">in</span> output:
+        interfaces.append({
+            <span class="str">"nombre"</span>: intf[<span class="str">"intf"</span>],
+            <span class="str">"ip"</span>: intf[<span class="str">"ipaddr"</span>] <span class="kw">if</span> intf[<span class="str">"ipaddr"</span>] <span class="kw">else</span> <span class="str">"unassigned"</span>,
+            <span class="str">"estado_linea"</span>: intf[<span class="str">"status"</span>],
+            <span class="str">"protocolo"</span>: intf[<span class="str">"proto"</span>]
+        })
+    <span class="kw">return</span> interfaces
+
+<span class="cmt"># Conexión y recolección completa</span>
+device_params = {
+    <span class="str">"device_type"</span>: <span class="str">"cisco_ios"</span>,
+    <span class="str">"host"</span>: <span class="str">"192.168.1.1"</span>,
+    <span class="str">"username"</span>: <span class="str">"admin"</span>,
+    <span class="str">"password"</span>: <span class="str">"Cisco123"</span>,
+    <span class="str">"secret"</span>: <span class="str">"EnableSecret"</span>
+}
+
+<span class="kw">try</span>:
+    <span class="kw">with</span> ConnectHandler(**device_params) <span class="kw">as</span> conn:
+        conn.enable()  <span class="cmt"># Entrar a enable mode</span>
+        datos_basicos = obtener_info_basica(conn)
+        interfaces = obtener_interfaces_json(conn)
+        
+        <span class="fn">print</span>(<span class="str">f"✅ {datos_basicos['hostname']} recolectado"</span>)
+<span class="kw">except</span> <span class="fn">Exception</span> <span class="kw">as</span> e:
+    <span class="fn">print</span>(<span class="str">f"❌ Error en {device_params['host']}: {e}"</span>)</code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚠️ Manejo de Errores de Conexión</div>
+    <p>Siempre envuelve las conexiones en <code>try/except</code>. Un dispositivo offline no debe detener el inventario completo. Guarda el error en <code>error_msg</code> y continúa con el siguiente dispositivo.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 4 — SERIALIZACIÓN JSON
+═══════════════════════════════════════════ -->
+<div id="tab-serializa" class="py1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">De Python a JSON: json.dumps()</h2>
+  <p>Python tiene un módulo JSON robusto. La función <code>json.dumps()</code> convierte diccionarios a strings JSON, mientras que <code>json.dump()</code> escribe directamente a archivo.</p>
+
+  <div class="code-block">
+    <div class="code-label">serializacion.py — Control total del formato</div>
+    <pre><code><span class="kw">import</span> json
+
+<span class="cmt"># Datos de ejemplo</span>
+datos = {
+    <span class="str">"dispositivos"</span>: [
+        {<span class="str">"hostname"</span>: <span class="str">"R1"</span>, <span class="str">"ip"</span>: <span class="str">"10.0.0.1"</span>, <span class="str">"activo"</span>: <span class="kw">True</span>},
+        {<span class="str">"hostname"</span>: <span class="str">"R2"</span>, <span class="str">"ip"</span>: <span class="str">"10.0.0.2"</span>, <span class="str">"activo"</span>: <span class="kw">False</span>}
+    ]
+}
+
+<span class="cmt"># Opción 1: Convertir a string (para imprimir o enviar por API)</span>
+json_string = json.dumps(datos)
+<span class="fn">print</span>(json_string)  <span class="cmt"># Una línea compacta</span>
+
+<span class="cmt"># Opción 2: Pretty print con indentación</span>
+json_pretty = json.dumps(datos, indent=<span class="num">2</span>)
+<span class="fn">print</span>(json_pretty)
+
+<span class="cmt"># Opción 3: Ordenar claves alfabéticamente (consistente)</span>
+json_ordenado = json.dumps(datos, indent=<span class="num">2</span>, sort_keys=<span class="kw">True</span>)
+
+<span class="cmt"># Opción 4: Fechas datetime (no serializables por defecto)</span>
+<span class="kw">from</span> datetime <span class="kw">import</span> datetime
+
+<span class="kw">def</span> <span class="fn">json_serial</span>(obj):
+    <span class="str">"""JSON serializer para objetos no serializables por defecto"""</span>
+    <span class="kw">if</span> <span class="fn">isinstance</span>(obj, datetime):
+        <span class="kw">return</span> obj.isoformat()
+    <span class="kw">raise</span> <span class="fn">TypeError</span>(<span class="str">"Type not serializable"</span>)
+
+<span class="cmt"># Uso con función personalizada de serialización</span>
+datos_con_fecha = {<span class="str">"timestamp"</span>: datetime.now(), <span class="str">"data"</span>: <span class="str">"test"</span>}
+json_con_fecha = json.dumps(datos_con_fecha, default=json_serial, indent=<span class="num">2</span>)</code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Parámetros Críticos de json.dumps()</div>
+    <ul>
+      <li><code>indent=2</code>: Formato legible con sangría de 2 espacios</li>
+      <li><code>sort_keys=True</code>: Claves ordenadas alfabéticamente (útil para diffs)</li>
+      <li><code>ensure_ascii=False</code>: Permite caracteres UTF-8 (tildes, ñ)</li>
+      <li><code>default=func</code>: Handler para tipos no serializables (datetime, set, etc.)</li>
+    </ul>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 5 — ARCHIVOS
+═══════════════════════════════════════════ -->
+<div id="tab-archivos" class="py1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Persistencia: Escribiendo el Archivo JSON</h2>
+  <p>Una vez serializado, guardamos el JSON en disco con manejo seguro de archivos (context manager <code>with</code>) y codificación UTF-8.</p>
+
+  <div class="code-block">
+    <div class="code-label">file_manager.py — Gestión profesional de archivos</div>
+    <pre><code><span class="kw">import</span> json
+<span class="kw">import</span> os
+<span class="kw">from</span> datetime <span class="kw">import</span> datetime
+
+<span class="kw">def</span> <span class="fn">guardar_inventario</span>(datos, directorio=<span class="str">"./output"</span>, prefijo=<span class="str">"inventario"</span>):
+    <span class="str">"""
+    Guarda el inventario en un archivo JSON con timestamp.
+    Retorna la ruta del archivo creado.
+    """</span>
+    <span class="cmt"># Crear directorio si no existe</span>
+    <span class="kw">if</span> <span class="kw">not</span> os.path.exists(directorio):
+        os.makedirs(directorio)
+        <span class="fn">print</span>(<span class="str">f"📁 Directorio creado: {directorio}"</span>)
+    
+    <span class="cmt"># Generar nombre de archivo con timestamp</span>
+    timestamp = datetime.now().strftime(<span class="str">"%Y%m%d_%H%M%S"</span>)
+    filename = <span class="str">f"{prefijo}_{timestamp}.json"</span>
+    filepath = os.path.join(directorio, filename)
+    
+    <span class="cmt"># Escribir archivo con formato profesional</span>
+    <span class="kw">with</span> <span class="fn">open</span>(filepath, <span class="str">'w'</span>, encoding=<span class="str">'utf-8'</span>) <span class="kw">as</span> f:
+        json.dump(
+            datos, 
+            f, 
+            indent=<span class="num">2</span>, 
+            sort_keys=<span class="kw">True</span>, 
+            ensure_ascii=<span class="kw">False</span>
+        )
+    
+    <span class="fn">print</span>(<span class="str">f"💾 Inventario guardado: {filepath}"</span>)
+    <span class="kw">return</span> filepath
+
+<span class="cmt"># Función complementaria: Leer inventario</span>
+<span class="kw">def</span> <span class="fn">cargar_inventario</span>(filepath):
+    <span class="str">"""Carga un inventario desde archivo JSON"""</span>
+    <span class="kw">with</span> <span class="fn">open</span>(filepath, <span class="str">'r'</span>, encoding=<span class="str">'utf-8'</span>) <span class="kw">as</span> f:
+        <span class="kw">return</span> json.load(f)  <span class="cmt"># json.load lee desde archivo</span></code></pre>
+  </div>
+
+  <div class="info-box success">
+    <div class="info-box-title">✅ Validación de Archivos</div>
+    <p>Siempre usa <code>encoding='utf-8'</code> para soportar caracteres internacionales. El modo <code>'w'</code> sobrescribe; usa <code>'a'</code> (append) solo si quieres agregar a un archivo existente sin borrar.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 6 — PROYECTO COMPLETO
+═══════════════════════════════════════════ -->
+<div id="tab-proyecto" class="py1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">🚀 Proyecto Final — Generador de Inventario JSON</h2>
+  <p>Este es el script completo de producción. Conecta a múltiples dispositivos, maneja errores individualmente, estructura todo en JSON jerárquico y guarda el archivo timestamped.</p>
+
+  <div class="code-block">
+    <div class="code-label">generar_inventario.py — Solución completa (150 líneas)</div>
+    <pre><code><span class="cmt">#!/usr/bin/env python3</span>
+<span class="str">"""
+generar_inventario.py
+─────────────────────────────────────────────────
+Genera inventario JSON automatizado de red Cisco.
+Requiere: pip install netmiko
+─────────────────────────────────────────────────
+"""</span>
+
+<span class="kw">import</span> json
+<span class="kw">import</span> os
+<span class="kw">from</span> datetime <span class="kw">import</span> datetime
+<span class="kw">from</span> netmiko <span class="kw">import</span> ConnectHandler
+<span class="kw">from</span> netmiko.ssh_exception <span class="kw">import</span> NetmikoTimeoutException, AuthenticationException
+
+<span class="cmt"># ══════════════════════════════════════════════════════
+# CONFIGURACIÓN: Define tus dispositivos aquí
+# ══════════════════════════════════════════════════════</span>
+DISPOSITIVOS_CONFIG = [
+    {
+        <span class="str">"device_type"</span>: <span class="str">"cisco_ios"</span>,
+        <span class="str">"host"</span>: <span class="str">"192.168.1.1"</span>,
+        <span class="str">"username"</span>: <span class="str">"admin"</span>,
+        <span class="str">"password"</span>: <span class="str">"Cisco123"</span>,
+        <span class="str">"secret"</span>: <span class="str">"EnablePass"</span>,
+        <span class="str">"hostname_esperado"</span>: <span class="str">"R1-CORE"</span>
+    },
+    {
+        <span class="str">"device_type"</span>: <span class="str">"cisco_ios"</span>,
+        <span class="str">"host"</span>: <span class="str">"192.168.1.2"</span>,
+        <span class="str">"username"</span>: <span class="str">"admin"</span>,
+        <span class="str">"password"</span>: <span class="str">"Cisco123"</span>,
+        <span class="str">"hostname_esperado"</span>: <span class="str">"SW1-ACC"</span>
+    },
+    {
+        <span class="str">"device_type"</span>: <span class="str">"cisco_ios"</span>,
+        <span class="str">"host"</span>: <span class="str">"192.168.1.99"</span>,  <span class="cmt"># Simulación de dispositivo offline</span>
+        <span class="str">"username"</span>: <span class="str">"admin"</span>,
+        <span class="str">"password"</span>: <span class="str">"WrongPass"</span>,
+        <span class="str">"hostname_esperado"</span>: <span class="str">"R2-BACKUP"</span>
+    }
+]
+
+<span class="cmt"># ══════════════════════════════════════════════════════
+# FUNCIONES DE COLECCIÓN
+# ══════════════════════════════════════════════════════</span>
+
+<span class="kw">def</span> <span class="fn">colectar_dispositivo</span>(dev_config):
+    <span class="str">"""Conecta a un dispositivo y extrae toda la información"""</span>
+    
+    resultado = {
+        <span class="str">"ip_mgmt"</span>: dev_config[<span class="str">"host"</span>],
+        <span class="str">"hostname"</span>: dev_config.get(<span class="str">"hostname_esperado"</span>, <span class="str">"unknown"</span>),
+        <span class="str">"estado_conexion"</span>: <span class="str">"pending"</span>,
+        <span class="str">"error_msg"</span>: <span class="kw">None</span>,
+        <span class="str">"version_ios"</span>: <span class="kw">None</span>,
+        <span class="str">"modelo"</span>: <span class="kw">None</span>,
+        <span class="str">"uptime"</span>: <span class="kw">None</span>,
+        <span class="str">"interfaces"</span>: [],
+        <span class="str">"rutas_totales"</span>: <span class="num">0</span>
+    }
+    
+    <span class="kw">try</span>:
+        <span class="fn">print</span>(<span class="str">f"🔌 Conectando a {dev_config['host']}..."</span>)
+        
+        <span class="kw">with</span> ConnectHandler(**dev_config) <span class="kw">as</span> conn:
+            conn.enable()
+            
+            <span class="cmt"># 1. Hostname real (verificación)</span>
+            prompt = conn.find_prompt().strip(<span class="str">'#'</span>).strip(<span class="str">'&gt;'</span>)
+            resultado[<span class="str">"hostname"</span>] = prompt
+            
+            <span class="cmt"># 2. Versión y modelo (parseo simple)</span>
+            show_ver = conn.send_command(<span class="str">"show version"</span>)
+            <span class="kw">if</span> <span class="str">"Version"</span> <span class="kw">in</span> show_ver:
+                <span class="kw">import</span> re
+                ver_match = re.search(<span class="str">r'Version\s+(\d+\.[\d\w\.]+)'</span>, show_ver)
+                <span class="kw">if</span> ver_match:
+                    resultado[<span class="str">"version_ios"</span>] = ver_match.group(<span class="num">1</span>)
+                
+                model_match = re.search(<span class="str">r'cisco\s+(\S+).*with.*bytes'</span>, show_ver, re.I)
+                <span class="kw">if</span> model_match:
+                    resultado[<span class="str">"modelo"</span>] = model_match.group(<span class="num">1</span>)
+            
+            <span class="cmt"># 3. Interfaces (usando TextFSM si disponible)</span>
+            <span class="kw">try</span>:
+                show_ip = conn.send_command(<span class="str">"show ip interface brief"</span>, use_textfsm=<span class="kw">True</span>)
+                <span class="kw">if</span> <span class="fn">isinstance</span>(show_ip, <span class="fn">list</span>):
+                    <span class="kw">for</span> intf <span class="kw">in</span> show_ip:
+                        resultado[<span class="str">"interfaces"</span>].append({
+                            <span class="str">"nombre"</span>: intf.get(<span class="str">"intf"</span>, <span class="str">"unknown"</span>),
+                            <span class="str">"ip"</span>: intf.get(<span class="str">"ipaddr"</span>) <span class="kw">or</span> <span class="str">"unassigned"</span>,
+                            <span class="str">"estado"</span>: intf.get(<span class="str">"status"</span>, <span class="str">"unknown"</span>),
+                            <span class="str">"protocolo"</span>: intf.get(<span class="str">"proto"</span>, <span class="str">"unknown"</span>)
+                        })
+            <span class="kw">except</span> <span class="fn">Exception</span> <span class="kw">as</span> e:
+                resultado[<span class="str">"interfaces"</span>] = [{<span class="str">"error"</span>: <span class="str">"No se pudieron obtener interfaces"</span>}]
+            
+            <span class="cmt"># 4. Conteo de rutas</span>
+            show_route = conn.send_command(<span class="str">"show ip route | count"</span>)
+            <span class="kw">if</span> <span class="str">"Route"</span> <span class="kw">in</span> show_route:
+                <span class="kw">import</span> re
+                count_match = re.search(<span class="str">r'(\d+)'</span>, show_route)
+                <span class="kw">if</span> count_match:
+                    resultado[<span class="str">"rutas_totales"</span>] = <span class="fn">int</span>(count_match.group(<span class="num">1</span>))
+            
+            resultado[<span class="str">"estado_conexion"</span>] = <span class="str">"success"</span>
+            <span class="fn">print</span>(<span class="str">f"   ✅ {resultado['hostname']} recolectado"</span>)
+            
+    <span class="kw">except</span> AuthenticationException:
+        resultado[<span class="str">"estado_conexion"</span>] = <span class="str">"auth_failed"</span>
+        resultado[<span class="str">"error_msg"</span>] = <span class="str">"Autenticación fallida"</span>
+        <span class="fn">print</span>(<span class="str">f"   ❌ Auth failed en {dev_config['host']}"</span>)
+    <span class="kw">except</span> NetmikoTimeoutException:
+        resultado[<span class="str">"estado_conexion"</span>] = <span class="str">"timeout"</span>
+        resultado[<span class="str">"error_msg"</span>] = <span class="str">"Dispositivo no responde"</span>
+        <span class="fn">print</span>(<span class="str">f"   ❌ Timeout en {dev_config['host']}"</span>)
+    <span class="kw">except</span> <span class="fn">Exception</span> <span class="kw">as</span> e:
+        resultado[<span class="str">"estado_conexion"</span>] = <span class="str">"error"</span>
+        resultado[<span class="str">"error_msg"</span>] = <span class="fn">str</span>(e)
+        <span class="fn">print</span>(<span class="str">f"   ❌ Error en {dev_config['host']}: {e}"</span>)
+    
+    <span class="kw">return</span> resultado
+
+<span class="cmt"># ══════════════════════════════════════════════════════
+# FUNCIÓN PRINCIPAL
+# ══════════════════════════════════════════════════════</span>
+
+<span class="kw">def</span> <span class="fn">main</span>():
+    <span class="fn">print</span>(<span class="str">"\n"</span> + <span class="str">"="</span>*<span class="num">60</span>)
+    <span class="fn">print</span>(<span class="str">"  CCNA ACADEMY — GENERADOR DE INVENTARIO JSON"</span>)
+    <span class="fn">print</span>(<span class="str">"="</span>*<span class="num">60</span> + <span class="str">"\n"</span>)
+    
+    <span class="cmt"># Inicializar estructura maestra</span>
+    inventario = {
+        <span class="str">"metadata"</span>: {
+            <span class="str">"timestamp"</span>: datetime.now().isoformat(),
+            <span class="str">"generado_por"</span>: <span class="str">"ccna_inventory_generator/2.0"</span>,
+            <span class="str">"total_intentos"</span>: <span class="fn">len</span>(DISPOSITIVOS_CONFIG)
+        },
+        <span class="str">"resumen"</span>: {
+            <span class="str">"exitosos"</span>: <span class="num">0</span>,
+            <span class="str">"fallidos"</span>: <span class="num">0</span>,
+            <span class="str">"total_interfaces"</span>: <span class="num">0</span>
+        },
+        <span class="str">"dispositivos"</span>: []
+    }
+    
+    <span class="cmt"># Procesar cada dispositivo</span>
+    <span class="kw">for</span> dev_conf <span class="kw">in</span> DISPOSITIVOS_CONFIG:
+        datos = colectar_dispositivo(dev_conf)
+        inventario[<span class="str">"dispositivos"</span>].append(datos)
+        
+        <span class="kw">if</span> datos[<span class="str">"estado_conexion"</span>] == <span class="str">"success"</span>:
+            inventario[<span class="str">"resumen"</span>][<span class="str">"exitosos"</span>] += <span class="num">1</span>
+            inventario[<span class="str">"resumen"</span>][<span class="str">"total_interfaces"</span>] += <span class="fn">len</span>(datos[<span class="str">"interfaces"</span>])
+        <span class="kw">else</span>:
+            inventario[<span class="str">"resumen"</span>][<span class="str">"fallidos"</span>] += <span class="num">1</span>
+    
+    <span class="cmt"># Guardar a archivo</span>
+    output_dir = <span class="str">"./inventarios_json"</span>
+    <span class="kw">if</span> <span class="kw">not</span> os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    
+    filename = <span class="str">f"inventario_red_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"</span>
+    filepath = os.path.join(output_dir, filename)
+    
+    <span class="kw">with</span> <span class="fn">open</span>(filepath, <span class="str">'w'</span>, encoding=<span class="str">'utf-8'</span>) <span class="kw">as</span> f:
+        json.dump(inventario, f, indent=<span class="num">2</span>, sort_keys=<span class="kw">True</span>, ensure_ascii=<span class="kw">False</span>)
+    
+    <span class="cmt"># Reporte final</span>
+    <span class="fn">print</span>(<span class="str">"\n"</span> + <span class="str">"="</span>*<span class="num">60</span>)
+    <span class="fn">print</span>(<span class="str">"  RESUMEN DE EJECUCIÓN"</span>)
+    <span class="fn">print</span>(<span class="str">"="</span>*<span class="num">60</span>)
+    <span class="fn">print</span>(<span class="str">f"  ✅ Exitosos:   {inventario['resumen']['exitosos']}"</span>)
+    <span class="fn">print</span>(<span class="str">f"  ❌ Fallidos:   {inventario['resumen']['fallidos']}"</span>)
+    <span class="fn">print</span>(<span class="str">f"  📊 Interfaces: {inventario['resumen']['total_interfaces']}"</span>)
+    <span class="fn">print</span>(<span class="str">f"\n💾 Archivo guardado: {filepath}"</span>)
+    <span class="fn">print</span>(<span class="str">="</span>*<span class="num">60</span> + <span class="str">"\n"</span>)
+
+<span class="kw">if</span> __name__ == <span class="str">"__main__"</span>:
+    main()</code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">▶️ Ejecución del Proyecto</div>
+    <ol>
+      <li>Instala dependencias: <code>pip install netmiko</code></li>
+      <li>Configura los dispositivos en <code>DISPOSITIVOS_CONFIG</code> con IPs reales de Packet Tracer o laboratorio</li>
+      <li>Ejecuta: <code>python generar_inventario.py</code></li>
+      <li>Revisa el directorio <code>./inventarios_json/</code> para el archivo generado</li>
+      <li>Abre el JSON en VS Code o cópialo a un validador online para verificar sintaxis</li>
+    </ol>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 7 — REFERENCIA
+═══════════════════════════════════════════ -->
+<div id="tab-referencia" class="py1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Referencia Rápida — JSON y Archivos</h2>
+  <div id="refTablePy1"></div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 8 — QUIZ
+═══════════════════════════════════════════ -->
+<div id="tab-quiz" class="py1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Quiz — Inventario Automatizado JSON</h2>
+  <p style="font-size:.83rem;color:#6b7a9a;margin-bottom:20px;">10 preguntas sobre serialización JSON, manejo de archivos y arquitectura de datos. Estilo CCNA Domain 6.2.</p>
+  <div id="quizContainerPy1"></div>
+</div>
+</div>
+
+</div><!-- /.tabs-wrap -->
+
+<script>
+// ── NAVEGACIÓN DRAWER ────────────────────────────────
+function ccnaToggle() {
+  document.getElementById('ccnaDrawer').classList.toggle('open');
+  document.getElementById('ccnaOverlay').classList.toggle('show');
+}
+function ccnaClose() {
+  document.getElementById('ccnaDrawer').classList.remove('open');
+  document.getElementById('ccnaOverlay').classList.remove('show');
+}
+
+// ── TABS ──────────────────────────────────────────────
+function showTabPy1(id, btn) {
+  document.querySelectorAll('.py1-tab-content').forEach(t => t.classList.remove('py1-active'));
+  document.querySelectorAll('.py1-tab-btn').forEach(b => b.classList.remove('py1-active'));
+  document.getElementById('tab-' + id).classList.add('py1-active');
+  if (btn) btn.classList.add('py1-active');
+}
+
+// ── TABLA DE REFERENCIA ──────────────────────────────
+function buildRefTable() {
+  const container = document.getElementById('refTablePy1');
+  if (!container) return;
+  
+  const secciones = [
+    {
+      titulo: 'MÓDULO JSON',
+      cols: ['Función','Uso','Ejemplo'],
+      filas: [
+        ['<code>json.dumps()</code>','Convierte dict a string JSON','json.dumps(data, indent=2)'],
+        ['<code>json.dump()</code>','Escribe dict directamente a archivo','json.dump(data, file_handler)'],
+        ['<code>json.loads()</code>','Convierte string JSON a dict','json.loads(\'{"a":1}\')'],
+        ['<code>json.load()</code>','Lee archivo JSON a dict','json.load(open("f.json"))'],
+        ['<code>indent</code>','Parámetro para pretty-print','indent=4 (sangría de 4 espacios)'],
+        ['<code>sort_keys</code>','Ordena claves alfabéticamente','sort_keys=True'],
+        ['<code>ensure_ascii=False</code>','Soporta UTF-8 (tildes/ñ)','ensure_ascii=False'],
+      ]
+    },
+    {
+      titulo: 'MANEJO DE ARCHIVOS',
+      cols: ['Modo','Descripción','Uso'],
+      filas: [
+        ['<code>"r"</code>','Lectura (default)','open("f.json", "r")'],
+        ['<code>"w"</code>','Escritura (sobrescribe)','open("f.json", "w")'],
+        ['<code>"a"</code>','Append (agrega al final)','open("log.txt", "a")'],
+        ['<code>"x"</code>','Creación exclusiva (falla si existe)','open("new.json", "x")'],
+        ['<code>encoding="utf-8"</code>','Codificación de caracteres','Siempre usar para JSON internacional'],
+        ['<code>with open(...) as f:</code>','Context manager (auto-close)','Buena práctica obligatoria'],
+      ]
+    },
+    {
+      titulo: 'EXCEPCIONES NETMIKO',
+      cols: ['Excepción','Cuándo ocurre','Manejo'],
+      filas: [
+        ['NetmikoTimeoutException','Host no responde','try/except + logging'],
+        ['AuthenticationException','Usuario/password incorrecto','Capturar y reportar'],
+        ['SSHException','Error de negociación SSH','Verificar SSH habilitado'],
+        ['ConfigInvalidException','Comando inválido','Validar sintaxis antes'],
+      ]
+    },
+    {
+      titulo: 'ESTRUCTURA JSON INVENTARIO',
+      cols: ['Nivel','Tipo','Descripción'],
+      filas: [
+        ['Raíz','Dict','Metadatos + dispositivos[]'],
+        ['dispositivos[]','List','Array de dispositivos'],
+        ['dispositivo{}','Dict','Hostname, IP, versión, interfaces[]'],
+        ['interfaces[]','List','Array de interfaces del device'],
+        ['interface{}','Dict','Nombre, IP, estado, protocolo'],
+      ]
+    }
+  ];
+
+  let html = '';
+  secciones.forEach(sec => {
+    html += `<h3 style="font-family:Orbitron,sans-serif;font-size:.8rem;color:#fbbf24;letter-spacing:2px;margin:24px 0 10px;text-transform:uppercase;">▸ ${sec.titulo}</h3>`;
+    html += `<div class="table-wrap"><table class="ref-table"><thead><tr>${sec.cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>`;
+    sec.filas.forEach(f => { html += '<tr>' + f.map(c=>`<td>${c}</td>`).join('') + '</tr>'; });
+    html += '</tbody></table></div>';
+  });
+  container.innerHTML = html;
+}
+
+// ── QUIZ ─────────────────────────────
+function initQuiz() {
+  const container = document.getElementById('quizContainerPy1');
+  if (!container) return;
+
+  const qs = [
+    {
+      q: '¿Cuál es la diferencia entre <code>json.dumps()</code> y <code>json.dump()</code>?',
+      opts: ['Ninguna, son alias','dumps() devuelve string; dump() escribe a archivo','dumps() es más rápido','dump() formatea automáticamente, dumps() no'],
+      ans: 1,
+      exp: '<code>json.dumps()</code> (dump string) serializa a una cadena de texto Python. <code>json.dump()</code> (dump file) escribe directamente a un archivo que tengas abierto.'
+    },
+    {
+      q: 'Para guardar un archivo JSON con caracteres españoles (tildes, ñ), ¿qué parámetro necesitas?',
+      opts: ['locale="es"','ensure_ascii=False','unicode=True','encoding="latin1"'],
+      ans: 1,
+      exp: '<code>ensure_ascii=False</code> permite que JSON escriba caracteres UTF-8 directamente en lugar de escaparlos como \\uXXXX. Combínalo con <code>encoding="utf-8"</code> en open().'
+    },
+    {
+      q: '¿Cuál es la forma correcta de abrir un archivo para escritura JSON?',
+      opts: ['open("file.json", "w")','open("file.json", "wb")','with open("file.json", "w", encoding="utf-8") as f:','fopen("file.json", "write")'],
+      ans: 2,
+      exp: 'Usar el context manager <code>with</code> asegura que el archivo se cierre automáticamente. El encoding UTF-8 es obligatorio para caracteres internacionales.'
+    },
+    {
+      q: 'Si quieres que las claves del JSON estén ordenadas alfabéticamente, usas:',
+      opts: ['sorted=True','order_keys=True','sort_keys=True','alphabetical=True'],
+      ans: 2,
+      exp: '<code>sort_keys=True</code> ordena todas las claves de diccionarios alfabéticamente, haciendo el archivo comparable (diff) entre ejecuciones.'
+    },
+    {
+      q: '¿Qué estructura Python se serializa directamente a un array JSON []?',
+      opts: ['Diccionario','Lista','String','Integer'],
+      ans: 1,
+      exp: 'Las listas de Python (<code>[1, 2, 3]</code>) se convierten a arrays JSON <code>[1, 2, 3]</code>. Los diccionarios se convierten a objetos JSON <code>{}</code>.'
+    },
+    {
+      q: 'Netmiko lanza <code>NetmikoTimeoutException</code> cuando:',
+      opts: ['El comando es inválido','La contraseña es incorrecta','El dispositivo no responde en el puerto SSH','El archivo JSON está mal formado'],
+      ans: 2,
+      exp: 'Esta excepción indica que no hay conectividad de red (firewall, host offline, SSH no habilitado) o el puerto no responde dentro del timeout.'
+    },
+    {
+      q: 'Para pretty-print (formato legible) un JSON con sangría de 2 espacios:',
+      opts: ['json.dumps(data, spaces=2)','json.dumps(data, indent=2)','json.dumps(data, pretty=True)','json.dumps(data, format="indented")'],
+      ans: 1,
+      exp: 'El parámetro <code>indent</code> especifica el número de espacios para la sangría. Es esencial para archivos de inventario legibles por humanos.'
+    },
+    {
+      q: '¿Cómo conviertes un string JSON (leído de un archivo) de vuelta a diccionario Python?',
+      opts: ['json.stringify()','json.loads()','json.parse()','dict.fromjson()'],
+      ans: 1,
+      exp: '<code>json.loads()</code> (load string) parsea una cadena JSON. <code>json.load()</code> (sin s) lee directamente desde un archivo.'
+    },
+    {
+      q: 'En el proyecto de inventario, ¿por qué usamos deep copy o constructores de templates?',
+      opts: ['Para ahorrar memoria','Para evitar mutaciones accidentales de referencias','Porque JSON lo requiere','Para cifrar los datos'],
+      ans: 1,
+      exp: 'En Python, las variables de diccionario son referencias. Si modificas un "template" sin copiar, modificas todas las instancias. Los constructores aseguran estructuras independientes.'
+    },
+    {
+      q: '¿Qué timestamp es estándar para el campo "generated_at" en APIs modernas?',
+      opts: ['Unix epoch (segundos desde 1970)','Formato DD/MM/YYYY','ISO 8601 (2024-01-15T14:30:00)','String vacío'],
+      ans: 2,
+      exp: 'ISO 8601 (<code>datetime.now().isoformat()</code>) es el estándar internacional para timestamps en JSON APIs: legible, sortable y sin ambigüedades de zona horaria.'
+    }
+  ];
+
+  let html = '';
+  qs.forEach((q, i) => {
+    html += `<div class="quiz-question" id="qpy${i}">
+      <div class="quiz-q-num">PREGUNTA ${i+1} DE ${qs.length} · M8 Tema 6</div>
+      <div class="quiz-q-text">${q.q}</div>
+      <div class="quiz-opts">
+        ${q.opts.map((o,j) => `<button class="quiz-opt" data-qi="${i}" data-sel="${j}" data-ans="${q.ans}">${o}</button>`).join('')}
+      </div>
+    </div>`;
+  });
+  container.innerHTML = html;
+
+  window._py1Exp = {};
+  qs.forEach((q, i) => { window._py1Exp[i] = q.exp; });
+
+  container.querySelectorAll('.quiz-opt').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const qi  = parseInt(this.dataset.qi);
+      const sel = parseInt(this.dataset.sel);
+      const ans = parseInt(this.dataset.ans);
+      const qDiv = document.getElementById('qpy' + qi);
+      const btns = qDiv.querySelectorAll('.quiz-opt');
+      
+      btns.forEach(b => b.disabled = true);
+      btns[sel].classList.add(sel === ans ? 'correct' : 'wrong');
+      if (sel !== ans) btns[ans].classList.add('correct');
+      
+      const expDiv = document.createElement('div');
+      expDiv.className = 'quiz-explanation';
+      expDiv.innerHTML = `<strong>${sel===ans ? '✅ Correcto!' : '❌ Incorrecto.'}</strong> ${window._py1Exp[qi]}`;
+      qDiv.appendChild(expDiv);
+    });
+  });
+}
+
+// ── INICIALIZACIÓN ────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  buildRefTable();
+  initQuiz();
+});
+</script>
+</body>
+</html>
