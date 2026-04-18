@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RESTCONF — REST para Dispositivos IOS-XE · M8 T2 | CCNA Academy</title>
+  <meta name="description" content="Domina RESTCONF RFC 8040 en Cisco IOS-XE. YANG data models, datastores, CRUD via HTTP, configuración de interfaces, OSPF y routing. CCNA Domain 6.5.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── HERO acento REST ── */
+.class-hero { background: linear-gradient(135deg, #06080f 0%, #080d18 60%, #0a1020 100%); }
+
+/* ── REST ACCENT TOKENS ── */
+:root{ --rest:#38bdf8; --rest-d:#0ea5e9; --rest-glow:rgba(56,189,248,.12); }
+
+/* ── BASE CLASS STYLES ── */
+body{font-family:'Exo 2',sans-serif;background:#07090f;color:#e2e8f0;}
+.class-hero{padding:56px 24px 48px;border-bottom:1px solid rgba(56,189,248,.08);position:relative;overflow:hidden;}
+.class-hero::before{content:'';position:absolute;top:-60px;right:-80px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(56,189,248,.06) 0%,transparent 70%);pointer-events:none;}
+.class-hero-inner{max-width:900px;margin:0 auto;position:relative;z-index:1;}
+.class-badge{font-family:'Share Tech Mono',monospace;font-size:.63rem;color:#38bdf8;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;}
+.class-title{font-family:'Orbitron',sans-serif;font-size:clamp(1.6rem,3.8vw,2.6rem);font-weight:900;letter-spacing:3px;color:#c2d0e8;margin-bottom:12px;line-height:1.1;}
+.class-subtitle{font-size:.92rem;color:#6b7a9a;line-height:1.72;margin-bottom:20px;max-width:700px;}
+.class-meta{display:flex;gap:12px;flex-wrap:wrap;}
+.meta-item{font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#4a5780;padding:4px 10px;border:1px solid rgba(56,189,248,.15);border-radius:4px;}
+.rest2-tabs-wrap{max-width:1100px;margin:0 auto;padding:0 16px 40px;}
+.rest2-tabs-bar{display:flex;gap:4px;padding:20px 0 0;flex-wrap:wrap;border-bottom:1px solid rgba(56,189,248,.12);margin-bottom:0;}
+.rest2-tab-btn{padding:8px 13px;border-radius:8px 8px 0 0;font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#4a5780;background:none;border:1px solid transparent;cursor:pointer;transition:all .18s;white-space:nowrap;border-bottom:none;}
+.rest2-tab-btn:hover{color:#c2d0e8;background:rgba(56,189,248,.06);}
+.rest2-tab-btn.rest2-active{color:#38bdf8;background:#0d1220;border-color:rgba(56,189,248,.25);border-bottom:1px solid #0d1220;}
+.rest2-tab-content{display:none;background:#0d1220;border:1px solid rgba(56,189,248,.08);border-top:none;border-radius:0 0 12px 12px;padding:32px;}
+.rest2-tab-content.rest2-active{display:block;}
+.content-block{max-width:880px;}
+.section-title{font-family:'Orbitron',sans-serif;font-size:.95rem;color:#38bdf8;letter-spacing:2px;margin:28px 0 14px;padding-bottom:8px;border-bottom:1px solid rgba(56,189,248,.15);}
+.section-title:first-child{margin-top:0;}
+p{color:#8294b8;line-height:1.75;margin-bottom:14px;font-size:.9rem;}
+ul,ol{color:#8294b8;padding-left:1.4rem;margin-bottom:14px;font-size:.9rem;}
+li{margin-bottom:5px;line-height:1.65;}
+strong{color:#c2d0e8;}
+code{font-family:'Share Tech Mono',monospace;font-size:.82rem;background:rgba(56,189,248,.1);color:#38bdf8;padding:1px 6px;border-radius:4px;border:1px solid rgba(56,189,248,.2);}
+
+/* INFO BOXES */
+.info-box{border-radius:8px;padding:14px 18px;margin:18px 0;border-left:3px solid;}
+.info-box.tip{background:rgba(56,189,248,.06);border-color:#38bdf8;}
+.info-box.warning{background:rgba(251,191,36,.05);border-color:#fbbf24;}
+.info-box-title{font-family:'Share Tech Mono',monospace;font-size:.73rem;color:#38bdf8;margin-bottom:8px;}
+.info-box.warning .info-box-title{color:#fbbf24;}
+
+/* CODE BLOCKS */
+.code-block{background:#050810;border:1px solid rgba(56,189,248,.15);border-left:3px solid #38bdf8;border-radius:8px;padding:0;margin:16px 0;overflow:hidden;}
+.code-label{background:rgba(56,189,248,.08);padding:8px 16px;font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#4a5780;letter-spacing:2px;text-transform:uppercase;border-bottom:1px solid rgba(56,189,248,.1);}
+.code-block pre{margin:0;padding:18px;overflow-x:auto;}
+.code-block code{background:none;border:none;padding:0;color:#a8b4c8;font-size:.79rem;line-height:1.8;display:block;}
+
+/* SYNTAX HIGHLIGHTING */
+.cmt{color:#3a4a60;font-style:italic;}
+.kw {color:#c792ea;}
+.fn {color:#82aaff;}
+.str{color:#c3e88d;}
+.num{color:#f78c6c;}
+
+/* CONCEPT GRID */
+.concept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin:16px 0;}
+.concept-card{background:#090d1a;border:1px solid rgba(56,189,248,.1);border-radius:10px;padding:16px;}
+.concept-icon{font-size:1.8rem;margin-bottom:8px;}
+.concept-card h3{font-family:'Share Tech Mono',monospace;font-size:.77rem;color:#38bdf8;margin-bottom:8px;}
+.concept-card p{font-size:.8rem;margin:0;}
+
+/* REF TABLE */
+.table-wrap{overflow-x:auto;margin:16px 0;}
+.ref-table{width:100%;border-collapse:collapse;font-size:.8rem;}
+.ref-table th{background:#090d1a;color:#38bdf8;font-family:'Share Tech Mono',monospace;font-size:.67rem;padding:10px 12px;text-align:left;border:1px solid rgba(56,189,248,.15);letter-spacing:1px;}
+.ref-table td{padding:9px 12px;border:1px solid rgba(255,255,255,.04);color:#8294b8;}
+.ref-table tr:hover td{background:rgba(56,189,248,.04);}
+.ref-table code{font-size:.77rem;}
+
+/* QUIZ */
+.quiz-question{background:#090d1a;border:1px solid rgba(56,189,248,.12);border-radius:10px;padding:20px;margin-bottom:14px;}
+.quiz-q-num{font-family:'Share Tech Mono',monospace;font-size:.62rem;color:#374060;margin-bottom:8px;}
+.quiz-q-text{font-size:.9rem;color:#c2d0e8;margin-bottom:14px;line-height:1.6;}
+.quiz-opts{display:flex;flex-direction:column;gap:7px;}
+.quiz-opt{padding:10px 14px;border-radius:7px;border:1px solid rgba(56,189,248,.12);background:#0d1220;color:#6b7a9a;cursor:pointer;font-size:.84rem;text-align:left;transition:all .15s;font-family:'Exo 2',sans-serif;}
+.quiz-opt:hover:not(:disabled){border-color:rgba(56,189,248,.4);color:#c2d0e8;}
+.quiz-opt.correct{border-color:#34d399;background:rgba(52,211,153,.08);color:#34d399;}
+.quiz-opt.wrong{border-color:#f87171;background:rgba(248,113,113,.08);color:#f87171;}
+.quiz-explanation{margin-top:10px;padding:10px 14px;background:rgba(56,189,248,.07);border-left:3px solid #38bdf8;border-radius:6px;font-size:.82rem;color:#a0aec0;line-height:1.65;}
+
+/* HTTP DIAGRAM */
+.http-flow{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin:20px 0;padding:20px;background:#090d1a;border-radius:10px;border:1px solid rgba(56,189,248,.1);}
+.http-box{background:#0d1220;border:1px solid rgba(56,189,248,.2);border-radius:8px;padding:14px 18px;text-align:center;min-width:110px;}
+.http-box-label{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:#38bdf8;margin-bottom:4px;}
+.http-box-val{font-size:.8rem;color:#c2d0e8;}
+.http-arrow{font-size:1.4rem;color:#38bdf8;}
+
+/* Path builder visual */
+.path-builder{background:#050810;border:1px solid rgba(56,189,248,.15);border-radius:8px;padding:16px;margin:16px 0;font-family:'Share Tech Mono',monospace;font-size:.78rem;color:#a8b4c8;line-height:1.8;}
+.path-segment{display:inline-block;padding:2px 8px;border-radius:4px;margin:0 2px;}
+.path-root{background:rgba(56,189,248,.15);color:#38bdf8;}
+.path-ds{background:rgba(52,211,153,.15);color:#34d399;}
+.path-module{background:rgba(251,191,36,.15);color:#fbbf24;}
+.path-resource{background:rgba(248,113,113,.15);color:#f87171;}
+
+/* Navbar y Drawer */
+.navbar{position:fixed;top:0;left:0;right:0;height:56px;background:#080a10;border-bottom:1px solid rgba(56,189,248,.1);display:flex;align-items:center;padding:0 24px;z-index:1000;}
+.navbar-toggle{background:none;border:1px solid rgba(56,189,248,.3);color:#38bdf8;padding:6px 12px;border-radius:6px;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:.75rem;margin-right:16px;}
+.navbar-brand{font-family:'Orbitron',sans-serif;font-weight:700;color:#38bdf8;text-decoration:none;font-size:1.1rem;}
+.navbar-brand span{color:#0ea5e9;}
+.navbar-spacer{flex:1;}
+.navbar-link{color:#6b7a9a;text-decoration:none;font-size:.8rem;transition:color .2s;}
+.navbar-link:hover{color:#c2d0e8;}
+.nav-spacer{height:56px;}
+.ccna-drawer{position:fixed;top:0;left:0;bottom:0;width:280px;background:#0d1220;border-right:1px solid rgba(56,189,248,.2);transform:translateX(-100%);transition:transform .3s;z-index:2000;overflow-y:auto;}
+.ccna-drawer.open{transform:translateX(0);}
+.ccna-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);opacity:0;visibility:hidden;transition:all .3s;z-index:1500;}
+.ccna-overlay.show{opacity:1;visibility:visible;}
+.drawer-header{padding:20px;border-bottom:1px solid rgba(56,189,248,.2);display:flex;justify-content:space-between;align-items:center;}
+.drawer-header h2{font-family:'Orbitron',sans-serif;font-size:.8rem;color:#38bdf8;margin:0;letter-spacing:2px;}
+.drawer-close{background:none;border:none;color:#6b7a9a;font-size:1.2rem;cursor:pointer;}
+.drawer-section{padding:16px;border-bottom:1px solid rgba(56,189,248,.1);}
+.drawer-section-title{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#374060;margin-bottom:12px;letter-spacing:1px;text-transform:uppercase;}
+.drawer-link{display:block;padding:10px 12px;color:#8294b8;text-decoration:none;font-size:.85rem;border-radius:6px;transition:all .2s;margin-bottom:4px;}
+.drawer-link:hover{background:rgba(56,189,248,.1);color:#c2d0e8;}
+.drawer-link.active{background:rgba(56,189,248,.2);color:#38bdf8;border-left:3px solid #38bdf8;}
+.dl-icon{margin-right:8px;}
+
+@media(max-width:680px){
+  .rest2-tab-btn{font-size:.6rem;padding:6px 9px;}
+  .rest2-tab-content{padding:18px 12px;}
+  .concept-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
+<nav class="ccna-drawer" id="ccnaDrawer">
+  <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
+  <div class="drawer-section"><div class="drawer-section-title">General</div>
+    <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M1 · Fundamentos</div>
+    <a href="fundamentos.html" class="drawer-link"><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
+    <a href="subnetting.html"  class="drawer-link"><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
+    <a href="ipv6.html"        class="drawer-link"><span class="dl-icon">6️⃣</span> IPv6</a>
+    <a href="arp.html"         class="drawer-link"><span class="dl-icon">📡</span> ARP</a>
+    <a href="rip.html"         class="drawer-link"><span class="dl-icon">🔄</span> RIP</a>
+    <a href="protocolos-internet.html" class="drawer-link"><span class="dl-icon">🌍</span> Protocolos Internet</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M2 · Dispositivos Cisco</div>
+    <a href="router.html"         class="drawer-link"><span class="dl-icon">📡</span> Routers Cisco</a>
+    <a href="switches-cisco.html" class="drawer-link"><span class="dl-icon">🔀</span> Switches Cisco</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M3 · Switching</div>
+    <a href="vlan.html"               class="drawer-link"><span class="dl-icon">🏷️</span> VLANs</a>
+    <a href="inter-vlan-routing.html" class="drawer-link"><span class="dl-icon">🔁</span> Inter-VLAN Routing</a>
+    <a href="stp.html"                class="drawer-link"><span class="dl-icon">🌳</span> STP</a>
+    <a href="etherchannel.html"       class="drawer-link"><span class="dl-icon">🔗</span> EtherChannel</a>
+    <a href="port-security.html"      class="drawer-link"><span class="dl-icon">🔒</span> Port Security</a>
+    <a href="cdp-lldp.html"           class="drawer-link"><span class="dl-icon">🔍</span> CDP / LLDP</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M4 · Routing</div>
+    <a href="routing.html"            class="drawer-link"><span class="dl-icon">🗺️</span> Routing Estático</a>
+    <a href="ospf.html"               class="drawer-link"><span class="dl-icon">⭕</span> OSPF</a>
+    <a href="eigrp.html"              class="drawer-link"><span class="dl-icon">⚡</span> EIGRP</a>
+    <a href="ospfv2-masterclass.html" class="drawer-link"><span class="dl-icon">🎯</span> OSPFv2 Masterclass</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M5 · Servicios IP</div>
+    <a href="dhcp.html" class="drawer-link"><span class="dl-icon">📋</span> DHCP</a>
+    <a href="nat.html"  class="drawer-link"><span class="dl-icon">🔄</span> NAT / PAT</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M6 · Seguridad</div>
+    <a href="acl.html" class="drawer-link"><span class="dl-icon">🛡️</span> ACLs</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M7 · WAN &amp; QoS</div>
+    <a href="wan.html" class="drawer-link"><span class="dl-icon">🌍</span> WAN</a>
+    <a href="qos.html" class="drawer-link"><span class="dl-icon">📊</span> QoS</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M8 · Automatización</div>
+    <a href="m8-automatizacion.html" class="drawer-link"><span class="dl-icon">🤖</span> M8 — Vista General</a>
+    <a href="python-redes.html"      class="drawer-link"><span class="dl-icon">🐍</span> Python para Redes</a>
+    <a href="json-datos.html"        class="drawer-link"><span class="dl-icon">📋</span> JSON y Datos</a>
+    <a href="rest-apis.html"         class="drawer-link active"><span class="dl-icon">🌐</span> REST APIs</a>
+    <a href="ansible-redes.html"     class="drawer-link"><span class="dl-icon">⚙️</span> Ansible</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">⚡ Herramientas</div>
+    <a href="asistente.html"          class="drawer-link"><span class="dl-icon">🤖</span> Asistente IA</a>
+    <a href="netbot.html"             class="drawer-link"><span class="dl-icon">⚙️</span> NetBot Config</a>
+    <a href="calculadora.html"        class="drawer-link"><span class="dl-icon">🧮</span> Calculadora IP</a>
+    <a href="../laboratorios-pkt.html"   class="drawer-link"><span class="dl-icon">🧪</span> Labs Packet Tracer</a>
+    <a href="../banco-preguntas.html" class="drawer-link"><span class="dl-icon">📝</span> Banco de Preguntas</a></div>
+</nav>
+
+<header class="navbar">
+  <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
+  <a href="../index.html" class="navbar-brand">CISCO<span> ACADEMY</span></a>
+  <div class="navbar-spacer"></div>
+  <a href="rest-apis.html" class="navbar-link">← REST APIs</a>
+</header>
+<div class="nav-spacer"></div>
+
+<!-- HERO -->
+<section class="class-hero" style="border-bottom:1px solid rgba(56,189,248,.2);">
+  <div class="class-hero-inner">
+    <div class="class-badge" style="color:#38bdf8;">M8 · AUTOMATIZACIÓN · REST APIs · TEMA 2 DE 7</div>
+    <h1 class="class-title">RESTCONF <span class="class-title-accent" style="background:linear-gradient(135deg,#38bdf8,#0ea5e9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">— REST para IOS-XE</span></h1>
+    <p class="class-subtitle">El protocolo estándar RFC 8040 que lleva REST directamente a los routers y switches Cisco. Aprende a manipular configuración YANG, datastores y modelos de datos nativos vía HTTPS para automatizar infraestructura real sin SSH ni parseo de CLI.</p>
+    <div class="class-meta">
+      <span class="meta-item" style="border-color:rgba(56,189,248,.2);color:#38bdf8;">🔧 RFC 8040</span>
+      <span class="meta-item">🎯 CCNA Domain 6.5</span>
+      <span class="meta-item">⏱ ~100 min lectura</span>
+      <span class="meta-item">💻 Labs con IOS-XE</span>
+      <span class="meta-item">🧪 Proyecto CRUD real</span>
+    </div>
+  </div>
+</section>
+
+<!-- TABS -->
+<div class="rest2-tabs-wrap">
+  <div class="rest2-tabs-bar">
+    <button class="rest2-tab-btn rest2-active" onclick="showTabRest2('intro',this)">🔧 Intro</button>
+    <button class="rest2-tab-btn" onclick="showTabRest2('rfc',this)">📜 RFC 8040</button>
+    <button class="rest2-tab-btn" onclick="showTabRest2('yang',this)">🌳 YANG</button>
+    <button class="rest2-tab-btn" onclick="showTabRest2('paths',this)">🔗 Paths</button>
+    <button class="rest2-tab-btn" onclick="showTabRest2('crud',this)">⚙️ CRUD</button>
+    <button class="rest2-tab-btn" onclick="showTabRest2('python',this)">🐍 Python</button>
+    <button class="rest2-tab-btn" onclick="showTabRest2('seguridad',this)">🔒 Seguridad</button>
+    <button class="rest2-tab-btn" onclick="showTabRest2('proyecto',this)">🚀 Proyecto</button>
+    <button class="rest2-tab-btn" onclick="showTabRest2('referencia',this)">📊 Referencia</button>
+    <button class="rest2-tab-btn" onclick="showTabRest2('quiz',this)">🎯 Quiz</button>
+  </div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 1 — INTRO
+═══════════════════════════════════════════ -->
+<div id="tab-intro" class="rest2-tab-content rest2-active">
+<div class="content-block">
+  <h2 class="section-title">¿Qué es RESTCONF y por qué cambia todo?</h2>
+  <p><strong>RESTCONF</strong> es el protocolo definido en la <strong>RFC 8040</strong> que permite gestionar dispositivos de red usando los principios REST (HTTP + verbs) sobre los modelos de datos <strong>YANG</strong>. Es la evolución natural de NETCONF: mientras NETCONF usa sesiones SSH persistentes y XML-RPC, RESTCONF abre la puerta a las herramientas modernas de desarrollo.</p>
+  <p>Con RESTCONF, configurar un router Cisco deja de ser un ejercicio de expresiones regulares sobre texto plano. Se convierte en una conversación estructurada: tu script Python envía JSON semánticamente validado contra un modelo YANG, y el router responde con códigos HTTP estándar. Si algo falla, obtienes un <code>400 Bad Request</code> con detalles, no un <code>% Ambiguous command</code> en la CLI.</p>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 ¿Por qué RESTCONF y no solo CLI/SSH?</div>
+    <ul>
+      <li><strong>Tipado fuerte</strong>: YANG valida tipos de datos (IPv4, uint16, boolean) antes de aplicar la configuración.</li>
+      <li><strong>Idempotencia nativa</strong>: PUT y DELETE son idempotentes; reintentar es seguro.</li>
+      <li><strong>Datos estructurados</strong>: JSON/XML con schema conocido, no texto libre que hay que parsear.</li>
+      <li><strong>Datastores separados</strong>: Puedes editar <code>candidate</code> y hacer <code>commit</code>, o editar <code>running</code> directamente.</li>
+      <li><strong>Estándar abierto</strong>: No es propietario de Cisco; es un RFC de la IETF soportado por múltiples vendors.</li>
+    </ul>
+  </div>
+
+  <h2 class="section-title">Requisitos en IOS-XE</h2>
+  <p>RESTCONF está disponible en <strong>IOS-XE 16.6+</strong> (Denali y posterior) y en la mayoría de plataformas modernas: ISR 4000, Catalyst 8000, CSR 1000V, C9200/C9300 con capa de routing. Para habilitarlo:</p>
+
+  <div class="code-block">
+    <div class="code-label">Habilitar RESTCONF en IOS-XE</div>
+    <pre><code>! Habilitar servidor HTTP/HTTPS
+ip http server
+ip http secure-server
+
+! Habilitar RESTCONF (RFC 8040)
+restconf
+
+! Asegurar autenticación local (o AAA)
+username admin privilege 15 secret Cisco123
+ip ssh version 2
+
+! Opcional: habilitar NETCONF para operaciones avanzadas
+netconf-yang
+netconf-yang cisco-odm polling-enable
+
+! Verificar
+show restconf
+show platform software yang-management process</code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚡ Importante para el laboratorio</div>
+    <p>Los routers reales usan certificados autofirmados para HTTPS. Python <code>requests</code> rechazará la conexión por defecto. En desarrollo usa <code>verify=False</code>; en producción, configura una PKI interna o importa el certificado raíz al truststore de Python.</p>
+  </div>
+
+  <h2 class="section-title">Arquitectura de alto nivel</h2>
+  <div class="http-flow">
+    <div class="http-box"><div class="http-box-label">SCRIPT PYTHON</div><div class="http-box-val">requests + JSON</div></div>
+    <div class="http-arrow">→ HTTPS 443 →</div>
+    <div class="http-box"><div class="http-box-label">IOS-XE</div><div class="http-box-val">nginx + confd</div></div>
+    <div class="http-arrow">→ YANG →</div>
+    <div class="http-box"><div class="http-box-label">RUNNING-CONFIG</div><div class="http-box-val">Candidato/Activa</div></div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 2 — RFC 8040
+═══════════════════════════════════════════ -->
+<div id="tab-rfc" class="rest2-tab-content">
+<div class="content-block">
+  <h2 class="section-title">RFC 8040 — La especificación formal</h2>
+  <p>La <strong>RFC 8040: "RESTCONF Protocol"</strong> fue publicada en enero de 2017 por la IETF. Define cómo mapear operaciones sobre modelos YANG a los verbos HTTP estándar. No inventa un protocolo nuevo: usa HTTP/1.1 o HTTP/2 como transporte, JSON o XML como serialización, y YANG como lenguaje de modelado de datos.</p>
+
+  <h2 class="section-title">Datastores: running, startup, candidate</h2>
+  <p>RESTCONF hereda de NETCONF el concepto de <strong>datastores</strong>. Un datastore es una instancia de la base de datos de configuración del dispositivo. No todos los dispositivos soportan todos los datastores:</p>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">⚡</div>
+      <h3>running</h3>
+      <p>La configuración activa del dispositivo. Siempre presente. Operaciones GET/PUT/PATCH/DELETE apuntan aquí por defecto. Equivalente a <code>show running-config</code>.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">💾</div>
+      <h3>startup</h3>
+      <p>Configuración que se carga al bootear. Presente en la mayoría de plataformas. Para persistir cambios en running, necesitas <code>copy running-config startup-config</code> (o su equivalente YANG).</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-card">
+      <div class="concept-icon">📝</div>
+      <h3>candidate</h3>
+      <p>Copia editable sin impacto inmediato. Permite hacer múltiples cambios y luego un <code>commit</code> atómico. No todos los dispositivos Cisco lo soportan vía RESTCONF (más común en NETCONF puro).</p>
+    </div>
+    </div>
+  </div>
+
+  <h2 class="section-title">Raíces de la API RESTCONF</h2>
+  <p>La RFC 8040 define dos puntos de entrada (roots) obligatorios:</p>
+  <ul>
+    <li><code>{+restconf}/data</code> — Acceso a datastores y recursos de configuración/estado. Es donde vives el 99% del tiempo.</li>
+    <li><code>{+restconf}/operations</code> — Invocación de RPCs ( Remote Procedure Calls ) definidos en YANG. Equivalente a <code>&lt;rpc&gt;</code> en NETCONF.</li>
+  </ul>
+
+  <div class="path-builder">
+    <span class="path-segment path-root">https://router.local:443</span>
+    <span style="color:#374060;">/</span>
+    <span class="path-segment path-root">restconf</span>
+    <span style="color:#374060;">/</span>
+    <span class="path-segment path-ds">data</span>
+    <span style="color:#374060;">/</span>
+    <span class="path-segment path-module">Cisco-IOS-XE-native:native</span>
+    <span style="color:#374060;">/</span>
+    <span class="path-segment path-resource">interface</span>
+    <span style="color:#374060;">/</span>
+    <span class="path-segment path-resource">GigabitEthernet=0%2F0</span>
+  </div>
+
+  <h2 class="section-title">Content-Type según RFC 8040</h2>
+  <p>RESTCONF define sus propios tipos MIME, no usa genéricos:</p>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead><tr><th>Tipo MIME</th><th>Uso</th><th>Contexto</th></tr></thead>
+      <tbody>
+        <tr><td><code>application/yang-data+json</code></td><td>Datos YANG en JSON</td><td>Content-Type y Accept para /data</td></tr>
+        <tr><td><code>application/yang-data+xml</code></td><td>Datos YANG en XML</td><td>Alternativa para plataformas XML-centric</td></tr>
+        <tr><td><code>application/yang-patch+json</code></td><td>PATCH conforme a YANG Patch</td><td>Cuando usas PATCH con formato YANG-Patch (no solo campos sueltos)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚡ Trampa del examen CCNA</div>
+    <p>El examen pregunta cuál es el <code>Content-Type</code> correcto para RESTCONF. La respuesta no es <code>application/json</code> genérico. Es <strong><code>application/yang-data+json</code></strong> (o <code>application/yang-data+xml</code>). Este detalle distingue a un candidato que memorizó de uno que entiende RFC 8040.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 3 — YANG
+═══════════════════════════════════════════ -->
+<div id="tab-yang" class="rest2-tab-content">
+<div class="content-block">
+  <h2 class="section-title">YANG — El lenguaje de modelado de datos</h2>
+  <p><strong>YANG (Yet Another Next Generation, RFC 6020/7950)</strong> es un lenguaje de modelado de datos usado para definir la estructura, tipos y restricciones de la configuración y el estado operacional de dispositivos de red. Piensa en YANG como el <strong>schema</strong> de una base de datos: define qué tablas existen, qué columnas tienen y qué tipos de datos aceptan.</p>
+  <p>Cuando haces un GET a RESTCONF, el JSON que recibes no es arbitrario: está rigidamente definido por un modelo YANG. Cuando haces un PUT, el router valida tu JSON contra ese schema antes de aplicar cualquier cambio.</p>
+
+  <h2 class="section-title">Módulos YANG en Cisco IOS-XE</h2>
+  <p>IOS-XE expone cientos de módulos YANG. Los más relevantes para automatización:</p>
+
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead><tr><th>Módulo YANG</th><th>Namespace / Prefijo</th><th>Cubre</th></tr></thead>
+      <tbody>
+        <tr><td><code>Cisco-IOS-XE-native</code></td><td><code>native</code></td><td>Configuración nativa IOS-XE: interfaces, routing, VLANs, usuarios, SNMP, etc.</td></tr>
+        <tr><td><code>Cisco-IOS-XE-interfaces</code></td><td><code>ios-if</code></td><td>Operaciones y estado de interfaces (stats, counters).</td></tr>
+        <tr><td><code>Cisco-IOS-XE-ospf</code></td><td><code>ios-ospf</code></td><td>Configuración y estado de OSPFv2 y OSPFv3.</td></tr>
+        <tr><td><code>Cisco-IOS-XE-bgp</code></td><td><code>ios-bgp</code></td><td>Peers, address-families, políticas BGP.</td></tr>
+        <tr><td><code>Cisco-IOS-XE-acl</code></td><td><code>ios-acl</code></td><td>Listas de acceso: IPv4, IPv6, MAC.</td></tr>
+        <tr><td><code>ietf-interfaces</code></td><td><code>if</code></td><td>Modelo estándar IETF para interfaces (interoperable entre vendors).</td></tr>
+        <tr><td><code>ietf-routing</code></td><td><code>rt</code></td><td>Modelo estándar IETF para protocolos de routing.</td></tr>
+        <tr><td><code>ietf-yang-types</code></td><td><code>yang</code></td><td>Tipos de datos comunes: counter64, date-and-time, mac-address.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="section-title">Anatomía de un modelo YANG (simplificado)</h2>
+  <p>No necesitas escribir YANG, pero sí entenderlo para interpretar JSON y construir payloads:</p>
+
+  <div class="code-block">
+    <div class="code-label">Cisco-IOS-XE-native:native/interface (extracto conceptual)</div>
+    <pre><code>module Cisco-IOS-XE-native {
+  namespace "http://cisco.com/ns/yang/Cisco-IOS-XE-native";
+  prefix native;
+
+  container native {
+    container interface {
+      list GigabitEthernet {
+        key "name";
+        leaf name { type string; }
+        leaf description { type string; }
+        leaf shutdown {
+          type empty;
+          presence "Interface is shut down";
+        }
+        container ip {
+          container address {
+            container primary {
+              leaf address { type inet:ipv4-address; }
+              leaf mask { type inet:ipv4-address; }
+            }
+          }
+        }
+      }
+    }
+  }
+}</code></pre>
+  </div>
+
+  <p>Este modelo se traduce en el JSON que verás en RESTCONF:</p>
+  <div class="code-block">
+    <div class="code-label">JSON resultante para GigabitEthernet0/0</div>
+    <pre><code>{
+  "Cisco-IOS-XE-native:interface": {
+    "GigabitEthernet": [
+      {
+        "name": "0/0",
+        "description": "WAN-PRIMARY",
+        "ip": {
+          "address": {
+            "primary": {
+              "address": "192.168.1.1",
+              "mask": "255.255.255.0"
+            }
+          }
+        }
+      }
+    ]
+  }
+}</code></pre>
+  </div>
+
+  <h2 class="section-title">Tipos de nodos YANG</h2>
+  <ul>
+    <li><strong>container</strong>: Agrupa nodos relacionados. No tiene valor propio. Ej: <code>ip</code>, <code>address</code>.</li>
+    <li><strong>list</strong>: Secuencia ordenada de entradas con una <strong>key</strong>. Ej: <code>GigabitEthernet</code> (key = <code>name</code>).</li>
+    <li><strong>leaf</strong>: Nodo con un solo valor de tipo simple. Ej: <code>description</code> (string), <code>shutdown</code> (empty).</li>
+    <li><strong>leaf-list</strong>: Lista de valores simples sin keys. Ej: lista de DNS servers.</li>
+    <li><strong>rpc</strong>: Operación invocable vía <code>/operations</code>. Ej: <code>clear-arp</code>.</li>
+  </ul>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Cómo descubrir módulos disponibles en tu router</div>
+    <pre><code>GET https://router.local/restconf/data/netconf-state/capabilities
+→ Lista todas las capabilities YANG soportadas
+
+show netconf-yang modules
+→ En CLI, lista módulos cargados</code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 4 — PATHS
+═══════════════════════════════════════════ -->
+<div id="tab-paths" class="rest2-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Construcción de Paths RESTCONF</h2>
+  <p>En RESTCONF, la URI identifica de forma única cada recurso YANG. La construcción de paths sigue reglas estrictas derivadas del modelo YANG. Un error en la URI produce un <strong>404 Not Found</strong> o un <strong>400 Bad Request</strong> inmediato.</p>
+
+  <h2 class="section-title">Reglas de codificación</h2>
+  <ul>
+    <li><strong>Module prefix</strong>: Se usa <code>modulename:</code> antes del nombre del nodo. Ej: <code>Cisco-IOS-XE-native:native</code>.</li>
+    <li><strong>List keys</strong>: Se pasan como <code>nombrerecurso=valor</code>. Si el valor contiene <code>/</code> (como en interfaces), debe codificarse como <code>%2F</code>.</li>
+    <li><strong>Namespace URI encoding</strong>: Los dos puntos del módulo van tal cual; los slashes internos de valores van URL-encoded.</li>
+  </ul>
+
+  <h2 class="section-title">Ejemplos de paths por recurso</h2>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead><tr><th>Recurso</th><th>Path RESTCONF</th><th>Notas</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Configuración completa</td>
+          <td><code>/restconf/data/Cisco-IOS-XE-native:native</code></td>
+          <td>GET retorna todo el running-config como JSON YANG masivo.</td>
+        </tr>
+        <tr>
+          <td>Interfaz específica</td>
+          <td><code>/restconf/data/Cisco-IOS-XE-native:native/interface/GigabitEthernet=0%2F0</code></td>
+          <td><code>%2F</code> es el slash. El key es el nombre <code>0/0</code>.</td>
+        </tr>
+        <tr>
+          <td>Todas las interfaces</td>
+          <td><code>/restconf/data/Cisco-IOS-XE-native:native/interface</code></td>
+          <td>GET retorna array de todas las interfaces configuradas.</td>
+        </tr>
+        <tr>
+          <td>IP de interfaz</td>
+          <td><code>.../interface/GigabitEthernet=0%2F0/ip/address/primary</code></td>
+          <td>Navegación profunda por contenedores YANG.</td>
+        </tr>
+        <tr>
+          <td>Hostname</td>
+          <td><code>/restconf/data/Cisco-IOS-XE-native:native/hostname</code></td>
+          <td>Leaf simple; GET retorna string directamente.</td>
+        </tr>
+        <tr>
+          <td>OSPF proceso 1</td>
+          <td><code>/restconf/data/Cisco-IOS-XE-native:native/router/ospf/ospf=1</code></td>
+          <td>List key = process ID. En IOS-XE OSPF se modela como list.</td>
+        </tr>
+        <tr>
+          <td>VLAN 10</td>
+          <td><code>/restconf/data/Cisco-IOS-XE-native:native/vlan/vlan-list=10</code></td>
+          <td>En switches Layer 3 IOS-XE.</td>
+        </tr>
+        <tr>
+          <td>Usuario admin</td>
+          <td><code>/restconf/data/Cisco-IOS-XE-native:native/username=admin</code></td>
+          <td>Key del list username es el nombre.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="section-title">Query parameters útiles</h2>
+  <div class="code-block">
+    <div class="code-label">Filtros y modificadores de URI</div>
+    <pre><code><span class="cmt"># depth — controla qué tan profundo recorrer la jerarquía</span>
+GET .../interface/GigabitEthernet=0%2F0?<span class="kw">depth</span>=<span class="num">1</span>
+  → Solo el primer nivel de hijos (nombre, descripción, IP primaria...)
+
+GET .../interface/GigabitEthernet=0%2F0?<span class="kw">depth</span>=<span class="num">unbounded</span>
+  → Todo el árbol completo (por defecto)
+
+<span class="cmt"># fields — filtra qué nodos retornar</span>
+GET .../native?<span class="kw">fields</span>=<span class="str">hostname;interface</span>
+  → Solo hostname e interfaces, ignora routing, usuarios, etc.
+
+<span class="cmt"># content — filtra tipo de datos</span>
+GET .../native?<span class="kw">content</span>=<span class="str">config</span>     <span class="cmt">→ solo configuración</span>
+GET .../native?<span class="kw">content</span>=<span class="str">nonconfig</span>  <span class="cmt">→ solo estado operacional (stats)</span>
+GET .../native?<span class="kw">content</span>=<span class="str">all</span>      <span class="cmt">→ ambos (por defecto)</span></code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚡ Error común: olvidar codificar el slash</div>
+    <p>Si escribes <code>GigabitEthernet=0/0</code> en la URL sin codificar, el servidor interpreta <code>0</code> como key y <code>0</code> como un path adicional, resultando en <strong>404 Not Found</strong>. Siempre codifica: <code>GigabitEthernet=0%2F0</code>. En Python usa <code>urllib.parse.quote('0/0', safe='')</code>.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 5 — CRUD
+═══════════════════════════════════════════ -->
+<div id="tab-crud" class="rest2-tab-content">
+<div class="content-block">
+  <h2 class="section-title">CRUD en IOS-XE vía RESTCONF</h2>
+  <p>Aquí aplicamos los verbos HTTP estudiados en el Tema 1 al contexto real de un router Cisco. Cada operación incluye la URI exacta, los headers obligatorios y el payload JSON esperado por YANG.</p>
+
+  <h2 class="section-title">CREATE — POST vs PUT</h2>
+  <p>En RESTCONF, <strong>POST</strong> se usa principalmente para crear recursos dentro de una colección (list) donde el servidor asigna la key. Sin embargo, muchos recursos de red tienen keys predecibles (nombre de interfaz, ID de proceso OSPF). Para esos, <strong>PUT</strong> es más común porque es idempotente.</p>
+
+  <div class="code-block">
+    <div class="code-label">PUT — Crear/Reemplazar Loopback 100</div>
+    <pre><code>PUT /restconf/data/Cisco-IOS-XE-native:native/interface/Loopback=100
+Content-Type: application/yang-data+json
+Accept: application/yang-data+json
+
+{
+  "Cisco-IOS-XE-native:Loopback": {
+    "name": "100",
+    "description": "MANAGEMENT-LOOPBACK",
+    "ip": {
+      "address": {
+        "primary": {
+          "address": "1.1.1.1",
+          "mask": "255.255.255.255"
+        }
+      }
+    }
+  }
+}</code></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">POST — Crear nueva VLAN (cuando el server asigna o es colección)</div>
+    <pre><code>POST /restconf/data/Cisco-IOS-XE-native:native/vlan
+Content-Type: application/yang-data+json
+
+{
+  "Cisco-IOS-XE-native:vlan-list": {
+    "id": 50,
+    "name": "NUEVA_VLAN_50"
+  }
+}</code></pre>
+  </div>
+
+  <h2 class="section-title">READ — GET con filtros</h2>
+  <div class="code-block">
+    <div class="code-label">GET — Obtener tabla de routing (RIB) en JSON</div>
+    <pre><code>GET /restconf/data/Cisco-IOS-XE-native:native/ip/route
+Accept: application/yang-data+json
+
+<span class="cmt"># Respuesta (simplificada):</span>
+{
+  "Cisco-IOS-XE-native:route": {
+    "ip-route-interface-forwarding-list": [
+      {
+        "prefix": "0.0.0.0",
+        "mask": "0.0.0.0",
+        "fwd-list": [{"fwd": "192.168.1.254"}]
+      }
+    ]
+  }
+}</code></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">GET — OSPF neighbors (estado operacional, no config)</div>
+    <pre><code>GET /restconf/data/Cisco-IOS-XE-ospf:ospf-oper-data/ospf-state/ospf-instance
+Accept: application/yang-data+json
+
+<span class="cmt"># Devuelve estado real de vecinos, no la configuración.</span>
+<span class="cmt"># Requiere módulo operacional (nonconfig).</span></code></pre>
+  </div>
+
+  <h2 class="section-title">UPDATE — PATCH parcial</h2>
+  <p><strong>PATCH</strong> es el verbo más útil para cambios rápidos: solo envías lo que quieres modificar. En IOS-XE, PATCH sobre un leaf o container reemplaza solo ese subárbol.</p>
+
+  <div class="code-block">
+    <div class="code-label">PATCH — Cambiar solo descripción y activar interfaz</div>
+    <pre><code>PATCH /restconf/data/Cisco-IOS-XE-native:native/interface/GigabitEthernet=0%2F0
+Content-Type: application/yang-data+json
+
+{
+  "Cisco-IOS-XE-native:GigabitEthernet": {
+    "description": "ENLACE-AL-CORE-AKT1",
+    "shutdown": [null]
+  }
+}
+
+<span class="cmt"># Nota: "shutdown": [null] en JSON es el truco para eliminar un leaf de tipo empty.</span>
+<span class="cmt"># Equivale a "no shutdown" en CLI. El valor [null] representa delete en PATCH/PUT.</span></code></pre>
+  </div>
+
+  <h2 class="section-title">DELETE — Eliminar recursos</h2>
+  <div class="code-block">
+    <div class="code-label">DELETE — Remover Loopback 100</div>
+    <pre><code>DELETE /restconf/data/Cisco-IOS-XE-native:native/interface/Loopback=100
+
+<span class="cmt"># Respuesta esperada:</span>
+HTTP/1.1 204 No Content
+
+<span class="cmt"># Si intentas borrar algo que no existe:</span>
+HTTP/1.1 404 Not Found</code></pre>
+  </div>
+
+  <h2 class="section-title">Operaciones (RPC) vía /operations</h2>
+  <p>Algunas acciones no encajan en CRUD: reiniciar un proceso, limpiar tabla ARP, aplicar <code>copy run start</code>. Estas se exponen como <strong>RPCs</strong> en <code>/restconf/operations</code>:</p>
+
+  <div class="code-block">
+    <div class="code-label">POST — Guardar configuración (copy run start vía RPC)</div>
+    <pre><code>POST /restconf/operations/cisco-ia:save-config
+Content-Type: application/yang-data+json
+
+{ "cisco-ia:input": {} }
+
+<span class="cmt"># Equivalente a "write memory" o "copy running-config startup-config".</span>
+<span class="cmt"># Retorna 204 No Content si tiene éxito.</span></code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Idempotencia en la práctica con IOS-XE</div>
+    <p>Si tu script automatizado pierde conexión después de enviar un PUT, ¿lo reintentas? Con RESTCONF sí: PUT es idempotente. Enviar la misma configuración 10 veces no daña nada. Con CLI/SSH vía Netmiko, un reintento podría duplicar comandos o fallar en contextos cambiantes. Esta es la razón principal por la que RESTCONF es superior para automatización confiable.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 6 — PYTHON
+═══════════════════════════════════════════ -->
+<div id="tab-python" class="rest2-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Python + requests contra RESTCONF</h2>
+  <p>La librería <code>requests</code> es todo lo que necesitas para hablar RESTCONF desde Python. No requieres librerías específicas de Cisco (aunque existen wrappers). Comprender HTTP a bajo nivel te da control total y te prepara para cualquier API REST de red.</p>
+
+  <div class="code-block">
+    <div class="code-label">restconf_client.py — Cliente base reutilizable</div>
+    <pre><code><span class="kw">import</span> requests
+<span class="kw">import</span> json
+<span class="kw">import</span> urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+<span class="kw">class</span> <span class="fn">RestconfClient</span>:
+    <span class="str">"""Cliente RESTCONF RFC 8040 para IOS-XE"""</span>
+
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, host, username, password, port=<span class="num">443</span>):
+        self.base_url = <span class="str">f"https://{host}:{port}/restconf/data"</span>
+        self.headers = {
+            <span class="str">"Content-Type"</span>: <span class="str">"application/yang-data+json"</span>,
+            <span class="str">"Accept"</span>: <span class="str">"application/yang-data+json"</span>,
+        }
+        self.auth = (username, password)
+        self.verify = <span class="kw">False</span>   <span class="cmt"># ⚠️ Solo laboratorio</span>
+
+    <span class="kw">def</span> <span class="fn">get</span>(self, path):
+        url = <span class="str">f"{self.base_url}/{path}"</span>
+        resp = requests.get(url, headers=self.headers, auth=self.auth,
+                            verify=self.verify, timeout=<span class="num">10</span>)
+        resp.raise_for_status()
+        <span class="kw">return</span> resp.json()
+
+    <span class="kw">def</span> <span class="fn">put</span>(self, path, payload):
+        url = <span class="str">f"{self.base_url}/{path}"</span>
+        resp = requests.put(url, headers=self.headers, auth=self.auth,
+                            verify=self.verify, timeout=<span class="num">10</span>,
+                            data=json.dumps(payload))
+        resp.raise_for_status()
+        <span class="kw">return</span> resp.status_code
+
+    <span class="kw">def</span> <span class="fn">patch</span>(self, path, payload):
+        url = <span class="str">f"{self.base_url}/{path}"</span>
+        resp = requests.patch(url, headers=self.headers, auth=self.auth,
+                              verify=self.verify, timeout=<span class="num">10</span>,
+                              data=json.dumps(payload))
+        resp.raise_for_status()
+        <span class="kw">return</span> resp.status_code
+
+    <span class="kw">def</span> <span class="fn">delete</span>(self, path):
+        url = <span class="str">f"{self.base_url}/{path}"</span>
+        resp = requests.delete(url, headers=self.headers, auth=self.auth,
+                               verify=self.verify, timeout=<span class="num">10</span>)
+        resp.raise_for_status()
+        <span class="kw">return</span> resp.status_code
+
+<span class="cmt"># ── USO ─────────────────────────────────────────────</span>
+router = RestconfClient(<span class="str">"192.168.1.1"</span>, <span class="str">"admin"</span>, <span class="str">"Cisco123"</span>)
+
+<span class="cmt"># Leer hostname</span>
+data = router.get(<span class="str">"Cisco-IOS-XE-native:native/hostname"</span>)
+<span class="fn">print</span>(<span class="str">f"Hostname: {data['Cisco-IOS-XE-native:hostname']}"</span>)
+
+<span class="cmt"># Cambiar descripción de interfaz</span>
+router.patch(
+    <span class="str">"Cisco-IOS-XE-native:native/interface/GigabitEthernet=0%2F0"</span>,
+    {<span class="str">"Cisco-IOS-XE-native:GigabitEthernet"</span>: {<span class="str">"description"</span>: <span class="str">"WAN-VIA-RESTCONF"</span>}}
+)</code></pre>
+  </div>
+
+  <h2 class="section-title">Manejo de errores específicos de IOS-XE</h2>
+  <p>Los errores de RESTCONF en Cisco incluyen a veces un body JSON con detalles del modelo YANG que falló:</p>
+
+  <div class="code-block">
+    <div class="code-label">Manejo robusto de errores</div>
+    <pre><code><span class="kw">from</span> requests.exceptions <span class="kw">import</span> HTTPError, ConnectionError, Timeout
+
+<span class="kw">def</span> <span class="fn">safe_restconf_call</span>(method_func, *args, **kwargs):
+    <span class="str">"""Wrapper que traduce errores HTTP a mensajes útiles"""</span>
+    <span class="kw">try</span>:
+        <span class="kw">return</span> method_func(*args, **kwargs)
+    <span class="kw">except</span> HTTPError <span class="kw">as</span> e:
+        status = e.response.status_code
+        <span class="kw">if</span> status == <span class="num">400</span>:
+            detail = e.response.json().get(<span class="str">"errors"</span>, {}).get(<span class="str">"error"</span>, [{}])[<span class="num">0</span>].get(<span class="str">"error-message"</span>, <span class="str">"JSON malformado"</span>)
+            <span class="fn">print</span>(<span class="str">f"[400] YANG validation failed: {detail}"</span>)
+        <span class="kw">elif</span> status == <span class="num">401</span>:
+            <span class="fn">print</span>(<span class="str">"[401] Credenciales inválidas o usuario sin privilegio 15"</span>)
+        <span class="kw">elif</span> status == <span class="num">404</span>:
+            <span class="fn">print</span>(<span class="str">"[404] Recurso no encontrado — revisa el path YANG"</span>)
+        <span class="kw">elif</span> status == <span class="num">409</span>:
+            <span class="fn">print</span>(<span class="str">"[409] Conflicto — el recurso ya existe (usar PUT) o dependencia faltante"</span>)
+        <span class="kw">elif</span> status == <span class="num">500</span>:
+            <span class="fn">print</span>(<span class="str">"[500] Error interno del daemon RESTCONF en el router"</span>)
+        <span class="kw">else</span>:
+            <span class="fn">print</span>(<span class="str">f"[{status}] Error HTTP: {e}"</span>)
+    <span class="kw">except</span> ConnectionError:
+        <span class="fn">print</span>(<span class="str">"[NET] No se pudo conectar — verificar IP, HTTPS habilitado y reachability"</span>)
+    <span class="kw">except</span> Timeout:
+        <span class="fn">print</span>(<span class="str">"[NET] Timeout — el router no respondió a tiempo"</span>)</code></pre>
+  </div>
+
+  <h2 class="section-title">Descubrimiento automático de capabilities</h2>
+  <div class="code-block">
+    <div class="code-label">Descubrir qué YANG soporta el router</div>
+    <pre><code><span class="kw">def</span> <span class="fn">list_capabilities</span>(host, user, pwd):
+    url = <span class="str">f"https://{host}/restconf/data/netconf-state/capabilities"</span>
+    resp = requests.get(url, auth=(user, pwd), verify=<span class="kw">False</span>,
+                        headers={<span class="str">"Accept"</span>: <span class="str">"application/yang-data+json"</span>})
+    caps = resp.json().get(<span class="str">"ietf-netconf-monitoring:capabilities"</span>, {}).get(<span class="str">"capability"</span>, [])
+    <span class="kw">for</span> c <span class="kw">in</span> caps[:<span class="num">10</span>]:
+        <span class="fn">print</span>(c)
+    <span class="fn">print</span>(<span class="str">f"
+Total capabilities: {len(caps)}"</span>)
+
+list_capabilities(<span class="str">"192.168.1.1"</span>, <span class="str">"admin"</span>, <span class="str">"Cisco123"</span>)</code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 7 — SEGURIDAD
+═══════════════════════════════════════════ -->
+<div id="tab-seguridad" class="rest2-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Seguridad en RESTCONF</h2>
+  <p>RESTCONF no negocia: <strong>HTTPS es obligatorio</strong>. Nunca envíes credenciales ni configuración por HTTP plano. La RFC 8040 asume TLS como transporte seguro y recomienda autenticación vía certificados de cliente o HTTP Basic Auth sobre TLS.</p>
+
+  <h2 class="section-title">Autenticación soportada</h2>
+  <div class="concept-grid">
+    <div class="concept-card" style="border-color:rgba(52,211,153,.2);">
+      <div class="concept-icon">🔑</div>
+      <h3 style="color:#34d399;">HTTP Basic Auth</h3>
+      <p>Usuario:contraseña codificados en Base64 dentro del header <code>Authorization</code>. Requiere HTTPS obligatoriamente. Soportado por todos los dispositivos IOS-XE.</p>
+    </div>
+    <div class="concept-card" style="border-color:rgba(56,189,248,.2);">
+      <div class="concept-icon">🛡️</div>
+      <h3 style="color:#38bdf8;">Certificados de Cliente</h3>
+      <p>mTLS: el cliente presenta un certificado X.509 firmado por la CA del router. Sin contraseñas en el script. Máxima seguridad, configuración más compleja.</p>
+    </div>
+    <div class="concept-card" style="border-color:rgba(251,191,36,.2);">
+      <div class="concept-icon">🎫</div>
+      <h3 style="color:#fbbf24;">Tokens (OAuth/JWT)</h3>
+      <p>No nativo en IOS-XE RESTCONF básico. Usado por DNA Center y controladores SDN donde RESTCONF actúa como backend interno.</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">Roles y privilegios en IOS-XE</h2>
+  <p>RESTCONF respeta el nivel de privilegio del usuario:</p>
+  <ul>
+    <li><strong>Privilege 15</strong>: Acceso total. GET, PUT, PATCH, DELETE sobre cualquier modelo YANG.</li>
+    <li><strong>Privilege &lt; 15</strong>: Acceso limitado. Puede hacer GET sobre estado operacional pero recibe <strong>403 Forbidden</strong> al intentar escritura.</li>
+    <li><strong>RBAC con AAA/TACACS+</strong>: Se pueden definir comandos permitidos/denegados por usuario, y estos se mapean a operaciones RESTCONF.</li>
+  </ul>
+
+  <div class="code-block">
+    <div class="code-label">Configuración segura en IOS-XE</div>
+    <pre><code>! Crear usuario con privilegio completo para RESTCONF
+username admin privilege 15 algorithm-type sha256 secret Cisco123
+username monitor privilege 7 algorithm-type sha256 secret ReadOnly123
+
+! Habilitar solo HTTPS (no HTTP plano)
+no ip http server
+ip http secure-server
+
+! Restringir origen de management (opcional pero recomendado)
+ip http secure-active-session-modules none
+ip http max-connections 10
+
+! ACL para restringir quién puede llegar al puerto 443
+ip access-list extended MGMT-HTTPS
+ permit tcp 10.0.0.0 0.0.0.255 any eq 443
+ deny ip any any log
+!
+interface GigabitEthernet0/0
+ ip access-group MGMT-HTTPS in
+
+! Verificar sesiones activas RESTCONF
+show ip http server session-module
+show restconf</code></pre>
+  </div>
+
+  <h2 class="section-title">Certificados autofirmados vs CA</h2>
+  <p>Por defecto, IOS-XE genera un certificado autofirmado al habilitar <code>ip http secure-server</code>. Esto produce un warning en Python:</p>
+  <div class="code-block">
+    <div class="code-label">Opciones para manejar SSL en desarrollo</div>
+    <pre><code><span class="cmt"># Opción A: Deshabilitar verificación (SOLO LABORATORIO)</span>
+requests.get(url, verify=<span class="kw">False</span>)
+
+<span class="cmt"># Opción B: Exportar certificado del router e importarlo</span>
+<span class="cmt"># En el router:</span>
+crypto pki export TP-self-signed-XXXX certificate pem terminal
+<span class="cmt"># Copiar el PEM a un archivo local, por ejemplo router.pem</span>
+
+<span class="cmt"># En Python:</span>
+requests.get(url, verify=<span class="str">"router.pem"</span>)
+
+<span class="cmt"># Opción C: Usar PKI interna (Producción)</span>
+<span class="cmt"># Inscribir routers con SCEP/EST contra CA corporativa.</span>
+<span class="cmt"># Python usa el bundle de CA del sistema (verify=True por defecto).</span></code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚡ Nunca en producción</div>
+    <p>Nunca uses <code>verify=False</code> en producción. Expones tu script a ataques MITM donde un atacante puede suplantar el router, capturar credenciales Basic Auth (aunque sean Base64, se decodifican trivialmente) y modificar tu infraestructura. En producción: mTLS o al menos verificación de certificado contra una CA interna.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 8 — PROYECTO
+═══════════════════════════════════════════ -->
+<div id="tab-proyecto" class="rest2-tab-content">
+<div class="content-block">
+  <h2 class="section-title">🚀 Proyecto Final — Configurador IOS-XE vía RESTCONF</h2>
+  <p>Este proyecto integra todo lo aprendido en una aplicación Python completa que se conecta a un router Cisco IOS-XE vía RESTCONF, obtiene su estado actual, aplica configuraciones y genera un reporte de auditoría.</p>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Escenario</div>
+    <p>Eres el ingeniero de automatización de una empresa con sucursales. Debes desplegar 50 routers ISR 4331 con configuración base idéntica: hostname, interfaz WAN con IP/DG, OSPF proceso 1, área 0, y una Loopback de management. En lugar de conectarte vía SSH a cada uno, usas RESTCONF.</p>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">proyecto_restconf_iosxe.py — Despliegue masivo</div>
+    <pre><code><span class="cmt">#!/usr/bin/env python3</span>
+<span class="cmt">"""proyecto_restconf_iosxe.py
+CCNA Academy M8 T2 — Configuración masiva vía RESTCONF RFC 8040
+Despliega configuración base en múltiples routers ISR.
+"""</span>
+
+<span class="kw">import</span> requests
+<span class="kw">import</span> json
+<span class="kw">import</span> sys
+<span class="kw">from</span> requests.auth <span class="kw">import</span> HTTPBasicAuth
+<span class="kw">import</span> urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+<span class="cmt"># ══════════════════════════════════════════════════════</span>
+<span class="cmt"># CONFIGURACIÓN GLOBAL</span>
+<span class="cmt"># ══════════════════════════════════════════════════════</span>
+USER = <span class="str">"admin"</span>
+PASS = <span class="str">"Cisco123"</span>
+BASE_MODULE = <span class="str">"Cisco-IOS-XE-native:native"</span>
+HEADERS = {
+    <span class="str">"Content-Type"</span>: <span class="str">"application/yang-data+json"</span>,
+    <span class="str">"Accept"</span>: <span class="str">"application/yang-data+json"</span>,
+}
+
+ROUTERS = [
+    {<span class="str">"id"</span>: <span class="num">1</span>, <span class="str">"ip"</span>: <span class="str">"10.0.0.1"</span>, <span class="str">"hostname"</span>: <span class="str">"R1-SUC-BOG"</span>, <span class="str">"wan_ip"</span>: <span class="str">"192.168.100.1"</span>, <span class="str">"mask"</span>: <span class="str">"255.255.255.252"</span>},
+    {<span class="str">"id"</span>: <span class="num">2</span>, <span class="str">"ip"</span>: <span class="str">"10.0.0.2"</span>, <span class="str">"hostname"</span>: <span class="str">"R2-SUC-MED"</span>, <span class="str">"wan_ip"</span>: <span class="str">"192.168.100.5"</span>, <span class="str">"mask"</span>: <span class="str">"255.255.255.252"</span>},
+    {<span class="str">"id"</span>: <span class="num">3</span>, <span class="str">"ip"</span>: <span class="str">"10.0.0.3"</span>, <span class="str">"hostname"</span>: <span class="str">"R3-SUC-CAL"</span>, <span class="str">"wan_ip"</span>: <span class="str">"192.168.100.9"</span>, <span class="str">"mask"</span>: <span class="str">"255.255.255.252"</span>},
+]
+
+<span class="cmt"># ══════════════════════════════════════════════════════</span>
+<span class="cmt"># FUNCIONES CRUD REUTILIZABLES</span>
+<span class="cmt"># ══════════════════════════════════════════════════════</span>
+<span class="kw">def</span> <span class="fn">restconf_url</span>(host, path):
+    <span class="kw">return</span> <span class="str">f"https://{host}/restconf/data/{path}"</span>
+
+<span class="kw">def</span> <span class="fn">get_config</span>(router, path):
+    <span class="str">"""Obtener configuración vía GET"""</span>
+    url = restconf_url(router[<span class="str">"ip"</span>], path)
+    <span class="kw">try</span>:
+        r = requests.get(url, headers=HEADERS, auth=HTTPBasicAuth(USER, PASS),
+                         verify=<span class="kw">False</span>, timeout=<span class="num">10</span>)
+        r.raise_for_status()
+        <span class="kw">return</span> r.json()
+    <span class="kw">except</span> requests.exceptions.RequestException <span class="kw">as</span> e:
+        <span class="fn">print</span>(<span class="str">f"❌ [{router['hostname']}] GET error: {e}"</span>)
+        <span class="kw">return</span> <span class="kw">None</span>
+
+<span class="kw">def</span> <span class="fn">put_config</span>(router, path, payload):
+    <span class="str">"""Aplicar configuración vía PUT (idempotente)"""</span>
+    url = restconf_url(router[<span class="str">"ip"</span>], path)
+    <span class="kw">try</span>:
+        r = requests.put(url, headers=HEADERS, auth=HTTPBasicAuth(USER, PASS),
+                         verify=<span class="kw">False</span>, timeout=<span class="num">10</span>, data=json.dumps(payload))
+        r.raise_for_status()
+        <span class="fn">print</span>(<span class="str">f"✅ [{router['hostname']}] PUT {path} → {r.status_code}"</span>)
+        <span class="kw">return</span> <span class="kw">True</span>
+    <span class="kw">except</span> requests.exceptions.HTTPError <span class="kw">as</span> e:
+        <span class="fn">print</span>(<span class="str">f"⚠️  [{router['hostname']}] PUT falló: {e}"</span>)
+        <span class="kw">return</span> <span class="kw">False</span>
+
+<span class="cmt"># ══════════════════════════════════════════════════════</span>
+<span class="cmt"># TAREAS DE CONFIGURACIÓN</span>
+<span class="cmt"># ══════════════════════════════════════════════════════</span>
+<span class="kw">def</span> <span class="fn">task_hostname</span>(router):
+    payload = {<span class="str">"Cisco-IOS-XE-native:hostname"</span>: router[<span class="str">"hostname"</span>]}
+    <span class="kw">return</span> put_config(router, <span class="str">f"{BASE_MODULE}/hostname"</span>, payload)
+
+<span class="kw">def</span> <span class="fn">task_interface_wan</span>(router):
+    path = <span class="str">f"{BASE_MODULE}/interface/GigabitEthernet=0%2F0"</span>
+    payload = {
+        <span class="str">"Cisco-IOS-XE-native:GigabitEthernet"</span>: {
+            <span class="str">"name"</span>: <span class="str">"0/0"</span>,
+            <span class="str">"description"</span>: <span class="str">"WAN-PRIMARY-RESTCONF"</span>,
+            <span class="str">"ip"</span>: {
+                <span class="str">"address"</span>: {
+                    <span class="str">"primary"</span>: {
+                        <span class="str">"address"</span>: router[<span class="str">"wan_ip"</span>],
+                        <span class="str">"mask"</span>: router[<span class="str">"mask"</span>]
+                    }
+                }
+            }
+        }
+    }
+    <span class="kw">return</span> put_config(router, path, payload)
+
+<span class="kw">def</span> <span class="fn">task_loopback_mgmt</span>(router):
+    path = <span class="str">f"{BASE_MODULE}/interface/Loopback=100"</span>
+    payload = {
+        <span class="str">"Cisco-IOS-XE-native:Loopback"</span>: {
+            <span class="str">"name"</span>: <span class="str">"100"</span>,
+            <span class="str">"description"</span>: <span class="str">"MGMT-LOOPBACK"</span>,
+            <span class="str">"ip"</span>: {
+                <span class="str">"address"</span>: {
+                    <span class="str">"primary"</span>: {
+                        <span class="str">"address"</span>: <span class="str">f"1.1.1.{router['id']}"</span>,
+                        <span class="str">"mask"</span>: <span class="str">"255.255.255.255"</span>
+                    }
+                }
+            }
+        }
+    }
+    <span class="kw">return</span> put_config(router, path, payload)
+
+<span class="kw">def</span> <span class="fn">task_ospf</span>(router):
+    path = <span class="str">f"{BASE_MODULE}/router/ospf/ospf=1"</span>
+    payload = {
+        <span class="str">"Cisco-IOS-XE-native:ospf"</span>: {
+            <span class="str">"id"</span>: <span class="num">1</span>,
+            <span class="str">"router-id"</span>: <span class="str">f"1.1.1.{router['id']}"</span>,
+            <span class="str">"network"</span>: [
+                {
+                    <span class="str">"ip"</span>: router[<span class="str">"wan_ip"</span>],
+                    <span class="str">"mask"</span>: <span class="str">"0.0.0.3"</span>,
+                    <span class="str">"area"</span>: <span class="str">"0"</span>
+                },
+                {
+                    <span class="str">"ip"</span>: <span class="str">f"1.1.1.{router['id']}"</span>,
+                    <span class="str">"mask"</span>: <span class="str">"0.0.0.0"</span>,
+                    <span class="str">"area"</span>: <span class="str">"0"</span>
+                }
+            ]
+        }
+    }
+    <span class="kw">return</span> put_config(router, path, payload)
+
+<span class="cmt"># ══════════════════════════════════════════════════════</span>
+<span class="cmt"># ORQUESTADOR PRINCIPAL</span>
+<span class="cmt"># ══════════════════════════════════════════════════════</span>
+<span class="kw">def</span> <span class="fn">desplegar_router</span>(router):
+    <span class="fn">print</span>(<span class="str">f"
+{'='*60}"</span>)
+    <span class="fn">print</span>(<span class="str">f"🚀 Desplegando {router['hostname']} ({router['ip']})"</span>)
+    <span class="fn">print</span>(<span class="str">f"{'='*60}"</span>)
+
+    <span class="cmt"># Pre-check: ¿responde RESTCONF?</span>
+    health = get_config(router, <span class="str">"Cisco-IOS-XE-native:native/hostname"</span>)
+    <span class="kw">if</span> <span class="kw">not</span> health:
+        <span class="fn">print</span>(<span class="str">f"⛔ {router['hostname']} no responde. Saltando."</span>)
+        <span class="kw">return</span> <span class="kw">False</span>
+
+    resultados = []
+    resultados.append((<span class="str">"Hostname"</span>, task_hostname(router)))
+    resultados.append((<span class="str">"WAN Gi0/0"</span>, task_interface_wan(router)))
+    resultados.append((<span class="str">"Loopback100"</span>, task_loopback_mgmt(router)))
+    resultados.append((<span class="str">"OSPFv2"</span>, task_ospf(router)))
+
+    ok = <span class="fn">sum</span>(<span class="num">1</span> <span class="kw">for</span> _, r <span class="kw">in</span> resultados <span class="kw">if</span> r)
+    total = <span class="fn">len</span>(resultados)
+    <span class="fn">print</span>(<span class="str">f"
+📊 Resumen: {ok}/{total} tareas exitosas"</span>)
+    <span class="kw">return</span> ok == total
+
+<span class="kw">def</span> <span class="fn">main</span>():
+    <span class="fn">print</span>(<span class="str">"CCNA Academy — Proyecto RESTCONF Despliegue Masivo
+"</span>)
+    exitosos = <span class="num">0</span>
+    <span class="kw">for</span> r <span class="kw">in</span> ROUTERS:
+        <span class="kw">if</span> desplegar_router(r):
+            exitosos += <span class="num">1</span>
+
+    <span class="fn">print</span>(<span class="str">f"
+{'='*60}"</span>)
+    <span class="fn">print</span>(<span class="str">f"🎯 DESPLIEGUE FINALIZADO: {exitosos}/{len(ROUTERS)} routers configurados"</span>)
+    <span class="fn">print</span>(<span class="str">f"{'='*60}"</span>)
+
+<span class="kw">if</span> __name__ == <span class="str">"__main__"</span>:
+    main()</code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">▶️ Cómo ejecutar</div>
+    <ol>
+      <li>Configura al menos un router IOS-XE 16.6+ con <code>restconf</code>, <code>ip http secure-server</code> y usuario privilegio 15.</li>
+      <li>Actualiza la lista <code>ROUTERS</code> con las IPs reales de tu laboratorio.</li>
+      <li>Ejecuta: <code>python proyecto_restconf_iosxe.py</code></li>
+      <li>Observa cómo cada tarea PUT retorna 201 (creado) o 204 (sin contenido) y el resumen final.</li>
+    </ol>
+    <p>Este script es 100% idempotente: puedes ejecutarlo 10 veces y el resultado final será el mismo. Si un router ya tenía la IP configurada, PUT la sobrescribe con el mismo valor. No hay duplicados.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 9 — REFERENCIA
+═══════════════════════════════════════════ -->
+<div id="tab-referencia" class="rest2-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Tabla de Referencia — RESTCONF &amp; YANG</h2>
+  <div id="refTableRest2"></div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 10 — QUIZ
+═══════════════════════════════════════════ -->
+<div id="tab-quiz" class="rest2-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Quiz — RESTCONF para Dispositivos IOS-XE</h2>
+  <p style="font-size:.83rem;color:#6b7a9a;margin-bottom:20px;">10 preguntas estilo CCNA Domain 6.5. Evalúa tu comprensión de RFC 8040, YANG, datastores, paths y operaciones CRUD en Cisco.</p>
+  <div id="quizContainerRest2"></div>
+</div>
+</div>
+
+</div><!-- /.tabs-wrap -->
+
+<script>
+// ── NAVEGACIÓN DRAWER ────────────────────────────────
+function ccnaToggle() {
+  document.getElementById('ccnaDrawer').classList.toggle('open');
+  document.getElementById('ccnaOverlay').classList.toggle('show');
+}
+function ccnaClose() {
+  document.getElementById('ccnaDrawer').classList.remove('open');
+  document.getElementById('ccnaOverlay').classList.remove('show');
+}
+
+// ── TABS ──────────────────────────────────────────────
+function showTabRest2(id, btn) {
+  document.querySelectorAll('.rest2-tab-content').forEach(t => t.classList.remove('rest2-active'));
+  document.querySelectorAll('.rest2-tab-btn').forEach(b => b.classList.remove('rest2-active'));
+  document.getElementById('tab-' + id).classList.add('rest2-active');
+  if (btn) btn.classList.add('rest2-active');
+}
+
+// ── TABLA DE REFERENCIA ──────────────────────────────
+function buildRefTable() {
+  const container = document.getElementById('refTableRest2');
+  if (!container) return;
+
+  const secciones = [
+    {
+      titulo: 'DATASTORES RESTCONF',
+      cols: ['Datastore','Disponibilidad','Uso principal'],
+      filas: [
+        ['running','Siempre presente','Configuración activa. GET/PUT/PATCH/DELETE por defecto.'],
+        ['startup','Mayoría de plataformas','Configuración de arranque. Requiere save explícito.'],
+        ['candidate','Algunos (más en NETCONF)','Edición provisional + commit atómico.'],
+      ]
+    },
+    {
+      titulo: 'TIPOS MIME RFC 8040',
+      cols: ['MIME Type','Uso','Contexto'],
+      filas: [
+        ['application/yang-data+json','JSON basado en modelo YANG','Content-Type y Accept para /data'],
+        ['application/yang-data+xml','XML basado en modelo YANG','Alternativa para plataformas XML'],
+        ['application/yang-patch+json','PATCH estructurado YANG','Operaciones PATCH avanzadas'],
+      ]
+    },
+    {
+      titulo: 'MÓDULOS YANG CLAVE EN IOS-XE',
+      cols: ['Módulo','Prefijo','Cobertura'],
+      filas: [
+        ['Cisco-IOS-XE-native','native','Configuración nativa IOS-XE completa'],
+        ['Cisco-IOS-XE-interfaces','ios-if','Estado operacional de interfaces'],
+        ['Cisco-IOS-XE-ospf','ios-ospf','OSPFv2/v3 configuración y estado'],
+        ['Cisco-IOS-XE-bgp','ios-bgp','Configuración BGP'],
+        ['Cisco-IOS-XE-acl','ios-acl','Listas de acceso'],
+        ['ietf-interfaces','if','Modelo estándar IETF (interoperable)'],
+        ['ietf-routing','rt','Modelo estándar IETF para routing'],
+      ]
+    },
+    {
+      titulo: 'NODOS YANG',
+      cols: ['Nodo','Definición','Ejemplo'],
+      filas: [
+        ['container','Agrupación lógica sin valor propio','ip, address, primary'],
+        ['list','Colección ordenada con key','GigabitEthernet (key=name)'],
+        ['leaf','Valor simple de tipo YANG','description, hostname'],
+        ['leaf-list','Lista de valores simples','dns-servers [8.8.8.8, 8.8.4.4]'],
+        ['rpc','Operación invocable','/operations/cisco-ia:save-config'],
+      ]
+    },
+    {
+      titulo: 'CÓDIGOS DE ESTADO ESPECÍFICOS',
+      cols: ['Código','Significado','Causa en IOS-XE'],
+      filas: [
+        ['200 OK','Éxito con datos','GET de configuración o estado'],
+        ['201 Created','Recurso creado','PUT de nueva interfaz'],
+        ['204 No Content','Éxito sin body','PUT/PATCH/DELETE exitoso'],
+        ['400 Bad Request','Petición inválida','JSON no cumple schema YANG'],
+        ['401 Unauthorized','Sin autenticar','Falta header Authorization'],
+        ['403 Forbidden','Sin permisos','Usuario privilegio &lt; 15 intenta escritura'],
+        ['404 Not Found','Recurso no existe','Path YANG incorrecto o recurso borrado'],
+        ['409 Conflict','Conflicto de estado','POST de recurso ya existente'],
+        ['415 Unsupported Media','Tipo no soportado','Content-Type no es yang-data+json'],
+        ['500 Internal Error','Error servidor','Bug en daemon RESTCONF'],
+      ]
+    },
+    {
+      titulo: 'ENCODING DE PATHS',
+      cols: ['Carácter','Encoding','Motivo'],
+      filas: [
+        ['/','%2F','Separador de path HTTP vs valor de key'],
+       [' ','%20','Espacios en descripciones (evitar)'],
+       ['[', '%5B', 'Carácter reservado URL'],
+       [']', '%5D', 'Carácter reservado URL'],
+      ]
+    }
+  ];
+
+  let html = '';
+  secciones.forEach(sec => {
+    html += `<h3 style="font-family:Orbitron,sans-serif;font-size:.8rem;color:#38bdf8;letter-spacing:2px;margin:24px 0 10px;text-transform:uppercase;">▸ ${sec.titulo}</h3>`;
+    html += `<div class="table-wrap"><table class="ref-table"><thead><tr>${sec.cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>`;
+    sec.filas.forEach(f => { html += '<tr>' + f.map(c=>`<td>${c}</td>`).join('') + '</tr>'; });
+    html += '</tbody></table></div>';
+  });
+  container.innerHTML = html;
+}
+
+// ── QUIZ ─────────────────────────────────────────────
+function initQuiz() {
+  const container = document.getElementById('quizContainerRest2');
+  if (!container) return;
+
+  const qs = [
+    {
+      q: '¿Qué datastore de RESTCONF representa la configuración activa y actual del dispositivo?',
+      opts: ['startup','candidate','running','backup'],
+      ans: 2,
+      exp: '<strong>running</strong> es el datastore que contiene la configuración activa en memoria. Es el objetivo por defecto de las operaciones GET/PUT/PATCH/DELETE en RESTCONF. startup es la de arranque; candidate es para edición provisional.'
+    },
+    {
+      q: '¿Cuál es el Content-Type correcto según RFC 8040 para enviar datos YANG en formato JSON?',
+      opts: ['application/json','application/xml','application/yang-data+json','text/plain'],
+      ans: 2,
+      exp: 'RFC 8040 define explícitamente <code>application/yang-data+json</code> como el tipo MIME para representaciones JSON basadas en modelos YANG. Usar <code>application/json</code> genérico puede funcionar en algunas implementaciones, pero no es el estándar.'
+    },
+    {
+      q: 'Un ingeniero envía PUT a /interface/GigabitEthernet=0/0 sin codificar el slash. ¿Qué código de error espera?',
+      opts: ['200 OK','400 Bad Request','404 Not Found','415 Unsupported Media Type'],
+      ans: 2,
+      exp: 'El slash sin codificar (<code>0/0</code>) hace que el servidor interprete <code>0</code> como key y <code>0</code> como un recurso adicional inexistente. El resultado es <strong>404 Not Found</strong>. La codificación correcta es <code>0%2F0</code>.'
+    },
+    {
+      q: '¿Qué nodo YANG se utiliza para representar una colección de interfaces donde cada una tiene una key única (como el nombre)?',
+      opts: ['container','leaf','list','rpc'],
+      ans: 2,
+      exp: 'Un <strong>list</strong> en YANG define una secuencia ordenada de entradas, cada una identificada por una o más <strong>keys</strong>. Las interfaces GigabitEthernet en IOS-XE se modelan como un list cuya key es <code>name</code>.'
+    },
+    {
+      q: '¿Qué verbo HTTP es idempotente y se usa para reemplazar completamente un recurso YANG existente?',
+      opts: ['POST','PATCH','PUT','DELETE'],
+      ans: 2,
+      exp: '<strong>PUT</strong> es idempotente y realiza un reemplazo total del recurso identificado por la URI. Si ejecutas el mismo PUT 100 veces, el estado final es idéntico. POST no es idempotente; PATCH es parcial.'
+    },
+    {
+      q: '¿Cuál es el propósito del header Accept: application/yang-data+json en una petición GET?',
+      opts: ['Autenticar al cliente','Indicar el formato del body enviado','Solicitar que la respuesta sea JSON basado en YANG','Especificar la versión de RESTCONF'],
+      ans: 2,
+      exp: '<code>Accept</code> indica al servidor qué formato de respuesta desea el cliente. <code>application/yang-data+json</code> solicita explícitamente una representación JSON conforme al modelo YANG del recurso.'
+    },
+    {
+      q: '¿Cuál es la diferencia principal entre RESTCONF y NETCONF?',
+      opts: ['RESTCONF usa SSH y NETCONF usa HTTPS','RESTCONF es stateless sobre HTTP; NETCONF es stateful sobre SSH con sesión persistente','RESTCONF solo soporta XML','NETCONF es más moderno que RESTCONF'],
+      ans: 1,
+      exp: 'RESTCONF (RFC 8040) es stateless y usa HTTP/HTTPS como transporte. NETCONF (RFC 6241) mantiene una sesión SSH persistente (puerto 830) y usa RPCs XML como <code>&lt;get-config&gt;</code>. NETCONF es anterior; RESTCONF es la evolución REST-friendly.'
+    },
+    {
+      q: 'Un script recibe HTTP 403 al intentar un PATCH en IOS-XE. ¿Cuál es la causa más probable?',
+      opts: ['El JSON está malformado','La interfaz no existe','El usuario está autenticado pero carece de privilegios de escritura','Falta el header Content-Type'],
+      ans: 2,
+      exp: '<strong>403 Forbidden</strong> significa que la autenticación fue exitosa, pero el usuario no tiene autorización para esa operación. En IOS-XE, un usuario con privilegio menor a 15 puede hacer GET pero recibe 403 en PATCH/PUT/DELETE.'
+    },
+    {
+      q: '¿Qué codificación URL es necesaria para el carácter / cuando aparece como valor de key en una URI RESTCONF?',
+      opts: ['%20','%2F','%3A','%2F%2F'],
+      ans: 1,
+      exp: 'El carácter <code>/</code> debe codificarse como <code>%2F</code> cuando forma parte del valor de una key (como <code>GigabitEthernet=0%2F0</code>). De lo contrario, el servidor HTTP lo interpreta como separador de path.'
+    },
+    {
+      q: '¿Cuál es el propósito del endpoint /restconf/operations en RFC 8040?',
+      opts: ['Listar todos los datastores disponibles','Invocar procedimientos remotos (RPCs) definidos en YANG','Obtener el estado operacional del dispositivo','Subir archivos de configuración'],
+      ans: 1,
+      exp: '<code>/operations</code> expone las operaciones RPC definidas en los modelos YANG, como <code>save-config</code> o <code>clear-arp</code>. No son operaciones CRUD estándar; son acciones específicas del dispositivo que no encajan en GET/PUT/PATCH/DELETE.'
+    }
+  ];
+
+  let html = '';
+  qs.forEach((q, i) => {
+    html += `<div class="quiz-question" id="qr2${i}">
+      <div class="quiz-q-num">PREGUNTA ${i+1} DE ${qs.length} · M8 RESTCONF Tema 2</div>
+      <div class="quiz-q-text">${q.q}</div>
+      <div class="quiz-opts">
+        ${q.opts.map((o,j) => `<button class="quiz-opt" data-qi="${i}" data-sel="${j}" data-ans="${q.ans}">${o}</button>`).join('')}
+      </div>
+    </div>`;
+  });
+  container.innerHTML = html;
+
+  window._rest2Exp = {};
+  qs.forEach((q, i) => { window._rest2Exp[i] = q.exp; });
+
+  container.querySelectorAll('.quiz-opt').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const qi  = parseInt(this.dataset.qi);
+      const sel = parseInt(this.dataset.sel);
+      const ans = parseInt(this.dataset.ans);
+      const qDiv = document.getElementById('qr2' + qi);
+      const btns = qDiv.querySelectorAll('.quiz-opt');
+
+      btns.forEach(b => b.disabled = true);
+      btns[sel].classList.add(sel === ans ? 'correct' : 'wrong');
+      if (sel !== ans) btns[ans].classList.add('correct');
+
+      const expDiv = document.createElement('div');
+      expDiv.className = 'quiz-explanation';
+      expDiv.innerHTML = `<strong>${sel===ans ? '✅ Correcto!' : '❌ Incorrecto.'}</strong> ${window._rest2Exp[qi]}`;
+      qDiv.appendChild(expDiv);
+    });
+  });
+}
+
+// ── INICIALIZACIÓN ────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  buildRefTable();
+  initQuiz();
+});
+</script>
+</body>
+</html>
