@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YANG Data Models — Tema 4 | JSON y Datos | CCNA Academy</title>
+  <meta name="description" content="YANG RFC 7950 completo: módulos, containers, lists, leafs y leaf-lists. Cómo YANG define la estructura de datos para NETCONF/RESTCONF. Modelos Cisco y validación de datos.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── HERO acento YANG (Dorado/Verde datos) ── */
+.class-hero { background: linear-gradient(135deg, #06080f 0%, #08100a 40%, #0a0d18 100%); }
+
+/* ── YANG STRUCTURE GRID ── */
+.yang-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:10px; margin:20px 0; }
+.yang-card { background:#090d1a; border:1px solid rgba(0,212,170,.15); border-radius:10px; padding:14px; text-align:center; position:relative; overflow:hidden; }
+.yang-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,#00d4aa,transparent); opacity:.5; }
+.yang-icon { font-size:1.8rem; margin-bottom:6px; }
+.yang-name { font-family:'Orbitron',sans-serif; font-size:.7rem; color:#00d4aa; margin-bottom:4px; letter-spacing:1px; }
+.yang-desc { font-size:.68rem; color:#6b7a9a; line-height:1.4; }
+
+/* ── TREE VISUALIZATION ── */
+.yang-tree { background:#050810; border:1px solid rgba(0,212,170,.1); border-radius:8px; padding:16px; font-family:'Share Tech Mono',monospace; font-size:.8rem; line-height:1.8; overflow-x:auto; }
+.tree-node { margin-left:20px; border-left:1px solid rgba(0,212,170,.2); padding-left:12px; }
+.tree-root { color:#00d4aa; font-weight:bold; }
+.tree-container { color:#5b9bd5; }
+.tree-list { color:#fbbf24; }
+.tree-leaf { color:#c3e88d; }
+
+/* ── BASE CLASS STYLES ── */
+body{font-family:'Exo 2',sans-serif;background:#07090f;color:#e2e8f0;}
+.class-hero{padding:56px 24px 48px;border-bottom:1px solid rgba(251,191,36,.08);position:relative;overflow:hidden;}
+.class-hero::before{content:'';position:absolute;top:-60px;right:-80px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(251,191,36,.06) 0%,transparent 70%);pointer-events:none;}
+.class-hero-inner{max-width:900px;margin:0 auto;position:relative;z-index:1;}
+.class-badge{font-family:'Share Tech Mono',monospace;font-size:.63rem;color:#fbbf24;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;}
+.class-title{font-family:'Orbitron',sans-serif;font-size:clamp(1.6rem,3.8vw,2.6rem);font-weight:900;letter-spacing:3px;color:#c2d0e8;margin-bottom:12px;line-height:1.1;}
+.class-subtitle{font-size:.92rem;color:#6b7a9a;line-height:1.72;margin-bottom:20px;max-width:700px;}
+.class-meta{display:flex;gap:12px;flex-wrap:wrap;}
+.meta-item{font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#374060;padding:4px 10px;border:1px solid rgba(251,191,36,.1);border-radius:4px;}
+.json4-tabs-wrap{max-width:1100px;margin:0 auto;padding:0 16px 40px;}
+.json4-tabs-bar{display:flex;gap:4px;padding:20px 0 0;flex-wrap:wrap;border-bottom:1px solid rgba(251,191,36,.1);margin-bottom:0;}
+.json4-tab-btn{padding:8px 13px;border-radius:8px 8px 0 0;font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#4a5780;background:none;border:1px solid transparent;cursor:pointer;transition:all .18s;white-space:nowrap;border-bottom:none;}
+.json4-tab-btn:hover{color:#c2d0e8;background:rgba(251,191,36,.05);}
+.json4-tab-btn.json4-active{color:#fbbf24;background:#0d1220;border-color:rgba(251,191,36,.25);border-bottom:1px solid #0d1220;}
+.json4-tab-content{display:none;background:#0d1220;border:1px solid rgba(251,191,36,.08);border-top:none;border-radius:0 0 12px 12px;padding:32px;}
+.json4-tab-content.json4-active{display:block;}
+.content-block{max-width:880px;}
+.section-title{font-family:'Orbitron',sans-serif;font-size:.95rem;color:#fbbf24;letter-spacing:2px;margin:28px 0 14px;padding-bottom:8px;border-bottom:1px solid rgba(251,191,36,.15);}
+.section-title:first-child{margin-top:0;}
+p{color:#8294b8;line-height:1.75;margin-bottom:14px;font-size:.9rem;}
+ul,ol{color:#8294b8;padding-left:1.4rem;margin-bottom:14px;font-size:.9rem;}
+li{margin-bottom:5px;line-height:1.65;}
+strong{color:#c2d0e8;}
+code{font-family:'Share Tech Mono',monospace;font-size:.82rem;background:rgba(251,191,36,.1);color:#fbbf24;padding:1px 6px;border-radius:4px;border:1px solid rgba(251,191,36,.2);}
+
+/* INFO BOXES */
+.info-box{border-radius:8px;padding:14px 18px;margin:18px 0;border-left:3px solid;}
+.info-box.tip{background:rgba(251,191,36,.06);border-color:#fbbf24;}
+.info-box.yang-box{background:rgba(0,212,170,.06);border-color:#00d4aa;}
+.info-box.warning{background:rgba(248,113,113,.05);border-color:#f87171;}
+.info-box-title{font-family:'Share Tech Mono',monospace;font-size:.73rem;color:#fbbf24;margin-bottom:8px;}
+
+/* CODE BLOCKS */
+.code-block{background:#050810;border:1px solid rgba(251,191,36,.15);border-left:3px solid #fbbf24;border-radius:8px;padding:0;margin:16px 0;overflow:hidden;}
+.code-label{background:rgba(251,191,36,.08);padding:8px 16px;font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#6b7a9a;letter-spacing:2px;text-transform:uppercase;border-bottom:1px solid rgba(251,191,36,.1);}
+.code-block pre{margin:0;padding:18px;overflow-x:auto;}
+.code-block code{background:none;border:none;padding:0;color:#a8b4c8;font-size:.79rem;line-height:1.8;display:block;}
+
+/* SYNTAX HIGHLIGHTING YANG */
+.yang-kw { color:#c792ea; }      /* module, container, list */
+.yang-type { color:#82aaff; }    /* string, int32 */
+.yang-str { color:#c3e88d; }     /* "descripcion" */
+.yang-comment { color:#3a4a60; font-style:italic; }
+.yang-path { color:#fbbf24; }    /* /interfaces/interface */
+
+/* CONCEPT GRID */
+.concept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin:16px 0;}
+.concept-card{background:#090d1a;border:1px solid rgba(0,212,170,.1);border-radius:10px;padding:16px;}
+.concept-icon{font-size:1.8rem;margin-bottom:8px;}
+.concept-card h3{font-family:'Share Tech Mono',monospace;font-size:.77rem;color:#00d4aa;margin-bottom:8px;}
+.concept-card p{font-size:.8rem;margin:0;}
+
+/* REF TABLE */
+.table-wrap{overflow-x:auto;margin:16px 0;}
+.ref-table{width:100%;border-collapse:collapse;font-size:.8rem;}
+.ref-table th{background:#090d1a;color:#fbbf24;font-family:'Share Tech Mono',monospace;font-size:.67rem;padding:10px 12px;text-align:left;border:1px solid rgba(251,191,36,.15);letter-spacing:1px;}
+.ref-table td{padding:9px 12px;border:1px solid rgba(255,255,255,.04);color:#8294b8;}
+.ref-table tr:hover td{background:rgba(251,191,36,.03);}
+.ref-table code{font-size:.77rem;}
+
+/* QUIZ */
+.quiz-question{background:#090d1a;border:1px solid rgba(251,191,36,.12);border-radius:10px;padding:20px;margin-bottom:14px;}
+.quiz-q-num{font-family:'Share Tech Mono',monospace;font-size:.62rem;color:#374060;margin-bottom:8px;}
+.quiz-q-text{font-size:.9rem;color:#c2d0e8;margin-bottom:14px;line-height:1.6;}
+.quiz-opts{display:flex;flex-direction:column;gap:7px;}
+.quiz-opt{padding:10px 14px;border-radius:7px;border:1px solid rgba(251,191,36,.12);background:#0d1220;color:#6b7a9a;cursor:pointer;font-size:.84rem;text-align:left;transition:all .15s;font-family:'Exo 2',sans-serif;}
+.quiz-opt:hover:not(:disabled){border-color:rgba(251,191,36,.4);color:#c2d0e8;}
+.quiz-opt.correct{border-color:#34d399;background:rgba(52,211,153,.08);color:#34d399;}
+.quiz-opt.wrong{border-color:#f87171;background:rgba(248,113,113,.08);color:#f87171;}
+.quiz-explanation{margin-top:10px;padding:10px 14px;background:rgba(251,191,36,.07);border-left:3px solid #fbbf24;border-radius:6px;font-size:.82rem;color:#a0aec0;line-height:1.65;}
+
+/* Navbar */
+.navbar{position:fixed;top:0;left:0;right:0;height:56px;background:#080a10;border-bottom:1px solid rgba(251,191,36,.1);display:flex;align-items:center;padding:0 24px;z-index:1000;}
+.navbar-toggle{background:none;border:1px solid rgba(251,191,36,.3);color:#fbbf24;padding:6px 12px;border-radius:6px;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:.75rem;margin-right:16px;}
+.navbar-brand{font-family:'Orbitron',sans-serif;font-weight:700;color:#00d4aa;text-decoration:none;font-size:1.1rem;}
+.navbar-brand span{color:#5b9bd5;}
+.navbar-spacer{flex:1;}
+.navbar-link{color:#6b7a9a;text-decoration:none;font-size:.8rem;transition:color .2s;}
+.navbar-link:hover{color:#c2d0e8;}
+.nav-spacer{height:56px;}
+.ccna-drawer{position:fixed;top:0;left:0;bottom:0;width:280px;background:#0d1220;border-right:1px solid rgba(251,191,36,.2);transform:translateX(-100%);transition:transform .3s;z-index:2000;overflow-y:auto;}
+.ccna-drawer.open{transform:translateX(0);}
+.ccna-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);opacity:0;visibility:hidden;transition:all .3s;z-index:1500;}
+.ccna-overlay.show{opacity:1;visibility:visible;}
+.drawer-header{padding:20px;border-bottom:1px solid rgba(251,191,36,.2);display:flex;justify-content:space-between;align-items:center;}
+.drawer-header h2{font-family:'Orbitron',sans-serif;font-size:.8rem;color:#fbbf24;margin:0;letter-spacing:2px;}
+.drawer-close{background:none;border:none;color:#6b7a9a;font-size:1.2rem;cursor:pointer;}
+.drawer-section{padding:16px;border-bottom:1px solid rgba(251,191,36,.1);}
+.drawer-section-title{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#374060;margin-bottom:12px;letter-spacing:1px;text-transform:uppercase;}
+.drawer-link{display:block;padding:10px 12px;color:#8294b8;text-decoration:none;font-size:.85rem;border-radius:6px;transition:all .2s;margin-bottom:4px;}
+.drawer-link:hover{background:rgba(251,191,36,.1);color:#c2d0e8;}
+.drawer-link.active{background:rgba(251,191,36,.2);color:#fbbf24;border-left:3px solid #fbbf24;}
+.dl-icon{margin-right:8px;}
+
+@media(max-width:680px){
+  .json4-tab-btn{font-size:.6rem;padding:6px 9px;}
+  .json4-tab-content{padding:18px 12px;}
+  .yang-grid{grid-template-columns:repeat(2,1fr);}
+}
+</style>
+</head>
+<body>
+
+<div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
+<nav class="ccna-drawer" id="ccnaDrawer">
+  <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
+  <div class="drawer-section"><div class="drawer-section-title">General</div>
+    <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M8 · Automatización</div>
+    <a href="m8-automatizacion.html" class="drawer-link"><span class="dl-icon">🤖</span> M8 — Vista General</a>
+    <a href="python-redes.html"      class="drawer-link"><span class="dl-icon">🐍</span> Python para Redes</a>
+    <a href="json-datos.html"        class="drawer-link"><span class="dl-icon">📋</span> JSON y Datos — Índice</a>
+    <a href="json-tema1.html"        class="drawer-link"><span class="dl-icon">01</span> Fundamentos JSON</a>
+    <a href="json-tema2.html"        class="drawer-link"><span class="dl-icon">02</span> Parsing con Python</a>
+    <a href="json-tema3.html"        class="drawer-link"><span class="dl-icon">03</span> JSON vs XML vs YAML</a>
+    <a href="json-tema4.html"        class="drawer-link active"><span class="dl-icon">04</span> YANG Data Models</a>
+    <a href="rest-apis.html"         class="drawer-link"><span class="dl-icon">🌐</span> REST APIs</a></div>
+</nav>
+
+<header class="navbar">
+  <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
+  <a href="../index.html" class="navbar-brand">CISCO<span> ACADEMY</span></a>
+  <div class="navbar-spacer"></div>
+  <a href="json-datos.html" class="navbar-link">← JSON y Datos</a>
+</header>
+<div class="nav-spacer"></div>
+
+<!-- HERO -->
+<section class="class-hero" style="border-bottom:1px solid rgba(0,212,170,.2);">
+  <div class="class-hero-inner">
+    < <div class="class-badge" style="color:#00d4aa;">M8 · AUTOMATIZACIÓN · TEMA 4 DE 6 · JSON Y DATOS</div>
+    <h1 class="class-title"><span style="background:linear-gradient(135deg,#00d4aa,#fbbf24);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">YANG</span> Data Models</h1>
+    <p class="class-subtitle">El lenguaje de modelado que gobierna la configuración de red moderna. Aprende cómo YANG (RFC 7950) define la estructura, tipos y constraints de los datos que NETCONF y RESTCONF transportan. Módulos, containers, lists, leafs y la jerarquía de modelos Cisco.</p>
+    <div class="class-meta">
+      <span class="meta-item" style="border-color:rgba(0,212,170,.2);color:#00d4aa;">🌿 RFC 7950</span>
+      <span class="meta-item">🔗 NETCONF/RESTCONF</span>
+      <span class="meta-item">⏱ ~80 min lectura</span>
+      <span class="meta-item">🏗️ Modelado de datos</span>
+      <span class="meta-item">🎯 CCNA Domain 6.5</span>
+    </div>
+  </div>
+</section>
+
+<!-- TABS -->
+<div class="json4-tabs-wrap">
+  <div class="json4-tabs-bar">
+    <button class="json4-tab-btn json4-active" onclick="showTabJson4('intro',this)">🌿 Intro</button>
+    <button class="json4-tab-btn" onclick="showTabJson4('sintaxis',this)">🏗️ Sintaxis</button>
+    <button class="json4-tab-btn" onclick="showTabJson4('estructuras',this)">📦 Estructuras</button>
+    <button class="json4-tab-btn" onclick="showTabJson4('netconf',this)">🔌 NETCONF</button>
+    <button class="json4-tab-btn" onclick="showTabJson4('restconf',this)">🌐 RESTCONF</button>
+    <button class="json4-tab-btn" onclick="showTabJson4('cisco',this)">⚙️ Cisco</button>
+    <button class="json4-tab-btn" onclick="showTabJson4('python',this)">🐍 Python</button>
+    <button class="json4-tab-btn" onclick="showTabJson4('referencia',this)">📊 Referencia</button>
+    <button class="json4-tab-btn" onclick="showTabJson4('quiz',this)">🎯 Quiz</button>
+  </div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 1 — INTRO
+═══════════════════════════════════════════ -->
+<div id="tab-intro" class="json4-tab-content json4-active">
+<div class="content-block">
+  <h2 class="section-title">¿Qué es YANG y por qué cambia todo?</h2>
+  <p><strong>YANG</strong> (Yet Another Next Generation) es un lenguaje de modelado de datos estructurados, estandarizado en <strong>RFC 7950</strong> (2016). A diferencia de JSON, XML o YAML —que son formatos de serialización— YANG describe <em>qué</em> datos existen, <em>cómo</em> se relacionan y <em>qué reglas</em> deben cumplir, antes de que se transporten.</p>
+  
+  <div class="info-box yang-box">
+    <div class="info-box-title" style="color:#00d4aa;">🌿 Analogía: El Plan de Arquitectura</div>
+    <p>Si NETCONF/RESTCONF son los camiones que transportan la mercancía, YANG es el <strong>plano arquitectónico</strong> de la bodega: define dónde va cada caja (container), qué contienen (leafs), y las reglas de validación (constraints) antes de que el camión llegue.</p>
+  </div>
+
+  <h2 class="section-title">Jerarquía Conceptual</h2>
+  <div class="yang-grid">
+    <div class="yang-card">
+      <div class="yang-icon">📋</div>
+      <div class="yang-name">MODULE</div>
+      <div class="yang-desc">Namespace único. Ej: ietf-interfaces</div>
+    </div>
+    <div class="yang-card">
+      <div class="yang-icon">🗂️</div>
+      <div class="yang-name">CONTAINER</div>
+      <div class="yang-desc">Agrupación lógica. No tiene valor propio.</div>
+    </div>
+    <div class="yang-card">
+      <div class="yang-icon">📚</div>
+      <div class="yang-name">LIST</div>
+      <div class="yang-desc">Array de nodos. Requiere key única.</div>
+    </div>
+    <div class="yang-card">
+      <div class="yang-icon">🍃</div>
+      <div class="yang-name">LEAF</div>
+      <div class="yang-desc">Valor simple único. Tipo escalar.</div>
+    </div>
+    <div class="yang-card">
+      <div class="yang-icon">🌿</div>
+      <div class="yang-name">LEAF-LIST</div>
+      <div class="yang-desc">Array de valores simples.</div>
+    </div>
+    <div class="yang-card">
+      <div class="yang-icon">🔗</div>
+      <div class="yang-name">AUGMENT</div>
+      <div class="yang-desc">Extiende modelos existentes.</div>
+    </div>
+  </div>
+
+  <h2 class="section-title">YANG vs Schema (XML/JSON)</h2>
+  <p>YANG es agnóstico al formato de codificación. El mismo modelo YANG puede generar <strong>XML</strong> (para NETCONF) o <strong>JSON</strong> (para RESTCONF). El modelo define la semántica; la codificación define la sintaxis de transporte.</p>
+  
+  <div class="code-block">
+    <div class="code-label">Visión dual: Un modelo, dos transportes</div>
+    <pre><code><span class="cmt"># YANG define el modelo conceptual:</span>
+<span class="yang-kw">container</span> interfaces {
+  <span class="yang-kw">list</span> interface {
+    <span class="yang-kw">key</span> <span class="yang-str">"name"</span>;
+    <span class="yang-kw">leaf</span> name { <span class="yang-kw">type</span> <span class="yang-type">string</span>; }
+    <span class="yang-kw">leaf</span> ip { <span class="yang-kw">type</span> <span class="yang-type">inet:ipv4-address</span>; }
+  }
+}
+
+<span class="cmt"># Se codifica como XML (NETCONF):</span>
+&lt;<span class="tag">interfaces</span>&gt;
+  &lt;<span class="tag">interface</span>&gt;
+    &lt;<span class="tag">name</span>&gt;Gi0/0&lt;/<span class="tag">name</span>&gt;
+    &lt;<span class="tag">ip</span>&gt;192.168.1.1&lt;/<span class="tag">ip</span>&gt;
+  &lt;/<span class="tag">interface</span>&gt;
+&lt;/<span class="tag">interfaces</span>&gt;
+
+<span class="cmt"># O como JSON (RESTCONF):</span>
+{
+  <span class="key">"ietf-interfaces:interfaces"</span>: {
+    <span class="key">"interface"</span>: [{<span class="key">"name"</span>: <span class="str">"Gi0/0"</span>, <span class="key">"ip"</span>: <span class="str">"192.168.1.1"</span>}]
+  }
+}</code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 2 — SINTAXIS YANG
+═══════════════════════════════════════════ -->
+<div id="tab-sintaxis" class="json4-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Anatomía de un Módulo YANG</h2>
+  <p>Todo modelo YANG empieza con un <code>module</code> que define el namespace y la versión. Es similar a un "import" de Python pero para la definición de datos de red.</p>
+
+  <div class="code-block">
+    <div class="code-label">Estructura base de un módulo YANG (simplificado)</div>
+    <pre><code><span class="yang-kw">module</span> cisco-router-config {
+  <span class="yang-kw">yang-version</span> 1.1;              <span class="yang-comment">// RFC 7950</span>
+  <span class="yang-kw">namespace</span> <span class="yang-str">"http://cisco.com/ns/yang/router"</span>;
+  <span class="yang-kw">prefix</span> router;
+  
+  <span class="yang-kw">import</span> ietf-inet-types {     <span class="yang-comment">// Tipos estándar de IPs</span>
+    <span class="yang-kw">prefix</span> inet;
+  }
+  
+  <span class="yang-kw">organization</span> <span class="yang-str">"Cisco Systems"</span>;
+  <span class="yang-kw">description</span> <span class="yang-str">"Modelo de configuración de routers"</span>;
+  
+  <span class="yang-kw">revision</span> <span class="yang-str">"2024-01-15"</span> {
+    <span class="yang-kw">description</span> <span class="yang-str">"Versión inicial"</span>;
+  }
+  
+  <span class="yang-comment">// Aquí van los containers, lists y leafs...</span>
+}</code></pre>
+  </div>
+
+  <h2 class="section-title">Namespaces y Prefixes</h2>
+  <p>En YANG, el <strong>namespace</strong> (URI) identifica únicamente al módulo, evitando colisiones entre "interface" de Cisco vs "interface" de IETF. El <strong>prefix</strong> es el alias corto usado en las instancias.</p>
+  
+  <div class="code-block">
+    <div class="code-label">Uso de prefijos en instancias XML</div>
+    <pre><code><span class="cmt">&lt;!-- Ejemplo real de NETCONF con namespaces --&gt;</span>
+&lt;<span class="tag">rpc</span> <span class="attr">message-id</span>=<span class="yang-str">"101"</span>
+    <span class="attr">xmlns</span>=<span class="yang-str">"urn:ietf:params:xml:ns:netconf:base:1.0"</span>&gt;
+  &lt;<span class="tag">edit-config</span>&gt;
+    &lt;<span class="tag">target</span>&gt;&lt;<span class="tag">candidate</span>/&gt;&lt;/<span class="tag">target</span>&gt;
+    &lt;<span class="tag">config</span>&gt;
+      <span class="cmt">&lt;!-- Aquí usamos el prefix definido en YANG --&gt;</span>
+      &lt;<span class="tag">if:interfaces</span> 
+         <span class="attr">xmlns:if</span>=<span class="yang-str">"urn:ietf:params:xml:ns:yang:ietf-interfaces"</span>&gt;
+        &lt;<span class="tag">if:interface</span>&gt;
+          &lt;<span class="tag">if:name</span>&gt;eth0&lt;/<span class="tag">if:name</span>&gt;
+        &lt;/<span class="tag">if:interface</span>&gt;
+      &lt;/<span class="tag">if:interfaces</span>&gt;
+    &lt;/<span class="tag">config</span>&gt;
+  &lt;/<span class="tag">edit-config</span>&gt;
+&lt;/<span class="tag">rpc</span>&gt;</code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Tip de Examen</div>
+    <p>Cuando veas <code>xmlns:if="..."</code> en XML de NETCONF, está usando el namespace definido en el módulo YANG. El prefijo <code>if:</code> indica que esos datos obedecen al modelo <code>ietf-interfaces</code>.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 3 — ESTRUCTURAS DE DATOS
+═══════════════════════════════════════════ -->
+<div id="tab-estructuras" class="json4-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Los Cuatro Pilares de YANG</h2>
+  
+  <h3 class="section-title" style="font-size:.85rem; color:#5b9bd5;">1. Container — El Organizador</h3>
+  <p>Agrupa nodos relacionados lógicamente. No tiene valor propio, solo existe para contener otros nodos. Equivalente a una carpeta.</p>
+  <div class="code-block">
+    <div class="code-label">Definición de Container</div>
+    <pre><code><span class="yang-kw">container</span> system {
+  <span class="yang-kw">description</span> <span class="yang-str">"Información del sistema"</span>;
+  
+  <span class="yang-kw">leaf</span> hostname {
+    <span class="yang-kw">type</span> <span class="yang-type">string</span>;
+  }
+  <span class="yang-kw">leaf</span> domain {
+    <span class="yang-kw">type</span> <span class="yang-type">string</span>;
+  }
+}</code></pre>
+  </div>
+
+  <h3 class="section-title" style="font-size:.85rem; color:#fbbf24;">2. List — La Base de Datos</h3>
+  <p>Una lista es una secuencia de entradas del mismo tipo, cada una identificada por una <strong>key</strong> única. Es el equivalente a una tabla SQL o un array de objetos con ID.</p>
+  <div class="code-block">
+    <div class="code-label">List con clave compuesta</div>
+    <pre><code><span class="yang-kw">list</span> interface {
+  <span class="yang-kw">key</span> <span class="yang-str">"name"</span>;                    <span class="yang-comment">// Identificador único</span>
+  <span class="yang-kw">unique</span> <span class="yang-str">"ip-address"</span>;          <span class="yang-comment">// Constraint adicional</span>
+  
+  <span class="yang-kw">leaf</span> name {
+    <span class="yang-kw">type</span> <span class="yang-type">string</span>;
+  }
+  <span class="yang-kw">leaf</span> ip-address {
+    <span class="yang-kw">type</span> <span class="yang-type">inet:ipv4-address</span>;   <span class="yang-comment">// Tipo especializado</span>
+  }
+  <span class="yang-kw">leaf</span> mtu {
+    <span class="yang-kw">type</span> <span class="yang-type">uint16</span>;
+    <span class="yang-kw">default</span> 1500;               <span class="yang-comment">// Valor por defecto</span>
+  }
+}</code></pre>
+  </div>
+
+  <h3 class="section-title" style="font-size:.85rem; color:#c3e88d;">3. Leaf — El Valor Escalar</h3>
+  <p>Representa un valor simple (string, número, booleano, enumeración). No puede contener otros nodos. Es la "hoja" del árbol.</p>
+  <div class="code-block">
+    <div class="code-label">Tipos de Leaf avanzados</div>
+    <pre><code><span class="yang-kw">leaf</span> admin-status {
+  <span class="yang-kw">type</span> <span class="yang-kw">enumeration</span> {           <span class="yang-comment">// Enum tipo C</span>
+    <span class="yang-kw">enum</span> up { <span class="yang-kw">value</span> 1; }
+    <span class="yang-kw">enum</span> down { <span class="yang-kw">value</span> 2; }
+    <span class="yang-kw">enum</span> testing { <span class="yang-kw">value</span> 3; }
+  }
+  <span class="yang-kw">default</span> up;
+  <span class="yang-kw">config</span> true;                 <span class="yang-comment">// Es configurable (vs state)</span>
+}
+
+<span class="yang-kw">leaf</span> prefix-length {
+  <span class="yang-kw">type</span> <span class="yang-type">uint8</span> {
+    <span class="yang-kw">range</span> <span class="yang-str">"0..32"</span>;           <span class="yang-comment">// Constraint de rango</span>
+  }
+}</code></pre>
+  </div>
+
+  <h3 class="section-title" style="font-size:.85rem; color:#82aaff;">4. Leaf-List — El Array de Scalares</h3>
+  <p>Un array ordenado de valores simples, todos del mismo tipo. Ejemplo: lista de DNS servers o NTP servers.</p>
+  <div class="code-block">
+    <div class="code-label">Leaf-list para servidores</div>
+    <pre><code><span class="yang-kw">leaf-list</span> name-server {
+  <span class="yang-kw">type</span> <span class="yang-type">inet:ip-address</span>;
+  <span class="yang-kw">ordered-by</span> user;           <span class="yang-comment">// Orden significativo</span>
+  <span class="yang-kw">max-elements</span> 3;            <span class="yang-comment">// Máximo 3 servidores</span>
+}</code></pre>
+  </div>
+
+  <h2 class="section-title">Visualización del Árbol YANG</h2>
+  <div class="yang-tree">
+    <div class="tree-root">module: cisco-router</div>
+    <div class="tree-node">
+      <span class="tree-container">+-- container system</span>
+      <div class="tree-node">
+        <span class="tree-leaf">+-- leaf hostname (string)</span>
+        <span class="tree-leaf">+-- leaf domain (string)</span>
+      </div>
+    </div>
+    <div class="tree-node">
+      <span class="tree-list">+-- list interface [name]</span>
+      <div class="tree-node">
+        <span class="tree-leaf">+-- leaf name (string)</span>
+        <span class="tree-leaf">+-- leaf ip (inet:ipv4)</span>
+        <span class="tree-leaf">+-- leaf status (enum)</span>
+        <span class="tree-container">+-- container statistics</span>
+        <div class="tree-node">
+          <span class="tree-leaf">+-- leaf in-octets (uint64)</span>
+          <span class="tree-leaf">+-- leaf out-octets (uint64)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 4 — YANG + NETCONF
+═══════════════════════════════════════════ -->
+<div id="tab-netconf" class="json4-tab-content">
+<div class="content-block">
+  <h2 class="section-title">NETCONF: YANG codificado en XML</h2>
+  <p>NETCONF (RFC 6241) es el protocolo de gestión de red que usa YANG como modelo conceptual pero transporta los datos en <strong>XML</strong>. Cada elemento XML corresponde a un nodo YANG.</p>
+
+  <div class="code-block">
+    <div class="code-label">Operación NETCONF &lt;get&gt; sobre modelo YANG</div>
+    <pre><code><span class="cmt">&lt;!-- RPC de solicitud --&gt;</span>
+&lt;<span class="tag">rpc</span> <span class="attr">message-id</span>=<span class="str">"101"</span> 
+     <span class="attr">xmlns</span>=<span class="str">"urn:ietf:params:xml:ns:netconf:base:1.0"</span>&gt;
+  &lt;<span class="tag">get</span>&gt;
+    &lt;<span class="tag">filter</span> <span class="attr">type</span>=<span class="str">"subtree"</span>&gt;
+      &lt;<span class="tag">interfaces</span> <span class="attr">xmlns</span>=<span class="str">"urn:ietf:params:xml:ns:yang:ietf-interfaces"</span>/&gt;
+    &lt;/<span class="tag">filter</span>&gt;
+  &lt;/<span class="tag">get</span>&gt;
+&lt;/<span class="tag">rpc</span>&gt;
+
+<span class="cmt">&lt;!-- Respuesta (instancia de datos YANG) --&gt;</span>
+&lt;<span class="tag">rpc-reply</span> <span class="attr">message-id</span>=<span class="str">"101"</span>&gt;
+  &lt;<span class="tag">data</span>&gt;
+    &lt;<span class="tag">interfaces</span> <span class="attr">xmlns</span>=<span class="str">"urn:ietf:params:xml:ns:yang:ietf-interfaces"</span>&gt;
+      &lt;<span class="tag">interface</span>&gt;
+        &lt;<span class="tag">name</span>&gt;GigabitEthernet1&lt;/<span class="tag">name</span>&gt;
+        &lt;<span class="tag">type</span>&gt;iana-if-type:ethernetCsmacd&lt;/<span class="tag">type</span>&gt;
+        &lt;<span class="tag">enabled</span>&gt;true&lt;/<span class="tag">enabled</span>&gt;
+        &lt;<span class="tag">ipv4</span> <span class="attr">xmlns</span>=<span class="str">"urn:ietf:params:xml:ns:yang:ietf-ip"</span>&gt;
+          &lt;<span class="tag">address</span>&gt;
+            &lt;<span class="tag">ip</span>&gt;192.168.1.1&lt;/<span class="tag">ip</span>&gt;
+            &lt;<span class="tag">netmask</span>&gt;255.255.255.0&lt;/<span class="tag">netmask</span>&gt;
+          &lt;/<span class="tag">address</span>&gt;
+        &lt;/<span class="tag">ipv4</span>&gt;
+      &lt;/<span class="tag">interface</span>&gt;
+    &lt;/<span class="tag">interfaces</span>&gt;
+  &lt;/<span class="tag">data</span>&gt;
+&lt;/<span class="tag">rpc-reply</span>&gt;</code></pre>
+  </div>
+
+  <div class="info-box yang-box">
+    <div class="info-box-title" style="color:#00d4aa;">🔗 Mapping YANG → XML</div>
+    <ul>
+      <li><code>container</code> → Elemento XML anidado (&lt;interfaces&gt;)</li>
+      <li><code>list</code> → Múltiples elementos del mismo nombre (&lt;interface&gt;...&lt;/interface&gt;)</li>
+      <li><code>leaf</code> → Elemento XML con valor de texto (&lt;name&gt;Gi1&lt;/name&gt;)</li>
+      <li><code>leaf-list</code> → Múltiples elementos con mismo nombre, valores diferentes</li>
+    </ul>
+  </div>
+
+  <h2 class="section-title">Capas de NETCONF</h2>
+  <p>NETCONF opera en capas que separan el transporte (SSH), los mensajes (RPC), y el contenido (YANG):</p>
+  <ol>
+    <li><strong>Transport Layer:</strong> SSH (puerto 830) o TLS</li>
+    <li><strong>Messages Layer:</strong> RPC request/reply</li>
+    <li><strong>Operations Layer:</strong> &lt;get&gt;, &lt;edit-config&gt;, &lt;copy-config&gt;, &lt;delete-config&gt;</li>
+    <li><strong>Content Layer:</strong> Datos YANG codificados en XML</li>
+  </ol>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 5 — YANG + RESTCONF
+═══════════════════════════════════════════ -->
+<div id="tab-restconf" class="json4-tab-content">
+<div class="content-block">
+  <h2 class="section-title">RESTCONF: YANG codificado en JSON</h2>
+  <p>RESTCONF (RFC 8040) expone los mismos modelos YANG pero a través de HTTP REST, usando <strong>JSON</strong> como codificación por defecto. Las URLs siguen la estructura jerárquica del modelo YANG.</p>
+
+  <div class="code-block">
+    <div class="code-label">URL RESTCONF mapeada a modelo YANG</div>
+    <pre><code><span class="cmt"># Estructura de URL RESTCONF:</span>
+<span class="yang-path">/restconf/data/{modelo}:{ruta-al-nodo}</span>
+
+<span class="cmt"># Ejemplos reales:</span>
+<span class="yang-path">/restconf/data/ietf-interfaces:interfaces</span>
+<span class="yang-path">/restconf/data/ietf-interfaces:interfaces/interface=GigabitEthernet1</span>
+<span class="yang-path">/restconf/data/ietf-interfaces:interfaces/interface=Gi1/ipv4</span></code></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">GET /restconf/data/ietf-interfaces:interfaces</div>
+    <pre><code>{
+  <span class="str">"ietf-interfaces:interfaces"</span>: {
+    <span class="str">"interface"</span>: [
+      {
+        <span class="str">"name"</span>: <span class="str">"GigabitEthernet1"</span>,
+        <span class="str">"type"</span>: <span class="str">"iana-if-type:ethernetCsmacd"</span>,
+        <span class="str">"enabled"</span>: <span class="bool">true</span>,
+        <span class="str">"ietf-ip:ipv4"</span>: {
+          <span class="str">"address"</span>: [
+            {
+              <span class="str">"ip"</span>: <span class="str">"192.168.1.1"</span>,
+              <span class="str">"netmask"</span>: <span class="str">"255.255.255.0"</span>
+            }
+          ]
+        }
+      }
+    ]
+  }
+}</code></pre>
+  </div>
+
+  <h2 class="section-title">Diferencias Clave NETCONF vs RESTCONF</h2>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead>
+        <tr>
+          <th>Característica</th>
+          <th>NETCONF</th>
+          <th>RESTCONF</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Transporte</td>
+          <td>SSH (puerto 830)</td>
+          <td>HTTP/HTTPS</td>
+        </tr>
+        <tr>
+          <td>Formato</td>
+          <td>XML obligatorio</td>
+          <td>JSON por defecto, XML opcional</td>
+        </tr>
+        <tr>
+          <td>Estilo</td>
+          <td>RPC (Remote Procedure Call)</td>
+          <td>REST (Recursos con URLs)</td>
+        </tr>
+        <tr>
+          <td>Operaciones</td>
+          <td>&lt;get&gt;, &lt;edit-config&gt;</td>
+          <td>GET, POST, PATCH, DELETE</td>
+        </tr>
+        <tr>
+          <td>Modelo</td>
+          <td colspan="2" style="text-align:center; color:#00d4aa;">Ambos usan YANG (RFC 6020/7950)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Identificación rápida en el examen</div>
+    <p>Si ves <code>&lt;rpc&gt;</code> o <code>&lt;get-config&gt;</code> → NETCONF (XML). Si ves <code>/restconf/data/...</code> o JSON con namespaces como <code>ietf-interfaces:</code> → RESTCONF.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 6 — CISCO YANG MODELS
+═══════════════════════════════════════════ -->
+<div id="tab-cisco" class="json4-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Modelos YANG en Cisco IOS-XE</h2>
+  <p>Cisco proporciona modelos YANG nativos además de los estándares IETF. Los más importantes son <code>Cisco-IOS-XE-native</code> y <code>ietf-interfaces</code>.</p>
+
+  <div class="code-block">
+    <div class="code-label">Modelos disponibles en un router Cisco</div>
+    <pre><code><span class="cmt"># Comando CLI para ver modelos YANG soportados:</span>
+Router# <span class="str">show yang models</span>
+
+<span class="cmt"># Salida típico:</span>
+Cisco-IOS-XE-native
+Cisco-IOS-XE-interfaces
+ietf-interfaces
+ietf-ip
+Cisco-IOS-XE-ospf
+Cisco-IOS-XE-bgp
+...</code></pre>
+  </div>
+
+  <h2 class="section-title">Configuración vía YANG (NETCONF)</h2>
+  <div class="code-block">
+    <div class="code-label">Crear interfaz Loopback via NETCONF/YANG</div>
+    <pre><code>&lt;<span class="tag">rpc</span> <span class="attr">message-id</span>=<span class="str">"101"</span>&gt;
+  &lt;<span class="tag">edit-config</span>&gt;
+    &lt;<span class="tag">target</span>&gt;&lt;<span class="tag">candidate</span>/&gt;&lt;/<span class="tag">target</span>&gt;
+    &lt;<span class="tag">config</span>&gt;
+      &lt;<span class="tag">native</span> <span class="attr">xmlns</span>=<span class="str">"http://cisco.com/ns/yang/Cisco-IOS-XE-native"</span>&gt;
+        &lt;<span class="tag">interface</span>&gt;
+          &lt;<span class="tag">Loopback</span>&gt;
+            &lt;<span class="tag">name</span>&gt;100&lt;/<span class="tag">name</span>&gt;
+            &lt;<span class="tag">ip</span>&gt;
+              &lt;<span class="tag">address</span>&gt;
+                &lt;<span class="tag">primary</span>&gt;
+                  &lt;<span class="tag">address</span>&gt;1.1.1.1&lt;/<span class="tag">address</span>&gt;
+                  &lt;<span class="tag">mask</span>&gt;255.255.255.255&lt;/<span class="tag">mask</span>&gt;
+                &lt;/<span class="tag">primary</span>&gt;
+              &lt;/<span class="tag">address</span>&gt;
+            &lt;/<span class="tag">ip</span>&gt;
+          &lt;/<span class="tag">Loopback</span>&gt;
+        &lt;/<span class="tag">interface</span>&gt;
+      &lt;/<span class="tag">native</span>&gt;
+    &lt;/<span class="tag">config</span>&gt;
+  &lt;/<span class="tag">edit-config</span>&gt;
+&lt;/<span class="tag">rpc</span>&gt;
+
+<span class="cmt">&lt;!-- Seguido de commit --&gt;</span>
+&lt;<span class="tag">rpc</span>&gt;
+  &lt;<span class="tag">commit</span>/&gt;
+&lt;/<span class="tag">rpc</span>&gt;</code></pre>
+  </div>
+
+  <h2 class="section-title">Datastores YANG (Candidate vs Running)</h2>
+  <p>YANG define operaciones sobre diferentes almacenes de datos:</p>
+  <ul>
+    <li><strong>running:</strong> Configuración activa actual</li>
+    <li><strong>candidate:</strong> Configuración temporal (editar sin afectar running)</li>
+    <li><strong>startup:</strong> Configuración de arranque</li>
+  </ul>
+  <p>El patrón es: editar <code>candidate</code> → validar → <code>commit</code> → copiar a <code>running</code>.</p>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 7 — PYTHON + YANG
+═══════════════════════════════════════════ -->
+<div id="tab-python" class="json4-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Manipular YANG desde Python</h2>
+  <p>Aunque no parseamos YANG directamente (es complejo), sí interpretamos las instancias de datos que obedecen al modelo. Librerías como <code>ncclient</code> (NETCONF) y <code>requests</code> (RESTCONF) manejan el modelo por nosotros.</p>
+
+  <div class="code-block">
+    <div class="code-label">ncclient: NETCONF con Python</div>
+    <pre><code><span class="kw">from</span> ncclient <span class="kw">import</span> manager
+
+<span class="cmt"># Conectar usando modelo YANG implícito</span>
+<span class="kw">with</span> manager.<span class="fn">connect</span>(
+    host=<span class="str">"192.168.1.1"</span>,
+    port=<span class="num">830</span>,
+    username=<span class="str">"admin"</span>,
+    password=<span class="str">"cisco"</span>,
+    hostkey_verify=<span class="kw">False</span>
+) <span class="kw">as</span> m:
+    
+    <span class="cmt"># Get-config solicita datos del modelo candidate</span>
+    filter = <span class="str">'''
+    &lt;filter&gt;
+      &lt;interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces"/&gt;
+    &lt;/filter&gt;
+    '''</span>
+    
+    config = m.<span class="fn">get_config</span>(source=<span class="str">'running'</span>, filter=filter)
+    <span class="fn">print</span>(config)</code></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">requests: RESTCONF con Python</div>
+    <pre><code><span class="kw">import</span> requests
+<span class="kw">import</span> json
+
+url = <span class="str">"https://192.168.1.1/restconf/data/ietf-interfaces:interfaces"</span>
+headers = {
+    <span class="str">"Accept"</span>: <span class="str">"application/yang-data+json"</span>,
+    <span class="str">"Content-Type"</span>: <span class="str">"application/yang-data+json"</span>
+}
+
+resp = requests.<span class="fn">get</span>(url, headers=headers, auth=(<span class="str">"admin"</span>, <span class="str">"cisco"</span>), verify=<span class="kw">False</span>)
+data = resp.<span class="fn">json</span>()  <span class="cmt"># Los datos siguen estructura YANG pero en JSON</span>
+
+<span class="cmt"># Navegar según modelo YANG (ietf-interfaces)</span>
+<span class="kw">for</span> intf <span class="kw">in</span> data[<span class="str">"ietf-interfaces:interfaces"</span>][<span class="str">"interface"</span>]:
+    <span class="fn">print</span>(<span class="str">f"Interface: {intf['name']}"</span>)</code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Validación con pyang</div>
+    <p>La herramienta <code>pyang</code> permite validar archivos YANG y ver su árbol:</p>
+    <code>pyang -f tree ietf-interfaces.yang</code>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 8 — REFERENCIA
+═══════════════════════════════════════════ -->
+<div id="tab-referencia" class="json4-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Resumen de Statements YANG</h2>
+  
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead>
+        <tr>
+          <th>Statement</th>
+          <th>Descripción</th>
+          <th>Ejemplo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>module</code></td>
+          <td>Define el namespace del modelo</td>
+          <td>module cisco-ios { ... }</td>
+        </tr>
+        <tr>
+          <td><code>container</code></td>
+          <td>Agrupación lógica de nodos</td>
+          <td>container interfaces { ... }</td>
+        </tr>
+        <tr>
+          <td><code>list</code></td>
+          <td>Secuencia de entradas con key</td>
+          <td>list interface { key "name"; ... }</td>
+        </tr>
+        <tr>
+          <td><code>leaf</code></td>
+          <td>Valor escalar simple</td>
+          <td>leaf mtu { type uint16; }</td>
+        </tr>
+        <tr>
+          <td><code>leaf-list</code></td>
+          <td>Array de valores simples</td>
+          <td>leaf-list dns { type string; }</td>
+        </tr>
+        <tr>
+          <td><code>typedef</code></td>
+          <td>Definición de tipo personalizado</td>
+          <td>typedef percent { type uint8; ... }</td>
+        </tr>
+        <tr>
+          <td><code>grouping</code></td>
+          <td>Reutilizable block (like struct)</td>
+          <td>grouping address { ... }</td>
+        </tr>
+        <tr>
+          <td><code>uses</code></td>
+          <td>Instancia un grouping</td>
+          <td>uses address;</td>
+        </tr>
+        <tr>
+          <td><code>augment</code></td>
+          <td>Extiende otro modelo</td>
+          <td>augment /if:interfaces { ... }</td>
+        </tr>
+        <tr>
+          <td><code>config</code></td>
+          <td>true=configuración, false=estado</td>
+          <td>config false;</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="section-title">Tipos de Datos Built-in</h2>
+  <ul>
+    <li><strong>Enteros:</strong> int8, int16, int32, int64, uint8, uint16, uint32, uint64</li>
+    <li><strong>Decimales:</strong> decimal64</li>
+    <li><strong>Strings:</strong> string (con patterns length constraints)</li>
+    <li><strong>Booleanos:</strong> boolean</li>
+    <li><strong>Enumeraciones:</strong> enumeration</li>
+    <li><strong>Bits:</strong> bits (flags)</li>
+    <li><strong>Binarios:</strong> binary (base64)</li>
+    <li><strong>Referencia:</strong> leafref (apunta a otro leaf)</li>
+    <li><strong>Identidad:</strong> identity (para extensibilidad)</li>
+  </ul>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 9 — QUIZ
+═══════════════════════════════════════════ -->
+<div id="tab-quiz" class="json4-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Quiz — YANG Data Models</h2>
+  <p style="font-size:.83rem;color:#6b7a9a;margin-bottom:20px;">10 preguntas avanzadas sobre estructuras YANG, NETCONF/RESTCONF y modelado de datos. Estilo CCNA Domain 6.5.</p>
+  <div id="quizContainerJson4">
+    <!-- JS generated -->
+  </div>
+</div>
+</div>
+
+</div><!-- /.tabs-wrap -->
+
+<script>
+// ── NAVEGACIÓN DRAWER ────────────────────────────────
+function ccnaToggle() {
+  document.getElementById('ccnaDrawer').classList.toggle('open');
+  document.getElementById('ccnaOverlay').classList.toggle('show');
+}
+function ccnaClose() {
+  document.getElementById('ccnaDrawer').classList.remove('open');
+  document.getElementById('ccnaOverlay').classList.remove('show');
+}
+
+// ── TABS ──────────────────────────────────────────────
+function showTabJson4(id, btn) {
+  document.querySelectorAll('.json4-tab-content').forEach(t => t.classList.remove('json4-active'));
+  document.querySelectorAll('.json4-tab-btn').forEach(b => b.classList.remove('json4-active'));
+  document.getElementById('tab-' + id).classList.add('json4-active');
+  if (btn) btn.classList.add('json4-active');
+}
+
+// ── QUIZ ───────────────────────────────────────────────
+function initQuizJson4() {
+  const container = document.getElementById('quizContainerJson4');
+  if (!container) return;
+
+  const qs = [
+    {
+      q: '¿Qué es YANG exactamente?',
+      opts: ['Un formato de transporte como JSON', 'Un lenguaje de modelado de datos (RFC 7950)', 'Un protocolo de red como HTTP', 'Un tipo de base de datos'],
+      ans: 1,
+      exp: 'YANG (RFC 7950) es un lenguaje de modelado que define la estructura, tipos y relaciones de los datos de red. No transporta datos (eso lo hace NETCONF/RESTCONF), solo los define.'
+    },
+    {
+      q: 'En YANG, ¿qué diferencia hay entre un container y una list?',
+      opts: ['Ninguna, son sinónimos', 'Container agrupa nodos sin identidad propia; List es una secuencia con key única', 'Container es para datos de estado, list para configuración', 'List no puede contener leafs'],
+      ans: 1,
+      exp: 'Container es una agrupación lógica (como una carpeta). List es una secuencia ordenada donde cada entrada tiene una key única (como una tabla SQL).'
+    },
+    {
+      q: '¿Qué es un "leaf" en YANG?',
+      opts: ['Una hoja de árbol de decisión', 'Un nodo que contiene un valor escalar simple (string, número, etc.)', 'Un tipo de conexión de red', 'Un alias para container'],
+      ans: 1,
+      exp: 'Un leaf es un nodo terminal que contiene un valor simple (string, int, etc.) pero no puede contener otros nodos hijos. Es la "hoja" del árbol de datos.'
+    },
+    {
+      q: 'NETCONF transporta instancias de datos YANG codificadas en:',
+      opts: ['JSON únicamente', 'XML obligatoriamente', 'YAML', 'Binary'],
+      ans: 1,
+      exp: 'NETCONF (RFC 6241) usa XML obligatoriamente para codificar las instancias de datos definidos por modelos YANG. RESTCONF puede usar JSON.'
+    },
+    {
+      q: 'RESTCONF expone los modelos YANG a través de:',
+      opts: ['SSH en puerto 830', 'HTTP REST con URLs que mapean la jerarquía YANG', 'SNMP', 'Telnet'],
+      ans: 1,
+      exp: 'RESTCONF (RFC 8040) expone los datos YANG vía HTTP REST. Las URLs siguen la estructura del modelo YANG, y usa JSON (por defecto) o XML.'
+    },
+    {
+      q: 'En una URL RESTCONF: /restconf/data/ietf-interfaces:interfaces/interface=eth0, ¿qué representa "ietf-interfaces"?',
+      opts: ['Un servidor', 'El namespace (módulo YANG)', 'Un tipo de dato', 'Un error de sintaxis'],
+      ans: 1,
+      exp: 'En RESTCONF, el namespace (prefix) identifica el módulo YANG al que pertenecen los datos. Aquí es el módulo ietf-interfaces.'
+    },
+    {
+      q: '¿Qué statement en YANG se usa para definir que una lista tiene una clave única?',
+      opts: ['unique', 'key', 'id', 'primary'],
+      ans: 1,
+      exp: 'El statement "key" define el identificador único de una entrada en una list. Ejemplo: key "name"; hace que name sea el identificador único de cada interfaz.'
+    },
+    {
+      q: 'La diferencia entre leaf y leaf-list es:',
+      opts: ['Ninguna', 'Leaf es un valor único; leaf-list es un array de valores del mismo tipo', 'Leaf es obligatorio; leaf-list opcional', 'Leaf-list solo acepta strings'],
+      ans: 1,
+      exp: 'Un leaf contiene un solo valor (ej: MTU=1500). Un leaf-list contiene una secuencia de valores del mismo tipo (ej: servidores DNS: [8.8.8.8, 1.1.1.1]).'
+    },
+    {
+      q: '¿Qué datastore en NETCONF permite editar configuración sin afectar inmediatamente el running?',
+      opts: ['running', 'startup', 'candidate', 'backup'],
+      ans: 2,
+      exp: 'El datastore "candidate" permite hacer cambios temporalmente. Luego se validan y se aplican al "running" con la operación <commit>.'
+    },
+    {
+      q: 'En YANG, "config false;" en un leaf significa:',
+      opts: ['Que es obligatorio', 'Que es de solo lectura (estado operacional), no configurable', 'Que es un secreto', 'Que no tiene tipo'],
+      ans: 1,
+      exp: 'Config false indica que el nodo es de estado (operational state), no de configuración. Ejemplo: contadores de paquetes, temperatura. No se puede escribir, solo leer.'
+    }
+  ];
+
+  let html = '';
+  qs.forEach((q, i) => {
+    html += `<div class="quiz-question" id="qjson4${i}">
+      <div class="quiz-q-num">PREGUNTA ${i+1} DE ${qs.length} · YANG DATA MODELS</div>
+      <div class="quiz-q-text">${q.q}</div>
+      <div class="quiz-opts">
+        ${q.opts.map((o,j) => `<button class="quiz-opt" data-qi="${i}" data-sel="${j}" data-ans="${q.ans}">${o}</button>`).join('')}
+      </div>
+    </div>`;
+  });
+  container.innerHTML = html;
+
+  window._json4Exp = {};
+  qs.forEach((q, i) => { window._json4Exp[i] = q.exp; });
+
+  container.querySelectorAll('.quiz-opt').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const qi  = parseInt(this.dataset.qi);
+      const sel = parseInt(this.dataset.sel);
+      const ans = parseInt(this.dataset.ans);
+      const qDiv = document.getElementById('qjson4' + qi);
+      const btns = qDiv.querySelectorAll('.quiz-opt');
+      
+      btns.forEach(b => b.disabled = true);
+      btns[sel].classList.add(sel === ans ? 'correct' : 'wrong');
+      if (sel !== ans) btns[ans].classList.add('correct');
+      
+      const expDiv = document.createElement('div');
+      expDiv.className = 'quiz-explanation';
+      expDiv.innerHTML = `<strong>${sel===ans ? '✅ Correcto!' : '❌ Incorrecto.'}</strong> ${window._json4Exp[qi]}`;
+      qDiv.appendChild(expDiv);
+    });
+  });
+}
+
+// ── INIT ─────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  initQuizJson4();
+});
+</script>
+</body>
+</html>
