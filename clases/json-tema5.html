@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JSON en APIs Cisco — M8 Tema 5 | CCNA Academy</title>
+  <meta name="description" content="Análisis de respuestas JSON reales de Cisco DNA Center API, IOS-XE RESTCONF y Meraki API. Extracción de datos de dispositivos, interfaces y clientes con Python. M8 CCNA Academy.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── HERO acento APIs/JSON ── */
+.class-hero { background: linear-gradient(135deg, #06080f 0%, #0a0f1a 40%, #0c1220 100%); }
+
+/* ── TIPOS DE DATOS GRID ── */
+.py-types-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:10px; margin:16px 0; }
+.py-type-card { background:#090d1a; border:1px solid rgba(245,158,11,.15); border-radius:10px; padding:14px 10px; text-align:center; }
+.py-type-icon { font-size:1.5rem; margin-bottom:6px; }
+.py-type-name { font-family:'Orbitron',sans-serif; font-size:.72rem; color:#f59e0b; margin-bottom:4px; letter-spacing:1px; }
+.py-type-ex   { font-family:'Share Tech Mono',monospace; font-size:.65rem; color:#00d4aa; margin-bottom:4px; background:rgba(0,212,170,.06); padding:2px 6px; border-radius:4px; }
+.py-type-use  { font-size:.68rem; color:#374060; line-height:1.4; }
+
+/* ── BASE CLASS STYLES (clonado) ── */
+body{font-family:'Exo 2',sans-serif;background:#07090f;color:#e2e8f0;}
+.class-hero{padding:56px 24px 48px;border-bottom:1px solid rgba(245,158,11,.08);position:relative;overflow:hidden;}
+.class-hero::before{content:'';position:absolute;top:-60px;right:-80px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(245,158,11,.06) 0%,transparent 70%);pointer-events:none;}
+.class-hero-inner{max-width:900px;margin:0 auto;position:relative;z-index:1;}
+.class-badge{font-family:'Share Tech Mono',monospace;font-size:.63rem;color:#f59e0b;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;}
+.class-title{font-family:'Orbitron',sans-serif;font-size:clamp(1.6rem,3.8vw,2.6rem);font-weight:900;letter-spacing:3px;color:#c2d0e8;margin-bottom:12px;line-height:1.1;}
+.class-subtitle{font-size:.92rem;color:#6b7a9a;line-height:1.72;margin-bottom:20px;max-width:700px;}
+.class-meta{display:flex;gap:12px;flex-wrap:wrap;}
+.meta-item{font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#374060;padding:4px 10px;border:1px solid rgba(245,158,11,.1);border-radius:4px;}
+.py1-tabs-wrap{max-width:1100px;margin:0 auto;padding:0 16px 40px;}
+.py1-tabs-bar{display:flex;gap:4px;padding:20px 0 0;flex-wrap:wrap;border-bottom:1px solid rgba(245,158,11,.1);margin-bottom:0;}
+.py1-tab-btn{padding:8px 13px;border-radius:8px 8px 0 0;font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#4a5780;background:none;border:1px solid transparent;cursor:pointer;transition:all .18s;white-space:nowrap;border-bottom:none;}
+.py1-tab-btn:hover{color:#c2d0e8;background:rgba(245,158,11,.05);}
+.py1-tab-btn.py1-active{color:#f59e0b;background:#0d1220;border-color:rgba(245,158,11,.25);border-bottom:1px solid #0d1220;}
+.py1-tab-content{display:none;background:#0d1220;border:1px solid rgba(245,158,11,.08);border-top:none;border-radius:0 0 12px 12px;padding:32px;}
+.py1-tab-content.py1-active{display:block;}
+.content-block{max-width:880px;}
+.section-title{font-family:'Orbitron',sans-serif;font-size:.95rem;color:#f59e0b;letter-spacing:2px;margin:28px 0 14px;padding-bottom:8px;border-bottom:1px solid rgba(245,158,11,.15);}
+.section-title:first-child{margin-top:0;}
+p{color:#8294b8;line-height:1.75;margin-bottom:14px;font-size:.9rem;}
+ul,ol{color:#8294b8;padding-left:1.4rem;margin-bottom:14px;font-size:.9rem;}
+li{margin-bottom:5px;line-height:1.65;}
+strong{color:#c2d0e8;}
+code{font-family:'Share Tech Mono',monospace;font-size:.82rem;background:rgba(245,158,11,.1);color:#f59e0b;padding:1px 6px;border-radius:4px;border:1px solid rgba(245,158,11,.2);}
+
+/* INFO BOXES */
+.info-box{border-radius:8px;padding:14px 18px;margin:18px 0;border-left:3px solid;}
+.info-box.tip{background:rgba(245,158,11,.06);border-color:#f59e0b;}
+.info-box.warning{background:rgba(251,191,36,.05);border-color:#fbbf24;}
+.info-box.dna{background:rgba(0,212,170,.06);border-color:#00d4aa;}
+.info-box.iosxe{background:rgba(59,130,246,.06);border-color:#3b82f6;}
+.info-box.meraki{background:rgba(139,92,246,.06);border-color:#8b5cf6;}
+.info-box-title{font-family:'Share Tech Mono',monospace;font-size:.73rem;color:#f59e0b;margin-bottom:8px;}
+.info-box.warning .info-box-title{color:#fbbf24;}
+.info-box.dna .info-box-title{color:#00d4aa;}
+.info-box.iosxe .info-box-title{color:#3b82f6;}
+.info-box.meraki .info-box-title{color:#8b5cf6;}
+
+/* CODE BLOCKS */
+.code-block{background:#050810;border:1px solid rgba(245,158,11,.15);border-left:3px solid #f59e0b;border-radius:8px;padding:0;margin:16px 0;overflow:hidden;}
+.code-label{background:rgba(245,158,11,.08);padding:8px 16px;font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#4a5780;letter-spacing:2px;text-transform:uppercase;border-bottom:1px solid rgba(245,158,11,.1);}
+.code-block pre{margin:0;padding:18px;overflow-x:auto;}
+.code-block code{background:none;border:none;padding:0;color:#a8b4c8;font-size:.79rem;line-height:1.8;display:block;}
+
+/* SYNTAX HIGHLIGHTING */
+.cmt{color:#3a4a60;font-style:italic;}
+.kw {color:#c792ea;}
+.fn {color:#82aaff;}
+.str{color:#c3e88d;}
+.num{color:#f78c6c;}
+.key{color:#f59e0b;}
+
+/* CONCEPT GRID */
+.concept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin:16px 0;}
+.concept-card{background:#090d1a;border:1px solid rgba(245,158,11,.1);border-radius:10px;padding:16px;}
+.concept-icon{font-size:1.8rem;margin-bottom:8px;}
+.concept-card h3{font-family:'Share Tech Mono',monospace;font-size:.77rem;color:#f59e0b;margin-bottom:8px;}
+.concept-card p{font-size:.8rem;margin:0;}
+
+/* REF TABLE */
+.table-wrap{overflow-x:auto;margin:16px 0;}
+.ref-table{width:100%;border-collapse:collapse;font-size:.8rem;}
+.ref-table th{background:#090d1a;color:#f59e0b;font-family:'Share Tech Mono',monospace;font-size:.67rem;padding:10px 12px;text-align:left;border:1px solid rgba(245,158,11,.15);letter-spacing:1px;}
+.ref-table td{padding:9px 12px;border:1px solid rgba(255,255,255,.04);color:#8294b8;}
+.ref-table tr:hover td{background:rgba(245,158,11,.03);}
+.ref-table code{font-size:.77rem;}
+
+/* API CARDS */
+.api-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin:20px 0;}
+.api-card{background:#090d1a;border:1px solid rgba(245,158,11,.12);border-radius:12px;padding:20px;transition:transform .2s;}
+.api-card:hover{transform:translateY(-2px);border-color:rgba(245,158,11,.3);}
+.api-card h3{font-family:'Orbitron',sans-serif;font-size:.85rem;color:#f59e0b;margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+.api-card p{font-size:.82rem;color:#6b7a9a;margin:0;line-height:1.6;}
+.api-endpoint{font-family:'Share Tech Mono',monospace;font-size:.7rem;background:rgba(0,0,0,.3);padding:6px 10px;border-radius:6px;color:#00d4aa;margin-top:12px;border-left:2px solid #00d4aa;}
+
+/* QUIZ */
+.quiz-question{background:#090d1a;border:1px solid rgba(245,158,11,.12);border-radius:10px;padding:20px;margin-bottom:14px;}
+.quiz-q-num{font-family:'Share Tech Mono',monospace;font-size:.62rem;color:#374060;margin-bottom:8px;}
+.quiz-q-text{font-size:.9rem;color:#c2d0e8;margin-bottom:14px;line-height:1.6;}
+.quiz-opts{display:flex;flex-direction:column;gap:7px;}
+.quiz-opt{padding:10px 14px;border-radius:7px;border:1px solid rgba(245,158,11,.12);background:#0d1220;color:#6b7a9a;cursor:pointer;font-size:.84rem;text-align:left;transition:all .15s;font-family:'Exo 2',sans-serif;}
+.quiz-opt:hover:not(:disabled){border-color:rgba(245,158,11,.4);color:#c2d0e8;}
+.quiz-opt.correct{border-color:#34d399;background:rgba(52,211,153,.08);color:#34d399;}
+.quiz-opt.wrong{border-color:#f87171;background:rgba(248,113,113,.08);color:#f87171;}
+.quiz-explanation{margin-top:10px;padding:10px 14px;background:rgba(245,158,11,.07);border-left:3px solid #f59e0b;border-radius:6px;font-size:.82rem;color:#a0aec0;line-height:1.65;}
+
+/* Navbar y Drawer */
+.navbar{position:fixed;top:0;left:0;right:0;height:56px;background:#080a10;border-bottom:1px solid rgba(245,158,11,.1);display:flex;align-items:center;padding:0 24px;z-index:1000;}
+.navbar-toggle{background:none;border:1px solid rgba(245,158,11,.3);color:#f59e0b;padding:6px 12px;border-radius:6px;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:.75rem;margin-right:16px;}
+.navbar-brand{font-family:'Orbitron',sans-serif;font-weight:700;color:#f59e0b;text-decoration:none;font-size:1.1rem;}
+.navbar-brand span{color:#5b9bd5;}
+.navbar-spacer{flex:1;}
+.navbar-link{color:#6b7a9a;text-decoration:none;font-size:.8rem;transition:color .2s;}
+.navbar-link:hover{color:#c2d0e8;}
+.nav-spacer{height:56px;}
+.ccna-drawer{position:fixed;top:0;left:0;bottom:0;width:280px;background:#0d1220;border-right:1px solid rgba(245,158,11,.2);transform:translateX(-100%);transition:transform .3s;z-index:2000;overflow-y:auto;}
+.ccna-drawer.open{transform:translateX(0);}
+.ccna-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);opacity:0;visibility:hidden;transition:all .3s;z-index:1500;}
+.ccna-overlay.show{opacity:1;visibility:visible;}
+.drawer-header{padding:20px;border-bottom:1px solid rgba(245,158,11,.2);display:flex;justify-content:space-between;align-items:center;}
+.drawer-header h2{font-family:'Orbitron',sans-serif;font-size:.8rem;color:#f59e0b;margin:0;letter-spacing:2px;}
+.drawer-close{background:none;border:none;color:#6b7a9a;font-size:1.2rem;cursor:pointer;}
+.drawer-section{padding:16px;border-bottom:1px solid rgba(245,158,11,.1);}
+.drawer-section-title{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#374060;margin-bottom:12px;letter-spacing:1px;text-transform:uppercase;}
+.drawer-link{display:block;padding:10px 12px;color:#8294b8;text-decoration:none;font-size:.85rem;border-radius:6px;transition:all .2s;margin-bottom:4px;}
+.drawer-link:hover{background:rgba(245,158,11,.1);color:#c2d0e8;}
+.drawer-link.active{background:rgba(245,158,11,.2);color:#f59e0b;border-left:3px solid #f59e0b;}
+.dl-icon{margin-right:8px;}
+
+@media(max-width:680px){
+  .py1-tab-btn{font-size:.6rem;padding:6px 9px;}
+  .py1-tab-content{padding:18px 12px;}
+  .py-types-grid{grid-template-columns:repeat(3,1fr);}
+  .concept-grid{grid-template-columns:1fr;}
+  .api-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
+<nav class="ccna-drawer" id="ccnaDrawer">
+  <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
+  <div class="drawer-section"><div class="drawer-section-title">General</div>
+    <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M1 · Fundamentos</div>
+    <a href="fundamentos.html" class="drawer-link"><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
+    <a href="subnetting.html"  class="drawer-link"><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
+    <a href="ipv6.html"        class="drawer-link"><span class="dl-icon">6️⃣</span> IPv6</a>
+    <a href="arp.html"         class="drawer-link"><span class="dl-icon">📡</span> ARP</a>
+    <a href="rip.html"         class="drawer-link"><span class="dl-icon">🔄</span> RIP</a>
+    <a href="protocolos-internet.html" class="drawer-link"><span class="dl-icon">🌍</span> Protocolos Internet</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M2 · Dispositivos Cisco</div>
+    <a href="router.html"         class="drawer-link"><span class="dl-icon">📡</span> Routers Cisco</a>
+    <a href="switches-cisco.html" class="drawer-link"><span class="dl-icon">🔀</span> Switches Cisco</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M3 · Switching</div>
+    <a href="vlan.html"               class="drawer-link"><span class="dl-icon">🏷️</span> VLANs</a>
+    <a href="inter-vlan-routing.html" class="drawer-link"><span class="dl-icon">🔁</span> Inter-VLAN Routing</a>
+    <a href="stp.html"                class="drawer-link"><span class="dl-icon">🌳</span> STP</a>
+    <a href="etherchannel.html"       class="drawer-link"><span class="dl-icon">🔗</span> EtherChannel</a>
+    <a href="port-security.html"      class="drawer-link"><span class="dl-icon">🔒</span> Port Security</a>
+    <a href="cdp-lldp.html"           class="drawer-link"><span class="dl-icon">🔍</span> CDP / LLDP</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M4 · Routing</div>
+    <a href="routing.html"            class="drawer-link"><span class="dl-icon">🗺️</span> Routing Estático</a>
+    <a href="ospf.html"               class="drawer-link"><span class="dl-icon">⭕</span> OSPF</a>
+    <a href="eigrp.html"              class="drawer-link"><span class="dl-icon">⚡</span> EIGRP</a>
+    <a href="ospfv2-masterclass.html" class="drawer-link"><span class="dl-icon">🎯</span> OSPFv2 Masterclass</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M5 · Servicios IP</div>
+    <a href="dhcp.html" class="drawer-link"><span class="dl-icon">📋</span> DHCP</a>
+    <a href="nat.html"  class="drawer-link"><span class="dl-icon">🔄</span> NAT / PAT</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M6 · Seguridad</div>
+    <a href="acl.html" class="drawer-link"><span class="dl-icon">🛡️</span> ACLs</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M7 · WAN &amp; QoS</div>
+    <a href="wan.html" class="drawer-link"><span class="dl-icon">🌍</span> WAN</a>
+    <a href="qos.html" class="drawer-link"><span class="dl-icon">📊</span> QoS</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M8 · Automatización</div>
+    <a href="m8-automatizacion.html" class="drawer-link"><span class="dl-icon">🤖</span> M8 — Vista General</a>
+    <a href="python-redes.html"      class="drawer-link"><span class="dl-icon">🐍</span> Python para Redes</a>
+    <a href="python-tema1.html"      class="drawer-link"><span class="dl-icon">01</span> Python Esencial</a>
+    <a href="python-tema2.html"      class="drawer-link"><span class="dl-icon">02</span> Netmiko SSH</a>
+    <a href="python-tema3.html"      class="drawer-link"><span class="dl-icon">03</span> NAPALM</a>
+    <a href="json-datos.html"        class="drawer-link"><span class="dl-icon">04</span> JSON y Datos</a>
+    <a href="json-apis-cisco.html"   class="drawer-link active"><span class="dl-icon">05</span> JSON APIs Cisco</a>
+    <a href="rest-apis.html"         class="drawer-link"><span class="dl-icon">06</span> REST APIs</a>
+    <a href="ansible-redes.html"     class="drawer-link"><span class="dl-icon">07</span> Ansible</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">⚡ Herramientas</div>
+    <a href="asistente.html"          class="drawer-link"><span class="dl-icon">🤖</span> Asistente IA</a>
+    <a href="netbot.html"             class="drawer-link"><span class="dl-icon">⚙️</span> NetBot Config</a>
+    <a href="calculadora.html"        class="drawer-link"><span class="dl-icon">🧮</span> Calculadora IP</a>
+    <a href="laboratorios-pkt.html"   class="drawer-link"><span class="dl-icon">🧪</span> Labs Packet Tracer</a>
+    <a href="../banco-preguntas.html" class="drawer-link"><span class="dl-icon">📝</span> Banco de Preguntas</a></div>
+</nav>
+
+<header class="navbar">
+  <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
+  <a href="../index.html" class="navbar-brand">CISCO<span> ACADEMY</span></a>
+  <div class="navbar-spacer"></div>
+  <a href="json-datos.html" class="navbar-link">← JSON y Datos</a>
+</header>
+<div class="nav-spacer"></div>
+
+<!-- HERO -->
+<section class="class-hero" style="border-bottom:1px solid rgba(245,158,11,.2);">
+  <div class="class-hero-inner">
+    <div class="class-badge" style="color:#f59e0b;">M8 · AUTOMATIZACIÓN · TEMA 5 DE 7 · JSON AVANZADO</div>
+    <h1 class="class-title">JSON en <span class="class-title-accent" style="background:linear-gradient(135deg,#f59e0b,#00d4aa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Respuestas de APIs Cisco</span></h1>
+    <p class="class-subtitle">Analiza respuestas JSON reales de Cisco DNA Center API, IOS-XE RESTCONF y Meraki Dashboard API. Aprende a extraer información útil: interfaces, rutas, dispositivos y clientes usando Python.</p>
+    <div class="class-meta">
+      <span class="meta-item" style="border-color:rgba(245,158,11,.2);color:#f59e0b;">🌐 APIs Reales</span>
+      <span class="meta-item">🎯 CCNA Domain 6.2</span>
+      <span class="meta-item">⏱ ~90 min lectura</span>
+      <span class="meta-item">🧬 DNA/IOS-XE/Meraki</span>
+      <span class="meta-item">📊 Parseo Avanzado</span>
+    </div>
+  </div>
+</section>
+
+<!-- TABS -->
+<div class="py1-tabs-wrap">
+  <div class="py1-tabs-bar">
+    <button class="py1-tab-btn py1-active" onclick="showTabPy1('intro',this)">🌐 Intro</button>
+    <button class="py1-tab-btn" onclick="showTabPy1('dnac',this)">🧬 DNA Center</button>
+    <button class="py1-tab-btn" onclick="showTabPy1('iosxe',this)">⚙️ IOS-XE</button>
+    <button class="py1-tab-btn" onclick="showTabPy1('meraki',this)">☁️ Meraki</button>
+    <button class="py1-tab-btn" onclick="showTabPy1('extraccion',this)">🔍 Extracción</button>
+    <button class="py1-tab-btn" onclick="showTabPy1('proyecto',this)">🚀 Proyecto</button>
+    <button class="py1-tab-btn" onclick="showTabPy1('referencia',this)">📊 Referencia</button>
+    <button class="py1-tab-btn" onclick="showTabPy1('quiz',this)">🎯 Quiz</button>
+  </div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 1 — INTRO
+═══════════════════════════════════════════ -->
+<div id="tab-intro" class="py1-tab-content py1-active">
+<div class="content-block">
+  <h2 class="section-title">El Lenguaje Común de las APIs Cisco</h2>
+  <p>En la era de la red programable (Intent-Based Networking), los dispositivos Cisco ya no se configuran únicamente vía CLI. Las APIs REST devuelven datos estructurados en JSON, y tu trabajo como ingeniero de redes evolucionó: debes parsear estos JSON para extraer estados de interfaces, rutas, clientes wireless y topologías de red.</p>
+  <p>Cada plataforma Cisco habla JSON pero con dialectos diferentes. DNA Center devuelve estructuras profundas con metadados de intención. IOS-XE RESTCONF usa modelos YANG estandarizados. Meraki utiliza un formato plano y directo. Dominar los tres es dominar la visibilidad total de tu infraestructura.</p>
+
+  <div class="api-grid">
+    <div class="api-card">
+      <h3>🧬 Cisco DNA Center</h3>
+      <p>Plataforma de control centralizada. APIs de intención, topología, clientes e inventario. Devuelve JSON profundo con arrays anidados.</p>
+      <div class="api-endpoint">/dna/intent/api/v1/network-device</div>
+    </div>
+    <div class="api-card">
+      <h3>⚙️ IOS-XE RESTCONF</h3>
+      <p>API nativa en routers/switches Catalyst 9000. Acceso directo a modelos YANG (IETF y Cisco nativos). JSON estructurado según RFC 7951.</p>
+      <div class="api-endpoint">/restconf/data/Cisco-IOS-XE-native:native</div>
+    </div>
+    <div class="api-card">
+      <h3>☁️ Meraki Dashboard</h3>
+      <p>API cloud-first. JSON limpio y plano. Ideal para automatización de redes SD-WAN y wireless. Rate limiting estricto.</p>
+      <div class="api-endpoint">/api/v1/organizations/{orgId}/networks</div>
+    </div>
+  </div>
+
+  <h2 class="section-title">Anatomía de una Respuesta JSON Cisco</h2>
+  <p>Todas las APIs Cisco comparten patrones comunes: un código de respuesta HTTP, headers de autenticación (token Bearer), y un cuerpo JSON. La diferencia radica en la estructura de datos:</p>
+  
+  <div class="code-block">
+    <div class="code-label">Patrones de respuesta por plataforma</div>
+    <pre><code><span class="cmt"># DNA Center — Respuesta envuelta en "response"</span>
+{
+  <span class="key">"response"</span>: [
+    {
+      <span class="key">"managementIpAddress"</span>: <span class="str">"10.10.10.1"</span>,
+      <span class="key">"hostname"</span>: <span class="str">"c9300-switch-01"</span>,
+      <span class="key">"platformId"</span>: <span class="str">"C9300-48UXM"</span>
+    }
+  ],
+  <span class="key">"version"</span>: <span class="str">"1.0"</span>
+}
+
+<span class="cmt"># IOS-XE RESTCONF — Modelo YANG directo</span>
+{
+  <span class="key">"Cisco-IOS-XE-native:interfaces"</span>: {
+    <span class="key">"interface"</span>: [
+      {
+        <span class="key">"name"</span>: <span class="str">"GigabitEthernet1"</span>,
+        <span class="key">"ip"</span>: {<span class="key">"address"</span>: {<span class="key">"primary"</span>: {<span class="key">"address"</span>: <span class="str">"10.1.1.1"</span>}}}
+      }
+    ]
+  }
+}
+
+<span class="cmt"># Meraki — Array plano de objetos</span>
+[
+  {
+    <span class="key">"name"</span>: <span class="str">"Sede Central"</span>,
+    <span class="key">"id"</span>: <span class="str">"N_1234567890"</span>,
+    <span class="key">"timeZone"</span>: <span class="str">"America/Mexico_City"</span>
+  }
+]</code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Clave para el éxito</div>
+    <p>No memorices las estructuras. Usa <code>print(json.dumps(data, indent=2))</code> para visualizar el JSON devuelto, identifica el path de claves hasta tu dato objetivo (ej: <code>["response"][0]["managementIpAddress"]</code>), y luego accede programáticamente.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 2 — DNA CENTER
+═══════════════════════════════════════════ -->
+<div id="tab-dnac" class="py1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Cisco DNA Center API</h2>
+  <p>DNA Center es el cerebro de la red programable Cisco. Sus APIs devuelven JSON rico en metadatos. La clave está en entender que casi todas las respuestas vienen envueltas en un objeto <code>response</code> que contiene arrays de dispositivos, clientes o eventos.</p>
+
+  <div class="info-box dna">
+    <div class="info-box-title">🧬 Endpoints críticos para CCNA</div>
+    <ul style="margin:0;padding-left:1.2rem;">
+      <li><code>/dna/intent/api/v1/network-device</code> — Inventario completo</li>
+      <li><code>/dna/intent/api/v1/interface</code> — Detalles de interfaces</li>
+      <li><code>/dna/intent/api/v1/client-health</code> — Estado de clientes wireless</li>
+      <li><code>/dna/intent/api/v1/topology/physical-topology</code> — Topología L1</li>
+    </ul>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">Ejemplo real: Inventario de dispositivos</div>
+    <pre><code><span class="kw">import</span> requests
+<span class="kw">import</span> json
+
+<span class="cmt"># Token obtenido previamente via /dna/system/api/v1/auth/token</span>
+headers = {
+    <span class="str">"X-Auth-Token"</span>: <span class="str">"eyJ0eXAiOiJKV1Q..."</span>,
+    <span class="str">"Content-Type"</span>: <span class="str">"application/json"</span>
+}
+
+<span class="cmt"># Obtener todos los dispositivos gestionados</span>
+url = <span class="str">"https://dnac.example.com/dna/intent/api/v1/network-device"</span>
+response = requests.get(url, headers=headers, verify=<span class="kw">False</span>)
+data = response.json()
+
+<span class="cmt"># Extracción de datos críticos</span>
+dispositivos = data[<span class="str">"response"</span>]  <span class="cmt"># ¡Siempre está envuelto en "response"!</span>
+
+<span class="kw">for</span> device <span class="kw">in</span> dispositivos:
+    hostname = device[<span class="str">"hostname"</span>]
+    ip = device[<span class="str">"managementIpAddress"</span>]
+    plataforma = device.get(<span class="str">"platformId"</span>, <span class="str">"Desconocida"</span>)
+    estado = device[<span class="str">"reachabilityStatus"</span>]  <span class="cmt"># Reachable / Unreachable</span>
+    
+    <span class="fn">print</span>(<span class="str">f"{hostname:&lt;20} {ip:&lt;15} {plataforma:&lt;15} {estado}"</span>)</code></pre>
+  </div>
+
+  <h2 class="section-title">Extracción de Clientes Wireless</h2>
+  <p>El endpoint de client health devuelve métricas de conectividad y rendimiento. Es fundamental para troubleshooting automatizado:</p>
+
+  <div class="code-block">
+    <div class="code-label">Parseo de client health y conectividad</div>
+    <pre><code><span class="cmt"># Response de /dna/intent/api/v1/client-health</span>
+health_data = {
+    <span class="str">"response"</span>: [
+        {
+            <span class="str">"siteId"</span>: <span class="str">"global"</span>,
+            <span class="str">"scoreList"</span>: [
+                {
+                    <span class="str">"scoreCategory"</span>: <span class="str">" wired"</span>,
+                    <span class="str">"scoreValue"</span>: <span class="num">90</span>,
+                    <span class="str">"clientCount"</span>: <span class="num">45</span>
+                },
+                {
+                    <span class="str">"scoreCategory"</span>: <span class="str">" wireless"</span>,
+                    <span class="str">"scoreValue"</span>: <span class="num">85</span>,
+                    <span class="str">"clientCount"</span>: <span class="num">128</span>
+                }
+            ]
+        }
+    ]
+}
+
+<span class="cmt"># Extracción profunda</span>
+score_list = health_data[<span class="str">"response"</span>][<span class="num">0</span>][<span class="str">"scoreList"</span>]
+
+<span class="kw">for</span> categoria <span class="kw">in</span> score_list:
+    tipo = categoria[<span class="str">"scoreCategory"</span>].strip()
+    puntuacion = categoria[<span class="str">"scoreValue"</span>]
+    clientes = categoria[<span class="str">"clientCount"</span>]
+    
+    <span class="kw">if</span> puntuacion &lt; <span class="num">50</span>:
+        alerta = <span class="str">"🔴 CRÍTICO"</span>
+    <span class="kw">elif</span> puntuacion &lt; <span class="num">80</span>:
+        alerta = <span class="str">"🟡 ADVERTENCIA"</span>
+    <span class="kw">else</span>:
+        alerta = <span class="str">"🟢 ÓPTIMO"</span>
+    
+    <span class="fn">print</span>(<span class="str">f"{tipo:&lt;10} Score: {puntuacion} ({clientes} clientes) {alerta}"</span>)</code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚠️ Manejo de paginación</div>
+    <p>DNA Center pagina resultados grandes usando <code>offset</code> y <code>limit</code>. Siempre verifica si existe <code>response.pagination</code> o maneja el loop hasta que el array esté vacío para obtener el inventario completo.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 3 — IOS-XE RESTCONF
+═══════════════════════════════════════════ -->
+<div id="tab-iosxe" class="py1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">IOS-XE RESTCONF API</h2>
+  <p>RESTCONF (RFC 8040) proporciona una interfaz HTTP para acceder a modelos de datos YANG en dispositivos IOS-XE (Catalyst 9000, ISR 4000, ASR). El JSON devuelto sigue estrictamente la estructura del modelo YANG, con namespaces largos como <code>Cisco-IOS-XE-native</code>.</p>
+
+  <div class="info-box iosxe">
+    <div class="info-box-title">⚙️ Configuración previa en el dispositivo</div>
+    <pre style="background:rgba(0,0,0,.2);padding:10px;border-radius:6px;margin-top:8px;font-size:.75rem;color:#a8b4c8;">
+ip http server
+ip http secure-server
+restconf
+ip http authentication local
+</pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">Consumo RESTCONF con Python requests</div>
+    <pre><code><span class="kw">import</span> requests
+<span class="kw">import</span> json
+<span class="kw">from</span> requests.auth <span class="kw">import</span> HTTPBasicAuth
+
+<span class="cmt"># Datos del dispositivo</span>
+device = {
+    <span class="str">"host"</span>: <span class="str">"192.168.1.1"</span>,
+    <span class="str">"username"</span>: <span class="str">"admin"</span>,
+    <span class="str">"password"</span>: <span class="str">"Cisco123"</span>,
+    <span class="str">"port"</span>: <span class="num">443</span>
+}
+
+<span class="cmt"># Headers obligatorios para RESTCONF</span>
+headers = {
+    <span class="str">"Accept"</span>: <span class="str">"application/yang-data+json"</span>,
+    <span class="str">"Content-Type"</span>: <span class="str">"application/yang-data+json"</span>
+}
+
+<span class="cmt"># Obtener interfaces nativas</span>
+url = <span class="str">f"https://{device['host']}:{device['port']}/restconf/data/Cisco-IOS-XE-native:native/interface"</span>
+
+resp = requests.get(
+    url,
+    headers=headers,
+    auth=HTTPBasicAuth(device[<span class="str">"username"</span>], device[<span class="str">"password"</span>]),
+    verify=<span class="kw">False</span>
+)
+
+interfaces = resp.json()
+<span class="fn">print</span>(json.dumps(interfaces, indent=<span class="num">2</span>))  <span class="cmt"># Inspeccionar estructura</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Parseo de Interfaces y Estados</h2>
+  <p>El modelo YANG de interfaces devuelve arrays por tipo de interfaz (GigabitEthernet, Loopback, etc.), cada uno con su propio namespace:</p>
+
+  <div class="code-block">
+    <div class="code-label">Extracción de datos de interfaces</div>
+    <pre><code><span class="cmt"># Estructura típica de respuesta RESTCONF interfaces</span>
+data = {
+    <span class="str">"Cisco-IOS-XE-native:interface"</span>: {
+        <span class="str">"GigabitEthernet"</span>: [
+            {
+                <span class="str">"name"</span>: <span class="str">"0/0/0"</span>,
+                <span class="str">"description"</span>: <span class="str">"Uplink-Core"</span>,
+                <span class="str">"ip"</span>: {
+                    <span class="str">"address"</span>: {
+                        <span class="str">"primary"</span>: {
+                            <span class="str">"address"</span>: <span class="str">"10.1.1.1"</span>,
+                            <span class="str">"mask"</span>: <span class="str">"255.255.255.0"</span>
+                        }
+                    }
+                },
+                <span class="str">"shutdown"</span>: <span class="kw">False</span>  <span class="cmt"># Ausente si está activa</span>
+            },
+            {
+                <span class="str">"name"</span>: <span class="str">"0/0/1"</span>,
+                <span class="str">"description"</span>: <span class="str">"Unused"</span>,
+                <span class="str">"shutdown"</span>: <span class="kw">True</span>
+            }
+        ],
+        <span class="str">"Loopback"</span>: [
+            {<span class="str">"name"</span>: <span class="str">"0"</span>, <span class="str">"ip"</span>: {...}}
+        ]
+    }
+}
+
+<span class="cmt"># Normalizar datos de diferentes tipos de interfaz</span>
+interfaces_flat = []
+
+<span class="kw">for</span> intf_type, intf_list <span class="kw">in</span> data[<span class="str">"Cisco-IOS-XE-native:interface"</span>].items():
+    <span class="kw">for</span> intf <span class="kw">in</span> intf_list:
+        info = {
+            <span class="str">"tipo"</span>: intf_type,
+            <span class="str">"nombre"</span>: <span class="str">f"{intf_type}{intf['name']}"</span>,
+            <span class="str">"descripcion"</span>: intf.get(<span class="str">"description"</span>, <span class="str">"Sin descripción"</span>),
+            <span class="str">"activa"</span>: <span class="kw">not</span> intf.get(<span class="str">"shutdown"</span>, <span class="kw">False</span>),
+            <span class="str">"ip"</span>: <span class="str">"N/A"</span>
+        }
+        
+        <span class="cmt"># Extracción segura de IP (puede no existir)</span>
+        <span class="kw">if</span> <span class="str">"ip"</span> <span class="kw">in</span> intf <span class="kw">and</span> <span class="str">"address"</span> <span class="kw">in</span> intf[<span class="str">"ip"</span>]:
+            ip_data = intf[<span class="str">"ip"</span>][<span class="str">"address"</span>][<span class="str">"primary"</span>]
+            info[<span class="str">"ip"</span>] = <span class="str">f"{ip_data['address']}/{ip_data['mask']}"</span>
+        
+        interfaces_flat.append(info)
+
+<span class="cmt"># Reporte formateado</span>
+<span class="fn">print</span>(<span class="str">f"{'Interface':&lt;25} {'Estado':&lt;10} {'IP Address'}"</span>)
+<span class="kw">for</span> i <span class="kw">in</span> interfaces_flat:
+    estado = <span class="str">"UP"</span> <span class="kw">if</span> i[<span class="str">"activa"</span>] <span class="kw">else</span> <span class="str">"DOWN"</span>
+    <span class="fn">print</span>(<span class="str">f"{i['nombre']:&lt;25} {estado:&lt;10} {i['ip']}"</span>)</code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Patrón: Manejo de claves opcionales</div>
+    <p>En YANG/JSON muchas claves son opcionales (como <code>shutdown</code> o <code>description</code>). Usa siempre <code>.get()</code> con valores por defecto para evitar <code>KeyError</code> cuando parsees configuraciones variables.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 4 — MERAKI
+═══════════════════════════════════════════ -->
+<div id="tab-meraki" class="py1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Meraki Dashboard API</h2>
+  <p>La API de Meraki (cloud-managed) es la más simple de las tres. Devuelve arrays planos de objetos JSON sin envolturas adicionales. Es ideal para inventarios rápidos y automatización de redes SD-WAN.</p>
+
+  <div class="info-box meraki">
+    <div class="info-box-title">☁️ Autenticación y Rate Limiting</div>
+    <ul style="margin:0;padding-left:1.2rem;">
+      <li>Header <code>X-Cisco-Meraki-API-Key</code> en todas las peticiones</li>
+      <li>Rate limit: 5 llamadas por segundo (throttle automático necesario)</li>
+      <li>No requiere certificados locales (cloud proxy)</li>
+    </ul>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">Inventario de organización y redes</div>
+    <pre><code><span class="kw">import</span> requests
+<span class="kw">import</span> time
+
+API_KEY = <span class="str">"tu-api-key-aqui"</span>
+BASE_URL = <span class="str">"https://api.meraki.com/api/v1"</span>
+
+headers = {
+    <span class="str">"X-Cisco-Meraki-API-Key"</span>: API_KEY,
+    <span class="str">"Content-Type"</span>: <span class="str">"application/json"</span>
+}
+
+<span class="kw">def</span> <span class="fn">get_organizations</span>():
+    <span class="str">"""Obtiene todas las organizaciones accesibles"""</span>
+    url = <span class="str">f"{BASE_URL}/organizations"</span>
+    resp = requests.get(url, headers=headers)
+    <span class="kw">return</span> resp.json()  <span class="cmt"># Devuelve array directo [{}, {}]</span>
+
+<span class="kw">def</span> <span class="fn">get_networks</span>(org_id):
+    <span class="str">"""Obtiene redes de una organización"""</span>
+    url = <span class="str">f"{BASE_URL}/organizations/{org_id}/networks"</span>
+    resp = requests.get(url, headers=headers)
+    <span class="kw">return</span> resp.json()
+
+<span class="cmt"># Ejecución</span>
+orgs = get_organizations()
+<span class="kw">for</span> org <span class="kw">in</span> orgs:
+    <span class="fn">print</span>(<span class="str">f"\n🏢 Organización: {org['name']} (ID: {org['id']})"</span>)
+    
+    networks = get_networks(org[<span class="str">"id"</span>])
+    <span class="kw">for</span> net <span class="kw">in</span> networks:
+        <span class="fn">print</span>(<span class="str">f"   └─ 🌐 {net['name']:&lt;20} [{net['productTypes']}]"</span>)
+    
+    time.sleep(<span class="num">0.2</span>)  <span class="cmt"># Respetar rate limiting</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Dispositivos y Clientes</h2>
+  <p>Extracción de datos de switches, APs y MX (security appliances), incluyendo clientes conectados:</p>
+
+  <div class="code-block">
+    <div class="code-label">Parseo de dispositivos y topología clientes</div>
+    <pre><code><span class="kw">def</span> <span class="fn">get_devices</span>(network_id):
+    <span class="str">"""Obtiene equipos físicos (switches, APs, firewalls)"""</span>
+    url = <span class="str">f"{BASE_URL}/networks/{network_id}/devices"</span>
+    <span class="kw">return</span> requests.get(url, headers=headers).json()
+
+<span class="kw">def</span> <span class="fn">get_clients</span>(network_id, timespan=<span class="num">300</span>):
+    <span class="str">"""Clientes activos en los últimos X segundos"""</span>
+    url = <span class="str">f"{BASE_URL}/networks/{network_id}/clients"</span>
+    params = {<span class="str">"timespan"</span>: timespan}
+    <span class="kw">return</span> requests.get(url, headers=headers, params=params).json()
+
+<span class="cmt"># Procesamiento de datos</span>
+network_id = <span class="str">"N_1234567890"</span>
+
+<span class="cmt"># Dispositivos</span>
+devices = get_devices(network_id)
+inventory = []
+
+<span class="kw">for</span> dev <span class="kw">in</span> devices:
+    inventory.append({
+        <span class="str">"nombre"</span>: dev.get(<span class="str">"name"</span>, <span class="str">"Sin nombre"</span>),
+        <span class="str">"modelo"</span>: dev[<span class="str">"model"</span>],
+        <span class="str">"serial"</span>: dev[<span class="str">"serial"</span>],
+        <span class="str">"mac"</span>: dev[<span class="str">"mac"</span>],
+        <span class="str">"ip_lan"</span>: dev.get(<span class="str">"lanIp"</span>, <span class="str">"Desconocida"</span>),
+        <span class="str">"estado"</span>: <span class="str">"Online"</span> <span class="kw">if</span> dev.get(<span class="str">"status"</span>) == <span class="str">"online"</span> <span class="kw">else</span> <span class="str">"Offline"</span>
+    })
+
+<span class="cmt"># Clientes conectados (filtrar solo los con uso)</span>
+clients = get_clients(network_id)
+clientes_activos = [c <span class="kw">for</span> c <span class="kw">in</span> clients <span class="kw">if</span> c.get(<span class="str">"usage"</span>, {}).get(<span class="str">"sent"</span>, <span class="num">0</span>) &gt; <span class="num">0</span>]
+
+<span class="fn">print</span>(<span class="str">f"Dispositivos: {len(inventory)} | Clientes activos: {len(clientes_activos)}"</span>)</code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚠️ Datos potencialmente ausentes</div>
+    <p>Meraki omite claves completas si el valor es nulo (ej: <code>lanIp</code> para dispositivos offline). Nunca asumas que una clave existe; usa <code>.get()</code> siempre.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 5 — EXTRACCIÓN AVANZADA
+═══════════════════════════════════════════ -->
+<div id="tab-extraccion" class="py1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Técnicas de Extracción Avanzada</h2>
+  <p>Cuando automatizas redes heterogéneas (DNA + IOS-XE + Meraki), necesitas normalizar datos de estructuras JSON radicalmente diferentes. Aquí técnicas profesionales de parseo defensivo.</p>
+
+  <div class="code-block">
+    <div class="code-label">Funciones utilitarias para extracción segura</div>
+    <pre><code><span class="kw">def</span> <span class="fn">safe_get</span>(data, path, default=<span class="kw">None</span>):
+    <span class="str">"""
+    Extrae valor de un path anidado en dict sin lanzar KeyError.
+    Ej: safe_get(data, ["response", 0, "managementIpAddress"])
+    """</span>
+    current = data
+    <span class="kw">for</span> key <span class="kw">in</span> path:
+        <span class="kw">if</span> <span class="fn">isinstance</span>(current, <span class="fn">dict</span>) <span class="kw">and</span> key <span class="kw">in</span> current:
+            current = current[key]
+        <span class="kw">elif</span> <span class="fn">isinstance</span>(current, <span class="fn">list</span>) <span class="kw">and</span> <span class="fn">isinstance</span>(key, <span class="fn">int</span>) <span class="kw">and</span> <span class="num">0</span> &lt;= key &lt; <span class="fn">len</span>(current):
+            current = current[key]
+        <span class="kw">else</span>:
+            <span class="kw">return</span> default
+    <span class="kw">return</span> current
+
+<span class="kw">def</span> <span class="fn">normalizar_dispositivo</span>(api_type, raw_data):
+    <span class="str">"""Convierte cualquier formato Cisco a diccionario estándar"""</span>
+    
+    <span class="kw">if</span> api_type == <span class="str">"dnac"</span>:
+        <span class="kw">return</span> {
+            <span class="str">"id"</span>: raw_data.get(<span class="str">"id"</span>),
+            <span class="str">"hostname"</span>: raw_data.get(<span class="str">"hostname"</span>),
+            <span class="str">"ip"</span>: raw_data.get(<span class="str">"managementIpAddress"</span>),
+            <span class="str">"plataforma"</span>: raw_data.get(<span class="str">"platformId"</span>),
+            <span class="str">"estado"</span>: raw_data.get(<span class="str">"reachabilityStatus"</span>),
+            <span class="str">"fuente"</span>: <span class="str">"DNAC"</span>
+        }
+    
+    <span class="kw">elif</span> api_type == <span class="str">"meraki"</span>:
+        <span class="kw">return</span> {
+            <span class="str">"id"</span>: raw_data.get(<span class="str">"serial"</span>),
+            <span class="str">"hostname"</span>: raw_data.get(<span class="str">"name"</span>),
+            <span class="str">"ip"</span>: raw_data.get(<span class="str">"lanIp"</span>),
+            <span class="str">"plataforma"</span>: raw_data.get(<span class="str">"model"</span>),
+            <span class="str">"estado"</span>: raw_data.get(<span class="str">"status"</span>),
+            <span class="str">"fuente"</span>: <span class="str">"Meraki"</span>
+        }
+    
+    <span class="kw">elif</span> api_type == <span class="str">"iosxe"</span>:
+        <span class="cmt"># Para RESTCONF necesitas parsear el nombre completo</span>
+        nombre = <span class="str">f"{raw_data.get('type','Intf')}{raw_data.get('name','')}"</span>
+        ip_obj = safe_get(raw_data, [<span class="str">"ip"</span>, <span class="str">"address"</span>, <span class="str">"primary"</span>, <span class="str">"address"</span>])
+        
+        <span class="kw">return</span> {
+            <span class="str">"id"</span>: <span class="str">"N/A"</span>,
+            <span class="str">"hostname"</span>: nombre,
+            <span class="str">"ip"</span>: ip_obj <span class="kw">or</span> <span class="str">"N/A"</span>,
+            <span class="str">"plataforma"</span>: <span class="str">"IOS-XE"</span>,
+            <span class="str">"estado"</span>: <span class="str">"UP"</span> <span class="kw">if</span> <span class="kw">not</span> raw_data.get(<span class="str">"shutdown"</span>) <span class="kw">else</span> <span class="str">"DOWN"</span>,
+            <span class="str">"fuente"</span>: <span class="str">"RESTCONF"</span>
+        }
+    
+    <span class="kw">return</span> {}
+
+<span class="cmt"># Uso unificado</span>
+dnac_device = {<span class="str">"hostname"</span>: <span class="str">"sw01"</span>, <span class="str">"managementIpAddress"</span>: <span class="str">"10.0.0.5"</span>}
+standard = normalizar_dispositivo(<span class="str">"dnac"</span>, dnac_device)
+<span class="fn">print</span>(standard[<span class="str">"ip"</span>])  <span class="cmt"># 10.0.0.5</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Manejo de Errores en JSON</h2>
+  <p>Las APIs pueden devolver HTML en lugar de JSON (errores 500), JSON malformado, o estructuras inesperadas. Tu código debe ser defensivo:</p>
+
+  <div class="code-block">
+    <div class="code-label">Parseo defensivo con manejo de excepciones</div>
+    <pre><code><span class="kw">import</span> json
+<span class="kw">from</span> json <span class="kw">import</span> JSONDecodeError
+
+<span class="kw">def</span> <span class="fn">parse_api_response</span>(response_text):
+    <span class="str">"""Parsea respuesta HTTP con múltiples salvaguardas"""</span>
+    
+    <span class="cmt"># 1. Verificar si hay contenido</span>
+    <span class="kw">if</span> <span class="kw">not</span> response_text <span class="kw">or</span> response_text.strip() == <span class="str">""</span>:
+        <span class="kw">return</span> {<span class="str">"error"</span>: <span class="str">"Respuesta vacía"</span>, <span class="str">"data"</span>: <span class="kw">None</span>}
+    
+    <span class="cmt"># 2. Intentar parsear JSON</span>
+    <span class="kw">try</span>:
+        data = json.loads(response_text)
+    <span class="kw">except</span> JSONDecodeError <span class="kw">as</span> e:
+        <span class="kw">return</span> {
+            <span class="str">"error"</span>: <span class="str">f"JSON inválido: {e}"</span>,
+            <span class="str">"raw"</span>: response_text[:<span class="num">200</span>]  <span class="cmt"># Primeros 200 chars para debug</span>
+        }
+    <span class="kw">except</span> <span class="fn">Exception</span> <span class="kw">as</span> e:
+        <span class="kw">return</span> {<span class="str">"error"</span>: <span class="str">f"Error inesperado: {e}"</span>}
+    
+    <span class="cmt"># 3. Verificar estructura esperada (ej: DNA Center siempre tiene "response")</span>
+    <span class="kw">if</span> <span class="fn">isinstance</span>(data, <span class="fn">dict</span>) <span class="kw">and</span> <span class="str">"response"</span> <span class="kw">in</span> data:
+        <span class="kw">return</span> {<span class="str">"error"</span>: <span class="kw">None</span>, <span class="str">"data"</span>: data[<span class="str">"response"</span>], <span class="str">"type"</span>: <span class="str">"dnac"</span>}
+    
+    <span class="cmt"># 4. Si es array (Meraki), devolver directo</span>
+    <span class="kw">if</span> <span class="fn">isinstance</span>(data, <span class="fn">list</span>):
+        <span class="kw">return</span> {<span class="str">"error"</span>: <span class="kw">None</span>, <span class="str">"data"</span>: data, <span class="str">"type"</span>: <span class="str">"meraki"</span>}
+    
+    <span class="cmt"># 5. Si es dict plano (RESTCONF)</span>
+    <span class="kw">return</span> {<span class="str">"error"</span>: <span class="kw">None</span>, <span class="str">"data"</span>: data, <span class="str">"type"</span>: <span class="str">"iosxe"</span>}</code></pre>
+  </div>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">🎯</div>
+      <h3>Claves vs Valores</h3>
+      <p>Usa <code>.keys()</code> para inspeccionar qué datos disponibles tiene un dispositivo antes de acceder. Útil para debug de APIs desconocidas.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🔎</div>
+      <h3>Búsqueda recursiva</h3>
+      <p>Cuando no conoces la profundidad (ej: YANG anidado), usa funciones recursivas para encontrar claves específicas como <code>ip-address</code> en cualquier nivel.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">📊</div>
+      <h3>List Comprehensions</h3>
+      <p>Filtra dispositivos en una línea: <code>[d for d in devices if d.get('status') == 'online']</code>. Esencial para reportes rápidos.</p>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 6 — PROYECTO
+═══════════════════════════════════════════ -->
+<div id="tab-proyecto" class="py1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">🚀 Proyecto Final — Dashboard Unificado Multi-Plataforma</h2>
+  <p>Integra datos reales (o simulados) de DNA Center, IOS-XE y Meraki en un único reporte CSV/JSON unificado. Este es el patrón profesional usado en NetDevOps para obtener visibilidad 360°.</p>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Arquitectura del Proyecto</div>
+    <p>Tres módulos de extracción (uno por plataforma) → normalización a esquema común → exportación a CSV o envío a base de datos. Manejo centralizado de errores y logging.</p>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">dashboard_unificado.py — Extractor multi-API completo</div>
+    <pre><code><span class="cmt">#!/usr/bin/env python3</span>
+<span class="str">"""
+dashboard_unificado.py
+─────────────────────────────────────────────────
+Consolida inventario de DNA Center, IOS-XE y Meraki
+en formato estándar para análisis unificado.
+─────────────────────────────────────────────────
+"""</span>
+
+<span class="kw">import</span> json
+<span class="kw">import</span> csv
+<span class="kw">from</span> datetime <span class="kw">import</span> datetime
+
+<span class="cmt"># ══════════════════════════════════════════════════════
+# SECCIÓN 1 — DATOS SIMULADOS (reemplazar con llamadas reales)
+# ══════════════════════════════════════════════════════</span>
+
+<span class="kw">def</span> <span class="fn">get_dnac_devices</span>():
+    <span class="str">"""Simula respuesta de /dna/intent/api/v1/network-device"""</span>
+    <span class="kw">return</span> {
+        <span class="str">"response"</span>: [
+            {
+                <span class="str">"hostname"</span>: <span class="str">"C9300-Core-01"</span>,
+                <span class="str">"managementIpAddress"</span>: <span class="str">"10.1.1.10"</span>,
+                <span class="str">"platformId"</span>: <span class="str">"C9300-48P"</span>,
+                <span class="str">"reachabilityStatus"</span>: <span class="str">"Reachable"</span>,
+                <span class="str">"serialNumber"</span>: <span class="str">"FCW12345678"</span>
+            },
+            {
+                <span class="str">"hostname"</span>: <span class="str">"C9300-Core-02"</span>,
+                <span class="str">"managementIpAddress"</span>: <span class="str">"10.1.1.11"</span>,
+                <span class="str">"platformId"</span>: <span class="str">"C9300-48P"</span>,
+                <span class="str">"reachabilityStatus"</span>: <span class="str">"Unreachable"</span>,
+                <span class="str">"serialNumber"</span>: <span class="str">"FCW87654321"</span>
+            }
+        ]
+    }
+
+<span class="kw">def</span> <span class="fn">get_iosxe_interfaces</span>():
+    <span class="str">"""Simula respuesta RESTCONF de interfaces"""</span>
+    <span class="kw">return</span> {
+        <span class="str">"Cisco-IOS-XE-native:interface"</span>: {
+            <span class="str">"GigabitEthernet"</span>: [
+                {<span class="str">"name"</span>: <span class="str">"0/0/0"</span>, <span class="str">"ip"</span>: {<span class="str">"address"</span>: {<span class="str">"primary"</span>: {<span class="str">"address"</span>: <span class="str">"10.1.1.1"</span>}}}, <span class="str">"shutdown"</span>: <span class="kw">False</span>},
+                {<span class="str">"name"</span>: <span class="str">"0/0/1"</span>, <span class="str">"shutdown"</span>: <span class="kw">True</span>}
+            ],
+            <span class="str">"Loopback"</span>: [
+                {<span class="str">"name"</span>: <span class="str">"0"</span>, <span class="str">"ip"</span>: {<span class="str">"address"</span>: {<span class="str">"primary"</span>: {<span class="str">"address"</span>: <span class="str">"1.1.1.1"</span>}}}, <span class="str">"shutdown"</span>: <span class="kw">False</span>}
+            ]
+        }
+    }
+
+<span class="kw">def</span> <span class="fn">get_meraki_devices</span>():
+    <span class="str">"""Simula respuesta de /organizations/{id}/devices"""</span>
+    <span class="kw">return</span> [
+        {<span class="str">"name"</span>: <span class="str">"MX-Border-01"</span>, <span class="str">"model"</span>: <span class="str">"MX100"</span>, <span class="str">"serial"</span>: <span class="str">"Q2XX-XXXX-XXXX"</span>, <span class="str">"lanIp"</span>: <span class="str">"10.2.1.1"</span>, <span class="str">"status"</span>: <span class="str">"online"</span>},
+        {<span class="str">"name"</span>: <span class="str">"MR-AP-Floor2"</span>, <span class="str">"model"</span>: <span class="str">"MR52"</span>, <span class="str">"serial"</span>: <span class="str">"Q2XX-YYYY-YYYY"</span>, <span class="str">"lanIp"</span>: <span class="kw">None</span>, <span class="str">"status"</span>: <span class="str">"offline"</span>}
+    ]
+
+<span class="cmt"># ══════════════════════════════════════════════════════
+# SECCIÓN 2 — NORMALIZACIÓN
+# ══════════════════════════════════════════════════════</span>
+
+<span class="kw">def</span> <span class="fn">normalize_dnac</span>(data):
+    devices = []
+    <span class="kw">for</span> d <span class="kw">in</span> data.get(<span class="str">"response"</span>, []):
+        devices.append({
+            <span class="str">"fuente"</span>: <span class="str">"DNAC"</span>,
+            <span class="str">"nombre"</span>: d.get(<span class="str">"hostname"</span>, <span class="str">"N/A"</span>),
+            <span class="str">"ip"</span>: d.get(<span class="str">"managementIpAddress"</span>, <span class="str">"N/A"</span>),
+            <span class="str">"modelo"</span>: d.get(<span class="str">"platformId"</span>, <span class="str">"N/A"</span>),
+            <span class="str">"estado"</span>: d.get(<span class="str">"reachabilityStatus"</span>, <span class="str">"Unknown"</span>),
+            <span class="str">"id"</span>: d.get(<span class="str">"serialNumber"</span>, <span class="str">"N/A"</span>)
+        })
+    <span class="kw">return</span> devices
+
+<span class="kw">def</span> <span class="fn">normalize_iosxe</span>(data):
+    devices = []
+    interfaces = data.get(<span class="str">"Cisco-IOS-XE-native:interface"</span>, {})
+    
+    <span class="kw">for</span> intf_type, intf_list <span class="kw">in</span> interfaces.items():
+        <span class="kw">if</span> <span class="kw">not</span> <span class="fn">isinstance</span>(intf_list, <span class="fn">list</span>):
+            <span class="kw">continue</span>
+        <span class="kw">for</span> intf <span class="kw">in</span> intf_list:
+            ip = safe_get(intf, [<span class="str">"ip"</span>, <span class="str">"address"</span>, <span class="str">"primary"</span>, <span class="str">"address"</span>], <span class="str">"N/A"</span>)
+            devices.append({
+                <span class="str">"fuente"</span>: <span class="str">"IOS-XE"</span>,
+                <span class="str">"nombre"</span>: <span class="str">f"{intf_type}{intf['name']}"</span>,
+                <span class="str">"ip"</span>: ip,
+                <span class="str">"modelo"</span>: intf_type,
+                <span class="str">"estado"</span>: <span class="str">"UP"</span> <span class="kw">if</span> <span class="kw">not</span> intf.get(<span class="str">"shutdown"</span>) <span class="kw">else</span> <span class="str">"DOWN"</span>,
+                <span class="str">"id"</span>: <span class="str">"N/A"</span>
+            })
+    <span class="kw">return</span> devices
+
+<span class="kw">def</span> <span class="fn">normalize_meraki</span>(data):
+    <span class="kw">return</span> [{
+        <span class="str">"fuente"</span>: <span class="str">"Meraki"</span>,
+        <span class="str">"nombre"</span>: d.get(<span class="str">"name"</span>, <span class="str">"Unnamed"</span>),
+        <span class="str">"ip"</span>: d.get(<span class="str">"lanIp"</span>) <span class="kw">or</span> <span class="str">"DHCP/Unknown"</span>,
+        <span class="str">"modelo"</span>: d[<span class="str">"model"</span>],
+        <span class="str">"estado"</span>: d.get(<span class="str">"status"</span>, <span class="str">"unknown"</span>).capitalize(),
+        <span class="str">"id"</span>: d[<span class="str">"serial"</span>]
+    } <span class="kw">for</span> d <span class="kw">in</span> data]
+
+<span class="kw">def</span> <span class="fn">safe_get</span>(data, path, default=<span class="kw">None</span>):
+    current = data
+    <span class="kw">for</span> key <span class="kw">in</span> path:
+        <span class="kw">if</span> <span class="fn">isinstance</span>(current, <span class="fn">dict</span>) <span class="kw">and</span> key <span class="kw">in</span> current:
+            current = current[key]
+        <span class="kw">else</span>:
+            <span class="kw">return</span> default
+    <span class="kw">return</span> current
+
+<span class="cmt"># ══════════════════════════════════════════════════════
+# SECCIÓN 3 — ORQUESTACIÓN Y EXPORTACIÓN
+# ══════════════════════════════════════════════════════</span>
+
+<span class="kw">def</span> <span class="fn">main</span>():
+    <span class="fn">print</span>(<span class="str">"🔍 Recolectando datos de APIs Cisco..."</span>)
+    
+    <span class="cmt"># Extracción</span>
+    raw_dnac = get_dnac_devices()
+    raw_iosxe = get_iosxe_interfaces()
+    raw_meraki = get_meraki_devices()
+    
+    <span class="cmt"># Normalización</span>
+    todos_dispositivos = []
+    todos_dispositivos.extend(normalize_dnac(raw_dnac))
+    todos_dispositivos.extend(normalize_iosxe(raw_iosxe))
+    todos_dispositivos.extend(normalize_meraki(raw_meraki))
+    
+    <span class="cmt"># Reporte en consola</span>
+    <span class="fn">print</span>(<span class="str">f"\n📊 Total de entidades descubiertas: {len(todos_dispositivos)}"</span>)
+    <span class="fn">print</span>(<span class="str">f"{'Fuente':&lt;12} {'Nombre':&lt;20} {'IP':&lt;16} {'Estado':&lt;12} {'Modelo'}"</span>)
+    <span class="fn">print</span>(<span class="str">"-"</span> * <span class="num">70</span>)
+    
+    <span class="kw">for</span> dev <span class="kw">in</span> sorted(todos_dispositivos, key=<span class="kw">lambda</span> x: x[<span class="str">"fuente"</span>]):
+        <span class="fn">print</span>(<span class="str">f"{dev['fuente']:&lt;12} {dev['nombre']:&lt;20} {dev['ip']:&lt;16} {dev['estado']:&lt;12} {dev['modelo']}"</span>)
+    
+    <span class="cmt"># Exportación a CSV</span>
+    timestamp = datetime.now().strftime(<span class="str">"%Y%m%d_%H%M%S"</span>)
+    filename = <span class="str">f"inventario_unificado_{timestamp}.csv"</span>
+    
+    <span class="kw">with</span> <span class="fn">open</span>(filename, <span class="str">'w'</span>, newline=<span class="str">''</span>) <span class="kw">as</span> f:
+        writer = csv.DictWriter(f, fieldnames=[<span class="str">"fuente"</span>, <span class="str">"nombre"</span>, <span class="str">"ip"</span>, <span class="str">"modelo"</span>, <span class="str">"estado"</span>, <span class="str">"id"</span>])
+        writer.writeheader()
+        writer.writerows(todos_dispositivos)
+    
+    <span class="fn">print</span>(<span class="str">f"\n✅ Exportado a: {filename}"</span>)
+
+<span class="kw">if</span> __name__ == <span class="str">"__main__"</span>:
+    main()</code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">▶️ Ejecución y Resultado Esperado</div>
+    <p>Ejecuta <code>python dashboard_unificado.py</code>. El script generará un CSV con columnas estandarizadas aunque los datos vengan de fuentes heterogéneas. Este patrón es el fundamento de cualquier CMDB (Configuration Management Database) automatizado.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 7 — REFERENCIA
+═══════════════════════════════════════════ -->
+<div id="tab-referencia" class="py1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Mapeo JSON vs Python — Referencia Rápida</h2>
+  <div id="refTablePy1"></div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 8 — QUIZ
+═══════════════════════════════════════════ -->
+<div id="tab-quiz" class="py1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Quiz — JSON y APIs Cisco</h2>
+  <p style="font-size:.83rem;color:#6b7a9a;margin-bottom:20px;">10 preguntas estilo CCNA Domain 6.2. Evalúa tu capacidad de parsear respuestas reales de APIs Cisco.</p>
+  <div id="quizContainerPy1"></div>
+</div>
+</div>
+
+</div><!-- /.tabs-wrap -->
+
+<script>
+// ── NAVEGACIÓN DRAWER ────────────────────────────────
+function ccnaToggle() {
+  document.getElementById('ccnaDrawer').classList.toggle('open');
+  document.getElementById('ccnaOverlay').classList.toggle('show');
+}
+function ccnaClose() {
+  document.getElementById('ccnaDrawer').classList.remove('open');
+  document.getElementById('ccnaOverlay').classList.remove('show');
+}
+
+// ── TABS ──────────────────────────────────────────────
+function showTabPy1(id, btn) {
+  document.querySelectorAll('.py1-tab-content').forEach(t => t.classList.remove('py1-active'));
+  document.querySelectorAll('.py1-tab-btn').forEach(b => b.classList.remove('py1-active'));
+  document.getElementById('tab-' + id).classList.add('py1-active');
+  if (btn) btn.classList.add('py1-active');
+}
+
+// ── TABLA DE REFERENCIA ──────────────────────────────
+function buildRefTable() {
+  const container = document.getElementById('refTablePy1');
+  if (!container) return;
+  
+  const secciones = [
+    {
+      titulo: 'MAPEO JSON ↔ PYTHON',
+      cols: ['Tipo JSON','Tipo Python','Ejemplo en APIs Cisco'],
+      filas: [
+        ['Object <code>{}</code>','<code>dict</code>','<code>{"hostname": "R1"}</code> → diccionario'],
+        ['Array <code>[]</code>','<code>list</code>','<code>[{"ip": "10.0.0.1"}]</code> → lista de dicts'],
+        ['string','<code>str</code>','"C9300-48P"'],
+        ['number (int)','<code>int</code>','VLAN ID 10'],
+        ['number (float)','<code>float</code>','CPU usage 45.5'],
+        ['boolean','<code>bool</code>','<code>true</code> → <code>True</code>'],
+        ['null','<code>None</code>','IP no asignada'],
+      ]
+    },
+    {
+      titulo: 'RUTAS DE ACCESO COMUNES',
+      cols: ['Plataforma','Path típico','Notas'],
+      filas: [
+        ['DNA Center','<code>["response"][0]["hostname"]</code>','Siempre validar que response existe'],
+        ['DNA Client','<code>["response"][0]["scoreList"][0]["scoreValue"]</code>','Navegación profunda'],
+        ['IOS-XE','<code>["Cisco-IOS-XE-native:interface"]["GigabitEthernet"]</code>','Namespace largo'],
+        ['IOS-XE IP','<code>[...]["ip"]["address"]["primary"]["address"]</code>','Estructura YANG anidada'],
+        ['Meraki','<code>[0]["name"]</code>','Array plano directo'],
+        ['Meraki Serial','<code>[0]["serial"]</code>','ID único del device'],
+      ]
+    },
+    {
+      titulo: 'MÉTODOS DEFENSIVOS',
+      cols: ['Problema','Solución','Código'],
+      filas: [
+        ['Clave no existe','<code>.get()</code>','<code>data.get("ip", "N/A")</code>'],
+        ['Navegación profunda','Función auxiliar','<code>safe_get(data, ["a","b"], default)</code>'],
+        ['JSON malformado','<code>try/except</code>','<code>except json.JSONDecodeError</code>'],
+        ['Array vacío','Verificar len','<code>if data["response"]:</code>'],
+        ['Tipo inesperado','<code>isinstance()</code>','<code>isinstance(x, dict)</code>'],
+      ]
+    },
+    {
+      titulo: 'AUTENTICACIÓN POR API',
+      cols: ['Plataforma','Header/Auth','Ejemplo'],
+      filas: [
+        ['DNA Center','X-Auth-Token','Header Bearer token'],
+        ['IOS-XE RESTCONF','HTTPBasicAuth','Usuario/Password local'],
+        ['Meraki','X-Cisco-Meraki-API-Key','Header simple'],
+        ['Content-Type','application/yang-data+json','RESTCONF específico'],
+      ]
+    }
+  ];
+
+  let html = '';
+  secciones.forEach(sec => {
+    html += `<h3 style="font-family:Orbitron,sans-serif;font-size:.8rem;color:#f59e0b;letter-spacing:2px;margin:24px 0 10px;text-transform:uppercase;">▸ ${sec.titulo}</h3>`;
+    html += `<div class="table-wrap"><table class="ref-table"><thead><tr>${sec.cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>`;
+    sec.filas.forEach(f => { html += '<tr>' + f.map(c=>`<td>${c}</td>`).join('') + '</tr>'; });
+    html += '</tbody></table></div>';
+  });
+  container.innerHTML = html;
+}
+
+// ── QUIZ ─────────────────────────────
+function initQuiz() {
+  const container = document.getElementById('quizContainerPy1');
+  if (!container) return;
+
+  const qs = [
+    {
+      q: 'En una respuesta DNA Center, ¿dónde se encuentra típicamente el array de dispositivos?',
+      opts: ['En la raíz del JSON','Dentro de la clave "response"','En "data.devices"','En "result.items"'],
+      ans: 1,
+      exp: 'DNA Center envuelve casi todas sus respuestas en un objeto con clave <code>"response"</code>. El array de dispositivos está en <code>data["response"]</code>.'
+    },
+    {
+      q: '¿Cómo accedes de forma segura a una IP que podría no existir en un diccionario Python?',
+      opts: ['data["ip"]','data.ip','data.get("ip", "N/A")','data["ip"] or "N/A"'],
+      ans: 2,
+      exp: 'El método <code>.get()</code> permite especificar un valor por defecto si la clave no existe, evitando <code>KeyError</code>.'
+    },
+    {
+      q: 'En IOS-XE RESTCONF, ¿cuál es el namespace típico para interfaces nativas?',
+      opts: ['Cisco-IOS-XE-interfaces','Cisco-IOS-XE-native:interface','ietf-interfaces:interface','ios:native'],
+      ans: 1,
+      exp: 'IOS-XE RESTCONF usa <code>Cisco-IOS-XE-native:</code> como prefijo YANG para datos nativos del dispositivo.'
+    },
+    {
+      q: 'Meraki API devuelve datos en formato:',
+      opts: ['Siempre envuelto en {"data": []}','Objeto con "response"','Array plano de objetos JSON','XML únicamente'],
+      ans: 2,
+      exp: 'Meraki devuelve arrays JSON planos directamente (ej: <code>[{"name": "MX01"}, ...]</code>), sin envolturas adicionales.'
+    },
+    {
+      q: 'Tienes este JSON: <code>{"a": {"b": {"c": "valor"}}}</code>. ¿Cómo accedes a "valor"?',
+      opts: ['data["a"]["b"]["c"]','data.a.b.c','data["a"]["b"]["c"]["value"]','Ambas A y B son válidas en Python'],
+      ans: 3,
+      exp: 'En Python, puedes usar notación de corchetes <code>["a"]["b"]["c"]</code> o notación punto <code>.a.b.c</code> (si usas clases/dataclasses). Para diccionarios puros, ambas funcionan si usas librerías como <code>box</code> o <code>dotty</code>, pero con diccionarios estándar solo los corchetes funcionan directamente. La respuesta más precisa es que la notación de corchetes es la estándar.'
+    },
+    {
+      q: '¿Qué código Python convierte un string JSON en un diccionario?',
+      opts: ['json.dumps()','json.loads()','json.parse()','dict(json)'],
+      ans: 1,
+      exp: '<code>json.loads()</code> (load string) convierte una cadena JSON en objetos Python. <code>dumps</code> hace lo contrario.'
+    },
+    {
+      q: 'Al parsear RESTCONF, encuentras una clave <code>"shutdown": true</code>. ¿Qué significa?',
+      opts: ['La interfaz está activa','La interfaz está administrativamente down','El equipo está apagado','Hay un error de conexión'],
+      ans: 1,
+      exp: 'En modelos YANG de interfaces Cisco, <code>shutdown: true</code> indica que la interfaz está administrativamente apagada (shutdown). Si la clave está ausente, está activa.'
+    },
+    {
+      q: '¿Cuál es el rate limit típico de la API de Meraki?',
+      opts: ['100 peticiones/segundo','5 peticiones/segundo','Sin límite','1 petición/minuto'],
+      ans: 1,
+      exp: 'Meraki tiene un rate limit de aproximadamente 5 llamadas por segundo por organización. Es obligatorio implementar <code>time.sleep()</code> entre llamadas.'
+    },
+    {
+      q: 'Tienes un array <code>devices = [{"ip": "10.0.0.1"}, {"ip": "10.0.0.2"}]</code>. ¿Cómo extraes solo las IPs?',
+      opts: ['devices["ip"]','[d["ip"] for d in devices]','devices.get("ip")','map(devices, "ip")'],
+      ans: 1,
+      exp: 'La list comprehension <code>[d["ip"] for d in devices]</code> es la forma pythónica de extraer un campo de todos los objetos en una lista.'
+    },
+    {
+      q: '¿Qué header HTTP es obligatorio para autenticar en DNA Center?',
+      opts: ['Authorization: Basic','X-Auth-Token','X-Cisco-Meraki-API-Key','Bearer: token'],
+      ans: 1,
+      exp: 'DNA Center usa <code>X-Auth-Token</code> (obtenido previamente via <code>/dna/system/api/v1/auth/token</code>) para autenticar peticiones subsequentes.'
+    }
+  ];
+
+  let html = '';
+  qs.forEach((q, i) => {
+    html += `<div class="quiz-question" id="qpy${i}">
+      <div class="quiz-q-num">PREGUNTA ${i+1} DE ${qs.length} · M8 Tema 5</div>
+      <div class="quiz-q-text">${q.q}</div>
+      <div class="quiz-opts">
+        ${q.opts.map((o,j) => `<button class="quiz-opt" data-qi="${i}" data-sel="${j}" data-ans="${q.ans}">${o}</button>`).join('')}
+      </div>
+    </div>`;
+  });
+  container.innerHTML = html;
+
+  window._py1Exp = {};
+  qs.forEach((q, i) => { window._py1Exp[i] = q.exp; });
+
+  container.querySelectorAll('.quiz-opt').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const qi  = parseInt(this.dataset.qi);
+      const sel = parseInt(this.dataset.sel);
+      const ans = parseInt(this.dataset.ans);
+      const qDiv = document.getElementById('qpy' + qi);
+      const btns = qDiv.querySelectorAll('.quiz-opt');
+      
+      btns.forEach(b => b.disabled = true);
+      btns[sel].classList.add(sel === ans ? 'correct' : 'wrong');
+      if (sel !== ans) btns[ans].classList.add('correct');
+      
+      const expDiv = document.createElement('div');
+      expDiv.className = 'quiz-explanation';
+      expDiv.innerHTML = `<strong>${sel===ans ? '✅ Correcto!' : '❌ Incorrecto.'}</strong> ${window._py1Exp[qi]}`;
+      qDiv.appendChild(expDiv);
+    });
+  });
+}
+
+// ── INICIALIZACIÓN ────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  buildRefTable();
+  initQuiz();
+});
+</script>
+</body>
+</html>
