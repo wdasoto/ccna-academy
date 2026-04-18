@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTTP y REST — Fundamentos · M8 T1 | CCNA Academy</title>
+  <meta name="description" content="Domina HTTP y REST APIs desde cero para redes Cisco. Verbos GET POST PUT PATCH DELETE, códigos de estado, headers, modelo cliente-servidor y RESTCONF. CCNA Domain 6.5.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── HERO acento REST ── */
+.class-hero { background: linear-gradient(135deg, #06080f 0%, #080d18 60%, #0a1020 100%); }
+
+/* ── REST ACCENT TOKENS ── */
+:root{ --rest:#38bdf8; --rest-d:#0ea5e9; --rest-glow:rgba(56,189,248,.12); }
+
+/* ── BASE CLASS STYLES ── */
+body{font-family:'Exo 2',sans-serif;background:#07090f;color:#e2e8f0;}
+.class-hero{padding:56px 24px 48px;border-bottom:1px solid rgba(56,189,248,.08);position:relative;overflow:hidden;}
+.class-hero::before{content:'';position:absolute;top:-60px;right:-80px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(56,189,248,.06) 0%,transparent 70%);pointer-events:none;}
+.class-hero-inner{max-width:900px;margin:0 auto;position:relative;z-index:1;}
+.class-badge{font-family:'Share Tech Mono',monospace;font-size:.63rem;color:#38bdf8;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;}
+.class-title{font-family:'Orbitron',sans-serif;font-size:clamp(1.6rem,3.8vw,2.6rem);font-weight:900;letter-spacing:3px;color:#c2d0e8;margin-bottom:12px;line-height:1.1;}
+.class-subtitle{font-size:.92rem;color:#6b7a9a;line-height:1.72;margin-bottom:20px;max-width:700px;}
+.class-meta{display:flex;gap:12px;flex-wrap:wrap;}
+.meta-item{font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#4a5780;padding:4px 10px;border:1px solid rgba(56,189,248,.15);border-radius:4px;}
+.rest1-tabs-wrap{max-width:1100px;margin:0 auto;padding:0 16px 40px;}
+.rest1-tabs-bar{display:flex;gap:4px;padding:20px 0 0;flex-wrap:wrap;border-bottom:1px solid rgba(56,189,248,.12);margin-bottom:0;}
+.rest1-tab-btn{padding:8px 13px;border-radius:8px 8px 0 0;font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#4a5780;background:none;border:1px solid transparent;cursor:pointer;transition:all .18s;white-space:nowrap;border-bottom:none;}
+.rest1-tab-btn:hover{color:#c2d0e8;background:rgba(56,189,248,.06);}
+.rest1-tab-btn.rest1-active{color:#38bdf8;background:#0d1220;border-color:rgba(56,189,248,.25);border-bottom:1px solid #0d1220;}
+.rest1-tab-content{display:none;background:#0d1220;border:1px solid rgba(56,189,248,.08);border-top:none;border-radius:0 0 12px 12px;padding:32px;}
+.rest1-tab-content.rest1-active{display:block;}
+.content-block{max-width:880px;}
+.section-title{font-family:'Orbitron',sans-serif;font-size:.95rem;color:#38bdf8;letter-spacing:2px;margin:28px 0 14px;padding-bottom:8px;border-bottom:1px solid rgba(56,189,248,.15);}
+.section-title:first-child{margin-top:0;}
+p{color:#8294b8;line-height:1.75;margin-bottom:14px;font-size:.9rem;}
+ul,ol{color:#8294b8;padding-left:1.4rem;margin-bottom:14px;font-size:.9rem;}
+li{margin-bottom:5px;line-height:1.65;}
+strong{color:#c2d0e8;}
+code{font-family:'Share Tech Mono',monospace;font-size:.82rem;background:rgba(56,189,248,.1);color:#38bdf8;padding:1px 6px;border-radius:4px;border:1px solid rgba(56,189,248,.2);}
+
+/* INFO BOXES */
+.info-box{border-radius:8px;padding:14px 18px;margin:18px 0;border-left:3px solid;}
+.info-box.tip{background:rgba(56,189,248,.06);border-color:#38bdf8;}
+.info-box.warning{background:rgba(251,191,36,.05);border-color:#fbbf24;}
+.info-box-title{font-family:'Share Tech Mono',monospace;font-size:.73rem;color:#38bdf8;margin-bottom:8px;}
+.info-box.warning .info-box-title{color:#fbbf24;}
+
+/* CODE BLOCKS */
+.code-block{background:#050810;border:1px solid rgba(56,189,248,.15);border-left:3px solid #38bdf8;border-radius:8px;padding:0;margin:16px 0;overflow:hidden;}
+.code-label{background:rgba(56,189,248,.08);padding:8px 16px;font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#4a5780;letter-spacing:2px;text-transform:uppercase;border-bottom:1px solid rgba(56,189,248,.1);}
+.code-block pre{margin:0;padding:18px;overflow-x:auto;}
+.code-block code{background:none;border:none;padding:0;color:#a8b4c8;font-size:.79rem;line-height:1.8;display:block;}
+
+/* SYNTAX HIGHLIGHTING */
+.cmt{color:#3a4a60;font-style:italic;}
+.kw {color:#c792ea;}
+.fn {color:#82aaff;}
+.str{color:#c3e88d;}
+.num{color:#f78c6c;}
+
+/* CONCEPT GRID */
+.concept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin:16px 0;}
+.concept-card{background:#090d1a;border:1px solid rgba(56,189,248,.1);border-radius:10px;padding:16px;}
+.concept-icon{font-size:1.8rem;margin-bottom:8px;}
+.concept-card h3{font-family:'Share Tech Mono',monospace;font-size:.77rem;color:#38bdf8;margin-bottom:8px;}
+.concept-card p{font-size:.8rem;margin:0;}
+
+/* METHOD GRID (verbs) */
+.method-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin:16px 0;}
+.method-card{background:#090d1a;border:1px solid rgba(56,189,248,.1);border-radius:10px;padding:16px;position:relative;overflow:hidden;}
+.method-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#38bdf8,#0ea5e9);opacity:.6;}
+.method-verb{font-family:'Orbitron',sans-serif;font-size:1.1rem;color:#38bdf8;margin-bottom:6px;}
+.method-crud{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:#0ea5e9;border:1px solid rgba(56,189,248,.2);display:inline-block;padding:2px 8px;border-radius:4px;margin-bottom:8px;}
+.method-card p{font-size:.82rem;margin:0;color:#8294b8;line-height:1.6;}
+.method-idem{font-family:'Share Tech Mono',monospace;font-size:.62rem;color:#34d399;margin-top:8px;display:block;}
+
+/* STATUS GRID */
+.status-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin:16px 0;}
+.status-card{background:#090d1a;border:1px solid rgba(56,189,248,.1);border-radius:10px;padding:14px;}
+.status-range{font-family:'Orbitron',sans-serif;font-size:.85rem;color:#38bdf8;margin-bottom:6px;}
+.status-card ul{font-size:.82rem;margin:0;padding-left:1.2rem;color:#8294b8;}
+.status-card li{margin-bottom:4px;}
+
+/* REF TABLE */
+.table-wrap{overflow-x:auto;margin:16px 0;}
+.ref-table{width:100%;border-collapse:collapse;font-size:.8rem;}
+.ref-table th{background:#090d1a;color:#38bdf8;font-family:'Share Tech Mono',monospace;font-size:.67rem;padding:10px 12px;text-align:left;border:1px solid rgba(56,189,248,.15);letter-spacing:1px;}
+.ref-table td{padding:9px 12px;border:1px solid rgba(255,255,255,.04);color:#8294b8;}
+.ref-table tr:hover td{background:rgba(56,189,248,.04);}
+.ref-table code{font-size:.77rem;}
+
+/* QUIZ */
+.quiz-question{background:#090d1a;border:1px solid rgba(56,189,248,.12);border-radius:10px;padding:20px;margin-bottom:14px;}
+.quiz-q-num{font-family:'Share Tech Mono',monospace;font-size:.62rem;color:#374060;margin-bottom:8px;}
+.quiz-q-text{font-size:.9rem;color:#c2d0e8;margin-bottom:14px;line-height:1.6;}
+.quiz-opts{display:flex;flex-direction:column;gap:7px;}
+.quiz-opt{padding:10px 14px;border-radius:7px;border:1px solid rgba(56,189,248,.12);background:#0d1220;color:#6b7a9a;cursor:pointer;font-size:.84rem;text-align:left;transition:all .15s;font-family:'Exo 2',sans-serif;}
+.quiz-opt:hover:not(:disabled){border-color:rgba(56,189,248,.4);color:#c2d0e8;}
+.quiz-opt.correct{border-color:#34d399;background:rgba(52,211,153,.08);color:#34d399;}
+.quiz-opt.wrong{border-color:#f87171;background:rgba(248,113,113,.08);color:#f87171;}
+.quiz-explanation{margin-top:10px;padding:10px 14px;background:rgba(56,189,248,.07);border-left:3px solid #38bdf8;border-radius:6px;font-size:.82rem;color:#a0aec0;line-height:1.65;}
+
+/* HTTP DIAGRAM */
+.http-flow{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin:20px 0;padding:20px;background:#090d1a;border-radius:10px;border:1px solid rgba(56,189,248,.1);}
+.http-box{background:#0d1220;border:1px solid rgba(56,189,248,.2);border-radius:8px;padding:14px 18px;text-align:center;min-width:110px;}
+.http-box-label{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:#38bdf8;margin-bottom:4px;}
+.http-box-val{font-size:.8rem;color:#c2d0e8;}
+.http-arrow{font-size:1.4rem;color:#38bdf8;}
+
+/* Navbar y Drawer */
+.navbar{position:fixed;top:0;left:0;right:0;height:56px;background:#080a10;border-bottom:1px solid rgba(56,189,248,.1);display:flex;align-items:center;padding:0 24px;z-index:1000;}
+.navbar-toggle{background:none;border:1px solid rgba(56,189,248,.3);color:#38bdf8;padding:6px 12px;border-radius:6px;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:.75rem;margin-right:16px;}
+.navbar-brand{font-family:'Orbitron',sans-serif;font-weight:700;color:#38bdf8;text-decoration:none;font-size:1.1rem;}
+.navbar-brand span{color:#0ea5e9;}
+.navbar-spacer{flex:1;}
+.navbar-link{color:#6b7a9a;text-decoration:none;font-size:.8rem;transition:color .2s;}
+.navbar-link:hover{color:#c2d0e8;}
+.nav-spacer{height:56px;}
+.ccna-drawer{position:fixed;top:0;left:0;bottom:0;width:280px;background:#0d1220;border-right:1px solid rgba(56,189,248,.2);transform:translateX(-100%);transition:transform .3s;z-index:2000;overflow-y:auto;}
+.ccna-drawer.open{transform:translateX(0);}
+.ccna-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);opacity:0;visibility:hidden;transition:all .3s;z-index:1500;}
+.ccna-overlay.show{opacity:1;visibility:visible;}
+.drawer-header{padding:20px;border-bottom:1px solid rgba(56,189,248,.2);display:flex;justify-content:space-between;align-items:center;}
+.drawer-header h2{font-family:'Orbitron',sans-serif;font-size:.8rem;color:#38bdf8;margin:0;letter-spacing:2px;}
+.drawer-close{background:none;border:none;color:#6b7a9a;font-size:1.2rem;cursor:pointer;}
+.drawer-section{padding:16px;border-bottom:1px solid rgba(56,189,248,.1);}
+.drawer-section-title{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#374060;margin-bottom:12px;letter-spacing:1px;text-transform:uppercase;}
+.drawer-link{display:block;padding:10px 12px;color:#8294b8;text-decoration:none;font-size:.85rem;border-radius:6px;transition:all .2s;margin-bottom:4px;}
+.drawer-link:hover{background:rgba(56,189,248,.1);color:#c2d0e8;}
+.drawer-link.active{background:rgba(56,189,248,.2);color:#38bdf8;border-left:3px solid #38bdf8;}
+.dl-icon{margin-right:8px;}
+
+@media(max-width:680px){
+  .rest1-tab-btn{font-size:.6rem;padding:6px 9px;}
+  .rest1-tab-content{padding:18px 12px;}
+  .concept-grid{grid-template-columns:1fr;}
+  .method-grid{grid-template-columns:1fr;}
+  .status-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
+<nav class="ccna-drawer" id="ccnaDrawer">
+  <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
+  <div class="drawer-section"><div class="drawer-section-title">General</div>
+    <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M1 · Fundamentos</div>
+    <a href="fundamentos.html" class="drawer-link"><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
+    <a href="subnetting.html"  class="drawer-link"><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
+    <a href="ipv6.html"        class="drawer-link"><span class="dl-icon">6️⃣</span> IPv6</a>
+    <a href="arp.html"         class="drawer-link"><span class="dl-icon">📡</span> ARP</a>
+    <a href="rip.html"         class="drawer-link"><span class="dl-icon">🔄</span> RIP</a>
+    <a href="protocolos-internet.html" class="drawer-link"><span class="dl-icon">🌍</span> Protocolos Internet</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M2 · Dispositivos Cisco</div>
+    <a href="router.html"         class="drawer-link"><span class="dl-icon">📡</span> Routers Cisco</a>
+    <a href="switches-cisco.html" class="drawer-link"><span class="dl-icon">🔀</span> Switches Cisco</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M3 · Switching</div>
+    <a href="vlan.html"               class="drawer-link"><span class="dl-icon">🏷️</span> VLANs</a>
+    <a href="inter-vlan-routing.html" class="drawer-link"><span class="dl-icon">🔁</span> Inter-VLAN Routing</a>
+    <a href="stp.html"                class="drawer-link"><span class="dl-icon">🌳</span> STP</a>
+    <a href="etherchannel.html"       class="drawer-link"><span class="dl-icon">🔗</span> EtherChannel</a>
+    <a href="port-security.html"      class="drawer-link"><span class="dl-icon">🔒</span> Port Security</a>
+    <a href="cdp-lldp.html"           class="drawer-link"><span class="dl-icon">🔍</span> CDP / LLDP</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M4 · Routing</div>
+    <a href="routing.html"            class="drawer-link"><span class="dl-icon">🗺️</span> Routing Estático</a>
+    <a href="ospf.html"               class="drawer-link"><span class="dl-icon">⭕</span> OSPF</a>
+    <a href="eigrp.html"              class="drawer-link"><span class="dl-icon">⚡</span> EIGRP</a>
+    <a href="ospfv2-masterclass.html" class="drawer-link"><span class="dl-icon">🎯</span> OSPFv2 Masterclass</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M5 · Servicios IP</div>
+    <a href="dhcp.html" class="drawer-link"><span class="dl-icon">📋</span> DHCP</a>
+    <a href="nat.html"  class="drawer-link"><span class="dl-icon">🔄</span> NAT / PAT</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M6 · Seguridad</div>
+    <a href="acl.html" class="drawer-link"><span class="dl-icon">🛡️</span> ACLs</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M7 · WAN &amp; QoS</div>
+    <a href="wan.html" class="drawer-link"><span class="dl-icon">🌍</span> WAN</a>
+    <a href="qos.html" class="drawer-link"><span class="dl-icon">📊</span> QoS</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M8 · Automatización</div>
+    <a href="m8-automatizacion.html" class="drawer-link"><span class="dl-icon">🤖</span> M8 — Vista General</a>
+    <a href="python-redes.html"      class="drawer-link"><span class="dl-icon">🐍</span> Python para Redes</a>
+    <a href="json-datos.html"        class="drawer-link"><span class="dl-icon">📋</span> JSON y Datos</a>
+    <a href="rest-apis.html"         class="drawer-link active"><span class="dl-icon">🌐</span> REST APIs</a>
+    <a href="ansible-redes.html"     class="drawer-link"><span class="dl-icon">⚙️</span> Ansible</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">⚡ Herramientas</div>
+    <a href="asistente.html"          class="drawer-link"><span class="dl-icon">🤖</span> Asistente IA</a>
+    <a href="netbot.html"             class="drawer-link"><span class="dl-icon">⚙️</span> NetBot Config</a>
+    <a href="calculadora.html"        class="drawer-link"><span class="dl-icon">🧮</span> Calculadora IP</a>
+    <a href="../laboratorios-pkt.html"   class="drawer-link"><span class="dl-icon">🧪</span> Labs Packet Tracer</a>
+    <a href="../banco-preguntas.html" class="drawer-link"><span class="dl-icon">📝</span> Banco de Preguntas</a></div>
+</nav>
+
+<header class="navbar">
+  <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
+  <a href="../index.html" class="navbar-brand">CISCO<span> ACADEMY</span></a>
+  <div class="navbar-spacer"></div>
+  <a href="rest-apis.html" class="navbar-link">← REST APIs</a>
+</header>
+<div class="nav-spacer"></div>
+
+<!-- HERO -->
+<section class="class-hero" style="border-bottom:1px solid rgba(56,189,248,.2);">
+  <div class="class-hero-inner">
+    <div class="class-badge" style="color:#38bdf8;">M8 · AUTOMATIZACIÓN · REST APIs · TEMA 1 DE 7</div>
+    <h1 class="class-title">HTTP y REST <span class="class-title-accent" style="background:linear-gradient(135deg,#38bdf8,#0ea5e9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">— Fundamentos</span></h1>
+    <p class="class-subtitle">Domina el protocolo que mueve la Internet moderna y las APIs de red. Desde los verbos HTTP y códigos de estado hasta los principios REST, el modelo cliente-servidor y su aplicación directa en Cisco IOS-XE RESTCONF, DNA Center y Meraki.</p>
+    <div class="class-meta">
+      <span class="meta-item" style="border-color:rgba(56,189,248,.2);color:#38bdf8;">🌐 HTTP/1.1 &amp; HTTP/2</span>
+      <span class="meta-item">🎯 CCNA Domain 6.5</span>
+      <span class="meta-item">⏱ ~90 min lectura</span>
+      <span class="meta-item">💻 Labs con Python requests</span>
+      <span class="meta-item">🧪 Proyecto CRUD real</span>
+    </div>
+  </div>
+</section>
+
+<!-- TABS -->
+<div class="rest1-tabs-wrap">
+  <div class="rest1-tabs-bar">
+    <button class="rest1-tab-btn rest1-active" onclick="showTabRest1('intro',this)">🌐 Intro</button>
+    <button class="rest1-tab-btn" onclick="showTabRest1('http',this)">📡 HTTP</button>
+    <button class="rest1-tab-btn" onclick="showTabRest1('verbos',this)">🔧 Verbos</button>
+    <button class="rest1-tab-btn" onclick="showTabRest1('status',this)">📊 Status</button>
+    <button class="rest1-tab-btn" onclick="showTabRest1('headers',this)">📋 Headers</button>
+    <button class="rest1-tab-btn" onclick="showTabRest1('rest',this)">🏗️ REST</button>
+    <button class="rest1-tab-btn" onclick="showTabRest1('cliente',this)">🖥️ Cliente-Servidor</button>
+    <button class="rest1-tab-btn" onclick="showTabRest1('proyecto',this)">🚀 Proyecto</button>
+    <button class="rest1-tab-btn" onclick="showTabRest1('referencia',this)">📊 Referencia</button>
+    <button class="rest1-tab-btn" onclick="showTabRest1('quiz',this)">🎯 Quiz</button>
+  </div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 1 — INTRO
+═══════════════════════════════════════════ -->
+<div id="tab-intro" class="rest1-tab-content rest1-active">
+<div class="content-block">
+  <h2 class="section-title">¿Qué es una API y por qué REST?</h2>
+  <p>Una <strong>API (Application Programming Interface)</strong> es un conjunto de reglas que permite que dos aplicaciones se comuniquen entre sí. En redes, las APIs son el puente entre tu código Python y los dispositivos Cisco: routers, switches, controladores SDN y plataformas cloud como Meraki.</p>
+  <p>Antes de las APIs, todo se hacía vía <strong>CLI (SSH/Telnet)</strong>: conectarte a cada dispositivo, ejecutar comandos, parsear texto con expresiones regulares. Era frágil, lento y propenso a errores. Las APIs cambiaron las reglas del juego: ahora los dispositivos exponen sus datos y configuraciones en formatos estructurados (JSON, XML) que tu código puede consumir y modificar de forma predecible.</p>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 APIs en el ecosistema Cisco (Domain 6.3–6.5)</div>
+    <ul>
+      <li><strong>RESTCONF (RFC 8040)</strong>: API REST nativa en IOS-XE 16.6+. Usa HTTP para manipular modelos YANG. Es el futuro de la gestión programática de routers y switches.</li>
+      <li><strong>NETCONF (RFC 6241)</strong>: API RPC sobre SSH usando XML. Más antigua y robusta, pero no usa HTTP/REST.</li>
+      <li><strong>DNA Center API</strong>: REST API del controlador SD-Access. Inventario, topología, políticas, provisioning.</li>
+      <li><strong>Meraki Dashboard API</strong>: REST pura para gestión cloud de APs, switches y firewalls.</li>
+    </ul>
+  </div>
+
+  <h2 class="section-title">REST vs SOAP vs RPC</h2>
+  <p>No todas las APIs son REST. Entender las diferencias es clave para el examen CCNA y para la vida real:</p>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead><tr><th>Característica</th><th>REST</th><th>SOAP</th><th>RPC (gRPC/XML-RPC)</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Protocolo base</strong></td><td>HTTP/1.1 o HTTP/2</td><td>HTTP (sobre POST)</td><td>HTTP o HTTP/2</td></tr>
+        <tr><td><strong>Formato datos</strong></td><td>JSON, XML, YAML</td><td>Solo XML</td><td>JSON, XML, Protocol Buffers</td></tr>
+        <tr><td><strong>Estilo</strong></td><td>Recursos + verbos HTTP</td><td>Operaciones sobre servicio</td><td>Llamadas a funciones remotas</td></tr>
+        <tr><td><strong>Estado</strong></td><td>Stateless</td><td>Puede ser stateful</td><td>Stateless o stateful</td></tr>
+        <tr><td><strong>Uso en Cisco</strong></td><td>RESTCONF, DNA Center, Meraki</td><td>Legacy AXL (CUCM)</td><td>gRPC en model-driven telemetry</td></tr>
+        <tr><td><strong>Complejidad</strong></td><td>Baja — fácil de debug</td><td>Alta — WSDL, headers pesados</td><td>Media — requiere stubs</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="section-title">La analogía del restaurante</h2>
+  <p>Imagina una API REST como un restaurante:</p>
+  <ul>
+    <li><strong>El menú (API Documentation / OpenAPI)</strong>: enumera todos los recursos disponibles y qué operaciones puedes hacer con ellos.</li>
+    <li><strong>El camarero (HTTP)</strong>: lleva tu pedido a la cocina y trae la respuesta. Habla un protocolo estándar (GET, POST, etc.).</li>
+    <li><strong>La cocina (Servidor)</strong>: procesa tu solicitud, accede a la base de datos (running-config, interfaces, etc.) y prepara la respuesta.</li>
+    <li><strong>El cliente (Tú / Script Python)</strong>: no necesitas saber cómo funciona la cocina internamente. Solo necesitas saber leer el menú y hacer pedidos correctos.</li>
+  </ul>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚡ Lo que evalúa el CCNA 200-301 (Domain 6.5)</div>
+    <p>El examen no te pide programar una API desde cero, pero sí exige que sepas: (1) qué verbo HTTP usar para cada operación CRUD, (2) interpretar códigos de estado 2xx/4xx/5xx, (3) reconocer que REST es stateless, (4) diferenciar RESTCONF de NETCONF, y (5) entender el rol del controlador SDN. Todo eso lo cubrimos aquí.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 2 — HTTP
+═══════════════════════════════════════════ -->
+<div id="tab-http" class="rest1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">El Protocolo HTTP en profundidad</h2>
+  <p><strong>HTTP (HyperText Transfer Protocol)</strong> es el lenguaje que hablan los navegadores, las apps y ahora los routers Cisco. Es un protocolo de la capa de aplicación (OSI L7) que funciona sobre TCP (puerto 80) o TLS/SSL (puerto 443 como HTTPS). HTTP es <strong>stateless</strong>: cada mensaje es independiente; el servidor no recuerda nada de conversaciones anteriores a menos que se lo digas explícitamente (via headers o cookies).</p>
+
+  <h2 class="section-title">Anatomía de una URL</h2>
+  <p>Toda petición REST apunta a una <strong>URL (Uniform Resource Locator)</strong> que identifica un recurso. En redes Cisco, las URLs de RESTCONF siguen estructuras YANG muy específicas:</p>
+
+  <div class="code-block">
+    <div class="code-label">URL Structure</div>
+    <pre><code>https://router.local:443/restconf/data/Cisco-IOS-XE-native:native/interface/GigabitEthernet=0%2F0
+│      │              │  │         │                                      │
+│      │              │  │         └── root resource (datastores)         └── instancia
+│      │              │  └────────── API root (RFC 8040)
+│      │              └───────────── Puerto HTTPS (443 por defecto)
+│      └──────────────────────────── Hostname o IP del dispositivo
+└─────────────────────────────────── Esquema: https (obligatorio para RESTCONF)</code></pre>
+  </div>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">🔒</div>
+      <h3>HTTPS</h3>
+      <p>RESTCONF exige TLS. El puerto por defecto es 443. El certificado puede ser autofirmado (usar <code>verify=False</code> en desarrollo).</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🌳</div>
+      <h3>Resource Path</h3>
+      <p>La ruta identifica el recurso YANG. <code>/restconf/data/...</code> accede al datastore running. Todo es jerárquico.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">❓</div>
+      <h3>Query String</h3>
+      <p>Parámetros opcionales: <code>?depth=1</code>, <code>?fields=interfaces</code>, <code>?content=config</code>. Filtran o limitan la respuesta.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">#️⃣</div>
+      <h3>Fragmento (#)</h3>
+      <p>No se envía al servidor. Se usa en el cliente para navegación local. Irrelevante en APIs de red.</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">El ciclo Request / Response</h2>
+  <p>Una interacción HTTP consta de un <strong>mensaje de petición</strong> enviado por el cliente y un <strong>mensaje de respuesta</strong> devuelto por el servidor. Ambos tienen la misma estructura general:</p>
+
+  <div class="code-block">
+    <div class="code-label">HTTP Request → Router Cisco</div>
+    <pre><code><span class="cmt"># Start-line: método + path + versión HTTP</span>
+GET /restconf/data/Cisco-IOS-XE-native:native/interface HTTP/1.1
+
+<span class="cmt"># Headers (metadata de la petición)</span>
+Host: 192.168.1.1
+Accept: application/yang-data+json
+Content-Type: application/yang-data+json
+Authorization: Basic YWRtaW46Q2lzY28xMjM=
+User-Agent: CCNA-Script/1.0
+
+<span class="cmt"># Empty line (CRLF)</span>
+
+<span class="cmt"># Body (vacío en GET; JSON/XML en POST/PUT/PATCH)</span></code></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">HTTP Response ← Router Cisco</div>
+    <pre><code><span class="cmt"># Status-line: versión + código + frase</span>
+HTTP/1.1 200 OK
+
+<span class="cmt"># Response headers</span>
+Server: nginx
+Content-Type: application/yang-data+json
+Content-Length: 482
+Cache-Control: no-cache
+
+<span class="cmt"># Empty line</span>
+
+<span class="cmt"># Body (payload con datos JSON)</span>
+{
+  "Cisco-IOS-XE-native:interface": {
+    "GigabitEthernet": [
+      {"name":"0\/0","ip":{"address":{"primary":{"address":"192.168.1.1","mask":"255.255.255.0"}}}}
+    ]
+  }
+}</code></pre>
+  </div>
+
+  <div class="http-flow">
+    <div class="http-box"><div class="http-box-label">CLIENTE</div><div class="http-box-val">Python / Postman</div></div>
+    <div class="http-arrow">→</div>
+    <div class="http-box"><div class="http-box-label">REQUEST</div><div class="http-box-val">GET /resource</div></div>
+    <div class="http-arrow">→</div>
+    <div class="http-box"><div class="http-box-label">SERVIDOR</div><div class="http-box-val">IOS-XE / DNA Center</div></div>
+    <div class="http-arrow">→</div>
+    <div class="http-box"><div class="http-box-label">RESPONSE</div><div class="http-box-val">200 + JSON</div></div>
+    <div class="http-arrow">→</div>
+    <div class="http-box"><div class="http-box-label">CLIENTE</div><div class="http-box-val">Parsea resultado</div></div>
+  </div>
+
+  <h2 class="section-title">Versiones: HTTP/1.1 vs HTTP/2</h2>
+  <ul>
+    <li><strong>HTTP/1.1</strong>: la versión dominante durante décadas. Texto plano, persistent connections (keep-alive), pipelining limitado. Es lo que usa la mayoría de APIs de red Cisco hoy.</li>
+    <li><strong>HTTP/2</strong>: binario, multiplexación de streams sobre una sola conexión TCP, compresión de headers (HPACK), server push. Usado por plataformas cloud modernas. RESTCONF en IOS-XE soporta HTTP/1.1 principalmente.</li>
+    <li><strong>HTTP/3</strong>: sobre QUIC (UDP). Aún poco común en infraestructura de red tradicional.</li>
+  </ul>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 3 — VERBOS HTTP
+═══════════════════════════════════════════ -->
+<div id="tab-verbos" class="rest1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Los Verbos HTTP — El alfabeto de REST</h2>
+  <p>Los verbos (métodos) HTTP definen la <strong>acción</strong> que quieres realizar sobre un recurso. En REST, cada verbo tiene una semántica precisa que el servidor debe respetar. Para el CCNA y para trabajar con RESTCONF, debes saberlos al dedillo:</p>
+
+  <div class="method-grid">
+    <div class="method-card">
+      <div class="method-verb">GET</div>
+      <div class="method-crud">READ</div>
+      <p>Obtiene un recurso o una colección. No debe tener efectos secundarios en el servidor. Es <strong>safe</strong> y <strong>idempotente</strong>.</p>
+      <span class="method-idem">✅ Idempotente · ✅ Safe</span>
+    </div>
+    <div class="method-card">
+      <div class="method-verb">POST</div>
+      <div class="method-crud">CREATE</div>
+      <p>Crea un nuevo recurso subordinado. El servidor asigna la URI. No es idempotente: ejecutarlo 2 veces crea 2 recursos.</p>
+      <span class="method-idem">❌ No idempotente · ❌ No safe</span>
+    </div>
+    <div class="method-card">
+      <div class="method-verb">PUT</div>
+      <div class="method-crud">UPDATE (total)</div>
+      <p>Reemplaza por completo un recurso existente o lo crea si no existe (cuando conoces la URI). Es idempotente.</p>
+      <span class="method-idem">✅ Idempotente · ❌ No safe</span>
+    </div>
+    <div class="method-card">
+      <div class="method-verb">PATCH</div>
+      <div class="method-crud">UPDATE (parcial)</div>
+      <p>Modifica parcialmente un recurso. Solo envías los campos que cambian. Puede no ser idempotente según la implementación.</p>
+      <span class="method-idem">⚠️ Generalmente idempotente · ❌ No safe</span>
+    </div>
+    <div class="method-card">
+      <div class="method-verb">DELETE</div>
+      <div class="method-crud">DELETE</div>
+      <p>Elimina un recurso. Después de DELETE, un GET al mismo recurso debería retornar 404. Es idempotente.</p>
+      <span class="method-idem">✅ Idempotente · ❌ No safe</span>
+    </div>
+  </div>
+
+  <h2 class="section-title">Idempotencia: el concepto clave</h2>
+  <p>Una operación es <strong>idempotente</strong> si producirá el mismo resultado si la ejecutas 1 vez o 100 veces. Esto es crítico en redes porque los scripts automatizados reintentan peticiones ante fallos de conectividad.</p>
+  <ul>
+    <li><strong>GET</strong>: pedir la tabla de routing 1 o 100 veces no cambia el router. ✅</li>
+    <li><strong>PUT</strong>: configurar la IP de una interfaz 1 o 100 veces deja la misma IP. ✅</li>
+    <li><strong>POST</strong>: crear una interfaz Loopback 100 veces crea 100 loopbacks. ❌</li>
+  </ul>
+
+  <h2 class="section-title">Mapeo CRUD completo</h2>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead><tr><th>Operación</th><th>Verbo HTTP</th><th>Ejemplo en RESTCONF</th><th>Idempotente</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Create</strong></td><td>POST</td><td><code>POST /restconf/data/interfaces</code> (crear subinterfaz)</td><td>❌ No</td></tr>
+        <tr><td><strong>Read (uno)</strong></td><td>GET</td><td><code>GET /restconf/data/interface/GigabitEthernet=0%2F0</code></td><td>✅ Sí</td></tr>
+        <tr><td><strong>Read (todos)</strong></td><td>GET</td><td><code>GET /restconf/data/interface</code></td><td>✅ Sí</td></tr>
+        <tr><td><strong>Update (total)</strong></td><td>PUT</td><td><code>PUT /restconf/data/interface/GigabitEthernet=0%2F0</code> + body JSON completo</td><td>✅ Sí</td></tr>
+        <tr><td><strong>Update (parcial)</strong></td><td>PATCH</td><td><code>PATCH /restconf/data/interface/GigabitEthernet=0%2F0</code> + solo campo description</td><td>⚠️ Depende</td></tr>
+        <tr><td><strong>Delete</strong></td><td>DELETE</td><td><code>DELETE /restconf/data/interface/Loopback=100</code></td><td>✅ Sí</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">Ejemplo práctico — Verbos contra un router Cisco (RESTCONF)</div>
+    <pre><code><span class="cmt"># GET — Obtener configuración de una interfaz</span>
+GET /restconf/data/Cisco-IOS-XE-native:native/interface/GigabitEthernet=0%2F0
+→ 200 OK + JSON con IP, mask, description, shutdown...
+
+<span class="cmt"># POST — Crear una nueva Loopback (el servidor asigna el nombre si es colección)</span>
+POST /restconf/data/Cisco-IOS-XE-native:native/interface
+Body: {"Loopback": [{"name": "100", "ip": {"address": {"primary": {"address": "1.1.1.1", "mask": "255.255.255.255"}}}}]}
+→ 201 Created + Location: /interface/Loopback=100
+
+<span class="cmt"># PUT — Reemplazar TODA la configuración de esa interfaz</span>
+PUT /restconf/data/Cisco-IOS-XE-native:native/interface/GigabitEthernet=0%2F0
+Body: {JSON completo con TODOS los campos}
+→ 204 No Content (éxito sin datos de retorno)
+
+<span class="cmt"># PATCH — Cambiar solo la descripción</span>
+PATCH /restconf/data/Cisco-IOS-XE-native:native/interface/GigabitEthernet=0%2F0
+Body: {"description": "ENLACE-PRINCIPAL-AL-CORE"}
+→ 204 No Content
+
+<span class="cmt"># DELETE — Eliminar la Loopback 100</span>
+DELETE /restconf/data/Cisco-IOS-XE-native:native/interface/Loopback=100
+→ 204 No Content</code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Trampa común del examen CCNA</div>
+    <p>El examen pregunta: "¿Qué verbo HTTP se usa para modificar parcialmente un recurso?" La respuesta es <strong>PATCH</strong>, no PUT. PUT reemplaza el recurso completo. Si envías un PUT con solo 2 campos, el servidor puede borrar todos los demás campos que no incluiste.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 4 — STATUS CODES
+═══════════════════════════════════════════ -->
+<div id="tab-status" class="rest1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Códigos de Estado HTTP</h2>
+  <p>El servidor siempre responde con un <strong>código de estado numérico de 3 dígitos</strong> que indica el resultado de la petición. En automatización de red, tu script debe reaccionar diferente ante un <code>200</code> (éxito) que ante un <code>401</code> (credenciales malas) o <code>500</code> (el router falló internamente).</p>
+
+  <div class="status-grid">
+    <div class="status-card">
+      <div class="status-range" style="color:#34d399;">2xx — ÉXITO</div>
+      <ul>
+        <li><strong>200 OK</strong>: petición exitosa. Viene datos en el body.</li>
+        <li><strong>201 Created</strong>: recurso creado exitosamente. Header <code>Location</code> con la URI.</li>
+        <li><strong>204 No Content</strong>: éxito pero sin body. Común en PUT/PATCH/DELETE.</li>
+      </ul>
+    </div>
+    <div class="status-card">
+      <div class="status-range" style="color:#38bdf8;">3xx — REDIRECCIÓN</div>
+      <ul>
+        <li><strong>301 Moved Permanently</strong>: recurso cambió de URL permanentemente.</li>
+        <li><strong>302 Found</strong>: redirección temporal (uso histórico).</li>
+        <li><strong>307 Temporary Redirect</strong>: redirección temporal; conservar método.</li>
+        <li><strong>308 Permanent Redirect</strong>: redirección permanente; conservar método.</li>
+      </ul>
+    </div>
+    <div class="status-card">
+      <div class="status-range" style="color:#fbbf24;">4xx — ERROR DEL CLIENTE</div>
+      <ul>
+        <li><strong>400 Bad Request</strong>: JSON malformado o datos inválidos.</li>
+        <li><strong>401 Unauthorized</strong>: falta autenticación o credenciales incorrectas.</li>
+        <li><strong>403 Forbidden</strong>: autenticado, pero sin permisos para el recurso.</li>
+        <li><strong>404 Not Found</strong>: el recurso solicitado no existe.</li>
+        <li><strong>406 Not Acceptable</strong>: servidor no puede generar el formato pedido en <code>Accept</code>.</li>
+        <li><strong>409 Conflict</strong>: conflicto de estado (ej. intentar crear recurso que ya existe con POST).</li>
+        <li><strong>415 Unsupported Media Type</strong>: Content-Type no soportado.</li>
+      </ul>
+    </div>
+    <div class="status-card">
+      <div class="status-range" style="color:#f87171;">5xx — ERROR DEL SERVIDOR</div>
+      <ul>
+        <li><strong>500 Internal Server Error</strong>: error genérico del servidor (bug o condición inesperada).</li>
+        <li><strong>501 Not Implemented</strong>: servidor no soporta la funcionalidad requerida.</li>
+        <li><strong>502 Bad Gateway</strong>: gateway/proxy recibió respuesta inválida del upstream.</li>
+        <li><strong>503 Service Unavailable</strong>: servidor sobrecargado o en mantenimiento.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2 class="section-title">Contexto networking: ¿qué significa cada código?</h2>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead><tr><th>Código</th><th>Escenario real en IOS-XE RESTCONF</th><th>Acción del script</th></tr></thead>
+      <tbody>
+        <tr><td><code>200 OK</code></td><td>GET de running-config devuelve JSON completo.</td><td>Parsear JSON y extraer datos.</td></tr>
+        <tr><td><code>201 Created</code></td><td>POST crea nueva interfaz Loopback exitosamente.</td><td>Registrar nueva URI, continuar workflow.</td></tr>
+        <tr><td><code>204 No Content</code></td><td>DELETE de una ACL o PATCH de descripción exitoso.</td><td>Confirmar éxito, no esperar body.</td></tr>
+        <tr><td><code>400 Bad Request</code></td><td>Enviaste YANG JSON malformado; falta un campo obligatorio.</td><td>Revisar payload, corregir schema YANG.</td></tr>
+        <tr><td><code>401 Unauthorized</code></td><td>Usuario/contraseña incorrectos o no enviaste Authorization.</td><td>Reintentar con credenciales válidas.</td></tr>
+        <tr><td><code>403 Forbidden</code></td><td>El usuario existe pero no tiene privilegios para modificar esa rama YANG.</td><td>Escalar privilegios o cambiar usuario.</td></tr>
+        <tr><td><code>404 Not Found</code></td><td>Intentas GET de una interfaz que no existe en el router.</td><td>Verificar nombre de recurso o crearlo primero.</td></tr>
+        <tr><td><code>409 Conflict</code></td><td>Intentas crear con POST un recurso que ya existe.</td><td>Usar PUT para actualizar o DELETE primero.</td></tr>
+        <tr><td><code>415 Unsupported Media</code></td><td>Enviaste <code>Content-Type: application/xml</code> cuando el router espera JSON.</td><td>Cambiar header a <code>application/yang-data+json</code>.</td></tr>
+        <tr><td><code>500 Internal Error</code></td><td>Bug en el daemon RESTCONF de IOS-XE o memoria agotada.</td><td>Reintentar más tarde; si persiste, abrir TAC.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚡ Diferencia crítica: 401 vs 403</div>
+    <p><strong>401 Unauthorized</strong>: "¿Quién eres?" — No te autenticaste o lo hiciste mal. <strong>403 Forbidden</strong>: "Sé quién eres, pero no puedes entrar aquí" — Estás autenticado pero sin privilegios suficientes. En IOS-XE, un usuario con privilegio 1 puede obtener configuración (GET 200) pero no modificarla (PUT 403).</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 5 — HEADERS
+═══════════════════════════════════════════ -->
+<div id="tab-headers" class="rest1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Headers HTTP — La metadata de la conversación</h2>
+  <p>Los <strong>headers</strong> son pares <code>clave: valor</code> que transportan metadata sobre la petición o la respuesta. En APIs de red, los headers son tan importantes como el body: sin el <code>Content-Type</code> correcto, IOS-XE rechazará tu configuración; sin <code>Authorization</code>, ni siquiera llegarás al prompt.</p>
+
+  <h2 class="section-title">Headers esenciales para REST APIs de red</h2>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead><tr><th>Header</th><th>Contexto</th><th>Ejemplo / Valor típico</th></tr></thead>
+      <tbody>
+        <tr><td><code>Content-Type</code></td><td>Indica el formato del body enviado.</td><td><code>application/json</code> o <code>application/yang-data+json</code> (RESTCONF)</td></tr>
+        <tr><td><code>Accept</code></td><td>Formato que el cliente quiere recibir.</td><td><code>application/yang-data+json</code>, <code>application/json</code></td></tr>
+        <tr><td><code>Authorization</code></td><td>Credenciales de autenticación.</td><td><code>Basic YWRtaW46c2VjcmV0</code> o <code>Bearer eyJ0...</code></td></tr>
+        <tr><td><code>Host</code></td><td>Nombre del servidor destino (obligatorio HTTP/1.1).</td><td><code>192.168.1.1</code> o <code>dnac.cisco.com</code></td></tr>
+        <tr><td><code>User-Agent</code></td><td>Identifica al cliente.</td><td><code>python-requests/2.28</code> o <code>CCNA-Automation/1.0</code></td></tr>
+        <tr><td><code>Content-Length</code></td><td>Tamaño en bytes del body.</td><td><code>482</code></td></tr>
+        <tr><td><code>Cache-Control</code></td><td>Directivas de caching.</td><td><code>no-cache</code>, <code>max-age=3600</code></td></tr>
+        <tr><td><code>Location</code></td><td>URI del recurso creado (respuesta 201).</td><td><code>/restconf/data/interface/Loopback=100</code></td></tr>
+        <tr><td><code>X-Auth-Token</code></td><td>Token de sesión (DNA Center, custom APIs).</td><td><code>eyJhbGciOiJIUzI1NiIs...</code></td></tr>
+        <tr><td><code>If-Match</code></td><td>Concurrencia optimista (ETag). Evita sobreescrituras.</td><td><code>"abc123"</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="section-title">Autenticación en headers</h2>
+  <p>Existen dos métodos principales que verás en Cisco:</p>
+
+  <div class="code-block">
+    <div class="code-label">Basic Auth (RESTCONF en IOS-XE)</div>
+    <pre><code><span class="cmt"># El cliente codifica usuario:contraseña en Base64</span>
+usuario = <span class="str">"admin"</span>
+password = <span class="str">"Cisco123"</span>
+credenciales = <span class="str">f"{usuario}:{password}"</span>
+import base64
+encoded = base64.b64encode(credenciales.encode()).decode()  <span class="cmt"># YWRtaW46Q2lzY28xMjM=</span>
+
+<span class="cmt"># Header resultante</span>
+Authorization: Basic YWRtaW46Q2lzY28xMjM=</code></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">Bearer Token (DNA Center, Meraki, APIs Cloud)</div>
+    <pre><code><span class="cmt"># Paso 1: Obtener token vía POST (DNA Center)</span>
+POST /dna/system/api/v1/auth/token
+Authorization: Basic YWRtaW46Q2lzY28xMjM=
+→ 200 OK + Body: {"Token": "eyJ0eXAiOiJKV1QiLCJhbGc..."}
+
+<span class="cmt"># Paso 2: Usar token en subsiguientes peticiones</span>
+GET /dna/intent/api/v1/network-device
+X-Auth-Token: eyJ0eXAiOiJKV1QiLCJhbGc...
+<span class="cmt"># o también:</span>
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGc...</code></pre>
+  </div>
+
+  <h2 class="section-title">Headers específicos de RESTCONF (RFC 8040)</h2>
+  <p>Cuando trabajas con routers Cisco vía RESTCONF, estos headers son <strong>obligatorios o altamente recomendados</strong>:</p>
+  <ul>
+    <li><code>Accept: application/yang-data+json</code> — pides datos en formato JSON según modelo YANG.</li>
+    <li><code>Content-Type: application/yang-data+json</code> — informas que envías JSON YANG.</li>
+    <li><code>Authorization: Basic ...</code> — RESTCONF usa siempre HTTPS + Basic Auth (o certificados cliente en setups avanzados).</li>
+  </ul>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Errores comunes de headers</div>
+    <ul>
+      <li>Olvidar <code>Content-Type</code> al hacer POST/PUT: el servidor devuelve <strong>415 Unsupported Media Type</strong>.</li>
+      <li>Enviar <code>Accept: application/xml</code> a un servidor solo-JSON: devuelve <strong>406 Not Acceptable</strong>.</li>
+      <li>No incluir <code>Authorization</code>: <strong>401 Unauthorized</strong> inmediato.</li>
+      <li>En RESTCONF, usar <code>application/json</code> genérico en lugar de <code>application/yang-data+json</code> puede funcionar en algunas versiones, pero es mejor ser explícito según RFC 8040.</li>
+    </ul>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 6 — REST PRINCIPLES
+═══════════════════════════════════════════ -->
+<div id="tab-rest" class="rest1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Principios REST de Fielding</h2>
+  <p>REST no es un protocolo ni una tecnología: es un <strong>estilo arquitectónico</strong> definido por Roy Fielding en su tesis doctoral (2000). Una API que dice ser "RESTful" debe cumplir ciertos constraints. Para el examen CCNA y para diseñar integraciones limpias, estos son los 6 constraints:</p>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">🖥️</div>
+      <h3>1. Cliente-Servidor</h3>
+      <p>Separa las responsabilidades: el cliente maneja la UI/lógica de presentación; el servidor maneja datos y estado. Permiten evolucionar independientemente.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon"> Stateless</div>
+      <h3>2. Stateless</h3>
+      <p>Cada petición del cliente al servidor debe contener toda la información necesaria para ser entendida. El servidor no guarda contexto de sesión entre requests.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">⚡</div>
+      <h3>3. Cacheable</h3>
+      <p>Las respuestas deben etiquetarse explícitamente como cacheables o no. Un cliente puede reutilizar respuestas previas para mejorar rendimiento.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🏗️</div>
+      <h3>4. Interfaz Uniforme</h3>
+      <p>Identificación de recursos por URI, manipulación de recursos mediante representaciones, mensajes autodescriptivos y HATEOAS (hipermedia).</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🥞</div>
+      <h3>5. Sistema por Capas</h3>
+      <p>El cliente no puede saber si está conectado directamente al servidor final o a un intermediario (load balancer, proxy, cache). Las capas son transparentes.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">📜</div>
+      <h3>6. Código Bajo Demanda (opcional)</h3>
+      <p>Los servidores pueden extender funcionalidad del cliente enviando código ejecutable (ej. JavaScript). Raro en APIs de red; más común en web.</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">Recursos y Representaciones</h2>
+  <p>En REST, todo es un <strong>recurso</strong>. Una interfaz GigabitEthernet0/0 es un recurso. Una ruta OSPF es un recurso. Una VLAN es un recurso. Cada recurso tiene una <strong>URI única</strong>:</p>
+  <ul>
+    <li><code>/restconf/data/interface/GigabitEthernet=0%2F0</code> → recurso "interfaz gi0/0"</li>
+    <li><code>/restconf/data/router/ospf/process=1</code> → recurso "proceso OSPF 1"</li>
+    <li><code>/api/v1/network-device</code> → colección "todos los dispositivos" (DNA Center)</li>
+  </ul>
+  <p>Un recurso puede tener múltiples <strong>representaciones</strong>: JSON, XML, YAML. El cliente elige la representación via header <code>Accept</code>.</p>
+
+  <h2 class="section-title">Stateless en el contexto de redes</h2>
+  <p>Stateless significa que el router (servidor) no recuerda que tu script acaba de hacer un GET antes de tu POST. Cada request es una isla. Esto tiene implicaciones prácticas:</p>
+  <ul>
+    <li><strong>Ventaja</strong>: puedes distribuir requests entre múltiples routers sin preocuparte por "sesiones".</li>
+    <li><strong>Desventaja</strong>: si necesitas transaccionalidad (ej. "solo configura si la versión IOS es X"), debes enviar toda esa lógica en el propio request o manejarla en el cliente.</li>
+    <li><strong>NETCONF vs REST</strong>: NETCONF sí mantiene estado a través de la sesión SSH (locks, candidate datastore). RESTCONF es stateless sobre HTTP.</li>
+  </ul>
+
+  <div class="code-block">
+    <div class="code-label">Ejemplo de stateless vs stateful</div>
+    <pre><code><span class="cmt"># RESTCONF (Stateless) — Cada request es independiente</span>
+Request 1: GET /restconf/data/interface/GigabitEthernet=0%2F0
+  → El router no "recuerda" que preguntaste.
+
+Request 2: PATCH /restconf/data/interface/GigabitEthernet=0%2F0
+  → Debes enviar auth de nuevo. El router valida desde cero.
+
+<span class="cmt"># NETCONF (Stateful) — Sesión persistente SSH</span>
+&lt;rpc message-id="101"&gt;&lt;get-config&gt;...&lt;/get-config&gt;&lt;/rpc&gt;
+  → Sesión SSH activa. Puedes hacer lock, edit, commit en secuencia.
+  → El servidor mantiene estado de la sesión.</code></pre>
+  </div>
+
+  <h2 class="section-title">REST vs RESTCONF vs NETCONF</h2>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead><tr><th>Aspecto</th><th>REST (estilo)</th><th>RESTCONF (RFC 8040)</th><th>NETCONF (RFC 6241)</th></tr></thead>
+      <tbody>
+        <tr><td>Transporte</td><td>Cualquiera (HTTP/1.1, HTTP/2)</td><td>HTTPS obligatorio</td><td>SSH (puerto 830)</td></tr>
+        <tr><td>Formato</td><td>JSON, XML, YAML, etc.</td><td>JSON o XML basado en YANG</td><td>Solo XML</td></tr>
+        <tr><td>Paradigma</td><td>Recursos + verbos HTTP</td><td>Recursos + verbos HTTP + YANG</td><td>RPC (get-config, edit-config)</td></tr>
+        <tr><td>Estado</td><td>Stateless</td><td>Stateless</td><td>Stateful (sesión)</td></tr>
+        <tr><td>Configuración</td><td>Datos + estado operacional</td><td>datastores: running, startup, candidate</td><td>datastores: running, startup, candidate</td></tr>
+        <tr><td>Implementación Cisco</td><td>DNA Center, Meraki</td><td>IOS-XE 16.6+, IOS-XR, NX-OS</td><td>IOS-XE, IOS-XR, NX-OS</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 7 — CLIENTE-SERVIDOR
+═══════════════════════════════════════════ -->
+<div id="tab-cliente" class="rest1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Modelo Cliente-Servidor en APIs de Red</h2>
+  <p>El modelo <strong>cliente-servidor</strong> es la base de toda comunicación REST. En infraestructura de red, los roles son claros:</p>
+
+  <div class="concept-grid">
+    <div class="concept-card" style="border-color:rgba(52,211,153,.2);">
+      <div class="concept-icon">💻</div>
+      <h3 style="color:#34d399;">CLIENTE</h3>
+      <p><strong>Quien pide.</strong> Scripts Python, Postman, Ansible, Terraform, navegador, aplicación NMS. Construye requests HTTP y parsea responses.</p>
+    </div>
+    <div class="concept-card" style="border-color:rgba(56,189,248,.2);">
+      <div class="concept-icon">🌐</div>
+      <h3 style="color:#38bdf8;">SERVIDOR</h3>
+      <p><strong>Quien responde.</strong> Proceso RESTCONF en IOS-XE, API Gateway de DNA Center, Meraki Dashboard Cloud. Recibe requests, accede al running-config, devuelve JSON.</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">El Cliente: herramientas y librerías</h2>
+  <ul>
+    <li><strong>Python + requests</strong>: el estándar de facto para automatización. Sencillo, potente, legible.</li>
+    <li><strong>Postman / Insomnia</strong>: GUI para probar APIs manualmente. Ideal para explorar endpoints antes de automatizar.</li>
+    <li><strong>cURL</strong>: herramienta de línea de comandos. Útil para debugging rápido desde un servidor Linux.</li>
+    <li><strong>Ansible (uri module)</strong>: automatización declarativa. El módulo <code>uri</code> hace peticiones HTTP desde playbooks.</li>
+  </ul>
+
+  <h2 class="section-title">El Servidor: endpoints Cisco</h2>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead><tr><th>Plataforma</th><th>Rol</th><th>Base URL</th><th>Autenticación</th></tr></thead>
+      <tbody>
+        <tr><td><strong>IOS-XE RESTCONF</strong></td><td>Dispositivo individual</td><td><code>https://{ip}:443/restconf</code></td><td>Basic Auth (HTTPS)</td></tr>
+        <tr><td><strong>DNA Center</strong></td><td>Controlador SD-Access</td><td><code>https://{dnac}/dna</code></td><td>Token Bearer (JWT)</td></tr>
+        <tr><td><strong>Meraki Dashboard</strong></td><td>Cloud management</td><td><code>https://api.meraki.com/api/v1</code></td><td>API Key (header)</td></tr>
+        <tr><td><strong>SD-WAN vManage</strong></td><td>Orquestador WAN</td><td><code>https://{vmanage}:8443/dataservice</code></td><td>Token de sesión</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="section-title">Flujo completo: Script Python → Router Cisco</h2>
+  <div class="http-flow">
+    <div class="http-box"><div class="http-box-label">1. SCRIPT</div><div class="http-box-val">Construye URL, headers, body JSON</div></div>
+    <div class="http-arrow">→</div>
+    <div class="http-box"><div class="http-box-label">2. TCP+TLS</div><div class="http-box-val">Handshake puerto 443</div></div>
+    <div class="http-arrow">→</div>
+    <div class="http-box"><div class="http-box-label">3. HTTP REQUEST</div><div class="http-box-val">GET /restconf/data/...</div></div>
+    <div class="http-arrow">→</div>
+    <div class="http-box"><div class="http-box-label">4. IOS-XE</div><div class="http-box-val">Procesa YANG → running-config</div></div>
+    <div class="http-arrow">→</div>
+    <div class="http-box"><div class="http-box-label">5. HTTP RESPONSE</div><div class="http-box-val">200 + JSON</div></div>
+    <div class="http-arrow">→</div>
+    <div class="http-box"><div class="http-box-label">6. SCRIPT</div><div class="http-box-val">response.json()</div></div>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Arquitecturas SDN y el rol del controlador</div>
+    <p>En <strong>SD-Access</strong> y <strong>SD-WAN</strong>, el modelo cliente-servidor evoluciona: ya no hablas directamente con 500 routers. Hablas con <strong>UN controlador</strong> (DNA Center o vManage) que actúa como servidor/proxy. El controlador es el servidor REST; los edge devices son sus "agentes" internos. Tu script hace un GET al controlador y este consulta a todos los dispositivos por ti.</p>
+  </div>
+
+  <h2 class="section-title">Seguridad en el canal</h2>
+  <p>RESTCONF exige <strong>TLS (HTTPS)</strong>. Nunca configures RESTCONF sobre HTTP plano en producción. Además:</p>
+  <ul>
+    <li><strong>Certificados autofirmados</strong>: en laboratorio, el router genera su propio cert. Python rechazará la conexión por defecto. Usa <code>verify=False</code> solo en lab.</li>
+    <li><strong>Certificados CA</strong>: en producción, usa una PKI interna para firmar certificados de los routers.</li>
+    <li><strong>RBAC</strong>: IOS-XE permite definir qué usuarios REST pueden leer (GET) y cuáles pueden escribir (PUT/POST/DELETE).</li>
+  </ul>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 8 — PROYECTO
+═══════════════════════════════════════════ -->
+<div id="tab-proyecto" class="rest1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">🚀 Proyecto Final — Cliente REST CRUD con Python</h2>
+  <p>Este proyecto integra todo lo aprendido en una aplicación Python real que ejecuta operaciones CRUD contra la API pública <strong>httpbin.org</strong> (un espejo de peticiones HTTP ideal para prácticas). Luego incluye el código adaptado para RESTCONF real.</p>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Requisitos</div>
+    <ol>
+      <li>Python 3.8+ instalado</li>
+      <li>Instalar requests: <code>pip install requests</code></li>
+      <li>Conexión a Internet para httpbin.org (o usa un servidor local)</li>
+    </ol>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">rest_crud_lab.py — Laboratorio completo HTTP/REST</div>
+    <pre><code><span class="cmt">#!/usr/bin/env python3</span>
+<span class="cmt">"""rest_crud_lab.py
+Laboratorio HTTP/REST — CCNA Academy M8 T1
+Demuestra: GET, POST, PUT, PATCH, DELETE, status codes, headers, JSON.
+"""</span>
+
+<span class="kw">import</span> requests
+<span class="kw">import</span> json
+
+BASE_URL = <span class="str">"https://httpbin.org"</span>
+
+<span class="cmt"># ═══════════════════════════════════════════════════</span>
+<span class="cmt"># 1. GET — Obtener datos (equivalente a leer config)</span>
+<span class="cmt"># ═══════════════════════════════════════════════════</span>
+<span class="fn">print</span>(<span class="str">"
+=== GET /get ==="</span>)
+resp = requests.get(<span class="str">f"{BASE_URL}/get"</span>, timeout=<span class="num">10</span>)
+<span class="fn">print</span>(<span class="str">f"Status Code: {resp.status_code}"</span>)        <span class="cmt"># 200</span>
+<span class="fn">print</span>(<span class="str">f"Content-Type: {resp.headers.get('Content-Type')}"</span>)
+data = resp.json()                                   <span class="cmt"># Parsear JSON automáticamente</span>
+<span class="fn">print</span>(<span class="str">f"URL origen: {data['url']}"</span>)
+
+<span class="cmt"># ═══════════════════════════════════════════════════</span>
+<span class="cmt"># 2. POST — Crear recurso (equivalente a crear VLAN)</span>
+<span class="cmt"># ═══════════════════════════════════════════════════</span>
+<span class="fn">print</span>(<span class="str">"
+=== POST /post ==="</span>)
+payload = {
+    <span class="str">"hostname"</span>: <span class="str">"R1-CORE"</span>,
+    <span class="str">"ip_mgmt"</span>: <span class="str">"192.168.1.1"</span>,
+    <span class="str">"vlans"</span>: [<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>]
+}
+headers = {<span class="str">"Content-Type"</span>: <span class="str">"application/json"</span>}
+resp = requests.post(
+    <span class="str">f"{BASE_URL}/post"</span>,
+    headers=headers,
+    data=json.dumps(payload),
+    timeout=<span class="num">10</span>
+)
+<span class="fn">print</span>(<span class="str">f"Status Code: {resp.status_code}"</span>)        <span class="cmt"># 200 (httpbin devuelve 200 en lugar de 201)</span>
+<span class="fn">print</span>(<span class="str">f"JSON enviado: {resp.json()['data']}"</span>)
+
+<span class="cmt"># ═══════════════════════════════════════════════════</span>
+<span class="cmt"># 3. PUT — Reemplazar recurso completo</span>
+<span class="cmt"># ═══════════════════════════════════════════════════</span>
+<span class="fn">print</span>(<span class="str">"
+=== PUT /put ==="</span>)
+update_total = {
+    <span class="str">"interface"</span>: <span class="str">"GigabitEthernet0/0"</span>,
+    <span class="str">"ip"</span>: <span class="str">"10.0.0.1"</span>,
+    <span class="str">"mask"</span>: <span class="str">"255.255.255.0"</span>,
+    <span class="str">"description"</span>: <span class="str">"WAN-PRIMARY"</span>
+}
+resp = requests.put(
+    <span class="str">f"{BASE_URL}/put"</span>,
+    headers=headers,
+    data=json.dumps(update_total),
+    timeout=<span class="num">10</span>
+)
+<span class="fn">print</span>(<span class="str">f"Status: {resp.status_code} | Idempotente: Sí"</span>)
+
+<span class="cmt"># ═══════════════════════════════════════════════════</span>
+<span class="cmt"># 4. PATCH — Modificación parcial</span>
+<span class="cmt"># ═══════════════════════════════════════════════════</span>
+<span class="fn">print</span>(<span class="str">"
+=== PATCH /patch ==="</span>)
+parche = {<span class="str">"description"</span>: <span class="str">"WAN-PRIMARY-BACKUP"</span>}
+resp = requests.patch(
+    <span class="str">f"{BASE_URL}/patch"</span>,
+    headers=headers,
+    data=json.dumps(parche),
+    timeout=<span class="num">10</span>
+)
+<span class="fn">print</span>(<span class="str">f"Status: {resp.status_code} | Cambio parcial aplicado"</span>)
+
+<span class="cmt"># ═══════════════════════════════════════════════════</span>
+<span class="cmt"># 5. DELETE — Eliminar recurso</span>
+<span class="cmt"># ═══════════════════════════════════════════════════</span>
+<span class="fn">print</span>(<span class="str">"
+=== DELETE /delete ==="</span>)
+resp = requests.delete(<span class="str">f"{BASE_URL}/delete"</span>, timeout=<span class="num">10</span>)
+<span class="fn">print</span>(<span class="str">f"Status: {resp.status_code} | Recurso eliminado (simulado)"</span>)
+
+<span class="cmt"># ═══════════════════════════════════════════════════</span>
+<span class="cmt"># 6. Manejo de errores y status codes</span>
+<span class="cmt"># ═══════════════════════════════════════════════════</span>
+<span class="fn">print</span>(<span class="str">"
+=== Manejo de errores ==="</span>)
+<span class="kw">for</span> code <span class="kw">in</span> [<span class="num">404</span>, <span class="num">500</span>, <span class="num">401</span>]:
+    resp = requests.get(<span class="str">f"{BASE_URL}/status/{code}"</span>, timeout=<span class="num">10</span>)
+    <span class="kw">if</span> resp.status_code == <span class="num">404</span>:
+        <span class="fn">print</span>(<span class="str">f"[{code}] Recurso no encontrado — revisar URL"</span>)
+    <span class="kw">elif</span> resp.status_code == <span class="num">500</span>:
+        <span class="fn">print</span>(<span class="str">f"[{code}] Error interno del servidor — reintentar más tarde"</span>)
+    <span class="kw">elif</span> resp.status_code == <span class="num">401</span>:
+        <span class="fn">print</span>(<span class="str">f"[{code}] No autorizado — revisar credenciales"</span>)
+
+<span class="cmt"># ═══════════════════════════════════════════════════</span>
+<span class="cmt"># 7. Ejemplo real: conexión a RESTCONF (estructura)</span>
+<span class="cmt"># ═══════════════════════════════════════════════════</span>
+<span class="fn">print</span>(<span class="str">"
+=== Plantilla RESTCONF Cisco (estructura real) ==="</span>)
+
+def restconf_get_interface(ip_router, usuario, password, interfaz):
+    <span class="str">"""Obtiene configuración de interfaz vía RESTCONF RFC 8040"""</span>
+    url = (
+        <span class="str">f"https://{ip_router}/restconf/data/"</span>
+        <span class="str">f"Cisco-IOS-XE-native:native/interface/"</span>
+        <span class="str">f"GigabitEthernet={interfaz}"</span>
+    )
+    headers = {
+        <span class="str">"Accept"</span>: <span class="str">"application/yang-data+json"</span>,
+        <span class="str">"Content-Type"</span>: <span class="str">"application/yang-data+json"</span>,
+    }
+    <span class="kw">try</span>:
+        resp = requests.get(
+            url,
+            headers=headers,
+            auth=(usuario, password),
+            verify=<span class="kw">False</span>,      <span class="cmt"># ⚠️ Solo en laboratorio (cert autofirmado)</span>
+            timeout=<span class="num">10</span>
+        )
+        <span class="kw">if</span> resp.status_code == <span class="num">200</span>:
+            <span class="kw">return</span> resp.json()
+        <span class="kw">elif</span> resp.status_code == <span class="num">404</span>:
+            <span class="kw">return</span> {<span class="str">"error"</span>: <span class="str">"Interfaz no existe"</span>}
+        <span class="kw">else</span>:
+            <span class="kw">return</span> {<span class="str">"error"</span>: <span class="str">f"HTTP {resp.status_code}"</span>}
+    <span class="kw">except</span> requests.exceptions.RequestException <span class="kw">as</span> e:
+        <span class="kw">return</span> {<span class="str">"error"</span>: <span class="fn">str</span>(e)}
+
+<span class="cmt"># Llamada de ejemplo (comentada — requiere router real)</span>
+<span class="cmt"># resultado = restconf_get_interface("192.168.1.1", "admin", "Cisco123", "0%2F0")</span>
+<span class="cmt"># print(json.dumps(resultado, indent=2))</span>
+
+<span class="fn">print</span>(<span class="str">"
+✅ Laboratorio completado. Ahora puedes adaptar este código a routers reales."</span>)</code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">▶️ Cómo ejecutar</div>
+    <ol>
+      <li>Guarda el código en <code>rest_crud_lab.py</code></li>
+      <li>Ejecuta: <code>python rest_crud_lab.py</code></li>
+      <li>Observa cada status code, los headers reflejados por httpbin y el flujo CRUD completo.</li>
+      <li>Para probar con un router real, descomenta la sección 7 y ajusta IP/credenciales. Asegúrate de que RESTCONF esté habilitado: <code>ip http server</code>, <code>restconf</code>, <code>ip http secure-server</code>.</li>
+    </ol>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 9 — REFERENCIA
+═══════════════════════════════════════════ -->
+<div id="tab-referencia" class="rest1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Tabla de Referencia — HTTP y REST para Redes</h2>
+  <div id="refTableRest1"></div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 10 — QUIZ
+═══════════════════════════════════════════ -->
+<div id="tab-quiz" class="rest1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Quiz — HTTP y REST Fundamentos</h2>
+  <p style="font-size:.83rem;color:#6b7a9a;margin-bottom:20px;">10 preguntas estilo CCNA Domain 6.5. Evalúa tu dominio de verbos, códigos de estado, headers y principios REST.</p>
+  <div id="quizContainerRest1"></div>
+</div>
+</div>
+
+</div><!-- /.tabs-wrap -->
+
+<script>
+// ── NAVEGACIÓN DRAWER ────────────────────────────────
+function ccnaToggle() {
+  document.getElementById('ccnaDrawer').classList.toggle('open');
+  document.getElementById('ccnaOverlay').classList.toggle('show');
+}
+function ccnaClose() {
+  document.getElementById('ccnaDrawer').classList.remove('open');
+  document.getElementById('ccnaOverlay').classList.remove('show');
+}
+
+// ── TABS ──────────────────────────────────────────────
+function showTabRest1(id, btn) {
+  document.querySelectorAll('.rest1-tab-content').forEach(t => t.classList.remove('rest1-active'));
+  document.querySelectorAll('.rest1-tab-btn').forEach(b => b.classList.remove('rest1-active'));
+  document.getElementById('tab-' + id).classList.add('rest1-active');
+  if (btn) btn.classList.add('rest1-active');
+}
+
+// ── TABLA DE REFERENCIA ──────────────────────────────
+function buildRefTable() {
+  const container = document.getElementById('refTableRest1');
+  if (!container) return;
+
+  const secciones = [
+    {
+      titulo: 'VERBOS HTTP & CRUD',
+      cols: ['Verbo','CRUD','Idempotente','Uso en redes'],
+      filas: [
+        ['GET','Read','Sí','Obtener config, estado, interfaces, rutas'],
+        ['POST','Create','No','Crear loopback, VLAN, usuario; ejecutar operaciones'],
+        ['PUT','Update (total)','Sí','Reemplazar configuración completa de recurso'],
+        ['PATCH','Update (parcial)','Generalmente sí','Modificar solo description, IP, etc.'],
+        ['DELETE','Delete','Sí','Eliminar interfaz, ACL, ruta estática'],
+      ]
+    },
+    {
+      titulo: 'CÓDIGOS DE ESTADO CLAVE',
+      cols: ['Código','Significado','Escenario networking'],
+      filas: [
+        ['200 OK','Éxito con datos','GET de running-config exitoso'],
+        ['201 Created','Recurso creado','POST crea interfaz Loopback'],
+        ['204 No Content','Éxito sin body','DELETE o PATCH exitoso'],
+        ['301/308','Redirección permanente','API cambió de endpoint'],
+        ['400 Bad Request','Petición malformada','JSON inválido, falta campo YANG'],
+        ['401 Unauthorized','Sin autenticar','Falta header Authorization'],
+        ['403 Forbidden','Sin permisos','Usuario sin privilegios de escritura'],
+        ['404 Not Found','Recurso no existe','Interfaz solicitada no está configurada'],
+        ['409 Conflict','Conflicto de estado','POST de recurso que ya existe'],
+        ['415 Unsupported Media','Formato no soportado','Content-Type incorrecto'],
+        ['500 Internal Error','Error servidor','Bug en daemon RESTCONF'],
+        ['503 Service Unavailable','Servidor no disponible','Router en mantenimiento'],
+      ]
+    },
+    {
+      titulo: 'HEADERS CRÍTICOS PARA APIs DE RED',
+      cols: ['Header','Uso','Ejemplo'],
+      filas: [
+        ['Content-Type','Formato del body enviado','application/yang-data+json'],
+        ['Accept','Formato deseado en respuesta','application/yang-data+json'],
+        ['Authorization','Credenciales','Basic YWRtaW46c2VjcmV0'],
+        ['X-Auth-Token','Token de sesión (DNA Center)','eyJ0eXAiOiJKV1Qi...'],
+        ['Host','Servidor destino','192.168.1.1'],
+        ['Location','URI nuevo recurso (respuesta 201)','/interface/Loopback=100'],
+        ['Cache-Control','Control de caché','no-cache'],
+      ]
+    },
+    {
+      titulo: 'REST vs RESTCONF vs NETCONF',
+      cols: ['Característica','REST','RESTCONF','NETCONF'],
+      filas: [
+        ['Transporte','HTTP/1.1, HTTP/2','HTTPS obligatorio','SSH (puerto 830)'],
+        ['Formato','JSON/XML/YAML','JSON/XML + YANG','Solo XML'],
+        ['Estilo','Recursos + verbos HTTP','Recursos + verbos HTTP + YANG','RPC (get-config, edit-config)'],
+        ['Estado','Stateless','Stateless','Stateful (sesión)'],
+        ['Datastores','N/A','running, startup, candidate','running, startup, candidate'],
+      ]
+    },
+    {
+      titulo: 'PRINCIPIOS REST (FIELDING)',
+      cols: ['Constraint','Descripción','Impacto en redes'],
+      filas: [
+        ['Cliente-Servidor','Separación de responsabilidades','Script Python no necesita saber cómo IOS-XE almacena datos'],
+        ['Stateless','Cada request lleva toda la info','Fácil escalar; reintentar requests sin miedo'],
+        ['Cacheable','Respuestas etiquetadas para caché','Reducir carga en controladores'],
+        ['Interfaz Uniforme','URIs identifican recursos','Cada interfaz, VLAN, ruta tiene URI única'],
+        ['Sistema por Capas','Proxies/load balancers transparentes','DNA Center actúa como capa intermedia'],
+        ['Código bajo demanda','Opcional: enviar código al cliente','Poco usado en infraestructura'],
+      ]
+    }
+  ];
+
+  let html = '';
+  secciones.forEach(sec => {
+    html += `<h3 style="font-family:Orbitron,sans-serif;font-size:.8rem;color:#38bdf8;letter-spacing:2px;margin:24px 0 10px;text-transform:uppercase;">▸ ${sec.titulo}</h3>`;
+    html += `<div class="table-wrap"><table class="ref-table"><thead><tr>${sec.cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>`;
+    sec.filas.forEach(f => { html += '<tr>' + f.map(c=>`<td>${c}</td>`).join('') + '</tr>'; });
+    html += '</tbody></table></div>';
+  });
+  container.innerHTML = html;
+}
+
+// ── QUIZ ─────────────────────────────────────────────
+function initQuiz() {
+  const container = document.getElementById('quizContainerRest1');
+  if (!container) return;
+
+  const qs = [
+    {
+      q: '¿Qué verbo HTTP se utiliza para obtener la configuración de una interfaz vía RESTCONF sin modificar nada?',
+      opts: ['POST','PUT','GET','PATCH'],
+      ans: 2,
+      exp: 'GET es el verbo <strong>safe</strong> e <strong>idempotente</strong> para lectura. RESTCONF usa <code>GET /restconf/data/...</code> para obtener configuración o estado operacional.'
+    },
+    {
+      q: '¿Cuál de los siguientes códigos de estado indica que un recurso fue creado exitosamente?',
+      opts: ['200 OK','201 Created','204 No Content','202 Accepted'],
+      ans: 1,
+      exp: '<strong>201 Created</strong> es la respuesta estándar para creación exitosa. Suele venir acompañada del header <code>Location</code> apuntando al nuevo recurso. 200 OK también puede usarse, pero 201 es más semánticamente correcto.'
+    },
+    {
+      q: 'Un ingeniero envía un PATCH para cambiar solo la descripción de una interfaz, pero olvida el header Content-Type. ¿Qué código de error espera?',
+      opts: ['401 Unauthorized','404 Not Found','415 Unsupported Media Type','500 Internal Server Error'],
+      ans: 2,
+      exp: 'Sin <code>Content-Type</code>, el servidor no sabe cómo interpretar el body del PATCH. Devuelve <strong>415 Unsupported Media Type</strong>. El header correcto sería <code>Content-Type: application/yang-data+json</code>.'
+    },
+    {
+      q: '¿Qué verbo HTTP es idempotente y reemplaza por completo un recurso existente?',
+      opts: ['POST','PATCH','PUT','DELETE'],
+      ans: 2,
+      exp: '<strong>PUT</strong> es idempotente y realiza un reemplazo total del recurso. Si ejecutas el mismo PUT 100 veces, el resultado final es idéntico. POST no es idempotente; PATCH es parcial.'
+    },
+    {
+      q: '¿Qué significa que HTTP sea "stateless" en el contexto de una API REST?',
+      opts: ['No usa TLS/HTTPS','Cada petición es independiente; el servidor no guarda contexto entre requests','No soporta autenticación','No puede enviar cookies'],
+      ans: 1,
+      exp: 'Stateless significa que <strong>cada request contiene toda la información necesaria</strong>. El servidor no mantiene sesión ni recuerda peticiones anteriores. Esto facilita la escalabilidad y los reintentos.'
+    },
+    {
+      q: 'Un script recibe código 403 al intentar modificar una interfaz vía RESTCONF. ¿Cuál es la causa más probable?',
+      opts: ['La interfaz no existe','El JSON está malformado','El usuario está autenticado pero no tiene privilegios de escritura','La URL es incorrecta'],
+      ans: 2,
+      exp: '<strong>403 Forbidden</strong> indica autenticación exitosa pero falta de autorización. El usuario existe pero su rol no permite escritura. 401 = no autenticado; 404 = no existe; 400 = malformado.'
+    },
+    {
+      q: '¿Cuál es el propósito del header <code>Accept: application/yang-data+json</code> en RESTCONF?',
+      opts: ['Autenticar al cliente','Indicar que el body enviado es JSON','Solicitar que la respuesta del servidor sea en formato YANG JSON','Especificar la versión de HTTP'],
+      ans: 2,
+      exp: 'El header <code>Accept</code> le dice al servidor <strong>qué formato de respuesta quiere el cliente</strong>. <code>application/yang-data+json</code> es el tipo MIME definido en RFC 8040 para datos YANG en JSON.'
+    },
+    {
+      q: '¿Cuál es la diferencia fundamental entre RESTCONF y NETCONF?',
+      opts: ['RESTCONF usa SSH y NETCONF usa HTTPS','RESTCONF es stateless sobre HTTP; NETCONF es stateful sobre SSH con sesión persistente','RESTCONF solo soporta XML; NETCONF soporta JSON y XML','RESTCONF es más antiguo que NETCONF'],
+      ans: 1,
+      exp: 'RESTCONF (RFC 8040) lleva REST a los modelos YANG usando HTTP stateless. NETCONF (RFC 6241) usa sesiones SSH persistentes y operaciones RPC como <code>&lt;get-config&gt;</code>. NETCONF es anterior a RESTCONF.'
+    },
+    {
+      q: 'Un administrador ejecuta dos veces seguidas el mismo POST para crear una VLAN. ¿Qué ocurre si la API es puramente RESTful?',
+      opts: ['La segunda request es ignorada','Se crean dos VLANs idénticas','La segunda devuelve 204 No Content','La segunda devuelve 200 OK sin efecto'],
+      ans: 1,
+      exp: 'POST <strong>no es idempotente</strong>. Ejecutarlo N veces crea N recursos. Si quieres idempotencia en creación, usa PUT a una URI conocida de antemano, o maneja la lógica de duplicados en el cliente.'
+    },
+    {
+      q: '¿Qué código de estado debería devolver un servidor si el cliente envía un JSON con un campo obligatorio faltante?',
+      opts: ['401 Unauthorized','400 Bad Request','409 Conflict','503 Service Unavailable'],
+      ans: 1,
+      exp: '<strong>400 Bad Request</strong> indica que el servidor no puede procesar la petición debido a un error del cliente: JSON malformado, schema YANG inválido, tipos de datos incorrectos o campos obligatorios faltantes.'
+    }
+  ];
+
+  let html = '';
+  qs.forEach((q, i) => {
+    html += `<div class="quiz-question" id="qr1${i}">
+      <div class="quiz-q-num">PREGUNTA ${i+1} DE ${qs.length} · M8 REST Tema 1</div>
+      <div class="quiz-q-text">${q.q}</div>
+      <div class="quiz-opts">
+        ${q.opts.map((o,j) => `<button class="quiz-opt" data-qi="${i}" data-sel="${j}" data-ans="${q.ans}">${o}</button>`).join('')}
+      </div>
+    </div>`;
+  });
+  container.innerHTML = html;
+
+  window._rest1Exp = {};
+  qs.forEach((q, i) => { window._rest1Exp[i] = q.exp; });
+
+  container.querySelectorAll('.quiz-opt').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const qi  = parseInt(this.dataset.qi);
+      const sel = parseInt(this.dataset.sel);
+      const ans = parseInt(this.dataset.ans);
+      const qDiv = document.getElementById('qr1' + qi);
+      const btns = qDiv.querySelectorAll('.quiz-opt');
+
+      btns.forEach(b => b.disabled = true);
+      btns[sel].classList.add(sel === ans ? 'correct' : 'wrong');
+      if (sel !== ans) btns[ans].classList.add('correct');
+
+      const expDiv = document.createElement('div');
+      expDiv.className = 'quiz-explanation';
+      expDiv.innerHTML = `<strong>${sel===ans ? '✅ Correcto!' : '❌ Incorrecto.'}</strong> ${window._rest1Exp[qi]}`;
+      qDiv.appendChild(expDiv);
+    });
+  });
+}
+
+// ── INICIALIZACIÓN ────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  buildRefTable();
+  initQuiz();
+});
+</script>
+</body>
+</html>
