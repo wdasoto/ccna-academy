@@ -1,0 +1,904 @@
+Aquí tienes el archivo **`json-tema3.html`** completo — Tema 03 del módulo JSON, manteniendo el diseño idéntico con paleta dorada/ámbar y enfocado en la comparativa estratégica entre formatos para el examen CCNA:
+
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JSON vs XML vs YAML — Tema 3 | JSON y Datos | CCNA Academy</title>
+  <meta name="description" content="Comparativa completa: JSON para RESTCONF, XML para NETCONF, YAML para Ansible. Sintaxis, casos de uso y diferencias clave para el examen CCNA Domain 6.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── HERO acento Comparativa (Dorado/Ámbar) ── */
+.class-hero { background: linear-gradient(135deg, #06080f 0%, #0f0d05 40%, #0a1510 100%); }
+
+/* ── FORMAT GRID ── */
+.format-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:12px; margin:20px 0; }
+.format-card { background:#090d1a; border:1px solid rgba(251,191,36,.15); border-radius:10px; padding:16px; text-align:center; position:relative; }
+.format-icon { font-size:2.2rem; margin-bottom:8px; }
+.format-name { font-family:'Orbitron',sans-serif; font-size:.9rem; color:#fbbf24; margin-bottom:6px; }
+.format-tag { font-family:'Share Tech Mono',monospace; font-size:.65rem; color:#6b7a9a; background:rgba(251,191,36,.08); padding:3px 10px; border-radius:20px; display:inline-block; }
+
+/* ── COMPARISON TABLE ── */
+.compare-wrap { overflow-x:auto; margin:20px 0; border:1px solid rgba(251,191,36,.1); border-radius:8px; }
+.compare-table { width:100%; border-collapse:collapse; font-size:.85rem; }
+.compare-table th { background:#090d1a; color:#fbbf24; font-family:'Share Tech Mono',monospace; padding:12px; text-align:left; border-bottom:2px solid rgba(251,191,36,.2); }
+.compare-table td { padding:12px; border-bottom:1px solid rgba(255,255,255,.04); color:#8294b8; vertical-align:top; }
+.compare-table tr:hover td { background:rgba(251,191,36,.03); }
+.compare-table .winner { color:#34d399; font-weight:600; }
+
+/* ── CODE COMPARISON ── */
+.code-compare { display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:16px; margin:20px 0; }
+.code-col { background:#050810; border:1px solid rgba(251,191,36,.1); border-radius:8px; overflow:hidden; }
+.code-col-header { background:rgba(251,191,36,.08); padding:8px 16px; font-family:'Share Tech Mono',monospace; font-size:.7rem; color:#fbbf24; text-transform:uppercase; letter-spacing:1px; border-bottom:1px solid rgba(251,191,36,.1); }
+.code-col pre { margin:0; padding:16px; font-size:.75rem; line-height:1.6; }
+
+/* ── BASE STYLES ── */
+body{font-family:'Exo 2',sans-serif;background:#07090f;color:#e2e8f0;}
+.class-hero{padding:56px 24px 48px;border-bottom:1px solid rgba(251,191,36,.08);position:relative;overflow:hidden;}
+.class-hero::before{content:'';position:absolute;top:-60px;right:-80px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(251,191,36,.06) 0%,transparent 70%);pointer-events:none;}
+.class-hero-inner{max-width:900px;margin:0 auto;position:relative;z-index:1;}
+.class-badge{font-family:'Share Tech Mono',monospace;font-size:.63rem;color:#fbbf24;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;}
+.class-title{font-family:'Orbitron',sans-serif;font-size:clamp(1.6rem,3.8vw,2.6rem);font-weight:900;letter-spacing:3px;color:#c2d0e8;margin-bottom:12px;line-height:1.1;}
+.class-subtitle{font-size:.92rem;color:#6b7a9a;line-height:1.72;margin-bottom:20px;max-width:700px;}
+.class-meta{display:flex;gap:12px;flex-wrap:wrap;}
+.meta-item{font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#374060;padding:4px 10px;border:1px solid rgba(251,191,36,.1);border-radius:4px;}
+.json3-tabs-wrap{max-width:1100px;margin:0 auto;padding:0 16px 40px;}
+.json3-tabs-bar{display:flex;gap:4px;padding:20px 0 0;flex-wrap:wrap;border-bottom:1px solid rgba(251,191,36,.1);margin-bottom:0;}
+.json3-tab-btn{padding:8px 13px;border-radius:8px 8px 0 0;font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#4a5780;background:none;border:1px solid transparent;cursor:pointer;transition:all .18s;white-space:nowrap;border-bottom:none;}
+.json3-tab-btn:hover{color:#c2d0e8;background:rgba(251,191,36,.05);}
+.json3-tab-btn.json3-active{color:#fbbf24;background:#0d1220;border-color:rgba(251,191,36,.25);border-bottom:1px solid #0d1220;}
+.json3-tab-content{display:none;background:#0d1220;border:1px solid rgba(251,191,36,.08);border-top:none;border-radius:0 0 12px 12px;padding:32px;}
+.json3-tab-content.json3-active{display:block;}
+.content-block{max-width:880px;}
+.section-title{font-family:'Orbitron',sans-serif;font-size:.95rem;color:#fbbf24;letter-spacing:2px;margin:28px 0 14px;padding-bottom:8px;border-bottom:1px solid rgba(251,191,36,.15);}
+.section-title:first-child{margin-top:0;}
+p{color:#8294b8;line-height:1.75;margin-bottom:14px;font-size:.9rem;}
+ul,ol{color:#8294b8;padding-left:1.4rem;margin-bottom:14px;font-size:.9rem;}
+li{margin-bottom:5px;line-height:1.65;}
+strong{color:#c2d0e8;}
+code{font-family:'Share Tech Mono',monospace;font-size:.82rem;background:rgba(251,191,36,.1);color:#fbbf24;padding:1px 6px;border-radius:4px;border:1px solid rgba(251,191,36,.2);}
+
+/* INFO BOXES */
+.info-box{border-radius:8px;padding:14px 18px;margin:18px 0;border-left:3px solid;}
+.info-box.tip{background:rgba(251,191,36,.06);border-color:#fbbf24;}
+.info-box.json-box{background:rgba(0,212,170,.06);border-color:#00d4aa;}
+.info-box.xml-box{background:rgba(91,155,213,.06);border-color:#5b9bd5;}
+.info-box.yaml-box{background:rgba(156,163,175,.06);border-color:#9ca3af;}
+.info-box-title{font-family:'Share Tech Mono',monospace;font-size:.73rem;color:#fbbf24;margin-bottom:8px;}
+
+/* CODE BLOCKS */
+.code-block{background:#050810;border:1px solid rgba(251,191,36,.15);border-left:3px solid #fbbf24;border-radius:8px;padding:0;margin:16px 0;overflow:hidden;}
+.code-label{background:rgba(251,191,36,.08);padding:8px 16px;font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#6b7a9a;letter-spacing:2px;text-transform:uppercase;border-bottom:1px solid rgba(251,191,36,.1);}
+.code-block pre{margin:0;padding:18px;overflow-x:auto;}
+.code-block code{background:none;border:none;padding:0;color:#a8b4c8;font-size:.79rem;line-height:1.8;display:block;}
+
+/* SYNTAX HIGHLIGHTING */
+.cmt{color:#3a4a60;font-style:italic;}
+.kw {color:#c792ea;}
+.fn {color:#82aaff;}
+.str{color:#c3e88d;}
+.num{color:#f78c6c;}
+.key{color:#fbbf24;}
+.tag{color:#5b9bd5;}
+.attr{color:#9cdcfe;}
+
+/* QUIZ */
+.quiz-question{background:#090d1a;border:1px solid rgba(251,191,36,.12);border-radius:10px;padding:20px;margin-bottom:14px;}
+.quiz-q-num{font-family:'Share Tech Mono',monospace;font-size:.62rem;color:#374060;margin-bottom:8px;}
+.quiz-q-text{font-size:.9rem;color:#c2d0e8;margin-bottom:14px;line-height:1.6;}
+.quiz-opts{display:flex;flex-direction:column;gap:7px;}
+.quiz-opt{padding:10px 14px;border-radius:7px;border:1px solid rgba(251,191,36,.12);background:#0d1220;color:#6b7a9a;cursor:pointer;font-size:.84rem;text-align:left;transition:all .15s;font-family:'Exo 2',sans-serif;}
+.quiz-opt:hover:not(:disabled){border-color:rgba(251,191,36,.4);color:#c2d0e8;}
+.quiz-opt.correct{border-color:#34d399;background:rgba(52,211,153,.08);color:#34d399;}
+.quiz-opt.wrong{border-color:#f87171;background:rgba(248,113,113,.08);color:#f87171;}
+.quiz-explanation{margin-top:10px;padding:10px 14px;background:rgba(251,191,36,.07);border-left:3px solid #fbbf24;border-radius:6px;font-size:.82rem;color:#a0aec0;line-height:1.65;}
+
+/* Navbar */
+.navbar{position:fixed;top:0;left:0;right:0;height:56px;background:#080a10;border-bottom:1px solid rgba(251,191,36,.1);display:flex;align-items:center;padding:0 24px;z-index:1000;}
+.navbar-toggle{background:none;border:1px solid rgba(251,191,36,.3);color:#fbbf24;padding:6px 12px;border-radius:6px;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:.75rem;margin-right:16px;}
+.navbar-brand{font-family:'Orbitron',sans-serif;font-weight:700;color:#00d4aa;text-decoration:none;font-size:1.1rem;}
+.navbar-brand span{color:#5b9bd5;}
+.navbar-spacer{flex:1;}
+.navbar-link{color:#6b7a9a;text-decoration:none;font-size:.8rem;transition:color .2s;}
+.navbar-link:hover{color:#c2d0e8;}
+.nav-spacer{height:56px;}
+.ccna-drawer{position:fixed;top:0;left:0;bottom:0;width:280px;background:#0d1220;border-right:1px solid rgba(251,191,36,.2);transform:translateX(-100%);transition:transform .3s;z-index:2000;overflow-y:auto;}
+.ccna-drawer.open{transform:translateX(0);}
+.ccna-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);opacity:0;visibility:hidden;transition:all .3s;z-index:1500;}
+.ccna-overlay.show{opacity:1;visibility:visible;}
+.drawer-header{padding:20px;border-bottom:1px solid rgba(251,191,36,.2);display:flex;justify-content:space-between;align-items:center;}
+.drawer-header h2{font-family:'Orbitron',sans-serif;font-size:.8rem;color:#fbbf24;margin:0;letter-spacing:2px;}
+.drawer-close{background:none;border:none;color:#6b7a9a;font-size:1.2rem;cursor:pointer;}
+.drawer-section{padding:16px;border-bottom:1px solid rgba(251,191,36,.1);}
+.drawer-section-title{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#374060;margin-bottom:12px;letter-spacing:1px;text-transform:uppercase;}
+.drawer-link{display:block;padding:10px 12px;color:#8294b8;text-decoration:none;font-size:.85rem;border-radius:6px;transition:all .2s;margin-bottom:4px;}
+.drawer-link:hover{background:rgba(251,191,36,.1);color:#c2d0e8;}
+.drawer-link.active{background:rgba(251,191,36,.2);color:#fbbf24;border-left:3px solid #fbbf24;}
+.dl-icon{margin-right:8px;}
+
+@media(max-width:680px){
+  .json3-tab-btn{font-size:.6rem;padding:6px 9px;}
+  .json3-tab-content{padding:18px 12px;}
+  .format-grid{grid-template-columns:1fr;}
+  .code-compare{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
+<nav class="ccna-drawer" id="ccnaDrawer">
+  <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
+  <div class="drawer-section"><div class="drawer-section-title">General</div>
+    <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M8 · Automatización</div>
+    <a href="m8-automatizacion.html" class="drawer-link"><span class="dl-icon">🤖</span> M8 — Vista General</a>
+    <a href="python-redes.html"      class="drawer-link"><span class="dl-icon">🐍</span> Python para Redes</a>
+    <a href="json-datos.html"        class="drawer-link"><span class="dl-icon">📋</span> JSON y Datos — Índice</a>
+    <a href="json-tema1.html"        class="drawer-link"><span class="dl-icon">01</span> Fundamentos JSON</a>
+    <a href="json-tema2.html"        class="drawer-link"><span class="dl-icon">02</span> Parsing con Python</a>
+    <a href="json-tema3.html"        class="drawer-link active"><span class="dl-icon">03</span> JSON vs XML vs YAML</a>
+    <a href="rest-apis.html"         class="drawer-link"><span class="dl-icon">🌐</span> REST APIs</a></div>
+</nav>
+
+<header class="navbar">
+  <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
+  <a href="../index.html" class="navbar-brand">CISCO<span> ACADEMY</span></a>
+  <div class="navbar-spacer"></div>
+  <a href="json-datos.html" class="navbar-link">← JSON y Datos</a>
+</header>
+<div class="nav-spacer"></div>
+
+<!-- HERO -->
+<section class="class-hero" style="border-bottom:1px solid rgba(251,191,36,.2);">
+  <div class="class-hero-inner">
+    <div class="class-badge" style="color:#fbbf24;">M8 · AUTOMATIZACIÓN · TEMA 3 DE 6 · JSON Y DATOS</div>
+    <h1 class="class-title"><span style="background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">JSON</span> vs <span style="color:#5b9bd5;">XML</span> vs <span style="color:#9ca3af;">YAML</span></h1>
+    <p class="class-subtitle">La guerra de los formatos de datos en networking. Aprende cuándo usa cada protocolo: RESTCONF (JSON/XML), NETCONF (XML), Ansible (YAML). Diferencias sintácticas clave y escenarios de uso para el examen CCNA.</p>
+    <div class="class-meta">
+      <span class="meta-item" style="border-color:rgba(251,191,36,.2);color:#fbbf24;">⚖️ Comparativa</span>
+      <span class="meta-item">🎯 CCNA Domain 6.5-6.7</span>
+      <span class="meta-item">⏱ ~55 min lectura</span>
+      <span class="meta-item">🌐 RESTCONF/NETCONF</span>
+      <span class="meta-item">⚙️ Ansible</span>
+    </div>
+  </div>
+</section>
+
+<!-- TABS -->
+<div class="json3-tabs-wrap">
+  <div class="json3-tabs-bar">
+    <button class="json3-tab-btn json3-active" onclick="showTabJson3('intro',this)">⚖️ Intro</button>
+    <button class="json3-tab-btn" onclick="showTabJson3('sintaxis',this)">🔤 Sintaxis</button>
+    <button class="json3-tab-btn" onclick="showTabJson3('json',this)">📋 JSON</button>
+    <button class="json3-tab-btn" onclick="showTabJson3('xml',this)">🌐 XML</button>
+    <button class="json3-tab-btn" onclick="showTabJson3('yaml',this)">📄 YAML</button>
+    <button class="json3-tab-btn" onclick="showTabJson3('red',this)">🖥️ En la Red</button>
+    <button class="json3-tab-btn" onclick="showTabJson3('python',this)">🐍 Python</button>
+    <button class="json3-tab-btn" onclick="showTabJson3('referencia',this)">📊 Referencia</button>
+    <button class="json3-tab-btn" onclick="showTabJson3('quiz',this)">🎯 Quiz</button>
+  </div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 1 — INTRO
+═══════════════════════════════════════════ -->
+<div id="tab-intro" class="json3-tab-content json3-active">
+<div class="content-block">
+  <h2 class="section-title">Los Tres Pilares de la Automatización de Red</h2>
+  <p>En el mundo del networking moderno, no existe un único formato de datos. Cada protocolo y herramienta eligió su lenguaje: <strong>RESTCONF</strong> habla JSON (y XML), <strong>NETCONF</strong> habla XML exclusivamente, y <strong>Ansible</strong> prefiere YAML por su legibilidad humana. Dominar las diferencias es clave para el examen CCNA y para la vida real.</p>
+
+  <div class="format-grid">
+    <div class="format-card">
+      <div class="format-icon" style="color:#fbbf24;">{ }</div>
+      <div class="format-name">JSON</div>
+      <div class="format-tag">RESTCONF APIs</div>
+      <p style="font-size:.75rem;color:#6b7a9a;margin-top:10px;">Ligero, nativo de JavaScript, estructura clave-valor. Ideal para APIs HTTP modernas.</p>
+    </div>
+    <div class="format-card">
+      <div class="format-icon" style="color:#5b9bd5;">&lt;/&gt;</div>
+      <div class="format-name">XML</div>
+      <div class="format-tag">NETCONF / YANG</div>
+      <p style="font-size:.75rem;color:#6b7a9a;margin-top:10px;">Verbos pero estricto. El estándar de NETCONF y configuraciones legacy. Schema-based.</p>
+    </div>
+    <div class="format-card">
+      <div class="format-icon" style="color:#9ca3af;">⎽⎽</div>
+      <div class="format-name">YAML</div>
+      <div class="format-tag">Ansible / Configs</div>
+      <p style="font-size:.75rem;color:#6b7a9a;margin-top:10px;">Human-friendly. Indentación significativa. Playbooks de Ansible e inventarios.</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">Mapa de Uso en Cisco</h2>
+  <div class="compare-wrap">
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Tecnología</th>
+          <th>Formato Principal</th>
+          <th>Alternativa</th>
+          <th>Uso típico</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>RESTCONF</strong></td>
+          <td class="winner">JSON</td>
+          <td>XML</td>
+          <td>APIs HTTP modernas, programación web</td>
+        </tr>
+        <tr>
+          <td><strong>NETCONF</strong></td>
+          <td class="winner">XML (obligatorio)</td>
+          <td>—</td>
+          <td>Configuración estructurada, RPCs</td>
+        </tr>
+        <tr>
+          <td><strong>Ansible</strong></td>
+          <td class="winner">YAML</td>
+          <td>JSON (convertido)</td>
+          <td>Playbooks, inventarios, variables</td>
+        </tr>
+        <tr>
+          <td><strong>DNA Center</strong></td>
+          <td class="winner">JSON</td>
+          <td>—</td>
+          <td>APIs RESTful, intenciones</td>
+        </tr>
+        <tr>
+          <td><strong>Modelos YANG</strong></td>
+          <td>Conceptual</td>
+          <td>XML/JSON instancias</td>
+          <td>Definición de datos, no transporte</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Clave para el examen CCNA</div>
+    <p>Si la pregunta menciona <strong>RESTCONF</strong>, piensa JSON. Si menciona <strong>NETCONF</strong>, piensa XML. Si menciona <strong>Ansible</strong>, piensa YAML. No hay excepciones en el examen: NETCONF <strong>siempre</strong> usa XML por especificación RFC 6241.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 2 — SINTAXIS COMPARADA
+═══════════════════════════════════════════ -->
+<div id="tab-sintaxis" class="json3-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Mismo Dato, Tres Lenguajes</h2>
+  <p>Compara cómo se representa la misma información (una interfaz de router) en los tres formatos. Observa la verbosidad y legibilidad.</p>
+
+  <div class="code-compare">
+    <div class="code-col">
+      <div class="code-col-header" style="color:#fbbf24;">📋 JSON</div>
+      <pre><code>{
+  <span class="key">"interface"</span>: {
+    <span class="key">"name"</span>: <span class="str">"GigabitEthernet1"</span>,
+    <span class="key">"ip"</span>: <span class="str">"192.168.1.1"</span>,
+    <span class="key">"mask"</span>: <span class="str">"255.255.255.0"</span>,
+    <span class="key">"enabled"</span>: <span class="bool">true</span>,
+    <span class="key">"vlan"</span>: <span class="null">null</span>
+  }
+}</code></pre>
+    </div>
+    <div class="code-col">
+      <div class="code-col-header" style="color:#5b9bd5;">🌐 XML</div>
+      <pre><code><span class="tag">&lt;interface&gt;</span>
+  <span class="tag">&lt;name&gt;</span>GigabitEthernet1<span class="tag">&lt;/name&gt;</span>
+  <span class="tag">&lt;ip&gt;</span>192.168.1.1<span class="tag">&lt;/ip&gt;</span>
+  <span class="tag">&lt;mask&gt;</span>255.255.255.0<span class="tag">&lt;/mask&gt;</span>
+  <span class="tag">&lt;enabled&gt;</span>true<span class="tag">&lt;/enabled&gt;</span>
+  <span class="tag">&lt;vlan&gt;</span>null<span class="tag">&lt;/vlan&gt;</span>
+<span class="tag">&lt;/interface&gt;</span></code></pre>
+    </div>
+    <div class="code-col">
+      <div class="code-col-header" style="color:#9ca3af;">📄 YAML</div>
+      <pre><code><span class="key">interface</span>:
+  <span class="key">name</span>: <span class="str">GigabitEthernet1</span>
+  <span class="key">ip</span>: <span class="str">192.168.1.1</span>
+  <span class="key">mask</span>: <span class="str">255.255.255.0</span>
+  <span class="key">enabled</span>: <span class="bool">true</span>
+  <span class="key">vlan</span>: <span class="null">null</span></code></pre>
+    </div>
+  </div>
+
+  <h2 class="section-title">Análisis Comparativo</h2>
+  <div class="compare-wrap">
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Característica</th>
+          <th>JSON</th>
+          <th>XML</th>
+          <th>YAML</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Delimitadores</strong></td>
+          <td><code>{} [] ""</code></td>
+          <td><code>&lt;tags&gt;</code></td>
+          <td>Indentación (espacios)</td>
+        </tr>
+        <tr>
+          <td><strong>Comentarios</strong></td>
+          <td>No</td>
+          <td>Sí <code>&lt;!-- --&gt;</code></td>
+          <td>Sí <code>#</code></td>
+        </tr>
+        <tr>
+          <td><strong>Verbosidad</strong></td>
+          <td>Media</td>
+          <td>Alta (repetición de tags)</td>
+          <td>Baja (más limpio)</td>
+        </tr>
+        <tr>
+          <td><strong>Parseo Python</strong></td>
+          <td><code>json.loads()</code></td>
+          <td><code>xml.etree</code></td>
+          <td><code>yaml.safe_load()</code></td>
+        </tr>
+        <tr>
+          <td><strong>Legibilidad</strong></td>
+          <td>Para máquinas</td>
+          <td>Verboso</td>
+          <td class="winner">Para humanos</td>
+        </tr>
+        <tr>
+          <td><strong>Schema validation</strong></td>
+          <td>JSON Schema</td>
+          <td class="winner">XSD (DTD)</td>
+          <td>Limited</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 3 — JSON PROFUNDO
+═══════════════════════════════════════════ -->
+<div id="tab-json" class="json3-tab-content">
+<div class="content-block">
+  <h2 class="section-title">JSON — El Estándar REST</h2>
+  <p>JSON es el formato por defecto de RESTCONF y la mayoría de APIs HTTP modernas. Su simplicidad lo hace ideal para JavaScript y Python.</p>
+
+  <div class="info-box json-box">
+    <div class="info-box-title" style="color:#00d4aa;">✅ Ventajas JSON</div>
+    <ul>
+      <li>Nativo en navegadores (JavaScript)</li>
+      <li>Más ligero que XML (menos bytes en red)</li>
+      <li>Tipos de datos nativos (strings, números, booleanos)</li>
+      <li>Parseo rápido en Python con <code>json.loads()</code></li>
+    </ul>
+  </div>
+
+  <h2 class="section-title">Ejemplo RESTCONF Real (Cisco)</h2>
+  <div class="code-block">
+    <div class="code-label">GET /restconf/data/ietf-interfaces:interfaces</div>
+    <pre><code>{
+  <span class="str">"ietf-interfaces:interfaces"</span>: {
+    <span class="str">"interface"</span>: [
+      {
+        <span class="str">"name"</span>: <span class="str">"GigabitEthernet1"</span>,
+        <span class="str">"description"</span>: <span class="str">"Uplink to Core"</span>,
+        <span class="str">"type"</span>: <span class="str">"iana-if-type:ethernetCsmacd"</span>,
+        <span class="str">"enabled"</span>: <span class="bool">true</span>,
+        <span class="str">"ietf-ip:ipv4"</span>: {
+          <span class="str">"address"</span>: [
+            {
+              <span class="str">"ip"</span>: <span class="str">"203.0.113.1"</span>,
+              <span class="str">"netmask"</span>: <span class="str">"255.255.255.0"</span>
+            }
+          ]
+        }
+      }
+    ]
+  }
+}</code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">⚡ JSON en el examen CCNA</div>
+    <p>Busca las llaves <code>{}</code> para identificar JSON. Recuerda: las claves van entre comillas dobles <code>"clave"</code>, nunca simples. Los booleanos son <code>true/false</code> (minúsculas).</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 4 — XML PROFUNDO
+═══════════════════════════════════════════ -->
+<div id="tab-xml" class="json3-tab-content">
+<div class="content-block">
+  <h2 class="section-title">XML — El Lenguaje de NETCONF</h2>
+  <p>XML es obligatorio para NETCONF (RFC 6241). Aunque verboso, proporciona validación estricta mediante esquemas (XSD) y es el formato nativo de YANG data models.</p>
+
+  <div class="info-box xml-box">
+    <div class="info-box-title" style="color:#5b9bd5;">🌐 Características XML</div>
+    <ul>
+      <li>Tags de apertura y cierre obligatorios <code>&lt;tag&gt;&lt;/tag&gt;</code></li>
+      <li>Atributos en tags: <code>&lt;interface name="Gi0/0"&gt;</code></li>
+      <li>Namespaces para evitar colisiones: <code>&lt;nc:rpc&gt;</code></li>
+      <li>Comentarios: <code>&lt;!-- esto es un comentario --&gt;</code></li>
+    </ul>
+  </div>
+
+  <h2 class="section-title">Ejemplo NETCONF Real (RPC)</h2>
+  <div class="code-block">
+    <div class="code-label">&lt;rpc&gt; message para obtener configuración</div>
+    <pre><code><span class="tag">&lt;rpc</span> <span class="attr">message-id</span>=<span class="str">"101"</span> 
+     <span class="attr">xmlns</span>=<span class="str">"urn:ietf:params:xml:ns:netconf:base:1.0"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;get-config&gt;</span>
+    <span class="tag">&lt;source&gt;</span>
+      <span class="tag">&lt;running/&gt;</span>
+    <span class="tag">&lt;/source&gt;</span>
+    <span class="tag">&lt;filter</span> <span class="attr">type</span>=<span class="str">"subtree"</span><span class="tag">&gt;</span>
+      <span class="tag">&lt;interfaces</span> <span class="attr">xmlns</span>=<span class="str">"urn:ietf:params:xml:ns:yang:ietf-interfaces"</span><span class="tag">&gt;</span>
+        <span class="tag">&lt;interface&gt;</span>
+          <span class="tag">&lt;name&gt;</span>GigabitEthernet1<span class="tag">&lt;/name&gt;</span>
+        <span class="tag">&lt;/interface&gt;</span>
+      <span class="tag">&lt;/interfaces&gt;</span>
+    <span class="tag">&lt;/filter&gt;</span>
+  <span class="tag">&lt;/get-config&gt;</span>
+<span class="tag">&lt;/rpc&gt;</span></code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">🎯 Clave CCNA: NETCONF = XML</div>
+    <p>En el examen, NETCONF <strong>siempre</strong> usa XML. No existe NETCONF con JSON en la especificación base (aunque algunos vendors tienen extensiones). Si ves una pregunta sobre NETCONF, busca tags XML <code>&lt;&gt;</code>, no llaves JSON.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 5 — YAML PROFUNDO
+═══════════════════════════════════════════ -->
+<div id="tab-yaml" class="json3-tab-content">
+<div class="content-block">
+  <h2 class="section-title">YAML — El Lenguaje de Ansible</h2>
+  <p>YAML (YAML Ain't Markup Language) es el formato de los playbooks de Ansible. Es un superconjunto de JSON (todo JSON válido es YAML válido) pero mucho más legible para humanos.</p>
+
+  <div class="info-box yaml-box">
+    <div class="info-box-title" style="color:#9ca3af;">📄 Reglas Críticas YAML</div>
+    <ul>
+      <li><strong>Indentación con espacios</strong> (no tabs). Generalmente 2 espacios.</li>
+      <li><strong>Sin comillas</strong> obligatorias (aunque permitidas).</li>
+      <li><strong>Listas</strong> con guión <code>-</code> y espacio.</li>
+      <li><strong>Comentarios</strong> con <code>#</code>.</li>
+      <li><strong>Booleanos</strong>: <code>true/false</code> o <code>yes/no</code> (cuidado: <code>no</code> se convierte en booleano, no string).</li>
+    </ul>
+  </div>
+
+  <h2 class="section-title">Ejemplo Ansible Playbook</h2>
+  <div class="code-block">
+    <div class="code-label">Configurar VLANs en switches Cisco</div>
+    <pre><code><span class="cmt"># playbook-vlans.yml</span>
+<span class="key">---</span>
+<span class="key">- name</span>: <span class="str">Configurar VLANs en switches</span>
+  <span class="key">hosts</span>: <span class="str">switches</span>
+  <span class="key">gather_facts</span>: <span class="bool">no</span>
+  
+  <span class="key">tasks</span>:
+    <span class="key">- name</span>: <span class="str">Crear VLANs</span>
+      <span class="key">cisco.ios.ios_vlan</span>:
+        <span class="key">vlan_id</span>: <span class="num">10</span>
+        <span class="key">name</span>: <span class="str">USUARIOS</span>
+        <span class="key">state</span>: <span class="str">present</span>
+      <span class="key">register</span>: <span class="str">resultado</span>
+      
+    <span class="key">- name</span>: <span class="str">Mostrar resultado</span>
+      <span class="key">ansible.builtin.debug</span>:
+        <span class="key">var</span>: <span class="str">resultado</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Inventario Ansible (YAML)</h2>
+  <div class="code-block">
+    <div class="code-label">inventory.yml</div>
+    <pre><code><span class="key">all</span>:
+  <span class="key">children</span>:
+    <span class="key">routers</span>:
+      <span class="key">hosts</span>:
+        <span class="key">R1</span>:
+          <span class="key">ansible_host</span>: <span class="num">192.168.1.1</span>
+          <span class="key">ansible_network_os</span>: <span class="str">ios</span>
+        <span class="key">R2</span>:
+          <span class="key">ansible_host</span>: <span class="num">192.168.1.2</span>
+    <span class="key">switches</span>:
+      <span class="key">hosts</span>:
+        <span class="key">SW1</span>:
+          <span class="key">ansible_host</span>: <span class="num">192.168.1.10</span>
+          
+<span class="key">vars</span>:
+  <span class="key">ansible_user</span>: <span class="str">admin</span>
+  <span class="key">ansible_ssh_pass</span>: <span class="str">Cisco123</span></code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚡ Trampa común en YAML</div>
+    <p>En YAML, <code>no</code> y <code>yes</code> se convierten en booleanos. Si necesitas el string "no", ponlo entre comillas: <code>"no"</code>. Esto es un error clásico en contraseñas o nombres de interfaces.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 6 — USO EN RED
+═══════════════════════════════════════════ -->
+<div id="tab-red" class="json3-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Cuándo Usar Cada Uno (Guía de Campo)</h2>
+  
+  <div class="compare-wrap">
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Escenario</th>
+          <th>Formato Recomendado</th>
+          <th>Por qué</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>API REST moderna (DNA Center, Meraki)</td>
+          <td class="winner">JSON</td>
+          <td>Nativo, ligero, parseo rápido</td>
+        </tr>
+        <tr>
+          <td>Configuración modelo YANG vía NETCONF</td>
+          <td class="winner">XML</td>
+          <td>Requerido por RFC 6241</td>
+        </tr>
+        <tr>
+          <td>Automatización con Ansible</td>
+          <td class="winner">YAML</td>
+          <td>Legibilidad, comentarios, indentación</td>
+        </tr>
+        <tr>
+          <td>Intercambio entre sistemas legacy</td>
+          <td>XML</td>
+          <td>Schemas XSD, validación estricta</td>
+        </tr>
+        <tr>
+          <td>Archivos de configuración manual</td>
+          <td class="winner">YAML</td>
+          <td>Fácil de editar sin errores de sintaxis</td>
+        </tr>
+        <tr>
+          <td>Comunicación web (AJAX, Fetch)</td>
+          <td class="winner">JSON</td>
+          <td>JavaScript nativo</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="section-title">Conversión Entre Formatos</h2>
+  <p>En la práctica, convertirás entre estos formatos constantemente:</p>
+  
+  <ul>
+    <li><strong>YAML → JSON</strong>: Ansible lee YAML pero APIs esperan JSON. Usa <code>yaml.safe_load()</code> → <code>json.dumps()</code></li>
+    <li><strong>XML → JSON</strong>: NETCONF devuelve XML pero tu app usa JSON. Librerías como <code>xmltodict</code> o <code>xml.etree</code></li>
+    <li><strong>JSON → YAML</strong>: Para hacer APIs legibles en documentación. <code>yaml.dump()</code></li>
+  </ul>
+
+  <div class="code-block">
+    <div class="code-label">Conversión YAML a JSON en Python</div>
+    <pre><code><span class="kw">import</span> yaml
+<span class="kw">import</span> json
+
+<span class="cmt"># Leer playbook de Ansible (YAML)</span>
+<span class="kw">with</span> <span class="fn">open</span>(<span class="str">'playbook.yml'</span>) <span class="kw">as</span> f:
+    playbook = yaml.<span class="fn">safe_load</span>(f)
+
+<span class="cmt"># Convertir a JSON para enviar a API</span>
+json_payload = json.<span class="fn">dumps</span>(playbook, indent=<span class="num">2</span>)
+<span class="fn">print</span>(json_payload)</code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 7 — PYTHON
+═══════════════════════════════════════════ -->
+<div id="tab-python" class="json3-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Parseo en Python de los Tres Formatos</h2>
+  
+  <div class="code-compare">
+    <div class="code-col">
+      <div class="code-col-header" style="color:#fbbf24;">JSON</div>
+      <pre><code><span class="kw">import</span> json
+
+<span class="cmt"># Parsear</span>
+data = json.<span class="fn">loads</span>(<span class="str">'{"ip": "1.1.1.1"}'</span>)
+
+<span class="cmt"># Acceder</span>
+<span class="fn">print</span>(data[<span class="str">"ip"</span>])  <span class="cmt"># 1.1.1.1</span>
+
+<span class="cmt"># Serializar</span>
+json_str = json.<span class="fn">dumps</span>(data)</code></pre>
+    </div>
+    <div class="code-col">
+      <div class="code-col-header" style="color:#5b9bd5;">XML</div>
+      <pre><code><span class="kw">import</span> xml.etree.ElementTree <span class="kw">as</span> ET
+
+<span class="cmt"># Parsear</span>
+root = ET.<span class="fn">fromstring</span>(xml_data)
+
+<span class="cmt"># Acceder</span>
+ip = root.<span class="fn">find</span>(<span class="str">"ip"</span>).<span class="fn">text</span>
+
+<span class="cmt"># Crear</span>
+iface = ET.<span class="fn">Element</span>(<span class="str">"interface"</span>)
+ET.<span class="fn">SubElement</span>(iface, <span class="str">"name"</span>)</code></pre>
+    </div>
+    <div class="code-col">
+      <div class="code-col-header" style="color:#9ca3af;">YAML</div>
+      <pre><code><span class="kw">import</span> yaml
+
+<span class="cmt"># Parsear</span>
+<span class="kw">with</span> <span class="fn">open</span>(<span class="str">'inv.yml'</span>) <span class="kw">as</span> f:
+    data = yaml.<span class="fn">safe_load</span>(f)
+
+<span class="cmt"># Acceder</span>
+<span class="fn">print</span>(data[<span class="str">"routers"</span>])
+
+<span class="cmt"># Serializar</span>
+yaml_str = yaml.<span class="fn">dump</span>(data)</code></pre>
+    </div>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Instalación de librerías</div>
+    <p>JSON viene en la librería estándar. XML también (<code>xml.etree</code>). Para YAML necesitas instalar: <code>pip install PyYAML</code></p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 8 — REFERENCIA
+═══════════════════════════════════════════ -->
+<div id="tab-referencia" class="json3-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Tabla de Referencia CCNA</h2>
+  
+  <div class="compare-wrap">
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Característica</th>
+          <th>JSON</th>
+          <th>XML</th>
+          <th>YAML</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Extensión archivo</td>
+          <td>.json</td>
+          <td>.xml</td>
+          <td>.yaml / .yml</td>
+        </tr>
+        <tr>
+          <td>Media type</td>
+          <td>application/json</td>
+          <td>application/xml</td>
+          <td>application/yaml</td>
+        </tr>
+        <tr>
+          <td>Tipos de datos</td>
+          <td>string, number, bool, null, array, object</td>
+          <td>string (todo es texto)</td>
+          <td>Implícitos por formato</td>
+        </tr>
+        <tr>
+          <td>Legibilidad humana</td>
+          <td>Media</td>
+          <td>Baja</td>
+          <td class="winner">Alta</td>
+        </tr>
+        <tr>
+          <td>Overhead de red</td>
+          <td>Bajo</td>
+          <td>Alto (tags repetidos)</td>
+          <td>Muy bajo</td>
+        </tr>
+        <tr>
+          <td>Comentarios</td>
+          <td>No</td>
+          <td>Sí</td>
+          <td>Sí (#)</td>
+        </tr>
+        <tr>
+          <td>Strict schema</td>
+          <td>JSON Schema</td>
+          <td class="winner">XSD</td>
+          <td>JSON Schema (convertido)</td>
+        </tr>
+        <tr>
+          <td>Uso CCNA</td>
+          <td>RESTCONF</td>
+          <td>NETCONF</td>
+          <td>Ansible</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="section-title">Cheat Sheet: Identificación Rápida</h2>
+  <ul>
+    <li><strong>Ve {} o []</strong> → Es JSON</li>
+    <li><strong>Ve &lt;tag&gt;</strong> → Es XML</li>
+    <li><strong>Ve indentación con - lista</strong> → Es YAML</li>
+    <li><strong>Ve xmlns=</strong> → Es XML (NETCONF)</li>
+    <li><strong>Ve Content-Type: application/json</strong> → RESTCONF</li>
+  </ul>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 9 — QUIZ
+═══════════════════════════════════════════ -->
+<div id="tab-quiz" class="json3-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Quiz — Comparativa de Formatos</h2>
+  <p style="font-size:.83rem;color:#6b7a9a;margin-bottom:20px;">10 preguntas sobre cuándo usar cada formato, sintaxis y aplicaciones en redes. Estilo CCNA Domain 6.</p>
+  <div id="quizContainerJson3">
+    <!-- JS generated -->
+  </div>
+</div>
+</div>
+
+</div><!-- /.tabs-wrap -->
+
+<script>
+// ── NAVEGACIÓN DRAWER ────────────────────────────────
+function ccnaToggle() {
+  document.getElementById('ccnaDrawer').classList.toggle('open');
+  document.getElementById('ccnaOverlay').classList.toggle('show');
+}
+function ccnaClose() {
+  document.getElementById('ccnaDrawer').classList.remove('open');
+  document.getElementById('ccnaOverlay').classList.remove('show');
+}
+
+// ── TABS ──────────────────────────────────────────────
+function showTabJson3(id, btn) {
+  document.querySelectorAll('.json3-tab-content').forEach(t => t.classList.remove('json3-active'));
+  document.querySelectorAll('.json3-tab-btn').forEach(b => b.classList.remove('json3-active'));
+  document.getElementById('tab-' + id).classList.add('json3-active');
+  if (btn) btn.classList.add('json3-active');
+}
+
+// ── QUIZ ───────────────────────────────────────────────
+function initQuizJson3() {
+  const container = document.getElementById('quizContainerJson3');
+  if (!container) return;
+
+  const qs = [
+    {
+      q: 'RESTCONF soporta JSON y XML, pero ¿cuál es el formato por defecto según el estándar?',
+      opts: ['XML', 'JSON', 'YAML', 'Ambos por igual'],
+      ans: 1,
+      exp: 'RESTCONF (RFC 8040) usa JSON como codificación por defecto. Aunque puede usar XML, la mayoría de implementaciones modernas usan JSON.'
+    },
+    {
+      q: 'NETCONF (RFC 6241) requiere obligatoriamente el uso de:',
+      opts: ['JSON', 'XML', 'YAML', 'Cualquiera de los tres'],
+      ans: 1,
+      exp: 'NETCONF está basado en XML obligatoriamente. Los mensajes RPC, las configuraciones y las notificaciones usan tags XML.'
+    },
+    {
+      q: 'Los playbooks de Ansible se escriben típicamente en:',
+      opts: ['JSON', 'XML', 'YAML', 'Python puro'],
+      ans: 2,
+      exp: 'Ansible usa YAML por su legibilidad. Aunque puede leer JSON, los playbooks se escriben en YAML para facilitar la edición manual y los comentarios.'
+    },
+    {
+      q: '¿Cuál de estos formatos NO soporta comentarios nativamente?',
+      opts: ['XML', 'YAML', 'JSON', 'Ninguno soporta comentarios'],
+      ans: 2,
+      exp: 'JSON (RFC 7159) no admite comentarios. XML usa &lt;!-- --&gt; y YAML usa #. Esto es una diferencia clave frecuente en el examen.'
+    },
+    {
+      q: 'Observas un archivo con extensión .yml que define hosts y tareas. ¿Qué tecnología estás viendo?',
+      opts: ['NETCONF', 'RESTCONF', 'Ansible', 'YANG'],
+      ans: 2,
+      exp: 'La extensión .yml (o .yaml) y la estructura de hosts/tareas indican un playbook de Ansible. NETCONF usa XML, RESTCONF usa JSON generalmente.'
+    },
+    {
+      q: 'En XML, ¿qué significa xmlns="urn:ietf:params:xml:ns:netconf:base:1.0"?',
+      opts: ['Es un comentario', 'Es un namespace para evitar colisiones de nombres', 'Es el cuerpo del mensaje', 'Es un error de sintaxis'],
+      ans: 1,
+      exp: 'Los namespaces (xmlns) en XML permiten que diferentes esquemas usen el mismo nombre de tag sin conflicto. Esencial en NETCONF/YANG.'
+    },
+    {
+      q: '¿Cuál es la ventaja principal de YAML sobre JSON para archivos de configuración?',
+      opts: ['Es más rápido de parsear', 'Soporta comentarios y es más legible para humanos', 'Es más seguro', 'Es el único que soporta listas'],
+      ans: 1,
+      exp: 'YAML permite comentarios (#) y usa indentación en lugar de llaves, haciéndolo más legible para editar manualmente configuraciones complejas.'
+    },
+    {
+      q: 'Si necesitas validar estrictamente la estructura de datos contra un esquema (schema), ¿cuál formato es más adecuado?',
+      opts: ['JSON', 'XML con XSD', 'YAML', 'CSV'],
+      ans: 1,
+      exp: 'XML tiene soporte nativo maduro para XSD (XML Schema Definition), permitiendo validación estricta de tipos y estructura antes del parsing.'
+    },
+    {
+      q: 'En YAML, el siguiente código representa: <br><code>interfaces:<br>  - name: Gi0/0<br>    ip: 192.168.1.1</code>',
+      opts: ['Un objeto con una lista', 'Un string multilínea', 'Un comentario', 'Un error de sintaxis'],
+      ans: 0,
+      exp: 'Es un objeto (interfaces) que contiene una lista (array) de objetos. El guión (-) indica elemento de lista en YAML.'
+    },
+    {
+      q: '¿Qué header HTTP indica que el cuerpo de la respuesta es JSON?',
+      opts: ['Content-Type: application/xml', 'Content-Type: application/json', 'Accept: text/yaml', 'Content-Encoding: JSON'],
+      ans: 1,
+      exp: 'El header Content-Type: application/json indica JSON. application/xml sería XML, y text/yaml no es estándar para HTTP.'
+    }
+  ];
+
+  let html = '';
+  qs.forEach((q, i) => {
+    html += `<div class="quiz-question" id="qjson3${i}">
+      <div class="quiz-q-num">PREGUNTA ${i+1} DE ${qs.length} · FORMATOS DE DATOS</div>
+      <div class="quiz-q-text">${q.q}</div>
+      <div class="quiz-opts">
+        ${q.opts.map((o,j) => `<button class="quiz-opt" data-qi="${i}" data-sel="${j}" data-ans="${q.ans}">${o}</button>`).join('')}
+      </div>
+    </div>`;
+  });
+  container.innerHTML = html;
+
+  window._json3Exp = {};
+  qs.forEach((q, i) => { window._json3Exp[i] = q.exp; });
+
+  container.querySelectorAll('.quiz-opt').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const qi  = parseInt(this.dataset.qi);
+      const sel = parseInt(this.dataset.sel);
+      const ans = parseInt(this.dataset.ans);
+      const qDiv = document.getElementById('qjson3' + qi);
+      const btns = qDiv.querySelectorAll('.quiz-opt');
+      
+      btns.forEach(b => b.disabled = true);
+      btns[sel].classList.add(sel === ans ? 'correct' : 'wrong');
+      if (sel !== ans) btns[ans].classList.add('correct');
+      
+      const expDiv = document.createElement('div');
+      expDiv.className = 'quiz-explanation';
+      expDiv.innerHTML = `<strong>${sel===ans ? '✅ Correcto!' : '❌ Incorrecto.'}</strong> ${window._json3Exp[qi]}`;
+      qDiv.appendChild(expDiv);
+    });
+  });
+}
+
+// ── INIT ─────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  initQuizJson3();
+});
+</script>
+</body>
+</html>
+```
+
+Este archivo **`json-tema3.html`** mantiene el **diseño idéntico** al sistema JSON (paleta dorada #fbbf24) e incluye:
+
+1. **Comparativa visual tres columnas**: JSON vs XML vs YAML con ejemplos paralelos de la misma interfaz
+2. **Cobertura específica CCNA**:
+   - RESTCONF = JSON (por defecto)
+   - NETCONF = XML (obligatorio)
+   - Ansible = YAML (playbooks)
+3. **Ejemplos reales**:
+   - RESTCONF Cisco (JSON)
+   - RPC NETCONF (XML con namespaces)
+   - Playbook Ansible (YAML con comentarios y estructura)
+4. **Tabla de decisión**: Cuándo usar cada formato según el escenario
+5. **Conversión en Python**: Cómo parsear los tres formatos (json, xml.etree, yaml)
+6. **Trampas del examen**: JSON sin comentarios, YAML booleanos (yes/no), XML namespaces
+
+El enlace desde `json-datos.html` (que ya tienes) apunta a este archivo como **Tema 03** con el título "JSON vs XML vs YAML — Comparativa".
