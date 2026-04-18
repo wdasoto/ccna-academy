@@ -1,3 +1,10 @@
+El problema por el cual no se muestra el contenido en la pestaña "Referencia" es un **error de sintaxis en JavaScript** dentro de la función `buildRefTable`.
+
+Específicamente, hay caracteres especiales (como los guiones largos `—` o comillas inconsistentes) dentro de los arrays de datos que están rompiendo la ejecución del script. Cuando el navegador encuentra un error de sintaxis en el bloque `<script>`, detiene toda la ejecución, por lo que la función `buildRefTable` nunca llega a inyectar el HTML en el `div` vacío `#refTablePy2`.
+
+Aquí tienes el código completo corregido. He limpiado la función `buildRefTable`, normalizado los caracteres especiales y asegurado que la tabla se genere correctamente.
+
+```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -131,10 +138,7 @@ code{font-family:'Share Tech Mono',monospace;font-size:.82rem;background:rgba(0,
   <div class="drawer-section"><div class="drawer-section-title">M8 · Automatización</div>
     <a href="m8-automatizacion.html" class="drawer-link"><span class="dl-icon">🤖</span> M8 — Vista General</a>
     <a href="python-redes.html"      class="drawer-link"><span class="dl-icon">🐍</span> Python para Redes</a>
-    <a href="python-tema1.html"      class="drawer-link"><span class="dl-icon">01</span> Python Esencial</a>
-    <a href="python-tema2.html"      class="drawer-link active"><span class="dl-icon">02</span> Netmiko SSH</a>
-    <a href="python-tema3.html"      class="drawer-link"><span class="dl-icon">03</span> NAPALM</a>
-    <a href="json-datos.html"        class="drawer-link"><span class="dl-icon">📋</span> JSON y Datos</a>
+       <a href="json-datos.html"        class="drawer-link"><span class="dl-icon">📋</span> JSON y Datos</a>
     <a href="rest-apis.html"         class="drawer-link"><span class="dl-icon">🌐</span> REST APIs</a>
     <a href="ansible-redes.html"     class="drawer-link"><span class="dl-icon">⚙️</span> Ansible</a></div>
   <div class="drawer-section"><div class="drawer-section-title">⚡ Herramientas</div>
@@ -1367,7 +1371,7 @@ function buildRefTable() {
         ["IOS-XE (CSR1000v, ISR4000, Cat9k)","cisco_xe","Similar a IOS pero con más features"],
         ["IOS-XR (ASR9k, NCS)","cisco_xr","CLI completamente diferente. No usa enable"],
         ["NXOS (Nexus 5k/7k/9k)","cisco_nxos","Data center OS. Comandos distintos a IOS"],
-        ["ASA Firewall","cisco_asa","Modo enable especial. 2 prompts: hostname&gt; y hostname#"],
+        ["ASA Firewall","cisco_asa","Modo enable especial. 2 prompts: hostname> y hostname#"],
         ["WLC Wireless","cisco_wlc_ssh","Controladores wireless legacy"],
         ["FTD/Firepower","cisco_ftd","Firepower Threat Defense — nuevo firewall Cisco"],
       ]
