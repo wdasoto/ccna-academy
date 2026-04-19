@@ -1279,7 +1279,84 @@ CREDS = {
 <div id="tab-referencia" class="py2-tab-content">
 <div class="content-block">
   <h2 class="section-title">Tabla de Referencia Completa — Netmiko</h2>
-  <div id="refTablePy2"></div>
+  <h3 style="font-family:Orbitron,sans-serif;font-size:.8rem;color:#00d4aa;letter-spacing:2px;margin:28px 0 12px;text-transform:uppercase;">&#9658; PARÁMETROS DE CONNECTHANDLER</h3>
+<div class="table-wrap"><table class="ref-table"><thead><tr><th>Parámetro</th><th>Tipo</th><th>Default</th><th>Descripción</th></tr></thead><tbody>
+<tr><td>device_type</td><td>str</td><td>Obligatorio</td><td>Identificador de plataforma: cisco_ios, cisco_xe, cisco_nxos, cisco_xr, arista_eos...</td></tr>
+<tr><td>host</td><td>str</td><td>Obligatorio</td><td>Dirección IP o FQDN del dispositivo destino</td></tr>
+<tr><td>username</td><td>str</td><td>Obligatorio</td><td>Usuario para autenticación SSH</td></tr>
+<tr><td>password</td><td>str</td><td>Obligatorio</td><td>Contraseña SSH (o vacío si usa llaves)</td></tr>
+<tr><td>secret</td><td>str</td><td>''</td><td>Enable password para elevar a modo privilegiado</td></tr>
+<tr><td>port</td><td>int</td><td>22</td><td>Puerto TCP SSH destino</td></tr>
+<tr><td>timeout</td><td>int</td><td>100</td><td>Timeout TCP en segundos para establecer la conexión</td></tr>
+<tr><td>auth_timeout</td><td>int</td><td>None</td><td>Timeout de la fase de autenticación SSH</td></tr>
+<tr><td>banner_timeout</td><td>int</td><td>15</td><td>Tiempo máximo esperando el banner SSH del dispositivo</td></tr>
+<tr><td>conn_timeout</td><td>int</td><td>10</td><td>Timeout del establecimiento de la conexión (TCP connect)</td></tr>
+<tr><td>session_log</td><td>str</td><td>None</td><td>Archivo donde guardar la sesión completa (debug)</td></tr>
+<tr><td>fast_cli</td><td>bool</td><td>False</td><td>Deshabilita delays extra — más rápido en redes LAN rápidas</td></tr>
+<tr><td>global_delay_factor</td><td>float</td><td>1.0</td><td>Multiplicador global de todos los delays internos</td></tr>
+<tr><td>key_file</td><td>str</td><td>None</td><td>Ruta a la llave privada SSH para auth por llaves</td></tr>
+<tr><td>use_keys</td><td>bool</td><td>False</td><td>Forzar autenticación por llave SSH</td></tr>
+<tr><td>allow_agent</td><td>bool</td><td>False</td><td>Usar el agente SSH del sistema operativo</td></tr>
+</tbody></table></div>
+
+<h3 style="font-family:Orbitron,sans-serif;font-size:.8rem;color:#00d4aa;letter-spacing:2px;margin:28px 0 12px;text-transform:uppercase;">&#9658; MÉTODOS PRINCIPALES DE CONNECTHANDLER</h3>
+<div class="table-wrap"><table class="ref-table"><thead><tr><th>Método</th><th>Parámetros clave</th><th>Retorna</th><th>Descripción</th></tr></thead><tbody>
+<tr><td>send_command()</td><td>command_string, delay_factor, max_loops, strip_prompt, strip_command, expect_string, use_textfsm, read_timeout</td><td>str o list</td><td>Ejecuta un show command y espera el prompt de retorno</td></tr>
+<tr><td>send_command_timing()</td><td>command_string, delay_factor, normalize</td><td>str</td><td>Usa timing en lugar de prompt detection — para comandos interactivos</td></tr>
+<tr><td>send_config_set()</td><td>config_commands[], delay_factor, cmd_verify, strip_prompt, error_pattern</td><td>str</td><td>Envía lista de comandos de config — entra/sale de config mode automático</td></tr>
+<tr><td>send_config_from_file()</td><td>config_file, delay_factor</td><td>str</td><td>Lee comandos de un archivo y los envía como send_config_set()</td></tr>
+<tr><td>save_config()</td><td>None</td><td>str</td><td>Guarda la configuración (write memory o copy run start según plataforma)</td></tr>
+<tr><td>enable()</td><td>cmd, pattern, enable_cmd</td><td>None</td><td>Entra al modo privilegiado usando el secret</td></tr>
+<tr><td>exit_enable_mode()</td><td>None</td><td>None</td><td>Sale del modo privilegiado</td></tr>
+<tr><td>config_mode()</td><td>config_command, pattern, max_loops</td><td>str</td><td>Entra a configure terminal manualmente</td></tr>
+<tr><td>exit_config_mode()</td><td>exit_config</td><td>str</td><td>Sale de configure terminal manualmente</td></tr>
+<tr><td>check_enable_mode()</td><td>None</td><td>bool</td><td>Retorna True si estamos en modo privilegiado</td></tr>
+<tr><td>check_config_mode()</td><td>None</td><td>bool</td><td>Retorna True si estamos en modo config</td></tr>
+<tr><td>find_prompt()</td><td>delay_factor</td><td>str</td><td>Retorna el prompt actual como string</td></tr>
+<tr><td>disconnect()</td><td>None</td><td>None</td><td>Cierra la sesión SSH ordenadamente</td></tr>
+<tr><td>write_channel()</td><td>out_data</td><td>None</td><td>Escribe directamente al canal SSH (bajo nivel)</td></tr>
+<tr><td>read_channel()</td><td>None</td><td>str</td><td>Lee todo el buffer del canal SSH disponible</td></tr>
+<tr><td>read_until_prompt()</td><td>delay_factor</td><td>str</td><td>Lee hasta encontrar el prompt esperado</td></tr>
+</tbody></table></div>
+
+<h3 style="font-family:Orbitron,sans-serif;font-size:.8rem;color:#00d4aa;letter-spacing:2px;margin:28px 0 12px;text-transform:uppercase;">&#9658; DEVICE TYPES — CISCO</h3>
+<div class="table-wrap"><table class="ref-table"><thead><tr><th>Plataforma</th><th>device_type</th><th>Notas</th></tr></thead><tbody>
+<tr><td>IOS Clásico (ISR, 2900, 3750)</td><td>cisco_ios</td><td>El más usado. enable mode estándar</td></tr>
+<tr><td>IOS-XE (CSR1000v, ISR4000, Cat9k)</td><td>cisco_xe</td><td>Similar a IOS pero con más features</td></tr>
+<tr><td>IOS-XR (ASR9k, NCS)</td><td>cisco_xr</td><td>CLI completamente diferente. No usa enable</td></tr>
+<tr><td>NXOS (Nexus 5k/7k/9k)</td><td>cisco_nxos</td><td>Data center OS. Comandos distintos a IOS</td></tr>
+<tr><td>ASA Firewall</td><td>cisco_asa</td><td>Modo enable especial. 2 prompts: hostname&gt; y hostname#</td></tr>
+<tr><td>WLC Wireless</td><td>cisco_wlc_ssh</td><td>Controladores wireless legacy</td></tr>
+<tr><td>FTD/Firepower</td><td>cisco_ftd</td><td>Firepower Threat Defense — nuevo firewall Cisco</td></tr>
+</tbody></table></div>
+
+<h3 style="font-family:Orbitron,sans-serif;font-size:.8rem;color:#00d4aa;letter-spacing:2px;margin:28px 0 12px;text-transform:uppercase;">&#9658; EXCEPCIONES NETMIKO</h3>
+<div class="table-wrap"><table class="ref-table"><thead><tr><th>Excepción</th><th>Módulo</th><th>Cuándo ocurre</th><th>Estrategia</th></tr></thead><tbody>
+<tr><td>NetmikoAuthenticationException</td><td>netmiko.exceptions</td><td>Usuario/password/secret incorrecto</td><td>NO reintentar — credenciales incorrectas. Alertar admin</td></tr>
+<tr><td>NetmikoTimeoutException</td><td>netmiko.exceptions</td><td>Timeout TCP al establecer conexión</td><td>SÍ reintentar con backoff exponencial. Verificar IP/conectividad</td></tr>
+<tr><td>ReadTimeout</td><td>netmiko.exceptions</td><td>Comando tardó más del read_timeout</td><td>Aumentar read_timeout o delay_factor para ese comando</td></tr>
+<tr><td>NetmikoBaseException</td><td>netmiko.exceptions</td><td>Clase base — captura todas las de Netmiko</td><td>Usar como fallback genérico</td></tr>
+<tr><td>AuthenticationException</td><td>paramiko.ssh_exception</td><td>Fallo SSH de bajo nivel</td><td>Similar a NetmikoAuth. No reintentar</td></tr>
+<tr><td>NoValidConnectionsError</td><td>paramiko.ssh_exception</td><td>No se puede abrir TCP al host:port</td><td>Verificar IP, puerto, ACLs y que SSH esté habilitado</td></tr>
+<tr><td>SSHException</td><td>paramiko.ssh_exception</td><td>Error SSH genérico (algoritmos, versión)</td><td>Verificar configuración SSH del dispositivo</td></tr>
+<tr><td>socket.timeout</td><td>socket</td><td>Timeout a nivel OS</td><td>Similar a NetmikoTimeout</td></tr>
+</tbody></table></div>
+
+<h3 style="font-family:Orbitron,sans-serif;font-size:.8rem;color:#00d4aa;letter-spacing:2px;margin:28px 0 12px;text-transform:uppercase;">&#9658; PARÁMETROS DE SEND_COMMAND()</h3>
+<div class="table-wrap"><table class="ref-table"><thead><tr><th>Parámetro</th><th>Default</th><th>Descripción</th></tr></thead><tbody>
+<tr><td>command_string</td><td>Obligatorio</td><td>El comando show a ejecutar</td></tr>
+<tr><td>expect_string</td><td>None</td><td>Regex o string a esperar en lugar del prompt — para comandos interactivos</td></tr>
+<tr><td>delay_factor</td><td>1</td><td>Multiplicador del tiempo de espera base (~2s)</td></tr>
+<tr><td>max_loops</td><td>500</td><td>Iteraciones máximas esperando el prompt</td></tr>
+<tr><td>strip_prompt</td><td>True</td><td>Si True: elimina el prompt del final del output</td></tr>
+<tr><td>strip_command</td><td>True</td><td>Si True: elimina el comando del inicio del output</td></tr>
+<tr><td>read_timeout</td><td>10.0</td><td>Timeout absoluto en segundos esperando output</td></tr>
+<tr><td>cmd_verify</td><td>True</td><td>Verifica que el eco del comando apareció — detecta comandos no aceptados</td></tr>
+<tr><td>use_textfsm</td><td>False</td><td>Si True: usa TextFSM+ntc-templates para parsear el output</td></tr>
+<tr><td>use_genie</td><td>False</td><td>Si True: usa Cisco Genie para parsear el output (requiere genie)</td></tr>
+<tr><td>textfsm_template</td><td>None</td><td>Plantilla TextFSM específica a usar (override automático)</td></tr>
+<tr><td>normalize</td><td>True</td><td>Normaliza el output (eliminar caracteres de control)</td></tr>
+</tbody></table></div>
 </div>
 </div>
 
@@ -1311,120 +1388,8 @@ function showTabPy2(id, btn) {
 
 // ── REFERENCIA ────────────────────────────────────────────────
 function buildRefTable() {
-  const secs = [
-    {
-      t: "PARÁMETROS DE CONNECTHANDLER",
-      cols: ["Parámetro","Tipo","Default","Descripción"],
-      rows: [
-        ["device_type","str","Obligatorio","Identificador de plataforma: cisco_ios, cisco_xe, cisco_nxos, cisco_xr, arista_eos..."],
-        ["host","str","Obligatorio","Dirección IP o FQDN del dispositivo destino"],
-        ["username","str","Obligatorio","Usuario para autenticación SSH"],
-        ["password","str","Obligatorio","Contraseña SSH (o vacío si usa llaves)"],
-        ["secret","str","''","Enable password para elevar a modo privilegiado"],
-        ["port","int","22","Puerto TCP SSH destino"],
-        ["timeout","int","100","Timeout TCP en segundos para establecer la conexión"],
-        ["auth_timeout","int","None","Timeout de la fase de autenticación SSH"],
-        ["banner_timeout","int","15","Tiempo máximo esperando el banner SSH del dispositivo"],
-        ["conn_timeout","int","10","Timeout del establecimiento de la conexión (TCP connect)"],
-        ["session_log","str","None","Archivo donde guardar la sesión completa (debug)"],
-        ["fast_cli","bool","False","Deshabilita delays extra — más rápido en redes LAN rápidas"],
-        ["global_delay_factor","float","1.0","Multiplicador global de todos los delays internos"],
-        ["key_file","str","None","Ruta a la llave privada SSH para auth por llaves"],
-        ["use_keys","bool","False","Forzar autenticación por llave SSH"],
-        ["allow_agent","bool","False","Usar el agente SSH del sistema operativo"],
-      ]
-    },
-    {
-      t: "MÉTODOS PRINCIPALES DE CONNECTHANDLER",
-      cols: ["Método","Parámetros clave","Retorna","Descripción"],
-      rows: [
-        ["send_command()","command_string, delay_factor, max_loops, strip_prompt, strip_command, expect_string, use_textfsm, read_timeout","str o list","Ejecuta un show command y espera el prompt de retorno"],
-        ["send_command_timing()","command_string, delay_factor, normalize","str","Usa timing en lugar de prompt detection — para comandos interactivos"],
-        ["send_config_set()","config_commands[], delay_factor, cmd_verify, strip_prompt, error_pattern","str","Envía lista de comandos de config — entra/sale de config mode automático"],
-        ["send_config_from_file()","config_file, delay_factor","str","Lee comandos de un archivo y los envía como send_config_set()"],
-        ["save_config()","None","str","Guarda la configuración (write memory o copy run start según plataforma)"],
-        ["enable()","cmd, pattern, enable_cmd","None","Entra al modo privilegiado usando el secret"],
-        ["exit_enable_mode()","None","None","Sale del modo privilegiado"],
-        ["config_mode()","config_command, pattern, max_loops","str","Entra a configure terminal manualmente"],
-        ["exit_config_mode()","exit_config","str","Sale de configure terminal manualmente"],
-        ["check_enable_mode()","None","bool","Retorna True si estamos en modo privilegiado"],
-        ["check_config_mode()","None","bool","Retorna True si estamos en modo config"],
-        ["find_prompt()","delay_factor","str","Retorna el prompt actual como string"],
-        ["disconnect()","None","None","Cierra la sesión SSH ordenadamente"],
-        ["write_channel()","out_data","None","Escribe directamente al canal SSH (bajo nivel)"],
-        ["read_channel()","None","str","Lee todo el buffer del canal SSH disponible"],
-        ["read_until_prompt()","delay_factor","str","Lee hasta encontrar el prompt esperado"],
-      ]
-    },
-    {
-      t: "DEVICE TYPES — CISCO",
-      cols: ["Plataforma","device_type","Notas"],
-      rows: [
-        ["IOS Clásico (ISR, 2900, 3750)","cisco_ios","El más usado. enable mode estándar"],
-        ["IOS-XE (CSR1000v, ISR4000, Cat9k)","cisco_xe","Similar a IOS pero con más features"],
-        ["IOS-XR (ASR9k, NCS)","cisco_xr","CLI completamente diferente. No usa enable"],
-        ["NXOS (Nexus 5k/7k/9k)","cisco_nxos","Data center OS. Comandos distintos a IOS"],
-        ["ASA Firewall","cisco_asa","Modo enable especial. 2 prompts: hostname> y hostname#"],
-        ["WLC Wireless","cisco_wlc_ssh","Controladores wireless legacy"],
-        ["FTD/Firepower","cisco_ftd","Firepower Threat Defense — nuevo firewall Cisco"],
-      ]
-    },
-    {
-      t: "EXCEPCIONES NETMIKO",
-      cols: ["Excepción","Módulo","Cuándo ocurre","Estrategia"],
-      rows: [
-        ["NetmikoAuthenticationException","netmiko.exceptions","Usuario/password/secret incorrecto","NO reintentar — credenciales incorrectas. Alertar admin"],
-        ["NetmikoTimeoutException","netmiko.exceptions","Timeout TCP al establecer conexión","SÍ reintentar con backoff exponencial. Verificar IP/conectividad"],
-        ["ReadTimeout","netmiko.exceptions","Comando tardó más del read_timeout","Aumentar read_timeout o delay_factor para ese comando"],
-        ["NetmikoBaseException","netmiko.exceptions","Clase base — captura todas las de Netmiko","Usar como fallback genérico"],
-        ["AuthenticationException","paramiko.ssh_exception","Fallo SSH de bajo nivel","Similar a NetmikoAuth. No reintentar"],
-        ["NoValidConnectionsError","paramiko.ssh_exception","No se puede abrir TCP al host:port","Verificar IP, puerto, ACLs y que SSH esté habilitado"],
-        ["SSHException","paramiko.ssh_exception","Error SSH genérico (algoritmos, versión)","Verificar configuración SSH del dispositivo"],
-        ["socket.timeout","socket","Timeout a nivel OS","Similar a NetmikoTimeout"],
-      ]
-    },
-    {
-      t: "PARÁMETROS DE SEND_COMMAND()",
-      cols: ["Parámetro","Default","Descripción"],
-      rows: [
-        ["command_string","Obligatorio","El comando show a ejecutar"],
-        ["expect_string","None","Regex o string a esperar en lugar del prompt — para comandos interactivos"],
-        ["delay_factor","1","Multiplicador del tiempo de espera base (~2s)"],
-        ["max_loops","500","Iteraciones máximas esperando el prompt"],
-        ["strip_prompt","True","Si True: elimina el prompt del final del output"],
-        ["strip_command","True","Si True: elimina el comando del inicio del output"],
-        ["read_timeout","10.0","Timeout absoluto en segundos esperando output"],
-        ["cmd_verify","True","Verifica que el eco del comando apareció — detecta comandos no aceptados"],
-        ["use_textfsm","False","Si True: usa TextFSM+ntc-templates para parsear el output"],
-        ["use_genie","False","Si True: usa Cisco Genie para parsear el output (requiere genie)"],
-        ["textfsm_template","None","Plantilla TextFSM específica a usar (override automático)"],
-        ["normalize","True","Normaliza el output (eliminar caracteres de control)"],
-      ]
-    }
-  ];
-
-  const container = document.getElementById("refTablePy2");
-  if (!container) return;
-
-  let html = "";
-  secs.forEach(function(sec) {
-    html += `<h3 style="font-family:Orbitron,sans-serif;font-size:.8rem;color:#00d4aa;letter-spacing:2px;margin:28px 0 12px;text-transform:uppercase;">&#9658; ${sec.t}</h3>`;
-    html += `<div class="table-wrap"><table class="ref-table"><thead><tr>`;
-    sec.cols.forEach(function(c) {
-      html += `<th>${c}</th>`;
-    });
-    html += `</tr></thead><tbody>`;
-    sec.rows.forEach(function(r) {
-      html += `<tr>`;
-      r.forEach(function(c) {
-        html += `<td>${c}</td>`;
-      });
-      html += `</tr>`;
-    });
-    html += `</tbody></table></div>`;
-  });
-
-  container.innerHTML = html;
+  // Static tables now rendered directly in HTML
+  console.log('Reference tables loaded from static HTML');
 }
 
 // ── QUIZ ─────────────────────────────────────────────────────
