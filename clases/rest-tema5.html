@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meraki Dashboard API — Cloud Networking · M8 T5 | CCNA Academy</title>
+  <meta name="description" content="Domina la Meraki Dashboard API v1. Gestión cloud de MX, MS, MR, MV, MT. API Key, OAuth, rate limits, VLANs, clientes wireless, webhooks y SDK Python. CCNA Domain 6.5.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── HERO acento Meraki ── */
+.class-hero { background: linear-gradient(135deg, #06080f 0%, #080d18 60%, #0a1020 100%); }
+
+/* ── REST ACCENT TOKENS ── */
+:root{ --rest:#38bdf8; --rest-d:#0ea5e9; --rest-glow:rgba(56,189,248,.12); }
+
+/* ── BASE CLASS STYLES ── */
+body{font-family:'Exo 2',sans-serif;background:#07090f;color:#e2e8f0;}
+.class-hero{padding:56px 24px 48px;border-bottom:1px solid rgba(56,189,248,.08);position:relative;overflow:hidden;}
+.class-hero::before{content:'';position:absolute;top:-60px;right:-80px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(56,189,248,.06) 0%,transparent 70%);pointer-events:none;}
+.class-hero-inner{max-width:900px;margin:0 auto;position:relative;z-index:1;}
+.class-badge{font-family:'Share Tech Mono',monospace;font-size:.63rem;color:#38bdf8;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;}
+.class-title{font-family:'Orbitron',sans-serif;font-size:clamp(1.6rem,3.8vw,2.6rem);font-weight:900;letter-spacing:3px;color:#c2d0e8;margin-bottom:12px;line-height:1.1;}
+.class-subtitle{font-size:.92rem;color:#6b7a9a;line-height:1.72;margin-bottom:20px;max-width:700px;}
+.class-meta{display:flex;gap:12px;flex-wrap:wrap;}
+.meta-item{font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#4a5780;padding:4px 10px;border:1px solid rgba(56,189,248,.15);border-radius:4px;}
+.rest5-tabs-wrap{max-width:1100px;margin:0 auto;padding:0 16px 40px;}
+.rest5-tabs-bar{display:flex;gap:4px;padding:20px 0 0;flex-wrap:wrap;border-bottom:1px solid rgba(56,189,248,.12);margin-bottom:0;}
+.rest5-tab-btn{padding:8px 13px;border-radius:8px 8px 0 0;font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#4a5780;background:none;border:1px solid transparent;cursor:pointer;transition:all .18s;white-space:nowrap;border-bottom:none;}
+.rest5-tab-btn:hover{color:#c2d0e8;background:rgba(56,189,248,.06);}
+.rest5-tab-btn.rest5-active{color:#38bdf8;background:#0d1220;border-color:rgba(56,189,248,.25);border-bottom:1px solid #0d1220;}
+.rest5-tab-content{display:none;background:#0d1220;border:1px solid rgba(56,189,248,.08);border-top:none;border-radius:0 0 12px 12px;padding:32px;}
+.rest5-tab-content.rest5-active{display:block;}
+.content-block{max-width:880px;}
+.section-title{font-family:'Orbitron',sans-serif;font-size:.95rem;color:#38bdf8;letter-spacing:2px;margin:28px 0 14px;padding-bottom:8px;border-bottom:1px solid rgba(56,189,248,.15);}
+.section-title:first-child{margin-top:0;}
+p{color:#8294b8;line-height:1.75;margin-bottom:14px;font-size:.9rem;}
+ul,ol{color:#8294b8;padding-left:1.4rem;margin-bottom:14px;font-size:.9rem;}
+li{margin-bottom:5px;line-height:1.65;}
+strong{color:#c2d0e8;}
+code{font-family:'Share Tech Mono',monospace;font-size:.82rem;background:rgba(56,189,248,.1);color:#38bdf8;padding:1px 6px;border-radius:4px;border:1px solid rgba(56,189,248,.2);}
+
+/* INFO BOXES */
+.info-box{border-radius:8px;padding:14px 18px;margin:18px 0;border-left:3px solid;}
+.info-box.tip{background:rgba(56,189,248,.06);border-color:#38bdf8;}
+.info-box.warning{background:rgba(251,191,36,.05);border-color:#fbbf24;}
+.info-box-title{font-family:'Share Tech Mono',monospace;font-size:.73rem;color:#38bdf8;margin-bottom:8px;}
+.info-box.warning .info-box-title{color:#fbbf24;}
+
+/* CODE BLOCKS */
+.code-block{background:#050810;border:1px solid rgba(56,189,248,.15);border-left:3px solid #38bdf8;border-radius:8px;padding:0;margin:16px 0;overflow:hidden;}
+.code-label{background:rgba(56,189,248,.08);padding:8px 16px;font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#4a5780;letter-spacing:2px;text-transform:uppercase;border-bottom:1px solid rgba(56,189,248,.1);}
+.code-block pre{margin:0;padding:18px;overflow-x:auto;}
+.code-block code{background:none;border:none;padding:0;color:#a8b4c8;font-size:.79rem;line-height:1.8;display:block;}
+
+/* SYNTAX HIGHLIGHTING */
+.cmt{color:#3a4a60;font-style:italic;}
+.kw {color:#c792ea;}
+.fn {color:#82aaff;}
+.str{color:#c3e88d;}
+.num{color:#f78c6c;}
+
+/* CONCEPT GRID */
+.concept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin:16px 0;}
+.concept-card{background:#090d1a;border:1px solid rgba(56,189,248,.1);border-radius:10px;padding:16px;}
+.concept-icon{font-size:1.8rem;margin-bottom:8px;}
+.concept-card h3{font-family:'Share Tech Mono',monospace;font-size:.77rem;color:#38bdf8;margin-bottom:8px;}
+.concept-card p{font-size:.8rem;margin:0;}
+
+/* REF TABLE */
+.table-wrap{overflow-x:auto;margin:16px 0;}
+.ref-table{width:100%;border-collapse:collapse;font-size:.8rem;}
+.ref-table th{background:#090d1a;color:#38bdf8;font-family:'Share Tech Mono',monospace;font-size:.67rem;padding:10px 12px;text-align:left;border:1px solid rgba(56,189,248,.15);letter-spacing:1px;}
+.ref-table td{padding:9px 12px;border:1px solid rgba(255,255,255,.04);color:#8294b8;}
+.ref-table tr:hover td{background:rgba(56,189,248,.04);}
+.ref-table code{font-size:.77rem;}
+
+/* QUIZ */
+.quiz-question{background:#090d1a;border:1px solid rgba(56,189,248,.12);border-radius:10px;padding:20px;margin-bottom:14px;}
+.quiz-q-num{font-family:'Share Tech Mono',monospace;font-size:.62rem;color:#374060;margin-bottom:8px;}
+.quiz-q-text{font-size:.9rem;color:#c2d0e8;margin-bottom:14px;line-height:1.6;}
+.quiz-opts{display:flex;flex-direction:column;gap:7px;}
+.quiz-opt{padding:10px 14px;border-radius:7px;border:1px solid rgba(56,189,248,.12);background:#0d1220;color:#6b7a9a;cursor:pointer;font-size:.84rem;text-align:left;transition:all .15s;font-family:'Exo 2',sans-serif;}
+.quiz-opt:hover:not(:disabled){border-color:rgba(56,189,248,.4);color:#c2d0e8;}
+.quiz-opt.correct{border-color:#34d399;background:rgba(52,211,153,.08);color:#34d399;}
+.quiz-opt.wrong{border-color:#f87171;background:rgba(248,113,113,.08);color:#f87171;}
+.quiz-explanation{margin-top:10px;padding:10px 14px;background:rgba(56,189,248,.07);border-left:3px solid #38bdf8;border-radius:6px;font-size:.82rem;color:#a0aec0;line-height:1.65;}
+
+/* MERAKI FLOW DIAGRAM */
+.mk-flow{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin:20px 0;padding:20px;background:#090d1a;border-radius:10px;border:1px solid rgba(56,189,248,.1);}
+.mk-box{background:#0d1220;border:1px solid rgba(56,189,248,.2);border-radius:8px;padding:14px 18px;text-align:center;min-width:110px;}
+.mk-box-label{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:#38bdf8;margin-bottom:4px;}
+.mk-box-val{font-size:.8rem;color:#c2d0e8;}
+.mk-arrow{font-size:1.4rem;color:#38bdf8;}
+
+/* ENDPOINT CARD */
+.endpoint-card{background:#050810;border:1px solid rgba(56,189,248,.12);border-radius:8px;padding:16px;margin:12px 0;}
+.endpoint-method{display:inline-block;font-family:'Share Tech Mono',monospace;font-size:.7rem;padding:3px 8px;border-radius:4px;margin-right:8px;font-weight:700;}
+.get{background:rgba(52,211,153,.12);color:#34d399;}
+.post{background:rgba(56,189,248,.12);color:#38bdf8;}
+.put{background:rgba(251,191,36,.12);color:#fbbf24;}
+.delete{background:rgba(248,113,113,.12);color:#f87171;}
+.endpoint-path{font-family:'Share Tech Mono',monospace;font-size:.78rem;color:#c2d0e8;}
+.endpoint-desc{font-size:.82rem;color:#6b7a9a;margin-top:6px;}
+
+/* PRODUCT GRID */
+.product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin:16px 0;}
+.product-card{background:#090d1a;border:1px solid rgba(56,189,248,.1);border-radius:8px;padding:14px;text-align:center;}
+.product-code{font-family:'Share Tech Mono',monospace;font-size:1.1rem;color:#38bdf8;font-weight:700;}
+.product-name{font-size:.75rem;color:#8294b8;margin-top:4px;}
+
+/* Navbar y Drawer */
+.navbar{position:fixed;top:0;left:0;right:0;height:56px;background:#080a10;border-bottom:1px solid rgba(56,189,248,.1);display:flex;align-items:center;padding:0 24px;z-index:1000;}
+.navbar-toggle{background:none;border:1px solid rgba(56,189,248,.3);color:#38bdf8;padding:6px 12px;border-radius:6px;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:.75rem;margin-right:16px;}
+.navbar-brand{font-family:'Orbitron',sans-serif;font-weight:700;color:#38bdf8;text-decoration:none;font-size:1.1rem;}
+.navbar-brand span{color:#0ea5e9;}
+.navbar-spacer{flex:1;}
+.navbar-link{color:#6b7a9a;text-decoration:none;font-size:.8rem;transition:color .2s;}
+.navbar-link:hover{color:#c2d0e8;}
+.nav-spacer{height:56px;}
+.ccna-drawer{position:fixed;top:0;left:0;bottom:0;width:280px;background:#0d1220;border-right:1px solid rgba(56,189,248,.2);transform:translateX(-100%);transition:transform .3s;z-index:2000;overflow-y:auto;}
+.ccna-drawer.open{transform:translateX(0);}
+.ccna-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);opacity:0;visibility:hidden;transition:all .3s;z-index:1500;}
+.ccna-overlay.show{opacity:1;visibility:visible;}
+.drawer-header{padding:20px;border-bottom:1px solid rgba(56,189,248,.2);display:flex;justify-content:space-between;align-items:center;}
+.drawer-header h2{font-family:'Orbitron',sans-serif;font-size:.8rem;color:#38bdf8;margin:0;letter-spacing:2px;}
+.drawer-close{background:none;border:none;color:#6b7a9a;font-size:1.2rem;cursor:pointer;}
+.drawer-section{padding:16px;border-bottom:1px solid rgba(56,189,248,.1);}
+.drawer-section-title{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#374060;margin-bottom:12px;letter-spacing:1px;text-transform:uppercase;}
+.drawer-link{display:block;padding:10px 12px;color:#8294b8;text-decoration:none;font-size:.85rem;border-radius:6px;transition:all .2s;margin-bottom:4px;}
+.drawer-link:hover{background:rgba(56,189,248,.1);color:#c2d0e8;}
+.drawer-link.active{background:rgba(56,189,248,.2);color:#38bdf8;border-left:3px solid #38bdf8;}
+.dl-icon{margin-right:8px;}
+
+@media(max-width:680px){
+  .rest5-tab-btn{font-size:.6rem;padding:6px 9px;}
+  .rest5-tab-content{padding:18px 12px;}
+  .concept-grid{grid-template-columns:1fr;}
+  .product-grid{grid-template-columns:repeat(2,1fr);}
+}
+</style>
+</head>
+<body>
+
+<div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
+<nav class="ccna-drawer" id="ccnaDrawer">
+  <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
+  <div class="drawer-section"><div class="drawer-section-title">General</div>
+    <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M1 · Fundamentos</div>
+    <a href="fundamentos.html" class="drawer-link"><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
+    <a href="subnetting.html"  class="drawer-link"><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
+    <a href="ipv6.html"        class="drawer-link"><span class="dl-icon">6️⃣</span> IPv6</a>
+    <a href="arp.html"         class="drawer-link"><span class="dl-icon">📡</span> ARP</a>
+    <a href="rip.html"         class="drawer-link"><span class="dl-icon">🔄</span> RIP</a>
+    <a href="protocolos-internet.html" class="drawer-link"><span class="dl-icon">🌍</span> Protocolos Internet</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M2 · Dispositivos Cisco</div>
+    <a href="router.html"         class="drawer-link"><span class="dl-icon">📡</span> Routers Cisco</a>
+    <a href="switches-cisco.html" class="drawer-link"><span class="dl-icon">🔀</span> Switches Cisco</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M3 · Switching</div>
+    <a href="vlan.html"               class="drawer-link"><span class="dl-icon">🏷️</span> VLANs</a>
+    <a href="inter-vlan-routing.html" class="drawer-link"><span class="dl-icon">🔁</span> Inter-VLAN Routing</a>
+    <a href="stp.html"                class="drawer-link"><span class="dl-icon">🌳</span> STP</a>
+    <a href="etherchannel.html"       class="drawer-link"><span class="dl-icon">🔗</span> EtherChannel</a>
+    <a href="port-security.html"      class="drawer-link"><span class="dl-icon">🔒</span> Port Security</a>
+    <a href="cdp-lldp.html"           class="drawer-link"><span class="dl-icon">🔍</span> CDP / LLDP</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M4 · Routing</div>
+    <a href="routing.html"            class="drawer-link"><span class="dl-icon">🗺️</span> Routing Estático</a>
+    <a href="ospf.html"               class="drawer-link"><span class="dl-icon">⭕</span> OSPF</a>
+    <a href="eigrp.html"              class="drawer-link"><span class="dl-icon">⚡</span> EIGRP</a>
+    <a href="ospfv2-masterclass.html" class="drawer-link"><span class="dl-icon">🎯</span> OSPFv2 Masterclass</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M5 · Servicios IP</div>
+    <a href="dhcp.html" class="drawer-link"><span class="dl-icon">📋</span> DHCP</a>
+    <a href="nat.html"  class="drawer-link"><span class="dl-icon">🔄</span> NAT / PAT</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M6 · Seguridad</div>
+    <a href="acl.html" class="drawer-link"><span class="dl-icon">🛡️</span> ACLs</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M7 · WAN &amp; QoS</div>
+    <a href="wan.html" class="drawer-link"><span class="dl-icon">🌍</span> WAN</a>
+    <a href="qos.html" class="drawer-link"><span class="dl-icon">📊</span> QoS</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M8 · Automatización</div>
+    <a href="m8-automatizacion.html" class="drawer-link"><span class="dl-icon">🤖</span> M8 — Vista General</a>
+    <a href="python-redes.html"      class="drawer-link"><span class="dl-icon">🐍</span> Python para Redes</a>
+    <a href="json-datos.html"        class="drawer-link"><span class="dl-icon">📋</span> JSON y Datos</a>
+    <a href="rest-apis.html"         class="drawer-link active"><span class="dl-icon">🌐</span> REST APIs</a>
+    <a href="ansible-redes.html"     class="drawer-link"><span class="dl-icon">⚙️</span> Ansible</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">⚡ Herramientas</div>
+    <a href="asistente.html"          class="drawer-link"><span class="dl-icon">🤖</span> Asistente IA</a>
+    <a href="netbot.html"             class="drawer-link"><span class="dl-icon">⚙️</span> NetBot Config</a>
+    <a href="calculadora.html"        class="drawer-link"><span class="dl-icon">🧮</span> Calculadora IP</a>
+    <a href="../laboratorios-pkt.html"   class="drawer-link"><span class="dl-icon">🧪</span> Labs Packet Tracer</a>
+    <a href="../banco-preguntas.html" class="drawer-link"><span class="dl-icon">📝</span> Banco de Preguntas</a></div>
+</nav>
+
+<header class="navbar">
+  <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
+  <a href="../index.html" class="navbar-brand">CISCO<span> ACADEMY</span></a>
+  <div class="navbar-spacer"></div>
+  <a href="rest-apis.html" class="navbar-link">← REST APIs</a>
+</header>
+<div class="nav-spacer"></div>
+
+<!-- HERO -->
+<section class="class-hero" style="border-bottom:1px solid rgba(56,189,248,.2);">
+  <div class="class-hero-inner">
+    <div class="class-badge" style="color:#38bdf8;">M8 · AUTOMATIZACIÓN · REST APIs · TEMA 5 DE 5</div>
+    <h1 class="class-title">MERAKI DASHBOARD <span class="class-title-accent" style="background:linear-gradient(135deg,#38bdf8,#0ea5e9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">— Cloud Networking API</span></h1>
+    <p class="class-subtitle">La API REST que gobierna la infraestructura cloud de Cisco. Gestiona MX, MS, MR, MV y MT desde un único endpoint: organizaciones, redes, VLANs, clientes wireless, Auto VPN, webhooks y assurance. Autenticación por API Key, rate limiting inteligente y SDK oficial para Python.</p>
+    <div class="class-meta">
+      <span class="meta-item" style="border-color:rgba(56,189,248,.2);color:#38bdf8;">☁️ Cloud-Managed</span>
+      <span class="meta-item">🎯 CCNA Domain 6.5</span>
+      <span class="meta-item">⏱ ~90 min lectura</span>
+      <span class="meta-item">💻 api.meraki.com</span>
+      <span class="meta-item">🐍 SDK + requests</span>
+    </div>
+  </div>
+</section>
+
+<!-- TABS -->
+<div class="rest5-tabs-wrap">
+  <div class="rest5-tabs-bar">
+    <button class="rest5-tab-btn rest5-active" onclick="showTabRest5('intro',this)">☁️ Intro</button>
+    <button class="rest5-tab-btn" onclick="showTabRest5('auth',this)">🔐 Auth</button>
+    <button class="rest5-tab-btn" onclick="showTabRest5('orgs',this)">🏢 Orgs & Nets</button>
+    <button class="rest5-tab-btn" onclick="showTabRest5('devices',this)">📡 Devices</button>
+    <button class="rest5-tab-btn" onclick="showTabRest5('vlans',this)">🌐 VLANs & L3</button>
+    <button class="rest5-tab-btn" onclick="showTabRest5('clients',this)">📱 Clients</button>
+    <button class="rest5-tab-btn" onclick="showTabRest5('monitor',this)">🔔 Monitor</button>
+    <button class="rest5-tab-btn" onclick="showTabRest5('sdk',this)">🛠️ SDK</button>
+    <button class="rest5-tab-btn" onclick="showTabRest5('proyecto',this)">🚀 Proyecto</button>
+    <button class="rest5-tab-btn" onclick="showTabRest5('referencia',this)">📊 Ref</button>
+    <button class="rest5-tab-btn" onclick="showTabRest5('quiz',this)">🎯 Quiz</button>
+  </div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 1 — INTRO
+═══════════════════════════════════════════ -->
+<div id="tab-intro" class="rest5-tab-content rest5-active">
+<div class="content-block">
+  <h2 class="section-title">¿Qué es Meraki y por qué es "cloud-first"?</h2>
+  <p><strong>Cisco Meraki</strong> es la familia de productos de red gestionados 100% desde la nube. A diferencia de los controladores on-premise (DNA Center, WLC tradicional), Meraki elimina la necesidad de controladores locales: cada dispositivo se conecta directamente a los servidores cloud de Cisco vía HTTPS, descarga su configuración automáticamente y reporta telemetría en tiempo real.</p>
+  <p>La <strong>Dashboard API v1</strong> expone esta plataforma como una API REST completa. Con una simple API Key, puedes crear redes, configurar VLANs, desplegar SSIDs, analizar clientes y monitorizar la salud de miles de sitios desde un script Python ejecutándose en cualquier parte del mundo.</p>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Meraki vs. DNA Center — Cuándo usar cada uno</div>
+    <ul>
+      <li><strong>Meraki</strong>: Ideal para sucursales distribuidas, retail, educación y healthcare que necesitan despliegue rápido sin ingenieros locales. Gestión 100% cloud. Zero-touch provisioning.</li>
+      <li><strong>DNA Center</strong>: Ideal para campus empresariales grandes con requerimientos de SD-Access, microsegmentación y control on-premise. Integración profunda con ISE y WLAN controllers físicos.</li>
+      <li><strong>La realidad</strong>: Muchas empresas híbridas usan ambos. Meraki para el edge (sucursales), DNA Center para el core/campus.</li>
+    </ul>
+  </div>
+
+  <h2 class="section-title">Familia de productos Meraki</h2>
+  <div class="product-grid">
+    <div class="product-card"><div class="product-code">MX</div><div class="product-name">Security & SD-WAN<br>Firewall, Auto VPN, IDS/IPS</div></div>
+    <div class="product-card"><div class="product-code">MS</div><div class="product-name">Cloud Switches<br>L2/L3, PoE, RSTP</div></div>
+    <div class="product-card"><div class="product-code">MR</div><div class="product-name">Cloud Wi-Fi<br>Wave 2/6, mesh, location</div></div>
+    <div class="product-card"><div class="product-code">MV</div><div class="product-name">Smart Cameras<br>Edge analytics, object detection</div></div>
+    <div class="product-card"><div class="product-code">MT</div><div class="product-name">Sensors<br>Temperatura, humedad, puertas</div></div>
+    <div class="product-card"><div class="product-code">MG</div><div class="product-name">Cellular Gateways<br>5G/LTE backup</div></div>
+  </div>
+
+  <h2 class="section-title">Arquitectura de la Dashboard API</h2>
+  <p>Toda la comunicación fluye hacia un único endpoint global:</p>
+  <div class="mk-flow">
+    <div class="mk-box"><div class="mk-box-label">TU SCRIPT</div><div class="mk-box-val">Python / Postman</div></div>
+    <div class="mk-arrow">→ HTTPS →</div>
+    <div class="mk-box"><div class="mk-box-label">API GATEWAY</div><div class="mk-box-val">api.meraki.com/api/v1</div></div>
+    <div class="mk-arrow">→</div>
+    <div class="mk-box"><div class="mk-box-label">CLOUD</div><div class="mk-box-val">Meraki Dashboard</div></div>
+    <div class="mk-arrow">→</div>
+    <div class="mk-box"><div class="mk-box-label">DEVICES</div><div class="mk-box-val">MX / MS / MR / MV</div></div>
+  </div>
+
+  <h2 class="section-title">Requisitos para comenzar</h2>
+  <ul>
+    <li>Una <strong>organización Meraki</strong> activa (puede ser de evaluación).</li>
+    <li>Una <strong>API Key</strong> generada desde <em>Organization > Settings > Dashboard API access</em>.</li>
+    <li>Permisos de red sobre las organizaciones que deseas gestionar.</li>
+    <li>Python 3.8+ con <code>requests</code> o el SDK oficial <code>meraki</code>.</li>
+  </ul>
+
+  <div class="code-block">
+    <div class="code-label">Instalación de dependencias</div>
+    <pre><code><span class="cmt"># Opción A: SDK oficial de Cisco Meraki (recomendado)</span>
+pip install meraki
+
+<span class="cmt"># Opción B: Solo requests para control total</span>
+pip install requests python-dotenv</code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚡ Concepto clave del examen</div>
+    <p>El examen CCNA puede preguntar: <em>"¿Qué solución Cisco permite gestionar firewalls, switches y APs desde la nube sin controladores locales?"</em> La respuesta es <strong>Cisco Meraki</strong>. También puede preguntar la diferencia entre API Key y OAuth: la API Key es para scripts propios; OAuth es para aplicaciones de terceros publicadas en el Meraki Marketplace.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 2 — AUTH & RATE LIMITS
+═══════════════════════════════════════════ -->
+<div id="tab-auth" class="rest5-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Autenticación: API Key y OAuth 2.0</h2>
+  <p>Meraki soporta dos modelos de autenticación. El examen CCNA se enfoca principalmente en la <strong>API Key</strong>, pero un ingeniero de automatización completo debe entender ambos flujos.</p>
+
+  <div class="concept-grid">
+    <div class="concept-card" style="border-color:rgba(52,211,153,.2);">
+      <div class="concept-icon">🔑</div>
+      <h3 style="color:#34d399;">API Key</h3>
+      <p>Una clave secreta larga asociada a tu cuenta de administrador. Se envía en el header <code>X-Cisco-Meraki-API-Key</code> en cada petición. Ideal para scripts internos y automatización propia.</p>
+    </div>
+    <div class="concept-card" style="border-color:rgba(56,189,248,.2);">
+      <div class="concept-icon">🌐</div>
+      <h3 style="color:#38bdf8;">OAuth 2.0</h3>
+      <p>Flujo <code>authorization_code</code> para aplicaciones de terceros (Meraki Marketplace). El usuario autoriza tu app sin compartir su contraseña ni API Key. Usa <code>client_id</code>, <code>client_secret</code> y scopes.</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">API Key en Python requests</h2>
+  <div class="code-block">
+    <div class="code-label">auth_meraki.py — Patrón base con requests</div>
+    <pre><code><span class="kw">import</span> requests
+<span class="kw">import</span> os
+
+<span class="cmt"># Nunca hardcodees la key. Usa variables de entorno.</span>
+API_KEY = os.getenv(<span class="str">"MERAKI_API_KEY"</span>, <span class="str">"tu-api-key-aqui"</span>)
+BASE_URL = <span class="str">"https://api.meraki.com/api/v1"</span>
+
+headers = {
+    <span class="str">"X-Cisco-Meraki-API-Key"</span>: API_KEY,
+    <span class="str">"Content-Type"</span>: <span class="str">"application/json"</span>,
+    <span class="str">"Accept"</span>: <span class="str">"application/json"</span>
+}
+
+<span class="kw">def</span> <span class="fn">get_organizations</span>():
+    r = requests.get(<span class="str">f"{BASE_URL}/organizations"</span>, headers=headers)
+    r.raise_for_status()
+    <span class="kw">return</span> r.json()
+
+orgs = get_organizations()
+<span class="kw">for</span> org <span class="kw">in</span> orgs:
+    <span class="fn">print</span>(<span class="str">f"🏢 {org['name']} — ID: {org['id']}"</span>)</code></pre>
+  </div>
+
+  <h2 class="section-title">OAuth 2.0 para aplicaciones de terceros</h2>
+  <p>Si desarrollas una app para el <strong>Meraki Marketplace</strong>, no puedes pedir la API Key del cliente. En su lugar, usas OAuth 2.0 con el flujo de <strong>código de autorización</strong>:</p>
+  <ol>
+    <li>Registras tu app en Meraki Developer Hub. Obtienes <code>client_id</code> y <code>client_secret</code>.</li>
+    <li>El usuario accede a <code>https://api.meraki.com/oauth/authorize?client_id=XXX&redirect_uri=YYY&scope=read-networks</code> y autoriza.</li>
+    <li>Meraki redirige a tu <code>redirect_uri</code> con un <code>code</code> temporal.</li>
+    <li>Tu backend intercambia ese <code>code</code> por un <code>access_token</code> vía POST a <code>/oauth/token</code>.</li>
+    <li>Usas el <code>access_token</code> en el header <code>Authorization: Bearer &lt;token&gt;</code>.</li>
+  </ol>
+
+  <div class="code-block">
+    <div class="code-label">oauth_callback.py — Intercambio de código por token</div>
+    <pre><code><span class="kw">def</span> <span class="fn">exchange_code_for_token</span>(code, client_id, client_secret, redirect_uri):
+    url = <span class="str">"https://api.meraki.com/oauth/token"</span>
+    payload = {
+        <span class="str">"grant_type"</span>: <span class="str">"authorization_code"</span>,
+        <span class="str">"code"</span>: code,
+        <span class="str">"client_id"</span>: client_id,
+        <span class="str">"client_secret"</span>: client_secret,
+        <span class="str">"redirect_uri"</span>: redirect_uri
+    }
+    r = requests.post(url, data=payload)
+    data = r.json()
+    <span class="kw">return</span> data[<span class="str">"access_token"</span>], data.get(<span class="str">"refresh_token"</span>)
+
+<span class="cmt"># Posteriormente, usar:</span>
+<span class="cmt"># headers["Authorization"] = f"Bearer {access_token}"</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Rate Limiting: 5 peticiones por segundo</h2>
+  <p>Meraki impone un límite estricto de <strong>5 llamadas por segundo por organización</strong>. Si lo excedes, recibes <strong>HTTP 429 Too Many Requests</strong>. La respuesta incluye el header <code>Retry-After</code> con los segundos a esperar.</p>
+
+  <div class="code-block">
+    <div class="code-label">rate_limit_handler.py — Backoff exponencial y throttling</div>
+    <pre><code><span class="kw">import</span> time
+
+<span class="kw">class</span> <span class="fn">MerakiRateLimiter</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, max_rate=<span class="num">5</span>):
+        self.min_interval = <span class="num">1.0</span> / max_rate   <span class="cmt"># 0.2s entre calls</span>
+        self.last_call = <span class="num">0</span>
+
+    <span class="kw">def</span> <span class="fn">wait</span>(self):
+        elapsed = time.time() - self.last_call
+        <span class="kw">if</span> elapsed < self.min_interval:
+            time.sleep(self.min_interval - elapsed)
+        self.last_call = time.time()
+
+<span class="kw">def</span> <span class="fn">meraki_request</span>(limiter, method, url, headers, **kwargs):
+    limiter.wait()
+    r = requests.request(method, url, headers=headers, **kwargs)
+    <span class="kw">if</span> r.status_code == <span class="num">429</span>:
+        retry = <span class="fn">int</span>(r.headers.get(<span class="str">"Retry-After"</span>, <span class="num">1</span>))
+        <span class="fn">print</span>(<span class="str">f"⏳ Rate limit alcanzado. Esperando {retry}s..."</span>)
+        time.sleep(retry)
+        <span class="kw">return</span> meraki_request(limiter, method, url, headers, **kwargs)
+    r.raise_for_status()
+    <span class="kw">return</span> r</code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚡ Regla de oro de producción</div>
+    <p>Si gestionas múltiples organizaciones, el rate limit es <strong>por organización</strong>, no global. Sin embargo, un mismo script que itere 100 redes en una org debe respetar los 5 req/s o implementar una cola con backoff. El SDK oficial de Meraki maneja esto automáticamente con <code>single_request_timeout</code> y <code>retry_4xx_error</code>.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 3 — ORGS & NETWORKS
+═══════════════════════════════════════════ -->
+<div id="tab-orgs" class="rest5-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Jerarquía: Organizations y Networks</h2>
+  <p>En Meraki, todo se organiza en una estructura de dos niveles:</p>
+  <ul>
+    <li><strong>Organization</strong>: El contenedor de nivel más alto. Representa a la empresa o división. Contiene múltiples networks, admins, configuraciones de branding y licencias.</li>
+    <li><strong>Network</strong>: Una red lógica dentro de una organización. Puede ser de tipo <code>wireless</code>, <code>appliance</code> (MX), <code>switch</code> (MS), <code>camera</code> (MV), <code>sensor</code> (MT), o <code>combined</code> (varios tipos juntos).</li>
+  </ul>
+
+  <div class="endpoint-card">
+    <div><span class="endpoint-method get">GET</span><span class="endpoint-path">/organizations</span></div>
+    <div class="endpoint-desc">Lista todas las organizaciones donde tu API Key tiene permisos.</div>
+  </div>
+  <div class="endpoint-card">
+    <div><span class="endpoint-method get">GET</span><span class="endpoint-path">/organizations/{orgId}/networks</span></div>
+    <div class="endpoint-desc">Lista las networks dentro de una organización específica.</div>
+  </div>
+  <div class="endpoint-card">
+    <div><span class="endpoint-method post">POST</span><span class="endpoint-path">/organizations/{orgId}/networks</span></div>
+    <div class="endpoint-desc">Crea una nueva network. Requiere name, type y opcionalmente tags y timeZone.</div>
+  </div>
+
+  <h2 class="section-title">Crear una network combinada</h2>
+  <div class="code-block">
+    <div class="code-label">create_network.py — Provisión programática</div>
+    <pre><code><span class="kw">def</span> <span class="fn">create_combined_network</span>(org_id, name, tags=[]):
+    url = <span class="str">f"{BASE_URL}/organizations/{org_id}/networks"</span>
+    payload = {
+        <span class="str">"name"</span>: name,
+        <span class="str">"type"</span>: <span class="str">"appliance switch wireless"</span>,  <span class="cmt"># Combined: MX + MS + MR</span>
+        <span class="str">"tags"</span>: tags,
+        <span class="str">"timeZone"</span>: <span class="str">"America/Bogota"</span>
+    }
+    r = requests.post(url, headers=headers, json=payload)
+    r.raise_for_status()
+    net = r.json()
+    <span class="fn">print</span>(<span class="str">f"✅ Network creada: {net['name']} — ID: {net['id']}"</span>)
+    <span class="kw">return</span> net[<span class="str">"id"</span>]
+
+<span class="cmt"># Uso</span>
+net_id = create_combined_network(
+    org_id=<span class="str">"123456"</span>,
+    name=<span class="str">"SUCURSAL-MEDELLIN-01"</span>,
+    tags=[<span class="str">"latam"</span>, <span class="str">"retail"</span>]
+)</code></pre>
+  </div>
+
+  <h2 class="section-title">Config Templates (Plantillas de configuración)</h2>
+  <p>Meraki permite crear <strong>templates</strong> para aplicar configuraciones idénticas a múltiples networks. Cambias el template y todas las networks vinculadas heredan el cambio automáticamente. Esto es crítico para operaciones de retail o franquicias con cientos de sucursales idénticas.</p>
+  <div class="endpoint-card">
+    <div><span class="endpoint-method get">GET</span><span class="endpoint-path">/organizations/{orgId}/configTemplates</span></div>
+    <div class="endpoint-desc">Lista las plantillas de configuración disponibles en la organización.</div>
+  </div>
+  <div class="endpoint-card">
+    <div><span class="endpoint-method post">POST</span><span class="endpoint-path">/organizations/{orgId}/configTemplates/{templateId}/bind</span></div>
+    <div class="endpoint-desc">Vincula una network existente a un template. La network hereda toda la configuración del template.</div>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Tip para escala masiva</div>
+    <p>Para desplegar 50 tiendas idénticas, la arquitectura recomendada es: 1) Crear un template con VLANs, SSIDs y firewall rules base; 2) Crear cada network como <code>combined</code>; 3) Vincular al template con <code>autoBind: true</code>; 4) Hacer override solo en parámetros locales como direcciones IP estáticas.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 4 — DEVICES
+═══════════════════════════════════════════ -->
+<div id="tab-devices" class="rest5-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Inventario y gestión de dispositivos</h2>
+  <p>Los dispositivos Meraki se identifican por su <strong>número de serie</strong> (ej. <code>Q2XX-XXXX-XXXX</code>). Una vez que reclamas un dispositivo en tu organización (claim), puedes gestionarlo completamente por API.</p>
+
+  <div class="endpoint-card">
+    <div><span class="endpoint-method get">GET</span><span class="endpoint-path">/organizations/{orgId}/devices</span></div>
+    <div class="endpoint-desc">Inventario completo de la organización con modelo, serial, MAC, red asignada y estado.</div>
+  </div>
+  <div class="endpoint-card">
+    <div><span class="endpoint-method get">GET</span><span class="endpoint-path">/networks/{netId}/devices</span></div>
+    <div class="endpoint-desc">Dispositivos dentro de una network específica.</div>
+  </div>
+  <div class="endpoint-card">
+    <div><span class="endpoint-method get">GET</span><span class="endpoint-path">/networks/{netId}/devices/{serial}</span></div>
+    <div class="endpoint-desc">Detalle de un dispositivo: nombre, dirección, lat/lng, notas, tags, firmware.</div>
+  </div>
+  <div class="endpoint-card">
+    <div><span class="endpoint-method post">POST</span><span class="endpoint-path">/networks/{netId}/devices/claim</span></div>
+    <div class="endpoint-desc">Reclama dispositivos nuevos (por serial o order number) y los añade a la network.</div>
+  </div>
+
+  <h2 class="section-title">Inventario organizacional con paginación</h2>
+  <div class="code-block">
+    <div class="code-label">inventory_devices.py — Listar todo con paginación automática</div>
+    <pre><code><span class="kw">def</span> <span class="fn">get_all_org_devices</span>(org_id):
+    <span class="str">"""Obtiene todos los dispositivos respetando paginación (perPage)."""</span>
+    devices = []
+    url = <span class="str">f"{BASE_URL}/organizations/{org_id}/devices"</span>
+    params = {<span class="str">"perPage"</span>: <span class="num">1000</span>}
+
+    <span class="kw">while</span> url:
+        r = requests.get(url, headers=headers, params=params)
+        r.raise_for_status()
+        data = r.json()
+        devices.extend(data)
+
+        <span class="cmt"># Meraki usa Link header para paginación (next)</span>
+        link_header = r.headers.get(<span class="str">"Link"</span>, <span class="str">""</span>)
+        url = <span class="kw">None</span>
+        <span class="kw">if</span> <span class="str">'rel="next"'</span> <span class="kw">in</span> link_header:
+            <span class="cmt"># Parsear URL de next del header Link</span>
+            <span class="kw">import</span> re
+            match = re.search(<span class="str">'&lt;(.*?)&gt;; rel="next"'</span>, link_header)
+            <span class="kw">if</span> match:
+                url = match.group(<span class="num">1</span>)
+                params = <span class="kw">None</span>   <span class="cmt"># La URL ya incluye params</span>
+
+    <span class="kw">return</span> devices
+
+<span class="cmt"># Análisis del inventario</span>
+all_devices = get_all_org_devices(<span class="str">"123456"</span>)
+mx_count = <span class="fn">sum</span>(<span class="num">1</span> <span class="kw">for</span> d <span class="kw">in</span> all_devices <span class="kw">if</span> d[<span class="str">"model"</span>].startswith(<span class="str">"MX"</span>))
+<span class="fn">print</span>(<span class="str">f"🔥 Total: {len(all_devices)} | MX: {mx_count}"</span>)</code></pre>
+  </div>
+
+  <h2 class="section-title">Estado y uplinks</h2>
+  <div class="code-block">
+    <div class="code-label">device_status.py — Monitoreo de salud por serial</div>
+    <pre><code><span class="kw">def</span> <span class="fn">get_device_statuses</span>(org_id):
+    url = <span class="str">f"{BASE_URL}/organizations/{org_id}/devices/statuses"</span>
+    r = requests.get(url, headers=headers)
+    <span class="kw">for</span> dev <span class="kw">in</span> r.json():
+        status = dev.get(<span class="str">"status"</span>, <span class="str">"unknown"</span>)
+        icon = <span class="str">"🟢"</span> <span class="kw">if</span> status == <span class="str">"online"</span> <span class="kw">else</span> <span class="str">"🔴"</span>
+        <span class="fn">print</span>(<span class="str">f"{icon} {dev['name']} ({dev['model']}) — {status}"</span>)
+
+<span class="kw">def</span> <span class="fn">get_uplink_status</span>(net_id):
+    url = <span class="str">f"{BASE_URL}/networks/{net_id}/appliance/uplinks/statuses"</span>
+    r = requests.get(url, headers=headers)
+    <span class="kw">for</span> uplink <span class="kw">in</span> r.json():
+        iface = uplink[<span class="str">"interface"</span>]
+        ip    = uplink.get(<span class="str">"ip"</span>, <span class="str">"N/A"</span>)
+        status= uplink.get(<span class="str">"status"</span>, <span class="str">"unknown"</span>)
+        <span class="fn">print</span>(<span class="str">f"🌐 {iface}: {ip} [{status}]"</span>)</code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚡ Claim vs. Assign</div>
+    <p><strong>Claim</strong> mueve el dispositivo del inventario "sin dueño" de Cisco a tu organización. <strong>Assign</strong> (o mover entre networks) lo ubica dentro de una network específica para que herede configuración. Si haces claim pero no lo añades a una network, el dispositivo aparecerá en el inventario pero no tendrá configuración aplicada.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 5 — VLANS & L3
+═══════════════════════════════════════════ -->
+<div id="tab-vlans" class="rest5-tab-content">
+<div class="content-block">
+  <h2 class="section-title">VLANs, DHCP, Firewall y Auto VPN</h2>
+  <p>Los dispositivos <strong>MX (appliance)</strong> actúan como L3 gateway, firewall y concentrador VPN. La API permite gestionar VLANs, rutas estáticas, DHCP scopes, NAT, port forwarding y reglas de firewall de capa 3 y 7.</p>
+
+  <div class="endpoint-card">
+    <div><span class="endpoint-method get">GET</span><span class="endpoint-path">/networks/{netId}/appliance/vlans</span></div>
+    <div class="endpoint-desc">Lista VLANs configuradas en el MX de la network.</div>
+  </div>
+  <div class="endpoint-card">
+    <div><span class="endpoint-method post">POST</span><span class="endpoint-path">/networks/{netId}/appliance/vlans</span></div>
+    <div class="endpoint-desc">Crea una nueva VLAN con id, name, subnet, applianceIp y opcionalmente dhcpHandling.</div>
+  </div>
+  <div class="endpoint-card">
+    <div><span class="endpoint-method put">PUT</span><span class="endpoint-path">/networks/{netId}/appliance/vlans/{vlanId}</span></div>
+    <div class="endpoint-desc">Actualiza parámetros de una VLAN existente: DNS, DHCP, reserved IP ranges.</div>
+  </div>
+
+  <h2 class="section-title">Crear VLAN con DHCP en MX</h2>
+  <div class="code-block">
+    <div class="code-label">vlan_provisioning.py — Subnetting automatizado</div>
+    <pre><code><span class="kw">def</span> <span class="fn">create_vlan</span>(net_id, vlan_id, name, subnet, appliance_ip):
+    url = <span class="str">f"{BASE_URL}/networks/{net_id}/appliance/vlans"</span>
+    payload = {
+        <span class="str">"id"</span>: vlan_id,
+        <span class="str">"name"</span>: name,
+        <span class="str">"subnet"</span>: subnet,
+        <span class="str">"applianceIp"</span>: appliance_ip,
+        <span class="str">"dhcpHandling"</span>: <span class="str">"Run a DHCP server"</span>,
+        <span class="str">"dhcpLeaseTime"</span>: <span class="str">"1 day"</span>,
+        <span class="str">"dnsNameservers"</span>: <span class="str">"upstream_dns"</span>,
+        <span class="str">"reservedIpRanges"</span>: [
+            {<span class="str">"start"</span>: <span class="str">"192.168.10.1"</span>, <span class="str">"end"</span>: <span class="str">"192.168.10.19"</span>, <span class="str">"comment"</span>: <span class="str">"Infraestructura"</span>}
+        ]
+    }
+    r = requests.post(url, headers=headers, json=payload)
+    r.raise_for_status()
+    <span class="fn">print</span>(<span class="str">f"🏷️  VLAN {vlan_id} '{name}' creada en {subnet}"</span>)
+    <span class="kw">return</span> r.json()
+
+<span class="cmt"># Crear VLAN 10 para Ventas</span>
+create_vlan(
+    net_id=<span class="str">"N_1234567890"</span>,
+    vlan_id=<span class="num">10</span>,
+    name=<span class="str">"VENTAS"</span>,
+    subnet=<span class="str">"192.168.10.0/24"</span>,
+    appliance_ip=<span class="str">"192.168.10.1"</span>
+)</code></pre>
+  </div>
+
+  <h2 class="section-title">Firewall rules y 1:1 NAT</h2>
+  <div class="code-block">
+    <div class="code-label">firewall_rules.py — Seguridad perimetral por API</div>
+    <pre><code><span class="kw">def</span> <span class="fn">update_firewall_rules</span>(net_id):
+    url = <span class="str">f"{BASE_URL}/networks/{net_id}/appliance/firewall/l3FirewallRules"</span>
+    payload = {
+        <span class="str">"rules"</span>: [
+            {
+                <span class="str">"comment"</span>: <span class="str">"Allow SSH to DMZ"</span>,
+                <span class="str">"policy"</span>: <span class="str">"allow"</span>,
+                <span class="str">"protocol"</span>: <span class="str">"tcp"</span>,
+                <span class="str">"srcPort"</span>: <span class="str">"Any"</span>,
+                <span class="str">"srcCidr"</span>: <span class="str">"Any"</span>,
+                <span class="str">"destPort"</span>: <span class="str">"22"</span>,
+                <span class="str">"destCidr"</span>: <span class="str">"192.168.100.10/32"</span>,
+                <span class="str">"syslogEnabled"</span>: <span class="kw">False</span>
+            },
+            {
+                <span class="str">"comment"</span>: <span class="str">"Deny all inbound"</span>,
+                <span class="str">"policy"</span>: <span class="str">"deny"</span>,
+                <span class="str">"protocol"</span>: <span class="str">"Any"</span>,
+                <span class="str">"srcPort"</span>: <span class="str">"Any"</span>,
+                <span class="str">"srcCidr"</span>: <span class="str">"Any"</span>,
+                <span class="str">"destPort"</span>: <span class="str">"Any"</span>,
+                <span class="str">"destCidr"</span>: <span class="str">"Any"</span>
+            }
+        ]
+    }
+    r = requests.put(url, headers=headers, json=payload)
+    <span class="fn">print</span>(<span class="str">f"🛡️  Firewall actualizado: {r.status_code}"</span>)</code></pre>
+  </div>
+
+  <h2 class="section-title">Auto VPN y SD-WAN</h2>
+  <p>El <strong>Auto VPN</strong> de Meraki permite levantar túneles IPsec site-to-site entre MXs automáticamente con solo un clic. La API te permite configurar los hubs, los spokes, las subnets participantes y las políticas SD-WAN para balanceo de uplinks.</p>
+  <div class="endpoint-card">
+    <div><span class="endpoint-method get">GET</span><span class="endpoint-path">/networks/{netId}/appliance/vpn/siteToSiteVpn</span></div>
+    <div class="endpoint-desc">Configuración actual de Auto VPN: hubs, mode (spoke/hub), subnets locales.</div>
+  </div>
+  <div class="endpoint-card">
+    <div><span class="endpoint-method put">PUT</span><span class="endpoint-path">/networks/{netId}/appliance/vpn/siteToSiteVpn</span></div>
+    <div class="endpoint-desc">Actualiza el rol (hub/spoke) y los hubs a los que conectarse.</div>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Trampa frecuente del examen</div>
+    <p>El examen CCNA puede confundirte entre <strong>SD-WAN</strong> y <strong>Auto VPN</strong>. Recuerda: Meraki MX soporta ambos. Auto VPN es la tecnología de túneles automáticos; SD-WAN es la política de selección de path (VPN vs. Internet directo, balanceo por rendimiento). La API los gestiona por separado: <code>/vpn/siteToSiteVpn</code> para el túnel, <code>/sdwan</code> para las políticas de tráfico.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 6 — CLIENTS
+═══════════════════════════════════════════ -->
+<div id="tab-clients" class="rest5-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Análisis de clientes wireless y wired</h2>
+  <p>Meraki tiene una visibilidad profunda de los clientes conectados: dispositivos, usuarios, aplicaciones consumidas, historial de tráfico, ubicación aproximada (via triangulación RSSI de los MR) y políticas de grupo aplicadas.</p>
+
+  <div class="endpoint-card">
+    <div><span class="endpoint-method get">GET</span><span class="endpoint-path">/networks/{netId}/clients</span></div>
+    <div class="endpoint-desc">Lista clientes conectados recientemente (hasta 30 días). Incluye MAC, IP, VLAN, SSID, AP, switch y puerto.</div>
+  </div>
+  <div class="endpoint-card">
+    <div><span class="endpoint-method get">GET</span><span class="endpoint-path">/networks/{netId}/clients/{clientMac}/trafficHistory</span></div>
+    <div class="endpoint-desc">Historial de tráfico por aplicación y categoría para un cliente específico.</div>
+  </div>
+  <div class="endpoint-card">
+    <div><span class="endpoint-method get">GET</span><span class="endpoint-path">/networks/{netId}/clients/{clientMac}/latencyHistory</span></div>
+    <div class="endpoint-desc">Métricas de latencia histórica del cliente (útil para troubleshooting Wi-Fi).</div>
+  </div>
+
+  <h2 class="section-title">Listar y filtrar clientes</h2>
+  <div class="code-block">
+    <div class="code-label">client_analytics.py — Visibilidad de usuarios</div>
+    <pre><code><span class="kw">def</span> <span class="fn">get_network_clients</span>(net_id, timespan=<span class="num">86400</span>):
+    <span class="str">"""Clientes activos en las últimas 24h (timespan en segundos)."""</span>
+    url = <span class="str">f"{BASE_URL}/networks/{net_id}/clients"</span>
+    r = requests.get(url, headers=headers, params={<span class="str">"timespan"</span>: timespan})
+    clients = r.json()
+
+    <span class="kw">for</span> c <span class="kw">in</span> clients[:<span class="num">10</span>]:
+        <span class="fn">print</span>(<span class="str">f"📱 {c.get('description','Unknown')}"</span>)
+        <span class="fn">print</span>(<span class="str">f"   MAC: {c['mac']} | IP: {c.get('ip','N/A')} | VLAN: {c.get('vlan','N/A')}"</span>)
+        <span class="fn">print</span>(<span class="str">f"   SSID: {c.get('ssid','Wired')} | AP: {c.get('recentDeviceName','N/A')}"</span>)
+        <span class="fn">print</span>(<span class="str">f"   Usage: ↓{c.get('usage',{}).get('recv','0')} ↑{c.get('usage',{}).get('sent','0')}"</span>)
+        <span class="fn">print</span>()
+
+<span class="cmt"># Buscar cliente por MAC</span>
+<span class="kw">def</span> <span class="fn">find_client_by_mac</span>(net_id, mac):
+    clients = get_network_clients(net_id, timespan=<span class="num">2592000</span>)  <span class="cmt"># 30 días</span>
+    mac_clean = mac.lower().replace(<span class="str">"-"</span>, <span class="str">":"</span>)
+    <span class="kw">return</span> [c <span class="kw">for</span> c <span class="kw">in</span> clients <span class="kw">if</span> c[<span class="str">"mac"</span>] == mac_clean]</code></pre>
+  </div>
+
+  <h2 class="section-title">Group Policies y Traffic Shaping</h2>
+  <p>Las <strong>Group Policies</strong> permiten aplicar reglas de firewall, shaping de ancho de banda, QoS y VLAN tagging por grupo de usuarios (ej. "Invitados", "Ejecutivos", "IoT").</p>
+  <div class="code-block">
+    <div class="code-label">group_policies.py — Control de acceso por identidad</div>
+    <pre><code><span class="kw">def</span> <span class="fn">create_group_policy</span>(net_id, name):
+    url = <span class="str">f"{BASE_URL}/networks/{net_id}/groupPolicies"</span>
+    payload = {
+        <span class="str">"name"</span>: name,
+        <span class="str">"scheduling"</span>: {<span class="str">"enabled"</span>: <span class="kw">False</span>},
+        <span class="str">"bandwidth"</span>: {
+            <span class="str">"settings"</span>: <span class="str">"custom"</span>,
+            <span class="str">"bandwidthLimits"</span>: {
+                <span class="str">"limitUp"</span>: <span class="num">1000</span>,    <span class="cmt"># kbps</span>
+                <span class="str">"limitDown"</span>: <span class="num">5000</span>   <span class="cmt"># kbps</span>
+            }
+        },
+        <span class="str">"firewallAndTrafficShaping"</span>: {
+            <span class="str">"settings"</span>: <span class="str">"custom"</span>,
+            <span class="str">"l3FirewallRules"</span>: [
+                {
+                    <span class="str">"comment"</span>: <span class="str">"Block Social Media"</span>,
+                    <span class="str">"policy"</span>: <span class="str">"deny"</span>,
+                    <span class="str">"protocol"</span>: <span class="str">"tcp"</span>,
+                    <span class="str">"destPort"</span>: <span class="str">"443"</span>,
+                    <span class="str">"destCidr"</span>: <span class="str">"Any"</span>  <span class="cmt"># En producción se filtra por app: Facebook, etc.</span>
+                }
+            ]
+        }
+    }
+    r = requests.post(url, headers=headers, json=payload)
+    <span class="fn">print</span>(<span class="str">f"📋 Política '{name}' creada: {r.json()['groupPolicyId']}"</span>)</code></pre>
+  </div>
+
+  <h2 class="section-title">Location Analytics (API de localización)</h2>
+  <p>Los APs MR escanean constantemente la intensidad de señal (RSSI) de los clientes Bluetooth y Wi-Fi. Con la API de scanning puedes obtener posiciones aproximadas para heatmaps y servicios de wayfinding.</p>
+  <div class="endpoint-card">
+    <div><span class="endpoint-method get">GET</span><span class="endpoint-path">/networks/{netId}/wireless/bluetoothSettings</span></div>
+    <div class="endpoint-desc">Configura el escaneo BLE y la transmisión de beacons del AP.</div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 7 — MONITOR & ALERTS
+═══════════════════════════════════════════ -->
+<div id="tab-monitor" class="rest5-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Monitoreo, logs y alertas vía Webhook</h2>
+  <p>Meraki ofrece dos mecanismas de monitorización: <strong>pull</strong> (consultas periódicas a la API) y <strong>push</strong> (webhooks que envían eventos en tiempo real a tu servidor). La combinación de ambos es el estándar en arquitecturas cloud-modernas.</p>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">📊</div>
+      <h3>Organization-wide Logs</h3>
+      <p>Eventos de cambio de configuración, conexión/disconexión de VPN, cambios de rol en admins. Audit trail completo.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🔔</div>
+      <h3>Alerting Channels</h3>
+      <p>Email, SMS, webhook, Push API. Las alertas cubren caída de uplink, VPN down, rogue AP, cámara offline, sensor threshold.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🌡️</div>
+      <h3>Sensor Telemetry</h3>
+      <p>Los MT reportan temperatura, humedad, puerta abierta/cerrada, agua detectada. Datos históricos vía <code>/sensor/relationships</code>.</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">Endpoints de monitoreo</h2>
+  <div class="endpoint-card">
+    <div><span class="endpoint-method get">GET</span><span class="endpoint-path">/organizations/{orgId}/configurationChanges</span></div>
+    <div class="endpoint-desc">Audit log de cambios en la configuración de la organización. Útil para compliance y troubleshooting.</div>
+  </div>
+  <div class="endpoint-card">
+    <div><span class="endpoint-method get">GET</span><span class="endpoint-path">/networks/{netId}/events/eventTypes</span></div>
+    <div class="endpoint-desc">Tipos de eventos disponibles en la network (client connection, dhcp, vpn, etc.).</div>
+  </div>
+  <div class="endpoint-card">
+    <div><span class="endpoint-method get">GET</span><span class="endpoint-path">/organizations/{orgId}/devices/uplinksLossAndLatency</span></div>
+    <div class="endpoint-desc">Métricas de pérdida de paquetes y latencia por uplink de cada appliance. Ideal para SLAs.</div>
+  </div>
+
+  <h2 class="section-title">Configurar Webhooks de alerta</h2>
+  <div class="code-block">
+    <div class="code-label">webhook_alert.py — Suscribir endpoint receptor</div>
+    <pre><code><span class="kw">def</span> <span class="fn">create_http_server</span>(net_id, name, url, secret):
+    <span class="str">"""Registra un webhook HTTP server en la network."""</span>
+    endpoint = <span class="str">f"{BASE_URL}/networks/{net_id}/webhooks/httpServers"</span>
+    payload = {
+        <span class="str">"name"</span>: name,
+        <span class="str">"url"</span>: url,
+        <span class="str">"sharedSecret"</span>: secret
+    }
+    r = requests.post(endpoint, headers=headers, json=payload)
+    <span class="kw">return</span> r.json()[<span class="str">"id"</span>]
+
+<span class="kw">def</span> <span class="fn">bind_alert</span>(net_id, http_server_id):
+    <span class="str">"""Configura qué alertas se envían a ese webhook."""</span>
+    url = <span class="str">f"{BASE_URL}/networks/{net_id}/alertSettings"</span>
+    payload = {
+        <span class="str">"defaultDestinations"</span>: {<span class="str">"httpServerIds"</span>: [http_server_id]},
+        <span class="str">"alerts"</span>: [
+            {
+                <span class="str">"type"</span>: <span class="str">"vpnConnectivityChange"</span>,
+                <span class="str">"enabled"</span>: <span class="kw">True</span>,
+                <span class="str">"alertDestinations"</span>: {<span class="str">"httpServerIds"</span>: [http_server_id]}
+            },
+            {
+                <span class="str">"type"</span>: <span class="str">"uplinkStatusChange"</span>,
+                <span class="str">"enabled"</span>: <span class="kw">True</span>
+            }
+        ]
+    }
+    r = requests.put(url, headers=headers, json=payload)
+    <span class="fn">print</span>(<span class="str">f"🔔 Alertas vinculadas al webhook: {r.status_code}"</span>)</code></pre>
+  </div>
+
+  <h2 class="section-title">Receptor de alertas con Flask</h2>
+  <div class="code-block">
+    <div class="code-label">webhook_receiver.py — Servidor de alertas Meraki</div>
+    <pre><code><span class="kw">from</span> flask <span class="kw">import</span> Flask, request
+<span class="kw">import</span> hmac, hashlib
+
+app = Flask(<span class="str">__name__</span>)
+SHARED_SECRET = <span class="str">"mi-secreto-compartido"</span>
+
+<span class="kw">@app.route</span>(<span class="str">"/webhook/meraki"</span>, methods=[<span class="str">"POST"</span>])
+<span class="kw">def</span> <span class="fn">meraki_alert</span>():
+    payload = request.get_data()
+    signature = request.headers.get(<span class="str">"X-Meraki-Signature"</span>, <span class="str">""</span>)
+
+    <span class="cmt"># Validar firma HMAC-SHA256 para integridad</span>
+    expected = hmac.new(
+        SHARED_SECRET.encode(),
+        payload,
+        hashlib.sha256
+    ).hexdigest()
+
+    <span class="kw">if</span> <span class="kw">not</span> hmac.compare_digest(signature, expected):
+        <span class="kw">return</span> <span class="str">"Unauthorized"</span>, <span class="num">401</span>
+
+    data = request.get_json()
+    <span class="fn">print</span>(<span class="str">f"🚨 ALERTA: {data.get('alertType')}"</span>)
+    <span class="fn">print</span>(<span class="str">f"   Dispositivo: {data.get('deviceName')}"</span>)
+    <span class="fn">print</span>(<span class="str">f"   Timestamp: {data.get('occurredAt')}"</span>)
+
+    <span class="cmt"># Acciones automatizadas: abrir ticket, enviar SMS, escalar</span>
+    <span class="kw">return</span> <span class="str">"OK"</span>, <span class="num">200</span>
+
+<span class="kw">if</span> __name__ == <span class="str">"__main__"</span>:
+    app.run(host=<span class="str">"0.0.0.0"</span>, port=<span class="num">5000</span>)</code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚡ Validación de webhooks es obligatoria</div>
+    <p>Meraki envía el header <code>X-Meraki-Signature</code> con un HMAC-SHA256 del payload usando tu <code>sharedSecret</code>. Si no validas esto, cualquier actor puede enviar POSTs falsos a tu endpoint y generar falsas alarmas o bloqueos. Nunca confíes en la IP de origen como único mecanismo de seguridad.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 8 — SDK & POSTMAN
+═══════════════════════════════════════════ -->
+<div id="tab-sdk" class="rest5-tab-content">
+<div class="content-block">
+  <h2 class="section-title">SDK oficial vs. requests puro vs. Postman</h2>
+  <p>Meraki ofrece un <strong>SDK Python oficial</strong> (<code>meraki</code>) que abstrae la paginación, el rate limiting, el re-intento ante errores y la serialización de payloads. Es la opción recomendada para producción, pero entender <code>requests</code> puro es esencial para el examen y para debuguear.</p>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">🐍</div>
+      <h3>SDK meraki</h3>
+      <p>Clase <code>DashboardAPI</code>. Auto-retry, logging integrado, manejo de 429, soporte async. Ideal para scripts largos y orquestación.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">📡</div>
+      <h3>requests puro</h3>
+      <p>Control total sobre headers, paginación y errores. Útil para entender los fundamentos y para lenguajes donde no hay SDK.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🧪</div>
+      <h3>Postman / Insomnia</h3>
+      <p>Colecciones oficiales en Postman Workspace. Ideal para explorar endpoints, guardar ejemplos y compartir con el equipo.</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">SDK oficial: DashboardAPI</h2>
+  <div class="code-block">
+    <div class="code-label">sdk_example.py — Patrón profesional con el SDK</div>
+    <pre><code><span class="kw">import</span> meraki
+<span class="kw">import</span> os
+
+<span class="cmt"># Inicializar con logging y reintentos</span>
+dashboard = meraki.DashboardAPI(
+    api_key=os.getenv(<span class="str">"MERAKI_API_KEY"</span>),
+    base_url=<span class="str">"https://api.meraki.com/api/v1"</span>,
+    single_request_timeout=<span class="num">60</span>,
+    wait_on_rate_limit=<span class="kw">True</span>,        <span class="cmt"># Respeta 429 automáticamente</span>
+    nginx_429_retry_wait_time=<span class="num">2</span>,   <span class="cmt"># Segundos de espera ante 429</span>
+    action_batch_retry_wait_time=<span class="num">60</span>,
+    print_console=<span class="kw">False</span>,
+    output_log=<span class="kw">False</span>
+)
+
+<span class="cmt"># Listar organizaciones</span>
+orgs = dashboard.organizations.getOrganizations()
+<span class="kw">for</span> org <span class="kw">in</span> orgs:
+    <span class="fn">print</span>(<span class="str">f"🏢 {org['name']} — {org['id']}"</span>)
+
+<span class="cmt"># Listar networks de una org</span>
+networks = dashboard.organizations.getOrganizationNetworks(
+    organizationId=<span class="str">"123456"</span>,
+    total_pages=<span class="str">'all'</span>   <span class="cmt"># Auto-paginación</span>
+)
+
+<span class="cmt"># Obtener clientes de una network</span>
+clients = dashboard.networks.getNetworkClients(
+    networkId=<span class="str">"N_123456"</span>,
+    timespan=<span class="num">86400</span>,
+    total_pages=<span class="str">'all'</span>
+)
+
+<span class="cmt"># Crear VLAN usando el SDK</span>
+vlan = dashboard.appliance.createNetworkApplianceVlan(
+    networkId=<span class="str">"N_123456"</span>,
+    id=<span class="str">"100"</span>,
+    name=<span class="str">"IOT_DEVICES"</span>,
+    subnet=<span class="str">"10.0.100.0/24"</span>,
+    applianceIp=<span class="str">"10.0.100.1"</span>
+)</code></pre>
+  </div>
+
+  <h2 class="section-title">Colección oficial de Postman</h2>
+  <p>Cisco Meraki mantiene una colección oficial en el <strong>Meraki Developer Hub</strong>. Pasos para importar:</p>
+  <ol>
+    <li>Descarga la colección JSON desde <code>https://developer.cisco.com/meraki/api-v1/</code></li>
+    <li>En Postman: <em>File > Import</em> y selecciona el JSON.</li>
+    <li>Crea un <strong>Environment</strong> con variables: <code>baseUrl</code>, <code>apiKey</code>, <code>orgId</code>, <code>netId</code>.</li>
+    <li>En la pestaña <em>Authorization</em> de la colección, selecciona tipo <code>API Key</code>:
+      <ul>
+        <li>Key: <code>X-Cisco-Meraki-API-Key</code></li>
+        <li>Value: <code>{{apiKey}}</code></li>
+        <li>Add to: <code>Header</code></li>
+      </ul>
+    </li>
+  </ol>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 ¿Cuándo usar cada herramienta?</div>
+    <ul>
+      <li><strong>Postman/Insomnia</strong>: Descubrimiento de API, pruebas rápidas, documentación para equipos no-dev.</li>
+      <li><strong>requests puro</strong>: Scripts simples, entornos sin permisos para instalar librerías, o cuando necesitas interceptar/modificar headers exóticos.</li>
+      <li><strong>SDK meraki</strong>: Cualquier proyecto que supere 50 líneas de código. El manejo automático de rate limits y paginación ahorra horas de debugging.</li>
+    </ul>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 9 — PROYECTO
+═══════════════════════════════════════════ -->
+<div id="tab-proyecto" class="rest5-tab-content">
+<div class="content-block">
+  <h2 class="section-title">🚀 Proyecto Final — NOC Dashboard Meraki</h2>
+  <p>Este proyecto integra todo: autenticación con el SDK, paginación automática, rate limiting, inventario multi-org, monitoreo de uplinks, exportación CSV y un receptor de alertas webhook. Es un centro de operaciones de red (NOC) en Python que puede ejecutarse en un contenedor Docker o una Raspberry Pi en la oficina.</p>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Escenario de producción</div>
+    <p>Gestionas 120 tiendas retail con Meraki MX+MS+MR. Cada mañana necesitas validar que ningún uplink está caído, exportar el inventario completo para finanzas (depreciación de activos), y recibir en Slack cualquier caída de VPN entre sucursales y la central. Este script lo automatiza.</p>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">noc_dashboard.py — Orquestador Meraki completo</div>
+    <pre><code><span class="cmt">#!/usr/bin/env python3</span>
+<span class="cmt">"""
+noc_dashboard.py
+CCNA Academy M8 T5 — NOC Dashboard para Meraki Dashboard API
+─────────────────────────────────────────────────────────────
+- Multi-org inventory con export CSV
+- Uplink health check (loss & latency)
+- Alert webhook server con validación HMAC
+- Logging profesional y manejo de rate limits via SDK
+"""</span>
+
+<span class="kw">import</span> os
+<span class="kw">import</span> csv
+<span class="kw">import</span> sys
+<span class="kw">import</span> json
+<span class="kw">import</span> hmac
+<span class="kw">import</span> hashlib
+<span class="kw">import</span> logging
+<span class="kw">from</span> datetime <span class="kw">import</span> datetime
+<span class="kw">from</span> flask <span class="kw">import</span> Flask, request
+
+<span class="kw">try</span>:
+    <span class="kw">import</span> meraki
+<span class="kw">except</span> ImportError:
+    <span class="fn">print</span>(<span class="str">"pip install meraki flask"</span>)
+    sys.exit(<span class="num">1</span>)
+
+<span class="cmt"># ══════════════════════════════════════════════════════</span>
+<span class="cmt"># CONFIGURACIÓN</span>
+<span class="cmt"># ══════════════════════════════════════════════════════</span>
+API_KEY       = os.getenv(<span class="str">"MERAKI_API_KEY"</span>)
+ORG_IDS       = os.getenv(<span class="str">"MERAKI_ORG_IDS"</span>, <span class="str">""</span>).split(<span class="str">","</span>)  <span class="cmt"># "123,456,789"</span>
+WEBHOOK_SECRET= os.getenv(<span class="str">"WEBHOOK_SECRET"</span>, <span class="str">"cambia-esto"</span>)
+REPORT_DIR    = <span class="str">"./meraki_reports"</span>
+
+logging.basicConfig(
+    level=logging.INFO,
+    format=<span class="str">"%(asctime)s [%(levelname)s] %(message)s"</span>,
+    datefmt=<span class="str">"%H:%M:%S"</span>
+)
+
+<span class="cmt"># ══════════════════════════════════════════════════════</span>
+<span class="cmt"># CLIENTE MERAKI</span>
+<span class="cmt"># ══════════════════════════════════════════════════════</span>
+<span class="kw">class</span> <span class="fn">MerakiNOC</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+        self.dashboard = meraki.DashboardAPI(
+            api_key=API_KEY,
+            wait_on_rate_limit=<span class="kw">True</span>,
+            output_log=<span class="kw">False</span>,
+            print_console=<span class="kw">False</span>
+        )
+
+    <span class="kw">def</span> <span class="fn">export_inventory</span>(self):
+        <span class="str">"""Exporta CSV de dispositivos de todas las orgs configuradas."""</span>
+        os.makedirs(REPORT_DIR, exist_ok=<span class="kw">True</span>)
+        ts = datetime.now().strftime(<span class="str">"%Y%m%d_%H%M%S"</span>)
+        fname = <span class="str">f"{REPORT_DIR}/inventory_{ts}.csv"</span>
+
+        <span class="kw">with</span> <span class="fn">open</span>(fname, <span class="str">"w"</span>, newline=<span class="str">""</span>) <span class="kw">as</span> f:
+            writer = csv.writer(f)
+            writer.writerow([<span class="str">"Org"</span>, <span class="str">"Network"</span>, <span class="str">"Name"</span>, <span class="str">"Serial"</span>, <span class="str">"Model"</span>, <span class="str">"MAC"</span>, <span class="str">"Firmware"</span>, <span class="str">"Status"</span>])
+
+            <span class="kw">for</span> org_id <span class="kw">in</span> ORG_IDS:
+                <span class="kw">if</span> <span class="kw">not</span> org_id:
+                    <span class="kw">continue</span>
+                <span class="kw">try</span>:
+                    org = self.dashboard.organizations.getOrganization(org_id)
+                    devices = self.dashboard.organizations.getOrganizationDevices(
+                        organizationId=org_id,
+                        total_pages=<span class="str">'all'</span>
+                    )
+                    statuses = self.dashboard.organizations.getOrganizationDevicesStatuses(
+                        organizationId=org_id,
+                        total_pages=<span class="str">'all'</span>
+                    )
+                    status_map = {s[<span class="str">"serial"</span>]: s[<span class="str">"status"</span>] <span class="kw">for</span> s <span class="kw">in</span> statuses}
+
+                    <span class="kw">for</span> d <span class="kw">in</span> devices:
+                        writer.writerow([
+                            org[<span class="str">"name"</span>],
+                            d.get(<span class="str">"networkId"</span>, <span class="str">"N/A"</span>),
+                            d.get(<span class="str">"name"</span>, <span class="str">"N/A"</span>),
+                            d[<span class="str">"serial"</span>],
+                            d[<span class="str">"model"</span>],
+                            d[<span class="str">"mac"</span>],
+                            d.get(<span class="str">"firmware"</span>, <span class="str">"N/A"</span>),
+                            status_map.get(d[<span class="str">"serial"</span>], <span class="str">"unknown"</span>)
+                        ])
+                    logging.info(<span class="str">f"[{org['name']}] {len(devices)} dispositivos exportados"</span>)
+                <span class="kw">except</span> Exception <span class="kw">as</span> e:
+                    logging.error(<span class="str">f"Error en org {org_id}: {e}"</span>)
+
+        logging.info(<span class="str">f"✅ Reporte guardado: {fname}"</span>)
+        <span class="kw">return</span> fname
+
+    <span class="kw">def</span> <span class="fn">check_uplink_health</span>(self):
+        <span class="str">"""Verifica pérdida y latencia de uplinks por org."""</span>
+        <span class="kw">for</span> org_id <span class="kw">in</span> ORG_IDS:
+            <span class="kw">if</span> <span class="kw">not</span> org_id:
+                <span class="kw">continue</span>
+            <span class="kw">try</span>:
+                uplinks = self.dashboard.organizations.getOrganizationDevicesUplinksLossAndLatency(
+                    organizationId=org_id,
+                    total_pages=<span class="str">'all'</span>
+                )
+                <span class="kw">for</span> dev <span class="kw">in</span> uplinks:
+                    <span class="kw">for</span> uplink <span class="kw">in</span> dev.get(<span class="str">"uplinks"</span>, []):
+                        loss = uplink.get(<span class="str">"lossPercent"</span>, <span class="num">0</span>)
+                        lat  = uplink.get(<span class="str">"latencyMs"</span>, <span class="num">0</span>)
+                        iface = uplink.get(<span class="str">"interface"</span>, <span class="str">"?"</span>)
+                        <span class="kw">if</span> loss > <span class="num">5</span> <span class="kw">or</span> lat > <span class="num">200</span>:
+                            logging.warning(
+                                <span class="str">f"⚠️  {dev['serial']} [{iface}] — Loss: {loss}% | Lat: {lat}ms"</span>
+                            )
+            <span class="kw">except</span> Exception <span class="kw">as</span> e:
+                logging.error(<span class="str">f"Error uplinks org {org_id}: {e}"</span>)
+
+<span class="cmt"># ══════════════════════════════════════════════════════</span>
+<span class="cmt"># WEBHOOK SERVER</span>
+<span class="cmt"># ══════════════════════════════════════════════════════</span>
+app = Flask(<span class="str">__name__</span>)
+noc = MerakiNOC()
+
+<span class="kw">@app.route</span>(<span class="str">"/webhook/meraki"</span>, methods=[<span class="str">"POST"</span>])
+<span class="kw">def</span> <span class="fn">receive_alert</span>():
+    payload = request.get_data()
+    sig = request.headers.get(<span class="str">"X-Meraki-Signature"</span>, <span class="str">""</span>)
+    expected = hmac.new(WEBHOOK_SECRET.encode(), payload, hashlib.sha256).hexdigest()
+
+    <span class="kw">if</span> <span class="kw">not</span> hmac.compare_digest(sig, expected):
+        <span class="kw">return</span> <span class="str">"Unauthorized"</span>, <span class="num">401</span>
+
+    data = request.get_json()
+    logging.warning(
+        <span class="str">f"🚨 [{data.get('alertType')}] {data.get('deviceName')} — {data.get('occurredAt')}"</span>
+    )
+    <span class="cmt"># Aquí podrías enviar a Slack, PagerDuty, ServiceNow...</span>
+    <span class="kw">return</span> <span class="str">"OK"</span>, <span class="num">200</span>
+
+<span class="cmt"># ══════════════════════════════════════════════════════</span>
+<span class="cmt"># EJECUCIÓN PRINCIPAL</span>
+<span class="cmt"># ══════════════════════════════════════════════════════</span>
+<span class="kw">def</span> <span class="fn">main</span>():
+    <span class="fn">print</span>(<span class="str">"\n☁️  Meraki NOC Dashboard — CCNA Academy M8 T5\n"</span>)
+    noc.export_inventory()
+    noc.check_uplink_health()
+
+    <span class="cmt"># Iniciar servidor webhook en segundo plano (opcional)</span>
+    <span class="cmt"># from threading import Thread</span>
+    <span class="cmt"># Thread(target=lambda: app.run(host="0.0.0.0", port=5000)).start()</span>
+
+    logging.info(<span class="str">"🏁 NOC check completado."</span>)
+
+<span class="kw">if</span> __name__ == <span class="str">"__main__"</span>:
+    main()</code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">▶️ Cómo ejecutar</div>
+    <ol>
+      <li>Exporta tu API Key: <code>export MERAKI_API_KEY="tu-key"</code></li>
+      <li>Define orgs: <code>export MERAKI_ORG_IDS="123456,789012"</code></li>
+      <li>Instala: <code>pip install meraki flask</code></li>
+      <li>Ejecuta: <code>python noc_dashboard.py</code></li>
+      <li>Revisa la carpeta <code>./meraki_reports/</code> para el CSV.</li>
+    </ol>
+    <p>Este patrón de <strong>clase NOC + SDK + logging + webhook server</strong> es escalable a cientos de organizaciones y es compatible con los principios de automatización del CCNA Domain 6.5.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 10 — REFERENCIA
+═══════════════════════════════════════════ -->
+<div id="tab-referencia" class="rest5-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Tabla de Referencia — Meraki Dashboard API v1</h2>
+  <div id="refTableRest5"></div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 11 — QUIZ
+═══════════════════════════════════════════ -->
+<div id="tab-quiz" class="rest5-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Quiz — Meraki Dashboard API</h2>
+  <p style="font-size:.83rem;color:#6b7a9a;margin-bottom:20px;">10 preguntas estilo CCNA Domain 6.5. Evalúa tu comprensión de arquitectura cloud, autenticación, endpoints y automatización con Meraki.</p>
+  <div id="quizContainerRest5"></div>
+</div>
+</div>
+
+</div><!-- /.tabs-wrap -->
+
+<script>
+// ── NAVEGACIÓN DRAWER ────────────────────────────────
+function ccnaToggle() {
+  document.getElementById('ccnaDrawer').classList.toggle('open');
+  document.getElementById('ccnaOverlay').classList.toggle('show');
+}
+function ccnaClose() {
+  document.getElementById('ccnaDrawer').classList.remove('open');
+  document.getElementById('ccnaOverlay').classList.remove('show');
+}
+
+// ── TABS ──────────────────────────────────────────────
+function showTabRest5(id, btn) {
+  document.querySelectorAll('.rest5-tab-content').forEach(t => t.classList.remove('rest5-active'));
+  document.querySelectorAll('.rest5-tab-btn').forEach(b => b.classList.remove('rest5-active'));
+  document.getElementById('tab-' + id).classList.add('rest5-active');
+  if (btn) btn.classList.add('rest5-active');
+}
+
+// ── TABLA DE REFERENCIA ──────────────────────────────
+function buildRefTable() {
+  const container = document.getElementById('refTableRest5');
+  if (!container) return;
+
+  const secciones = [
+    {
+      titulo: 'ENDPOINTS CORE DASHBOARD API v1',
+      cols: ['Método','Endpoint','Descripción'],
+      filas: [
+        ['<span class="endpoint-method get">GET</span>','/organizations','Lista orgs accesibles con la API Key.'],
+        ['<span class="endpoint-method get">GET</span>','/organizations/{orgId}/networks','Networks dentro de la org.'],
+        ['<span class="endpoint-method post">POST</span>','/organizations/{orgId}/networks','Crea una network (wireless, appliance, switch, combined).'],
+        ['<span class="endpoint-method get">GET</span>','/organizations/{orgId}/devices','Inventario completo de dispositivos.'],
+        ['<span class="endpoint-method get">GET</span>','/organizations/{orgId}/devices/statuses','Estado online/offline de cada dispositivo.'],
+        ['<span class="endpoint-method get">GET</span>','/networks/{netId}/devices','Dispositivos de una network específica.'],
+        ['<span class="endpoint-method post">POST</span>','/networks/{netId}/devices/claim','Reclama dispositivos por serial o order number.'],
+        ['<span class="endpoint-method get">GET</span>','/networks/{netId}/appliance/vlans','VLANs del MX en la network.'],
+        ['<span class="endpoint-method post">POST</span>','/networks/{netId}/appliance/vlans','Crea una nueva VLAN.'],
+        ['<span class="endpoint-method put">PUT</span>','/networks/{netId}/appliance/vlans/{vlanId}','Actualiza VLAN existente.'],
+        ['<span class="endpoint-method get">GET</span>','/networks/{netId}/clients','Clientes conectados en el período especificado.'],
+        ['<span class="endpoint-method get">GET</span>','/networks/{netId}/clients/{mac}/trafficHistory','Tráfico histórico por app del cliente.'],
+        ['<span class="endpoint-method get">GET</span>','/organizations/{orgId}/devices/uplinksLossAndLatency','Métricas de loss y latencia por uplink.'],
+        ['<span class="endpoint-method post">POST</span>','/networks/{netId}/webhooks/httpServers','Registra un webhook receptor.'],
+        ['<span class="endpoint-method put">PUT</span>','/networks/{netId}/alertSettings','Configura alertas y sus destinatarios.'],
+      ]
+    },
+    {
+      titulo: 'HEADERS HTTP Y AUTENTICACIÓN',
+      cols: ['Header / Parámetro','Valor','Descripción'],
+      filas: [
+        ['X-Cisco-Meraki-API-Key','<code>{api_key}</code>','Autenticación para scripts propios. Obligatorio.'],
+        ['Authorization','Bearer &lt;token&gt;','Usado en OAuth 2.0 para apps de terceros.'],
+        ['Content-Type','application/json','Indica payload JSON en POST/PUT.'],
+        ['Link','&lt;url&gt;; rel="next"','Paginación: URL para la siguiente página de resultados.'],
+      ]
+    },
+    {
+      titulo: 'PRODUCTOS MERAKI Y SUS ROLES',
+      cols: ['Código','Familia','Función principal'],
+      filas: [
+        ['MX','Security & SD-WAN','Firewall, NAT, VPN site-to-site, IDS/IPS.'],
+        ['MS','Cloud Switch','Switching L2/L3, PoE, RSTP, port schedules.'],
+        ['MR','Cloud Wi-Fi','Access points, mesh, location analytics, WIDS.'],
+        ['MV','Smart Camera','Videovigilancia con ML edge (personas, vehículos).'],
+        ['MT','Sensor','IoT: temperatura, humedad, puerta, agua.'],
+        ['MG','Cellular Gateway','Backhaul 4G/5G para uplink redundante.'],
+      ]
+    },
+    {
+      titulo: 'CÓDIGOS HTTP Y RATE LIMITS',
+      cols: ['Código','Significado','Acción'],
+      filas: [
+        ['200 OK','Éxito.','Procesar respuesta JSON.'],
+        ['201 Created','Recurso creado.','Usar ID retornado para referencias futuras.'],
+        ['400 Bad Request','Payload o parámetro inválido.','Revisar schema JSON y tipos de datos.'],
+        ['401 Unauthorized','API Key ausente o inválida.','Verificar header y regenerar key si es necesario.'],
+        ['403 Forbidden','Key válida sin permisos sobre el recurso.','Verificar acceso de administrador en Dashboard.'],
+        ['404 Not Found','Recurso no existe (org/net/serial).','Validar IDs y que el dispositivo esté claimado.'],
+        ['429 Too Many Requests','Rate limit excedido (5 req/s por org).','Leer Retry-After, esperar y reintentar.'],
+        ['500/502/503','Error del servidor cloud.','Reintentar con backoff exponencial.'],
+      ]
+    }
+  ];
+
+  let html = '';
+  secciones.forEach(sec => {
+    html += `<h3 style="font-family:Orbitron,sans-serif;font-size:.8rem;color:#38bdf8;letter-spacing:2px;margin:24px 0 10px;text-transform:uppercase;">▸ ${sec.titulo}</h3>`;
+    html += `<div class="table-wrap"><table class="ref-table"><thead><tr>${sec.cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>`;
+    sec.filas.forEach(f => { html += '<tr>' + f.map(c=>`<td>${c}</td>`).join('') + '</tr>'; });
+    html += '</tbody></table></div>';
+  });
+  container.innerHTML = html;
+}
+
+// ── QUIZ ─────────────────────────────────────────────
+function initQuiz() {
+  const container = document.getElementById('quizContainerRest5');
+  if (!container) return;
+
+  const qs = [
+    {
+      q: '¿Cuál es el endpoint base de la Meraki Dashboard API v1?',
+      opts: ['https://dashboard.meraki.com/api/v1','https://api.meraki.com/api/v1','https://sandboxdnac.cisco.com','https://meraki.cisco.com/rest/v2'],
+      ans: 1,
+      exp: 'El endpoint oficial y único de la Dashboard API v1 es <strong>https://api.meraki.com/api/v1</strong>. No existe un sandbox always-on como DNA Center; se usa la API contra organizaciones reales o de evaluación.'
+    },
+    {
+      q: '¿Qué header HTTP se utiliza para enviar la API Key en cada petición?',
+      opts: ['Authorization: Bearer','X-Auth-Token','X-Cisco-Meraki-API-Key','Api-Key'],
+      ans: 2,
+      exp: 'Meraki usa el header propietario <strong>X-Cisco-Meraki-API-Key</strong>. El header <code>Authorization: Bearer</code> se usa en el flujo OAuth 2.0, no con API Key directa.'
+    },
+    {
+      q: 'Un script recibe HTTP 429 al consultar dispositivos. ¿Qué significa y qué debe hacer?',
+      opts: ['La API Key es inválida; regenerarla.','El dispositivo no existe; verificar serial.','Rate limit excedido; respetar Retry-After y reintentar.','El servidor está caído; abortar.'],
+      ans: 2,
+      exp: 'HTTP <strong>429 Too Many Requests</strong> indica que se superó el límite de <strong>5 peticiones por segundo por organización</strong>. El header <code>Retry-After</code> indica los segundos de espera. El SDK oficial maneja esto automáticamente con <code>wait_on_rate_limit=True</code>.'
+    },
+    {
+      q: '¿Cuál producto Meraki se utiliza principalmente para firewall, NAT y VPN site-to-site?',
+      opts: ['MR','MS','MX','MV'],
+      ans: 2,
+      exp: '<strong>MX</strong> es la familia Security & SD-WAN. Gestiona firewall de capa 3-7, NAT, port forwarding, Auto VPN y políticas SD-WAN. MR es Wi-Fi, MS es switching, MV es cámaras.'
+    },
+    {
+      q: '¿Qué modelo de autenticación es adecuado para una aplicación de terceros publicada en el Meraki Marketplace?',
+      opts: ['API Key del administrador','OAuth 2.0 authorization code grant','Basic Auth con usuario/contraseña','Certificado mutuo TLS únicamente'],
+      ans: 1,
+      exp: 'Para apps de terceros (Marketplace) se usa <strong>OAuth 2.0</strong> con flujo <code>authorization_code</code>. Así el cliente nunca comparte su API Key ni contraseña; solo autoriza scopes específicos a tu aplicación.'
+    },
+    {
+      q: 'En una network "combined", ¿qué tipos de dispositivos pueden coexistir?',
+      opts: ['Solo APs MR','Solo switches MS','MX, MS y MR juntos','Solo cámaras MV'],
+      ans: 2,
+      exp: 'Una network de tipo <strong>combined</strong> permite gestionar múltiples familias en una sola red lógica: <strong>appliance (MX) + switch (MS) + wireless (MR)</strong>. Es el modelo más común en sucursales pequeñas y medianas.'
+    },
+    {
+      q: '¿Qué tecnología usa Meraki para crear túneles VPN site-to-site automáticamente entre MXs?',
+      opts: ['IPsec manual con claves pre-compartidas','GRE sobre MPLS','Auto VPN','DMVPN'],
+      ans: 2,
+      exp: '<strong>Auto VPN</strong> es la tecnología propietaria de Meraki que levanta túneles IPsec automáticamente entre appliances MX usando la nube como orquestador. No requiere configuración manual de peers ni crypto maps.'
+    },
+    {
+      q: 'Para validar la autenticidad de un webhook recibido desde Meraki, ¿qué mecanismo se debe usar?',
+      opts: ['Verificar que la IP origen sea de Cisco','Comparar el header X-Meraki-Signature con un HMAC-SHA256 del payload','Validar un certificado SSL cliente','Revisar que el User-Agent sea "Meraki-Webhook"'],
+      ans: 1,
+      exp: 'Meraki envía el header <strong>X-Meraki-Signature</strong> conteniendo el HMAC-SHA256 del payload firmado con tu <code>sharedSecret</code>. Debes recalcular el HMAC en tu servidor y compararlos con <code>hmac.compare_digest</code>.'
+    },
+    {
+      q: '¿Cuál es la función principal del SDK oficial de Python <code>meraki</code>?',
+      opts: ['Reemplazar el firmware de los dispositivos','Proporcionar una GUI de escritorio','Abstraer paginación, rate limits y reintentos automáticos','Generar configuraciones CLI para switches Catalyst'],
+      ans: 2,
+      exp: 'El SDK <code>meraki</code> abstrae la complejidad de la API: maneja automáticamente la <strong>paginación</strong> (parámetro <code>total_pages='all'</code>), el <strong>rate limiting</strong> (<code>wait_on_rate_limit=True</code>) y los <strong>reintentos</strong> ante errores transitorios.'
+    },
+    {
+      q: '¿Qué tipo de dato devuelven la mayoría de los endpoints GET de la Dashboard API?',
+      opts: ['XML estructurado','YAML','JSON','Protocol Buffers binario'],
+      ans: 2,
+      exp: 'Al igual que DNA Center y la mayoría de APIs REST modernas, Meraki Dashboard API usa <strong>JSON</strong> como formato de intercambio de datos. Los headers <code>Accept: application/json</code> y <code>Content-Type: application/json</code> son estándar.'
+    }
+  ];
+
+  let html = '';
+  qs.forEach((q, i) => {
+    html += `<div class="quiz-question" id="qr5${i}">
+      <div class="quiz-q-num">PREGUNTA ${i+1} DE ${qs.length} · M8 MERAKI Tema 5</div>
+      <div class="quiz-q-text">${q.q}</div>
+      <div class="quiz-opts">
+        ${q.opts.map((o,j) => `<button class="quiz-opt" data-qi="${i}" data-sel="${j}" data-ans="${q.ans}">${o}</button>`).join('')}
+      </div>
+    </div>`;
+  });
+  container.innerHTML = html;
+
+  window._rest5Exp = {};
+  qs.forEach((q, i) => { window._rest5Exp[i] = q.exp; });
+
+  container.querySelectorAll('.quiz-opt').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const qi  = parseInt(this.dataset.qi);
+      const sel = parseInt(this.dataset.sel);
+      const ans = parseInt(this.dataset.ans);
+      const qDiv = document.getElementById('qr5' + qi);
+      const btns = qDiv.querySelectorAll('.quiz-opt');
+
+      btns.forEach(b => b.disabled = true);
+      btns[sel].classList.add(sel === ans ? 'correct' : 'wrong');
+      if (sel !== ans) btns[ans].classList.add('correct');
+
+      const expDiv = document.createElement('div');
+      expDiv.className = 'quiz-explanation';
+      expDiv.innerHTML = `<strong>${sel===ans ? '✅ Correcto!' : '❌ Incorrecto.'}</strong> ${window._rest5Exp[qi]}`;
+      qDiv.appendChild(expDiv);
+    });
+  });
+}
+
+// ── INICIALIZACIÓN ────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  buildRefTable();
+  initQuiz();
+});
+</script>
+</body>
+</html>
