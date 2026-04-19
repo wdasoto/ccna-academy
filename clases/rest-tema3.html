@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NETCONF — Gestión con XML y SSH · M8 T3 | CCNA Academy</title>
+  <meta name="description" content="Domina NETCONF RFC 6241. Protocolo de gestión de red vía SSH+XML: datastores, get-config, edit-config, commit, lock y ncclient Python. CCNA Domain 6.5.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── HERO acento NETCONF ── */
+.class-hero { background: linear-gradient(135deg, #06080f 0%, #080d18 60%, #0a1020 100%); }
+
+/* ── REST ACCENT TOKENS ── */
+:root{ --rest:#38bdf8; --rest-d:#0ea5e9; --rest-glow:rgba(56,189,248,.12); }
+
+/* ── BASE CLASS STYLES ── */
+body{font-family:'Exo 2',sans-serif;background:#07090f;color:#e2e8f0;}
+.class-hero{padding:56px 24px 48px;border-bottom:1px solid rgba(56,189,248,.08);position:relative;overflow:hidden;}
+.class-hero::before{content:'';position:absolute;top:-60px;right:-80px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(56,189,248,.06) 0%,transparent 70%);pointer-events:none;}
+.class-hero-inner{max-width:900px;margin:0 auto;position:relative;z-index:1;}
+.class-badge{font-family:'Share Tech Mono',monospace;font-size:.63rem;color:#38bdf8;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;}
+.class-title{font-family:'Orbitron',sans-serif;font-size:clamp(1.6rem,3.8vw,2.6rem);font-weight:900;letter-spacing:3px;color:#c2d0e8;margin-bottom:12px;line-height:1.1;}
+.class-subtitle{font-size:.92rem;color:#6b7a9a;line-height:1.72;margin-bottom:20px;max-width:700px;}
+.class-meta{display:flex;gap:12px;flex-wrap:wrap;}
+.meta-item{font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#4a5780;padding:4px 10px;border:1px solid rgba(56,189,248,.15);border-radius:4px;}
+.rest3-tabs-wrap{max-width:1100px;margin:0 auto;padding:0 16px 40px;}
+.rest3-tabs-bar{display:flex;gap:4px;padding:20px 0 0;flex-wrap:wrap;border-bottom:1px solid rgba(56,189,248,.12);margin-bottom:0;}
+.rest3-tab-btn{padding:8px 13px;border-radius:8px 8px 0 0;font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#4a5780;background:none;border:1px solid transparent;cursor:pointer;transition:all .18s;white-space:nowrap;border-bottom:none;}
+.rest3-tab-btn:hover{color:#c2d0e8;background:rgba(56,189,248,.06);}
+.rest3-tab-btn.rest3-active{color:#38bdf8;background:#0d1220;border-color:rgba(56,189,248,.25);border-bottom:1px solid #0d1220;}
+.rest3-tab-content{display:none;background:#0d1220;border:1px solid rgba(56,189,248,.08);border-top:none;border-radius:0 0 12px 12px;padding:32px;}
+.rest3-tab-content.rest3-active{display:block;}
+.content-block{max-width:880px;}
+.section-title{font-family:'Orbitron',sans-serif;font-size:.95rem;color:#38bdf8;letter-spacing:2px;margin:28px 0 14px;padding-bottom:8px;border-bottom:1px solid rgba(56,189,248,.15);}
+.section-title:first-child{margin-top:0;}
+p{color:#8294b8;line-height:1.75;margin-bottom:14px;font-size:.9rem;}
+ul,ol{color:#8294b8;padding-left:1.4rem;margin-bottom:14px;font-size:.9rem;}
+li{margin-bottom:5px;line-height:1.65;}
+strong{color:#c2d0e8;}
+code{font-family:'Share Tech Mono',monospace;font-size:.82rem;background:rgba(56,189,248,.1);color:#38bdf8;padding:1px 6px;border-radius:4px;border:1px solid rgba(56,189,248,.2);}
+
+/* INFO BOXES */
+.info-box{border-radius:8px;padding:14px 18px;margin:18px 0;border-left:3px solid;}
+.info-box.tip{background:rgba(56,189,248,.06);border-color:#38bdf8;}
+.info-box.warning{background:rgba(251,191,36,.05);border-color:#fbbf24;}
+.info-box-title{font-family:'Share Tech Mono',monospace;font-size:.73rem;color:#38bdf8;margin-bottom:8px;}
+.info-box.warning .info-box-title{color:#fbbf24;}
+
+/* CODE BLOCKS */
+.code-block{background:#050810;border:1px solid rgba(56,189,248,.15);border-left:3px solid #38bdf8;border-radius:8px;padding:0;margin:16px 0;overflow:hidden;}
+.code-label{background:rgba(56,189,248,.08);padding:8px 16px;font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#4a5780;letter-spacing:2px;text-transform:uppercase;border-bottom:1px solid rgba(56,189,248,.1);}
+.code-block pre{margin:0;padding:18px;overflow-x:auto;}
+.code-block code{background:none;border:none;padding:0;color:#a8b4c8;font-size:.79rem;line-height:1.8;display:block;}
+
+/* SYNTAX HIGHLIGHTING */
+.cmt{color:#3a4a60;font-style:italic;}
+.kw {color:#c792ea;}
+.fn {color:#82aaff;}
+.str{color:#c3e88d;}
+.num{color:#f78c6c;}
+
+/* CONCEPT GRID */
+.concept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin:16px 0;}
+.concept-card{background:#090d1a;border:1px solid rgba(56,189,248,.1);border-radius:10px;padding:16px;}
+.concept-icon{font-size:1.8rem;margin-bottom:8px;}
+.concept-card h3{font-family:'Share Tech Mono',monospace;font-size:.77rem;color:#38bdf8;margin-bottom:8px;}
+.concept-card p{font-size:.8rem;margin:0;}
+
+/* REF TABLE */
+.table-wrap{overflow-x:auto;margin:16px 0;}
+.ref-table{width:100%;border-collapse:collapse;font-size:.8rem;}
+.ref-table th{background:#090d1a;color:#38bdf8;font-family:'Share Tech Mono',monospace;font-size:.67rem;padding:10px 12px;text-align:left;border:1px solid rgba(56,189,248,.15);letter-spacing:1px;}
+.ref-table td{padding:9px 12px;border:1px solid rgba(255,255,255,.04);color:#8294b8;}
+.ref-table tr:hover td{background:rgba(56,189,248,.04);}
+.ref-table code{font-size:.77rem;}
+
+/* QUIZ */
+.quiz-question{background:#090d1a;border:1px solid rgba(56,189,248,.12);border-radius:10px;padding:20px;margin-bottom:14px;}
+.quiz-q-num{font-family:'Share Tech Mono',monospace;font-size:.62rem;color:#374060;margin-bottom:8px;}
+.quiz-q-text{font-size:.9rem;color:#c2d0e8;margin-bottom:14px;line-height:1.6;}
+.quiz-opts{display:flex;flex-direction:column;gap:7px;}
+.quiz-opt{padding:10px 14px;border-radius:7px;border:1px solid rgba(56,189,248,.12);background:#0d1220;color:#6b7a9a;cursor:pointer;font-size:.84rem;text-align:left;transition:all .15s;font-family:'Exo 2',sans-serif;}
+.quiz-opt:hover:not(:disabled){border-color:rgba(56,189,248,.4);color:#c2d0e8;}
+.quiz-opt.correct{border-color:#34d399;background:rgba(52,211,153,.08);color:#34d399;}
+.quiz-opt.wrong{border-color:#f87171;background:rgba(248,113,113,.08);color:#f87171;}
+.quiz-explanation{margin-top:10px;padding:10px 14px;background:rgba(56,189,248,.07);border-left:3px solid #38bdf8;border-radius:6px;font-size:.82rem;color:#a0aec0;line-height:1.65;}
+
+/* NETCONF FLOW DIAGRAM */
+.nc-flow{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin:20px 0;padding:20px;background:#090d1a;border-radius:10px;border:1px solid rgba(56,189,248,.1);}
+.nc-box{background:#0d1220;border:1px solid rgba(56,189,248,.2);border-radius:8px;padding:14px 18px;text-align:center;min-width:110px;}
+.nc-box-label{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:#38bdf8;margin-bottom:4px;}
+.nc-box-val{font-size:.8rem;color:#c2d0e8;}
+.nc-arrow{font-size:1.4rem;color:#38bdf8;}
+
+/* XML TAG STYLING */
+.xml-tag{color:#f78c6c;}
+.xml-attr{color:#c792ea;}
+.xml-val{color:#c3e88d;}
+.xml-comment{color:#3a4a60;font-style:italic;}
+
+/* Navbar y Drawer */
+.navbar{position:fixed;top:0;left:0;right:0;height:56px;background:#080a10;border-bottom:1px solid rgba(56,189,248,.1);display:flex;align-items:center;padding:0 24px;z-index:1000;}
+.navbar-toggle{background:none;border:1px solid rgba(56,189,248,.3);color:#38bdf8;padding:6px 12px;border-radius:6px;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:.75rem;margin-right:16px;}
+.navbar-brand{font-family:'Orbitron',sans-serif;font-weight:700;color:#38bdf8;text-decoration:none;font-size:1.1rem;}
+.navbar-brand span{color:#0ea5e9;}
+.navbar-spacer{flex:1;}
+.navbar-link{color:#6b7a9a;text-decoration:none;font-size:.8rem;transition:color .2s;}
+.navbar-link:hover{color:#c2d0e8;}
+.nav-spacer{height:56px;}
+.ccna-drawer{position:fixed;top:0;left:0;bottom:0;width:280px;background:#0d1220;border-right:1px solid rgba(56,189,248,.2);transform:translateX(-100%);transition:transform .3s;z-index:2000;overflow-y:auto;}
+.ccna-drawer.open{transform:translateX(0);}
+.ccna-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);opacity:0;visibility:hidden;transition:all .3s;z-index:1500;}
+.ccna-overlay.show{opacity:1;visibility:visible;}
+.drawer-header{padding:20px;border-bottom:1px solid rgba(56,189,248,.2);display:flex;justify-content:space-between;align-items:center;}
+.drawer-header h2{font-family:'Orbitron',sans-serif;font-size:.8rem;color:#38bdf8;margin:0;letter-spacing:2px;}
+.drawer-close{background:none;border:none;color:#6b7a9a;font-size:1.2rem;cursor:pointer;}
+.drawer-section{padding:16px;border-bottom:1px solid rgba(56,189,248,.1);}
+.drawer-section-title{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#374060;margin-bottom:12px;letter-spacing:1px;text-transform:uppercase;}
+.drawer-link{display:block;padding:10px 12px;color:#8294b8;text-decoration:none;font-size:.85rem;border-radius:6px;transition:all .2s;margin-bottom:4px;}
+.drawer-link:hover{background:rgba(56,189,248,.1);color:#c2d0e8;}
+.drawer-link.active{background:rgba(56,189,248,.2);color:#38bdf8;border-left:3px solid #38bdf8;}
+.dl-icon{margin-right:8px;}
+
+@media(max-width:680px){
+  .rest3-tab-btn{font-size:.6rem;padding:6px 9px;}
+  .rest3-tab-content{padding:18px 12px;}
+  .concept-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
+<nav class="ccna-drawer" id="ccnaDrawer">
+  <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
+  <div class="drawer-section"><div class="drawer-section-title">General</div>
+    <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M1 · Fundamentos</div>
+    <a href="fundamentos.html" class="drawer-link"><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
+    <a href="subnetting.html"  class="drawer-link"><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
+    <a href="ipv6.html"        class="drawer-link"><span class="dl-icon">6️⃣</span> IPv6</a>
+    <a href="arp.html"         class="drawer-link"><span class="dl-icon">📡</span> ARP</a>
+    <a href="rip.html"         class="drawer-link"><span class="dl-icon">🔄</span> RIP</a>
+    <a href="protocolos-internet.html" class="drawer-link"><span class="dl-icon">🌍</span> Protocolos Internet</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M2 · Dispositivos Cisco</div>
+    <a href="router.html"         class="drawer-link"><span class="dl-icon">📡</span> Routers Cisco</a>
+    <a href="switches-cisco.html" class="drawer-link"><span class="dl-icon">🔀</span> Switches Cisco</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M3 · Switching</div>
+    <a href="vlan.html"               class="drawer-link"><span class="dl-icon">🏷️</span> VLANs</a>
+    <a href="inter-vlan-routing.html" class="drawer-link"><span class="dl-icon">🔁</span> Inter-VLAN Routing</a>
+    <a href="stp.html"                class="drawer-link"><span class="dl-icon">🌳</span> STP</a>
+    <a href="etherchannel.html"       class="drawer-link"><span class="dl-icon">🔗</span> EtherChannel</a>
+    <a href="port-security.html"      class="drawer-link"><span class="dl-icon">🔒</span> Port Security</a>
+    <a href="cdp-lldp.html"           class="drawer-link"><span class="dl-icon">🔍</span> CDP / LLDP</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M4 · Routing</div>
+    <a href="routing.html"            class="drawer-link"><span class="dl-icon">🗺️</span> Routing Estático</a>
+    <a href="ospf.html"               class="drawer-link"><span class="dl-icon">⭕</span> OSPF</a>
+    <a href="eigrp.html"              class="drawer-link"><span class="dl-icon">⚡</span> EIGRP</a>
+    <a href="ospfv2-masterclass.html" class="drawer-link"><span class="dl-icon">🎯</span> OSPFv2 Masterclass</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M5 · Servicios IP</div>
+    <a href="dhcp.html" class="drawer-link"><span class="dl-icon">📋</span> DHCP</a>
+    <a href="nat.html"  class="drawer-link"><span class="dl-icon">🔄</span> NAT / PAT</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M6 · Seguridad</div>
+    <a href="acl.html" class="drawer-link"><span class="dl-icon">🛡️</span> ACLs</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M7 · WAN &amp; QoS</div>
+    <a href="wan.html" class="drawer-link"><span class="dl-icon">🌍</span> WAN</a>
+    <a href="qos.html" class="drawer-link"><span class="dl-icon">📊</span> QoS</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M8 · Automatización</div>
+    <a href="m8-automatizacion.html" class="drawer-link"><span class="dl-icon">🤖</span> M8 — Vista General</a>
+    <a href="python-redes.html"      class="drawer-link"><span class="dl-icon">🐍</span> Python para Redes</a>
+    <a href="json-datos.html"        class="drawer-link"><span class="dl-icon">📋</span> JSON y Datos</a>
+    <a href="rest-apis.html"         class="drawer-link active"><span class="dl-icon">🌐</span> REST APIs</a>
+    <a href="ansible-redes.html"     class="drawer-link"><span class="dl-icon">⚙️</span> Ansible</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">⚡ Herramientas</div>
+    <a href="asistente.html"          class="drawer-link"><span class="dl-icon">🤖</span> Asistente IA</a>
+    <a href="netbot.html"             class="drawer-link"><span class="dl-icon">⚙️</span> NetBot Config</a>
+    <a href="calculadora.html"        class="drawer-link"><span class="dl-icon">🧮</span> Calculadora IP</a>
+    <a href="../laboratorios-pkt.html"   class="drawer-link"><span class="dl-icon">🧪</span> Labs Packet Tracer</a>
+    <a href="../banco-preguntas.html" class="drawer-link"><span class="dl-icon">📝</span> Banco de Preguntas</a></div>
+</nav>
+
+<header class="navbar">
+  <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
+  <a href="../index.html" class="navbar-brand">CISCO<span> ACADEMY</span></a>
+  <div class="navbar-spacer"></div>
+  <a href="rest-apis.html" class="navbar-link">← REST APIs</a>
+</header>
+<div class="nav-spacer"></div>
+
+<!-- HERO -->
+<section class="class-hero" style="border-bottom:1px solid rgba(56,189,248,.2);">
+  <div class="class-hero-inner">
+    <div class="class-badge" style="color:#38bdf8;">M8 · AUTOMATIZACIÓN · REST APIs · TEMA 3 DE 7</div>
+    <h1 class="class-title">NETCONF <span class="class-title-accent" style="background:linear-gradient(135deg,#38bdf8,#0ea5e9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">— Gestión con XML y SSH</span></h1>
+    <p class="class-subtitle">El protocolo estándar RFC 6241 que revolucionó la gestión de redes. Sesiones SSH persistentes, operaciones transaccionales sobre datastores, y modelos YANG estructurados. Domina get-config, edit-config, commit y ncclient para automatización robusta de Cisco IOS-XE.</p>
+    <div class="class-meta">
+      <span class="meta-item" style="border-color:rgba(56,189,248,.2);color:#38bdf8;">📡 RFC 6241</span>
+      <span class="meta-item">🎯 CCNA Domain 6.5</span>
+      <span class="meta-item">⏱ ~90 min lectura</span>
+      <span class="meta-item">💻 Labs con IOS-XE</span>
+      <span class="meta-item">🧪 Proyecto ncclient</span>
+    </div>
+  </div>
+</section>
+
+<!-- TABS -->
+<div class="rest3-tabs-wrap">
+  <div class="rest3-tabs-bar">
+    <button class="rest3-tab-btn rest3-active" onclick="showTabRest3('intro',this)">📡 Intro</button>
+    <button class="rest3-tab-btn" onclick="showTabRest3('rfc',this)">📜 RFC 6241</button>
+    <button class="rest3-tab-btn" onclick="showTabRest3('xml',this)">🧬 XML & SSH</button>
+    <button class="rest3-tab-btn" onclick="showTabRest3('ops',this)">⚙️ Operaciones</button>
+    <button class="rest3-tab-btn" onclick="showTabRest3('datastores',this)">💾 Datastores</button>
+    <button class="rest3-tab-btn" onclick="showTabRest3('ncclient',this)">🐍 ncclient</button>
+    <button class="rest3-tab-btn" onclick="showTabRest3('seguridad',this)">🔒 Seguridad</button>
+    <button class="rest3-tab-btn" onclick="showTabRest3('proyecto',this)">🚀 Proyecto</button>
+    <button class="rest3-tab-btn" onclick="showTabRest3('referencia',this)">📊 Referencia</button>
+    <button class="rest3-tab-btn" onclick="showTabRest3('quiz',this)">🎯 Quiz</button>
+  </div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 1 — INTRO
+═══════════════════════════════════════════ -->
+<div id="tab-intro" class="rest3-tab-content rest3-active">
+<div class="content-block">
+  <h2 class="section-title">¿Qué es NETCONF y por qué es el estándar de oro?</h2>
+  <p><strong>NETCONF (Network Configuration Protocol)</strong>, definido en la <strong>RFC 6241</strong>, es el protocolo de gestión de red creado por la IETF para superar las limitaciones del modelo CLI/SSH tradicional. Mientras que RESTCONF (Tema 2) es stateless y basado en HTTP, NETCONF es <strong>stateful, orientado a conexión y transaccional</strong> — características críticas para redes de producción donde un cambio mal aplicado puede causar una interrupción masiva.</p>
+  <p>NETCONF se comunica a través de <strong>SSH en el puerto 830</strong> (netconf-ssh) utilizando <strong>XML</strong> como formato nativo de mensajería. Cada sesión comienza con un intercambio de capabilities, permite múltiples operaciones sobre datastores (running, startup, candidate), y garantiza atomicidad: un <code>&lt;commit&gt;</code> aplica todos los cambios de golpe, o ninguno si falla algo.</p>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 NETCONF vs RESTCONF — ¿Cuándo usar cada uno?</div>
+    <ul>
+      <li><strong>NETCONF (RFC 6241)</strong>: Ideal para configuración masiva, transacciones complejas y entornos donde se requiere <strong>candidate config + commit</strong>. Es el preferido para orquestadores y herramientas de cumplimiento.</li>
+      <li><strong>RESTCONF (RFC 8040)</strong>: Ideal para aplicaciones web modernas, dashboards y microservicios que necesitan HTTP stateless con JSON. Más fácil de integrar con herramientas DevOps.</li>
+      <li><strong>La realidad</strong>: Muchos ingenieros usan ambos. NETCONF para el "día 0" de configuración masiva, RESTCONF para el "día 2" de monitoreo y ajustes rápidos.</li>
+    </ul>
+  </div>
+
+  <h2 class="section-title">Arquitectura de capas RFC 6241</h2>
+  <p>NETCONF se divide en cuatro capas bien definidas, lo que lo hace modular y extensible:</p>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">🔒</div>
+      <h3>Transporte Seguro</h3>
+      <p>SSH (puerto 830) es el estándar. También soporta TLS (RFC 7589), SOCKS5 o cualquier sesión confiable. Provee autenticación, integridad y cifrado.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">📨</div>
+      <h3>Mensajes (Messages)</h3>
+      <p>Marco XML para codificar RPCs. Un cliente envía <code>&lt;rpc&gt;</code>; el servidor responde <code>&lt;rpc-reply&gt;</code>. Incluye mecanismos de notificación y eventos.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">⚙️</div>
+      <h3>Operaciones</h3>
+      <p>Conjunto base de operaciones: <code>&lt;get&gt;</code>, <code>&lt;get-config&gt;</code>, <code>&lt;edit-config&gt;</code>, <code>&lt;copy-config&gt;</code>, <code>&lt;delete-config&gt;</code>, <code>&lt;commit&gt;</code>, <code>&lt;lock&gt;</code>, <code>&lt;unlock&gt;</code>.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🌳</div>
+      <h3>Contenido (Content)</h3>
+      <p>Modelos de datos YANG definen la sintaxis y semántica del XML intercambiado. Los mismos modelos YANG que usa RESTCONF son la base del contenido NETCONF.</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">Requisitos en IOS-XE</h2>
+  <div class="code-block">
+    <div class="code-label">Habilitar NETCONF en IOS-XE (obligatorio para ncclient)</div>
+    <pre><code>! Habilitar NETCONF/YANG (SSH ya debe estar configurado)
+netconf-yang
+netconf-yang cisco-odm polling-enable
+
+! Verificar que el proceso NETCONF esté activo
+show platform software yang-management process
+
+! Verificar sesiones NETCONF activas
+show netconf-yang sessions
+
+! NETCONF usa el puerto 830 TCP por defecto
+! Asegurar que el firewall/ACL permite 830
+ip access-list extended MGMT-NETCONF
+ permit tcp 10.0.0.0 0.0.0.255 any eq 830
+ permit tcp 10.0.0.0 0.0.0.255 any eq 22</code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚡ Diferencia clave con RESTCONF</div>
+    <p>RESTCONF se habilita con <code>restconf</code> y usa HTTPS (443). NETCONF se habilita con <code>netconf-yang</code> y usa SSH (830). Son independientes: puedes tener uno, ambos o ninguno. Para ncclient Python, necesitas exclusivamente <code>netconf-yang</code> y acceso al puerto 830.</p>
+  </div>
+
+  <h2 class="section-title">Flujo de una sesión NETCONF</h2>
+  <div class="nc-flow">
+    <div class="nc-box"><div class="nc-box-label">CLIENTE</div><div class="nc-box-val">ncclient / script</div></div>
+    <div class="nc-arrow">→ SSH:830 →</div>
+    <div class="nc-box"><div class="nc-box-label">HANDSHAKE</div><div class="nc-box-val">&lt;hello&gt; capabilities</div></div>
+    <div class="nc-arrow">→ &lt;rpc&gt; →</div>
+    <div class="nc-box"><div class="nc-box-label">IOS-XE</div><div class="nc-box-val">confd / ncserver</div></div>
+    <div class="nc-arrow">→ &lt;rpc-reply&gt; →</div>
+    <div class="nc-box"><div class="nc-box-label">DATASTORE</div><div class="nc-box-val">running / candidate</div></div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 2 — RFC 6241
+═══════════════════════════════════════════ -->
+<div id="tab-rfc" class="rest3-tab-content">
+<div class="content-block">
+  <h2 class="section-title">RFC 6241 — Especificación completa</h2>
+  <p>Publicada en 2011 y actualizada por RFC 6242 (usar SSH con NETCONF), la RFC 6241 establece un framework robusto para gestionar configuración de dispositivos de red. Su diseño se inspiró en los problemas del modelo SNMP de solo-lectura y la inestabilidad del scripting CLI.</p>
+
+  <h2 class="section-title">El intercambio de capabilities (&lt;hello&gt;)</h2>
+  <p>Toda sesión NETCONF comienza con un intercambio de mensajes <code>&lt;hello&gt;</code>. Tanto cliente como servidor anuncian qué capacidades soportan. Esto determina qué operaciones y modelos YANG están disponibles durante la sesión.</p>
+
+  <div class="code-block">
+    <div class="code-label">Ejemplo de mensaje &lt;hello&gt; del servidor (IOS-XE)</div>
+    <pre><code><span class="kw">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="kw">&lt;hello</span> <span class="xml-attr">xmlns</span>=<span class="str">"urn:ietf:params:xml:ns:netconf:base:1.0"</span><span class="kw">&gt;</span>
+  <span class="kw">&lt;capabilities&gt;</span>
+    <span class="kw">&lt;capability&gt;</span>urn:ietf:params:netconf:base:1.0<span class="kw">&lt;/capability&gt;</span>
+    <span class="kw">&lt;capability&gt;</span>urn:ietf:params:netconf:base:1.1<span class="kw">&lt;/capability&gt;</span>
+    <span class="kw">&lt;capability&gt;</span>urn:ietf:params:netconf:capability:writable-running:1.0<span class="kw">&lt;/capability&gt;</span>
+    <span class="kw">&lt;capability&gt;</span>urn:ietf:params:netconf:capability:candidate:1.0<span class="kw">&lt;/capability&gt;</span>
+    <span class="kw">&lt;capability&gt;</span>urn:ietf:params:netconf:capability:rollback-on-error:1.0<span class="kw">&lt;/capability&gt;</span>
+    <span class="kw">&lt;capability&gt;</span>urn:ietf:params:netconf:capability:validate:1.1<span class="kw">&lt;/capability&gt;</span>
+    <span class="kw">&lt;capability&gt;</span>urn:ietf:params:netconf:capability:confirmed-commit:1.1<span class="kw">&lt;/capability&gt;</span>
+    <span class="kw">&lt;capability&gt;</span>urn:ietf:params:netconf:capability:with-defaults:1.0?basic-mode=explicit<span class="kw">&lt;/capability&gt;</span>
+    <span class="cmt">&lt;!-- Capabilities YANG de Cisco --&gt;</span>
+    <span class="kw">&lt;capability&gt;</span>http://cisco.com/ns/yang/Cisco-IOS-XE-native?module=Cisco-IOS-XE-native&amp;revision=2021-03-01<span class="kw">&lt;/capability&gt;</span>
+  <span class="kw">&lt;/capabilities&gt;</span>
+  <span class="kw">&lt;session-id&gt;</span>42<span class="kw">&lt;/session-id&gt;</span>
+<span class="kw">&lt;/hello&gt;</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Capabilities fundamentales</h2>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead><tr><th>Capability</th><th>URI (urn:ietf:params:netconf:capability:...)</th><th>Significado</th></tr></thead>
+      <tbody>
+        <tr><td><code>:writable-running</code></td><td><code>writable-running:1.0</code></td><td>Permite editar directamente el datastore <code>running</code> con <code>&lt;edit-config&gt;</code>.</td></tr>
+        <tr><td><code>:candidate</code></td><td><code>candidate:1.0</code></td><td>Soporta datastore <code>candidate</code>. Los cambios no aplican hasta <code>&lt;commit&gt;</code>.</td></tr>
+        <tr><td><code>:confirmed-commit</code></td><td><code>confirmed-commit:1.1</code></td><td>Commit con timeout de confirmación. Si no se confirma, hace rollback automático.</td></tr>
+        <tr><td><code>:rollback-on-error</code></td><td><code>rollback-on-error:1.0</code></td><td>Si <code>&lt;edit-config&gt;</code> falla en algún punto, revierte TODOS los cambios de esa operación.</td></tr>
+        <tr><td><code>:validate</code></td><td><code>validate:1.1</code></td><td>Permite validar una configuración antes de aplicarla (<code>&lt;validate&gt;</code>).</td></tr>
+        <tr><td><code>:with-defaults</code></td><td><code>with-defaults:1.0</code></td><td>Controla si los valores YANG por defecto se incluyen en las respuestas.</td></tr>
+        <tr><td><code>:xpath</code></td><td><code>xpath:1.0</code></td><td>Permite filtros XPath en <code>&lt;get&gt;</code> y <code>&lt;get-config&gt;</code> (muy potente).</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Trampa frecuente del examen</div>
+    <p>El examen CCNA pregunta cuál capability permite modificar la configuración sin afectar <code>running</code> inmediatamente. La respuesta es <strong>:candidate</strong>. También pregunta qué capability protege contra commits fallidos: <strong>:rollback-on-error</strong>. Memoriza estos URIs por su nombre corto, no por el URI completo.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 3 — XML & SSH
+═══════════════════════════════════════════ -->
+<div id="tab-xml" class="rest3-tab-content">
+<div class="content-block">
+  <h2 class="section-title">XML — El lenguaje nativo de NETCONF</h2>
+  <p>A diferencia de RESTCONF que puede usar JSON, NETCONF está rigidamente ligado a <strong>XML</strong>. Cada mensaje es un documento XML bien formado con namespace obligatorio <code>urn:ietf:params:xml:ns:netconf:base:1.0</code>. Entender la estructura XML es entender NETCONF.</p>
+
+  <h2 class="section-title">Elementos raíz de NETCONF</h2>
+  <ul>
+    <li><strong><code>&lt;rpc&gt;</code></strong>: Envuelve cada solicitud del cliente. Atributo obligatorio <code>message-id</code> para correlacionar respuestas.</li>
+    <li><strong><code>&lt;rpc-reply&gt;</code></strong>: Respuesta del servidor. Incluye el mismo <code>message-id</code> o datos (<code>&lt;data&gt;</code>) o un <code>&lt;ok/&gt;</code>.</li>
+    <li><strong><code>&lt;rpc-error&gt;</code></strong>: Cuando falla una operación, contiene <code>error-type</code>, <code>error-tag</code>, <code>error-severity</code>, <code>error-message</code>.</li>
+  </ul>
+
+  <div class="code-block">
+    <div class="code-label">Ejemplo completo: get-config de running (mensaje XML crudo)</div>
+    <pre><code><span class="cmt">&lt;!-- CLIENTE envía --&gt;</span>
+<span class="kw">&lt;rpc</span> <span class="xml-attr">message-id</span>=<span class="str">"101"</span>
+     <span class="xml-attr">xmlns</span>=<span class="str">"urn:ietf:params:xml:ns:netconf:base:1.0"</span><span class="kw">&gt;</span>
+  <span class="kw">&lt;get-config&gt;</span>
+    <span class="kw">&lt;source&gt;</span>
+      <span class="kw">&lt;running/&gt;</span>
+    <span class="kw">&lt;/source&gt;</span>
+  <span class="kw">&lt;/get-config&gt;</span>
+<span class="kw">&lt;/rpc&gt;</span>
+
+<span class="cmt">&lt;!-- SERVIDOR responde (fragmento) --&gt;</span>
+<span class="kw">&lt;rpc-reply</span> <span class="xml-attr">message-id</span>=<span class="str">"101"</span>
+           <span class="xml-attr">xmlns</span>=<span class="str">"urn:ietf:params:xml:ns:netconf:base:1.0"</span><span class="kw">&gt;</span>
+  <span class="kw">&lt;data&gt;</span>
+    <span class="kw">&lt;native</span> <span class="xml-attr">xmlns</span>=<span class="str">"http://cisco.com/ns/yang/Cisco-IOS-XE-native"</span><span class="kw">&gt;</span>
+      <span class="kw">&lt;version&gt;</span>16.12<span class="kw">&lt;/version&gt;</span>
+      <span class="kw">&lt;hostname&gt;</span>R1-CORE<span class="kw">&lt;/hostname&gt;</span>
+      <span class="kw">&lt;interface&gt;</span>
+        <span class="kw">&lt;GigabitEthernet&gt;</span>
+          <span class="kw">&lt;name&gt;</span>0/0<span class="kw">&lt;/name&gt;</span>
+          <span class="kw">&lt;ip&gt;</span>
+            <span class="kw">&lt;address&gt;</span>
+              <span class="kw">&lt;primary&gt;</span>
+                <span class="kw">&lt;address&gt;</span>192.168.1.1<span class="kw">&lt;/address&gt;</span>
+                <span class="kw">&lt;mask&gt;</span>255.255.255.0<span class="kw">&lt;/mask&gt;</span>
+              <span class="kw">&lt;/primary&gt;</span>
+            <span class="kw">&lt;/address&gt;</span>
+          <span class="kw">&lt;/ip&gt;</span>
+        <span class="kw">&lt;/GigabitEthernet&gt;</span>
+      <span class="kw">&lt;/interface&gt;</span>
+    <span class="kw">&lt;/native&gt;</span>
+  <span class="kw">&lt;/data&gt;</span>
+<span class="kw">&lt;/rpc-reply&gt;</span></code></pre>
+  </div>
+
+  <h2 class="section-title">SSH como transporte (RFC 6242)</h2>
+  <p>NETCONF sobre SSH no usa simplemente una shell interactiva. Usa un <strong>subsystem SSH</strong> llamado <code>netconf</code>. Esto significa que después del handshake SSH, el cliente invoca <code>ssh -s router netconf</code> y obtiene un canal dedicado para XML.</p>
+
+  <div class="code-block">
+    <div class="code-label">Conexión manual vía línea de comandos (debug)</div>
+    <pre><code><span class="cmt"># Conectar al subsystem netconf manualmente (útil para troubleshooting)</span>
+ssh -p 830 -s admin@192.168.1.1 netconf
+
+<span class="cmt"># El servidor responderá inmediatamente con su &lt;hello&gt;:</span>
+<span class="kw">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="kw">&lt;hello xmlns="urn:ietf:params:xml:ns:netconf:base:1.0"&gt;</span>
+  <span class="kw">&lt;capabilities&gt;</span>...<span class="kw">&lt;/capabilities&gt;</span>
+  <span class="kw">&lt;session-id&gt;</span>1<span class="kw">&lt;/session-id&gt;</span>
+<span class="kw">&lt;/hello&gt;</span>]]>]]>
+
+<span class="cmt"># Luego puedes escribir manualmente un &lt;rpc&gt;:</span>
+<span class="kw">&lt;rpc message-id="1" xmlns="urn:ietf:params:xml:ns:netconf:base:1.0"&gt;</span>
+  <span class="kw">&lt;get&gt;&lt;filter type="subtree"&gt;&lt;native xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-native"/&gt;&lt;/filter&gt;&lt;/get&gt;</span>
+<span class="kw">&lt;/rpc&gt;</span>]]>]]></code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚡ Delimitador especial: ]]>]]&gt;</div>
+    <p>NETCONF 1.0 usa el delimitador <code>]]&gt;]]&gt;</code> para indicar fin de mensaje XML sobre el stream SSH. NETCONF 1.1 (chunked framing) usa un encabezado de longitud. <code>ncclient</code> maneja esto automáticamente, pero si debugueas con <code>ssh -s</code>, debes enviar el delimitador manualmente.</p>
+  </div>
+
+  <h2 class="section-title">Filtrado con Subtree vs XPath</h2>
+  <p>Al obtener configuración, puedes filtrar para no recibir el XML enorme de toda la configuración:</p>
+
+  <div class="code-block">
+    <div class="code-label">Filtro Subtree (soportado universalmente)</div>
+    <pre><code><span class="kw">&lt;get-config&gt;</span>
+  <span class="kw">&lt;source&gt;&lt;running/&gt;&lt;/source&gt;</span>
+  <span class="kw">&lt;filter type="subtree"&gt;</span>
+    <span class="kw">&lt;native xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-native"&gt;</span>
+      <span class="kw">&lt;hostname/&gt;</span>
+    <span class="kw">&lt;/native&gt;</span>
+  <span class="kw">&lt;/filter&gt;</span>
+<span class="kw">&lt;/get-config&gt;</span></code></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">Filtro XPath (requiere capability :xpath)</div>
+    <pre><code><span class="kw">&lt;get-config&gt;</span>
+  <span class="kw">&lt;source&gt;&lt;running/&gt;&lt;/source&gt;</span>
+  <span class="kw">&lt;filter type="xpath"</span> <span class="xml-attr">select</span>=<span class="str">"/native/interface/GigabitEthernet[name='0/0']"</span><span class="kw">/&gt;</span>
+<span class="kw">&lt;/get-config&gt;</span></code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 4 — OPERACIONES
+═══════════════════════════════════════════ -->
+<div id="tab-ops" class="rest3-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Operaciones base de NETCONF</h2>
+  <p>La RFC 6241 define 9 operaciones base. Cada una es un elemento XML dentro de <code>&lt;rpc&gt;</code>. Comprender cuándo usar cada operación es clave para la automatización segura.</p>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">📖</div>
+      <h3>&lt;get&gt;</h3>
+      <p>Recupera <strong>datos de estado operacional</strong> (no configuración). Útil para métricas, contadores, tabla ARP, vecinos OSPF.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">📂</div>
+      <h3>&lt;get-config&gt;</h3>
+      <p>Recupera <strong>configuración</strong> de un datastore específico: running, startup o candidate. El pilar de los backups automatizados.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">✏️</div>
+      <h3>&lt;edit-config&gt;</h3>
+      <p>Modifica un datastore target. Soporta <code>merge</code> (default), <code>replace</code>, <code>create</code> y <code>delete</code>. La operación más poderosa y peligrosa.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">📋</div>
+      <h3>&lt;copy-config&gt;</h3>
+      <p>Copia contenido completo de un datastore a otro. Equivalente a <code>copy running-config startup-config</code> pero atómico.</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">&lt;edit-config&gt; en profundidad</h2>
+  <p>Es la operación más compleja. El atributo <code>operation</code> dentro del elemento config determina el comportamiento:</p>
+
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead><tr><th>operation</th><th>Comportamiento</th><th>Analogía CLI</th></tr></thead>
+      <tbody>
+        <tr><td><code>merge</code> (default)</td><td>Combina la config enviada con la existente. No borra lo que no menciones.</td><td>Comandos en modo configuración sueltos.</td></tr>
+        <tr><td><code>replace</code></td><td>Reemplaza el nodo identificado por el filtro. Si el nodo es la raíz, reemplaza TODO el datastore.</td><td><code>config replace</code> o copy-paste de sección.</td></tr>
+        <tr><td><code>create</code></td><td>Crea el recurso solo si NO existe. Falla con <code>data-exists</code> si ya existe.</td><td><code>interface Loopback1</code> (primera vez).</td></tr>
+        <tr><td><code>delete</code></td><td>Elimina el recurso. Falla con <code>data-missing</code> si no existe.</td><td><code>no interface Loopback1</code>.</td></tr>
+        <tr><td><code>remove</code></td><td>Elimina si existe; si no existe, no hace nada (idempotente).</td><td><code>no</code> seguro en scripts.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">&lt;edit-config&gt; merge — Añadir descripción a Gi0/0</div>
+    <pre><code><span class="kw">&lt;rpc message-id="200" xmlns="urn:ietf:params:xml:ns:netconf:base:1.0"&gt;</span>
+  <span class="kw">&lt;edit-config&gt;</span>
+    <span class="kw">&lt;target&gt;</span>
+      <span class="kw">&lt;running/&gt;</span>
+    <span class="kw">&lt;/target&gt;</span>
+    <span class="kw">&lt;config&gt;</span>
+      <span class="kw">&lt;native xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-native"&gt;</span>
+        <span class="kw">&lt;interface&gt;</span>
+          <span class="kw">&lt;GigabitEthernet&gt;</span>
+            <span class="kw">&lt;name&gt;</span>0/0<span class="kw">&lt;/name&gt;</span>
+            <span class="kw">&lt;description&gt;</span>NETCONF-MANAGED-WAN<span class="kw">&lt;/description&gt;</span>
+          <span class="kw">&lt;/GigabitEthernet&gt;</span>
+        <span class="kw">&lt;/interface&gt;</span>
+      <span class="kw">&lt;/native&gt;</span>
+    <span class="kw">&lt;/config&gt;</span>
+  <span class="kw">&lt;/edit-config&gt;</span>
+<span class="kw">&lt;/rpc&gt;</span></code></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">&lt;edit-config&gt; replace — Reemplazar toda la sección de interfaces</div>
+    <pre><code><span class="kw">&lt;rpc message-id="201" xmlns="urn:ietf:params:xml:ns:netconf:base:1.0"&gt;</span>
+  <span class="kw">&lt;edit-config&gt;</span>
+    <span class="kw">&lt;target&gt;&lt;running/&gt;&lt;/target&gt;</span>
+    <span class="kw">&lt;config&gt;</span>
+      <span class="kw">&lt;native xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-native"&gt;</span>
+        <span class="kw">&lt;interface</span> <span class="xml-attr">xmlns:nc</span>=<span class="str">"urn:ietf:params:xml:ns:netconf:base:1.0"</span>
+                  <span class="xml-attr">nc:operation</span>=<span class="str">"replace"</span><span class="kw">&gt;</span>
+          <span class="cmt">&lt;!-- TODA la configuración de interfaces se reemplaza --&gt;</span>
+        <span class="kw">&lt;/interface&gt;</span>
+      <span class="kw">&lt;/native&gt;</span>
+    <span class="kw">&lt;/config&gt;</span>
+  <span class="kw">&lt;/edit-config&gt;</span>
+<span class="kw">&lt;/rpc&gt;</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Operaciones de control transaccional</h2>
+
+  <div class="code-block">
+    <div class="code-label">&lt;lock&gt; y &lt;unlock&gt; — Evitar corridas concurrentes</div>
+    <pre><code><span class="cmt">&lt;!-- Bloquear running para que nadie más edite --&gt;</span>
+<span class="kw">&lt;rpc message-id="300"&gt;</span>
+  <span class="kw">&lt;lock&gt;</span>
+    <span class="kw">&lt;target&gt;&lt;running/&gt;&lt;/target&gt;</span>
+  <span class="kw">&lt;/lock&gt;</span>
+<span class="kw">&lt;/rpc&gt;</span>
+
+<span class="cmt">&lt;!-- ... realizar múltiples operaciones ... --&gt;</span>
+
+<span class="kw">&lt;rpc message-id="301"&gt;</span>
+  <span class="kw">&lt;unlock&gt;</span>
+    <span class="kw">&lt;target&gt;&lt;running/&gt;&lt;/target&gt;</span>
+  <span class="kw">&lt;/unlock&gt;</span>
+<span class="kw">&lt;/rpc&gt;</span></code></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">&lt;commit&gt; — Aplicar candidate a running (transacción atómica)</div>
+    <pre><code><span class="kw">&lt;rpc message-id="400"&gt;</span>
+  <span class="kw">&lt;commit/&gt;</span>
+<span class="kw">&lt;/rpc&gt;</span>
+
+<span class="cmt">&lt;!-- Respuesta si todo OK --&gt;</span>
+<span class="kw">&lt;rpc-reply message-id="400"&gt;</span>
+  <span class="kw">&lt;ok/&gt;</span>
+<span class="kw">&lt;/rpc-reply&gt;</span></code></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">&lt;discard-changes&gt; — Abortar candidate</div>
+    <pre><code><span class="kw">&lt;rpc message-id="401"&gt;</span>
+  <span class="kw">&lt;discard-changes/&gt;</span>
+<span class="kw">&lt;/rpc&gt;</span></code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Patrón seguro: candidate + validate + commit</div>
+    <p>El flujo más seguro en producción es: <strong>lock candidate → edit-config (target=candidate) → validate → commit → unlock</strong>. Si algo falla en validate, haces <code>discard-changes</code> y <code>unlock</code>. Así nunca tocas running hasta estar 100% seguro.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 5 — DATASTORES
+═══════════════════════════════════════════ -->
+<div id="tab-datastores" class="rest3-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Datastores — El corazón transaccional de NETCONF</h2>
+  <p>Los datastores son la característica distintiva de NETCONF frente a RESTCONF. Mientras RESTCONF opera principalmente sobre <code>running</code> con modificaciones directas, NETCONF permite separar el <strong>trabajo en progreso</strong> de la <strong>configuración activa</strong>.</p>
+
+  <div class="concept-grid">
+    <div class="concept-card" style="border-color:rgba(52,211,153,.2);">
+      <div class="concept-icon">⚡</div>
+      <h3 style="color:#34d399;">running</h3>
+      <p>Configuración activa en memoria. <strong>Obligatorio</strong> en todos los dispositivos. Equivalente a <code>show running-config</code>. Si editas aquí, el cambio es inmediato.</p>
+    </div>
+    <div class="concept-card" style="border-color:rgba(251,191,36,.2);">
+      <div class="concept-icon">💾</div>
+      <h3 style="color:#fbbf24;">startup</h3>
+      <p>Configuración persistente de arranque. Equivalente a <code>show startup-config</code>. No se modifica directamente por NETCONF base; se usa <code>&lt;copy-config&gt;</code> desde running.</p>
+    </div>
+    <div class="concept-card" style="border-color:rgba(56,189,248,.2);">
+      <div class="concept-icon">📝</div>
+      <h3 style="color:#38bdf8;">candidate</h3>
+      <p>Copia de trabajo editable sin impacto. Requiere <code>:candidate</code> capability. Permite múltiples ediciones y un <code>&lt;commit&gt;</code> atómico. El más seguro para cambios masivos.</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">Matriz de operaciones por datastore</h2>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead><tr><th>Operación</th><th>running</th><th>startup</th><th>candidate</th><th>Notas</th></tr></thead>
+      <tbody>
+        <tr><td><code>&lt;get-config&gt;</code></td><td>✅</td><td>✅</td><td>✅</td><td>Siempre permitido.</td></tr>
+        <tr><td><code>&lt;edit-config&gt;</code></td><td>✅*</td><td>❌</td><td>✅</td><td>*Requiere <code>:writable-running</code>.</td></tr>
+        <tr><td><code>&lt;copy-config&gt;</code></td><td>src/tgt</td><td>src/tgt</td><td>src/tgt</td><td>Copia completa entre datastores.</td></tr>
+        <tr><td><code>&lt;delete-config&gt;</code></td><td>❌</td><td>✅</td><td>✅</td><td>Nunca borres running.</td></tr>
+        <tr><td><code>&lt;commit&gt;</code></td><td>N/A</td><td>N/A</td><td>✅</td><td>Copia candidate → running.</td></tr>
+        <tr><td><code>&lt;lock&gt;</code></td><td>✅</td><td>✅</td><td>✅</td><td>Bloqueo exclusivo.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="section-title">copy-config: El "write memory" de NETCONF</h2>
+  <div class="code-block">
+    <div class="code-label">Persistir running en startup vía NETCONF</div>
+    <pre><code><span class="kw">&lt;rpc message-id="500"&gt;</span>
+  <span class="kw">&lt;copy-config&gt;</span>
+    <span class="kw">&lt;target&gt;</span>
+      <span class="kw">&lt;startup/&gt;</span>
+    <span class="kw">&lt;/target&gt;</span>
+    <span class="kw">&lt;source&gt;</span>
+      <span class="kw">&lt;running/&gt;</span>
+    <span class="kw">&lt;/source&gt;</span>
+  <span class="kw">&lt;/copy-config&gt;</span>
+<span class="kw">&lt;/rpc&gt;</span></code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚡ Error crítico común</div>
+    <p>Intentar hacer <code>&lt;edit-config&gt;</code> sobre <code>running</code> en un dispositivo que NO anunció <code>:writable-running</code> produce <code>error-tag: operation-not-supported</code>. Muchos switches solo soportan <code>candidate</code>. Siempre lee las capabilities del <code>&lt;hello&gt;</code> antes de asumir que puedes escribir en running.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 6 — NCCLIENT PYTHON
+═══════════════════════════════════════════ -->
+<div id="tab-ncclient" class="rest3-tab-content">
+<div class="content-block">
+  <h2 class="section-title">ncclient — El SDK Python para NETCONF</h2>
+  <p><code>ncclient</code> es la librería Python de facto para NETCONF. Creada originalmente por Cisco, es ahora un proyecto open-source mantenido por la comunidad. Abstrae todo el XML, el framing SSH, los delimitadores <code>]]&gt;]]&gt;</code> y el manejo de sesiones, permitiéndote enfocarte en la lógica de red.</p>
+
+  <div class="code-block">
+    <div class="code-label">Instalación y conexión base</div>
+    <pre><code><span class="kw">import</span> logging
+<span class="kw">from</span> ncclient <span class="kw">import</span> manager
+
+<span class="cmt"># Opcional: ver XML crudo en consola para debug</span>
+logging.basicConfig(level=logging.DEBUG)
+
+<span class="cmt"># ══════════════════════════════════════════════════════</span>
+<span class="cmt"># CONEXIÓN A IOS-XE</span>
+<span class="cmt"># ══════════════════════════════════════════════════════</span>
+<span class="kw">with</span> manager.connect(
+    host=<span class="str">"192.168.1.1"</span>,
+    port=<span class="num">830</span>,
+    username=<span class="str">"admin"</span>,
+    password=<span class="str">"Cisco123"</span>,
+    hostkey_verify=<span class="kw">False</span>,          <span class="cmt"># Solo laboratorio</span>
+    device_params={<span class="str">"name"</span>: <span class="str">"iosxe"</span>},  <span class="cmt"># Parámetros específicos Cisco</span>
+    allow_agent=<span class="kw">False</span>,
+    look_for_keys=<span class="kw">False</span>,
+    timeout=<span class="num">30</span>
+) <span class="kw">as</span> m:
+
+    <span class="cmt"># Imprimir capabilities del servidor</span>
+    <span class="kw">for</span> capability <span class="kw">in</span> m.server_capabilities:
+        <span class="fn">print</span>(capability)</code></pre>
+  </div>
+
+  <h2 class="section-title">get_config() — Backup y lectura</h2>
+  <div class="code-block">
+    <div class="code-label">Obtener running-config completo y guardar a archivo</div>
+    <pre><code><span class="kw">from</span> ncclient <span class="kw">import</span> manager
+<span class="kw">from</span> datetime <span class="kw">import</span> datetime
+
+<span class="kw">def</span> <span class="fn">backup_router</span>(host, user, pwd, hostname):
+    <span class="kw">with</span> manager.connect(host=host, port=<span class="num">830</span>, username=user, password=pwd,
+                         hostkey_verify=<span class="kw">False</span>, device_params={<span class="str">"name"</span>: <span class="str">"iosxe"</span>}) <span class="kw">as</span> m:
+
+        <span class="cmt"># Recuperar TODO el running-config</span>
+        reply = m.get_config(source=<span class="str">"running"</span>)
+
+        <span class="cmt"># reply.data_xml contiene el XML crudo</span>
+        filename = <span class="str">f"backup_{hostname}_{datetime.now():%Y%m%d_%H%M%S}.xml"</span>
+        <span class="kw">with</span> <span class="fn">open</span>(filename, <span class="str">"w"</span>) <span class="kw">as</span> f:
+            f.write(reply.data_xml)
+
+        <span class="fn">print</span>(<span class="str">f"✅ Backup guardado: {filename} ({len(reply.data_xml)} chars)"</span>)
+        <span class="kw">return</span> filename
+
+backup_router(<span class="str">"192.168.1.1"</span>, <span class="str">"admin"</span>, <span class="str">"Cisco123"</span>, <span class="str">"R1-CORE"</span>)</code></pre>
+  </div>
+
+  <h2 class="section-title">Filtros con ncclient</h2>
+  <div class="code-block">
+    <div class="code-label">Subtree filter para obtener solo interfaces</div>
+    <pre><code><span class="kw">import</span> xml.etree.ElementTree <span class="kw">as</span> ET
+
+<span class="cmt"># Definir filtro subtree como string XML</span>
+FILTER_INTERFACES = <span class="str">"""
+&lt;filter&gt;
+  &lt;native xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-native"&gt;
+    &lt;interface/&gt;
+  &lt;/native&gt;
+&lt;/filter&gt;
+"""</span>
+
+<span class="kw">with</span> manager.connect(...) <span class="kw">as</span> m:
+    reply = m.get_config(source=<span class="str">"running"</span>, filter=FILTER_INTERFACES)
+    root = ET.fromstring(reply.data_xml)
+
+    <span class="cmt"># Parsear con ElementTree o xmltodict</span>
+    <span class="kw">for</span> intf <span class="kw">in</span> root.iter(<span class="str">"{http://cisco.com/ns/yang/Cisco-IOS-XE-native}GigabitEthernet"</span>):
+        name = intf.find(<span class="str">"{http://cisco.com/ns/yang/Cisco-IOS-XE-native}name"</span>).text
+        <span class="fn">print</span>(<span class="str">f"Interfaz: GigabitEthernet{name}"</span>)</code></pre>
+  </div>
+
+  <h2 class="section-title">edit_config() — Modificar configuración</h2>
+  <div class="code-block">
+    <div class="code-label">Crear Loopback 200 con ncclient</div>
+    <pre><code>CONFIG_LOOPBACK = <span class="str">"""
+&lt;config xmlns:xc="urn:ietf:params:xml:ns:netconf:base:1.0"&gt;
+  &lt;native xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-native"&gt;
+    &lt;interface&gt;
+      &lt;Loopback&gt;
+        &lt;name&gt;200&lt;/name&gt;
+        &lt;description&gt;NETCONF-CREATED-BY-NCCLIENT&lt;/description&gt;
+        &lt;ip&gt;
+          &lt;address&gt;
+            &lt;primary&gt;
+              &lt;address&gt;2.2.2.2&lt;/address&gt;
+              &lt;mask&gt;255.255.255.255&lt;/mask&gt;
+            &lt;/primary&gt;
+          &lt;/address&gt;
+        &lt;/ip&gt;
+      &lt;/Loopback&gt;
+    &lt;/interface&gt;
+  &lt;/native&gt;
+&lt;/config&gt;
+"""</span>
+
+<span class="kw">with</span> manager.connect(...) <span class="kw">as</span> m:
+    <span class="cmt"># Opción A: editar running directamente (si :writable-running)</span>
+    reply = m.edit_config(target=<span class="str">"running"</span>, config=CONFIG_LOOPBACK)
+
+    <span class="cmt"># Opción B: patrón candidate más seguro</span>
+    <span class="cmt"># reply = m.edit_config(target="candidate", config=CONFIG_LOOPBACK)</span>
+    <span class="cmt"># m.commit()</span>
+
+    <span class="fn">print</span>(<span class="str">f"Resultado: {reply.xml}"</span>)</code></pre>
+  </div>
+
+  <h2 class="section-title">Métodos avanzados de ncclient</h2>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead><tr><th>Método ncclient</th><th>Operación NETCONF</th><th>Uso</th></tr></thead>
+      <tbody>
+        <tr><td><code>m.get(filter=...)</code></td><td><code>&lt;get&gt;</code></td><td>Estado operacional (stats, neighbors).</td></tr>
+        <tr><td><code>m.get_config(source=..., filter=...)</code></td><td><code>&lt;get-config&gt;</code></td><td>Backup y auditoría de configuración.</td></tr>
+        <tr><td><code>m.edit_config(target=..., config=...)</code></td><td><code>&lt;edit-config&gt;</code></td><td>Aplicar cambios. Target puede ser running o candidate.</td></tr>
+        <tr><td><code>m.copy_config(source=..., target=...)</code></td><td><code>&lt;copy-config&gt;</code></td><td>Clonar configuración entre datastores.</td></tr>
+        <tr><td><code>m.delete_config(source=...)</code></td><td><code>&lt;delete-config&gt;</code></td><td>Eliminar startup o candidate.</td></tr>
+        <tr><td><code>m.commit(confirmed=True, timeout=60)</code></td><td><code>&lt;commit&gt;</code></td><td>Commit con confirmación automática (rollback si no se confirma).</td></tr>
+        <tr><td><code>m.discard_changes()</code></td><td><code>&lt;discard-changes&gt;</code></td><td>Abortar ediciones en candidate.</td></tr>
+        <tr><td><code>m.lock(target=...)</code></td><td><code>&lt;lock&gt;</code></td><td>Bloquear datastore.</td></tr>
+        <tr><td><code>m.unlock(target=...)</code></td><td><code>&lt;unlock&gt;</code></td><td>Liberar datastore.</td></tr>
+        <tr><td><code>m.close_session()</code></td><td><code>&lt;close-session&gt;</code></td><td>Cerrar graceful.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚡ El atributo xmlns en &lt;config&gt; es obligatorio</div>
+    <p>Si olvidas el namespace <code>xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-native"</code> en el nodo raíz de tu payload XML, IOS-XE responde con <code>unknown-namespace</code> o aplica el cambio en el namespace incorrecto. ncclient no valida esto por ti; es tu responsabilidad construir el XML correcto.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 7 — SEGURIDAD
+═══════════════════════════════════════════ -->
+<div id="tab-seguridad" class="rest3-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Seguridad en NETCONF</h2>
+  <p>NETCONF asume un transporte seguro. La RFC 6241 no define autenticación propia; delega esto en la capa de transporte. Esto significa que SSH (o TLS) es no opcional, sino <strong>fundamental</strong>.</p>
+
+  <h2 class="section-title">SSH como transporte mandatorio</h2>
+  <div class="concept-grid">
+    <div class="concept-card" style="border-color:rgba(52,211,153,.2);">
+      <div class="concept-icon">🔑</div>
+      <h3 style="color:#34d399;">Password Authentication</h3>
+      <p>Usuario/contraseña vía SSH. El método más común. Requiere <code>hostkey_verify=False</code> en ncclient para labs con certificados autofirmados.</p>
+    </div>
+    <div class="concept-card" style="border-color:rgba(56,189,248,.2);">
+      <div class="concept-icon">🛡️</div>
+      <h3 style="color:#38bdf8;">Public Key Authentication</h3>
+      <p>Clave SSH privada en el cliente, pública configurada en <code>ip ssh pubkey-chain</code> del router. Más seguro; elimina contraseñas en scripts.</p>
+    </div>
+    <div class="concept-card" style="border-color:rgba(251,191,36,.2);">
+      <div class="concept-icon">🎫</div>
+      <h3 style="color:#fbbf24;">TLS (RFC 7589)</h3>
+      <p>NETCONF over TLS usa certificados X.509 vía puerto 6513. Soportado en IOS-XE moderno. Alternativa cuando SSH no está disponible.</p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">Configuración segura de SSH para NETCONF en IOS-XE</div>
+    <pre><code>! Asegurar solo SSH v2 (obligatorio para NETCONF seguro)
+ip ssh version 2
+ip ssh time-out 60
+ip ssh authentication-retries 3
+
+! Deshabilitar algoritmos débiles (IOS-XE 17.x+)
+ip ssh server algorithm encryption aes256-gcm aes256-ctr
+ip ssh server algorithm mac hmac-sha2-256
+
+! Usuario con privilegio 15 (NETCONF requiere privilegios altos)
+username admin privilege 15 algorithm-type sha256 secret Cisco123
+
+! Configurar clave pública SSH (alternativa a password)
+ip ssh pubkey-chain
+  username admin
+   key-hash ssh-rsa AABBCC... fingerprint
+
+! Restringir acceso vía ACL al puerto 830
+ip access-list extended NETCONF-MGMT
+ permit tcp 10.0.0.0 0.0.0.255 any eq 830 log
+ deny ip any any log
+!
+control-plane host
+  management-interface GigabitEthernet0/0 allow ssh netconf</code></pre>
+  </div>
+
+  <h2 class="section-title">Host key verification en producción</h2>
+  <p>En laboratorio usamos <code>hostkey_verify=False</code>. En producción esto es inaceptable:</p>
+  <div class="code-block">
+    <div class="code-label">Verificación correcta de host keys con ncclient</div>
+    <pre><code><span class="kw">import</span> os
+<span class="kw">from</span> ncclient <span class="kw">import</span> manager
+
+<span class="cmt"># Opción A: Usar known_hosts del sistema</span>
+<span class="cmt"># ncclient lee ~/.ssh/known_hosts automáticamente si hostkey_verify=True</span>
+
+<span class="cmt"># Opción B: Especificar archivo de host keys manualmente</span>
+<span class="kw">with</span> manager.connect(
+    host=<span class="str">"10.0.0.1"</span>,
+    port=<span class="num">830</span>,
+    username=<span class="str">"admin"</span>,
+    key_filename=<span class="str">"/home/netops/.ssh/id_rsa"</span>,  <span class="cmt"># Auth por clave</span>
+    hostkey_verify=<span class="kw">True</span>,
+    look_for_keys=<span class="kw">True</span>,
+    allow_agent=<span class="kw">True</span>
+) <span class="kw">as</span> m:
+    <span class="fn">print</span>(m.session_id)</code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚡ NETCONF no cifra el contenido XML por sí mismo</div>
+    <p>NETCONF es "secure transport" porque asume que SSH/TLS ya cifraron el canal. El XML viaja en texto plano dentro del túnel SSH cifrado. Si intentas usar NETCONF sobre TCP plano (sin SSH), estarás violando el estándar y exponiendo credenciales y configuración.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 8 — PROYECTO
+═══════════════════════════════════════════ -->
+<div id="tab-proyecto" class="rest3-tab-content">
+<div class="content-block">
+  <h2 class="section-title">🚀 Proyecto Final — Orquestador NETCONF Multi-Router</h2>
+  <p>Este proyecto integra todo lo aprendido: conexión ncclient, datastores candidate, lock/unlock, commit confirmado, backup previo y manejo de errores con rollback automático. Despliega configuración estándar en múltiples routers con cero downtime y cero riesgo de dejar un router en estado inconsistente.</p>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Escenario de producción</div>
+    <p>Debes actualizar el SNMP community y añadir un usuario de backup en 20 routers de sucursal. El cambio debe ser atómico: si un router falla, ningún otro se ve afectado. Además, necesitas backup XML de la configuración previa por auditoría.</p>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">proyecto_netconf_orquestador.py — Script completo de producción</div>
+    <pre><code><span class="cmt">#!/usr/bin/env python3</span>
+<span class="cmt">"""
+proyecto_netconf_orquestador.py
+CCNA Academy M8 T3 — Despliegue atómico multi-router vía NETCONF RFC 6241
+─────────────────────────────────────────────────────────────────────────
+- Backup previo de running-config en XML
+- Edición sobre candidate datastore
+- Lock para evitar modificaciones concurrentes
+- Commit confirmado (rollback automático si falla confirmación)
+- Manejo de errores con discard_changes + unlock
+"""</span>
+
+<span class="kw">import</span> sys
+<span class="kw">import</span> logging
+<span class="kw">from</span> datetime <span class="kw">import</span> datetime
+<span class="kw">from</span> ncclient <span class="kw">import</span> manager
+<span class="kw">from</span> ncclient.operations <span class="kw">import</span> RPCError
+
+logging.basicConfig(
+    level=logging.INFO,
+    format=<span class="str">"%(asctime)s [%(levelname)s] %(message)s"</span>,
+    datefmt=<span class="str">"%H:%M:%S"</span>
+)
+
+<span class="cmt"># ══════════════════════════════════════════════════════</span>
+<span class="cmt"># INVENTARIO Y PLANTILLA DE CONFIGURACIÓN</span>
+<span class="cmt"># ══════════════════════════════════════════════════════</span>
+ROUTERS = [
+    {<span class="str">"hostname"</span>: <span class="str">"R1-CORE"</span>,  <span class="str">"ip"</span>: <span class="str">"10.0.0.1"</span>, <span class="str">"snmp"</span>: <span class="str">"BOGOTA_RW"</span>},
+    {<span class="str">"hostname"</span>: <span class="str">"R2-DIST"</span>,  <span class="str">"ip"</span>: <span class="str">"10.0.0.2"</span>, <span class="str">"snmp"</span>: <span class="str">"MEDELLIN_RW"</span>},
+    {<span class="str">"hostname"</span>: <span class="str">"R3-ACC"</span>,   <span class="str">"ip"</span>: <span class="str">"10.0.0.3"</span>, <span class="str">"snmp"</span>: <span class="str">"CALI_RW"</span>},
+]
+
+USER = <span class="str">"admin"</span>
+PASS = <span class="str">"Cisco123"</span>
+
+<span class="kw">def</span> <span class="fn">build_config_xml</span>(snmp_community):
+    <span class="str">"""Genera payload XML para edit-config"""</span>
+    <span class="kw">return</span> <span class="str">f"""
+&lt;config xmlns="urn:ietf:params:xml:ns:netconf:base:1.0"&gt;
+  &lt;native xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-native"&gt;
+    &lt;snmp-server&gt;
+      &lt;community&gt;
+        &lt;name&gt;{snmp_community}&lt;/name&gt;
+        &lt;RO/&gt;
+      &lt;/community&gt;
+    &lt;/snmp-server&gt;
+    &lt;username&gt;
+      &lt;name&gt;backupuser&lt;/name&gt;
+      &lt;privilege&gt;15&lt;/privilege&gt;
+      &lt;secret&gt;
+        &lt;encryption&gt;0&lt;/encryption&gt;
+        &lt;secret&gt;BackupPass123&lt;/secret&gt;
+      &lt;/secret&gt;
+    &lt;/username&gt;
+  &lt;/native&gt;
+&lt;/config&gt;
+"""</span>.strip()
+
+<span class="cmt"># ══════════════════════════════════════════════════════</span>
+<span class="cmt"># FUNCIONES ATÓMICAS</span>
+<span class="cmt"># ══════════════════════════════════════════════════════</span>
+<span class="kw">def</span> <span class="fn">backup_running</span>(conn, hostname):
+    <span class="str">"""Guarda running-config como XML"""</span>
+    reply = conn.get_config(source=<span class="str">"running"</span>)
+    ts = datetime.now().strftime(<span class="str">"%Y%m%d_%H%M%S"</span>)
+    fname = <span class="str">f"backup_{hostname}_{ts}.xml"</span>
+    <span class="kw">with</span> <span class="fn">open</span>(fname, <span class="str">"w"</span>) <span class="kw">as</span> f:
+        f.write(reply.data_xml)
+    logging.info(<span class="str">f"[{hostname}] Backup guardado: {fname}"</span>)
+    <span class="kw">return</span> fname
+
+<span class="kw">def</span> <span class="fn">apply_changes_safe</span>(conn, hostname, snmp):
+    <span class="str">"""
+    Patrón seguro: lock → edit candidate → validate → commit → unlock.
+    Si falla cualquier paso: discard_changes → unlock → raise.
+    """</span>
+    config_xml = build_config_xml(snmp)
+
+    <span class="kw">try</span>:
+        <span class="cmt"># 1. Bloquear candidate</span>
+        conn.lock(target=<span class="str">"candidate"</span>)
+        logging.info(<span class="str">f"[{hostname}] Candidate bloqueado"</span>)
+
+        <span class="cmt"># 2. Aplicar cambios en candidate</span>
+        conn.edit_config(target=<span class="str">"candidate"</span>, config=config_xml)
+        logging.info(<span class="str">f"[{hostname}] edit-config aplicado en candidate"</span>)
+
+        <span class="cmt"># 3. Validar (si el dispositivo soporta :validate)</span>
+        <span class="kw">try</span>:
+            conn.validate(source=<span class="str">"candidate"</span>)
+            logging.info(<span class="str">f"[{hostname}] Validación OK"</span>)
+        <span class="kw">except</span> RPCError:
+            logging.warning(<span class="str">f"[{hostname}] Validación no soportada, saltando"</span>)
+
+        <span class="cmt"># 4. Commit confirmado (30 seg de ventana para confirmar)</span>
+        conn.commit(confirmed=<span class="kw">True</span>, timeout=<span class="str">"30"</span>)
+        logging.info(<span class="str">f"[{hostname}] Commit confirmado (30s)"</span>)
+
+        <span class="cmt"># 5. Commit definitivo (confirma el anterior)</span>
+        conn.commit()
+        logging.info(<span class="str">f"[{hostname}] Commit confirmado definitivamente"</span>)
+
+        <span class="kw">return</span> <span class="kw">True</span>
+
+    <span class="kw">except</span> RPCError <span class="kw">as</span> e:
+        logging.error(<span class="str">f"[{hostname}] Error NETCONF: {e}"</span>)
+        <span class="kw">return</span> <span class="kw">False</span>
+
+    <span class="kw">finally</span>:
+        <span class="cmt"># 6. Siempre liberar candidate, incluso si falló</span>
+        <span class="kw">try</span>:
+            conn.discard_changes()
+        <span class="kw">except</span> Exception:
+            <span class="kw">pass</span>
+        <span class="kw">try</span>:
+            conn.unlock(target=<span class="str">"candidate"</span>)
+            logging.info(<span class="str">f"[{hostname}] Candidate desbloqueado"</span>)
+        <span class="kw">except</span> Exception:
+            <span class="kw">pass</span>
+
+<span class="kw">def</span> <span class="fn">process_router</span>(router):
+    <span class="str">"""Orquesta un router completo"""</span>
+    hostname = router[<span class="str">"hostname"</span>]
+    ip       = router[<span class="str">"ip"</span>]
+
+    logging.info(<span class="str">f"{'='*60}"</span>)
+    logging.info(<span class="str">f"🚀 Procesando {hostname} ({ip})"</span>)
+
+    <span class="kw">try</span>:
+        <span class="kw">with</span> manager.connect(
+            host=ip, port=<span class="num">830</span>, username=USER, password=PASS,
+            hostkey_verify=<span class="kw">False</span>, device_params={<span class="str">"name"</span>: <span class="str">"iosxe"</span>},
+            timeout=<span class="num">30</span>
+        ) <span class="kw">as</span> conn:
+
+            <span class="cmt"># Pre-check: ¿soporta candidate?</span>
+            caps = <span class="fn">list</span>(conn.server_capabilities)
+            has_candidate = <span class="fn">any</span>(<span class="str">"candidate"</span> <span class="kw">in</span> c <span class="kw">for</span> c <span class="kw">in</span> caps)
+            <span class="kw">if</span> <span class="kw">not</span> has_candidate:
+                logging.warning(<span class="str">f"[{hostname}] No soporta candidate. Usando running."</span>)
+
+            <span class="cmt"># Backup previo</span>
+            backup_running(conn, hostname)
+
+            <span class="cmt"># Aplicar cambios</span>
+            ok = apply_changes_safe(conn, hostname, router[<span class="str">"snmp"</span>])
+
+            <span class="kw">if</span> ok:
+                logging.info(<span class="str">f"[{hostname}] ✅ DESPLIEGUE EXITOSO"</span>)
+                <span class="kw">return</span> <span class="kw">True</span>
+            <span class="kw">else</span>:
+                logging.error(<span class="str">f"[{hostname}] ❌ DESPLIEGUE FALLIDO"</span>)
+                <span class="kw">return</span> <span class="kw">False</span>
+
+    <span class="kw">except</span> Exception <span class="kw">as</span> e:
+        logging.error(<span class="str">f"[{hostname}] ❌ Error de conexión: {e}"</span>)
+        <span class="kw">return</span> <span class="kw">False</span>
+
+<span class="cmt"># ══════════════════════════════════════════════════════</span>
+<span class="cmt"># EJECUCIÓN PRINCIPAL</span>
+<span class="cmt"># ══════════════════════════════════════════════════════</span>
+<span class="kw">def</span> <span class="fn">main</span>():
+    exitosos = <span class="num">0</span>
+    <span class="kw">for</span> r <span class="kw">in</span> ROUTERS:
+        <span class="kw">if</span> process_router(r):
+            exitosos += <span class="num">1</span>
+
+    logging.info(<span class="str">f"
+{'='*60}"</span>)
+    logging.info(<span class="str">f"🎯 RESUMEN: {exitosos}/{len(ROUTERS)} routers exitosos"</span>)
+    sys.exit(<span class="num">0</span> <span class="kw">if</span> exitosos == <span class="fn">len</span>(ROUTERS) <span class="kw">else</span> <span class="num">1</span>)
+
+<span class="kw">if</span> __name__ == <span class="str">"__main__"</span>:
+    main()</code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">▶️ Cómo ejecutar y verificar</div>
+    <ol>
+      <li>Asegúrate de tener al menos un router IOS-XE con <code>netconf-yang</code> habilitado y usuario privilegio 15.</li>
+      <li>Instala: <code>pip install ncclient</code></li>
+      <li>Actualiza <code>ROUTERS</code> con las IPs reales de tu laboratorio.</li>
+      <li>Ejecuta: <code>python proyecto_netconf_orquestador.py</code></li>
+      <li>Observa el log: backup XML, lock, candidate edit, validate, commit confirmado, unlock.</li>
+      <li>Verifica en el router: <code>show running-config | include snmp-server</code> y <code>show users</code>.</li>
+    </ol>
+    <p>Este patrón <strong>lock → candidate → validate → commit → unlock</strong> es el estándar de oro en producción. Nunca edites running directamente sin candidata si tienes usuarios concurrentes.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 9 — REFERENCIA
+═══════════════════════════════════════════ -->
+<div id="tab-referencia" class="rest3-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Tabla de Referencia — NETCONF RFC 6241</h2>
+  <div id="refTableRest3"></div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 10 — QUIZ
+═══════════════════════════════════════════ -->
+<div id="tab-quiz" class="rest3-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Quiz — NETCONF Gestión con XML y SSH</h2>
+  <p style="font-size:.83rem;color:#6b7a9a;margin-bottom:20px;">10 preguntas estilo CCNA Domain 6.5. Evalúa tu comprensión de NETCONF, datastores, operaciones XML y ncclient.</p>
+  <div id="quizContainerRest3"></div>
+</div>
+</div>
+
+</div><!-- /.tabs-wrap -->
+
+<script>
+// ── NAVEGACIÓN DRAWER ────────────────────────────────
+function ccnaToggle() {
+  document.getElementById('ccnaDrawer').classList.toggle('open');
+  document.getElementById('ccnaOverlay').classList.toggle('show');
+}
+function ccnaClose() {
+  document.getElementById('ccnaDrawer').classList.remove('open');
+  document.getElementById('ccnaOverlay').classList.remove('show');
+}
+
+// ── TABS ──────────────────────────────────────────────
+function showTabRest3(id, btn) {
+  document.querySelectorAll('.rest3-tab-content').forEach(t => t.classList.remove('rest3-active'));
+  document.querySelectorAll('.rest3-tab-btn').forEach(b => b.classList.remove('rest3-active'));
+  document.getElementById('tab-' + id).classList.add('rest3-active');
+  if (btn) btn.classList.add('rest3-active');
+}
+
+// ── TABLA DE REFERENCIA ──────────────────────────────
+function buildRefTable() {
+  const container = document.getElementById('refTableRest3');
+  if (!container) return;
+
+  const secciones = [
+    {
+      titulo: 'OPERACIONES NETCONF RFC 6241',
+      cols: ['Operación','XML','Función','Idempotente'],
+      filas: [
+        ['<code>&lt;get&gt;</code>','<code>&lt;get/&gt;</code>','Recupera estado operacional (stats, neighbors)','✅ Sí'],
+        ['<code>&lt;get-config&gt;</code>','<code>&lt;get-config&gt;&lt;source&gt;&lt;running/&gt;...','Lee configuración de un datastore','✅ Sí'],
+        ['<code>&lt;edit-config&gt;</code>','<code>&lt;edit-config&gt;&lt;target&gt;...&lt;config&gt;...','Modifica un datastore','⚠️ Depende de operation'],
+        ['<code>&lt;copy-config&gt;</code>','<code>&lt;copy-config&gt;&lt;target&gt;...&lt;source&gt;...','Copia datastore completo','❌ No (sobrescribe)'],
+        ['<code>&lt;delete-config&gt;</code>','<code>&lt;delete-config&gt;&lt;source&gt;...','Elimina un datastore','✅ Sí'],
+        ['<code>&lt;commit&gt;</code>','<code>&lt;commit/&gt;</code>','Copia candidate → running','✅ Sí'],
+        ['<code>&lt;discard-changes&gt;</code>','<code>&lt;discard-changes/&gt;</code>','Descarta candidate','✅ Sí'],
+        ['<code>&lt;lock&gt;</code>','<code>&lt;lock&gt;&lt;target&gt;...','Bloqueo exclusivo','❌ No (es acción)'],
+        ['<code>&lt;unlock&gt;</code>','<code>&lt;unlock&gt;&lt;target&gt;...','Libera bloqueo','❌ No (es acción)'],
+        ['<code>&lt;close-session&gt;</code>','<code>&lt;close-session/&gt;</code>','Cierra sesión graceful','❌ No'],
+        ['<code>&lt;kill-session&gt;</code>','<code>&lt;kill-session&gt;...','Fuerza cierre de otra sesión','❌ No'],
+      ]
+    },
+    {
+      titulo: 'DATASTORES Y CAPABILITIES',
+      cols: ['Datastore','Mandatorio','Escritura vía','Capability'],
+      filas: [
+        ['running','✅ Sí','edit-config (si :writable-running) o commit','writable-running'],
+        ['startup','❌ No','copy-config (source running)','—'],
+        ['candidate','❌ No','edit-config + commit','candidate'],
+      ]
+    },
+    {
+      titulo: 'TIPOS DE FILTRO',
+      cols: ['Tipo','Sintaxis','Uso'],
+      filas: [
+        ['Subtree','<code>&lt;filter type="subtree"&gt;...&lt;/filter&gt;</code>','Filtra por estructura YANG. Universalmente soportado.'],
+        ['XPath','<code>&lt;filter type="xpath" select="..."&gt;</code>','Expresiones XPath potentes. Requiere :xpath.'],
+        ['No filter','—','Retorna TODO el datastore. Peligroso en routers grandes.'],
+      ]
+    },
+    {
+      titulo: 'OPERACIONES EDIT-CONFIG',
+      cols: ['Operation','Comportamiento','Uso típico'],
+      filas: [
+        ['merge (default)','Mezcla con config existente','Añadir/actualizar sin borrar'],
+        ['replace','Reemplaza el nodo especificado','Reemplazo total de una sección'],
+        ['create','Crea solo si no existe','Evitar sobrescritura accidental'],
+        ['delete','Elimina; falla si no existe','Borrado estricto'],
+        ['remove','Elimina si existe; OK si no','Borrado idempotente en scripts'],
+      ]
+    },
+    {
+      titulo: 'NCCLIENT PYTHON — MÉTODOS CLAVE',
+      cols: ['Método','Operación NETCONF','Parámetros clave'],
+      filas: [
+        ['m.get_config()','<code>&lt;get-config&gt;</code>','source, filter (opcional)'],
+        ['m.edit_config()','<code>&lt;edit-config&gt;</code>','target, config (XML string), default_operation'],
+        ['m.copy_config()','<code>&lt;copy-config&gt;</code>','source, target'],
+        ['m.delete_config()','<code>&lt;delete-config&gt;</code>','source'],
+        ['m.commit()','<code>&lt;commit&gt;</code>','confirmed=True/False, timeout, persist'],
+        ['m.discard_changes()','<code>&lt;discard-changes&gt;</code>','—'],
+        ['m.lock() / m.unlock()','<code>&lt;lock&gt;</code> / <code>&lt;unlock&gt;</code>','target'],
+        ['m.close_session()','<code>&lt;close-session&gt;</code>','—'],
+      ]
+    },
+    {
+      titulo: 'CÓDIGOS DE ERROR NETCONF',
+      cols: ['error-tag','Significado','Causa común'],
+      filas: [
+        ['in-use','Recurso en uso','Datastore bloqueado por otra sesión'],
+        ['invalid-value','Valor inválido','IP malformada, VLAN fuera de rango'],
+        ['too-big','Respuesta demasiado grande','GET sin filtro en router masivo'],
+        ['missing-attribute','Falta atributo obligatorio','message-id ausente'],
+        ['bad-element','Elemento XML no reconocido','Namespace incorrecto'],
+        ['data-exists','Ya existe (con create)','Intentar create sobre recurso existente'],
+        ['data-missing','No existe (con delete)','Intentar delete sobre recurso inexistente'],
+        ['operation-not-supported','No soportado','edit-config en running sin :writable-running'],
+      ]
+    }
+  ];
+
+  let html = '';
+  secciones.forEach(sec => {
+    html += `<h3 style="font-family:Orbitron,sans-serif;font-size:.8rem;color:#38bdf8;letter-spacing:2px;margin:24px 0 10px;text-transform:uppercase;">▸ ${sec.titulo}</h3>`;
+    html += `<div class="table-wrap"><table class="ref-table"><thead><tr>${sec.cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>`;
+    sec.filas.forEach(f => { html += '<tr>' + f.map(c=>`<td>${c}</td>`).join('') + '</tr>'; });
+    html += '</tbody></table></div>';
+  });
+  container.innerHTML = html;
+}
+
+// ── QUIZ ─────────────────────────────────────────────
+function initQuiz() {
+  const container = document.getElementById('quizContainerRest3');
+  if (!container) return;
+
+  const qs = [
+    {
+      q: '¿Cuál es el puerto TCP estándar para NETCONF sobre SSH según la RFC 6241/6242?',
+      opts: ['22','443','830','6513'],
+      ans: 2,
+      exp: 'NETCONF sobre SSH usa el puerto <strong>830</strong> (asignado por IANA como "netconf-ssh"). El puerto 22 es SSH estándar; 443 es HTTPS (RESTCONF); 6513 es NETCONF sobre TLS.'
+    },
+    {
+      q: '¿Qué formato de datos es el nativo obligatorio de NETCONF RFC 6241?',
+      opts: ['JSON','XML','YAML','Protocol Buffers'],
+      ans: 1,
+      exp: 'NETCONF está rigidamente definido sobre <strong>XML</strong>. Cada mensaje RPC es un documento XML bien formado con namespace <code>urn:ietf:params:xml:ns:netconf:base:1.0</code>. RESTCONF puede usar JSON, pero NETCONF no.'
+    },
+    {
+      q: '¿Qué capability permite editar la configuración en un datastore provisional sin afectar running inmediatamente?',
+      opts: [':writable-running',':candidate',':rollback-on-error',':validate'],
+      ans: 1,
+      exp: '<strong>:candidate</strong> habilita el datastore <code>candidate</code>. Puedes hacer múltiples <code>&lt;edit-config&gt;</code> sobre candidate y solo afectar running cuando haces <code>&lt;commit&gt;</code>.'
+    },
+    {
+      q: '¿Cuál operación NETCONF copia el contenido completo de un datastore a otro de forma atómica?',
+      opts: ['<code>&lt;edit-config&gt;</code>','<code>&lt;copy-config&gt;</code>','<code>&lt;commit&gt;</code>','<code>&lt;get-config&gt;</code>'],
+      ans: 1,
+      exp: '<strong>&lt;copy-config&gt;</strong> copia TODO el contenido de <code>source</code> a <code>target</code>. Es equivalente a <code>copy running-config startup-config</code>. &lt;commit&gt; solo mueve candidate a running.'
+    },
+    {
+      q: 'En ncclient Python, ¿qué método aplica cambios sobre el candidate datastore y luego requiere un commit?',
+      opts: ['m.get_config()','m.edit_config(target="running")','m.edit_config(target="candidate")','m.copy_config()'],
+      ans: 2,
+      exp: 'Para usar el patrón seguro candidate + commit, llamas <code>m.edit_config(target="candidate", config=...)</code> seguido de <code>m.commit()</code>. Editar "running" aplica inmediatamente.'
+    },
+    {
+      q: '¿Qué elemento XML indica que una operación NETCONF se ejecutó exitosamente sin datos de retorno?',
+      opts: ['<code>&lt;data&gt;</code>','<code>&lt;ok/&gt;</code>','<code>&lt;success&gt;</code>','<code>&lt;done/&gt;</code>'],
+      ans: 1,
+      exp: '<strong>&lt;ok/&gt;</strong> es el elemento vacío estándar que indica éxito sin payload de datos. Aparece en respuestas a &lt;commit&gt;, &lt;delete-config&gt;, &lt;edit-config&gt; exitosos sin necesidad de retornar data.'
+    },
+    {
+      q: 'Un script recibe error-tag "data-exists" al ejecutar edit-config. ¿Cuál es la causa?',
+      opts: ['El datastore está bloqueado por otra sesión','Se intentó crear un recurso que ya existe con operation="create"','La contraseña es incorrecta','El XML está malformado'],
+      ans: 1,
+      exp: '<code>data-exists</code> significa que se usó <code>operation="create"</code> sobre un recurso que ya estaba presente. Para scripts idempotentes, usa <code>merge</code> (default) en lugar de <code>create</code>.'
+    },
+    {
+      q: '¿Cuál es la función del delimitador <code>]]&gt;]]&gt;</code> en NETCONF 1.0 sobre SSH?',
+      opts: ['Cifrar el payload','Indicar el fin de un mensaje XML','Autenticar al cliente','Separar headers HTTP'],
+      ans: 1,
+      exp: 'En NETCONF 1.0 (RFC 6241), el delimitador <code>]]&gt;]]&gt;</code> marca el fin de cada fragmento XML sobre el stream SSH. NETCONF 1.1 usa "chunked framing" con encabezados de longitud en su lugar.'
+    },
+    {
+      q: '¿Qué operación NETCONF revierte todos los cambios en candidate y lo deja idéntico a running?',
+      opts: ['<code>&lt;unlock&gt;</code>','<code>&lt;discard-changes&gt;</code>','<code>&lt;delete-config&gt;</code>','<code>&lt;rollback&gt;</code>'],
+      ans: 1,
+      exp: '<strong>&lt;discard-changes&gt;</strong> descarta todas las modificaciones pendientes en el datastore <code>candidate</code>, restaurándolo al estado actual de <code>running</code>. Es el "abort" seguro antes de un commit.'
+    },
+    {
+      q: '¿Cuál es la principal ventaja de usar <code>&lt;lock&gt;</code> antes de <code>&lt;edit-config&gt;</code> en un entorno multi-administrador?',
+      opts: ['Mejora el rendimiento del router','Evita que otro administrador modifique el mismo datastore concurrentemente','Cifra la configuración','Activa el candidate datastore'],
+      ans: 1,
+      exp: '<strong>&lt;lock&gt;</strong> proporciona un mecanismo de exclusión mutua. Mientras un cliente mantiene el lock sobre running o candidate, ninguna otra sesión NETCONF (ni CLI) puede modificar ese datastore, preveniendo condiciones de carrera.'
+    }
+  ];
+
+  let html = '';
+  qs.forEach((q, i) => {
+    html += `<div class="quiz-question" id="qr3${i}">
+      <div class="quiz-q-num">PREGUNTA ${i+1} DE ${qs.length} · M8 NETCONF Tema 3</div>
+      <div class="quiz-q-text">${q.q}</div>
+      <div class="quiz-opts">
+        ${q.opts.map((o,j) => `<button class="quiz-opt" data-qi="${i}" data-sel="${j}" data-ans="${q.ans}">${o}</button>`).join('')}
+      </div>
+    </div>`;
+  });
+  container.innerHTML = html;
+
+  window._rest3Exp = {};
+  qs.forEach((q, i) => { window._rest3Exp[i] = q.exp; });
+
+  container.querySelectorAll('.quiz-opt').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const qi  = parseInt(this.dataset.qi);
+      const sel = parseInt(this.dataset.sel);
+      const ans = parseInt(this.dataset.ans);
+      const qDiv = document.getElementById('qr3' + qi);
+      const btns = qDiv.querySelectorAll('.quiz-opt');
+
+      btns.forEach(b => b.disabled = true);
+      btns[sel].classList.add(sel === ans ? 'correct' : 'wrong');
+      if (sel !== ans) btns[ans].classList.add('correct');
+
+      const expDiv = document.createElement('div');
+      expDiv.className = 'quiz-explanation';
+      expDiv.innerHTML = `<strong>${sel===ans ? '✅ Correcto!' : '❌ Incorrecto.'}</strong> ${window._rest3Exp[qi]}`;
+      qDiv.appendChild(expDiv);
+    });
+  });
+}
+
+// ── INICIALIZACIÓN ────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  buildRefTable();
+  initQuiz();
+});
+</script>
+</body>
+</html>
