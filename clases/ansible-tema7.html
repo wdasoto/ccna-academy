@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ansible — Proyecto Despliegue Masivo · M8 T7 | CCNA Academy</title>
+  <meta name="description" content="Proyecto integrador CCNA: despliegue masivo de red con Ansible. Playbook completo para 10 dispositivos Cisco: VLANs, OSPF, SSH, ACLs, NAT e idempotencia. CCNA Domain 6.6.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── ANSIBLE ACCENT TOKENS ── */
+:root{ --ansible:#ef4444; --ansible-d:#dc2626; --ansible-glow:rgba(239,68,68,.12); }
+
+/* ── BASE ── */
+body{font-family:'Exo 2',sans-serif;background:#07090f;color:#e2e8f0;margin:0;}
+.class-hero{background:linear-gradient(135deg,#06080f 0%,#080d18 60%,#0a1020 100%);}
+
+/* ── HERO ── */
+.class-hero{padding:56px 24px 48px;border-bottom:1px solid rgba(239,68,68,.08);position:relative;overflow:hidden;}
+.class-hero::before{content:'';position:absolute;top:-60px;right:-80px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(239,68,68,.06) 0%,transparent 70%);pointer-events:none;}
+.class-hero-inner{max-width:900px;margin:0 auto;position:relative;z-index:1;}
+.class-badge{font-family:'Share Tech Mono',monospace;font-size:.63rem;color:#ef4444;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;}
+.class-title{font-family:'Orbitron',sans-serif;font-size:clamp(1.6rem,3.8vw,2.6rem);font-weight:900;letter-spacing:3px;color:#c2d0e8;margin-bottom:12px;line-height:1.1;}
+.class-title-accent{background:linear-gradient(135deg,#ef4444,#dc2626);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.class-subtitle{font-size:.92rem;color:#6b7a9a;line-height:1.72;margin-bottom:20px;max-width:700px;}
+.class-meta{display:flex;gap:12px;flex-wrap:wrap;}
+.meta-item{font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#4a5780;padding:4px 10px;border:1px solid rgba(239,68,68,.15);border-radius:4px;}
+
+/* ── TABS ── */
+.ans1-tabs-wrap{max-width:1100px;margin:0 auto;padding:0 16px 40px;}
+.ans1-tabs-bar{display:flex;gap:4px;padding:20px 0 0;flex-wrap:wrap;border-bottom:1px solid rgba(239,68,68,.12);margin-bottom:0;}
+.ans1-tab-btn{padding:8px 13px;border-radius:8px 8px 0 0;font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#4a5780;background:none;border:1px solid transparent;cursor:pointer;transition:all .18s;white-space:nowrap;border-bottom:none;}
+.ans1-tab-btn:hover{color:#c2d0e8;background:rgba(239,68,68,.06);}
+.ans1-tab-btn.ans1-active{color:#ef4444;background:#0d1220;border-color:rgba(239,68,68,.25);border-bottom:1px solid #0d1220;}
+.ans1-tab-content{display:none;background:#0d1220;border:1px solid rgba(239,68,68,.08);border-top:none;border-radius:0 0 12px 12px;padding:32px;}
+.ans1-tab-content.ans1-active{display:block;}
+.content-block{max-width:880px;}
+.section-title{font-family:'Orbitron',sans-serif;font-size:.95rem;color:#ef4444;letter-spacing:2px;margin:28px 0 14px;padding-bottom:8px;border-bottom:1px solid rgba(239,68,68,.15);}
+.section-title:first-child{margin-top:0;}
+p{color:#8294b8;line-height:1.75;margin-bottom:14px;font-size:.9rem;}
+ul,ol{color:#8294b8;padding-left:1.4rem;margin-bottom:14px;font-size:.9rem;}
+li{margin-bottom:5px;line-height:1.65;}
+strong{color:#c2d0e8;}
+code{font-family:'Share Tech Mono',monospace;font-size:.82rem;background:rgba(239,68,68,.1);color:#ef4444;padding:1px 6px;border-radius:4px;border:1px solid rgba(239,68,68,.2);}
+
+/* INFO BOXES */
+.info-box{border-radius:8px;padding:14px 18px;margin:18px 0;border-left:3px solid;}
+.info-box.tip{background:rgba(239,68,68,.06);border-color:#ef4444;}
+.info-box.warning{background:rgba(251,191,36,.05);border-color:#fbbf24;}
+.info-box.info{background:rgba(56,189,248,.05);border-color:#38bdf8;}
+.info-box-title{font-family:'Share Tech Mono',monospace;font-size:.73rem;color:#ef4444;margin-bottom:8px;}
+.info-box.warning .info-box-title{color:#fbbf24;}
+.info-box.info .info-box-title{color:#38bdf8;}
+
+/* CODE BLOCKS */
+.code-block{background:#050810;border:1px solid rgba(239,68,68,.15);border-left:3px solid #ef4444;border-radius:8px;padding:0;margin:16px 0;overflow:hidden;}
+.code-label{background:rgba(239,68,68,.08);padding:8px 16px;font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#4a5780;letter-spacing:2px;text-transform:uppercase;border-bottom:1px solid rgba(239,68,68,.1);}
+.code-block pre{margin:0;padding:18px;overflow-x:auto;}
+.code-block code{background:none;border:none;padding:0;color:#a8b4c8;font-size:.79rem;line-height:1.8;display:block;}
+
+/* SYNTAX */
+.cmt{color:#3a4a60;font-style:italic;}
+.kw {color:#c792ea;}
+.fn {color:#82aaff;}
+.str{color:#c3e88d;}
+.num{color:#f78c6c;}
+
+/* CONCEPT GRID */
+.concept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin:16px 0;}
+.concept-card{background:#090d1a;border:1px solid rgba(239,68,68,.1);border-radius:10px;padding:16px;}
+.concept-icon{font-size:1.8rem;margin-bottom:8px;}
+.concept-card h3{font-family:'Share Tech Mono',monospace;font-size:.77rem;color:#ef4444;margin-bottom:8px;}
+.concept-card p{font-size:.8rem;margin:0;}
+
+/* ARCHITECTURE DIAGRAM */
+.ans-flow{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin:20px 0;padding:20px;background:#090d1a;border-radius:10px;border:1px solid rgba(239,68,68,.1);}
+.ans-box{background:#0d1220;border:1px solid rgba(239,68,68,.2);border-radius:8px;padding:14px 18px;text-align:center;min-width:110px;}
+.ans-box-label{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:#ef4444;margin-bottom:4px;}
+.ans-box-val{font-size:.8rem;color:#c2d0e8;}
+.ans-arrow{font-size:1.4rem;color:#ef4444;}
+
+/* TABLE */
+.table-wrap{overflow-x:auto;margin:16px 0;}
+.ref-table{width:100%;border-collapse:collapse;font-size:.8rem;}
+.ref-table th{background:#090d1a;color:#ef4444;font-family:'Share Tech Mono',monospace;font-size:.67rem;padding:10px 12px;text-align:left;border:1px solid rgba(239,68,68,.15);letter-spacing:1px;}
+.ref-table td{padding:9px 12px;border:1px solid rgba(255,255,255,.04);color:#8294b8;}
+.ref-table tr:hover td{background:rgba(239,68,68,.04);}
+.ref-table code{font-size:.77rem;}
+
+/* QUIZ */
+.quiz-question{background:#090d1a;border:1px solid rgba(239,68,68,.12);border-radius:10px;padding:20px;margin-bottom:14px;}
+.quiz-q-num{font-family:'Share Tech Mono',monospace;font-size:.62rem;color:#374060;margin-bottom:8px;}
+.quiz-q-text{font-size:.9rem;color:#c2d0e8;margin-bottom:14px;line-height:1.6;}
+.quiz-opts{display:flex;flex-direction:column;gap:7px;}
+.quiz-opt{padding:10px 14px;border-radius:7px;border:1px solid rgba(239,68,68,.12);background:#0d1220;color:#6b7a9a;cursor:pointer;font-size:.84rem;text-align:left;transition:all .15s;font-family:'Exo 2',sans-serif;}
+.quiz-opt:hover:not(:disabled){border-color:rgba(239,68,68,.4);color:#c2d0e8;}
+.quiz-opt.correct{border-color:#34d399;background:rgba(52,211,153,.08);color:#34d399;}
+.quiz-opt.wrong{border-color:#f87171;background:rgba(248,113,113,.08);color:#f87171;}
+.quiz-explanation{margin-top:10px;padding:10px 14px;background:rgba(239,68,68,.07);border-left:3px solid #ef4444;border-radius:6px;font-size:.82rem;color:#a0aec0;line-height:1.65;}
+
+/* COMPARE TABLE */
+.compare-highlight{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);}
+.compare-highlight td{color:#c2d0e8 !important;}
+
+/* NAV & DRAWER */
+.navbar{position:fixed;top:0;left:0;right:0;height:56px;background:#080a10;border-bottom:1px solid rgba(239,68,68,.1);display:flex;align-items:center;padding:0 24px;z-index:1000;}
+.navbar-toggle{background:none;border:1px solid rgba(239,68,68,.3);color:#ef4444;padding:6px 12px;border-radius:6px;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:.75rem;margin-right:16px;}
+.navbar-brand{font-family:'Orbitron',sans-serif;font-weight:700;color:#ef4444;text-decoration:none;font-size:1.1rem;}
+.navbar-brand span{color:#dc2626;}
+.navbar-spacer{flex:1;}
+.navbar-link{color:#6b7a9a;text-decoration:none;font-size:.8rem;transition:color .2s;}
+.navbar-link:hover{color:#c2d0e8;}
+.nav-spacer{height:56px;}
+.ccna-drawer{position:fixed;top:0;left:0;bottom:0;width:280px;background:#0d1220;border-right:1px solid rgba(239,68,68,.2);transform:translateX(-100%);transition:transform .3s;z-index:2000;overflow-y:auto;}
+.ccna-drawer.open{transform:translateX(0);}
+.ccna-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);opacity:0;visibility:hidden;transition:all .3s;z-index:1500;}
+.ccna-overlay.show{opacity:1;visibility:visible;}
+.drawer-header{padding:20px;border-bottom:1px solid rgba(239,68,68,.2);display:flex;justify-content:space-between;align-items:center;}
+.drawer-header h2{font-family:'Orbitron',sans-serif;font-size:.8rem;color:#ef4444;margin:0;letter-spacing:2px;}
+.drawer-close{background:none;border:none;color:#6b7a9a;font-size:1.2rem;cursor:pointer;}
+.drawer-section{padding:16px;border-bottom:1px solid rgba(239,68,68,.1);}
+.drawer-section-title{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#374060;margin-bottom:12px;letter-spacing:1px;text-transform:uppercase;}
+.drawer-link{display:block;padding:10px 12px;color:#8294b8;text-decoration:none;font-size:.85rem;border-radius:6px;transition:all .2s;margin-bottom:4px;}
+.drawer-link:hover{background:rgba(239,68,68,.1);color:#c2d0e8;}
+.drawer-link.active{background:rgba(239,68,68,.2);color:#ef4444;border-left:3px solid #ef4444;}
+.dl-icon{margin-right:8px;}
+
+/* FILE TREE */
+.file-tree{background:#050810;border:1px solid rgba(239,68,68,.15);border-radius:8px;padding:18px 22px;font-family:'Share Tech Mono',monospace;font-size:.78rem;color:#8294b8;line-height:1.8;margin:16px 0;}
+.file-tree .folder{color:#ef4444;}
+.file-tree .file{color:#a8b4c8;}
+.file-tree .comment{color:#3a4a60;font-style:italic;}
+
+@media(max-width:680px){
+  .ans1-tab-btn{font-size:.6rem;padding:6px 9px;}
+  .ans1-tab-content{padding:18px 12px;}
+  .concept-grid{grid-template-columns:1fr;}
+  .ans-flow{flex-direction:column;}
+}
+</style>
+</head>
+<body>
+
+<div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
+<nav class="ccna-drawer" id="ccnaDrawer">
+  <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
+  <div class="drawer-section"><div class="drawer-section-title">General</div>
+    <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M1 · Fundamentos</div>
+    <a href="fundamentos.html" class="drawer-link"><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
+    <a href="subnetting.html"  class="drawer-link"><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
+    <a href="ipv6.html"        class="drawer-link"><span class="dl-icon">6️⃣</span> IPv6</a>
+    <a href="arp.html"         class="drawer-link"><span class="dl-icon">📡</span> ARP</a>
+    <a href="rip.html"         class="drawer-link"><span class="dl-icon">🔄</span> RIP</a>
+    <a href="protocolos-internet.html" class="drawer-link"><span class="dl-icon">🌍</span> Protocolos Internet</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M2 · Dispositivos Cisco</div>
+    <a href="router.html"         class="drawer-link"><span class="dl-icon">📡</span> Routers Cisco</a>
+    <a href="switches-cisco.html" class="drawer-link"><span class="dl-icon">🔀</span> Switches Cisco</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M3 · Switching</div>
+    <a href="vlan.html"               class="drawer-link"><span class="dl-icon">🏷️</span> VLANs</a>
+    <a href="inter-vlan-routing.html" class="drawer-link"><span class="dl-icon">🔁</span> Inter-VLAN Routing</a>
+    <a href="stp.html"                class="drawer-link"><span class="dl-icon">🌳</span> STP</a>
+    <a href="etherchannel.html"       class="drawer-link"><span class="dl-icon">🔗</span> EtherChannel</a>
+    <a href="port-security.html"      class="drawer-link"><span class="dl-icon">🔒</span> Port Security</a>
+    <a href="cdp-lldp.html"           class="drawer-link"><span class="dl-icon">🔍</span> CDP / LLDP</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M4 · Routing</div>
+    <a href="routing.html"            class="drawer-link"><span class="dl-icon">🗺️</span> Routing Estático</a>
+    <a href="ospf.html"               class="drawer-link"><span class="dl-icon">⭕</span> OSPF</a>
+    <a href="eigrp.html"              class="drawer-link"><span class="dl-icon">⚡</span> EIGRP</a>
+    <a href="ospfv2-masterclass.html" class="drawer-link"><span class="dl-icon">🎯</span> OSPFv2 Masterclass</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M5 · Servicios IP</div>
+    <a href="dhcp.html" class="drawer-link"><span class="dl-icon">📋</span> DHCP</a>
+    <a href="nat.html"  class="drawer-link"><span class="dl-icon">🔄</span> NAT / PAT</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M6 · Seguridad</div>
+    <a href="acl.html" class="drawer-link"><span class="dl-icon">🛡️</span> ACLs</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M7 · WAN &amp; QoS</div>
+    <a href="wan.html" class="drawer-link"><span class="dl-icon">🌍</span> WAN</a>
+    <a href="qos.html" class="drawer-link"><span class="dl-icon">📊</span> QoS</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M8 · Automatización</div>
+    <a href="m8-automatizacion.html" class="drawer-link"><span class="dl-icon">🤖</span> M8 — Vista General</a>
+    <a href="python-redes.html"      class="drawer-link"><span class="dl-icon">🐍</span> Python para Redes</a>
+    <a href="json-datos.html"        class="drawer-link"><span class="dl-icon">📋</span> JSON y Datos</a>
+    <a href="rest-apis.html"         class="drawer-link"><span class="dl-icon">🌐</span> REST APIs</a>
+    <a href="ansible-redes.html"     class="drawer-link"><span class="dl-icon">⚙️</span> Ansible Hub</a>
+    <a href="ansible-tema7.html"     class="drawer-link active"><span class="dl-icon">07</span> T7 — Proyecto Despliegue Masivo</a>
+  </div>
+  <div class="drawer-section"><div class="drawer-section-title">⚡ Herramientas</div>
+    <a href="asistente.html"          class="drawer-link"><span class="dl-icon">🤖</span> Asistente IA</a>
+    <a href="netbot.html"             class="drawer-link"><span class="dl-icon">⚙️</span> NetBot Config</a>
+    <a href="calculadora.html"        class="drawer-link"><span class="dl-icon">🧮</span> Calculadora IP</a>
+    <a href="../laboratorios-pkt.html"   class="drawer-link"><span class="dl-icon">🧪</span> Labs Packet Tracer</a>
+    <a href="../banco-preguntas.html" class="drawer-link"><span class="dl-icon">📝</span> Banco de Preguntas</a></div>
+</nav>
+
+<header class="navbar">
+  <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
+  <a href="../index.html" class="navbar-brand">CISCO<span> ACADEMY</span></a>
+  <div class="navbar-spacer"></div>
+  <a href="ansible-redes.html" class="navbar-link">← Ansible Hub</a>
+</header>
+<div class="nav-spacer"></div>
+
+<!-- HERO -->
+<section class="class-hero" style="border-bottom:1px solid rgba(239,68,68,.2);">
+  <div class="class-hero-inner">
+    <div class="class-badge" style="color:#ef4444;">M8 · AUTOMATIZACIÓN · ANSIBLE · TEMA 7 DE 7 · PROYECTO FINAL</div>
+    <h1 class="class-title">PROYECTO <span class="class-title-accent">— Despliegue Masivo</span></h1>
+    <p class="class-subtitle">Playbook completo que configura VLANs, IPs, OSPF, SSH y políticas de seguridad en una red de 10 dispositivos Cisco desde cero, en menos de 2 minutos. El proyecto integrador definitivo que une Layer 2, Layer 3, WAN, Seguridad e IaC en una sola ejecución idempotente.</p>
+    <div class="class-meta">
+      <span class="meta-item" style="border-color:rgba(239,68,68,.2);color:#ef4444;">🚀 Proyecto Integrador</span>
+      <span class="meta-item">🎯 CCNA Domain 6.6</span>
+      <span class="meta-item">⏱ ~120 min lectura</span>
+      <span class="meta-item">📋 10 Dispositivos</span>
+      <span class="meta-item">⚡ Idempotente</span>
+    </div>
+  </div>
+</section>
+
+<!-- TABS -->
+<div class="ans1-tabs-wrap">
+  <div class="ans1-tabs-bar">
+    <button class="ans1-tab-btn ans1-active" onclick="showTabAns1('intro',this)">📍 Intro</button>
+    <button class="ans1-tab-btn" onclick="showTabAns1('topologia',this)">🏗️ Topología</button>
+    <button class="ans1-tab-btn" onclick="showTabAns1('playbook',this)">📋 Playbook</button>
+    <button class="ans1-tab-btn" onclick="showTabAns1('roles',this)">🎭 Roles</button>
+    <button class="ans1-tab-btn" onclick="showTabAns1('ejecucion',this)">⚡ Ejecución</button>
+    <button class="ans1-tab-btn" onclick="showTabAns1('verificacion',this)">✅ Verificación</button>
+    <button class="ans1-tab-btn" onclick="showTabAns1('referencia',this)">📊 Ref</button>
+    <button class="ans1-tab-btn" onclick="showTabAns1('quiz',this)">🎯 Quiz</button>
+  </div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 1 — INTRO
+═══════════════════════════════════════════ -->
+<div id="tab-intro" class="ans1-tab-content ans1-active">
+<div class="content-block">
+  <h2 class="section-title">El proyecto integrador: red enterprise desde cero</h2>
+  <p>Este es el <strong>proyecto final</strong> del módulo Ansible. No es una lección teórica más: es un despliegue real de infraestructura de red usando Infrastructure as Code (IaC). En los próximos 120 minutos construirás un playbook que levanta una red de 10 dispositivos Cisco con arquitectura de tres capas: <strong>Core, Distribution, Access y WAN Edge</strong>.</p>
+  <p>El objetivo no es memorizar comandos, sino entender cómo orquestar múltiples tecnologías (VLANs, trunking, OSPF, SSH, ACLs, NAT, port-security) en un único pipeline automatizado, idempotente y reproducible. Si tu playbook funciona correctamente, podrás destruir toda la configuración de los 10 dispositivos, volver a ejecutarlo, y obtener exactamente la misma red funcional en menos de 120 segundos.</p>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Filosofía del proyecto</div>
+    <p>Este playbook es un <strong>blueprint vivo</strong>. Cada línea es documentación ejecutable. Cuando el auditor pregunte <em>"¿Cómo sabes que todos los switches tienen SSH v2?"</em>, tu respuesta no será un PDF: será <code>ansible-playbook site.yml --tags security</code>.</p>
+  </div>
+
+  <h2 class="section-title">Arquitectura objetivo de 3 capas</h2>
+  <div class="ans-flow">
+    <div class="ans-box" style="min-width:140px;">
+      <div class="ans-box-label">WAN EDGE</div>
+      <div class="ans-box-val">2 Routers</div>
+      <div style="font-size:.65rem;color:#8294b8;margin-top:4px;">NAT · ACLs · BGP</div>
+    </div>
+    <div class="ans-arrow">↔</div>
+    <div class="ans-box" style="min-width:140px;border-color:rgba(239,68,68,.4);background:rgba(239,68,68,.08);">
+      <div class="ans-box-label">CORE</div>
+      <div class="ans-box-val">2 Routers</div>
+      <div style="font-size:.65rem;color:#8294b8;margin-top:4px;">OSPF Area 0 · Alta disponibilidad</div>
+    </div>
+    <div class="ans-arrow">↔</div>
+    <div class="ans-box" style="min-width:140px;">
+      <div class="ans-box-label">DISTRIBUTION</div>
+      <div class="ans-box-val">2 Switches L3</div>
+      <div style="font-size:.65rem;color:#8294b8;margin-top:4px;">OSPF · Routing · Trunks</div>
+    </div>
+    <div class="ans-arrow">↔</div>
+    <div class="ans-box" style="min-width:140px;">
+      <div class="ans-box-label">ACCESS</div>
+      <div class="ans-box-val">4 Switches L2</div>
+      <div style="font-size:.65rem;color:#8294b8;margin-top:4px;">VLANs · Port-Security · STP</div>
+    </div>
+  </div>
+
+  <h2 class="section-title">Stack tecnológico del despliegue</h2>
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">🏷️</div>
+      <h3>Layer 2 — Switching</h3>
+      <p>VLANs 10, 20, 30, 99. Trunking 802.1Q. Rapid-PVST. PortFast BPDU Guard. Port-security en cada puerto access.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🌐</div>
+      <h3>Layer 3 — Routing</h3>
+      <p>OSPFv2 Area 0 en todos los routers y switches distribution. Interfaces punto a punto en /30. Passive-interface default.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🔒</div>
+      <h3>Seguridad</h3>
+      <p>SSH v2. Disable Telnet. Enable secret. Service password-encryption. ACLs en WAN. NAT overload. Banner MOTD.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">⚙️</div>
+      <h3>Management</h3>
+      <p>NTP sincronizado. Syslog centralizado. Hostname estandarizado. Domain-lookup deshabilitado. DNS local.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">📋</div>
+      <h3>IaC — Idempotencia</h3>
+      <p>Si ejecutas el playbook una o cien veces, el resultado final es idéntico. Solo se aplican cambios cuando hay drift.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🚀</div>
+      <h3>Velocidad</h3>
+      <p>Con <code>forks: 10</code>, el despliegue completo de 10 dispositivos toma menos de 2 minutos en hardware real.</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">Fases del proyecto</h2>
+  <ol>
+    <li><strong>Diseño:</strong> Inventario YAML con jerarquía de grupos (core, dist, access, wan). Variables centralizadas en <code>group_vars</code>.</li>
+    <li><strong>Common Baseline:</strong> Playbook que aplica SSH, NTP, banners y hardening básico a <em>todos</em> los dispositivos.</li>
+    <li><strong>Layer 2:</strong> Configuración masiva de VLANs, trunks y port-security en los 4 switches de acceso.</li>
+    <li><strong>Layer 3:</strong> Activación de OSPF, asignación de IPs en interfaces y loopbacks en Core, Dist y WAN.</li>
+    <li><strong>Seguridad Perimetral:</strong> ACLs stateless, NAT overload y políticas de control de tráfico en routers WAN.</li>
+    <li><strong>Verificación:</strong> Tests automáticos con <code>ios_facts</code> y <code>assert</code> para validar que la red cumple el diseño.</li>
+  </ol>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 2 — TOPOLOGÍA
+═══════════════════════════════════════════ -->
+<div id="tab-topologia" class="ans1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Topología física y lógica</h2>
+  <p>La red consta de <strong>10 dispositivos Cisco</strong> organizados en capas jerárquicas. Todos los dispositivos son gestionados mediante una VLAN de management (VLAN 99) con direccionamiento <code>10.255.1.0/24</code>, accesible desde el Control Node de Ansible a través de una interfaz dedicada de management.</p>
+
+  <div class="ans-flow" style="flex-direction:column;gap:16px;">
+    <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;width:100%;">
+      <div class="ans-box" style="min-width:160px;background:rgba(56,189,248,.08);border-color:#38bdf8;">
+        <div class="ans-box-label" style="color:#38bdf8;">WAN EDGE</div>
+        <div class="ans-box-val">WAN-R1 · WAN-R2</div>
+        <div style="font-size:.65rem;color:#8294b8;">203.0.113.0/29</div>
+      </div>
+    </div>
+    <div class="ans-arrow">↓</div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;width:100%;">
+      <div class="ans-box" style="min-width:160px;background:rgba(239,68,68,.08);">
+        <div class="ans-box-label">CORE LAYER</div>
+        <div class="ans-box-val">CR1 · CR2</div>
+        <div style="font-size:.65rem;color:#8294b8;">OSPF Area 0 · Router-ID</div>
+      </div>
+    </div>
+    <div class="ans-arrow">↓</div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;width:100%;">
+      <div class="ans-box" style="min-width:160px;">
+        <div class="ans-box-label">DISTRIBUTION</div>
+        <div class="ans-box-val">DS1 · DS2</div>
+        <div style="font-size:.65rem;color:#8294b8;">L3 Switching · OSPF · Trunks</div>
+      </div>
+    </div>
+    <div class="ans-arrow">↓</div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;width:100%;">
+      <div class="ans-box" style="min-width:160px;">
+        <div class="ans-box-label">ACCESS LAYER</div>
+        <div class="ans-box-val">AS1 · AS2 · AS3 · AS4</div>
+        <div style="font-size:.65rem;color:#8294b8;">VLANs · Port-Security · STP</div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="section-title">Tabla de direccionamiento IP</h2>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead>
+        <tr><th>Dispositivo</th><th>Rol</th><th>IP Mgmt (VLAN99)</th><th>Loopback0</th><th>Enlace Core/Dist</th><th>Modelo</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>CR1</code></td><td>Core Router</td><td>10.255.1.1/24</td><td>1.1.1.1/32</td><td>10.10.1.0/30</td><td>ISR4331</td></tr>
+        <tr><td><code>CR2</code></td><td>Core Router</td><td>10.255.1.2/24</td><td>2.2.2.2/32</td><td>10.10.2.0/30</td><td>ISR4331</td></tr>
+        <tr><td><code>DS1</code></td><td>Dist Switch</td><td>10.255.1.3/24</td><td>3.3.3.3/32</td><td>10.10.1.4/30</td><td>C9300</td></tr>
+        <tr><td><code>DS2</code></td><td>Dist Switch</td><td>10.255.1.4/24</td><td>4.4.4.4/32</td><td>10.10.2.4/30</td><td>C9300</td></tr>
+        <tr><td><code>AS1</code></td><td>Access Switch</td><td>10.255.1.11/24</td><td>N/A</td><td>Trunk a DS1</td><td>C9200</td></tr>
+        <tr><td><code>AS2</code></td><td>Access Switch</td><td>10.255.1.12/24</td><td>N/A</td><td>Trunk a DS1</td><td>C9200</td></tr>
+        <tr><td><code>AS3</code></td><td>Access Switch</td><td>10.255.1.13/24</td><td>N/A</td><td>Trunk a DS2</td><td>C9200</td></tr>
+        <tr><td><code>AS4</code></td><td>Access Switch</td><td>10.255.1.14/24</td><td>N/A</td><td>Trunk a DS2</td><td>C9200</td></tr>
+        <tr><td><code>WAN-R1</code></td><td>WAN Edge</td><td>10.255.1.21/24</td><td>5.5.5.5/32</td><td>10.10.10.0/30</td><td>ISR1111</td></tr>
+        <tr><td><code>WAN-R2</code></td><td>WAN Edge</td><td>10.255.1.22/24</td><td>6.6.6.6/32</td><td>10.10.10.4/30</td><td>ISR1111</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="section-title">Esquema de VLANs</h2>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead>
+        <tr><th>VLAN</th><th>Nombre</th><th>Subred</th><th>Gateway</th><th>Función</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>10</td><td>DATOS</td><td>192.168.10.0/24</td><td>192.168.10.1</td><td>Usuarios corporativos</td></tr>
+        <tr><td>20</td><td>VOIP</td><td>192.168.20.0/24</td><td>192.168.20.1</td><td>Telefonía IP</td></tr>
+        <tr><td>30</td><td>GUEST</td><td>192.168.30.0/24</td><td>192.168.30.1</td><td>Invitados (ACL restrictiva)</td></tr>
+        <tr><td>99</td><td>MGMT</td><td>10.255.1.0/24</td><td>10.255.1.254</td><td>Gestión y Ansible</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="info-box info">
+    <div class="info-box-title">ℹ️ Diseño de red para el proyecto</div>
+    <p>Los <strong>Access Switches</strong> no tienen Loopback porque operan puramente en Layer 2. Los <strong>Distribution</strong> usan Switched Virtual Interfaces (SVI) para el default gateway de cada VLAN. Los <strong>Core</strong> y <strong>WAN Edge</strong> usan loopbacks estables como Router-ID de OSPF.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 3 — PLAYBOOK MONOLÍTICO
+═══════════════════════════════════════════ -->
+<div id="tab-playbook" class="ans1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">El playbook monolítico: site.yml</h2>
+  <p>La versión monolítica es un único archivo <code>site.yml</code> que contiene todos los plays. Es ideal para aprender porque puedes ver el flujo completo en una sola pantalla. En producción se prefiere la versión con roles (ver siguiente pestaña), pero ambas son funcionalmente idénticas.</p>
+
+  <div class="code-block">
+    <div class="code-label">inventory.yml — Inventario jerárquico de 10 nodos</div>
+    <pre><code><span class="kw">all</span>:
+  <span class="fn">children</span>:
+    <span class="fn">core_routers</span>:
+      <span class="fn">hosts</span>:
+        <span class="fn">CR1</span>:
+          <span class="fn">ansible_host</span>: <span class="num">10.255.1.1</span>
+          <span class="fn">ospf_router_id</span>: <span class="str">"1.1.1.1"</span>
+        <span class="fn">CR2</span>:
+          <span class="fn">ansible_host</span>: <span class="num">10.255.1.2</span>
+          <span class="fn">ospf_router_id</span>: <span class="str">"2.2.2.2"</span>
+
+    <span class="fn">dist_switches</span>:
+      <span class="fn">hosts</span>:
+        <span class="fn">DS1</span>:
+          <span class="fn">ansible_host</span>: <span class="num">10.255.1.3</span>
+          <span class="fn">ospf_router_id</span>: <span class="str">"3.3.3.3"</span>
+          <span class="fn">uplink_core</span>: <span class="str">"GigabitEthernet1/1/1"</span>
+        <span class="fn">DS2</span>:
+          <span class="fn">ansible_host</span>: <span class="num">10.255.1.4</span>
+          <span class="fn">ospf_router_id</span>: <span class="str">"4.4.4.4"</span>
+          <span class="fn">uplink_core</span>: <span class="str">"GigabitEthernet1/1/1"</span>
+
+    <span class="fn">access_switches</span>:
+      <span class="fn">hosts</span>:
+        <span class="fn">AS1</span>: { <span class="fn">ansible_host</span>: <span class="num">10.255.1.11</span>, <span class="fn">dist_pair</span>: <span class="str">"DS1"</span> }
+        <span class="fn">AS2</span>: { <span class="fn">ansible_host</span>: <span class="num">10.255.1.12</span>, <span class="fn">dist_pair</span>: <span class="str">"DS1"</span> }
+        <span class="fn">AS3</span>: { <span class="fn">ansible_host</span>: <span class="num">10.255.1.13</span>, <span class="fn">dist_pair</span>: <span class="str">"DS2"</span> }
+        <span class="fn">AS4</span>: { <span class="fn">ansible_host</span>: <span class="num">10.255.1.14</span>, <span class="fn">dist_pair</span>: <span class="str">"DS2"</span> }
+
+    <span class="fn">wan_routers</span>:
+      <span class="fn">hosts</span>:
+        <span class="fn">WAN-R1</span>:
+          <span class="fn">ansible_host</span>: <span class="num">10.255.1.21</span>
+          <span class="fn">ospf_router_id</span>: <span class="str">"5.5.5.5"</span>
+          <span class="fn">wan_ip</span>: <span class="str">"203.0.113.1/30"</span>
+        <span class="fn">WAN-R2</span>:
+          <span class="fn">ansible_host</span>: <span class="num">10.255.1.22</span>
+          <span class="fn">ospf_router_id</span>: <span class="str">"6.6.6.6"</span>
+          <span class="fn">wan_ip</span>: <span class="str">"203.0.113.5/30"</span>
+
+    <span class="fn">cisco_all</span>:
+      <span class="fn">children</span>:
+        <span class="fn">core_routers</span>:
+        <span class="fn">dist_switches</span>:
+        <span class="fn">access_switches</span>:
+        <span class="fn">wan_routers</span>:
+
+  <span class="fn">vars</span>:
+    <span class="fn">ansible_network_os</span>: <span class="str">ios</span>
+    <span class="fn">ansible_connection</span>: <span class="str">network_cli</span>
+    <span class="fn">ansible_user</span>: <span class="str">ansible</span>
+    <span class="fn">ansible_ssh_pass</span>: <span class="str">"{{ vault_ssh_pass }}"</span>
+    <span class="fn">ansible_become</span>: <span class="kw">yes</span>
+    <span class="fn">ansible_become_method</span>: <span class="str">enable</span></code></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">group_vars/all.yml — Variables globales del proyecto</div>
+    <pre><code><span class="kw">---</span>
+<span class="cmt"># ── Infraestructura ──</span>
+<span class="fn">domain_name</span>: <span class="str">"ccna.lab"</span>
+<span class="fn">ntp_server</span>: <span class="str">"10.255.1.254"</span>
+<span class="fn">syslog_server</span>: <span class="str">"10.255.1.254"</span>
+
+<span class="cmt"># ── VLANs ──</span>
+<span class="fn">vlans</span>:
+  - { <span class="fn">id</span>: <span class="num">10</span>, <span class="fn">name</span>: <span class="str">"DATOS"</span> }
+  - { <span class="fn">id</span>: <span class="num">20</span>, <span class="fn">name</span>: <span class="str">"VOIP"</span> }
+  - { <span class="fn">id</span>: <span class="num">30</span>, <span class="fn">name</span>: <span class="str">"GUEST"</span> }
+  - { <span class="fn">id</span>: <span class="num">99</span>, <span class="fn">name</span>: <span class="str">"MGMT"</span> }
+
+<span class="cmt"># ── OSPF ──</span>
+<span class="fn">ospf_process_id</span>: <span class="num">1</span>
+<span class="fn">ospf_area</span>: <span class="num">0</span>
+
+<span class="cmt"># ── Seguridad ──</span>
+<span class="fn">enable_secret</span>: <span class="str">"$6$rounds=10000$XYZ..."</span>  <span class="cmt"># Hash cifrado via vault</span>
+<span class="fn">local_username</span>: <span class="str">"admin"</span>
+<span class="fn">local_password</span>: <span class="str">"{{ vault_local_pass }}"</span>
+<span class="fn">vty_transport</span>: <span class="str">"ssh"</span>
+<span class="fn">console_timeout</span>: <span class="num">300</span>
+
+<span class="cmt"># ── Port-Security ──</span>
+<span class="fn">port_security_max</span>: <span class="num">2</span>
+<span class="fn">port_security_violation</span>: <span class="str">"restrict"</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Play 1: Baseline común (todos los dispositivos)</h2>
+  <div class="code-block">
+    <div class="code-label">site.yml — Play 1: Common Hardening</div>
+    <pre><code><span class="kw">---</span>
+- <span class="fn">name</span>: <span class="str">"PLAY 1: Baseline de seguridad y management"</span>
+  <span class="fn">hosts</span>: cisco_all
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Configurar hostname"</span>
+      <span class="fn">cisco.ios.ios_config</span>:
+        <span class="fn">lines</span>:
+          - <span class="str">"hostname {{ inventory_hostname }}"</span>
+        <span class="fn">save_when</span>: <span class="str">"changed"</span>
+
+    - <span class="fn">name</span>: <span class="str">"Deshabilitar domain-lookup"</span>
+      <span class="fn">cisco.ios.ios_config</span>:
+        <span class="fn">lines</span>: <span class="str">"no ip domain-lookup"</span>
+
+    - <span class="fn">name</span>: <span class="str">"Configurar domain name"</span>
+      <span class="fn">cisco.ios.ios_config</span>:
+        <span class="fn">lines</span>: <span class="str">"ip domain name {{ domain_name }}"</span>
+
+    - <span class="fn">name</span>: <span class="str">"Hardening básico"</span>
+      <span class="fn">cisco.ios.ios_config</span>:
+        <span class="fn">lines</span>:
+          - <span class="str">"service password-encryption"</span>
+          - <span class="str">"service timestamps debug datetime msec"</span>
+          - <span class="str">"service timestamps log datetime msec"</span>
+          - <span class="str">"no service pad"</span>
+
+    - <span class="fn">name</span>: <span class="str">"Banner MOTD"</span>
+      <span class="fn">cisco.ios.ios_config</span>:
+        <span class="fn">lines</span>: <span class="str">'banner motd ^ACCeso autorizado unicamente. Monitoreado por Ansible.^'</span>
+
+    - <span class="fn">name</span>: <span class="str">"Usuario local admin"</span>
+      <span class="fn">cisco.ios.ios_config</span>:
+        <span class="fn">lines</span>: <span class="str">"username {{ local_username }} privilege 15 secret {{ local_password }}"</span>
+
+    - <span class="fn">name</span>: <span class="str">"SSH v2 y líneas VTY"</span>
+      <span class="fn">cisco.ios.ios_config</span>:
+        <span class="fn">lines</span>:
+          - <span class="str">"ip ssh version 2"</span>
+          - <span class="str">"ip ssh time-out 60"</span>
+          - <span class="str">"line vty 0 15"</span>
+          - <span class="str">" transport input {{ vty_transport }}"</span>
+          - <span class="str">" exec-timeout 5 0"</span>
+          - <span class="str">" logging synchronous"</span>
+        <span class="fn">parents</span>: <span class="str">"line vty 0 15"</span>
+
+    - <span class="fn">name</span>: <span class="str">"Console timeout"</span>
+      <span class="fn">cisco.ios.ios_config</span>:
+        <span class="fn">lines</span>:
+          - <span class="str">"line con 0"</span>
+          - <span class="str">" exec-timeout {{ console_timeout }}"</span>
+          - <span class="str">" logging synchronous"</span>
+
+    - <span class="fn">name</span>: <span class="str">"NTP server"</span>
+      <span class="fn">cisco.ios.ios_config</span>:
+        <span class="fn">lines</span>: <span class="str">"ntp server {{ ntp_server }}"</span>
+
+    - <span class="fn">name</span>: <span class="str">"Syslog server"</span>
+      <span class="fn">cisco.ios.ios_config</span>:
+        <span class="fn">lines</span>:
+          - <span class="str">"logging {{ syslog_server }}"</span>
+          - <span class="str">"logging trap informational"</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Play 2: Layer 2 — Access Switches</h2>
+  <div class="code-block">
+    <div class="code-label">site.yml — Play 2: VLANs, Trunks y Port-Security</div>
+    <pre><code>- <span class="fn">name</span>: <span class="str">"PLAY 2: Layer 2 Access Switching"</span>
+  <span class="fn">hosts</span>: access_switches
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Crear VLANs"</span>
+      <span class="fn">cisco.ios.ios_vlans</span>:
+        <span class="fn">config</span>:
+          - <span class="fn">vlan_id</span>: <span class="str">"{{ item.id }}"</span>
+            <span class="fn">name</span>: <span class="str">"{{ item.name }}"</span>
+        <span class="fn">state</span>: <span class="str">merged</span>
+      <span class="fn">loop</span>: <span class="str">"{{ vlans }}"</span>
+
+    - <span class="fn">name</span>: <span class="str">"Configurar uplinks como Trunk"</span>
+      <span class="fn">cisco.ios.ios_l2_interfaces</span>:
+        <span class="fn">config</span>:
+          - <span class="fn">name</span>: <span class="str">"GigabitEthernet1/0/1"</span>
+            <span class="fn">mode</span>: <span class="str">trunk</span>
+            <span class="fn">trunk</span>:
+              <span class="fn">allowed_vlans</span>: <span class="str">"10,20,30,99"</span>
+              <span class="fn">native_vlan</span>: <span class="num">99</span>
+        <span class="fn">state</span>: <span class="str">merged</span>
+
+    - <span class="fn">name</span>: <span class="str">"Interfaces access con VLAN datos"</span>
+      <span class="fn">cisco.ios.ios_l2_interfaces</span>:
+        <span class="fn">config</span>:
+          - <span class="fn">name</span>: <span class="str">"GigabitEthernet1/0/2"</span>
+            <span class="fn">mode</span>: <span class="str">access</span>
+            <span class="fn">access</span>:
+              <span class="fn">vlan</span>: <span class="num">10</span>
+          - <span class="fn">name</span>: <span class="str">"GigabitEthernet1/0/3"</span>
+            <span class="fn">mode</span>: <span class="str">access</span>
+            <span class="fn">access</span>:
+              <span class="fn">vlan</span>: <span class="num">20</span>
+        <span class="fn">state</span>: <span class="str">merged</span>
+
+    - <span class="fn">name</span>: <span class="str">"Port-security en puertos access"</span>
+      <span class="fn">cisco.ios.ios_config</span>:
+        <span class="fn">lines</span>:
+          - <span class="str">"switchport port-security"</span>
+          - <span class="str">"switchport port-security maximum {{ port_security_max }}"</span>
+          - <span class="str">"switchport port-security violation {{ port_security_violation }}"</span>
+          - <span class="str">"switchport port-security mac-address sticky"</span>
+        <span class="fn">parents</span>: <span class="str">"interface {{ item }}"</span>
+      <span class="fn">loop</span>:
+        - <span class="str">"GigabitEthernet1/0/2"</span>
+        - <span class="str">"GigabitEthernet1/0/3"</span>
+
+    - <span class="fn">name</span>: <span class="str">"Rapid-PVST y PortFast"</span>
+      <span class="fn">cisco.ios.ios_config</span>:
+        <span class="fn">lines</span>:
+          - <span class="str">"spanning-tree mode rapid-pvst"</span>
+          - <span class="str">"spanning-tree portfast default"</span>
+          - <span class="str">"spanning-tree portfast bpduguard default"</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Play 3: Layer 3 — Core, Dist y OSPF</h2>
+  <div class="code-block">
+    <div class="code-label">site.yml — Play 3: Routing OSPF e IPs</div>
+    <pre><code>- <span class="fn">name</span>: <span class="str">"PLAY 3: Layer 3 Routing y OSPF"</span>
+  <span class="fn">hosts</span>: core_routers:dist_switches:wan_routers
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Loopback 0 como Router-ID"</span>
+      <span class="fn">cisco.ios.ios_config</span>:
+        <span class="fn">lines</span>:
+          - <span class="str">"interface Loopback0"</span>
+          - <span class="str">" ip address {{ ospf_router_id }} 255.255.255.255"</span>
+          - <span class="str">" ip ospf {{ ospf_process_id }} area {{ ospf_area }}"</span>
+
+    - <span class="fn">name</span>: <span class="str">"Activar OSPF y passive-interface default"</span>
+      <span class="fn">cisco.ios.ios_config</span>:
+        <span class="fn">lines</span>:
+          - <span class="str">"router ospf {{ ospf_process_id }}"</span>
+          - <span class="str">" router-id {{ ospf_router_id }}"</span>
+          - <span class="str">" passive-interface default"</span>
+          - <span class="str">" network 10.0.0.0 0.255.255.255 area {{ ospf_area }}"</span>
+
+    - <span class="fn">name</span>: <span class="str">"No passive en enlaces punto a punto"</span>
+      <span class="fn">cisco.ios.ios_config</span>:
+        <span class="fn">lines</span>: <span class="str">"no passive-interface {{ item }}"</span>
+      <span class="fn">loop</span>:
+        - <span class="str">"GigabitEthernet0/0/0"</span>
+        - <span class="str">"GigabitEthernet0/0/1"</span>
+      <span class="fn">parents</span>: <span class="str">"router ospf {{ ospf_process_id }}"</span>
+
+    - <span class="fn">name</span>: <span class="str">"SVI 99 en Distribution para gateway"</span>
+      <span class="fn">cisco.ios.ios_config</span>:
+        <span class="fn">lines</span>:
+          - <span class="str">"interface Vlan99"</span>
+          - <span class="str">" ip address 10.255.1.{{ ansible_host.split('.')[-1] }} 255.255.255.0"</span>
+          - <span class="str">" no shutdown"</span>
+      <span class="fn">when</span>: <span class="str">"'dist_switches' in group_names"</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Play 4: WAN Edge — NAT y ACLs</h2>
+  <div class="code-block">
+    <div class="code-label">site.yml — Play 4: Seguridad Perimetral</div>
+    <pre><code>- <span class="fn">name</span>: <span class="str">"PLAY 4: WAN Edge — NAT y ACLs"</span>
+  <span class="fn">hosts</span>: wan_routers
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+
+  <span class="fn">vars</span>:
+    <span class="fn">inside_interfaces</span>: [<span class="str">"GigabitEthernet0/0/0"</span>,<span class="str">"GigabitEthernet0/0/1"</span>]
+    <span class="fn">outside_interface</span>: <span class="str">"GigabitEthernet0/0/2"</span>
+
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"ACL: Permitir redes internas"</span>
+      <span class="fn">cisco.ios.ios_config</span>:
+        <span class="fn">lines</span>:
+          - <span class="str">"ip access-list extended NAT_ACL"</span>
+          - <span class="str">" permit ip 10.0.0.0 0.255.255.255 any"</span>
+          - <span class="str">" permit ip 192.168.0.0 0.0.255.255 any"</span>
+          - <span class="str">" deny ip any any log"</span>
+
+    - <span class="fn">name</span>: <span class="str">"NAT Inside Source Overload"</span>
+      <span class="fn">cisco.ios.ios_config</span>:
+        <span class="fn">lines</span>:
+          - <span class="str">"interface {{ outside_interface }}"</span>
+          - <span class="str">" ip nat outside"</span>
+      <span class="fn">parents</span>: <span class="str">"interface {{ outside_interface }}"</span>
+
+    - <span class="fn">name</span>: <span class="str">"Marcar interfaces inside"</span>
+      <span class="fn">cisco.ios.ios_config</span>:
+        <span class="fn">lines</span>:
+          - <span class="str">"interface {{ item }}"</span>
+          - <span class="str">" ip nat inside"</span>
+        <span class="fn">parents</span>: <span class="str">"interface {{ item }}"</span>
+      <span class="fn">loop</span>: <span class="str">"{{ inside_interfaces }}"</span>
+
+    - <span class="fn">name</span>: <span class="str">"PAT Overload"</span>
+      <span class="fn">cisco.ios.ios_config</span>:
+        <span class="fn">lines</span>:
+          - <span class="str">"ip nat inside source list NAT_ACL interface {{ outside_interface }} overload"</span>
+
+    - <span class="fn">name</span>: <span class="str">"ACL WAN: Bloquear Telnet y ICMP externo"</span>
+      <span class="fn">cisco.ios.ios_config</span>:
+        <span class="fn">lines</span>:
+          - <span class="str">"ip access-list extended WAN_INBOUND"</span>
+          - <span class="str">" remark Bloquear Telnet entrante"</span>
+          - <span class="str">" deny tcp any any eq 23 log"</span>
+          - <span class="str">" remark Permitir SSH desde management"</span>
+          - <span class="str">" permit tcp 10.255.1.0 0.0.0.255 any eq 22"</span>
+          - <span class="str">" deny icmp any any echo log"</span>
+          - <span class="str">" permit ip any any"</span>
+
+    - <span class="fn">name</span>: <span class="str">"Aplicar ACL en interfaz WAN"</span>
+      <span class="fn">cisco.ios.ios_config</span>:
+        <span class="fn">lines</span>: <span class="str">"ip access-group WAN_INBOUND in"</span>
+        <span class="fn">parents</span>: <span class="str">"interface {{ outside_interface }}"</span>
+
+    - <span class="fn">name</span>: <span class="str">"Ruta por defecto hacia ISP"</span>
+      <span class="fn">cisco.ios.ios_config</span>:
+        <span class="fn">lines</span>: <span class="str">"ip route 0.0.0.0 0.0.0.0 {{ outside_interface }} dhcp"</span></code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 4 — ROLES
+═══════════════════════════════════════════ -->
+<div id="tab-roles" class="ans1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Versión profesional con Roles Ansible</h2>
+  <p>En producción, un playbook monolítico de 400 líneas es difícil de mantener. Los <strong>roles</strong> permiten dividir el playbook en componentes reutilizables, testeables y versionables independientemente. Un role es simplemente una convención de directorios que Ansible reconoce automáticamente.</p>
+
+  <div class="file-tree">
+<span class="folder">proyecto_ccna/</span>
+├── <span class="file">site.yml</span>                    <span class="comment"># Orquestador principal</span>
+├── <span class="file">ansible.cfg</span>                <span class="comment"># forks=10, host_key_checking=False</span>
+├── <span class="file">inventory.yml</span>              <span class="comment"># Los 10 dispositivos</span>
+├── <span class="folder">group_vars/</span>
+│   └── <span class="file">all.yml</span>              <span class="comment"># Variables globales</span>
+├── <span class="folder">host_vars/</span>                 <span class="comment"># Variables específicas por nodo (opcional)</span>
+└── <span class="folder">roles/</span>
+    ├── <span class="folder">common/</span>              <span class="comment"># SSH, NTP, banners, usuarios</span>
+    │   ├── <span class="folder">tasks/</span>
+    │   │   └── <span class="file">main.yml</span>
+    │   └── <span class="folder">handlers/</span>
+    │       └── <span class="file">main.yml</span>
+    ├── <span class="folder">layer2/</span>              <span class="comment"># VLANs, trunks, port-security, STP</span>
+    │   ├── <span class="folder">tasks/</span>
+    │   │   └── <span class="file">main.yml</span>
+    │   └── <span class="folder">vars/</span>
+    │       └── <span class="file">main.yml</span>
+    ├── <span class="folder">layer3/</span>              <span class="comment"># IPs, OSPF, SVIs</span>
+    │   ├── <span class="folder">tasks/</span>
+    │   │   └── <span class="file">main.yml</span>
+    │   └── <span class="folder">templates/</span>
+    │       └── <span class="file">ospf_config.j2</span>
+    ├── <span class="folder">wan/</span>                 <span class="comment"># NAT, ACLs, default route</span>
+    │   └── <span class="folder">tasks/</span>
+    │       └── <span class="file">main.yml</span>
+    └── <span class="folder">verify/</span>              <span class="comment"># Tests post-despliegue</span>
+        └── <span class="folder">tasks/</span>
+            └── <span class="file">main.yml</span>
+  </div>
+
+  <h2 class="section-title">site.yml con roles</h2>
+  <div class="code-block">
+    <div class="code-label">site.yml — Orquestador limpio</div>
+    <pre><code><span class="kw">---</span>
+- <span class="fn">name</span>: <span class="str">"PROYECTO CCNA: Baseline común"</span>
+  <span class="fn">hosts</span>: cisco_all
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+  <span class="fn">roles</span>:
+    - <span class="fn">common</span>
+
+- <span class="fn">name</span>: <span class="str">"PROYECTO CCNA: Layer 2 Access"</span>
+  <span class="fn">hosts</span>: access_switches
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+  <span class="fn">roles</span>:
+    - <span class="fn">layer2</span>
+
+- <span class="fn">name</span>: <span class="str">"PROYECTO CCNA: Layer 3 Routing"</span>
+  <span class="fn">hosts</span>: core_routers:dist_switches:wan_routers
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+  <span class="fn">roles</span>:
+    - <span class="fn">layer3</span>
+
+- <span class="fn">name</span>: <span class="str">"PROYECTO CCNA: WAN Edge Security"</span>
+  <span class="fn">hosts</span>: wan_routers
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+  <span class="fn">roles</span>:
+    - <span class="fn">wan</span>
+
+- <span class="fn">name</span>: <span class="str">"PROYECTO CCNA: Verificación"</span>
+  <span class="fn">hosts</span>: cisco_all
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+  <span class="fn">roles</span>:
+    - <span class="fn">verify</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Role: common (hardening universal)</h2>
+  <div class="code-block">
+    <div class="code-label">roles/common/tasks/main.yml</div>
+    <pre><code><span class="kw">---</span>
+- <span class="fn">name</span>: <span class="str">"Hostname y domain"</span>
+  <span class="fn">cisco.ios.ios_config</span>:
+    <span class="fn">lines</span>:
+      - <span class="str">"hostname {{ inventory_hostname }}"</span>
+      - <span class="str">"ip domain name {{ domain_name }}"</span>
+      - <span class="str">"no ip domain-lookup"</span>
+    <span class="fn">save_when</span>: <span class="str">"changed"</span>
+
+- <span class="fn">name</span>: <span class="str">"Servicios de logging y encryption"</span>
+  <span class="fn">cisco.ios.ios_config</span>:
+    <span class="fn">lines</span>:
+      - <span class="str">"service password-encryption"</span>
+      - <span class="str">"service timestamps debug datetime msec"</span>
+      - <span class="str">"service timestamps log datetime msec"</span>
+
+- <span class="fn">name</span>: <span class="str">"Usuario admin y banner"</span>
+  <span class="fn">cisco.ios.ios_config</span>:
+    <span class="fn">lines</span>:
+      - <span class="str">'banner motd ^ACCESO RESTRINGIDO. Monitoreado por Ansible.^'</span>
+      - <span class="str">"username {{ local_username }} privilege 15 secret {{ local_password }}"</span>
+
+- <span class="fn">name</span>: <span class="str">"SSH v2 y VTY hardening"</span>
+  <span class="fn">cisco.ios.ios_config</span>:
+    <span class="fn">lines</span>:
+      - <span class="str">"ip ssh version 2"</span>
+      - <span class="str">"ip ssh time-out 60"</span>
+      - <span class="str">"line vty 0 15"</span>
+      - <span class="str">" transport input ssh"</span>
+      - <span class="str">" exec-timeout 5 0"</span>
+    <span class="fn">parents</span>: <span class="str">"line vty 0 15"</span>
+
+- <span class="fn">name</span>: <span class="str">"NTP y Syslog"</span>
+  <span class="fn">cisco.ios.ios_config</span>:
+    <span class="fn">lines</span>:
+      - <span class="str">"ntp server {{ ntp_server }}"</span>
+      - <span class="str">"logging {{ syslog_server }}"</span>
+      - <span class="str">"logging trap informational"</span>
+  <span class="fn">notify</span>: <span class="str">"save config"</span></code></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">roles/common/handlers/main.yml</div>
+    <pre><code><span class="kw">---</span>
+- <span class="fn">name</span>: <span class="str">"save config"</span>
+  <span class="fn">cisco.ios.ios_command</span>:
+    <span class="fn">commands</span>: <span class="str">"write memory"</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Role: layer2 (switching de acceso)</h2>
+  <div class="code-block">
+    <div class="code-label">roles/layer2/tasks/main.yml</div>
+    <pre><code><span class="kw">---</span>
+- <span class="fn">name</span>: <span class="str">"Asegurar VLANs existentes"</span>
+  <span class="fn">cisco.ios.ios_vlans</span>:
+    <span class="fn">config</span>:
+      - <span class="fn">vlan_id</span>: <span class="str">"{{ item.id }}"</span>
+        <span class="fn">name</span>: <span class="str">"{{ item.name }}"</span>
+    <span class="fn">state</span>: <span class="str">merged</span>
+  <span class="fn">loop</span>: <span class="str">"{{ vlans }}"</span>
+
+- <span class="fn">name</span>: <span class="str">"Uplinks trunk con native 99"</span>
+  <span class="fn">cisco.ios.ios_l2_interfaces</span>:
+    <span class="fn">config</span>:
+      - <span class="fn">name</span>: <span class="str">"GigabitEthernet1/0/1"</span>
+        <span class="fn">mode</span>: <span class="str">trunk</span>
+        <span class="fn">trunk</span>:
+          <span class="fn">allowed_vlans</span>: <span class="str">"10,20,30,99"</span>
+          <span class="fn">native_vlan</span>: <span class="num">99</span>
+    <span class="fn">state</span>: <span class="str">merged</span>
+
+- <span class="fn">name</span>: <span class="str">"Port-security sticky en access"</span>
+  <span class="fn">cisco.ios.ios_config</span>:
+    <span class="fn">lines</span>:
+      - <span class="str">"switchport port-security"</span>
+      - <span class="str">"switchport port-security maximum {{ port_security_max }}"</span>
+      - <span class="str">"switchport port-security violation {{ port_security_violation }}"</span>
+      - <span class="str">"switchport port-security mac-address sticky"</span>
+    <span class="fn">parents</span>: <span class="str">"interface {{ item }}"</span>
+  <span class="fn">loop</span>: <span class="str">"{{ access_interfaces | default(['GigabitEthernet1/0/2','GigabitEthernet1/0/3']) }}"</span>
+
+- <span class="fn">name</span>: <span class="str">"STP Rapid-PVST y BPDU Guard"</span>
+  <span class="fn">cisco.ios.ios_config</span>:
+    <span class="fn">lines</span>:
+      - <span class="str">"spanning-tree mode rapid-pvst"</span>
+      - <span class="str">"spanning-tree portfast default"</span>
+      - <span class="str">"spanning-tree portfast bpduguard default"</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Role: layer3 (routing OSPF)</h2>
+  <div class="code-block">
+    <div class="code-label">roles/layer3/tasks/main.yml</div>
+    <pre><code><span class="kw">---</span>
+- <span class="fn">name</span>: <span class="str">"Loopback0 como Router-ID"</span>
+  <span class="fn">cisco.ios.ios_config</span>:
+    <span class="fn">lines</span>:
+      - <span class="str">"interface Loopback0"</span>
+      - <span class="str">" ip address {{ ospf_router_id }} 255.255.255.255"</span>
+      - <span class="str">" ip ospf {{ ospf_process_id }} area {{ ospf_area }}"</span>
+
+- <span class="fn">name</span>: <span class="str">"Renderizar configuración OSPF desde Jinja2"</span>
+  <span class="fn">cisco.ios.ios_config</span>:
+    <span class="fn">src</span>: <span class="str">"ospf_config.j2"</span>
+
+- <span class="fn">name</span>: <span class="str">"SVI99 en switches distribution"</span>
+  <span class="fn">cisco.ios.ios_config</span>:
+    <span class="fn">lines</span>:
+      - <span class="str">"interface Vlan99"</span>
+      - <span class="str">" ip address 10.255.1.{{ ansible_host.split('.')[-1] }} 255.255.255.0"</span>
+      - <span class="str">" no shutdown"</span>
+  <span class="fn">when</span>: <span class="str">"'dist_switches' in group_names"</span></code></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">roles/layer3/templates/ospf_config.j2</div>
+    <pre><code>router ospf {{ ospf_process_id }}
+ router-id {{ ospf_router_id }}
+ passive-interface default
+{% for intf in ospf_active_interfaces | default(['GigabitEthernet0/0/0','GigabitEthernet0/0/1']) %}
+ no passive-interface {{ intf }}
+{% endfor %}
+ network 10.0.0.0 0.255.255.255 area {{ ospf_area }}
+ network 192.168.0.0 0.0.255.255 area {{ ospf_area }}</code></pre>
+  </div>
+
+  <h2 class="section-title">Role: wan (seguridad perimetral)</h2>
+  <div class="code-block">
+    <div class="code-label">roles/wan/tasks/main.yml</div>
+    <pre><code><span class="kw">---</span>
+- <span class="fn">name</span>: <span class="str">"ACL para NAT"</span>
+  <span class="fn">cisco.ios.ios_config</span>:
+    <span class="fn">lines</span>:
+      - <span class="str">"ip access-list extended NAT_ACL"</span>
+      - <span class="str">" permit ip 10.0.0.0 0.255.255.255 any"</span>
+      - <span class="str">" permit ip 192.168.0.0 0.0.255.255 any"</span>
+
+- <span class="fn">name</span>: <span class="str">"NAT Overload en interfaz outside"</span>
+  <span class="fn">cisco.ios.ios_config</span>:
+    <span class="fn">lines</span>:
+      - <span class="str">"interface {{ wan_outside_intf | default('GigabitEthernet0/0/2') }}"</span>
+      - <span class="str">" ip nat outside"</span>
+    <span class="fn">parents</span>: <span class="str">"interface {{ wan_outside_intf | default('GigabitEthernet0/0/2') }}"</span>
+
+- <span class="fn">name</span>: <span class="str">"NAT Inside en interfaces internas"</span>
+  <span class="fn">cisco.ios.ios_config</span>:
+    <span class="fn">lines</span>:
+      - <span class="str">"interface {{ item }}"</span>
+      - <span class="str">" ip nat inside"</span>
+    <span class="fn">parents</span>: <span class="str">"interface {{ item }}"</span>
+  <span class="fn">loop</span>: <span class="str">"{{ wan_inside_intfs | default(['GigabitEthernet0/0/0','GigabitEthernet0/0/1']) }}"</span>
+
+- <span class="fn">name</span>: <span class="str">"PAT overload rule"</span>
+  <span class="fn">cisco.ios.ios_config</span>:
+    <span class="fn">lines</span>:
+      - <span class="str">"ip nat inside source list NAT_ACL interface {{ wan_outside_intf | default('GigabitEthernet0/0/2') }} overload"</span>
+
+- <span class="fn">name</span>: <span class="str">"ACL WAN inbound y default route"</span>
+  <span class="fn">cisco.ios.ios_config</span>:
+    <span class="fn">lines</span>:
+      - <span class="str">"ip access-list extended WAN_INBOUND"</span>
+      - <span class="str">" deny tcp any any eq 23 log"</span>
+      - <span class="str">" permit tcp 10.255.1.0 0.0.0.255 any eq 22"</span>
+      - <span class="str">" deny icmp any any echo log"</span>
+      - <span class="str">" permit ip any any"</span>
+      - <span class="str">"ip route 0.0.0.0 0.0.0.0 {{ wan_outside_intf | default('GigabitEthernet0/0/2') }} dhcp"</span></code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Ventaja de los roles</div>
+    <p>Con roles, puedes testear <code>layer2</code> en un laboratorio de 2 switches sin tocar el resto de la red. También puedes compartir el role <code>common</code> con otros proyectos vía Ansible Galaxy o un repositorio Git privado. La separación de responsabilidades (SoC) es una práctica fundamental de ingeniería de software aplicada a redes.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 5 — EJECUCIÓN
+═══════════════════════════════════════════ -->
+<div id="tab-ejecucion" class="ans1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Ejecutando el despliegue masivo</h2>
+  <p>Ansible ejecuta tareas en paralelo por defecto (<code>forks=5</code>). Para 10 dispositivos, aumentar los forks a 10 reduce el tiempo total a menos de 2 minutos. Antes de tocar producción, siempre valida con <code>--check</code> (dry run) y <code>--diff</code>.</p>
+
+  <div class="code-block">
+    <div class="code-label">Comandos de ejecución y validación</div>
+    <pre><code><span class="cmt"># 1. Verificar conectividad a los 10 dispositivos</span>
+ansible cisco_all -i inventory.yml -m ping
+
+<span class="cmt"># 2. Dry-run: simular ejecución sin aplicar cambios</span>
+ansible-playbook site.yml -i inventory.yml --check --diff
+
+<span class="cmt"># 3. Ejecutar solo el baseline de seguridad</span>
+ansible-playbook site.yml -i inventory.yml --tags common
+
+<span class="cmt"># 4. Ejecutar solo en los access switches</span>
+ansible-playbook site.yml -i inventory.yml --limit access_switches
+
+<span class="cmt"># 5. Despliegue completo con 10 forks paralelos</span>
+ansible-playbook site.yml -i inventory.yml --forks 10
+
+<span class="cmt"># 6. Ejecutar con vault si las contraseñas están cifradas</span>
+ansible-playbook site.yml -i inventory.yml --ask-vault-pass
+
+<span class="cmt"># 7. Modo verbose para debug de una task específica</span>
+ansible-playbook site.yml -i inventory.yml -vvv --start-at-task <span class="str">"Crear VLANs"</span></code></pre>
+  </div>
+
+  <h2 class="section-title">ansible.cfg recomendado para el proyecto</h2>
+  <div class="code-block">
+    <div class="code-label">ansible.cfg — Optimizaciones de rendimiento</div>
+    <pre><code>[<span class="fn">defaults</span>]
+<span class="fn">inventory</span> = inventory.yml
+<span class="fn">forks</span> = <span class="num">10</span>
+<span class="fn">host_key_checking</span> = <span class="kw">False</span>
+<span class="fn">retry_files_enabled</span> = <span class="kw">False</span>
+<span class="fn">gathering</span> = <span class="str">explicit</span>
+<span class="fn">timeout</span> = <span class="num">30</span>
+
+[<span class="fn">persistent_connection</span>]
+<span class="fn">connect_timeout</span> = <span class="num">30</span>
+<span class="fn">command_timeout</span> = <span class="num">30</span>
+
+[<span class="fn">privilege_escalation</span>]
+<span class="fn">become</span> = <span class="kw">True</span>
+<span class="fn">become_method</span> = <span class="str">enable</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Estrategias de ejecución y manejo de errores</h2>
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">🎯</div>
+      <h3>--check (Dry Run)</h3>
+      <p>Predice cambios sin modificarlos. Usa el atributo <code>check_mode</code> de los módulos. No todos los módulos de red lo soportan al 100%, pero <code>ios_config</code> con <code>--diff</code> muestra el delta.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🏷️</div>
+      <h3>Tags y Limits</h3>
+      <p>Usa <code>--tags layer2</code> para ejecutar solo tareas etiquetadas, o <code>--limit CR1</code> para probar en un solo dispositivo antes del despliegue masivo.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🛡️</div>
+      <h3>any_errors_fatal</h3>
+      <p>Añade <code>any_errors_fatal: true</code> al play si un fallo en un dispositivo debe detener todo el pipeline (útil en migraciones críticas).</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">⏱️</div>
+      <h3>Serial y Throttle</h3>
+      <p><code>serial: 2</code> ejecuta en grupos de 2 (rolling update). <code>throttle: 1</code> en una task evita sobrecargar un servidor TFTP o syslog.</p>
+    </div>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚡ Advertencia de producción</div>
+    <p>Nunca ejecutes un playbook por primera vez en producción sin <code>--check --diff</code>. Los módulos <code>ios_config</code> con <code>replace: line</code> pueden sobrescribir configuraciones críticas. En redes live, usa <code>save_when: never</code> durante pruebas y programa ventanas de mantenimiento.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 6 — VERIFICACIÓN
+═══════════════════════════════════════════ -->
+<div id="tab-verificacion" class="ans1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Validación post-despliegue con assert</h2>
+  <p>Un despliegue sin verificación es un riesgo operacional. El proyecto incluye un play final de <strong>verificación</strong> que usa <code>ios_facts</code> y <code>assert</code> para confirmar que la red cumple el diseño antes de dar por terminada la ventana de mantenimiento.</p>
+
+  <div class="code-block">
+    <div class="code-label">roles/verify/tasks/main.yml — Tests automáticos</div>
+    <pre><code><span class="kw">---</span>
+- <span class="fn">name</span>: <span class="str">"RECOLECTAR: Facts de todos los dispositivos"</span>
+  <span class="fn">cisco.ios.ios_facts</span>:
+    <span class="fn">gather_subset</span>:
+      - <span class="str">"hardware"</span>
+      - <span class="str">"interfaces"</span>
+      - <span class="str">"config"</span>
+  <span class="fn">register</span>: <span class="str">"device_facts"</span>
+
+<span class="cmt"># ── TEST 1: SSH v2 está activo ──</span>
+- <span class="fn">name</span>: <span class="str">"ASSERT: SSH version 2 habilitado"</span>
+  <span class="fn">ansible.builtin.assert</span>:
+    <span class="fn">that</span>:
+      - <span class="str">"'ip ssh version 2' in device_facts.ansible_facts.ansible_net_config"</span>
+    <span class="fn">fail_msg</span>: <span class="str">"CRITICO: {{ inventory_hostname }} no tiene SSH v2"</span>
+    <span class="fn">success_msg</span>: <span class="str">"OK: SSH v2 verificado"</span>
+  <span class="fn">ignore_errors</span>: <span class="kw">yes</span>
+
+<span class="cmt"># ── TEST 2: VLANs existen en access switches ──</span>
+- <span class="fn">name</span>: <span class="str">"ASSERT: VLANs configuradas"</span>
+  <span class="fn">ansible.builtin.assert</span>:
+    <span class="fn">that</span>:
+      - <span class="str">"device_facts.ansible_facts.ansible_net_vlan is defined"</span>
+      - <span class="str">"device_facts.ansible_facts.ansible_net_vlan | length >= 4"</span>
+    <span class="fn">fail_msg</span>: <span class="str">"FALLO: Faltan VLANs en {{ inventory_hostname }}"</span>
+    <span class="fn">success_msg</span>: <span class="str">"OK: VLANs presentes"</span>
+  <span class="fn">when</span>: <span class="str">"'access_switches' in group_names"</span>
+  <span class="fn">ignore_errors</span>: <span class="kw">yes</span>
+
+<span class="cmt"># ── TEST 3: OSPF neighbors en routers ──</span>
+- <span class="fn">name</span>: <span class="str">"ASSERT: OSPF tiene vecinos establecidos"</span>
+  <span class="fn">cisco.ios.ios_command</span>:
+    <span class="fn">commands</span>: <span class="str">"show ip ospf neighbor"</span>
+  <span class="fn">register</span>: <span class="str">"ospf_nbr"</span>
+  <span class="fn">when</span>: <span class="str">"'core_routers' in group_names or 'dist_switches' in group_names or 'wan_routers' in group_names"</span>
+
+- <span class="fn">name</span>: <span class="str">"VALIDAR: Al menos 1 vecino OSPF FULL"</span>
+  <span class="fn">ansible.builtin.assert</span>:
+    <span class="fn">that</span>:
+      - <span class="str">"'FULL' in ospf_nbr.stdout[0]"</span>
+    <span class="fn">fail_msg</span>: <span class="str">"ALERTA: {{ inventory_hostname }} sin vecinos OSPF FULL"</span>
+    <span class="fn">success_msg</span>: <span class="str">"OK: OSPF FULL detectado"</span>
+  <span class="fn">when</span>: <span class="str">"ospf_nbr is defined"</span>
+  <span class="fn">ignore_errors</span>: <span class="kw">yes</span>
+
+<span class="cmt"># ── TEST 4: Interfaces críticas están UP ──</span>
+- <span class="fn">name</span>: <span class="str">"ASSERT: Uplinks operacionales"</span>
+  <span class="fn">ansible.builtin.assert</span>:
+    <span class="fn">that</span>:
+      - <span class="str">"device_facts.ansible_facts.ansible_net_interfaces[item].operstatus == 'up'"</span>
+    <span class="fn">fail_msg</span>: <span class="str">"CRITICO: {{ item }} está DOWN en {{ inventory_hostname }}"</span>
+  <span class="fn">loop</span>:
+    - <span class="str">"GigabitEthernet0/0/0"</span>
+    - <span class="str">"GigabitEthernet0/0/1"</span>
+  <span class="fn">ignore_errors</span>: <span class="kw">yes</span>
+
+<span class="cmt"># ── TEST 5: Port-security en access ──</span>
+- <span class="fn">name</span>: <span class="str">"ASSERT: Port-security configurado"</span>
+  <span class="fn">ansible.builtin.assert</span>:
+    <span class="fn">that</span>:
+      - <span class="str">"'switchport port-security' in device_facts.ansible_facts.ansible_net_config"</span>
+    <span class="fn">fail_msg</span>: <span class="str">"FALLO: Port-security no activo"</span>
+  <span class="fn">when</span>: <span class="str">"'access_switches' in group_names"</span>
+  <span class="fn">ignore_errors</span>: <span class="kw">yes</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Reporte de verificación ejecutivo</h2>
+  <p>Al finalizar el play de verify, puedes generar un resumen consolidado usando <code>delegate_to: localhost</code> y <code>run_once</code>:</p>
+
+  <div class="code-block">
+    <div class="code-label">reporte_verificacion.yml — Resumen final</div>
+    <pre><code><span class="kw">---</span>
+- <span class="fn">name</span>: <span class="str">"REPORTE: Estado del despliegue"</span>
+  <span class="fn">hosts</span>: cisco_all
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Recopolar estado"</span>
+      <span class="fn">cisco.ios.ios_facts</span>:
+        <span class="fn">gather_subset</span>: <span class="str">"hardware"</span>
+      <span class="fn">register</span>: <span class="str">"st"</span>
+
+    - <span class="fn">name</span>: <span class="str">"Agregar a reporte"</span>
+      <span class="fn">ansible.builtin.set_fact</span>:
+        <span class="fn">report_line</span>: <span class="str">"{{ inventory_hostname }} | {{ st.ansible_facts.ansible_net_version }} | {{ st.ansible_facts.ansible_net_model }} | OK"</span>
+
+  <span class="fn">post_tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Mostrar resumen"</span>
+      <span class="fn">ansible.builtin.debug</span>:
+        <span class="fn">msg</span>: <span class="str">"DESPLIEGUE COMPLETADO: {{ ansible_play_hosts | length }} dispositivos configurados."</span>
+      <span class="fn">delegate_to</span>: localhost
+      <span class="fn">run_once</span>: <span class="kw">yes</span></code></pre>
+  </div>
+
+  <div class="info-box info">
+    <div class="info-box-title">ℹ️ Golden Image vs. Golden Config</div>
+    <p>Este proyecto implementa una <strong>Golden Configuration</strong>: un template de configuración declarativa que define el estado deseado. No confundir con Golden Image (usado en servidores virtualizados). En redes Cisco, la configuración es texto; por eso Ansible con <code>ios_config</code> es la herramienta ideal.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 7 — REFERENCIA
+═══════════════════════════════════════════ -->
+<div id="tab-referencia" class="ans1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Tablas de referencia del proyecto</h2>
+  <div id="refTableAns7"></div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 8 — QUIZ
+═══════════════════════════════════════════ -->
+<div id="tab-quiz" class="ans1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Quiz — Proyecto Despliegue Masivo</h2>
+  <p style="font-size:.83rem;color:#6b7a9a;margin-bottom:20px;">10 preguntas estilo CCNA Domain 6.6 sobre arquitectura de red, idempotencia, OSPF con Ansible y seguridad perimetral.</p>
+  <div id="quizContainerAns7"></div>
+</div>
+</div>
+
+</div><!-- /.tabs-wrap -->
+
+<script>
+// ── NAVEGACIÓN DRAWER ────────────────────────────────
+function ccnaToggle() {
+  document.getElementById('ccnaDrawer').classList.toggle('open');
+  document.getElementById('ccnaOverlay').classList.toggle('show');
+}
+function ccnaClose() {
+  document.getElementById('ccnaDrawer').classList.remove('open');
+  document.getElementById('ccnaOverlay').classList.remove('show');
+}
+
+// ── TABS ──────────────────────────────────────────────
+function showTabAns1(id, btn) {
+  document.querySelectorAll('.ans1-tab-content').forEach(t => t.classList.remove('ans1-active'));
+  document.querySelectorAll('.ans1-tab-btn').forEach(b => b.classList.remove('ans1-active'));
+  document.getElementById('tab-' + id).classList.add('ans1-active');
+  if (btn) btn.classList.add('ans1-active');
+}
+
+// ── TABLA DE REFERENCIA ──────────────────────────────
+function buildRefTableAns7() {
+  var container = document.getElementById('refTableAns7');
+  if (!container) return;
+
+  var secciones = [
+    {
+      titulo: 'DISPOSITIVOS DEL PROYECTO',
+      cols: ['Hostname','Rol','Capa','Tecnologías Ansible'],
+      filas: [
+        ['CR1, CR2','Core Router','Layer 3','ios_config (OSPF, Loopback, SSH)'],
+        ['DS1, DS2','Dist Switch','Layer 2/3','ios_vlans, ios_l2_interfaces, OSPF'],
+        ['AS1-AS4','Access Switch','Layer 2','ios_vlans, port-security, rapid-pvst'],
+        ['WAN-R1, WAN-R2','WAN Edge','Layer 3','NAT, ACLs, static routes']
+      ]
+    },
+    {
+      titulo: 'VARIABLES CLAVE DEL PROYECTO',
+      cols: ['Variable','Ubicación','Propósito'],
+      filas: [
+        ['vlans','group_vars/all.yml','Lista de diccionarios con id y name de VLANs'],
+        ['ospf_process_id','group_vars/all.yml','Identificador del proceso OSPF (1)'],
+        ['ospf_router_id','host_vars o inventory','Router-ID único por dispositivo'],
+        ['port_security_max','group_vars/all.yml','Máximo de MACs por puerto access'],
+        ['local_password','vault','Contraseña cifrada del usuario admin local']
+      ]
+    },
+    {
+      titulo: 'MÓDULOS UTILIZADOS EN EL PROYECTO',
+      cols: ['Módulo','Play/Role','Función'],
+      filas: [
+        ['cisco.ios.ios_config','common, layer3, wan','Configuración genérica de IOS'],
+        ['cisco.ios.ios_vlans','layer2','Gestión declarativa de VLAN database'],
+        ['cisco.ios.ios_l2_interfaces','layer2','Configuración de modo access/trunk'],
+        ['cisco.ios.ios_facts','verify','Recolección de facts para validación'],
+        ['cisco.ios.ios_command','verify','Ejecución de comandos show para asserts'],
+        ['ansible.builtin.assert','verify','Validación de políticas post-despliegue']
+      ]
+    },
+    {
+      titulo: 'COMANDOS DE EJECUCIÓN',
+      cols: ['Comando','Contexto'],
+      filas: [
+        ['ansible-playbook site.yml --check --diff','Dry run antes de producción'],
+        ['ansible-playbook site.yml --forks 10','Despliegue paralelo completo'],
+        ['ansible-playbook site.yml --tags common','Solo baseline de seguridad'],
+        ['ansible-playbook site.yml --limit WAN-R1','Prueba en un solo dispositivo'],
+        ['ansible-playbook site.yml --start-at-task "Crear VLANs"','Reanudar desde una task']
+      ]
+    }
+  ];
+
+  var html = '';
+  secciones.forEach(function(sec) {
+    html += '<h3 style="font-family:Orbitron,sans-serif;font-size:.8rem;color:#ef4444;letter-spacing:2px;margin:24px 0 10px;text-transform:uppercase;">▸ ' + sec.titulo + '</h3>';
+    html += '<div class="table-wrap"><table class="ref-table"><thead><tr>';
+    sec.cols.forEach(function(c) { html += '<th>' + c + '</th>'; });
+    html += '</tr></thead><tbody>';
+    sec.filas.forEach(function(f) {
+      html += '<tr>';
+      f.forEach(function(c) { html += '<td>' + c + '</td>'; });
+      html += '</tr>';
+    });
+    html += '</tbody></table></div>';
+  });
+  container.innerHTML = html;
+}
+
+// ── QUIZ ─────────────────────────────────────────────
+function initQuizAns7() {
+  var container = document.getElementById('quizContainerAns7');
+  if (!container) return;
+
+  var qs = [
+    {
+      q: 'En el proyecto, ¿por qué los Access Switches (AS1-AS4) no tienen definida una variable ospf_router_id?',
+      opts: ['Porque usan EIGRP en lugar de OSPF','Porque operan en Layer 2 y no participan en routing','Porque Ansible lo genera automáticamente','Porque usan BGP como protocolo de routing'],
+      ans: 1,
+      exp: 'Los <strong>Access Switches</strong> operan puramente en Layer 2 (VLANs, trunks, port-security). No requieren Router-ID porque no ejecutan OSPF; el routing se delega a los switches Distribution mediante SVIs.'
+    },
+    {
+      q: '¿Qué propiedad de Ansible garantiza que ejecutar el playbook dos veces no cause errores ni cambios innecesarios?',
+      opts: ['Parallel forking','Agentless architecture','Idempotencia','Push model'],
+      ans: 2,
+      exp: 'La <strong>idempotencia</strong> es la propiedad clave: si el estado deseado ya existe, Ansible reporta <code>ok</code> sin volver a aplicar la configuración. Esto evita downtime y acumulación de comandos duplicados.'
+    },
+    {
+      q: 'En el play de WAN Edge, ¿por qué se usa NAT overload (PAT) en lugar de NAT estático?',
+      opts: ['Porque PAT es más seguro que NAT estático','Para permitir que múltiples hosts internos compartan una única IP pública','Porque el examen CCNA lo exige así','Para evitar configurar ACLs'],
+      ans: 1,
+      exp: 'El <strong>NAT overload (PAT)</strong> traduce múltiples direcciones privadas (10.0.0.0/8, 192.168.0.0/16) a una sola IP pública usando diferentes puertos TCP/UDP. Es el estándar en edge routers corporativos.'
+    },
+    {
+      q: '¿Cuál es la ventaja principal de dividir el playbook monolítico en roles (common, layer2, layer3, wan)?',
+      opts: ['Reduce el número de dispositivos gestionados','Permite reutilizar, testear y versionar cada componente independientemente','Elimina la necesidad de un inventario','Hace que Ansible no requiera SSH'],
+      ans: 1,
+      exp: 'Los <strong>roles</strong> aplican el principio de separación de responsabilidades. Puedes testear <code>layer2</code> en un lab sin afectar routing, compartir <code>common</code> entre proyectos, y mantener el código modular.'
+    },
+    {
+      q: 'En la verificación post-despliegue, ¿qué módulo permite validar que "ip ssh version 2" existe en la configuración?',
+      opts: ['ios_command con grep','ios_facts inspeccionando ansible_net_config','debug con var','template con Jinja2'],
+      ans: 1,
+      exp: '<code>ios_facts</code> con <code>gather_subset: config</code> expone <code>ansible_net_config</code>, que contiene el running-config completo como string. El assert verifica si la línea deseada está presente.'
+    },
+    {
+      q: '¿Qué comando permite simular la ejecución del playbook sin aplicar cambios reales en los 10 dispositivos?',
+      opts: ['ansible-playbook site.yml --limit test','ansible-playbook site.yml --check','ansible-playbook site.yml --diff','ansible-playbook site.yml --verbose'],
+      ans: 1,
+      exp: 'La opción <strong>--check</strong> ejecuta el playbook en modo dry-run. Ansible reporta qué cambiaría (<code>changed</code>) pero no envía comandos de configuración al dispositivo.'
+    },
+    {
+      q: 'En el proyecto, ¿por qué se configura "passive-interface default" en OSPF y luego se excluyen interfaces específicas?',
+      opts: ['Para evitar enviar hellos OSPF por interfaces que no tienen vecinos','Para reducir el tamaño de la LSDB','Para permitir BGP en esas interfaces','Porque es un requisito de NAT'],
+      ans: 0,
+      exp: '<strong>passive-interface default</strong> evita que OSPF envíe paquetes de saludo por todas las interfaces. Solo se habilitan activamente las interfaces punto a punto hacia otros routers, reduciendo tráfico innecesario y mejorando seguridad.'
+    },
+    {
+      q: '¿Qué función cumple el handler "save config" en el role common?',
+      opts: ['Reinicia el dispositivo','Ejecuta "write memory" solo si alguna task generó un cambio','Crea un backup en el Control Node','Borra la configuración antigua'],
+      ans: 1,
+      exp: 'Los <strong>handlers</strong> se disparan únicamente cuando una task notifica un cambio (<code>notify: save config</code>). Si el playbook es idempotente y no hay cambios, el handler no se ejecuta, evitando writes innecesarios en NVRAM.'
+    },
+    {
+      q: 'En los access switches, ¿qué función cumple "switchport port-security mac-address sticky"?',
+      opts: ['Bloquea el puerto inmediatamente','Aprende dinámicamente la primera MAC y la guarda en running-config','Permite hasta 50 direcc MAC','Desactiva el spanning-tree'],
+      ans: 1,
+      exp: '<strong>Sticky</strong> aprende la primera MAC que transmite por el puerto y la convierte en una entrada estática en la configuración. Combina flexibilidad de despliegue con seguridad de MAC fija.'
+    },
+    {
+      q: 'El proyecto usa VLAN 99 como native en los trunks. ¿Por qué es una buena práctica de seguridad?',
+      opts: ['Porque la 99 es más rápida que la 1','Para evitar VLAN hopping nativo que explota la VLAN 1 por defecto','Porque la VLAN 1 no soporta trunking','Para reducir broadcast domains'],
+      ans: 1,
+      exp: 'La <strong>VLAN 1</strong> es la native por defecto y es blanco frecuente de ataques de VLAN hopping (802.1Q double-tagging). Cambiar la native a una VLAN no utilizada (99) y pruning adecuado mitiga este vector de ataque.'
+    }
+  ];
+
+  var html = '';
+  qs.forEach(function(q, i) {
+    html += '<div class="quiz-question" id="qans7' + i + '">' +
+      '<div class="quiz-q-num">PREGUNTA ' + (i+1) + ' DE ' + qs.length + ' · M8 ANSIBLE TEMA 7</div>' +
+      '<div class="quiz-q-text">' + q.q + '</div>' +
+      '<div class="quiz-opts">';
+    q.opts.forEach(function(o, j) {
+      html += '<button class="quiz-opt" data-qi="' + i + '" data-sel="' + j + '" data-ans="' + q.ans + '">' + o + '</button>';
+    });
+    html += '</div></div>';
+  });
+  container.innerHTML = html;
+
+  window._ans7Exp = {};
+  qs.forEach(function(q, i) { window._ans7Exp[i] = q.exp; });
+
+  container.querySelectorAll('.quiz-opt').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var qi  = parseInt(this.dataset.qi);
+      var sel = parseInt(this.dataset.sel);
+      var ans = parseInt(this.dataset.ans);
+      var qDiv = document.getElementById('qans7' + qi);
+      var btns = qDiv.querySelectorAll('.quiz-opt');
+
+      btns.forEach(function(b) { b.disabled = true; });
+      btns[sel].classList.add(sel === ans ? 'correct' : 'wrong');
+      if (sel !== ans) btns[ans].classList.add('correct');
+
+      var expDiv = document.createElement('div');
+      expDiv.className = 'quiz-explanation';
+      expDiv.innerHTML = '<strong>' + (sel===ans ? '✅ Correcto!' : '❌ Incorrecto.') + '</strong> ' + window._ans7Exp[qi];
+      qDiv.appendChild(expDiv);
+    });
+  });
+}
+
+// ── INICIALIZACIÓN ────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  buildRefTableAns7();
+  initQuizAns7();
+});
+</script>
+</body>
+</html>
