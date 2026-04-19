@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ansible — Arquitectura y Conceptos · M8 T1 | CCNA Academy</title>
+  <meta name="description" content="Clase magistral de Ansible desde cero. Arquitectura agentless, Control Node vs Managed Nodes, SSH, diferencias con Chef y Puppet. CCNA Domain 6.6.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── ANSIBLE ACCENT TOKENS ── */
+:root{ --ansible:#ef4444; --ansible-d:#dc2626; --ansible-glow:rgba(239,68,68,.12); }
+
+/* ── BASE ── */
+body{font-family:'Exo 2',sans-serif;background:#07090f;color:#e2e8f0;margin:0;}
+.class-hero{background:linear-gradient(135deg,#06080f 0%,#080d18 60%,#0a1020 100%);}
+
+/* ── HERO ── */
+.class-hero{padding:56px 24px 48px;border-bottom:1px solid rgba(239,68,68,.08);position:relative;overflow:hidden;}
+.class-hero::before{content:'';position:absolute;top:-60px;right:-80px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(239,68,68,.06) 0%,transparent 70%);pointer-events:none;}
+.class-hero-inner{max-width:900px;margin:0 auto;position:relative;z-index:1;}
+.class-badge{font-family:'Share Tech Mono',monospace;font-size:.63rem;color:#ef4444;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;}
+.class-title{font-family:'Orbitron',sans-serif;font-size:clamp(1.6rem,3.8vw,2.6rem);font-weight:900;letter-spacing:3px;color:#c2d0e8;margin-bottom:12px;line-height:1.1;}
+.class-title-accent{background:linear-gradient(135deg,#ef4444,#dc2626);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.class-subtitle{font-size:.92rem;color:#6b7a9a;line-height:1.72;margin-bottom:20px;max-width:700px;}
+.class-meta{display:flex;gap:12px;flex-wrap:wrap;}
+.meta-item{font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#4a5780;padding:4px 10px;border:1px solid rgba(239,68,68,.15);border-radius:4px;}
+
+/* ── TABS ── */
+.ans1-tabs-wrap{max-width:1100px;margin:0 auto;padding:0 16px 40px;}
+.ans1-tabs-bar{display:flex;gap:4px;padding:20px 0 0;flex-wrap:wrap;border-bottom:1px solid rgba(239,68,68,.12);margin-bottom:0;}
+.ans1-tab-btn{padding:8px 13px;border-radius:8px 8px 0 0;font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#4a5780;background:none;border:1px solid transparent;cursor:pointer;transition:all .18s;white-space:nowrap;border-bottom:none;}
+.ans1-tab-btn:hover{color:#c2d0e8;background:rgba(239,68,68,.06);}
+.ans1-tab-btn.ans1-active{color:#ef4444;background:#0d1220;border-color:rgba(239,68,68,.25);border-bottom:1px solid #0d1220;}
+.ans1-tab-content{display:none;background:#0d1220;border:1px solid rgba(239,68,68,.08);border-top:none;border-radius:0 0 12px 12px;padding:32px;}
+.ans1-tab-content.ans1-active{display:block;}
+.content-block{max-width:880px;}
+.section-title{font-family:'Orbitron',sans-serif;font-size:.95rem;color:#ef4444;letter-spacing:2px;margin:28px 0 14px;padding-bottom:8px;border-bottom:1px solid rgba(239,68,68,.15);}
+.section-title:first-child{margin-top:0;}
+p{color:#8294b8;line-height:1.75;margin-bottom:14px;font-size:.9rem;}
+ul,ol{color:#8294b8;padding-left:1.4rem;margin-bottom:14px;font-size:.9rem;}
+li{margin-bottom:5px;line-height:1.65;}
+strong{color:#c2d0e8;}
+code{font-family:'Share Tech Mono',monospace;font-size:.82rem;background:rgba(239,68,68,.1);color:#ef4444;padding:1px 6px;border-radius:4px;border:1px solid rgba(239,68,68,.2);}
+
+/* INFO BOXES */
+.info-box{border-radius:8px;padding:14px 18px;margin:18px 0;border-left:3px solid;}
+.info-box.tip{background:rgba(239,68,68,.06);border-color:#ef4444;}
+.info-box.warning{background:rgba(251,191,36,.05);border-color:#fbbf24;}
+.info-box-title{font-family:'Share Tech Mono',monospace;font-size:.73rem;color:#ef4444;margin-bottom:8px;}
+.info-box.warning .info-box-title{color:#fbbf24;}
+
+/* CODE BLOCKS */
+.code-block{background:#050810;border:1px solid rgba(239,68,68,.15);border-left:3px solid #ef4444;border-radius:8px;padding:0;margin:16px 0;overflow:hidden;}
+.code-label{background:rgba(239,68,68,.08);padding:8px 16px;font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#4a5780;letter-spacing:2px;text-transform:uppercase;border-bottom:1px solid rgba(239,68,68,.1);}
+.code-block pre{margin:0;padding:18px;overflow-x:auto;}
+.code-block code{background:none;border:none;padding:0;color:#a8b4c8;font-size:.79rem;line-height:1.8;display:block;}
+
+/* SYNTAX */
+.cmt{color:#3a4a60;font-style:italic;}
+.kw {color:#c792ea;}
+.fn {color:#82aaff;}
+.str{color:#c3e88d;}
+.num{color:#f78c6c;}
+
+/* CONCEPT GRID */
+.concept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin:16px 0;}
+.concept-card{background:#090d1a;border:1px solid rgba(239,68,68,.1);border-radius:10px;padding:16px;}
+.concept-icon{font-size:1.8rem;margin-bottom:8px;}
+.concept-card h3{font-family:'Share Tech Mono',monospace;font-size:.77rem;color:#ef4444;margin-bottom:8px;}
+.concept-card p{font-size:.8rem;margin:0;}
+
+/* ARCHITECTURE DIAGRAM */
+.ans-flow{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin:20px 0;padding:20px;background:#090d1a;border-radius:10px;border:1px solid rgba(239,68,68,.1);}
+.ans-box{background:#0d1220;border:1px solid rgba(239,68,68,.2);border-radius:8px;padding:14px 18px;text-align:center;min-width:110px;}
+.ans-box-label{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:#ef4444;margin-bottom:4px;}
+.ans-box-val{font-size:.8rem;color:#c2d0e8;}
+.ans-arrow{font-size:1.4rem;color:#ef4444;}
+
+/* TABLE */
+.table-wrap{overflow-x:auto;margin:16px 0;}
+.ref-table{width:100%;border-collapse:collapse;font-size:.8rem;}
+.ref-table th{background:#090d1a;color:#ef4444;font-family:'Share Tech Mono',monospace;font-size:.67rem;padding:10px 12px;text-align:left;border:1px solid rgba(239,68,68,.15);letter-spacing:1px;}
+.ref-table td{padding:9px 12px;border:1px solid rgba(255,255,255,.04);color:#8294b8;}
+.ref-table tr:hover td{background:rgba(239,68,68,.04);}
+.ref-table code{font-size:.77rem;}
+
+/* QUIZ */
+.quiz-question{background:#090d1a;border:1px solid rgba(239,68,68,.12);border-radius:10px;padding:20px;margin-bottom:14px;}
+.quiz-q-num{font-family:'Share Tech Mono',monospace;font-size:.62rem;color:#374060;margin-bottom:8px;}
+.quiz-q-text{font-size:.9rem;color:#c2d0e8;margin-bottom:14px;line-height:1.6;}
+.quiz-opts{display:flex;flex-direction:column;gap:7px;}
+.quiz-opt{padding:10px 14px;border-radius:7px;border:1px solid rgba(239,68,68,.12);background:#0d1220;color:#6b7a9a;cursor:pointer;font-size:.84rem;text-align:left;transition:all .15s;font-family:'Exo 2',sans-serif;}
+.quiz-opt:hover:not(:disabled){border-color:rgba(239,68,68,.4);color:#c2d0e8;}
+.quiz-opt.correct{border-color:#34d399;background:rgba(52,211,153,.08);color:#34d399;}
+.quiz-opt.wrong{border-color:#f87171;background:rgba(248,113,113,.08);color:#f87171;}
+.quiz-explanation{margin-top:10px;padding:10px 14px;background:rgba(239,68,68,.07);border-left:3px solid #ef4444;border-radius:6px;font-size:.82rem;color:#a0aec0;line-height:1.65;}
+
+/* COMPARE TABLE */
+.compare-highlight{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);}
+.compare-highlight td{color:#c2d0e8 !important;}
+
+/* NAV & DRAWER */
+.navbar{position:fixed;top:0;left:0;right:0;height:56px;background:#080a10;border-bottom:1px solid rgba(239,68,68,.1);display:flex;align-items:center;padding:0 24px;z-index:1000;}
+.navbar-toggle{background:none;border:1px solid rgba(239,68,68,.3);color:#ef4444;padding:6px 12px;border-radius:6px;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:.75rem;margin-right:16px;}
+.navbar-brand{font-family:'Orbitron',sans-serif;font-weight:700;color:#ef4444;text-decoration:none;font-size:1.1rem;}
+.navbar-brand span{color:#dc2626;}
+.navbar-spacer{flex:1;}
+.navbar-link{color:#6b7a9a;text-decoration:none;font-size:.8rem;transition:color .2s;}
+.navbar-link:hover{color:#c2d0e8;}
+.nav-spacer{height:56px;}
+.ccna-drawer{position:fixed;top:0;left:0;bottom:0;width:280px;background:#0d1220;border-right:1px solid rgba(239,68,68,.2);transform:translateX(-100%);transition:transform .3s;z-index:2000;overflow-y:auto;}
+.ccna-drawer.open{transform:translateX(0);}
+.ccna-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);opacity:0;visibility:hidden;transition:all .3s;z-index:1500;}
+.ccna-overlay.show{opacity:1;visibility:visible;}
+.drawer-header{padding:20px;border-bottom:1px solid rgba(239,68,68,.2);display:flex;justify-content:space-between;align-items:center;}
+.drawer-header h2{font-family:'Orbitron',sans-serif;font-size:.8rem;color:#ef4444;margin:0;letter-spacing:2px;}
+.drawer-close{background:none;border:none;color:#6b7a9a;font-size:1.2rem;cursor:pointer;}
+.drawer-section{padding:16px;border-bottom:1px solid rgba(239,68,68,.1);}
+.drawer-section-title{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#374060;margin-bottom:12px;letter-spacing:1px;text-transform:uppercase;}
+.drawer-link{display:block;padding:10px 12px;color:#8294b8;text-decoration:none;font-size:.85rem;border-radius:6px;transition:all .2s;margin-bottom:4px;}
+.drawer-link:hover{background:rgba(239,68,68,.1);color:#c2d0e8;}
+.drawer-link.active{background:rgba(239,68,68,.2);color:#ef4444;border-left:3px solid #ef4444;}
+.dl-icon{margin-right:8px;}
+
+@media(max-width:680px){
+  .ans1-tab-btn{font-size:.6rem;padding:6px 9px;}
+  .ans1-tab-content{padding:18px 12px;}
+  .concept-grid{grid-template-columns:1fr;}
+  .ans-flow{flex-direction:column;}
+}
+</style>
+</head>
+<body>
+
+<div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
+<nav class="ccna-drawer" id="ccnaDrawer">
+  <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
+  <div class="drawer-section"><div class="drawer-section-title">General</div>
+    <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M1 · Fundamentos</div>
+    <a href="fundamentos.html" class="drawer-link"><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
+    <a href="subnetting.html"  class="drawer-link"><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
+    <a href="ipv6.html"        class="drawer-link"><span class="dl-icon">6️⃣</span> IPv6</a>
+    <a href="arp.html"         class="drawer-link"><span class="dl-icon">📡</span> ARP</a>
+    <a href="rip.html"         class="drawer-link"><span class="dl-icon">🔄</span> RIP</a>
+    <a href="protocolos-internet.html" class="drawer-link"><span class="dl-icon">🌍</span> Protocolos Internet</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M2 · Dispositivos Cisco</div>
+    <a href="router.html"         class="drawer-link"><span class="dl-icon">📡</span> Routers Cisco</a>
+    <a href="switches-cisco.html" class="drawer-link"><span class="dl-icon">🔀</span> Switches Cisco</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M3 · Switching</div>
+    <a href="vlan.html"               class="drawer-link"><span class="dl-icon">🏷️</span> VLANs</a>
+    <a href="inter-vlan-routing.html" class="drawer-link"><span class="dl-icon">🔁</span> Inter-VLAN Routing</a>
+    <a href="stp.html"                class="drawer-link"><span class="dl-icon">🌳</span> STP</a>
+    <a href="etherchannel.html"       class="drawer-link"><span class="dl-icon">🔗</span> EtherChannel</a>
+    <a href="port-security.html"      class="drawer-link"><span class="dl-icon">🔒</span> Port Security</a>
+    <a href="cdp-lldp.html"           class="drawer-link"><span class="dl-icon">🔍</span> CDP / LLDP</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M4 · Routing</div>
+    <a href="routing.html"            class="drawer-link"><span class="dl-icon">🗺️</span> Routing Estático</a>
+    <a href="ospf.html"               class="drawer-link"><span class="dl-icon">⭕</span> OSPF</a>
+    <a href="eigrp.html"              class="drawer-link"><span class="dl-icon">⚡</span> EIGRP</a>
+    <a href="ospfv2-masterclass.html" class="drawer-link"><span class="dl-icon">🎯</span> OSPFv2 Masterclass</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M5 · Servicios IP</div>
+    <a href="dhcp.html" class="drawer-link"><span class="dl-icon">📋</span> DHCP</a>
+    <a href="nat.html"  class="drawer-link"><span class="dl-icon">🔄</span> NAT / PAT</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M6 · Seguridad</div>
+    <a href="acl.html" class="drawer-link"><span class="dl-icon">🛡️</span> ACLs</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M7 · WAN &amp; QoS</div>
+    <a href="wan.html" class="drawer-link"><span class="dl-icon">🌍</span> WAN</a>
+    <a href="qos.html" class="drawer-link"><span class="dl-icon">📊</span> QoS</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M8 · Automatización</div>
+    <a href="m8-automatizacion.html" class="drawer-link"><span class="dl-icon">🤖</span> M8 — Vista General</a>
+    <a href="python-redes.html"      class="drawer-link"><span class="dl-icon">🐍</span> Python para Redes</a>
+    <a href="json-datos.html"        class="drawer-link"><span class="dl-icon">📋</span> JSON y Datos</a>
+    <a href="rest-apis.html"         class="drawer-link"><span class="dl-icon">🌐</span> REST APIs</a>
+    <a href="ansible-redes.html"     class="drawer-link"><span class="dl-icon">⚙️</span> Ansible</a>
+    <a href="ansible-tema1.html"     class="drawer-link active"><span class="dl-icon">⚙️</span> T1 — Arquitectura Ansible</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">⚡ Herramientas</div>
+    <a href="asistente.html"          class="drawer-link"><span class="dl-icon">🤖</span> Asistente IA</a>
+    <a href="netbot.html"             class="drawer-link"><span class="dl-icon">⚙️</span> NetBot Config</a>
+    <a href="calculadora.html"        class="drawer-link"><span class="dl-icon">🧮</span> Calculadora IP</a>
+    <a href="../laboratorios-pkt.html"   class="drawer-link"><span class="dl-icon">🧪</span> Labs Packet Tracer</a>
+    <a href="../banco-preguntas.html" class="drawer-link"><span class="dl-icon">📝</span> Banco de Preguntas</a></div>
+</nav>
+
+<header class="navbar">
+  <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
+  <a href="../index.html" class="navbar-brand">CISCO<span> ACADEMY</span></a>
+  <div class="navbar-spacer"></div>
+  <a href="ansible-redes.html" class="navbar-link">← Ansible Hub</a>
+</header>
+<div class="nav-spacer"></div>
+
+<!-- HERO -->
+<section class="class-hero" style="border-bottom:1px solid rgba(239,68,68,.2);">
+  <div class="class-hero-inner">
+    <div class="class-badge" style="color:#ef4444;">M8 · AUTOMATIZACIÓN · ANSIBLE · TEMA 1 DE 7</div>
+    <h1 class="class-title">ANSIBLE <span class="class-title-accent">— Arquitectura y Conceptos</span></h1>
+    <p class="class-subtitle">La herramienta de automatización definitiva para infraestructura de red. Entiende su filosofía agentless, domina la arquitectura de Control Node y Managed Nodes, y aprende por qué redes Cisco eligen Ansible frente a Chef o Puppet para orquestar cientos de dispositivos sin instalar un solo agente.</p>
+    <div class="class-meta">
+      <span class="meta-item" style="border-color:rgba(239,68,68,.2);color:#ef4444;">⚙️ Agentless</span>
+      <span class="meta-item">🎯 CCNA Domain 6.6</span>
+      <span class="meta-item">⏱ ~90 min lectura</span>
+      <span class="meta-item">🔐 SSH / WinRM</span>
+      <span class="meta-item">📋 YAML</span>
+    </div>
+  </div>
+</section>
+
+<!-- TABS -->
+<div class="ans1-tabs-wrap">
+  <div class="ans1-tabs-bar">
+    <button class="ans1-tab-btn ans1-active" onclick="showTabAns1('intro',this)">⚙️ Intro</button>
+    <button class="ans1-tab-btn" onclick="showTabAns1('agentless',this)">🔌 Agentless</button>
+    <button class="ans1-tab-btn" onclick="showTabAns1('arquitectura',this)">🏗️ Arquitectura</button>
+    <button class="ans1-tab-btn" onclick="showTabAns1('ssh',this)">🔐 SSH & APIs</button>
+    <button class="ans1-tab-btn" onclick="showTabAns1('vschef',this)">⚖️ vs Chef/Puppet</button>
+    <button class="ans1-tab-btn" onclick="showTabAns1('instalacion',this)">💻 Instalación</button>
+    <button class="ans1-tab-btn" onclick="showTabAns1('referencia',this)">📊 Ref</button>
+    <button class="ans1-tab-btn" onclick="showTabAns1('quiz',this)">🎯 Quiz</button>
+  </div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 1 — INTRO
+═══════════════════════════════════════════ -->
+<div id="tab-intro" class="ans1-tab-content ans1-active">
+<div class="content-block">
+  <h2 class="section-title">¿Qué es Ansible y por qué revolucionó la automatización?</h2>
+  <p><strong>Ansible</strong> es una plataforma de automatización de código abierto creada por <strong>Michael DeHaan</strong> en 2012 y adquirida por Red Hat en 2015. Su propósito es gestionar la configuración de sistemas, desplegar aplicaciones y orquestar tareas complejas de infraestructura usando un lenguaje declarativo basado en <strong>YAML</strong>.</p>
+  <p>A diferencia de los scripts Python tradicionales que <em>describen cómo</em> hacer algo paso a paso (imperativo), Ansible usa <strong>playbooks</strong> que declaran <em>el estado deseado</em> del sistema (declarativo). Tú dices: "Quiero que el switch tenga la VLAN 10 configurada"; Ansible se encarga de decidir si debe crearla, modificarla o dejarla tal cual.</p>
+  <p>En el contexto de redes Cisco, Ansible se ha convertido en el estándar de facto porque permite gestionar simultáneamente <strong>routers, switches, firewalls y controladores Wi-Fi</strong> usando los mismos playbooks, sin importar si el dispositivo ejecuta IOS, IOS-XE, NX-OS o incluso sistemas de otros fabricantes.</p>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Concepto clave del examen CCNA</div>
+    <p>El dominio 6.6 del examen CCNA 200-301 evalúa tu capacidad para distinguir herramientas de gestión de configuración. La pregunta más frecuente sobre Ansible es: <em>\"¿Cuál es la característica diferenciadora de Ansible frente a Chef o Puppet?\"</em> La respuesta correcta siempre es: <strong>es agentless (no requiere instalar software en los nodos gestionados)</strong>.</p>
+  </div>
+
+  <h2 class="section-title">Infrastructure as Code (IaC) en redes</h2>
+  <p>Antes de Ansible, configurar 50 switches era un proceso manual: conectarte por SSH a cada uno, pegar comandos, validar, documentar en Excel. Con Ansible, ese mismo proceso se convierte en:</p>
+  <ol>
+    <li>Un <strong>inventario</strong> que lista tus 50 switches (IPs o nombres).</li>
+    <li>Un <strong>playbook YAML</strong> que declara la configuración deseada (VLANs, trunks, SSH, NTP).</li>
+    <li>Una <strong>ejecución única</strong> que aplica los cambios en paralelo a todos los dispositivos.</li>
+    <li>Un <strong>log idempotente</strong>: si vuelves a ejecutar el playbook, Ansible detecta que ya está configurado y no hace cambios innecesarios.</li>
+  </ol>
+  <p>Esto es <strong>Infraestructura como Código (IaC)</strong>: tu red se versiona en Git, se audita con pull requests y se despliega con pipelines CI/CD, exactamente igual que el software.</p>
+
+  <h2 class="section-title">¿Por qué Ansible en redes Cisco?</h2>
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">🔌</div>
+      <h3>Agentless</h3>
+      <p>No instalarás nada en tus routers o switches. Solo necesitas IP reachable y credenciales SSH. Ideal para equipos con poco almacenamiento o CPU.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">📋</div>
+      <h3>YAML Legible</h3>
+      <p>Sintaxis limpia y legible incluso para ingenieros de red sin background de desarrollo. Un playbook es más fácil de entender que un script Python de 200 líneas.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🎯</div>
+      <h3>Idempotencia</h3>
+      <p>Ejecuta el playbook 1 vez o 100 veces: el resultado final es idéntico. Ansible solo aplica cambios cuando detecta desviación del estado deseado.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🧩</div>
+      <h3>Módulos Oficiales Cisco</h3>
+      <p>La colección <code>cisco.ios</code> provee módulos certificados: <code>ios_config</code>, <code>ios_command</code>, <code>ios_vlans</code>, etc. Soportados directamente por Cisco.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">⚡</div>
+      <h3>Ejecución Paralela</h3>
+      <p>Por defecto, Ansible se conecta a 5 dispositivos simultáneamente (<code>forks=5</code>). Configurar 100 switches toma minutos, no horas.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🔒</div>
+      <h3>Seguridad Integrada</h3>
+      <p>Soporta Ansible Vault para cifrar contraseñas y claves SSH. Integración con LDAP/AD y privilegios sudo escalables.</p>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 2 — AGENTLESS
+═══════════════════════════════════════════ -->
+<div id="tab-agentless" class="ans1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">El paradigma Agentless: cero software en el destino</h2>
+  <p>La característica más importante de Ansible —y la que más preguntas genera en el examen CCNA— es que es <strong>agentless</strong>, es decir, <em>sin agente</em>. Esto significa que no necesitas instalar ningún demonio, servicio o binario permanente en los dispositivos gestionados (Managed Nodes).</p>
+  <p>¿Cómo es posible? Ansible utiliza protocolos de gestión remotos que ya existen en prácticamente cualquier sistema operativo o dispositivo de red:</p>
+  <ul>
+    <li><strong>SSH</strong> (predeterminado): Para routers, switches y servidores Linux/Unix.</li>
+    <li><strong>WinRM</strong>: Para servidores Windows (PowerShell remoto).</li>
+    <li><strong>HTTP/HTTPS APIs</strong>: Para controladores cloud como Meraki, DNA Center o ACI.</li>
+    <li><strong>NETCONF / RESTCONF</strong>: Para equipos Cisco modernos con modelos YANG.</li>
+  </ul>
+
+  <div class="ans-flow">
+    <div class="ans-box"><div class="ans-box-label">CONTROL NODE</div><div class="ans-box-val">Ansible Engine</div></div>
+    <div class="ans-arrow">→ SSH / API →</div>
+    <div class="ans-box"><div class="ans-box-label">MANAGED NODE</div><div class="ans-box-val">Switch Cisco IOS</div></div>
+  </div>
+
+  <h2 class="section-title">Implicaciones de ser Agentless</h2>
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">✅</div>
+      <h3>Bajo consumo de recursos</h3>
+      <p>Los routers y switches Cisco tienen CPU y memoria limitadas. No desperdiciarás recursos en un agente permanente como ocurre con Puppet o Chef.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">✅</div>
+      <h3>Menor superficie de ataque</h3>
+      <p>Menos software instalado = menos vulnerabilidades. No hay demonio escuchando en un puerto adicional que pueda ser explotado.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">✅</div>
+      <h3>Despliegue inmediato</h3>
+      <p>Añade un nuevo switch a tu inventario y ejecútalo. No necesitas preparar el dispositivo ni instalar nada previamente. Zero-touch automation.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">⚠️</div>
+      <h3>Control Node centralizado</h3>
+      <p>Toda la lógica y las credenciales residen en el nodo de control. Debes protegerlo como el activo más crítico de tu red.</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">¿Qué transporta Ansible durante la conexión?</h2>
+  <p>Cuando Ansible se conecta por SSH a un switch Cisco, el flujo es:</p>
+  <ol>
+    <li>El Control Node abre una conexión SSH hacia el switch usando las credenciales del inventario.</li>
+    <li>Ansible copia temporalmente un <strong>módulo Python</strong> pequeño (o un script shell si el objetivo no tiene Python) al dispositivo, usualmente en <code>/tmp</code> o en la memoria flash.</li>
+    <li>Ejecuta el módulo, recoge el resultado en formato JSON y lo transfiere de vuelta al Control Node.</li>
+    <li>Limpia los archivos temporales y cierra la sesión SSH.</li>
+  </ol>
+  <p>En dispositivos de red Cisco que no permiten escribir en filesystem de forma estándar, Ansible utiliza conexiones persistentes de tipo <code>network_cli</code> que ejecutan comandos directamente vía shell interactiva sin copiar archivos.</p>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚡ Trampa frecuente en el examen</div>
+    <p><em>\"Ansible requiere Python instalado en los nodos gestionados\"</em> → <strong>Falso</strong>. Aunque algunos módulos prefieren Python en el target (especialmente en servidores Linux), para dispositivos de red Cisco Ansible usa conexiones CLI/SSH nativas o APIs HTTP que no requieren intérprete Python en el switch.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 3 — ARQUITECTURA
+═══════════════════════════════════════════ -->
+<div id="tab-arquitectura" class="ans1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Anatomía de Ansible: Control Node y Managed Nodes</h2>
+  <p>La arquitectura de Ansible es asimétrica y deliberadamente simple. Se compone de dos actores principales y varios componentes internos que orquestan la magia.</p>
+
+  <div class="ans-flow">
+    <div class="ans-box" style="border-color:rgba(239,68,68,.4);background:rgba(239,68,68,.08);">
+      <div class="ans-box-label">CONTROL NODE (1)</div>
+      <div class="ans-box-val">Ansible Instalado</div>
+      <div style="font-size:.65rem;color:#8294b8;margin-top:4px;">Inventario · Playbooks · Módulos · Plugins</div>
+    </div>
+    <div class="ans-arrow">→ SSH / API →</div>
+    <div class="ans-box">
+      <div class="ans-box-label">MANAGED NODES (N)</div>
+      <div class="ans-box-val">Routers, Switches</div>
+      <div style="font-size:.65rem;color:#8294b8;margin-top:4px;">IOS · IOS-XE · NX-OS · Linux</div>
+    </div>
+  </div>
+
+  <h2 class="section-title">Componentes del Control Node</h2>
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">📄</div>
+      <h3>Inventory</h3>
+      <p>Archivo INI o YAML que define los managed nodes. Puedes agrupar por función: <code>[cisco_routers]</code>, <code>[cisco_switches]</code>, asignar variables por host y por grupo.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">📋</div>
+      <h3>Playbooks</h3>
+      <p>Archivos YAML que contienen uno o más "plays". Cada play mapea un grupo de hosts a un conjunto de tareas (tasks) ejecutadas por módulos.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🧩</div>
+      <h3>Módulos</h3>
+      <p>Unidades de trabajo reutilizables. Ejemplos de red: <code>ios_config</code>, <code>ios_command</code>, <code>nxos_vlans</code>, <code>vyos_config</code>. Cada módulo es idempotente.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">⚡</div>
+      <h3>Plugins</h3>
+      <p>Extienden la funcionalidad core: inventarios dinámicos (de AWS, Azure, NetBox), callbacks para logging, estrategias de ejecución (linear, free, debug).</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">📁</div>
+      <h3>Roles</h3>
+      <p>Estructura de directorios estandarizada para organizar playbooks complejos. Un role contiene tasks, variables, templates, files y handlers en carpetas separadas.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🔒</div>
+      <h3>Ansible Vault</h3>
+      <p>Cifrado AES-256 para proteger datos sensibles (passwords, keys) dentro de playbooks e inventarios. Integrado nativamente.</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">El Inventario: el mapa de tu infraestructura</h2>
+  <p>El inventario es el punto de partida. Sin él, Ansible no sabe a dónde conectarse. Puede ser un archivo estático o un script/plugin dinámico.</p>
+
+  <div class="code-block">
+    <div class="code-label">inventory.ini — Ejemplo práctico para red Cisco</div>
+    <pre><code><span class="cmt"># Grupos lógicos de dispositivos</span>
+[<span class="fn">cisco_routers</span>]
+R1 ansible_host=<span class="num">192.168.1.1</span>
+R2 ansible_host=<span class="num">192.168.1.2</span>
+
+[<span class="fn">cisco_switches</span>]
+SW1 ansible_host=<span class="num">192.168.1.10</span>
+SW2 ansible_host=<span class="num">192.168.1.11</span>
+SW3 ansible_host=<span class="num">192.168.1.12</span>
+
+[<span class="fn">cisco:children</span>]
+cisco_routers
+cisco_switches
+
+<span class="cmt"># Variables por grupo (todas las conexiones usarán SSH)</span>
+[<span class="fn">cisco:vars</span>]
+ansible_network_os=ios
+ansible_connection=network_cli
+ansible_user=admin
+ansible_ssh_pass=<span class="str">"{{ vault_cisco_pass }}"</span>
+ansible_become=yes
+ansible_become_method=enable</code></pre>
+  </div>
+
+  <h2 class="section-title">Flujo de ejecución de un Playbook</h2>
+  <ol>
+    <li><strong>Parseo:</strong> Ansible lee el playbook YAML y el inventario.</li>
+    <li><strong>Determinación de hosts:</strong> Identifica qué managed nodes están incluidos en el play.</li>
+    <li><strong>Forking:</strong> Crea procesos paralelos (hijos) para conectarse a múltiples hosts simultáneamente.</li>
+    <li><strong> Gathering Facts (opcional):</strong> Recopila información del sistema (en servidores Linux), o usa <code>ios_facts</code> en redes.</li>
+    <li><strong>Ejecución de Tasks:</strong> Por cada tarea, ejecuta el módulo correspondiente y espera el resultado JSON.</li>
+    <li><strong>Idempotencia:</strong> Si el estado actual coincide con el deseado, el módulo reporta <code>ok</code> sin hacer cambios. Si difiere, aplica el cambio y reporta <code>changed</code>.</li>
+    <li><strong>Handlers:</strong> Si alguna task generó un cambio, se disparan handlers (ej. guardar configuración con <code>write memory</code>).</li>
+  </ol>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Tip de arquitectura para el examen</div>
+    <p>El examen CCNA puede preguntarte quién inicia la comunicación. En Ansible, el <strong>Control Node inicia siempre la conexión hacia los Managed Nodes</strong> (modelo push). Nunca al revés. Esto es distinto a Puppet, donde el agente en el nodo inicia la conexión hacia el master (modelo pull).</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 4 — SSH & APIs
+═══════════════════════════════════════════ -->
+<div id="tab-ssh" class="ans1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Conectividad: SSH, NETCONF, RESTCONF y HTTPAPI</h2>
+  <p>Ansible no impone un único método de conexión. Para redes Cisco, dispones de varios plugins de conexión que se adaptan a la capacidad del dispositivo y a tus requisitos de seguridad.</p>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">🔐</div>
+      <h3>network_cli (SSH)</h3>
+      <p>El método más compatible. Usa SSH para enviar comandos CLI directamente. Funciona en casi cualquier Cisco con IOS/IOS-XE/NX-OS. No requiere APIs ni modelos YANG.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">📡</div>
+      <h3>netconf</h3>
+      <p>Protocolo basado en SSH (puerto 830) que usa XML para configurar y monitorear dispositivos con modelos YANG. Idempotencia nativa y transacciones atómicas.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🌐</div>
+      <h3>httpapi / RESTCONF</h3>
+      <p>Usa HTTPS (puerto 443/8443) con payloads JSON/XML. Requiere que el dispositivo exponga una API REST (IOS-XE 16.x+, NX-OS 9K). Más eficiente para JSON parsing.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">💻</div>
+      <h3>local</h3>
+      <p>Ansible ejecuta el módulo localmente en el Control Node y este interactúa con la API del dispositivo (útil para Meraki, DNA Center, controladores cloud).</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">Comparativa de plugins de conexión Cisco</h2>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead>
+        <tr><th>Plugin</th><th>Protocolo</th><th>Puerto</th><th>Formato</th><th>Requisito Device</th><th>Idempotencia</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>network_cli</code></td><td>SSH</td><td>22</td><td>Texto CLI</td><td>IOS/IOS-XE/NX-OS básico</td><td>Limitada*</td></tr>
+        <tr><td><code>netconf</code></td><td>SSH + XML</td><td>830</td><td>XML/YANG</td><td>NETCONF habilitado</td><td>Nativa</td></tr>
+        <tr><td><code>httpapi</code></td><td>HTTPS</td><td>443/8443</td><td>JSON/XML</td><td>RESTCONF / API abierta</td><td>Nativa</td></tr>
+        <tr><td><code>local</code></td><td>HTTPS/HTTP</td><td>Variable</td><td>JSON</td><td>API endpoint (Meraki, etc.)</td><td>Depende de API</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:.75rem;color:#4a5780;">* <code>network_cli</code> logra idempotencia comparando la configuración actual con la deseada antes de enviar comandos, pero depende de la implementación del módulo.</p>
+
+  <h2 class="section-title">Configuración de conexión en el inventario</h2>
+  <div class="code-block">
+    <div class="code-label">inventory_ssh_vs_api.yml — Múltiples métodos</div>
+    <pre><code><span class="kw">all</span>:
+  <span class="fn">children</span>:
+    <span class="fn">ios_legacy</span>:
+      <span class="fn">hosts</span>:
+        <span class="fn">R1</span>:
+          <span class="fn">ansible_host</span>: <span class="num">10.0.0.1</span>
+      <span class="fn">vars</span>:
+        <span class="fn">ansible_connection</span>: network_cli
+        <span class="fn">ansible_network_os</span>: ios
+        <span class="fn">ansible_user</span>: admin
+
+    <span class="fn">iosxe_modern</span>:
+      <span class="fn">hosts</span>:
+        <span class="fn">CSR1k</span>:
+          <span class="fn">ansible_host</span>: <span class="num">10.0.0.10</span>
+      <span class="fn">vars</span>:
+        <span class="fn">ansible_connection</span>: httpapi
+        <span class="fn">ansible_network_os</span>: ios
+        <span class="fn">ansible_httpapi_use_ssl</span>: <span class="kw">yes</span>
+        <span class="fn">ansible_httpapi_validate_certs</span>: <span class="kw">no</span>
+        <span class="fn">ansible_user</span>: admin
+        <span class="fn">ansible_password</span>: <span class="str">Cisco123</span>
+
+    <span class="fn">nxos_switch</span>:
+      <span class="fn">hosts</span>:
+        <span class="fn">N9K1</span>:
+          <span class="fn">ansible_host</span>: <span class="num">10.0.0.20</span>
+      <span class="fn">vars</span>:
+        <span class="fn">ansible_connection</span>: network_cli
+        <span class="fn">ansible_network_os</span>: nxos
+        <span class="fn">ansible_user</span>: admin</code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚡ Seguridad en producción</div>
+    <p>Nunca uses <code>ansible_ssh_pass</code> en texto plano en producción. Las mejores prácticas son: (1) <strong>SSH keys</strong> para Linux, (2) <strong>ansible-vault</strong> para cifrar contraseñas de red, o (3) un <strong>Credential Vault</strong> externo como HashiCorp Vault o CyberArk integrado con AWX/Tower.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 5 — VS CHEF/PUPPET
+═══════════════════════════════════════════ -->
+<div id="tab-vschef" class="ans1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Ansible vs. Chef vs. Puppet: la batalla de la automatización</h2>
+  <p>El examen CCNA 200-301 (Domain 6.6) espera que conozcas las diferencias fundamentales entre las tres grandes herramientas de gestión de configuración. No necesitas ser experto en Chef o Puppet, pero sí distinguir sus arquitecturas.</p>
+
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead>
+        <tr><th>Característica</th><th>Ansible</th><th>Chef</th><th>Puppet</th></tr>
+      </thead>
+      <tbody>
+        <tr class="compare-highlight"><td><strong>Arquitectura</strong></td><td>Agentless (SSH/API)</td><td>Agente + Chef Server</td><td>Agente + Puppet Master</td></tr>
+        <tr><td><strong>Lenguaje</strong></td><td>YAML (Playbooks)</td><td>Ruby DSL (Recipes/Cookbooks)</td><td>Ruby DSL (Manifests)</td></tr>
+        <tr><td><strong>Modelo</strong></td><td>Push (el master envía)</td><td>Pull (el nodo solicita)</td><td>Pull (el nodo solicita)</td></tr>
+        <tr><td><strong>Curva de aprendizaje</strong></td><td>Baja (YAML legible)</td><td>Alta (Ruby + conceptos)</td><td>Media-Alta (DSL propio)</td></tr>
+        <tr><td><strong>Requisito en nodos</strong></td><td>Ninguno (solo SSH/WinRM)</td><td>Chef Client instalado</td><td>Puppet Agent instalado</td></tr>
+        <tr><td><strong>Idempotencia</strong></td><td>Sí (módulos nativos)</td><td>Sí (recursos declarativos)</td><td>Sí (modelo deseado)</td></tr>
+        <tr><td><strong>Orquestación</strong></td><td>Excelente (playbooks secuenciales)</td><td>Moderada (chef-run)</td><td>Moderada (bolt/tasks)</td></tr>
+        <tr><td><strong>Comunidad en Redes</strong></td><td>Muy alta (colecciones Cisco)</td><td>Baja</td><td>Baja-Media</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="section-title">Desglose por arquitectura</h2>
+
+  <h3 style="color:#ef4444;font-family:'Orbitron',sans-serif;font-size:.85rem;letter-spacing:1px;margin-top:24px;">▸ ANSIBLE — El push agentless</h3>
+  <p>Ansible opera desde un único punto (Control Node). Tú ejecutas <code>ansible-playbook</code> y el sistema contacta a cada nodo vía SSH para imponer el estado deseado. No hay demonios corriendo en los routers; no hay "latido" o heartbeat constante. Esto lo hace ideal para redes donde no quieres ni puedes instalar software en el endpoint.</p>
+
+  <h3 style="color:#fbbf24;font-family:'Orbitron',sans-serif;font-size:.85rem;letter-spacing:1px;margin-top:24px;">▸ CHEF — La receta del chef</h3>
+  <p>Chef usa una metáfora culinaria: tienes <strong>recipes</strong> (recetas) que se agrupan en <strong>cookbooks</strong> (libros de cocina). El nodo gestionado debe tener instalado el <strong>Chef Client</strong>, que periódicamente contacta al Chef Server para descargar su configuración y aplicarla. Todo se escribe en Ruby DSL. Es poderoso para servidores cloud, pero excesivo para un switch Cisco.</p>
+
+  <h3 style="color:#38bdf8;font-family:'Orbitron',sans-serif;font-size:.85rem;letter-spacing:1px;margin-top:24px;">▸ PUPPET — El titiritero</h3>
+  <p>Puppet también requiere un <strong>agente</strong> en cada nodo. El agente se conecta al <strong>Puppet Master</strong>, envía un reporte de su estado actual (facts) y recibe un <strong>catálogo</strong> (catalog) con los recursos que debe aplicar. Usa su propio lenguaje declarativo basado en Ruby. Al igual que Chef, el modelo pull implica que si el master cae, los nodos no pueden recibir configuraciones nuevas hasta que vuelva.</p>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Analogía para recordar en el examen</div>
+    <ul>
+      <li><strong>Ansible</strong> es como un <em>profesor que va de pupitre en pupitre</em> repartiendo hojas (push, agentless).</li>
+      <li><strong>Puppet</strong> es como un <em>sistema de mochilas inteligentes</em> que cada alumno debe tener y que periodicamente se sincronizan con la oficina (pull, agente obligatorio).</li>
+      <li><strong>Chef</strong> es similar a Puppet pero con <em>recetas de cocina</em> más que con catálogos (pull, agente obligatorio, Ruby).</li>
+    </ul>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚡ Pregunta tipo examen CCNA</div>
+    <p><em>\"Una empresa necesita gestionar configuraciones de red sin instalar software adicional en routers y switches. ¿Qué herramienta recomendarías?\"</em></p>
+    <p>Respuesta: <strong>Ansible</strong>. Chef y Puppet requieren agentes que, en muchos dispositivos de red Cisco, ni siquiera pueden instalarse por falta de soporte de Ruby o permisos de sistema.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 6 — INSTALACIÓN
+═══════════════════════════════════════════ -->
+<div id="tab-instalacion" class="ans1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Instalación práctica del Control Node</h2>
+  <p>Ansible está escrito en Python y se instala típicamente en una máquina Linux (Ubuntu, RHEL, CentOS). También funciona en macOS y Windows (vía WSL). Para el examen CCNA no necesitas memorizar los comandos de instalación, pero sí entender los requisitos y la verificación.</p>
+
+  <div class="code-block">
+    <div class="code-label">Ubuntu / Debian — Instalación oficial</div>
+    <pre><code><span class="cmt"># Actualizar repositorios</span>
+sudo apt update && sudo apt upgrade -y
+
+<span class="cmt"># Instalar dependencias</span>
+sudo apt install -y software-properties-common
+
+<span class="cmt"># Añadir repositorio oficial de Ansible (recomendado)</span>
+sudo add-apt-repository --yes --update ppa:ansible/ansible
+
+<span class="cmt"># Instalar Ansible</span>
+sudo apt install -y ansible
+
+<span class="cmt"># Verificar instalación</span>
+ansible --version</code></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">RHEL / CentOS / Fedora</div>
+    <pre><code><span class="cmt"># RHEL 8+ usa dnf</span>
+sudo dnf install -y ansible
+
+<span class="cmt"># O vía pip (universal pero no recomendado para producción)</span>
+pip3 install ansible
+
+<span class="cmt"># Verificar que el binario esté en PATH</span>
+which ansible
+ansible --version | <span class="fn">head</span> -n <span class="num">1</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Instalación de colecciones Cisco</h2>
+  <p>Ansible separa el core de las colecciones específicas de plataformas. Para gestionar Cisco IOS, debes instalar la colección <code>cisco.ios</code> desde Ansible Galaxy:</p>
+
+  <div class="code-block">
+    <div class="code-label">Galaxy — Instalar colección oficial Cisco</div>
+    <pre><code><span class="cmt"># Instalar la colección cisco.ios (routers y switches IOS/IOS-XE)</span>
+ansible-galaxy collection install cisco.ios
+
+<span class="cmt"># Instalar colección NX-OS para switches de datacenter</span>
+ansible-galaxy collection install cisco.nxos
+
+<span class="cmt"># Ver colecciones instaladas</span>
+ansible-galaxy collection list | <span class="fn">grep</span> cisco</code></pre>
+  </div>
+
+  <h2 class="section-title">Primer comando: ansible ad-hoc</h2>
+  <p>Antes de escribir playbooks, puedes probar conectividad con comandos <strong>ad-hoc</strong> (de un solo uso). El módulo <code>ping</code> verifica que Ansible pueda conectarse; el módulo <code>ios_command</code> ejecuta <code>show</code> commands en switches.</p>
+
+  <div class="code-block">
+    <div class="code-label">Prueba de conectividad ad-hoc</div>
+    <pre><code><span class="cmt"># Ping a todos los hosts del inventario (módulo ping, no ICMP)</span>
+ansible all -i inventory.ini -m ping
+
+<span class="cmt"># Ejecutar 'show version' en todos los switches Cisco</span>
+ansible cisco_switches -i inventory.ini -m ios_command -a <span class="str">"commands='show version'"</span>
+
+<span class="cmt"># Ver facts de un router Cisco</span>
+ansible R1 -i inventory.ini -m ios_facts -a <span class="str">"gather_subset=hardware"</span></code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Estructura de directorios recomendada</div>
+    <pre style="background:none;border:none;padding:0;color:#8294b8;font-size:.82rem;line-height:1.6;">
+proyecto_ansible/
+├── ansible.cfg          # Configuración global (forks, timeouts, inventory default)
+├── inventory/
+│   ├── production.ini   # Inventario de producción
+│   └── group_vars/
+│       └── cisco.yml    # Variables por grupo
+├── playbooks/
+│   └── backup_config.yml
+├── roles/
+│   └── base_cisco/
+└── vault/
+    └── secrets.yml      # Credenciales cifradas con ansible-vault
+    </pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 7 — REFERENCIA
+═══════════════════════════════════════════ -->
+<div id="tab-referencia" class="ans1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Tabla de Referencia — Arquitectura Ansible</h2>
+  <div id="refTableAns1"></div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 8 — QUIZ
+═══════════════════════════════════════════ -->
+<div id="tab-quiz" class="ans1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Quiz — Arquitectura y Conceptos Ansible</h2>
+  <p style="font-size:.83rem;color:#6b7a9a;margin-bottom:20px;">10 preguntas estilo CCNA Domain 6.6. Evalúa tu comprensión de arquitectura agentless, componentes y diferencias con otras herramientas.</p>
+  <div id="quizContainerAns1"></div>
+</div>
+</div>
+
+</div><!-- /.tabs-wrap -->
+
+<script>
+// ── NAVEGACIÓN DRAWER ────────────────────────────────
+function ccnaToggle() {
+  document.getElementById('ccnaDrawer').classList.toggle('open');
+  document.getElementById('ccnaOverlay').classList.toggle('show');
+}
+function ccnaClose() {
+  document.getElementById('ccnaDrawer').classList.remove('open');
+  document.getElementById('ccnaOverlay').classList.remove('show');
+}
+
+// ── TABS ──────────────────────────────────────────────
+function showTabAns1(id, btn) {
+  document.querySelectorAll('.ans1-tab-content').forEach(t => t.classList.remove('ans1-active'));
+  document.querySelectorAll('.ans1-tab-btn').forEach(b => b.classList.remove('ans1-active'));
+  document.getElementById('tab-' + id).classList.add('ans1-active');
+  if (btn) btn.classList.add('ans1-active');
+}
+
+// ── TABLA DE REFERENCIA ──────────────────────────────
+function buildRefTable() {
+  var container = document.getElementById('refTableAns1');
+  if (!container) return;
+
+  var secciones = [
+    {
+      titulo: 'COMPONENTES CORE DE ANSIBLE',
+      cols: ['Componente','Función','Ejemplo en Redes'],
+      filas: [
+        ['Control Node','Máquina donde se instala Ansible y se ejecutan playbooks.','Servidor Ubuntu con Ansible.'],
+        ['Managed Nodes','Dispositivos gestionados. No requieren agente.','Routers Cisco, Switches NX-OS.'],
+        ['Inventory','Lista de hosts y grupos. INI o YAML.','[cisco_routers] con IPs y credenciales.'],
+        ['Playbook','Archivo YAML con plays, tasks y handlers.','backup_config.yml'],
+        ['Task','Unidad atómica de trabajo dentro de un play.','- ios_config: lines: "hostname R1"'],
+        ['Module','Código que ejecuta la tarea en el nodo.','ios_command, ios_config, nxos_vlans'],
+        ['Role','Estructura reutilizable de directorios.','role: base_cisco (tasks, vars, templates)'],
+        ['Handler','Tarea disparada por notificación tras un cambio.','Guardar config con "write memory"'],
+        ['Plugin','Extensión de core: conexión, inventario, filtro.','network_cli, httpapi, csvfile lookup.'],
+        ['Vault','Cifrado AES-256 para datos sensibles.','ansible-vault encrypt secrets.yml']
+      ]
+    },
+    {
+      titulo: 'DIFERENCIAS CLAVE CCNA DOMAIN 6.6',
+      cols: ['Característica','Ansible','Chef','Puppet'],
+      filas: [
+        ['Agente requerido','No (Agentless)','Sí (Chef Client)','Sí (Puppet Agent)'],
+        ['Lenguaje','YAML','Ruby DSL','Ruby DSL'],
+        ['Modelo de ejecución','Push','Pull','Pull'],
+        ['Curva de aprendizaje','Baja','Alta','Media-Alta'],
+        ['Ideal para redes Cisco','Excelente','Limitado','Limitado'],
+        ['Protocolo típico','SSH / API','HTTPS a Chef Server','HTTPS a Puppet Master']
+      ]
+    },
+    {
+      titulo: 'PLUGINS DE CONEXIÓN PARA REDES CISCO',
+      cols: ['Plugin','Protocolo','Puerto','Caso de uso'],
+      filas: [
+        ['network_cli','SSH','22','Compatibilidad universal IOS/IOS-XE/NX-OS.'],
+        ['netconf','SSH + XML','830','Configuración YANG, transacciones atómicas.'],
+        ['httpapi','HTTPS','443','RESTCONF en IOS-XE 16.x+, respuestas JSON.'],
+        ['local','HTTP/S','Variable','APIs externas: Meraki, DNA Center, vManage.']
+      ]
+    },
+    {
+      titulo: 'COMANDOS CLI ESENCIALES',
+      cols: ['Comando','Descripción'],
+      filas: [
+        ['ansible --version','Muestra versión, ruta de config y módulos.'],
+        ['ansible all -m ping','Prueba de conectividad a todos los hosts.'],
+        ['ansible-playbook site.yml','Ejecuta un playbook.'],
+        ['ansible-playbook site.yml --check','Modo simulación (dry run).'],
+        ['ansible-playbook site.yml --limit R1','Ejecuta solo en el host R1.'],
+        ['ansible-galaxy collection install cisco.ios','Instala colección oficial Cisco.'],
+        ['ansible-vault create secrets.yml','Crea archivo cifrado para contraseñas.'],
+        ['ansible-inventory --graph','Visualiza grupos y hosts del inventario.']
+      ]
+    }
+  ];
+
+  var html = '';
+  secciones.forEach(function(sec) {
+    html += '<h3 style="font-family:Orbitron,sans-serif;font-size:.8rem;color:#ef4444;letter-spacing:2px;margin:24px 0 10px;text-transform:uppercase;">▸ ' + sec.titulo + '</h3>';
+    html += '<div class="table-wrap"><table class="ref-table"><thead><tr>';
+    sec.cols.forEach(function(c) { html += '<th>' + c + '</th>'; });
+    html += '</tr></thead><tbody>';
+    sec.filas.forEach(function(f) {
+      html += '<tr>';
+      f.forEach(function(c) { html += '<td>' + c + '</td>'; });
+      html += '</tr>';
+    });
+    html += '</tbody></table></div>';
+  });
+  container.innerHTML = html;
+}
+
+// ── QUIZ ─────────────────────────────────────────────
+function initQuiz() {
+  var container = document.getElementById('quizContainerAns1');
+  if (!container) return;
+
+  var qs = [
+    {
+      q: '¿Cuál es la característica diferenciadora principal de Ansible frente a Chef y Puppet?',
+      opts: ['Usa YAML en lugar de JSON','Es agentless (no requiere software en los nodos)','Es más antiguo que las otras','Solo funciona en Linux'],
+      ans: 1,
+      exp: 'La respuesta clave del examen CCNA es <strong>agentless</strong>. Chef y Puppet requieren instalar un agente en cada nodo gestionado; Ansible solo necesita SSH o API access.'
+    },
+    {
+      q: 'En la arquitectura de Ansible, ¿qué componente aloja los playbooks y ejecuta las tareas?',
+      opts: ['Managed Node','Control Node','Ansible Agent','Puppet Master'],
+      ans: 1,
+      exp: 'El <strong>Control Node</strong> es la máquina donde está instalado Ansible y desde donde se disparan las conexiones hacia los Managed Nodes via SSH/API.'
+    },
+    {
+      q: '¿Qué protocolo de transporte usa Ansible por defecto para conectarse a routers y switches Cisco?',
+      opts: ['SNMP','NETCONF sobre puerto 830','SSH (network_cli)','Telnet'],
+      ans: 2,
+      exp: 'El plugin de conexión <strong>network_cli</strong> utiliza SSH (puerto 22) por defecto. Es el método más compatible para equipos Cisco con IOS/IOS-XE.'
+    },
+    {
+      q: 'Un administrador ejecuta un playbook dos veces seguidas. La segunda ejecución reporta "ok" en todas las tareas sin cambios. ¿Qué propiedad de Ansible demuestra esto?',
+      opts: ['Push model','Idempotencia','Agentless architecture','Parallel forking'],
+      ans: 1,
+      exp: '<strong>Idempotencia</strong>: Ansible compara el estado deseado con el actual. Si ya coinciden, no aplica cambios, garantizando consistencia sin side effects.'
+    },
+    {
+      q: '¿Cuál de las siguientes herramientas utiliza un modelo PULL donde el nodo gestionado contacta periódicamente al servidor central?',
+      opts: ['Ansible','Chef y Puppet','Solo Ansible','Ninguna'],
+      ans: 1,
+      exp: 'Tanto <strong>Chef</strong> como <strong>Puppet</strong> usan modelo pull: el agente en el nodo se conecta al Chef Server/Puppet Master para descargar configuración. Ansible usa push.'
+    },
+    {
+      q: '¿Qué lenguaje utilizan Chef y Puppet para definir sus configuraciones?',
+      opts: ['Python','YAML','Ruby DSL','JavaScript'],
+      ans: 2,
+      exp: 'Chef y Puppet están escritos en Ruby y usan un <strong>Domain Specific Language (DSL)</strong> basado en Ruby. Ansible usa YAML puro, más legible para no desarrolladores.'
+    },
+    {
+      q: 'Para gestionar switches Cisco con IOS mediante Ansible, ¿qué requisito es obligatorio en el switch?',
+      opts: ['Tener instalado Python 3.8','Tener habilitado SSH y una cuenta de usuario','Instalar el agente de Ansible','Soportar únicamente RESTCONF'],
+      ans: 1,
+      exp: 'Al ser agentless, el switch solo necesita <strong>IP reachability</strong> y <strong>SSH habilitado</strong> con credenciales válidas. No requiere Python ni agentes instalados.'
+    },
+    {
+      q: '¿Cuál es la función del archivo "inventory" en Ansible?',
+      opts: ['Almacenar contraseñas cifradas','Definir qué dispositivos serán gestionados y cómo agruparlos','Ejecutar tareas programadas cron','Compilar módulos de Python'],
+      ans: 1,
+      exp: 'El <strong>inventario</strong> es el mapa de tu infraestructura: lista IPs, nombres, grupos (routers, switches) y variables de conexión (usuario, método SSH, etc.).'
+    },
+    {
+      q: '¿Qué plugin de conexión de Ansible utiliza el puerto 830 y modelos de datos YANG?',
+      opts: ['network_cli','httpapi','netconf','local'],
+      ans: 2,
+      exp: '<strong>netconf</strong> opera sobre SSH puerto 830 y utiliza XML/YANG. Es nativamente idempotente y soporta transacciones atómicas, ideal para configuraciones críticas.'
+    },
+    {
+      q: '¿Qué herramienta de Ansible permite cifrar contraseñas y claves SSH dentro de playbooks e inventarios?',
+      opts: ['Ansible Tower','Ansible Vault','Ansible Galaxy','Ansible Lint'],
+      ans: 1,
+      exp: '<strong>Ansible Vault</strong> provee cifrado AES-256 para proteger datos sensibles. Galaxy es un repositorio de roles; Tower es la UI enterprise; Lint verifica sintaxis.'
+    }
+  ];
+
+  var html = '';
+  qs.forEach(function(q, i) {
+    html += '<div class="quiz-question" id="qans1' + i + '">' +
+      '<div class="quiz-q-num">PREGUNTA ' + (i+1) + ' DE ' + qs.length + ' · M8 ANSIBLE TEMA 1</div>' +
+      '<div class="quiz-q-text">' + q.q + '</div>' +
+      '<div class="quiz-opts">';
+    q.opts.forEach(function(o, j) {
+      html += '<button class="quiz-opt" data-qi="' + i + '" data-sel="' + j + '" data-ans="' + q.ans + '">' + o + '</button>';
+    });
+    html += '</div></div>';
+  });
+  container.innerHTML = html;
+
+  window._ans1Exp = {};
+  qs.forEach(function(q, i) { window._ans1Exp[i] = q.exp; });
+
+  container.querySelectorAll('.quiz-opt').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var qi  = parseInt(this.dataset.qi);
+      var sel = parseInt(this.dataset.sel);
+      var ans = parseInt(this.dataset.ans);
+      var qDiv = document.getElementById('qans1' + qi);
+      var btns = qDiv.querySelectorAll('.quiz-opt');
+
+      btns.forEach(function(b) { b.disabled = true; });
+      btns[sel].classList.add(sel === ans ? 'correct' : 'wrong');
+      if (sel !== ans) btns[ans].classList.add('correct');
+
+      var expDiv = document.createElement('div');
+      expDiv.className = 'quiz-explanation';
+      expDiv.innerHTML = '<strong>' + (sel===ans ? '✅ Correcto!' : '❌ Incorrecto.') + '</strong> ' + window._ans1Exp[qi];
+      qDiv.appendChild(expDiv);
+    });
+  });
+}
+
+// ── INICIALIZACIÓN ────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  buildRefTable();
+  initQuiz();
+});
+</script>
+</body>
+</html>
