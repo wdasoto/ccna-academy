@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Meraki Dashboard API — Cloud Networking · M8 T5 | CCNA Academy</title>
-  <meta name="description" content="Domina la Meraki Dashboard API v1. Gestión cloud de MX, MS, MR, MV, MT. API Key, OAuth, rate limits, VLANs, clientes wireless, webhooks y SDK Python. CCNA Domain 6.5.">
+  <meta name="description" content="Domina la Meraki Dashboard API v1. Gestión cloud de MX, MS, MR, MV y MT. API Key, OAuth, rate limits, VLANs, clientes wireless, Auto VPN, webhooks y SDK Python. CCNA Domain 6.5.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -346,7 +346,7 @@ orgs = get_organizations()
   <p>Si desarrollas una app para el <strong>Meraki Marketplace</strong>, no puedes pedir la API Key del cliente. En su lugar, usas OAuth 2.0 con el flujo de <strong>código de autorización</strong>:</p>
   <ol>
     <li>Registras tu app en Meraki Developer Hub. Obtienes <code>client_id</code> y <code>client_secret</code>.</li>
-    <li>El usuario accede a <code>https://api.meraki.com/oauth/authorize?client_id=XXX&redirect_uri=YYY&scope=read-networks</code> y autoriza.</li>
+    <li>El usuario accede a <code>https://api.meraki.com/oauth/authorize?client_id=XXX&amp;redirect_uri=YYY&amp;scope=read-networks</code> y autoriza.</li>
     <li>Meraki redirige a tu <code>redirect_uri</code> con un <code>code</code> temporal.</li>
     <li>Tu backend intercambia ese <code>code</code> por un <code>access_token</code> vía POST a <code>/oauth/token</code>.</li>
     <li>Usas el <code>access_token</code> en el header <code>Authorization: Bearer &lt;token&gt;</code>.</li>
@@ -365,10 +365,7 @@ orgs = get_organizations()
     }
     r = requests.post(url, data=payload)
     data = r.json()
-    <span class="kw">return</span> data[<span class="str">"access_token"</span>], data.get(<span class="str">"refresh_token"</span>)
-
-<span class="cmt"># Posteriormente, usar:</span>
-<span class="cmt"># headers["Authorization"] = f"Bearer {access_token}"</span></code></pre>
+    <span class="kw">return</span> data[<span class="str">"access_token"</span>], data.get(<span class="str">"refresh_token"</span>)</code></pre>
   </div>
 
   <h2 class="section-title">Rate Limiting: 5 peticiones por segundo</h2>
@@ -380,7 +377,7 @@ orgs = get_organizations()
 
 <span class="kw">class</span> <span class="fn">MerakiRateLimiter</span>:
     <span class="kw">def</span> <span class="fn">__init__</span>(self, max_rate=<span class="num">5</span>):
-        self.min_interval = <span class="num">1.0</span> / max_rate   <span class="cmt"># 0.2s entre calls</span>
+        self.min_interval = <span class="num">1.0</span> / max_rate
         self.last_call = <span class="num">0</span>
 
     <span class="kw">def</span> <span class="fn">wait</span>(self):
@@ -394,7 +391,7 @@ orgs = get_organizations()
     r = requests.request(method, url, headers=headers, **kwargs)
     <span class="kw">if</span> r.status_code == <span class="num">429</span>:
         retry = <span class="fn">int</span>(r.headers.get(<span class="str">"Retry-After"</span>, <span class="num">1</span>))
-        <span class="fn">print</span>(<span class="str">f"⏳ Rate limit alcanzado. Esperando {retry}s..."</span>)
+        <span class="fn">print</span>(<span class="str">f"⏳ Rate limit. Esperando {retry}s..."</span>)
         time.sleep(retry)
         <span class="kw">return</span> meraki_request(limiter, method, url, headers, **kwargs)
     r.raise_for_status()
@@ -403,7 +400,7 @@ orgs = get_organizations()
 
   <div class="info-box warning">
     <div class="info-box-title">⚡ Regla de oro de producción</div>
-    <p>Si gestionas múltiples organizaciones, el rate limit es <strong>por organización</strong>, no global. Sin embargo, un mismo script que itere 100 redes en una org debe respetar los 5 req/s o implementar una cola con backoff. El SDK oficial de Meraki maneja esto automáticamente con <code>single_request_timeout</code> y <code>retry_4xx_error</code>.</p>
+    <p>Si gestionas múltiples organizaciones, el rate limit es <strong>por organización</strong>, no global. Sin embargo, un mismo script que itere 100 redes en una org debe respetar los 5 req/s. El SDK oficial maneja esto automáticamente.</p>
   </div>
 </div>
 </div>
@@ -440,7 +437,7 @@ orgs = get_organizations()
     url = <span class="str">f"{BASE_URL}/organizations/{org_id}/networks"</span>
     payload = {
         <span class="str">"name"</span>: name,
-        <span class="str">"type"</span>: <span class="str">"appliance switch wireless"</span>,  <span class="cmt"># Combined: MX + MS + MR</span>
+        <span class="str">"type"</span>: <span class="str">"appliance switch wireless"</span>,
         <span class="str">"tags"</span>: tags,
         <span class="str">"timeZone"</span>: <span class="str">"America/Bogota"</span>
     }
@@ -520,12 +517,11 @@ net_id = create_combined_network(
         link_header = r.headers.get(<span class="str">"Link"</span>, <span class="str">""</span>)
         url = <span class="kw">None</span>
         <span class="kw">if</span> <span class="str">'rel="next"'</span> <span class="kw">in</span> link_header:
-            <span class="cmt"># Parsear URL de next del header Link</span>
             <span class="kw">import</span> re
             match = re.search(<span class="str">'&lt;(.*?)&gt;; rel="next"'</span>, link_header)
             <span class="kw">if</span> match:
                 url = match.group(<span class="num">1</span>)
-                params = <span class="kw">None</span>   <span class="cmt"># La URL ya incluye params</span>
+                params = <span class="kw">None</span>
 
     <span class="kw">return</span> devices
 
@@ -661,7 +657,7 @@ create_vlan(
 
   <div class="info-box tip">
     <div class="info-box-title">💡 Trampa frecuente del examen</div>
-    <p>El examen CCNA puede confundirte entre <strong>SD-WAN</strong> y <strong>Auto VPN</strong>. Recuerda: Meraki MX soporta ambos. Auto VPN es la tecnología de túneles automáticos; SD-WAN es la política de selección de path (VPN vs. Internet directo, balanceo por rendimiento). La API los gestiona por separado: <code>/vpn/siteToSiteVpn</code> para el túnel, <code>/sdwan</code> para las políticas de tráfico.</p>
+    <p>El examen CCNA puede confundirte entre <strong>SD-WAN</strong> y <strong>Auto VPN</strong>. Recuerda: Meraki MX soporta ambos. Auto VPN es la tecnología de túneles automáticos; SD-WAN es la política de selección de path (VPN vs. Internet directo, balanceo por rendimiento). La API los gestiona por separado.</p>
   </div>
 </div>
 </div>
@@ -705,7 +701,7 @@ create_vlan(
 
 <span class="cmt"># Buscar cliente por MAC</span>
 <span class="kw">def</span> <span class="fn">find_client_by_mac</span>(net_id, mac):
-    clients = get_network_clients(net_id, timespan=<span class="num">2592000</span>)  <span class="cmt"># 30 días</span>
+    clients = get_network_clients(net_id, timespan=<span class="num">2592000</span>)
     mac_clean = mac.lower().replace(<span class="str">"-"</span>, <span class="str">":"</span>)
     <span class="kw">return</span> [c <span class="kw">for</span> c <span class="kw">in</span> clients <span class="kw">if</span> c[<span class="str">"mac"</span>] == mac_clean]</code></pre>
   </div>
@@ -722,8 +718,8 @@ create_vlan(
         <span class="str">"bandwidth"</span>: {
             <span class="str">"settings"</span>: <span class="str">"custom"</span>,
             <span class="str">"bandwidthLimits"</span>: {
-                <span class="str">"limitUp"</span>: <span class="num">1000</span>,    <span class="cmt"># kbps</span>
-                <span class="str">"limitDown"</span>: <span class="num">5000</span>   <span class="cmt"># kbps</span>
+                <span class="str">"limitUp"</span>: <span class="num">1000</span>,
+                <span class="str">"limitDown"</span>: <span class="num">5000</span>
             }
         },
         <span class="str">"firewallAndTrafficShaping"</span>: {
@@ -734,7 +730,7 @@ create_vlan(
                     <span class="str">"policy"</span>: <span class="str">"deny"</span>,
                     <span class="str">"protocol"</span>: <span class="str">"tcp"</span>,
                     <span class="str">"destPort"</span>: <span class="str">"443"</span>,
-                    <span class="str">"destCidr"</span>: <span class="str">"Any"</span>  <span class="cmt"># En producción se filtra por app: Facebook, etc.</span>
+                    <span class="str">"destCidr"</span>: <span class="str">"Any"</span>
                 }
             ]
         }
@@ -758,7 +754,7 @@ create_vlan(
 <div id="tab-monitor" class="rest5-tab-content">
 <div class="content-block">
   <h2 class="section-title">Monitoreo, logs y alertas vía Webhook</h2>
-  <p>Meraki ofrece dos mecanismas de monitorización: <strong>pull</strong> (consultas periódicas a la API) y <strong>push</strong> (webhooks que envían eventos en tiempo real a tu servidor). La combinación de ambos es el estándar en arquitecturas cloud-modernas.</p>
+  <p>Meraki ofrece dos mecanismos de monitorización: <strong>pull</strong> (consultas periódicas a la API) y <strong>push</strong> (webhooks que envían eventos en tiempo real a tu servidor). La combinación de ambos es el estándar en arquitecturas cloud-modernas.</p>
 
   <div class="concept-grid">
     <div class="concept-card">
@@ -774,7 +770,7 @@ create_vlan(
     <div class="concept-card">
       <div class="concept-icon">🌡️</div>
       <h3>Sensor Telemetry</h3>
-      <p>Los MT reportan temperatura, humedad, puerta abierta/cerrada, agua detectada. Datos históricos vía <code>/sensor/relationships</code>.</p>
+      <p>Los MT reportan temperatura, humedad, puerta abierta/cerrada, agua detectada. Datos históricos vía API.</p>
     </div>
   </div>
 
@@ -833,13 +829,13 @@ create_vlan(
     <pre><code><span class="kw">from</span> flask <span class="kw">import</span> Flask, request
 <span class="kw">import</span> hmac, hashlib
 
-app = Flask(<span class="str">__name__</span>)
+app = Flask(<span class="str">"__main__"</span>)
 SHARED_SECRET = <span class="str">"mi-secreto-compartido"</span>
 
 <span class="kw">@app.route</span>(<span class="str">"/webhook/meraki"</span>, methods=[<span class="str">"POST"</span>])
 <span class="kw">def</span> <span class="fn">meraki_alert</span>():
     payload = request.get_data()
-    signature = request.headers.get(<span class="str">"X-Meraki-Signature"</span>, <span class="str">""</span>)
+    sig = request.headers.get(<span class="str">"X-Meraki-Signature"</span>, <span class="str">""</span>)
 
     <span class="cmt"># Validar firma HMAC-SHA256 para integridad</span>
     expected = hmac.new(
@@ -848,7 +844,7 @@ SHARED_SECRET = <span class="str">"mi-secreto-compartido"</span>
         hashlib.sha256
     ).hexdigest()
 
-    <span class="kw">if</span> <span class="kw">not</span> hmac.compare_digest(signature, expected):
+    <span class="kw">if</span> <span class="kw">not</span> hmac.compare_digest(sig, expected):
         <span class="kw">return</span> <span class="str">"Unauthorized"</span>, <span class="num">401</span>
 
     data = request.get_json()
@@ -907,8 +903,8 @@ dashboard = meraki.DashboardAPI(
     api_key=os.getenv(<span class="str">"MERAKI_API_KEY"</span>),
     base_url=<span class="str">"https://api.meraki.com/api/v1"</span>,
     single_request_timeout=<span class="num">60</span>,
-    wait_on_rate_limit=<span class="kw">True</span>,        <span class="cmt"># Respeta 429 automáticamente</span>
-    nginx_429_retry_wait_time=<span class="num">2</span>,   <span class="cmt"># Segundos de espera ante 429</span>
+    wait_on_rate_limit=<span class="kw">True</span>,
+    nginx_429_retry_wait_time=<span class="num">2</span>,
     action_batch_retry_wait_time=<span class="num">60</span>,
     print_console=<span class="kw">False</span>,
     output_log=<span class="kw">False</span>
@@ -919,10 +915,10 @@ orgs = dashboard.organizations.getOrganizations()
 <span class="kw">for</span> org <span class="kw">in</span> orgs:
     <span class="fn">print</span>(<span class="str">f"🏢 {org['name']} — {org['id']}"</span>)
 
-<span class="cmt"># Listar networks de una org</span>
+<span class="cmt"># Listar networks de una org (auto-paginación)</span>
 networks = dashboard.organizations.getOrganizationNetworks(
     organizationId=<span class="str">"123456"</span>,
-    total_pages=<span class="str">'all'</span>   <span class="cmt"># Auto-paginación</span>
+    total_pages=<span class="str">'all'</span>
 )
 
 <span class="cmt"># Obtener clientes de una network</span>
@@ -946,7 +942,7 @@ vlan = dashboard.appliance.createNetworkApplianceVlan(
   <p>Cisco Meraki mantiene una colección oficial en el <strong>Meraki Developer Hub</strong>. Pasos para importar:</p>
   <ol>
     <li>Descarga la colección JSON desde <code>https://developer.cisco.com/meraki/api-v1/</code></li>
-    <li>En Postman: <em>File > Import</em> y selecciona el JSON.</li>
+    <li>En Postman: <em>File &gt; Import</em> y selecciona el JSON.</li>
     <li>Crea un <strong>Environment</strong> con variables: <code>baseUrl</code>, <code>apiKey</code>, <code>orgId</code>, <code>netId</code>.</li>
     <li>En la pestaña <em>Authorization</em> de la colección, selecciona tipo <code>API Key</code>:
       <ul>
@@ -1013,10 +1009,10 @@ CCNA Academy M8 T5 — NOC Dashboard para Meraki Dashboard API
 <span class="cmt"># ══════════════════════════════════════════════════════</span>
 <span class="cmt"># CONFIGURACIÓN</span>
 <span class="cmt"># ══════════════════════════════════════════════════════</span>
-API_KEY       = os.getenv(<span class="str">"MERAKI_API_KEY"</span>)
-ORG_IDS       = os.getenv(<span class="str">"MERAKI_ORG_IDS"</span>, <span class="str">""</span>).split(<span class="str">","</span>)  <span class="cmt"># "123,456,789"</span>
-WEBHOOK_SECRET= os.getenv(<span class="str">"WEBHOOK_SECRET"</span>, <span class="str">"cambia-esto"</span>)
-REPORT_DIR    = <span class="str">"./meraki_reports"</span>
+API_KEY        = os.getenv(<span class="str">"MERAKI_API_KEY"</span>)
+ORG_IDS        = os.getenv(<span class="str">"MERAKI_ORG_IDS"</span>, <span class="str">""</span>).split(<span class="str">","</span>)
+WEBHOOK_SECRET = os.getenv(<span class="str">"WEBHOOK_SECRET"</span>, <span class="str">"cambia-esto"</span>)
+REPORT_DIR     = <span class="str">"./meraki_reports"</span>
 
 logging.basicConfig(
     level=logging.INFO,
@@ -1104,7 +1100,7 @@ logging.basicConfig(
 <span class="cmt"># ══════════════════════════════════════════════════════</span>
 <span class="cmt"># WEBHOOK SERVER</span>
 <span class="cmt"># ══════════════════════════════════════════════════════</span>
-app = Flask(<span class="str">__name__</span>)
+app = Flask(<span class="str">"__main__"</span>)
 noc = MerakiNOC()
 
 <span class="kw">@app.route</span>(<span class="str">"/webhook/meraki"</span>, methods=[<span class="str">"POST"</span>])
@@ -1120,7 +1116,6 @@ noc = MerakiNOC()
     logging.warning(
         <span class="str">f"🚨 [{data.get('alertType')}] {data.get('deviceName')} — {data.get('occurredAt')}"</span>
     )
-    <span class="cmt"># Aquí podrías enviar a Slack, PagerDuty, ServiceNow...</span>
     <span class="kw">return</span> <span class="str">"OK"</span>, <span class="num">200</span>
 
 <span class="cmt"># ══════════════════════════════════════════════════════</span>
@@ -1130,11 +1125,6 @@ noc = MerakiNOC()
     <span class="fn">print</span>(<span class="str">"\n☁️  Meraki NOC Dashboard — CCNA Academy M8 T5\n"</span>)
     noc.export_inventory()
     noc.check_uplink_health()
-
-    <span class="cmt"># Iniciar servidor webhook en segundo plano (opcional)</span>
-    <span class="cmt"># from threading import Thread</span>
-    <span class="cmt"># Thread(target=lambda: app.run(host="0.0.0.0", port=5000)).start()</span>
-
     logging.info(<span class="str">"🏁 NOC check completado."</span>)
 
 <span class="kw">if</span> __name__ == <span class="str">"__main__"</span>:
@@ -1199,10 +1189,10 @@ function showTabRest5(id, btn) {
 
 // ── TABLA DE REFERENCIA ──────────────────────────────
 function buildRefTable() {
-  const container = document.getElementById('refTableRest5');
+  var container = document.getElementById('refTableRest5');
   if (!container) return;
 
-  const secciones = [
+  var secciones = [
     {
       titulo: 'ENDPOINTS CORE DASHBOARD API v1',
       cols: ['Método','Endpoint','Descripción'],
@@ -1221,17 +1211,17 @@ function buildRefTable() {
         ['<span class="endpoint-method get">GET</span>','/networks/{netId}/clients/{mac}/trafficHistory','Tráfico histórico por app del cliente.'],
         ['<span class="endpoint-method get">GET</span>','/organizations/{orgId}/devices/uplinksLossAndLatency','Métricas de loss y latencia por uplink.'],
         ['<span class="endpoint-method post">POST</span>','/networks/{netId}/webhooks/httpServers','Registra un webhook receptor.'],
-        ['<span class="endpoint-method put">PUT</span>','/networks/{netId}/alertSettings','Configura alertas y sus destinatarios.'],
+        ['<span class="endpoint-method put">PUT</span>','/networks/{netId}/alertSettings','Configura alertas y sus destinatarios.']
       ]
     },
     {
       titulo: 'HEADERS HTTP Y AUTENTICACIÓN',
       cols: ['Header / Parámetro','Valor','Descripción'],
       filas: [
-        ['X-Cisco-Meraki-API-Key','<code>{api_key}</code>','Autenticación para scripts propios. Obligatorio.'],
-        ['Authorization','Bearer &lt;token&gt;','Usado en OAuth 2.0 para apps de terceros.'],
+        ['X-Cisco-Meraki-API-Key','{api_key}','Autenticación para scripts propios. Obligatorio.'],
+        ['Authorization','Bearer {token}','Usado en OAuth 2.0 para apps de terceros.'],
         ['Content-Type','application/json','Indica payload JSON en POST/PUT.'],
-        ['Link','&lt;url&gt;; rel="next"','Paginación: URL para la siguiente página de resultados.'],
+        ['Link','&lt;url&gt;; rel="next"','Paginación: URL para la siguiente página de resultados.']
       ]
     },
     {
@@ -1243,7 +1233,7 @@ function buildRefTable() {
         ['MR','Cloud Wi-Fi','Access points, mesh, location analytics, WIDS.'],
         ['MV','Smart Camera','Videovigilancia con ML edge (personas, vehículos).'],
         ['MT','Sensor','IoT: temperatura, humedad, puerta, agua.'],
-        ['MG','Cellular Gateway','Backhaul 4G/5G para uplink redundante.'],
+        ['MG','Cellular Gateway','Backhaul 4G/5G para uplink redundante.']
       ]
     },
     {
@@ -1254,19 +1244,25 @@ function buildRefTable() {
         ['201 Created','Recurso creado.','Usar ID retornado para referencias futuras.'],
         ['400 Bad Request','Payload o parámetro inválido.','Revisar schema JSON y tipos de datos.'],
         ['401 Unauthorized','API Key ausente o inválida.','Verificar header y regenerar key si es necesario.'],
-        ['403 Forbidden','Key válida sin permisos sobre el recurso.','Verificar acceso de administrador en Dashboard.'],
+        ['403 Forbidden','Key válida sin permisos sobre el recurso.','Verificar rol de administrador en Dashboard.'],
         ['404 Not Found','Recurso no existe (org/net/serial).','Validar IDs y que el dispositivo esté claimado.'],
         ['429 Too Many Requests','Rate limit excedido (5 req/s por org).','Leer Retry-After, esperar y reintentar.'],
-        ['500/502/503','Error del servidor cloud.','Reintentar con backoff exponencial.'],
+        ['500/502/503','Error del servidor cloud.','Reintentar con backoff exponencial.']
       ]
     }
   ];
 
-  let html = '';
-  secciones.forEach(sec => {
-    html += `<h3 style="font-family:Orbitron,sans-serif;font-size:.8rem;color:#38bdf8;letter-spacing:2px;margin:24px 0 10px;text-transform:uppercase;">▸ ${sec.titulo}</h3>`;
-    html += `<div class="table-wrap"><table class="ref-table"><thead><tr>${sec.cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>`;
-    sec.filas.forEach(f => { html += '<tr>' + f.map(c=>`<td>${c}</td>`).join('') + '</tr>'; });
+  var html = '';
+  secciones.forEach(function(sec) {
+    html += '<h3 style="font-family:Orbitron,sans-serif;font-size:.8rem;color:#38bdf8;letter-spacing:2px;margin:24px 0 10px;text-transform:uppercase;">▸ ' + sec.titulo + '</h3>';
+    html += '<div class="table-wrap"><table class="ref-table"><thead><tr>';
+    sec.cols.forEach(function(c) { html += '<th>' + c + '</th>'; });
+    html += '</tr></thead><tbody>';
+    sec.filas.forEach(function(f) {
+      html += '<tr>';
+      f.forEach(function(c) { html += '<td>' + c + '</td>'; });
+      html += '</tr>';
+    });
     html += '</tbody></table></div>';
   });
   container.innerHTML = html;
@@ -1274,10 +1270,10 @@ function buildRefTable() {
 
 // ── QUIZ ─────────────────────────────────────────────
 function initQuiz() {
-  const container = document.getElementById('quizContainerRest5');
+  var container = document.getElementById('quizContainerRest5');
   if (!container) return;
 
-  const qs = [
+  var qs = [
     {
       q: '¿Cuál es el endpoint base de la Meraki Dashboard API v1?',
       opts: ['https://dashboard.meraki.com/api/v1','https://api.meraki.com/api/v1','https://sandboxdnac.cisco.com','https://meraki.cisco.com/rest/v2'],
@@ -1288,13 +1284,13 @@ function initQuiz() {
       q: '¿Qué header HTTP se utiliza para enviar la API Key en cada petición?',
       opts: ['Authorization: Bearer','X-Auth-Token','X-Cisco-Meraki-API-Key','Api-Key'],
       ans: 2,
-      exp: 'Meraki usa el header propietario <strong>X-Cisco-Meraki-API-Key</strong>. El header <code>Authorization: Bearer</code> se usa en el flujo OAuth 2.0, no con API Key directa.'
+      exp: 'Meraki usa el header propietario <strong>X-Cisco-Meraki-API-Key</strong>. El header Authorization: Bearer se usa en el flujo OAuth 2.0, no con API Key directa.'
     },
     {
       q: 'Un script recibe HTTP 429 al consultar dispositivos. ¿Qué significa y qué debe hacer?',
       opts: ['La API Key es inválida; regenerarla.','El dispositivo no existe; verificar serial.','Rate limit excedido; respetar Retry-After y reintentar.','El servidor está caído; abortar.'],
       ans: 2,
-      exp: 'HTTP <strong>429 Too Many Requests</strong> indica que se superó el límite de <strong>5 peticiones por segundo por organización</strong>. El header <code>Retry-After</code> indica los segundos de espera. El SDK oficial maneja esto automáticamente con <code>wait_on_rate_limit=True</code>.'
+      exp: 'HTTP <strong>429 Too Many Requests</strong> indica que se superó el límite de <strong>5 peticiones por segundo por organización</strong>. El header Retry-After indica los segundos de espera. El SDK oficial maneja esto automáticamente.'
     },
     {
       q: '¿Cuál producto Meraki se utiliza principalmente para firewall, NAT y VPN site-to-site?',
@@ -1306,7 +1302,7 @@ function initQuiz() {
       q: '¿Qué modelo de autenticación es adecuado para una aplicación de terceros publicada en el Meraki Marketplace?',
       opts: ['API Key del administrador','OAuth 2.0 authorization code grant','Basic Auth con usuario/contraseña','Certificado mutuo TLS únicamente'],
       ans: 1,
-      exp: 'Para apps de terceros (Marketplace) se usa <strong>OAuth 2.0</strong> con flujo <code>authorization_code</code>. Así el cliente nunca comparte su API Key ni contraseña; solo autoriza scopes específicos a tu aplicación.'
+      exp: 'Para apps de terceros (Marketplace) se usa <strong>OAuth 2.0</strong> con flujo authorization_code. Así el cliente nunca comparte su API Key ni contraseña; solo autoriza scopes específicos a tu aplicación.'
     },
     {
       q: 'En una network "combined", ¿qué tipos de dispositivos pueden coexistir?',
@@ -1324,52 +1320,53 @@ function initQuiz() {
       q: 'Para validar la autenticidad de un webhook recibido desde Meraki, ¿qué mecanismo se debe usar?',
       opts: ['Verificar que la IP origen sea de Cisco','Comparar el header X-Meraki-Signature con un HMAC-SHA256 del payload','Validar un certificado SSL cliente','Revisar que el User-Agent sea "Meraki-Webhook"'],
       ans: 1,
-      exp: 'Meraki envía el header <strong>X-Meraki-Signature</strong> conteniendo el HMAC-SHA256 del payload firmado con tu <code>sharedSecret</code>. Debes recalcular el HMAC en tu servidor y compararlos con <code>hmac.compare_digest</code>.'
+      exp: 'Meraki envía el header <strong>X-Meraki-Signature</strong> conteniendo el HMAC-SHA256 del payload firmado con tu sharedSecret. Debes recalcular el HMAC en tu servidor y compararlos con hmac.compare_digest.'
     },
     {
-      q: '¿Cuál es la función principal del SDK oficial de Python <code>meraki</code>?',
+      q: '¿Cuál es la función principal del SDK oficial de Python meraki?',
       opts: ['Reemplazar el firmware de los dispositivos','Proporcionar una GUI de escritorio','Abstraer paginación, rate limits y reintentos automáticos','Generar configuraciones CLI para switches Catalyst'],
       ans: 2,
-      exp: 'El SDK <code>meraki</code> abstrae la complejidad de la API: maneja automáticamente la <strong>paginación</strong> (parámetro <code>total_pages='all'</code>), el <strong>rate limiting</strong> (<code>wait_on_rate_limit=True</code>) y los <strong>reintentos</strong> ante errores transitorios.'
+      exp: 'El SDK <strong>meraki</strong> abstrae la complejidad de la API: maneja automáticamente la <strong>paginación</strong> (parámetro total_pages), el <strong>rate limiting</strong> (wait_on_rate_limit) y los <strong>reintentos</strong> ante errores transitorios.'
     },
     {
       q: '¿Qué tipo de dato devuelven la mayoría de los endpoints GET de la Dashboard API?',
       opts: ['XML estructurado','YAML','JSON','Protocol Buffers binario'],
       ans: 2,
-      exp: 'Al igual que DNA Center y la mayoría de APIs REST modernas, Meraki Dashboard API usa <strong>JSON</strong> como formato de intercambio de datos. Los headers <code>Accept: application/json</code> y <code>Content-Type: application/json</code> son estándar.'
+      exp: 'Al igual que DNA Center y la mayoría de APIs REST modernas, Meraki Dashboard API usa <strong>JSON</strong> como formato de intercambio de datos. Los headers Content-Type y Accept con application/json son estándar.'
     }
   ];
 
-  let html = '';
-  qs.forEach((q, i) => {
-    html += `<div class="quiz-question" id="qr5${i}">
-      <div class="quiz-q-num">PREGUNTA ${i+1} DE ${qs.length} · M8 MERAKI Tema 5</div>
-      <div class="quiz-q-text">${q.q}</div>
-      <div class="quiz-opts">
-        ${q.opts.map((o,j) => `<button class="quiz-opt" data-qi="${i}" data-sel="${j}" data-ans="${q.ans}">${o}</button>`).join('')}
-      </div>
-    </div>`;
+  var html = '';
+  qs.forEach(function(q, i) {
+    html += '<div class="quiz-question" id="qr5' + i + '">' +
+      '<div class="quiz-q-num">PREGUNTA ' + (i+1) + ' DE ' + qs.length + ' · M8 MERAKI Tema 5</div>' +
+      '<div class="quiz-q-text">' + q.q + '</div>' +
+      '<div class="quiz-opts">';
+    q.opts.forEach(function(o, j) {
+      html += '<button class="quiz-opt" data-qi="' + i + '" data-sel="' + j + '" data-ans="' + q.ans + '">' + o + '</button>';
+    });
+    html += '</div></div>';
   });
   container.innerHTML = html;
 
   window._rest5Exp = {};
-  qs.forEach((q, i) => { window._rest5Exp[i] = q.exp; });
+  qs.forEach(function(q, i) { window._rest5Exp[i] = q.exp; });
 
-  container.querySelectorAll('.quiz-opt').forEach(btn => {
+  container.querySelectorAll('.quiz-opt').forEach(function(btn) {
     btn.addEventListener('click', function() {
-      const qi  = parseInt(this.dataset.qi);
-      const sel = parseInt(this.dataset.sel);
-      const ans = parseInt(this.dataset.ans);
-      const qDiv = document.getElementById('qr5' + qi);
-      const btns = qDiv.querySelectorAll('.quiz-opt');
+      var qi  = parseInt(this.dataset.qi);
+      var sel = parseInt(this.dataset.sel);
+      var ans = parseInt(this.dataset.ans);
+      var qDiv = document.getElementById('qr5' + qi);
+      var btns = qDiv.querySelectorAll('.quiz-opt');
 
-      btns.forEach(b => b.disabled = true);
+      btns.forEach(function(b) { b.disabled = true; });
       btns[sel].classList.add(sel === ans ? 'correct' : 'wrong');
       if (sel !== ans) btns[ans].classList.add('correct');
 
-      const expDiv = document.createElement('div');
+      var expDiv = document.createElement('div');
       expDiv.className = 'quiz-explanation';
-      expDiv.innerHTML = `<strong>${sel===ans ? '✅ Correcto!' : '❌ Incorrecto.'}</strong> ${window._rest5Exp[qi]}`;
+      expDiv.innerHTML = '<strong>' + (sel===ans ? '✅ Correcto!' : '❌ Incorrecto.') + '</strong> ' + window._rest5Exp[qi];
       qDiv.appendChild(expDiv);
     });
   });
