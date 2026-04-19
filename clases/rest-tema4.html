@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DNA Center API — Intent-Based Networking · M8 T4 | CCNA Academy</title>
+  <meta name="description" content="Domina la DNA Center Intent API. Autenticación Token, inventario de red, assurance, command runner, templates y webhooks desde Python requests. CCNA Domain 6.5.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── HERO acento DNA Center ── */
+.class-hero { background: linear-gradient(135deg, #06080f 0%, #080d18 60%, #0a1020 100%); }
+
+/* ── REST ACCENT TOKENS ── */
+:root{ --rest:#38bdf8; --rest-d:#0ea5e9; --rest-glow:rgba(56,189,248,.12); }
+
+/* ── BASE CLASS STYLES ── */
+body{font-family:'Exo 2',sans-serif;background:#07090f;color:#e2e8f0;}
+.class-hero{padding:56px 24px 48px;border-bottom:1px solid rgba(56,189,248,.08);position:relative;overflow:hidden;}
+.class-hero::before{content:'';position:absolute;top:-60px;right:-80px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(56,189,248,.06) 0%,transparent 70%);pointer-events:none;}
+.class-hero-inner{max-width:900px;margin:0 auto;position:relative;z-index:1;}
+.class-badge{font-family:'Share Tech Mono',monospace;font-size:.63rem;color:#38bdf8;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;}
+.class-title{font-family:'Orbitron',sans-serif;font-size:clamp(1.6rem,3.8vw,2.6rem);font-weight:900;letter-spacing:3px;color:#c2d0e8;margin-bottom:12px;line-height:1.1;}
+.class-subtitle{font-size:.92rem;color:#6b7a9a;line-height:1.72;margin-bottom:20px;max-width:700px;}
+.class-meta{display:flex;gap:12px;flex-wrap:wrap;}
+.meta-item{font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#4a5780;padding:4px 10px;border:1px solid rgba(56,189,248,.15);border-radius:4px;}
+.rest4-tabs-wrap{max-width:1100px;margin:0 auto;padding:0 16px 40px;}
+.rest4-tabs-bar{display:flex;gap:4px;padding:20px 0 0;flex-wrap:wrap;border-bottom:1px solid rgba(56,189,248,.12);margin-bottom:0;}
+.rest4-tab-btn{padding:8px 13px;border-radius:8px 8px 0 0;font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#4a5780;background:none;border:1px solid transparent;cursor:pointer;transition:all .18s;white-space:nowrap;border-bottom:none;}
+.rest4-tab-btn:hover{color:#c2d0e8;background:rgba(56,189,248,.06);}
+.rest4-tab-btn.rest4-active{color:#38bdf8;background:#0d1220;border-color:rgba(56,189,248,.25);border-bottom:1px solid #0d1220;}
+.rest4-tab-content{display:none;background:#0d1220;border:1px solid rgba(56,189,248,.08);border-top:none;border-radius:0 0 12px 12px;padding:32px;}
+.rest4-tab-content.rest4-active{display:block;}
+.content-block{max-width:880px;}
+.section-title{font-family:'Orbitron',sans-serif;font-size:.95rem;color:#38bdf8;letter-spacing:2px;margin:28px 0 14px;padding-bottom:8px;border-bottom:1px solid rgba(56,189,248,.15);}
+.section-title:first-child{margin-top:0;}
+p{color:#8294b8;line-height:1.75;margin-bottom:14px;font-size:.9rem;}
+ul,ol{color:#8294b8;padding-left:1.4rem;margin-bottom:14px;font-size:.9rem;}
+li{margin-bottom:5px;line-height:1.65;}
+strong{color:#c2d0e8;}
+code{font-family:'Share Tech Mono',monospace;font-size:.82rem;background:rgba(56,189,248,.1);color:#38bdf8;padding:1px 6px;border-radius:4px;border:1px solid rgba(56,189,248,.2);}
+
+/* INFO BOXES */
+.info-box{border-radius:8px;padding:14px 18px;margin:18px 0;border-left:3px solid;}
+.info-box.tip{background:rgba(56,189,248,.06);border-color:#38bdf8;}
+.info-box.warning{background:rgba(251,191,36,.05);border-color:#fbbf24;}
+.info-box-title{font-family:'Share Tech Mono',monospace;font-size:.73rem;color:#38bdf8;margin-bottom:8px;}
+.info-box.warning .info-box-title{color:#fbbf24;}
+
+/* CODE BLOCKS */
+.code-block{background:#050810;border:1px solid rgba(56,189,248,.15);border-left:3px solid #38bdf8;border-radius:8px;padding:0;margin:16px 0;overflow:hidden;}
+.code-label{background:rgba(56,189,248,.08);padding:8px 16px;font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#4a5780;letter-spacing:2px;text-transform:uppercase;border-bottom:1px solid rgba(56,189,248,.1);}
+.code-block pre{margin:0;padding:18px;overflow-x:auto;}
+.code-block code{background:none;border:none;padding:0;color:#a8b4c8;font-size:.79rem;line-height:1.8;display:block;}
+
+/* SYNTAX HIGHLIGHTING */
+.cmt{color:#3a4a60;font-style:italic;}
+.kw {color:#c792ea;}
+.fn {color:#82aaff;}
+.str{color:#c3e88d;}
+.num{color:#f78c6c;}
+
+/* CONCEPT GRID */
+.concept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin:16px 0;}
+.concept-card{background:#090d1a;border:1px solid rgba(56,189,248,.1);border-radius:10px;padding:16px;}
+.concept-icon{font-size:1.8rem;margin-bottom:8px;}
+.concept-card h3{font-family:'Share Tech Mono',monospace;font-size:.77rem;color:#38bdf8;margin-bottom:8px;}
+.concept-card p{font-size:.8rem;margin:0;}
+
+/* REF TABLE */
+.table-wrap{overflow-x:auto;margin:16px 0;}
+.ref-table{width:100%;border-collapse:collapse;font-size:.8rem;}
+.ref-table th{background:#090d1a;color:#38bdf8;font-family:'Share Tech Mono',monospace;font-size:.67rem;padding:10px 12px;text-align:left;border:1px solid rgba(56,189,248,.15);letter-spacing:1px;}
+.ref-table td{padding:9px 12px;border:1px solid rgba(255,255,255,.04);color:#8294b8;}
+.ref-table tr:hover td{background:rgba(56,189,248,.04);}
+.ref-table code{font-size:.77rem;}
+
+/* QUIZ */
+.quiz-question{background:#090d1a;border:1px solid rgba(56,189,248,.12);border-radius:10px;padding:20px;margin-bottom:14px;}
+.quiz-q-num{font-family:'Share Tech Mono',monospace;font-size:.62rem;color:#374060;margin-bottom:8px;}
+.quiz-q-text{font-size:.9rem;color:#c2d0e8;margin-bottom:14px;line-height:1.6;}
+.quiz-opts{display:flex;flex-direction:column;gap:7px;}
+.quiz-opt{padding:10px 14px;border-radius:7px;border:1px solid rgba(56,189,248,.12);background:#0d1220;color:#6b7a9a;cursor:pointer;font-size:.84rem;text-align:left;transition:all .15s;font-family:'Exo 2',sans-serif;}
+.quiz-opt:hover:not(:disabled){border-color:rgba(56,189,248,.4);color:#c2d0e8;}
+.quiz-opt.correct{border-color:#34d399;background:rgba(52,211,153,.08);color:#34d399;}
+.quiz-opt.wrong{border-color:#f87171;background:rgba(248,113,113,.08);color:#f87171;}
+.quiz-explanation{margin-top:10px;padding:10px 14px;background:rgba(56,189,248,.07);border-left:3px solid #38bdf8;border-radius:6px;font-size:.82rem;color:#a0aec0;line-height:1.65;}
+
+/* DNA FLOW DIAGRAM */
+.dna-flow{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin:20px 0;padding:20px;background:#090d1a;border-radius:10px;border:1px solid rgba(56,189,248,.1);}
+.dna-box{background:#0d1220;border:1px solid rgba(56,189,248,.2);border-radius:8px;padding:14px 18px;text-align:center;min-width:110px;}
+.dna-box-label{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:#38bdf8;margin-bottom:4px;}
+.dna-box-val{font-size:.8rem;color:#c2d0e8;}
+.dna-arrow{font-size:1.4rem;color:#38bdf8;}
+
+/* ENDPOINT CARD */
+.endpoint-card{background:#050810;border:1px solid rgba(56,189,248,.12);border-radius:8px;padding:16px;margin:12px 0;}
+.endpoint-method{display:inline-block;font-family:'Share Tech Mono',monospace;font-size:.7rem;padding:3px 8px;border-radius:4px;margin-right:8px;font-weight:700;}
+.get{background:rgba(52,211,153,.12);color:#34d399;}
+.post{background:rgba(56,189,248,.12);color:#38bdf8;}
+.put{background:rgba(251,191,36,.12);color:#fbbf24;}
+.delete{background:rgba(248,113,113,.12);color:#f87171;}
+.endpoint-path{font-family:'Share Tech Mono',monospace;font-size:.78rem;color:#c2d0e8;}
+.endpoint-desc{font-size:.82rem;color:#6b7a9a;margin-top:6px;}
+
+/* Navbar y Drawer */
+.navbar{position:fixed;top:0;left:0;right:0;height:56px;background:#080a10;border-bottom:1px solid rgba(56,189,248,.1);display:flex;align-items:center;padding:0 24px;z-index:1000;}
+.navbar-toggle{background:none;border:1px solid rgba(56,189,248,.3);color:#38bdf8;padding:6px 12px;border-radius:6px;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:.75rem;margin-right:16px;}
+.navbar-brand{font-family:'Orbitron',sans-serif;font-weight:700;color:#38bdf8;text-decoration:none;font-size:1.1rem;}
+.navbar-brand span{color:#0ea5e9;}
+.navbar-spacer{flex:1;}
+.navbar-link{color:#6b7a9a;text-decoration:none;font-size:.8rem;transition:color .2s;}
+.navbar-link:hover{color:#c2d0e8;}
+.nav-spacer{height:56px;}
+.ccna-drawer{position:fixed;top:0;left:0;bottom:0;width:280px;background:#0d1220;border-right:1px solid rgba(56,189,248,.2);transform:translateX(-100%);transition:transform .3s;z-index:2000;overflow-y:auto;}
+.ccna-drawer.open{transform:translateX(0);}
+.ccna-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);opacity:0;visibility:hidden;transition:all .3s;z-index:1500;}
+.ccna-overlay.show{opacity:1;visibility:visible;}
+.drawer-header{padding:20px;border-bottom:1px solid rgba(56,189,248,.2);display:flex;justify-content:space-between;align-items:center;}
+.drawer-header h2{font-family:'Orbitron',sans-serif;font-size:.8rem;color:#38bdf8;margin:0;letter-spacing:2px;}
+.drawer-close{background:none;border:none;color:#6b7a9a;font-size:1.2rem;cursor:pointer;}
+.drawer-section{padding:16px;border-bottom:1px solid rgba(56,189,248,.1);}
+.drawer-section-title{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#374060;margin-bottom:12px;letter-spacing:1px;text-transform:uppercase;}
+.drawer-link{display:block;padding:10px 12px;color:#8294b8;text-decoration:none;font-size:.85rem;border-radius:6px;transition:all .2s;margin-bottom:4px;}
+.drawer-link:hover{background:rgba(56,189,248,.1);color:#c2d0e8;}
+.drawer-link.active{background:rgba(56,189,248,.2);color:#38bdf8;border-left:3px solid #38bdf8;}
+.dl-icon{margin-right:8px;}
+
+@media(max-width:680px){
+  .rest4-tab-btn{font-size:.6rem;padding:6px 9px;}
+  .rest4-tab-content{padding:18px 12px;}
+  .concept-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
+<nav class="ccna-drawer" id="ccnaDrawer">
+  <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
+  <div class="drawer-section"><div class="drawer-section-title">General</div>
+    <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M1 · Fundamentos</div>
+    <a href="fundamentos.html" class="drawer-link"><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
+    <a href="subnetting.html"  class="drawer-link"><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
+    <a href="ipv6.html"        class="drawer-link"><span class="dl-icon">6️⃣</span> IPv6</a>
+    <a href="arp.html"         class="drawer-link"><span class="dl-icon">📡</span> ARP</a>
+    <a href="rip.html"         class="drawer-link"><span class="dl-icon">🔄</span> RIP</a>
+    <a href="protocolos-internet.html" class="drawer-link"><span class="dl-icon">🌍</span> Protocolos Internet</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M2 · Dispositivos Cisco</div>
+    <a href="router.html"         class="drawer-link"><span class="dl-icon">📡</span> Routers Cisco</a>
+    <a href="switches-cisco.html" class="drawer-link"><span class="dl-icon">🔀</span> Switches Cisco</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M3 · Switching</div>
+    <a href="vlan.html"               class="drawer-link"><span class="dl-icon">🏷️</span> VLANs</a>
+    <a href="inter-vlan-routing.html" class="drawer-link"><span class="dl-icon">🔁</span> Inter-VLAN Routing</a>
+    <a href="stp.html"                class="drawer-link"><span class="dl-icon">🌳</span> STP</a>
+    <a href="etherchannel.html"       class="drawer-link"><span class="dl-icon">🔗</span> EtherChannel</a>
+    <a href="port-security.html"      class="drawer-link"><span class="dl-icon">🔒</span> Port Security</a>
+    <a href="cdp-lldp.html"           class="drawer-link"><span class="dl-icon">🔍</span> CDP / LLDP</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M4 · Routing</div>
+    <a href="routing.html"            class="drawer-link"><span class="dl-icon">🗺️</span> Routing Estático</a>
+    <a href="ospf.html"               class="drawer-link"><span class="dl-icon">⭕</span> OSPF</a>
+    <a href="eigrp.html"              class="drawer-link"><span class="dl-icon">⚡</span> EIGRP</a>
+    <a href="ospfv2-masterclass.html" class="drawer-link"><span class="dl-icon">🎯</span> OSPFv2 Masterclass</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M5 · Servicios IP</div>
+    <a href="dhcp.html" class="drawer-link"><span class="dl-icon">📋</span> DHCP</a>
+    <a href="nat.html"  class="drawer-link"><span class="dl-icon">🔄</span> NAT / PAT</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M6 · Seguridad</div>
+    <a href="acl.html" class="drawer-link"><span class="dl-icon">🛡️</span> ACLs</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M7 · WAN &amp; QoS</div>
+    <a href="wan.html" class="drawer-link"><span class="dl-icon">🌍</span> WAN</a>
+    <a href="qos.html" class="drawer-link"><span class="dl-icon">📊</span> QoS</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M8 · Automatización</div>
+    <a href="m8-automatizacion.html" class="drawer-link"><span class="dl-icon">🤖</span> M8 — Vista General</a>
+    <a href="python-redes.html"      class="drawer-link"><span class="dl-icon">🐍</span> Python para Redes</a>
+    <a href="json-datos.html"        class="drawer-link"><span class="dl-icon">📋</span> JSON y Datos</a>
+    <a href="rest-apis.html"         class="drawer-link active"><span class="dl-icon">🌐</span> REST APIs</a>
+    <a href="ansible-redes.html"     class="drawer-link"><span class="dl-icon">⚙️</span> Ansible</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">⚡ Herramientas</div>
+    <a href="asistente.html"          class="drawer-link"><span class="dl-icon">🤖</span> Asistente IA</a>
+    <a href="netbot.html"             class="drawer-link"><span class="dl-icon">⚙️</span> NetBot Config</a>
+    <a href="calculadora.html"        class="drawer-link"><span class="dl-icon">🧮</span> Calculadora IP</a>
+    <a href="../laboratorios-pkt.html"   class="drawer-link"><span class="dl-icon">🧪</span> Labs Packet Tracer</a>
+    <a href="../banco-preguntas.html" class="drawer-link"><span class="dl-icon">📝</span> Banco de Preguntas</a></div>
+</nav>
+
+<header class="navbar">
+  <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
+  <a href="../index.html" class="navbar-brand">CISCO<span> ACADEMY</span></a>
+  <div class="navbar-spacer"></div>
+  <a href="rest-apis.html" class="navbar-link">← REST APIs</a>
+</header>
+<div class="nav-spacer"></div>
+
+<!-- HERO -->
+<section class="class-hero" style="border-bottom:1px solid rgba(56,189,248,.2);">
+  <div class="class-hero-inner">
+    <div class="class-badge" style="color:#38bdf8;">M8 · AUTOMATIZACIÓN · REST APIs · TEMA 4 DE 4</div>
+    <h1 class="class-title">DNA CENTER <span class="class-title-accent" style="background:linear-gradient(135deg,#38bdf8,#0ea5e9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">— Intent-Based Networking API</span></h1>
+    <p class="class-subtitle">El cerebro central de Cisco SD-Access. Aprende a consumir la Intent API para orquestar inventario, topología, assurance y políticas desde Python. Autenticación Token, Command Runner, Templates, Webhooks y Health Metrics. El estándar empresarial de automatización Cisco para el examen CCNA.</p>
+    <div class="class-meta">
+      <span class="meta-item" style="border-color:rgba(56,189,248,.2);color:#38bdf8;">🧬 Intent API v1</span>
+      <span class="meta-item">🎯 CCNA Domain 6.5</span>
+      <span class="meta-item">⏱ ~90 min lectura</span>
+      <span class="meta-item">💻 Always-On Sandbox</span>
+      <span class="meta-item">🐍 Python requests</span>
+    </div>
+  </div>
+</section>
+
+<!-- TABS -->
+<div class="rest4-tabs-wrap">
+  <div class="rest4-tabs-bar">
+    <button class="rest4-tab-btn rest4-active" onclick="showTabRest4('intro',this)">🧬 Intro</button>
+    <button class="rest4-tab-btn" onclick="showTabRest4('auth',this)">🔐 Auth Token</button>
+    <button class="rest4-tab-btn" onclick="showTabRest4('inventory',this)">📦 Inventario</button>
+    <button class="rest4-tab-btn" onclick="showTabRest4('assurance',this)">❤️ Assurance</button>
+    <button class="rest4-tab-btn" onclick="showTabRest4('command',this)">⌨️ Command Runner</button>
+    <button class="rest4-tab-btn" onclick="showTabRest4('templates',this)">📋 Templates</button>
+    <button class="rest4-tab-btn" onclick="showTabRest4('webhooks',this)">🔔 Webhooks</button>
+    <button class="rest4-tab-btn" onclick="showTabRest4('proyecto',this)">🚀 Proyecto</button>
+    <button class="rest4-tab-btn" onclick="showTabRest4('referencia',this)">📊 Referencia</button>
+    <button class="rest4-tab-btn" onclick="showTabRest4('quiz',this)">🎯 Quiz</button>
+  </div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 1 — INTRO
+═══════════════════════════════════════════ -->
+<div id="tab-intro" class="rest4-tab-content rest4-active">
+<div class="content-block">
+  <h2 class="section-title">¿Qué es Cisco DNA Center y por qué revoluciona la red?</h2>
+  <p><strong>Cisco DNA Center</strong> es el controlador centralizado de Cisco para <strong>Intent-Based Networking (IBN)</strong>. En lugar de configurar dispositivos uno por uno vía CLI, defines <em>qué</em> quieres lograr (el "intent"): una política de acceso, una topología de fabric, un segmento de usuarios. DNA Center traduce esa intención en configuraciones concretas y las aplica automáticamente a través de la red.</p>
+  <p>Desde la perspectiva del examen <strong>CCNA Domain 6.5</strong>, DNA Center representa el modelo de <strong>controlador SDN</strong> aplicado a campus empresarial. Separa el plano de control del plano de datos, centraliza la inteligencia y expone todo su potencial a través de <strong>APIs REST</strong> que cualquier desarrollador puede consumir con Python y la librería <code>requests</code>.</p>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 DNA Center vs. Controladores tradicionales</div>
+    <ul>
+      <li><strong>SD-WAN (vManage)</strong>: Optimiza WAN y conectividad a la nube. APIs propias.</li>
+      <li><strong>Wireless LAN Controllers</strong>: Gestionan APs y RF. Usan <code>config-and-ejbca</code> o REST.</li>
+      <li><strong>DNA Center</strong>: Orquesta LAN, WLAN, políticas de acceso, assurance y provisioning. <strong>Intent API</strong> unificada en <code>/dna/intent/api/v1/</code>.</li>
+      <li>Para el examen CCNA: conoce que DNA Center centraliza gestión, políticas y monitoreo; expone REST APIs; y reduce el trabajo manual CLI.</li>
+    </ul>
+  </div>
+
+  <h2 class="section-title">Arquitectura de APIs en DNA Center</h2>
+  <p>DNA Center expone tres familias de APIs. El examen CCNA se enfoca en la primera:</p>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">🎯</div>
+      <h3>Intent API (REST)</h3>
+      <p>La API principal. CRUD sobre inventario, topología, políticas, configuración y assurance. Usa JSON sobre HTTPS. Es la que consume el 90% de los scripts de automatización.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">📡</div>
+      <h3>Event API (Webhooks)</h3>
+      <p>Notificaciones push asincrónicas. DNA Center envía un POST a tu endpoint cuando ocurre un evento (alarma, cambio de topología, rogue AP). Evita el polling constante.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🧪</div>
+      <h3>Multi-Domain Integration</h3>
+      <p>Integra DNA Center con SD-WAN (vManage), ISE, ServiceNow y Webex. Relevante para arquitecturas enterprise, fuera del alcance directo del CCNA.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🌐</div>
+      <h3>Always-On Sandbox</h3>
+      <p>Laboratorio público de Cisco DevNet: <code>sandboxdnac.cisco.com</code>. Credenciales <code>devnetuser / Cisco123!</code>. Ideal para practicar sin infraestructura física.</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">Flujo de trabajo típico con la Intent API</h2>
+  <div class="dna-flow">
+    <div class="dna-box"><div class="dna-box-label">AUTENTICAR</div><div class="dna-box-val">POST /auth/token</div></div>
+    <div class="dna-arrow">→</div>
+    <div class="dna-box"><div class="dna-box-label">X-AUTH-TOKEN</div><div class="dna-box-val">Header JWT</div></div>
+    <div class="dna-arrow">→</div>
+    <div class="dna-box"><div class="dna-box-label">CONSUMIR</div><div class="dna-box-val">GET / POST / PUT</div></div>
+    <div class="dna-arrow">→</div>
+    <div class="dna-box"><div class="dna-box-label">JSON RESPONSE</div><div class="dna-box-val">Parse & Action</div></div>
+  </div>
+
+  <h2 class="section-title">Requisitos para el laboratorio</h2>
+  <div class="code-block">
+    <div class="code-label">Instalación de dependencias Python</div>
+    <pre><code><span class="cmt"># Requiere: Python 3.8+</span>
+pip install requests python-dotenv
+
+<span class="cmt"># Opcional: para manejo avanzado de tablas en consola</span>
+pip install rich tabulate</code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚡ Seguridad en producción vs. Sandbox</div>
+    <p>En el sandbox usamos <code>verify=False</code> para evitar errores de certificado SSL autofirmado. En producción, <strong>nunca</strong> desactives la verificación SSL. Debes usar certificados válidos o el certificado CA raíz de tu organización. Además, nunca hardcodees credenciales en scripts; usa variables de entorno o un vault de secretos.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 2 — AUTH TOKEN
+═══════════════════════════════════════════ -->
+<div id="tab-auth" class="rest4-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Autenticación basada en Token (JWT)</h2>
+  <p>DNA Center no usa autenticación Basic en cada petición. En su lugar, implementa un modelo de <strong>Token JWT</strong>: envías tus credenciales una sola vez al endpoint de autenticación, recibes un token temporal, y lo reutilizas en el header <code>X-Auth-Token</code> de todas las llamadas subsiguientes.</p>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">⏳</div>
+      <h3>Duración del Token</h3>
+      <p>En la mayoría de deployments, el token expira tras <strong>1 hora (3600s)</strong> de inactividad. Si haces peticiones frecuentes, puedes reutilizarlo. Si expira, recibes HTTP 401 y debes re-autenticar.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🔄</div>
+      <h3>Refresh implícito</h3>
+      <p>La Intent API no expone un <code>refresh_token</code> separado. El "refresh" consiste simplemente en volver a llamar <code>/auth/token</code> con Basic Auth para obtener un token nuevo.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🛡️</div>
+      <h3>Transporte seguro</h3>
+      <p>Toda la comunicación viaja sobre <strong>HTTPS (443)</strong>. El token es sensible; si se filtra, un atacante puede leer configuración o ejecutar comandos. Protégelo como una contraseña.</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">Obtención del Token con Python requests</h2>
+  <div class="code-block">
+    <div class="code-label">auth_dna_center.py — Obtener y encapsular el token</div>
+    <pre><code><span class="kw">import</span> requests
+<span class="kw">import</span> urllib3
+<span class="kw">from</span> requests.auth <span class="kw">import</span> HTTPBasicAuth
+
+<span class="cmt"># Desactivar warnings de SSL solo para sandbox/educación</span>
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+BASE_URL = <span class="str">"https://sandboxdnac.cisco.com"</span>
+USERNAME = <span class="str">"devnetuser"</span>
+PASSWORD = <span class="str">"Cisco123!"</span>
+
+<span class="kw">def</span> <span class="fn">get_auth_token</span>():
+    <span class="str">"""Autentica contra DNA Center y retorna el JWT token."""</span>
+    endpoint = <span class="str">"/dna/system/api/v1/auth/token"</span>
+    url = BASE_URL + endpoint
+
+    response = requests.post(
+        url,
+        auth=HTTPBasicAuth(USERNAME, PASSWORD),
+        verify=<span class="kw">False</span>   <span class="cmt"># Sandbox usa cert autofirmado</span>
+    )
+
+    <span class="cmt"># DNA Center devuelve 200 con JSON {"Token": "eyJ0eXAi..."}</span>
+    response.raise_for_status()
+    token = response.json()[<span class="str">"Token"</span>]
+    <span class="fn">print</span>(<span class="str">f"✅ Token obtenido: {token[:20]}..."</span>)
+    <span class="kw">return</span> token
+
+<span class="cmt"># Uso</span>
+token = get_auth_token()
+headers = {
+    <span class="str">"X-Auth-Token"</span>: token,
+    <span class="str">"Content-Type"</span>: <span class="str">"application/json"</span>,
+    <span class="str">"Accept"</span>: <span class="str">"application/json"</span>
+}</code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Patrón de producción: Clase wrapper</div>
+    <p>En lugar de pasar <code>headers</code> manualmente a cada función, crea una clase <code>DNACenterAPI</code> que gestione el token, su expiración y el re-intento automático ante un 401. Esto separa la lógica de transporte de la lógica de negocio y hace tu código testeable.</p>
+  </div>
+
+  <h2 class="section-title">Manejo de expiración y errores 401</h2>
+  <div class="code-block">
+    <div class="code-label">Re-autenticación automática ante token expirado</div>
+    <pre><code><span class="kw">class</span> <span class="fn">DNACenterClient</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, base_url, username, password):
+        self.base_url = base_url
+        self.auth = HTTPBasicAuth(username, password)
+        self.headers = {}
+        self._get_token()
+
+    <span class="kw">def</span> <span class="fn">_get_token</span>(self):
+        url = <span class="str">f"{self.base_url}/dna/system/api/v1/auth/token"</span>
+        r = requests.post(url, auth=self.auth, verify=<span class="kw">False</span>)
+        r.raise_for_status()
+        self.headers[<span class="str">"X-Auth-Token"</span>] = r.json()[<span class="str">"Token"</span>]
+
+    <span class="kw">def</span> <span class="fn">request</span>(self, method, endpoint, **kwargs):
+        url = <span class="str">f"{self.base_url}{endpoint}"</span>
+        kwargs.setdefault(<span class="str">"headers"</span>, {}).update(self.headers)
+        kwargs[<span class="str">"verify"</span>] = <span class="kw">False</span>
+
+        resp = requests.request(method, url, **kwargs)
+        <span class="kw">if</span> resp.status_code == <span class="num">401</span>:
+            <span class="fn">print</span>(<span class="str">"🔄 Token expirado. Re-autenticando..."</span>)
+            self._get_token()
+            kwargs[<span class="str">"headers"</span>].update(self.headers)
+            resp = requests.request(method, url, **kwargs)
+        resp.raise_for_status()
+        <span class="kw">return</span> resp
+
+<span class="cmt"># Uso limpio en todo el proyecto</span>
+api = DNACenterClient(<span class="str">"https://sandboxdnac.cisco.com"</span>, <span class="str">"devnetuser"</span>, <span class="str">"Cisco123!"</span>)
+devices = api.request(<span class="str">"GET"</span>, <span class="str">"/dna/intent/api/v1/network-device"</span>).json()</code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 3 — INVENTARIO
+═══════════════════════════════════════════ -->
+<div id="tab-inventory" class="rest4-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Inventario de red y jerarquía de sites</h2>
+  <p>El inventario es el pilar de cualquier operación en DNA Center. Antes de aplicar una configuración, debes saber <em>qué</em> dispositivos existen, <em>dónde</em> están (site, building, floor) y <em>cómo</em> están conectados (topología).</p>
+
+  <h2 class="section-title">Endpoints esenciales de Inventario</h2>
+  
+  <div class="endpoint-card">
+    <div><span class="endpoint-method get">GET</span><span class="endpoint-path">/dna/intent/api/v1/network-device</span></div>
+    <div class="endpoint-desc">Lista todos los dispositivos gestionados: routers, switches, APs, WLCs. Soporta filtros por family, type, series y managementIpAddress.</div>
+  </div>
+  
+  <div class="endpoint-card">
+    <div><span class="endpoint-method get">GET</span><span class="endpoint-path">/dna/intent/api/v1/network-device/{deviceId}</span></div>
+    <div class="endpoint-desc">Detalle completo de un dispositivo específico: interfaces, versión IOS, serial number, ubicación, health score y roles en fabric.</div>
+  </div>
+
+  <div class="endpoint-card">
+    <div><span class="endpoint-method get">GET</span><span class="endpoint-path">/dna/intent/api/v1/site</span></div>
+    <div class="endpoint-desc">Jerarquía de sites definida en DNA Center: Global > Area > Building > Floor. Cada site tiene un siteId único.</div>
+  </div>
+
+  <div class="endpoint-card">
+    <div><span class="endpoint-method get">GET</span><span class="endpoint-path">/dna/intent/api/v1/topology/physical-topology</span></div>
+    <div class="endpoint-desc">Topología física de la red: nodos (dispositivos) y enlaces (conexiones L1/L2). Útil para mapear visualmente la infraestructura.</div>
+  </div>
+
+  <h2 class="section-title">Listar dispositivos e imprimir tabla</h2>
+  <div class="code-block">
+    <div class="code-label">inventory.py — Explorar inventario con filtros</div>
+    <pre><code><span class="kw">import</span> requests
+<span class="kw">from</span> tabulate <span class="kw">import</span> tabulate
+
+<span class="kw">def</span> <span class="fn">list_devices</span>(headers):
+    url = <span class="str">"https://sandboxdnac.cisco.com/dna/intent/api/v1/network-device"</span>
+    r = requests.get(url, headers=headers, verify=<span class="kw">False</span>)
+    r.raise_for_status()
+
+    devices = r.json()[<span class="str">"response"</span>]
+    table = []
+    <span class="kw">for</span> d <span class="kw">in</span> devices:
+        table.append([
+            d.get(<span class="str">"hostname"</span>, <span class="str">"N/A"</span>),
+            d.get(<span class="str">"managementIpAddress"</span>, <span class="str">"N/A"</span>),
+            d.get(<span class="str">"platformId"</span>, <span class="str">"N/A"</span>),
+            d.get(<span class="str">"softwareVersion"</span>, <span class="str">"N/A"</span>),
+            d.get(<span class="str">"reachabilityStatus"</span>, <span class="str">"unknown"</span>)
+        ])
+
+    <span class="fn">print</span>(tabulate(table,
+                   headers=[<span class="str">"Hostname"</span>, <span class="str">"IP"</span>, <span class="str">"Platform"</span>, <span class="str">"Version"</span>, <span class="str">"Status"</span>],
+                   tablefmt=<span class="str">"grid"</span>))
+
+<span class="cmt"># Ejemplo de salida:</span>
+<span class="cmt"># ╔══════════════╦════════════════╦════════════════╦═══════════╦══════════╗</span>
+<span class="cmt"># ║ Hostname     ║ IP             ║ Platform       ║ Version   ║ Status   ║</span>
+<span class="cmt"># ╠══════════════╬════════════════╬════════════════╬═══════════╬══════════╣</span>
+<span class="cmt"># ║ cat_9k_1     ║ 10.10.20.80    ║ C9300-24UX     ║ 17.6.1    ║ Reachable║</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Obtener la jerarquía de Sites</h2>
+  <p>DNA Center organiza los dispositivos en una jerarquía geográfica/lógica: <strong>Global > Area > Building > Floor</strong>. Esta jerarquía se usa para aplicar políticas por ubicación, reportes de health por site y provisioning automático.</p>
+
+  <div class="code-block">
+    <div class="code-label">sites.py — Explorar la jerarquía física</div>
+    <pre><code><span class="kw">def</span> <span class="fn">get_sites</span>(headers):
+    url = <span class="str">"https://sandboxdnac.cisco.com/dna/intent/api/v1/site"</span>
+    r = requests.get(url, headers=headers, verify=<span class="kw">False</span>)
+    sites = r.json()[<span class="str">"response"</span>]
+
+    <span class="kw">for</span> site <span class="kw">in</span> sites:
+        name   = site.get(<span class="str">"name"</span>)
+        stype  = site.get(<span class="str">"siteNameHierarchy"</span>, <span class="str">""</span>).split(<span class="str">"/"</span>)
+        level  = <span class="fn">len</span>([s <span class="kw">for</span> s <span class="kw">in</span> stype <span class="kw">if</span> s])
+        indent = <span class="str">"  "</span> * (level - <span class="num">1</span>)
+        <span class="fn">print</span>(<span class="str">f"{indent}📍 {name} [{site.get('siteId')[:8]}...]"</span>)
+
+<span class="cmt"># Salida típica:</span>
+<span class="cmt"># 📍 Global [a3d1e2f8...]</span>
+<span class="cmt">#   📍 San Jose [b4e2...]</span>
+<span class="cmt">#     📍 Building 10 [c5f3...]</span>
+<span class="cmt">#       📍 Floor 1 [d6a4...]</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Topología física y L3</h2>
+  <div class="code-block">
+    <div class="code-label">topology.py — Mapear nodos y enlaces</div>
+    <pre><code><span class="kw">def</span> <span class="fn">get_physical_topology</span>(headers):
+    url = <span class="str">"https://sandboxdnac.cisco.com/dna/intent/api/v1/topology/physical-topology"</span>
+    r = requests.get(url, headers=headers, verify=<span class="kw">False</span>)
+    topo = r.json()[<span class="str">"response"</span>]
+
+    nodes = topo[<span class="str">"nodes"</span>]
+    links = topo[<span class="str">"links"</span>]
+
+    <span class="fn">print</span>(<span class="str">f"🌐 Nodos descubiertos: {len(nodes)}"</span>)
+    <span class="fn">print</span>(<span class="str">f"🔗 Enlaces detectados: {len(links)}"</span>)
+
+    <span class="kw">for</span> node <span class="kw">in</span> nodes[:<span class="num">5</span>]:
+        <span class="fn">print</span>(<span class="str">f"  • {node['label']} ({node['deviceSeries']}) — {node['ip']}"</span>)
+
+    <span class="kw">for</span> link <span class="kw">in</span> links[:<span class="num">3</span>]:
+        src = <span class="fn">next</span>(n[<span class="str">"label"</span>] <span class="kw">for</span> n <span class="kw">in</span> nodes <span class="kw">if</span> n[<span class="str">"id"</span>] == link[<span class="str">"source"</span>])
+        dst = <span class="fn">next</span>(n[<span class="str">"label"</span>] <span class="kw">for</span> n <span class="kw">in</span> nodes <span class="kw">if</span> n[<span class="str">"id"</span>] == link[<span class="str">"target"</span>])
+        <span class="fn">print</span>(<span class="str">f"  └─ {src} === {dst} [{link.get('linkStatus','up')}]"</span>)</code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚡ Trampa común del examen</div>
+    <p>El examen CCNA puede preguntar: "¿Qué controlador Cisco proporciona inventario centralizado, topología y health monitoring vía REST API?" La respuesta es <strong>Cisco DNA Center</strong> (no WLC ni vManage). También puede preguntar el formato de respuesta: <strong>JSON</strong>, nunca XML ni YAML.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 4 — ASSURANCE
+═══════════════════════════════════════════ -->
+<div id="tab-assurance" class="rest4-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Assurance: Health de red, cliente y sitio</h2>
+  <p><strong>Assurance</strong> es el módulo de DNA Center que transforma telemetría en inteligencia accionable. No solo te dice si un dispositivo está up/down; te da un <strong>health score</strong> (0-10) basado en KPIs: CPU, memoria, errores de interfaces, retardo, pérdida de paquetes, problemas de RF, etc.</p>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">🌐</div>
+      <h3>Network Health</h3>
+      <p>Agregado de salud de todos los dispositivos de red (routers, switches, APs). Score bajo indplica congestionamiento, errores de enlace o hardware degradado.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">📱</div>
+      <h3>Client Health</h3>
+      <p>Experiencia de usuarios finales y dispositivos IoT. Mide asociación Wi-Fi, roaming, throughput y problemas de autenticación.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🏢</div>
+      <h3>Site Health</h3>
+      <p>Vista consolidada por ubicación física. Permite comparar el desempeño del edificio A vs. el edificio B, o identificar pisos problemáticos.</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">Endpoints de Assurance</h2>
+  
+  <div class="endpoint-card">
+    <div><span class="endpoint-method get">GET</span><span class="endpoint-path">/dna/intent/api/v1/network-health</span></div>
+    <div class="endpoint-desc">Devuelve health score global, número de dispositivos por estado (healthy, fair, poor), y timestamp de la muestra.</div>
+  </div>
+  
+  <div class="endpoint-card">
+    <div><span class="endpoint-method get">GET</span><span class="endpoint-path">/dna/intent/api/v1/client-health</span></div>
+    <div class="endpoint-desc">Métricas de clientes: total de clientes conectados, distribución por banda (2.4GHz, 5GHz, 6GHz), y score de experiencia.</div>
+  </div>
+
+  <div class="endpoint-card">
+    <div><span class="endpoint-method get">GET</span><span class="endpoint-path">/dna/intent/api/v1/site-health</span></div>
+    <div class="endpoint-desc">Health por site jerárquico. Incluye access health (usuarios), network health (infra) y application health (app-aware).</div>
+  </div>
+
+  <h2 class="section-title">Consultando Network Health</h2>
+  <div class="code-block">
+    <div class="code-label">assurance.py — Health metrics y KPIs</div>
+    <pre><code><span class="kw">def</span> <span class="fn">check_network_health</span>(headers):
+    url = <span class="str">"https://sandboxdnac.cisco.com/dna/intent/api/v1/network-health"</span>
+    r = requests.get(url, headers=headers, verify=<span class="kw">False</span>)
+    data = r.json()[<span class="str">"response"</span>][<span class="num">0</span>]   <span class="cmt"># Array con timestamp</span>
+
+    score       = data.get(<span class="str">"healthScore"</span>)
+    total       = data.get(<span class="str">"totalCount"</span>)
+    healthy     = data.get(<span class="str">"goodCount"</span>)
+    poor        = data.get(<span class="str">"poorCount"</span>)
+
+    <span class="fn">print</span>(<span class="str">f"❤️  Network Health Score : {score}/10"</span>)
+    <span class="fn">print</span>(<span class="str">f"📊 Dispositivos totales  : {total}"</span>)
+    <span class="fn">print</span>(<span class="str">f"✅ Saludables            : {healthy}"</span>)
+    <span class="fn">print</span>(<span class="str">f"⚠️  Degradados (poor)    : {poor}"</span>)
+
+    <span class="cmt"># Análisis de issue count</span>
+    issues = data.get(<span class="str">"issueCount"</span>, {})
+    <span class="kw">for</span> severity, count <span class="kw">in</span> issues.items():
+        <span class="kw">if</span> count > <span class="num">0</span>:
+            <span class="fn">print</span>(<span class="str">f"   🔴 {severity}: {count}"</span>)
+
+<span class="cmt"># Ejemplo de salida:</span>
+<span class="cmt"># ❤️  Network Health Score : 8/10</span>
+<span class="cmt"># 📊 Dispositivos totales  : 142</span>
+<span class="cmt"># ✅ Saludables            : 128</span>
+<span class="cmt"># ⚠️  Degradados (poor)    : 3</span>
+<span class="cmt">#    🔴 CRITICAL: 1</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Client Health: experiencia del usuario</h2>
+  <div class="code-block">
+    <div class="code-label">client_health.py — Métricas de conectividad</div>
+    <pre><code><span class="kw">def</span> <span class="fn">check_client_health</span>(headers):
+    url = <span class="str">"https://sandboxdnac.cisco.com/dna/intent/api/v1/client-health"</span>
+    r = requests.get(url, headers=headers, verify=<span class="kw">False</span>)
+    data = r.json()[<span class="str">"response"</span>]
+
+    <span class="kw">for</span> score_category <span class="kw">in</span> data:
+        category = score_category.get(<span class="str">"scoreCategory"</span>, {}).get(<span class="str">"scoreCategory"</span>)
+        clients  = score_category.get(<span class="str">"clientCount"</span>)
+        score    = score_category.get(<span class="str">"scoreValue"</span>)
+        <span class="fn">print</span>(<span class="str">f"📱 {category}: {clients} clientes (score: {score})"</span>)
+
+        <span class="cmt"># Detalle por banda Wi-Fi</span>
+        <span class="kw">for</span> detail <span class="kw">in</span> score_category.get(<span class="str">"scoreList"</span>, []):
+            band  = detail.get(<span class="str">"scoreCategory"</span>, {}).get(<span class="str">"value"</span>)
+            count = detail.get(<span class="str">"clientCount"</span>)
+            <span class="kw">if</span> band <span class="kw">and</span> count:
+                <span class="fn">print</span>(<span class="str">f"   └─ {band}: {count}"</span>)
+
+<span class="cmt"># Salida típica:</span>
+<span class="cmt"># 📱 WIRED: 45 clientes (score: 10)</span>
+<span class="cmt"># 📱 WIRELESS: 89 clientes (score: 9)</span>
+<span class="cmt">#    └─ 2.4GHz: 12</span>
+<span class="cmt">#    └─ 5GHz: 77</span></code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Assurance para el examen CCNA</div>
+    <p>El examen no te pedirá parsear JSON de health, pero sí puede preguntar: <em>"¿Qué solución Cisco proporciona health scores de red y cliente basados en telemetría?"</em> Respuesta: <strong>DNA Center Assurance</strong>. O: <em>"¿Qué protocolo usa DNA Center para recolectar telemetría de switches?"</em> Respuesta: <strong>Streaming Telemetry (gRPC/TLS) o SNMP trap/syslog</strong>, procesados por Analytics.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 5 — COMMAND RUNNER
+═══════════════════════════════════════════ -->
+<div id="tab-command" class="rest4-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Command Runner — CLI a través de la API</h2>
+  <p>No siempre existe un modelo YANG o un endpoint REST para la información que necesitas. <strong>Command Runner</strong> es el puente entre el mundo API y el mundo CLI: envías comandos <code>show</code> como si estuvieras en la consola, DNA Center los ejecuta en el dispositivo destino vía SSH/NETCONF interno, y te devuelve la salida como texto plano o estructurado.</p>
+
+  <h2 class="section-title">Flujo de trabajo del Command Runner</h2>
+  <div class="dna-flow">
+    <div class="dna-box"><div class="dna-box-label">1. ENVIAR</div><div class="dna-box-val">POST /cli/read-request</div></div>
+    <div class="dna-arrow">→</div>
+    <div class="dna-box"><div class="dna-box-label">2. TASK ID</div><div class="dna-box-val">UUID de tarea</div></div>
+    <div class="dna-arrow">→</div>
+    <div class="dna-box"><div class="dna-box-label">3. POLLING</div><div class="dna-box-val">GET /task/{id}</div></div>
+    <div class="dna-arrow">→</div>
+    <div class="dna-box"><div class="dna-box-label">4. RESULTADO</div><div class="dna-box-val">fileId / progress</div></div>
+  </div>
+
+  <h2 class="section-title">Ejecución de comandos show</h2>
+  <div class="code-block">
+    <div class="code-label">command_runner.py — Patrón completo con polling</div>
+    <pre><code><span class="kw">import</span> time
+<span class="kw">import</span> json
+
+<span class="kw">def</span> <span class="fn">run_show_command</span>(headers, device_uuid, commands):
+    <span class="str">"""
+    Ejecuta comandos 'show' en un dispositivo vía DNA Center.
+    Retorna la salida cruda del CLI.
+    """</span>
+    base = <span class="str">"https://sandboxdnac.cisco.com"</span>
+
+    <span class="cmt"># 1. Solicitar ejecución</span>
+    url = <span class="str">f"{base}/dna/intent/api/v1/network-device-poller/cli/read-request"</span>
+    payload = {
+        <span class="str">"commands"</span>: commands,
+        <span class="str">"deviceUuids"</span>: [device_uuid],
+        <span class="str">"timeout"</span>: <span class="num">30</span>
+    }
+    r = requests.post(url, headers=headers, json=payload, verify=<span class="kw">False</span>)
+    r.raise_for_status()
+    task_id = r.json()[<span class="str">"response"</span>][<span class="str">"taskId"</span>]
+    <span class="fn">print</span>(<span class="str">f"🚀 Tarea creada: {task_id}"</span>)
+
+    <span class="cmt"># 2. Polling del estado de la tarea</span>
+    task_url = <span class="str">f"{base}/dna/intent/api/v1/task/{task_id}"</span>
+    <span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(<span class="num">10</span>):
+        time.sleep(<span class="num">1</span>)
+        tr = requests.get(task_url, headers=headers, verify=<span class="kw">False</span>)
+        task = tr.json()[<span class="str">"response"</span>]
+
+        <span class="kw">if</span> task.get(<span class="str">"isError"</span>):
+            <span class="kw">raise</span> Exception(<span class="str">f"Error en tarea: {task.get('progress')}"</span>)
+
+        progress = task.get(<span class="str">"progress"</span>, <span class="str">""</span>)
+        <span class="fn">print</span>(<span class="str">f"⏳ Progreso: {progress}"</span>)
+
+        <span class="kw">if</span> task.get(<span class="str">"endTime"</span>):
+            <span class="kw">break</span>
+
+    <span class="cmt"># 3. Obtener resultado por fileId</span>
+    file_id = json.loads(progress).get(<span class="str">"fileId"</span>)
+    file_url = <span class="str">f"{base}/dna/intent/api/v1/file/{file_id}"</span>
+    fr = requests.get(file_url, headers=headers, verify=<span class="kw">False</span>)
+    result = fr.json()
+
+    <span class="kw">for</span> entry <span class="kw">in</span> result:
+        <span class="fn">print</span>(<span class="str">f"\n🖥️  {entry['deviceUuid']}"</span>)
+        <span class="fn">print</span>(<span class="str">"─"</span> * <span class="num">50</span>)
+        <span class="fn">print</span>(entry.get(<span class="str">"commandResponses"</span>, {}).get(<span class="str">"SUCCESS"</span>, {}))
+        <span class="kw">return</span> entry
+
+<span class="cmt"># Uso práctico</span>
+device_id = <span class="str">"a3d1e2f8-1234-5678-9abc-def012345678"</span>  <span class="cmt"># UUID real del inventario</span>
+run_show_command(headers, device_id, [<span class="str">"show version"</span>, <span class="str">"show ip interface brief"</span>])</code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚡ Command Runner ≠ Configuración masiva</div>
+    <p>Command Runner está diseñado para comandos <code>show</code> (lectura). Si intentas enviar <code>config t</code>, DNA Center lo bloqueará por seguridad. Para cambios de configuración masivos, usa <strong>Templates</strong> o la <strong>Intent API</strong> específica del servicio (ej. /network-device poller para CLI write no está soportado para cambios).</p>
+  </div>
+
+  <h2 class="section-title">Obtener el UUID de un dispositivo</h2>
+  <p>Los endpoints de Command Runner requieren <code>deviceUuids</code> (UUID), no IP ni hostname. Primero debes consultar el inventario:</p>
+  <div class="code-block">
+    <div class="code-label">Resolver hostname → UUID</div>
+    <pre><code><span class="kw">def</span> <span class="fn">get_device_uuid_by_ip</span>(headers, ip):
+    url = <span class="str">"https://sandboxdnac.cisco.com/dna/intent/api/v1/network-device"</span>
+    r = requests.get(url, headers=headers, verify=<span class="kw">False</span>)
+    <span class="kw">for</span> dev <span class="kw">in</span> r.json()[<span class="str">"response"</span>]:
+        <span class="kw">if</span> dev.get(<span class="str">"managementIpAddress"</span>) == ip:
+            <span class="kw">return</span> dev[<span class="str">"id"</span>]   <span class="cmt"># Este es el UUID</span>
+    <span class="kw">raise</span> ValueError(<span class="str">f"Dispositivo con IP {ip} no encontrado"</span>)</code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 6 — TEMPLATES
+═══════════════════════════════════════════ -->
+<div id="tab-templates" class="rest4-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Templates y Provisioning automatizado</h2>
+  <p>Los <strong>Templates</strong> de DNA Center permiten definir configuraciones CLI como plantillas reutilizables usando el lenguaje <strong>Apache Velocity</strong>. Variables como <code>${VLAN_ID}</code> o <code>${INTERFACE}</code> se sustituyen en tiempo de despliegue. Esto elimina errores humanos de copy-paste y acelera el provisioning de Day 0 y Day N.</p>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">📋</div>
+      <h3>Velocity Templates</h3>
+      <p>Sintaxis <code>${variable}</code>, condicionales <code>#if</code>, bucles <code>#foreach</code>. Soportado nativamente por DNA Center para generar CLI dinámico.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🚀</div>
+      <h3>Day-0 Provisioning</h3>
+      <p>Al encender un switch nuevo (PnP — Plug and Play), DNA Center le aplica automáticamente template + imagen + licencia sin intervención manual.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🔄</div>
+      <h3>Day-N Changes</h3>
+      <p>Ajustes posteriores: añadir VLANs, modificar ACLs, actualizar descripciones. Se versionan y pueden revertirse desde la interfaz.</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">Estructura de un Template</h2>
+  <div class="code-block">
+    <div class="code-label">Ejemplo: Template CLI para interfaz de acceso</div>
+    <pre><code><span class="cmt">! Template: access_port_vlan.vm</span>
+interface ${INTERFACE}
+ description ${DESCRIPTION}
+ switchport mode access
+ switchport access vlan ${VLAN_ID}
+ spanning-tree portfast
+<span class="cmt">#if( $ENABLE_BPDU )</span>
+ spanning-tree bpduguard enable
+<span class="cmt">#end</span></code></pre>
+  </div>
+
+  <h2 class="section-title">APIs para Templates</h2>
+  
+  <div class="endpoint-card">
+    <div><span class="endpoint-method get">GET</span><span class="endpoint-path">/dna/intent/api/v1/template-programmer/project</span></div>
+    <div class="endpoint-desc">Lista proyectos de template existentes. Un proyecto agrupa templates relacionados (ej. "Switching-Campus").</div>
+  </div>
+
+  <div class="endpoint-card">
+    <div><span class="endpoint-method post">POST</span><span class="endpoint-path">/dna/intent/api/v1/template-programmer/project/{projectId}/template</span></div>
+    <div class="endpoint-desc">Crea un nuevo template dentro de un proyecto. Requiere nombre, contenido Velocity, device types soportados y variables.</div>
+  </div>
+
+  <div class="endpoint-card">
+    <div><span class="endpoint-method post">POST</span><span class="endpoint-path">/dna/intent/api/v1/template-programmer/template/deploy</span></div>
+    <div class="endpoint-desc">Despliega un template a uno o más dispositivos. En el body envías el templateId, target devices y valores para las variables Velocity.</div>
+  </div>
+
+  <h2 class="section-title">Desplegar un template desde Python</h2>
+  <div class="code-block">
+    <div class="code-label">deploy_template.py — Provisioning programático</div>
+    <pre><code><span class="kw">def</span> <span class="fn">deploy_template</span>(headers, template_id, device_uuids, variables):
+    <span class="str">"""Despliega un template Velocity a una lista de dispositivos."""</span>
+    url = <span class="str">"https://sandboxdnac.cisco.com/dna/intent/api/v1/template-programmer/template/deploy"</span>
+
+    payload = {
+        <span class="str">"targetInfo"</span>: [
+            {
+                <span class="str">"id"</span>: dev_id,
+                <span class="str">"type"</span>: <span class="str">"MANAGED_DEVICE_UUID"</span>,
+                <span class="str">"params"</span>: variables
+            }
+            <span class="kw">for</span> dev_id <span class="kw">in</span> device_uuids
+        ],
+        <span class="str">"templateId"</span>: template_id
+    }
+
+    r = requests.post(url, headers=headers, json=payload, verify=<span class="kw">False</span>)
+    deployment = r.json()[<span class="str">"response"</span>]
+    <span class="fn">print</span>(<span class="str">f"📋 Deployment ID: {deployment['deploymentId']}"</span>)
+    <span class="fn">print</span>(<span class="str">f"⏳ Estado: {deployment['status']}"</span>)
+    <span class="kw">return</span> deployment
+
+<span class="cmt"># Uso</span>
+template_vars = {<span class="str">"INTERFACE"</span>: <span class="str">"GigabitEthernet1/0/1"</span>, <span class="str">"VLAN_ID"</span>: <span class="str">"10"</span>, <span class="str">"DESCRIPTION"</span>: <span class="str">"USUARIOS_VENTAS"</span>}
+deploy_template(headers, <span class="str">"tpl-abc123"</span>, [<span class="str">"uuid-1"</span>, <span class="str">"uuid-2"</span>], template_vars)</code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Templates vs. NETCONF/RESTCONF</div>
+    <p>Para el examen CCNA es clave entender cuándo usar cada herramienta:</p>
+    <ul>
+      <li><strong>Templates (DNA Center)</strong>: Útil para configuraciones masivas tipo CLI en dispositivos legacy o cuando no hay modelos YANG disponibles.</li>
+      <li><strong>NETCONF/YANG</strong>: Transaccional, estructurado, ideal para cambios atómicos y rollback.</li>
+      <li><strong>RESTCONF</strong>: Stateless, HTTP-based, perfecto para microservicios y dashboards.</li>
+      <li><strong>DNA Center API</strong>: Orquestación de alto nivel, assurance, topología e inventario. No reemplaza NETCONF; lo complementa.</li>
+    </ul>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 7 — WEBHOOKS
+═══════════════════════════════════════════ -->
+<div id="tab-webhooks" class="rest4-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Event API: Webhooks y notificaciones push</h2>
+  <p>El modelo de polling (preguntar cada X segundos si hay novedades) es ineficiente. DNA Center soporta <strong>Webhooks</strong>: tú registras una URL de tu aplicación, y DNA Center envía un POST automático cuando ocurre un evento relevante (alarma, rogue AP, cambio de topología, fallo de enlace).</p>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">🔔</div>
+      <h3>Eventos de red</h3>
+      <p>LINK_DOWN, INTERFACE_ERR_DISABLED, BGP_NEIGHBOR_DOWN. Notificación inmediata sin necesidad de SNMP traps complejos.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">👤</div>
+      <h3>Eventos de cliente</h3>
+      <p>CLIENT_ASSOCIATION_FAILURE, ROUGE_AP_DETECTED. Útil para seguridad WLAN y troubleshooting proactivo.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">⚙️</div>
+      <h3>Eventos de configuración</h3>
+      <p>CONFIGURATION_CHANGE, TEMPLATE_DEPLOYMENT_SUCCESS. Auditoría y compliance automatizada.</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">Crear una suscripción REST Webhook</h2>
+  <div class="code-block">
+    <div class="code-label">subscribe_webhook.py — Registrar endpoint receptor</div>
+    <pre><code><span class="kw">def</span> <span class="fn">create_webhook_subscription</span>(headers, name, webhook_url):
+    url = <span class="str">"https://sandboxdnac.cisco.com/dna/intent/api/v1/event/subscription/rest"</span>
+
+    payload = [
+        {
+            <span class="str">"name"</span>: name,
+            <span class="str">"description"</span>: <span class="str">"Suscripción a alarmas de red"</span>,
+            <span class="str">"filter"</span>: {
+                <span class="str">"eventIds"</span>: [<span class="str">"NETWORK-API-ERROR"</span>, <span class="str">"LINK-FAILURE"</span>]
+            },
+            <span class="str">"subscriptionEndpoints"</span>: [
+                {
+                    <span class="str">"instanceId"</span>: <span class="str">"webhook-01"</span>,
+                    <span class="str">"subscriptionDetails"</span>: {
+                        <span class="str">"connectorType"</span>: <span class="str">"REST"</span>,
+                        <span class="str">"name"</span>: <span class="str">"MiWebhook"</span>,
+                        <span class="str">"description"</span>: <span class="str">"Recibe alarmas en mi app"</span>,
+                        <span class="str">"url"</span>: webhook_url,
+                        <span class="str">"method"</span>: <span class="str">"POST"</span>,
+                        <span class="str">"trustCert"</span>: <span class="kw">False</span>,
+                        <span class="str">"headers"</span>: [
+                            {<span class="str">"name"</span>: <span class="str">"Content-Type"</span>, <span class="str">"value"</span>: <span class="str">"application/json"</span>}
+                        ]
+                    }
+                }
+            ]
+        }
+    ]
+
+    r = requests.post(url, headers=headers, json=payload, verify=<span class="kw">False</span>)
+    <span class="fn">print</span>(<span class="str">f"🔔 Suscripción creada: {r.status_code}"</span>)
+    <span class="kw">return</span> r.json()
+
+<span class="cmt"># Tu endpoint receptor (ej. Flask/FastAPI) recibirá:</span>
+<span class="cmt"># POST https://mi-servidor.com/webhook/dna-center</span>
+<span class="cmt"># Body: {"eventId":"LINK-FAILURE", "severity":"HIGH", ...}</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Receptor Webhook básico con Flask</h2>
+  <div class="code-block">
+    <div class="code-label">webhook_receiver.py — Endpoint para recibir eventos</div>
+    <pre><code><span class="kw">from</span> flask <span class="kw">import</span> Flask, request, jsonify
+
+app = Flask(<span class="str">__name__</span>)
+
+<span class="kw">@app.route</span>(<span class="str">"/webhook/dna-center"</span>, methods=[<span class="str">"POST"</span>])
+<span class="kw">def</span> <span class="fn">dna_webhook</span>():
+    data = request.get_json()
+    <span class="fn">print</span>(<span class="str">"🔔 Evento recibido de DNA Center:"</span>)
+    <span class="fn">print</span>(json.dumps(data, indent=<span class="num">2</span>))
+
+    <span class="cmt"># Extraer campos clave</span>
+    event_id  = data.get(<span class="str">"eventId"</span>)
+    severity  = data.get(<span class="str">"severity"</span>)
+    device_ip = data.get(<span class="str">"details"</span>, {}).get(<span class="str">"deviceIp"</span>)
+
+    <span class="kw">if</span> severity == <span class="str">"CRITICAL"</span>:
+        <span class="fn">print</span>(<span class="str">f"🚨 ALERTA CRÍTICA en {device_ip}: {event_id}"</span>)
+
+    <span class="kw">return</span> jsonify({<span class="str">"status"</span>: <span class="str">"recibido"</span>}), <span class="num">200</span>
+
+<span class="kw">if</span> __name__ == <span class="str">"__main__"</span>:
+    app.run(host=<span class="str">"0.0.0.0"</span>, port=<span class="num">5000</span>)</code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚡ Seguridad en Webhooks</div>
+    <p>Tu endpoint expuesto en Internet debe validar la autenticidad del emisor. DNA Center permite incluir headers personalizados (ej. <code>X-Webhook-Secret</code>) que tu aplicación debe verificar. Nunca proceses un webhook sin validar firma o secret, o podrías recibir payloads falsificados.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 8 — PROYECTO
+═══════════════════════════════════════════ -->
+<div id="tab-proyecto" class="rest4-tab-content">
+<div class="content-block">
+  <h2 class="section-title">🚀 Proyecto Final — Dashboard DNA Center en Python</h2>
+  <p>Este proyecto integra todo el conocimiento del tema: autenticación robusta con re-intento, inventario de dispositivos con exportación CSV, health check de red, command runner sobre múltiples nodos, y manejo profesional de errores. Es un orquestador de línea de comandos que cualquier ingeniero de red puede usar en producción contra DNA Center.</p>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Escenario de producción</div>
+    <p>Eres el ingeniero de automatización de una empresa con 50 sedes. Cada mañana necesitas un reporte ejecutivo de salud de red, un backup del inventario y la ejecución de <code>show version</code> en los core switches para auditar versiones de IOS. Este script lo automatiza en un solo comando.</p>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">dna_center_dashboard.py — Orquestador completo</div>
+    <pre><code><span class="cmt">#!/usr/bin/env python3</span>
+<span class="cmt">"""
+dna_center_dashboard.py
+CCNA Academy M8 T4 — Orquestador DNA Center Intent API
+────────────────────────────────────────────────────────
+- Autenticación con re-intento automático
+- Inventario con exportación CSV
+- Network & Client Health
+- Command Runner para show version
+- Logging profesional y manejo de errores
+"""</span>
+
+<span class="kw">import</span> os
+<span class="kw">import</span> csv
+<span class="kw">import</span> sys
+<span class="kw">import</span> json
+<span class="kw">import</span> time
+<span class="kw">import</span> logging
+<span class="kw">import</span> requests
+<span class="kw">import</span> urllib3
+<span class="kw">from</span> datetime <span class="kw">import</span> datetime
+<span class="kw">from</span> requests.auth <span class="kw">import</span> HTTPBasicAuth
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+<span class="cmt"># ══════════════════════════════════════════════════════</span>
+<span class="cmt"># CONFIGURACIÓN</span>
+<span class="cmt"># ══════════════════════════════════════════════════════</span>
+BASE_URL      = os.getenv(<span class="str">"DNAC_URL"</span>,      <span class="str">"https://sandboxdnac.cisco.com"</span>)
+USERNAME      = os.getenv(<span class="str">"DNAC_USER"</span>,     <span class="str">"devnetuser"</span>)
+PASSWORD      = os.getenv(<span class="str">"DNAC_PASS"</span>,     <span class="str">"Cisco123!"</span>)
+COMMANDS      = [<span class="str">"show version"</span>]
+REPORT_DIR    = <span class="str">"./reports"</span>
+
+logging.basicConfig(
+    level=logging.INFO,
+    format=<span class="str">"%(asctime)s [%(levelname)s] %(message)s"</span>,
+    datefmt=<span class="str">"%H:%M:%S"</span>
+)
+
+<span class="cmt"># ══════════════════════════════════════════════════════</span>
+<span class="cmt"># CLIENTE DNA CENTER</span>
+<span class="cmt"># ══════════════════════════════════════════════════════</span>
+<span class="kw">class</span> <span class="fn">DNACenterClient</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+        self.base_url = BASE_URL
+        self.auth     = HTTPBasicAuth(USERNAME, PASSWORD)
+        self.headers  = {<span class="str">"Content-Type"</span>: <span class="str">"application/json"</span>, <span class="str">"Accept"</span>: <span class="str">"application/json"</span>}
+        self._authenticate()
+
+    <span class="kw">def</span> <span class="fn">_authenticate</span>(self):
+        endpoint = <span class="str">"/dna/system/api/v1/auth/token"</span>
+        r = requests.post(<span class="str">f"{self.base_url}{endpoint}"</span>, auth=self.auth, verify=<span class="kw">False</span>)
+        r.raise_for_status()
+        self.headers[<span class="str">"X-Auth-Token"</span>] = r.json()[<span class="str">"Token"</span>]
+        logging.info(<span class="str">"🔐 Autenticado contra DNA Center"</span>)
+
+    <span class="kw">def</span> <span class="fn">request</span>(self, method, endpoint, **kwargs):
+        url = <span class="str">f"{self.base_url}{endpoint}"</span>
+        kwargs.setdefault(<span class="str">"headers"</span>, {}).update(self.headers)
+        kwargs[<span class="str">"verify"</span>] = <span class="kw">False</span>
+
+        resp = requests.request(method, url, **kwargs)
+        <span class="kw">if</span> resp.status_code == <span class="num">401</span>:
+            logging.warning(<span class="str">"🔄 Token expirado. Re-autenticando..."</span>)
+            self._authenticate()
+            kwargs[<span class="str">"headers"</span>].update(self.headers)
+            resp = requests.request(method, url, **kwargs)
+        resp.raise_for_status()
+        <span class="kw">return</span> resp
+
+<span class="cmt"># ══════════════════════════════════════════════════════</span>
+<span class="cmt"># FUNCIONES DE NEGOCIO</span>
+<span class="cmt"># ══════════════════════════════════════════════════════</span>
+<span class="kw">def</span> <span class="fn">export_inventory_csv</span>(api):
+    logging.info(<span class="str">"📦 Obteniendo inventario..."</span>)
+    r = api.request(<span class="str">"GET"</span>, <span class="str">"/dna/intent/api/v1/network-device"</span>)
+    devices = r.json()[<span class="str">"response"</span>]
+
+    os.makedirs(REPORT_DIR, exist_ok=<span class="kw">True</span>)
+    fname = <span class="str">f"{REPORT_DIR}/inventory_{datetime.now():%Y%m%d_%H%M%S}.csv"</span>
+    <span class="kw">with</span> <span class="fn">open</span>(fname, <span class="str">"w"</span>, newline=<span class="str">""</span>) <span class="kw">as</span> f:
+        writer = csv.writer(f)
+        writer.writerow([<span class="str">"Hostname"</span>, <span class="str">"IP"</span>, <span class="str">"Platform"</span>, <span class="str">"SW Version"</span>, <span class="str">"Reachability"</span>])
+        <span class="kw">for</span> d <span class="kw">in</span> devices:
+            writer.writerow([
+                d.get(<span class="str">"hostname"</span>),
+                d.get(<span class="str">"managementIpAddress"</span>),
+                d.get(<span class="str">"platformId"</span>),
+                d.get(<span class="str">"softwareVersion"</span>),
+                d.get(<span class="str">"reachabilityStatus"</span>)
+            ])
+    logging.info(<span class="str">f"✅ Inventario exportado: {fname}"</span>)
+    <span class="kw">return</span> devices
+
+<span class="kw">def</span> <span class="fn">print_health_summary</span>(api):
+    logging.info(<span class="str">"❤️  Obteniendo health metrics..."</span>)
+    r = api.request(<span class="str">"GET"</span>, <span class="str">"/dna/intent/api/v1/network-health"</span>)
+    net = r.json()[<span class="str">"response"</span>][<span class="num">0</span>]
+
+    r2 = api.request(<span class="str">"GET"</span>, <span class="str">"/dna/intent/api/v1/client-health"</span>)
+    cli = r2.json()[<span class="str">"response"</span>]
+
+    <span class="fn">print</span>(<span class="str">"\n╔════════════════════════════════════════════╗"</span>)
+    <span class="fn">print</span>(<span class="str">"║     DNA CENTER DAILY HEALTH REPORT         ║"</span>)
+    <span class="fn">print</span>(<span class="str">"╠════════════════════════════════════════════╣"</span>)
+    <span class="fn">print</span>(<span class="str">f"║ Network Score : {net.get('healthScore','N/A'):<6}/10               ║"</span>)
+    <span class="fn">print</span>(<span class="str">f"║ Devices Total : {net.get('totalCount',0):<6}                 ║"</span>)
+    <span class="fn">print</span>(<span class="str">f"║ Devices Poor  : {net.get('poorCount',0):<6}                 ║"</span>)
+    total_clients = <span class="fn">sum</span>(c.get(<span class="str">"clientCount"</span>,<span class="num">0</span>) <span class="kw">for</span> c <span class="kw">in</span> cli)
+    <span class="fn">print</span>(<span class="str">f"║ Total Clients : {total_clients:<6}                 ║"</span>)
+    <span class="fn">print</span>(<span class="str">"╚════════════════════════════════════════════╝\n"</span>)
+
+<span class="kw">def</span> <span class="fn">run_commands_on_cores</span>(api, devices):
+    cores = [d <span class="kw">for</span> d <span class="kw">in</span> devices <span class="kw">if</span> <span class="str">"CORE"</span> <span class="kw">in</span> d.get(<span class="str">"hostname"</span>, <span class="str">""</span>).upper()]
+    <span class="kw">if</span> <span class="kw">not</span> cores:
+        logging.warning(<span class="str">"No se encontraron dispositivos con 'CORE' en el hostname"</span>)
+        <span class="kw">return</span>
+
+    <span class="kw">for</span> dev <span class="kw">in</span> cores:
+        uuid = dev[<span class="str">"id"</span>]
+        ip   = dev.get(<span class="str">"managementIpAddress"</span>)
+        logging.info(<span class="str">f"⌨️  Command Runner en {dev['hostname']} ({ip})"</span>)
+
+        endpoint = <span class="str">"/dna/intent/api/v1/network-device-poller/cli/read-request"</span>
+        payload  = {<span class="str">"commands"</span>: COMMANDS, <span class="str">"deviceUuids"</span>: [uuid], <span class="str">"timeout"</span>: <span class="num">30</span>}
+        r = api.request(<span class="str">"POST"</span>, endpoint, json=payload)
+        task_id  = r.json()[<span class="str">"response"</span>][<span class="str">"taskId"</span>]
+
+        <span class="cmt"># Polling simple</span>
+        <span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(<span class="num">15</span>):
+            time.sleep(<span class="num">1</span>)
+            tr = api.request(<span class="str">"GET"</span>, <span class="str">f"/dna/intent/api/v1/task/{task_id}"</span>)
+            task = tr.json()[<span class="str">"response"</span>]
+            <span class="kw">if</span> task.get(<span class="str">"endTime"</span>):
+                progress = json.loads(task.get(<span class="str">"progress"</span>, <span class="str">"{}"</span>))
+                file_id  = progress.get(<span class="str">"fileId"</span>)
+                <span class="kw">if</span> file_id:
+                    fr = api.request(<span class="str">"GET"</span>, <span class="str">f"/dna/intent/api/v1/file/{file_id}"</span>)
+                    result = fr.json()[<span class="num">0</span>]
+                    version_output = result.get(<span class="str">"commandResponses"</span>, {}).get(<span class="str">"SUCCESS"</span>, {}).get(<span class="str">"show version"</span>, <span class="str">"N/A"</span>)
+                    logging.info(<span class="str">f"   📄 Versión: {version_output[:60]}..."</span>)
+                <span class="kw">break</span>
+
+<span class="cmt"># ══════════════════════════════════════════════════════</span>
+<span class="cmt"># EJECUCIÓN PRINCIPAL</span>
+<span class="cmt"># ══════════════════════════════════════════════════════</span>
+<span class="kw">def</span> <span class="fn">main</span>():
+    <span class="fn">print</span>(<span class="str">"\n🧬 Cisco DNA Center — Dashboard Automatizado\n"</span>)
+    api = DNACenterClient()
+
+    devices = export_inventory_csv(api)
+    print_health_summary(api)
+    run_commands_on_cores(api, devices)
+
+    logging.info(<span class="str">"🏁 Proceso completado exitosamente."</span>)
+
+<span class="kw">if</span> __name__ == <span class="str">"__main__"</span>:
+    <span class="kw">try</span>:
+        main()
+    <span class="kw">except</span> Exception <span class="kw">as</span> e:
+        logging.error(<span class="str">f"❌ Error fatal: {e}"</span>)
+        sys.exit(<span class="num">1</span>)</code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">▶️ Cómo ejecutar</div>
+    <ol>
+      <li>Exporta variables de entorno (opcional pero recomendado):
+        <code>export DNAC_URL="https://sandboxdnac.cisco.com"</code></li>
+      <li>Instala dependencias: <code>pip install requests python-dotenv</code></li>
+      <li>Ejecuta: <code>python dna_center_dashboard.py</code></li>
+      <li>Revisa la carpeta <code>./reports/</code> para el CSV de inventario.</li>
+    </ol>
+    <p>Este patrón de <strong>clase wrapper + re-autenticación + separación de lógica de negocio</strong> es exactamente lo que se espera de un script de red profesional y es compatible con los principios de automatización del CCNA.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 9 — REFERENCIA
+═══════════════════════════════════════════ -->
+<div id="tab-referencia" class="rest4-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Tabla de Referencia — DNA Center Intent API</h2>
+  <div id="refTableRest4"></div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 10 — QUIZ
+═══════════════════════════════════════════ -->
+<div id="tab-quiz" class="rest4-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Quiz — DNA Center Intent API</h2>
+  <p style="font-size:.83rem;color:#6b7a9a;margin-bottom:20px;">10 preguntas estilo CCNA Domain 6.5. Evalúa tu comprensión de autenticación, endpoints, assurance y automatización con DNA Center.</p>
+  <div id="quizContainerRest4"></div>
+</div>
+</div>
+
+</div><!-- /.tabs-wrap -->
+
+<script>
+// ── NAVEGACIÓN DRAWER ────────────────────────────────
+function ccnaToggle() {
+  document.getElementById('ccnaDrawer').classList.toggle('open');
+  document.getElementById('ccnaOverlay').classList.toggle('show');
+}
+function ccnaClose() {
+  document.getElementById('ccnaDrawer').classList.remove('open');
+  document.getElementById('ccnaOverlay').classList.remove('show');
+}
+
+// ── TABS ──────────────────────────────────────────────
+function showTabRest4(id, btn) {
+  document.querySelectorAll('.rest4-tab-content').forEach(t => t.classList.remove('rest4-active'));
+  document.querySelectorAll('.rest4-tab-btn').forEach(b => b.classList.remove('rest4-active'));
+  document.getElementById('tab-' + id).classList.add('rest4-active');
+  if (btn) btn.classList.add('rest4-active');
+}
+
+// ── TABLA DE REFERENCIA ──────────────────────────────
+function buildRefTable() {
+  const container = document.getElementById('refTableRest4');
+  if (!container) return;
+
+  const secciones = [
+    {
+      titulo: 'ENDPOINTS CORE INTENT API v1',
+      cols: ['Método','Endpoint','Descripción'],
+      filas: [
+        ['<span class="endpoint-method post">POST</span>','/dna/system/api/v1/auth/token','Genera JWT de sesión (Basic Auth).'],
+        ['<span class="endpoint-method get">GET</span>','/dna/intent/api/v1/network-device','Lista todos los dispositivos gestionados.'],
+        ['<span class="endpoint-method get">GET</span>','/dna/intent/api/v1/network-device/{id}','Detalle de un dispositivo por UUID.'],
+        ['<span class="endpoint-method get">GET</span>','/dna/intent/api/v1/site','Jerarquía de sites (Global/Area/Building/Floor).'],
+        ['<span class="endpoint-method get">GET</span>','/dna/intent/api/v1/topology/physical-topology','Topología física: nodos y enlaces.'],
+        ['<span class="endpoint-method get">GET</span>','/dna/intent/api/v1/network-health','Health score agregado de red y conteo de issues.'],
+        ['<span class="endpoint-method get">GET</span>','/dna/intent/api/v1/client-health','Métricas de clientes wired/wireless.'],
+        ['<span class="endpoint-method get">GET</span>','/dna/intent/api/v1/site-health','Health desagregado por site físico.'],
+        ['<span class="endpoint-method post">POST</span>','/dna/intent/api/v1/network-device-poller/cli/read-request','Ejecuta comandos show (Command Runner).'],
+        ['<span class="endpoint-method get">GET</span>','/dna/intent/api/v1/task/{taskId}','Consulta estado de una tarea asíncrona.'],
+        ['<span class="endpoint-method get">GET</span>','/dna/intent/api/v1/file/{fileId}','Obtiene resultado de Command Runner.'],
+        ['<span class="endpoint-method get">GET</span>','/dna/intent/api/v1/template-programmer/project','Lista proyectos de template.'],
+        ['<span class="endpoint-method post">POST</span>','/dna/intent/api/v1/template-programmer/template/deploy','Despliega un template Velocity a dispositivos.'],
+        ['<span class="endpoint-method post">POST</span>','/dna/intent/api/v1/event/subscription/rest','Registra un webhook para eventos push.'],
+      ]
+    },
+    {
+      titulo: 'HEADERS HTTP REQUERIDOS',
+      cols: ['Header','Valor','Propósito'],
+      filas: [
+        ['X-Auth-Token','eyJ0eXAi...','Token JWT obtenido tras autenticación. Obligatorio.'],
+        ['Content-Type','application/json','Indica que el body es JSON en POST/PUT.'],
+        ['Accept','application/json','Solicita respuesta en JSON.'],
+      ]
+    },
+    {
+      titulo: 'CÓDIGOS DE ESTADO HTTP COMUNES',
+      cols: ['Código','Significado','Acción recomendada'],
+      filas: [
+        ['200 OK','Éxito.','Procesar respuesta JSON.'],
+        ['201 Created','Recurso creado (POST).','Verificar URI en Location header.'],
+        ['400 Bad Request','Payload inválido.','Revisar sintaxis JSON y parámetros obligatorios.'],
+        ['401 Unauthorized','Token ausente o expirado.','Re-autenticar y reintentar.'],
+        ['403 Forbidden','Token válido sin permisos.','Verificar RBAC del usuario.'],
+        ['404 Not Found','Recurso no existe.','Verificar UUID o endpoint.'],
+        ['500 Internal Error','Fallo en DNA Center.','Reintentar con backoff exponencial.'],
+      ]
+    },
+    {
+      titulo: 'CONCEPTOS CLAVE CCNA',
+      cols: ['Concepto','Definición'],
+      filas: [
+        ['Intent-Based Networking (IBN)','Modelo donde defines el resultado deseado (intent) y el controlador lo implementa.'],
+        ['DNA Center','Controlador Cisco para campus que centraliza policy, assurance y automation.'],
+        ['Assurance','Verificación continua de que la red cumple el "intent" mediante telemetría y health scores.'],
+        ['Command Runner','Ejecución de comandos show vía API para obtener datos no expuestos en modelos REST.'],
+        ['Webhook','HTTP callback push: DNA Center notifica a tu app cuando ocurre un evento, evitando polling.'],
+        ['Site Hierarchy','Organización geográfica Global > Area > Building > Floor para aplicar políticas por ubicación.'],
+      ]
+    }
+  ];
+
+  let html = '';
+  secciones.forEach(sec => {
+    html += `<h3 style="font-family:Orbitron,sans-serif;font-size:.8rem;color:#38bdf8;letter-spacing:2px;margin:24px 0 10px;text-transform:uppercase;">▸ ${sec.titulo}</h3>`;
+    html += `<div class="table-wrap"><table class="ref-table"><thead><tr>${sec.cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>`;
+    sec.filas.forEach(f => { html += '<tr>' + f.map(c=>`<td>${c}</td>`).join('') + '</tr>'; });
+    html += '</tbody></table></div>';
+  });
+  container.innerHTML = html;
+}
+
+// ── QUIZ ─────────────────────────────────────────────
+function initQuiz() {
+  const container = document.getElementById('quizContainerRest4');
+  if (!container) return;
+
+  const qs = [
+    {
+      q: '¿Qué protocolo de transporte y puerto utiliza DNA Center Intent API por defecto?',
+      opts: ['HTTP / 80','SSH / 830','HTTPS / 443','NETCONF / 830'],
+      ans: 2,
+      exp: 'La Intent API de DNA Center es una API RESTful que usa <strong>HTTPS en el puerto 443</strong>. El puerto 830 es para NETCONF; el 80 es HTTP inseguro (no usado en producción).'
+    },
+    {
+      q: '¿Cuál es el método de autenticación inicial para obtener acceso a la Intent API?',
+      opts: ['OAuth 2.0 con redirect URI','Basic Auth contra /auth/token para obtener un JWT','API Key estática en header X-Api-Key','Certificado mutuo TLS (mTLS) obligatorio'],
+      ans: 1,
+      exp: 'DNA Center requiere que envíes <strong>Basic Auth (usuario/contraseña)</strong> al endpoint <code>/dna/system/api/v1/auth/token</code> para recibir un <strong>JWT (Token)</strong>. Luego usas ese token en el header <code>X-Auth-Token</code>.'
+    },
+    {
+      q: 'Un script recibe HTTP 401 al consultar /network-device. ¿Cuál es la causa más probable?',
+      opts: ['El dispositivo no está gestionado','El token JWT ha expirado o es inválido','Falta el header Content-Type','La URL base es incorrecta'],
+      ans: 1,
+      exp: 'HTTP <strong>401 Unauthorized</strong> indica problema de autenticación. En DNA Center, esto ocurre cuando el <code>X-Auth-Token</code> expiró, no fue incluido, o es inválido. Un 404 indicaría URL incorrecta; un 400 indicaría payload malformado.'
+    },
+    {
+      q: '¿Qué endpoint consultarías para obtener el health score agregado de todos los dispositivos de red?',
+      opts: ['/dna/intent/api/v1/client-health','/dna/intent/api/v1/network-device','/dna/intent/api/v1/network-health','/dna/intent/api/v1/site-health'],
+      ans: 2,
+      exp: '<strong>/network-health</strong> devuelve el health score global de la infraestructura de red (switches, routers, APs). /client-health es para usuarios finales; /site-health desagrega por ubicación física.'
+    },
+    {
+      q: '¿Cuál es el flujo correcto para ejecutar un comando "show" vía Command Runner?',
+      opts: ['GET directo al endpoint /cli/show/{command}','POST a /cli/read-request → obtener taskId → polling con GET /task/{taskId} → GET /file/{fileId}','PUT a /network-device/{id}/config','PATCH a /command-runner/execute'],
+      ans: 1,
+      exp: 'Command Runner es <strong>asíncrono</strong>: 1) POST a <code>/network-device-poller/cli/read-request</code> devuelve un taskId; 2) haces polling a <code>/task/{taskId}</code>; 3) cuando finaliza, usas el fileId para obtener el resultado vía <code>/file/{fileId}</code>.'
+    },
+    {
+      q: 'En un template Velocity para DNA Center, ¿cómo se declara una variable que el usuario completará en el despliegue?',
+      opts: ['{{ variable }}','${variable}','$variable','#variable'],
+      ans: 1,
+      exp: 'DNA Center usa <strong>Apache Velocity</strong>, cuya sintaxis para variables es <code>${variable}</code>. En el despliegue, DNA Center solicita los valores de estas variables y las sustituye en el template antes de enviarlo al dispositivo.'
+    },
+    {
+      q: '¿Qué ventaja principal ofrecen los Webhooks (Event API) sobre el polling tradicional?',
+      opts: ['Usan menos CPU en el servidor DNS','Permiten cifrar el tráfico con IPsec','El servidor (DNA Center) envía notificaciones push al cliente cuando ocurre un evento','No requieren autenticación'],
+      ans: 2,
+      exp: 'Los <strong>webhooks</strong> son notificaciones push: DNA Center envía un POST a tu endpoint cuando ocurre un evento configurado. Esto elimina la necesidad de preguntar constantemente (polling), reduciendo carga de red y latencia de detección.'
+    },
+    {
+      q: '¿Cuál de las siguientes es una característica de Intent-Based Networking (IBN) en DNA Center?',
+      opts: ['Configuración manual CLI en cada dispositivo','El administrador define la intención (política) y el controlador la traduce en configuración','Uso exclusivo de protocolos propietarios sin APIs','Eliminación completa del plano de datos'],
+      ans: 1,
+      exp: 'IBN separa el <strong>qué</strong> de la <strong>cómo</strong>: el ingeniero define la intención (ej. "VLAN 10 para Ventas en el edificio A") y DNA Center calcula y aplica la configuración necesaria en los dispositivos afectados.'
+    },
+    {
+      q: '¿Qué formato de datos usa DNA Center Intent API para requests y responses?',
+      opts: ['XML obligatorio','YAML 1.2','JSON','Protocol Buffers'],
+      ans: 2,
+      exp: 'La Intent API de DNA Center usa <strong>JSON</strong> como formato nativo de datos. Aunque internamente algunos componentes usan XML (NETCONF), la API REST expuesta al consumidor es 100% JSON sobre HTTPS.'
+    },
+    {
+      q: '¿Qué práctica de seguridad es obligatoria al almacenar credenciales de DNA Center en scripts de automatización?',
+      opts: ['Codificarlas en Base64 para ofuscarlas','Usar variables de entorno o un vault de secretos; nunca hardcodear','Compartir el mismo usuario/password entre todos los ingenieros','Guardarlas en un archivo JSON plano en el repositorio Git'],
+      ans: 1,
+      exp: 'La seguridad básica de automatización exige <strong>nunca hardcodear credenciales</strong>. Las mejores prácticas son variables de entorno, archivos <code>.env</code> ignorados por Git, o vaults como HashiCorp Vault, AWS Secrets Manager o Azure Key Vault.'
+    }
+  ];
+
+  let html = '';
+  qs.forEach((q, i) => {
+    html += `<div class="quiz-question" id="qr4${i}">
+      <div class="quiz-q-num">PREGUNTA ${i+1} DE ${qs.length} · M8 DNA CENTER Tema 4</div>
+      <div class="quiz-q-text">${q.q}</div>
+      <div class="quiz-opts">
+        ${q.opts.map((o,j) => `<button class="quiz-opt" data-qi="${i}" data-sel="${j}" data-ans="${q.ans}">${o}</button>`).join('')}
+      </div>
+    </div>`;
+  });
+  container.innerHTML = html;
+
+  window._rest4Exp = {};
+  qs.forEach((q, i) => { window._rest4Exp[i] = q.exp; });
+
+  container.querySelectorAll('.quiz-opt').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const qi  = parseInt(this.dataset.qi);
+      const sel = parseInt(this.dataset.sel);
+      const ans = parseInt(this.dataset.ans);
+      const qDiv = document.getElementById('qr4' + qi);
+      const btns = qDiv.querySelectorAll('.quiz-opt');
+
+      btns.forEach(b => b.disabled = true);
+      btns[sel].classList.add(sel === ans ? 'correct' : 'wrong');
+      if (sel !== ans) btns[ans].classList.add('correct');
+
+      const expDiv = document.createElement('div');
+      expDiv.className = 'quiz-explanation';
+      expDiv.innerHTML = `<strong>${sel===ans ? '✅ Correcto!' : '❌ Incorrecto.'}</strong> ${window._rest4Exp[qi]}`;
+      qDiv.appendChild(expDiv);
+    });
+  });
+}
+
+// ── INICIALIZACIÓN ────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  buildRefTable();
+  initQuiz();
+});
+</script>
+</body>
+</html>
