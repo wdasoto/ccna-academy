@@ -1,0 +1,1320 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ansible — Inventarios y Variables · M8 T2 | CCNA Academy</title>
+  <meta name="description" content="Clase magistral de Inventarios Ansible: estáticos INI/YAML, grupos jerárquicos, host_vars, group_vars e inventarios dinámicos AWS/Azure/NetBox. CCNA Domain 6.6.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── ANSIBLE ACCENT TOKENS ── */
+:root{ --ansible:#ef4444; --ansible-d:#dc2626; --ansible-glow:rgba(239,68,68,.12); }
+
+/* ── BASE ── */
+body{font-family:'Exo 2',sans-serif;background:#07090f;color:#e2e8f0;margin:0;}
+.class-hero{background:linear-gradient(135deg,#06080f 0%,#080d18 60%,#0a1020 100%);}
+
+/* ── HERO ── */
+.class-hero{padding:56px 24px 48px;border-bottom:1px solid rgba(239,68,68,.08);position:relative;overflow:hidden;}
+.class-hero::before{content:'';position:absolute;top:-60px;right:-80px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(239,68,68,.06) 0%,transparent 70%);pointer-events:none;}
+.class-hero-inner{max-width:900px;margin:0 auto;position:relative;z-index:1;}
+.class-badge{font-family:'Share Tech Mono',monospace;font-size:.63rem;color:#ef4444;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;}
+.class-title{font-family:'Orbitron',sans-serif;font-size:clamp(1.6rem,3.8vw,2.6rem);font-weight:900;letter-spacing:3px;color:#c2d0e8;margin-bottom:12px;line-height:1.1;}
+.class-title-accent{background:linear-gradient(135deg,#ef4444,#dc2626);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.class-subtitle{font-size:.92rem;color:#6b7a9a;line-height:1.72;margin-bottom:20px;max-width:700px;}
+.class-meta{display:flex;gap:12px;flex-wrap:wrap;}
+.meta-item{font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#4a5780;padding:4px 10px;border:1px solid rgba(239,68,68,.15);border-radius:4px;}
+
+/* ── TABS ── */
+.ans1-tabs-wrap{max-width:1100px;margin:0 auto;padding:0 16px 40px;}
+.ans1-tabs-bar{display:flex;gap:4px;padding:20px 0 0;flex-wrap:wrap;border-bottom:1px solid rgba(239,68,68,.12);margin-bottom:0;}
+.ans1-tab-btn{padding:8px 13px;border-radius:8px 8px 0 0;font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#4a5780;background:none;border:1px solid transparent;cursor:pointer;transition:all .18s;white-space:nowrap;border-bottom:none;}
+.ans1-tab-btn:hover{color:#c2d0e8;background:rgba(239,68,68,.06);}
+.ans1-tab-btn.ans1-active{color:#ef4444;background:#0d1220;border-color:rgba(239,68,68,.25);border-bottom:1px solid #0d1220;}
+.ans1-tab-content{display:none;background:#0d1220;border:1px solid rgba(239,68,68,.08);border-top:none;border-radius:0 0 12px 12px;padding:32px;}
+.ans1-tab-content.ans1-active{display:block;}
+.content-block{max-width:880px;}
+.section-title{font-family:'Orbitron',sans-serif;font-size:.95rem;color:#ef4444;letter-spacing:2px;margin:28px 0 14px;padding-bottom:8px;border-bottom:1px solid rgba(239,68,68,.15);}
+.section-title:first-child{margin-top:0;}
+p{color:#8294b8;line-height:1.75;margin-bottom:14px;font-size:.9rem;}
+ul,ol{color:#8294b8;padding-left:1.4rem;margin-bottom:14px;font-size:.9rem;}
+li{margin-bottom:5px;line-height:1.65;}
+strong{color:#c2d0e8;}
+code{font-family:'Share Tech Mono',monospace;font-size:.82rem;background:rgba(239,68,68,.1);color:#ef4444;padding:1px 6px;border-radius:4px;border:1px solid rgba(239,68,68,.2);}
+
+/* INFO BOXES */
+.info-box{border-radius:8px;padding:14px 18px;margin:18px 0;border-left:3px solid;}
+.info-box.tip{background:rgba(239,68,68,.06);border-color:#ef4444;}
+.info-box.warning{background:rgba(251,191,36,.05);border-color:#fbbf24;}
+.info-box.info{background:rgba(56,189,248,.05);border-color:#38bdf8;}
+.info-box-title{font-family:'Share Tech Mono',monospace;font-size:.73rem;color:#ef4444;margin-bottom:8px;}
+.info-box.warning .info-box-title{color:#fbbf24;}
+.info-box.info .info-box-title{color:#38bdf8;}
+
+/* CODE BLOCKS */
+.code-block{background:#050810;border:1px solid rgba(239,68,68,.15);border-left:3px solid #ef4444;border-radius:8px;padding:0;margin:16px 0;overflow:hidden;}
+.code-label{background:rgba(239,68,68,.08);padding:8px 16px;font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#4a5780;letter-spacing:2px;text-transform:uppercase;border-bottom:1px solid rgba(239,68,68,.1);}
+.code-block pre{margin:0;padding:18px;overflow-x:auto;}
+.code-block code{background:none;border:none;padding:0;color:#a8b4c8;font-size:.79rem;line-height:1.8;display:block;}
+
+/* SYNTAX */
+.cmt{color:#3a4a60;font-style:italic;}
+.kw {color:#c792ea;}
+.fn {color:#82aaff;}
+.str{color:#c3e88d;}
+.num{color:#f78c6c;}
+
+/* CONCEPT GRID */
+.concept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin:16px 0;}
+.concept-card{background:#090d1a;border:1px solid rgba(239,68,68,.1);border-radius:10px;padding:16px;}
+.concept-icon{font-size:1.8rem;margin-bottom:8px;}
+.concept-card h3{font-family:'Share Tech Mono',monospace;font-size:.77rem;color:#ef4444;margin-bottom:8px;}
+.concept-card p{font-size:.8rem;margin:0;}
+
+/* ARCHITECTURE DIAGRAM */
+.ans-flow{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin:20px 0;padding:20px;background:#090d1a;border-radius:10px;border:1px solid rgba(239,68,68,.1);}
+.ans-box{background:#0d1220;border:1px solid rgba(239,68,68,.2);border-radius:8px;padding:14px 18px;text-align:center;min-width:110px;}
+.ans-box-label{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:#ef4444;margin-bottom:4px;}
+.ans-box-val{font-size:.8rem;color:#c2d0e8;}
+.ans-arrow{font-size:1.4rem;color:#ef4444;}
+
+/* TABLE */
+.table-wrap{overflow-x:auto;margin:16px 0;}
+.ref-table{width:100%;border-collapse:collapse;font-size:.8rem;}
+.ref-table th{background:#090d1a;color:#ef4444;font-family:'Share Tech Mono',monospace;font-size:.67rem;padding:10px 12px;text-align:left;border:1px solid rgba(239,68,68,.15);letter-spacing:1px;}
+.ref-table td{padding:9px 12px;border:1px solid rgba(255,255,255,.04);color:#8294b8;}
+.ref-table tr:hover td{background:rgba(239,68,68,.04);}
+.ref-table code{font-size:.77rem;}
+
+/* QUIZ */
+.quiz-question{background:#090d1a;border:1px solid rgba(239,68,68,.12);border-radius:10px;padding:20px;margin-bottom:14px;}
+.quiz-q-num{font-family:'Share Tech Mono',monospace;font-size:.62rem;color:#374060;margin-bottom:8px;}
+.quiz-q-text{font-size:.9rem;color:#c2d0e8;margin-bottom:14px;line-height:1.6;}
+.quiz-opts{display:flex;flex-direction:column;gap:7px;}
+.quiz-opt{padding:10px 14px;border-radius:7px;border:1px solid rgba(239,68,68,.12);background:#0d1220;color:#6b7a9a;cursor:pointer;font-size:.84rem;text-align:left;transition:all .15s;font-family:'Exo 2',sans-serif;}
+.quiz-opt:hover:not(:disabled){border-color:rgba(239,68,68,.4);color:#c2d0e8;}
+.quiz-opt.correct{border-color:#34d399;background:rgba(52,211,153,.08);color:#34d399;}
+.quiz-opt.wrong{border-color:#f87171;background:rgba(248,113,113,.08);color:#f87171;}
+.quiz-explanation{margin-top:10px;padding:10px 14px;background:rgba(239,68,68,.07);border-left:3px solid #ef4444;border-radius:6px;font-size:.82rem;color:#a0aec0;line-height:1.65;}
+
+/* COMPARE TABLE */
+.compare-highlight{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);}
+.compare-highlight td{color:#c2d0e8 !important;}
+
+/* NAV & DRAWER */
+.navbar{position:fixed;top:0;left:0;right:0;height:56px;background:#080a10;border-bottom:1px solid rgba(239,68,68,.1);display:flex;align-items:center;padding:0 24px;z-index:1000;}
+.navbar-toggle{background:none;border:1px solid rgba(239,68,68,.3);color:#ef4444;padding:6px 12px;border-radius:6px;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:.75rem;margin-right:16px;}
+.navbar-brand{font-family:'Orbitron',sans-serif;font-weight:700;color:#ef4444;text-decoration:none;font-size:1.1rem;}
+.navbar-brand span{color:#dc2626;}
+.navbar-spacer{flex:1;}
+.navbar-link{color:#6b7a9a;text-decoration:none;font-size:.8rem;transition:color .2s;}
+.navbar-link:hover{color:#c2d0e8;}
+.nav-spacer{height:56px;}
+.ccna-drawer{position:fixed;top:0;left:0;bottom:0;width:280px;background:#0d1220;border-right:1px solid rgba(239,68,68,.2);transform:translateX(-100%);transition:transform .3s;z-index:2000;overflow-y:auto;}
+.ccna-drawer.open{transform:translateX(0);}
+.ccna-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);opacity:0;visibility:hidden;transition:all .3s;z-index:1500;}
+.ccna-overlay.show{opacity:1;visibility:visible;}
+.drawer-header{padding:20px;border-bottom:1px solid rgba(239,68,68,.2);display:flex;justify-content:space-between;align-items:center;}
+.drawer-header h2{font-family:'Orbitron',sans-serif;font-size:.8rem;color:#ef4444;margin:0;letter-spacing:2px;}
+.drawer-close{background:none;border:none;color:#6b7a9a;font-size:1.2rem;cursor:pointer;}
+.drawer-section{padding:16px;border-bottom:1px solid rgba(239,68,68,.1);}
+.drawer-section-title{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#374060;margin-bottom:12px;letter-spacing:1px;text-transform:uppercase;}
+.drawer-link{display:block;padding:10px 12px;color:#8294b8;text-decoration:none;font-size:.85rem;border-radius:6px;transition:all .2s;margin-bottom:4px;}
+.drawer-link:hover{background:rgba(239,68,68,.1);color:#c2d0e8;}
+.drawer-link.active{background:rgba(239,68,68,.2);color:#ef4444;border-left:3px solid #ef4444;}
+.dl-icon{margin-right:8px;}
+
+/* FILE TREE */
+.file-tree{background:#050810;border:1px solid rgba(239,68,68,.15);border-radius:8px;padding:18px 22px;font-family:'Share Tech Mono',monospace;font-size:.78rem;color:#8294b8;line-height:1.8;margin:16px 0;}
+.file-tree .folder{color:#ef4444;}
+.file-tree .file{color:#a8b4c8;}
+.file-tree .comment{color:#3a4a60;font-style:italic;}
+
+@media(max-width:680px){
+  .ans1-tab-btn{font-size:.6rem;padding:6px 9px;}
+  .ans1-tab-content{padding:18px 12px;}
+  .concept-grid{grid-template-columns:1fr;}
+  .ans-flow{flex-direction:column;}
+}
+</style>
+</head>
+<body>
+
+<div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
+<nav class="ccna-drawer" id="ccnaDrawer">
+  <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
+  <div class="drawer-section"><div class="drawer-section-title">General</div>
+    <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M1 · Fundamentos</div>
+    <a href="fundamentos.html" class="drawer-link"><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
+    <a href="subnetting.html"  class="drawer-link"><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
+    <a href="ipv6.html"        class="drawer-link"><span class="dl-icon">6️⃣</span> IPv6</a>
+    <a href="arp.html"         class="drawer-link"><span class="dl-icon">📡</span> ARP</a>
+    <a href="rip.html"         class="drawer-link"><span class="dl-icon">🔄</span> RIP</a>
+    <a href="protocolos-internet.html" class="drawer-link"><span class="dl-icon">🌍</span> Protocolos Internet</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M2 · Dispositivos Cisco</div>
+    <a href="router.html"         class="drawer-link"><span class="dl-icon">📡</span> Routers Cisco</a>
+    <a href="switches-cisco.html" class="drawer-link"><span class="dl-icon">🔀</span> Switches Cisco</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M3 · Switching</div>
+    <a href="vlan.html"               class="drawer-link"><span class="dl-icon">🏷️</span> VLANs</a>
+    <a href="inter-vlan-routing.html" class="drawer-link"><span class="dl-icon">🔁</span> Inter-VLAN Routing</a>
+    <a href="stp.html"                class="drawer-link"><span class="dl-icon">🌳</span> STP</a>
+    <a href="etherchannel.html"       class="drawer-link"><span class="dl-icon">🔗</span> EtherChannel</a>
+    <a href="port-security.html"      class="drawer-link"><span class="dl-icon">🔒</span> Port Security</a>
+    <a href="cdp-lldp.html"           class="drawer-link"><span class="dl-icon">🔍</span> CDP / LLDP</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M4 · Routing</div>
+    <a href="routing.html"            class="drawer-link"><span class="dl-icon">🗺️</span> Routing Estático</a>
+    <a href="ospf.html"               class="drawer-link"><span class="dl-icon">⭕</span> OSPF</a>
+    <a href="eigrp.html"              class="drawer-link"><span class="dl-icon">⚡</span> EIGRP</a>
+    <a href="ospfv2-masterclass.html" class="drawer-link"><span class="dl-icon">🎯</span> OSPFv2 Masterclass</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M5 · Servicios IP</div>
+    <a href="dhcp.html" class="drawer-link"><span class="dl-icon">📋</span> DHCP</a>
+    <a href="nat.html"  class="drawer-link"><span class="dl-icon">🔄</span> NAT / PAT</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M6 · Seguridad</div>
+    <a href="acl.html" class="drawer-link"><span class="dl-icon">🛡️</span> ACLs</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M7 · WAN &amp; QoS</div>
+    <a href="wan.html" class="drawer-link"><span class="dl-icon">🌍</span> WAN</a>
+    <a href="qos.html" class="drawer-link"><span class="dl-icon">📊</span> QoS</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M8 · Automatización</div>
+    <a href="m8-automatizacion.html" class="drawer-link"><span class="dl-icon">🤖</span> M8 — Vista General</a>
+    <a href="python-redes.html"      class="drawer-link"><span class="dl-icon">🐍</span> Python para Redes</a>
+    <a href="json-datos.html"        class="drawer-link"><span class="dl-icon">📋</span> JSON y Datos</a>
+    <a href="rest-apis.html"         class="drawer-link"><span class="dl-icon">🌐</span> REST APIs</a>
+    <a href="ansible-redes.html"     class="drawer-link"><span class="dl-icon">⚙️</span> Ansible Hub</a>
+    <a href="ansible-tema1.html"     class="drawer-link"><span class="dl-icon">01</span> T1 — Arquitectura</a>
+    <a href="ansible-tema2.html"     class="drawer-link active"><span class="dl-icon">02</span> T2 — Inventarios</a>
+  </div>
+  <div class="drawer-section"><div class="drawer-section-title">⚡ Herramientas</div>
+    <a href="asistente.html"          class="drawer-link"><span class="dl-icon">🤖</span> Asistente IA</a>
+    <a href="netbot.html"             class="drawer-link"><span class="dl-icon">⚙️</span> NetBot Config</a>
+    <a href="calculadora.html"        class="drawer-link"><span class="dl-icon">🧮</span> Calculadora IP</a>
+    <a href="../laboratorios-pkt.html"   class="drawer-link"><span class="dl-icon">🧪</span> Labs Packet Tracer</a>
+    <a href="../banco-preguntas.html" class="drawer-link"><span class="dl-icon">📝</span> Banco de Preguntas</a></div>
+</nav>
+
+<header class="navbar">
+  <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
+  <a href="../index.html" class="navbar-brand">CISCO<span> ACADEMY</span></a>
+  <div class="navbar-spacer"></div>
+  <a href="ansible-redes.html" class="navbar-link">← Ansible Hub</a>
+</header>
+<div class="nav-spacer"></div>
+
+<!-- HERO -->
+<section class="class-hero" style="border-bottom:1px solid rgba(239,68,68,.2);">
+  <div class="class-hero-inner">
+    <div class="class-badge" style="color:#ef4444;">M8 · AUTOMATIZACIÓN · ANSIBLE · TEMA 2 DE 7</div>
+    <h1 class="class-title">INVENTARIOS <span class="class-title-accent">y Variables</span></h1>
+    <p class="class-subtitle">El mapa de tu infraestructura. Domina el corazón de Ansible: inventarios estáticos en INI y YAML, jerarquías de grupos, variables por host y por grupo, y la magia de los inventarios dinámicos con AWS, Azure y NetBox. Sin un inventario sólido, no hay automatización posible.</p>
+    <div class="class-meta">
+      <span class="meta-item" style="border-color:rgba(239,68,68,.2);color:#ef4444;">📄 INI / YAML</span>
+      <span class="meta-item">🎯 CCNA Domain 6.6</span>
+      <span class="meta-item">⏱ ~90 min lectura</span>
+      <span class="meta-item">🔐 host_vars / group_vars</span>
+      <span class="meta-item">☁️ Inventarios Dinámicos</span>
+    </div>
+  </div>
+</section>
+
+<!-- TABS -->
+<div class="ans1-tabs-wrap">
+  <div class="ans1-tabs-bar">
+    <button class="ans1-tab-btn ans1-active" onclick="showTabAns1('intro',this)">📍 Intro</button>
+    <button class="ans1-tab-btn" onclick="showTabAns1('ini',this)">📝 Inventario INI</button>
+    <button class="ans1-tab-btn" onclick="showTabAns1('yaml',this)">📋 Inventario YAML</button>
+    <button class="ans1-tab-btn" onclick="showTabAns1('grupos',this)">🏗️ Grupos</button>
+    <button class="ans1-tab-btn" onclick="showTabAns1('variables',this)">🔧 Variables</button>
+    <button class="ans1-tab-btn" onclick="showTabAns1('dinamicos',this)">☁️ Dinámicos</button>
+    <button class="ans1-tab-btn" onclick="showTabAns1('practicas',this)">⚡ Mejores Prácticas</button>
+    <button class="ans1-tab-btn" onclick="showTabAns1('referencia',this)">📊 Ref</button>
+    <button class="ans1-tab-btn" onclick="showTabAns1('quiz',this)">🎯 Quiz</button>
+  </div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 1 — INTRO
+═══════════════════════════════════════════ -->
+<div id="tab-intro" class="ans1-tab-content ans1-active">
+<div class="content-block">
+  <h2 class="section-title">¿Qué es el Inventario en Ansible?</h2>
+  <p>El <strong>inventario</strong> es el archivo más importante de cualquier proyecto Ansible. Es el mapa que le dice a Ansible <em>qué dispositivos existen en tu red, dónde se encuentran y cómo conectarse a ellos</em>. Sin inventario, Ansible es un piloto sin navegador: sabe qué hacer pero no a dónde ir.</p>
+  <p>En el contexto de redes Cisco, el inventario no solo lista IPs. Define grupos lógicos como <code>[cisco_routers]</code>, <code>[cisco_switches]</code> o <code>[firewalls_asa]</code>, asigna credenciales específicas por ubicación, establece el método de conexión (SSH, NETCONF, HTTPAPI) y almacena variables personalizadas como la versión de IOS deseada, servidores NTP o comunidades SNMP.</p>
+  <p>Ansible soporta dos fuentes de inventario: <strong>estáticos</strong> (archivos INI o YAML que tú mantienes manualmente) y <strong>dinámicos</strong> (plugins que consultan APIs de cloud, CMDBs o orquestadores como AWS, Azure, NetBox o VMware vCenter para construir el inventario en tiempo real).</p>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Concepto clave del examen CCNA</div>
+    <p>El dominio 6.6 evalúa si entiendes que Ansible necesita un <strong>inventario</strong> para operar. La pregunta clásica es: <em>"¿Qué archivo define los hosts gestionados por Ansible?"</em> La respuesta es el <strong>inventory file</strong>, ya sea en formato INI o YAML.</p>
+  </div>
+
+  <h2 class="section-title">El flujo de datos: Inventario → Playbook → Ejecución</h2>
+  <div class="ans-flow">
+    <div class="ans-box">
+      <div class="ans-box-label">INVENTARIO</div>
+      <div class="ans-box-val">Hosts + Grupos + Vars</div>
+    </div>
+    <div class="ans-arrow">→</div>
+    <div class="ans-box">
+      <div class="ans-box-label">PLAYBOOK</div>
+      <div class="ans-box-val">Tareas + Módulos</div>
+    </div>
+    <div class="ans-arrow">→</div>
+    <div class="ans-box">
+      <div class="ans-box-label">EJECUCIÓN</div>
+      <div class="ans-box-val">SSH/API a Nodos</div>
+    </div>
+  </div>
+
+  <h2 class="section-title">Tipos de Inventarios: Estático vs. Dinámico</h2>
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">📝</div>
+      <h3>Estático INI</h3>
+      <p>Formato clásico tipo .ini. Rápido de escribir, ideal para redes pequeñas y medianas. Usa corchetes para grupos y clave=valor para variables.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">📋</div>
+      <h3>Estático YAML</h3>
+      <p>Estructura jerárquica anidada. Más legible para inventarios complejos. Permite listas y diccionarios nativos. Recomendado para equipos grandes.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">☁️</div>
+      <h3>Dinámico Cloud</h3>
+      <p>Consulta APIs de AWS EC2, Azure RM o Google Cloud. Los hosts aparecen y desaparecen automáticamente. Esencial para infraestructura cloud híbrida.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🔍</div>
+      <h3>Dinámico CMDB</h3>
+      <p>Integración con NetBox, ServiceNow o CMDBs internos. La fuente de verdad es tu base de datos de activos, no un archivo plano.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🗂️</div>
+      <h3>Directorios</h3>
+      <p>Ansible puede usar un directorio como inventario, combinando múltiples archivos INI/YAML y scripts dinámicos en una sola fuente.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">⚡</div>
+      <h3>En Línea de Comandos</h3>
+      <p>Puedes pasar hosts directamente con <code>ansible -i "host1,host2,"</code> sin archivo. Útil para pruebas de emergencia (no recomendado en producción).</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">¿Por qué el inventario decide el éxito de tu automatización?</h2>
+  <p>Un inventario mal diseñado genera:</p>
+  <ul>
+    <li><strong>Fallos de conexión:</strong> IPs incorrectas, credenciales mal agrupadas o métodos de conexión incompatibles con el modelo de switch.</li>
+    <li><strong>Configuraciones inconsistentes:</strong> Aplicar una plantilla de router a un switch porque ambos están en el grupo genérico <code>[cisco]</code> sin subgrupos.</li>
+    <li><strong>Problemas de seguridad:</strong> Contraseñas en texto plano dentro del inventario sin usar Vault o variables separadas.</li>
+    <li><strong>Dificultad de escala:</strong> Un archivo INI de 500 líneas sin grupos ni variables estructuradas es imposible de mantener.</li>
+  </ul>
+  <p>En este tema aprenderás a construir inventarios que escalan desde 5 dispositivos hasta 5,000, manteniendo la claridad y la seguridad.</p>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 2 — INVENTARIO INI
+═══════════════════════════════════════════ -->
+<div id="tab-ini" class="ans1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Formato INI: el clásico de Ansible</h2>
+  <p>El formato <strong>INI</strong> es el más antiguo y el que más rápido se escribe. Se basa en secciones encerradas entre corchetes. Cada línea debajo de una sección define un host. Las variables se asignan con el operador <code>=</code> (a diferencia de YAML que usa <code>:</code>).</p>
+  <p>Es ideal cuando comienzas con Ansible o cuando tu infraestructura es relativamente estable. Sin embargo, para estructuras muy anidadas o listas complejas, YAML ofrece mejor legibilidad.</p>
+
+  <div class="code-block">
+    <div class="code-label">inventory.ini — Red Cisco básica</div>
+    <pre><code>[<span class="fn">cisco_routers</span>]
+R1 ansible_host=<span class="num">192.168.1.1</span>
+R2 ansible_host=<span class="num">192.168.1.2</span>
+R3 ansible_host=<span class="num">192.168.1.3</span>
+
+[<span class="fn">cisco_switches</span>]
+SW-Core-01 ansible_host=<span class="num">192.168.1.10</span>
+SW-Acc-01  ansible_host=<span class="num">192.168.1.11</span>
+SW-Acc-02  ansible_host=<span class="num">192.168.1.12</span>
+
+[<span class="fn">firewalls</span>]
+FW-ASA-01 ansible_host=<span class="num">192.168.1.254</span>
+
+<span class="cmt"># Grupo padre que contiene a otros grupos</span>
+[<span class="fn">cisco:children</span>]
+cisco_routers
+cisco_switches
+
+[<span class="fn">all:vars</span>]
+ansible_python_interpreter=<span class="str">"/usr/bin/python3"</span>
+ansible_connection=network_cli
+
+[<span class="fn">cisco:vars</span>]
+ansible_network_os=ios
+ansible_user=admin
+ansible_become=yes
+ansible_become_method=enable
+
+[<span class="fn">firewalls:vars</span>]
+ansible_network_os=asa
+ansible_user=fwadmin</code></pre>
+  </div>
+
+  <h2 class="section-title">Rangos numéricos y patrones de hosts</h2>
+  <p>Ansible permite definir múltiples hosts similares usando rangos numéricos y alfabéticos, ahorrando líneas y reduciendo errores de tipeo:</p>
+
+  <div class="code-block">
+    <div class="code-label">inventory_ranges.ini — Rangos y patrones</div>
+    <pre><code>[<span class="fn">switches_acceso</span>]
+<span class="cmt"># SW-Acc-01 hasta SW-Acc-48</span>
+SW-Acc-[<span class="num">01:48</span>] ansible_host=<span class="num">10.0.1.[1:48]</span>
+
+[<span class="fn">routers_wan</span>]
+<span class="cmt"># R1, R2, R3 ... R12</span>
+R[<span class="num">1:12</span>] ansible_host=<span class="num">10.0.0.[1:12]</span>
+
+[<span class="fn">ap_wifi</span>]
+<span class="cmt"># AP-Floor-A, AP-Floor-B, AP-Floor-C</span>
+AP-Floor-[<span class="str">A:C</span>] ansible_host=<span class="num">10.0.2.[1:3]</span></code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚡ Trampa frecuente en el examen</div>
+    <p>Los rangos en INI usan <strong>dos puntos (:)</strong>, no guiones. <code>[01:48]</code> es válido, pero <code>[01-48]</code> fallará. Además, los rangos IP como <code>10.0.1.[1:48]</code> solo funcionan si los octetos finales son numéricos consecutivos.</p>
+  </div>
+
+  <h2 class="section-title">Variables inline vs. Variables de grupo</h2>
+  <p>Puedes asignar variables directamente en la línea del host (inline) o en secciones <code>[grupo:vars]</code>. Las inline tienen <strong>mayor precedencia</strong> y sobrescriben las de grupo.</p>
+
+  <div class="code-block">
+    <div class="code-label">inventory_precedence.ini — Precedencia de variables</div>
+    <pre><code>[<span class="fn">cisco_switches</span>]
+<span class="cmt"># Variable inline: este switch usa usuario 'backup' en lugar del grupo</span>
+SW-Backup ansible_host=<span class="num">192.168.1.99</span> ansible_user=backup
+
+<span class="cmt"># Variable inline: conexión diferente para este modelo antiguo</span>
+SW-Legacy ansible_host=<span class="num">192.168.1.100</span> ansible_connection=local
+
+[<span class="fn">cisco_switches:vars</span>]
+<span class="cmt"># Variables de grupo: aplican a TODOS los switches menos los que tengan inline</span>
+ansible_user=admin
+ansible_network_os=ios
+ansible_become=yes</code></pre>
+  </div>
+
+  <h2 class="section-title">Hosts múltiples y alias</h2>
+  <p>El nombre a la izquierda es el <strong>alias</strong> de Ansible (cómo tú lo llamas en los playbooks). La IP real va en <code>ansible_host</code>. Si omites <code>ansible_host</code>, Ansible intentará resolver el alias vía DNS.</p>
+
+  <div class="code-block">
+    <div class="code-label">inventory_alias.ini — Alias y DNS</div>
+    <pre><code>[<span class="fn">routers</span>]
+<span class="cmt"># Alias 'Router-Madrid' apunta a IP fija</span>
+Router-Madrid ansible_host=<span class="num">10.1.0.1</span>
+
+<span class="cmt"># Alias 'Router-Barcelona' confía en DNS (ansible_host omitido)</span>
+Router-Barcelona
+
+<span class="cmt"># Múltiples aliases apuntando a la misma IP (útil para labs)</span>
+R1-TEST ansible_host=<span class="num">192.168.56.101</span>
+R1-PROD ansible_host=<span class="num">10.0.0.1</span></code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 3 — INVENTARIO YAML
+═══════════════════════════════════════════ -->
+<div id="tab-yaml" class="ans1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Formato YAML: estructura jerárquica y legible</h2>
+  <p>El formato <strong>YAML</strong> es la evolución natural del inventario INI. Aunque requiere más indentación, permite estructuras anidadas complejas, listas nativas, diccionarios y comentarios más descriptivos. Es el formato recomendado por Red Hat para inventarios de más de 50 hosts o con múltiples niveles de grupos.</p>
+  <p>En YAML, todo el inventario es un diccionario con las claves <code>all</code>, <code>children</code> y <code>hosts</code>. Las variables se anidan bajo <code>vars</code> en lugar de usar la sintaxis <code>[grupo:vars]</code>.</p>
+
+  <div class="code-block">
+    <div class="code-label">inventory.yml — Equivalente YAML al INI anterior</div>
+    <pre><code><span class="kw">all</span>:
+  <span class="fn">children</span>:
+    <span class="fn">cisco_routers</span>:
+      <span class="fn">hosts</span>:
+        <span class="fn">R1</span>:
+          <span class="fn">ansible_host</span>: <span class="num">192.168.1.1</span>
+        <span class="fn">R2</span>:
+          <span class="fn">ansible_host</span>: <span class="num">192.168.1.2</span>
+        <span class="fn">R3</span>:
+          <span class="fn">ansible_host</span>: <span class="num">192.168.1.3</span>
+
+    <span class="fn">cisco_switches</span>:
+      <span class="fn">hosts</span>:
+        <span class="fn">SW-Core-01</span>:
+          <span class="fn">ansible_host</span>: <span class="num">192.168.1.10</span>
+        <span class="fn">SW-Acc-01</span>:
+          <span class="fn">ansible_host</span>: <span class="num">192.168.1.11</span>
+        <span class="fn">SW-Acc-02</span>:
+          <span class="fn">ansible_host</span>: <span class="num">192.168.1.12</span>
+
+    <span class="fn">firewalls</span>:
+      <span class="fn">hosts</span>:
+        <span class="fn">FW-ASA-01</span>:
+          <span class="fn">ansible_host</span>: <span class="num">192.168.1.254</span>
+
+    <span class="fn">cisco</span>:
+      <span class="fn">children</span>:
+        <span class="fn">cisco_routers</span>:
+        <span class="fn">cisco_switches</span>:
+
+  <span class="fn">vars</span>:
+    <span class="fn">ansible_python_interpreter</span>: <span class="str">"/usr/bin/python3"</span>
+    <span class="fn">ansible_connection</span>: network_cli
+
+    <span class="fn">cisco</span>:
+      <span class="fn">vars</span>:
+        <span class="fn">ansible_network_os</span>: ios
+        <span class="fn">ansible_user</span>: admin
+        <span class="fn">ansible_become</span>: <span class="kw">yes</span>
+        <span class="fn">ansible_become_method</span>: enable
+
+    <span class="fn">firewalls</span>:
+      <span class="fn">vars</span>:
+        <span class="fn">ansible_network_os</span>: asa
+        <span class="fn">ansible_user</span>: fwadmin</code></pre>
+  </div>
+
+  <h2 class="section-title">Ventajas de YAML sobre INI</h2>
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">🎯</div>
+      <h3>Listas Nativas</h3>
+      <p>Puedes definir listas de DNS, NTP o syslog servers directamente como arrays YAML sin necesidad de strings separadas por comas.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🧩</div>
+      <h3>Diccionarios Anidados</h3>
+      <p>Variables complejas como interfaces, VLANs o ACLs se representan como diccionarios YAML, imposibles de expresar limpiamente en INI.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">📐</div>
+      <h3>Consistencia Visual</h3>
+      <p>La indentación obligatoria fuerza un formato uniforme. Los editores modernos (VS Code, Vim) validan la sintaxis YAML en tiempo real.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🔀</div>
+      <h3>Fusión de Inventarios</h3>
+      <p>Ansible puede combinar múltiples archivos YAML en un directorio de inventario, fusionando automáticamente grupos y variables.</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">YAML avanzado: variables complejas por host</h2>
+  <p>En YAML puedes definir estructuras de datos ricas directamente en el inventario. Esto es especialmente útil para configurar interfaces, rutas estáticas o VLANs específicas por dispositivo:</p>
+
+  <div class="code-block">
+    <div class="code-label">inventory_advanced.yml — Estructuras anidadas</div>
+    <pre><code><span class="kw">all</span>:
+  <span class="fn">children</span>:
+    <span class="fn">core_switches</span>:
+      <span class="fn">hosts</span>:
+        <span class="fn">SW-Core-01</span>:
+          <span class="fn">ansible_host</span>: <span class="num">10.1.0.1</span>
+          <span class="fn">vlans</span>:
+            - { <span class="fn">id</span>: <span class="num">10</span>, <span class="fn">name</span>: <span class="str">"VENTAS"</span>, <span class="fn">subnet</span>: <span class="str">"192.168.10.0/24"</span> }
+            - { <span class="fn">id</span>: <span class="num">20</span>, <span class="fn">name</span>: <span class="str">"IT"</span>, <span class="fn">subnet</span>: <span class="str">"192.168.20.0/24"</span> }
+            - { <span class="fn">id</span>: <span class="num">30</span>, <span class="fn">name</span>: <span class="str">"GUEST"</span>, <span class="fn">subnet</span>: <span class="str">"192.168.30.0/24"</span> }
+          <span class="fn">uplink_interfaces</span>:
+            - <span class="str">"GigabitEthernet1/0/1"</span>
+            - <span class="str">"GigabitEthernet1/0/2"</span>
+          <span class="fn">ntp_servers</span>:
+            - <span class="str">"10.1.0.254"</span>
+            - <span class="str">"10.1.0.253"</span>
+
+        <span class="fn">SW-Core-02</span>:
+          <span class="fn">ansible_host</span>: <span class="num">10.1.0.2</span>
+          <span class="fn">vlans</span>:
+            - { <span class="fn">id</span>: <span class="num">10</span>, <span class="fn">name</span>: <span class="str">"VENTAS"</span> }
+            - { <span class="fn">id</span>: <span class="num">20</span>, <span class="fn">name</span>: <span class="str">"IT"</span> }
+          <span class="fn">uplink_interfaces</span>:
+            - <span class="str">"GigabitEthernet1/0/1"</span></code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Tip de productividad</div>
+    <p>Usa la herramienta de línea de comandos <code>ansible-inventory -i inventory.yml --graph</code> para visualizar la jerarquía de grupos y hosts antes de ejecutar playbooks. Detecta errores de indentación o grupos huérfanos al instante.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 4 — GRUPOS
+═══════════════════════════════════════════ -->
+<div id="tab-grupos" class="ans1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Jerarquías de grupos: organización lógica</h2>
+  <p>Los <strong>grupos</strong> son la clave para escalar Ansible. No gestionas 500 switches individualmente; gestionas 5 grupos lógicos. Un grupo puede contener hosts o, mediante <code>children</code>, otros grupos. Esto crea una jerarquía que hereda variables de arriba hacia abajo.</p>
+  <p>La estrategia de agrupamiento más efectiva para redes Cisco combina <strong>dos dimensiones</strong>: función del dispositivo (routers, switches, firewalls) y ubicación física o lógica (Madrid, Barcelona, Datacenter, WAN).</p>
+
+  <div class="ans-flow">
+    <div class="ans-box" style="min-width:140px;">
+      <div class="ans-box-label">all</div>
+      <div class="ans-box-val">Variables globales</div>
+    </div>
+    <div class="ans-arrow">↓</div>
+    <div class="ans-box" style="min-width:140px;">
+      <div class="ans-box-label">cisco / juniper</div>
+      <div class="ans-box-val">Fabricante/OS</div>
+    </div>
+    <div class="ans-arrow">↓</div>
+    <div class="ans-box" style="min-width:140px;">
+      <div class="ans-box-label">routers / switches</div>
+      <div class="ans-box-val">Función</div>
+    </div>
+    <div class="ans-arrow">↓</div>
+    <div class="ans-box" style="min-width:140px;">
+      <div class="ans-box-label">madrid / bcn</div>
+      <div class="ans-box-val">Ubicación</div>
+    </div>
+    <div class="ans-arrow">↓</div>
+    <div class="ans-box" style="min-width:140px;">
+      <div class="ans-box-label">R1, SW1...</div>
+      <div class="ans-box-val">Host + vars inline</div>
+    </div>
+  </div>
+
+  <h2 class="section-title">Grupos de grupos (children) en la práctica</h2>
+  <div class="code-block">
+    <div class="code-label">inventory_jerarquia.yml — Jerarquía multidimensional</div>
+    <pre><code><span class="kw">all</span>:
+  <span class="fn">children</span>:
+    <span class="fn">cisco</span>:
+      <span class="fn">children</span>:
+        <span class="fn">cisco_routers</span>:
+          <span class="fn">hosts</span>:
+            <span class="fn">R1-MAD</span>: { <span class="fn">ansible_host</span>: <span class="num">10.1.1.1</span> }
+            <span class="fn">R2-BCN</span>: { <span class="fn">ansible_host</span>: <span class="num">10.2.1.1</span> }
+        <span class="fn">cisco_switches</span>:
+          <span class="fn">hosts</span>:
+            <span class="fn">SW-Core-MAD</span>: { <span class="fn">ansible_host</span>: <span class="num">10.1.1.10</span> }
+            <span class="fn">SW-Core-BCN</span>: { <span class="fn">ansible_host</span>: <span class="num">10.2.1.10</span> }
+      <span class="fn">vars</span>:
+        <span class="fn">ansible_network_os</span>: ios
+        <span class="fn">ansible_user</span>: admin
+
+    <span class="fn">ubicacion_madrid</span>:
+      <span class="fn">children</span>:
+        <span class="fn">cisco_routers</span>:
+      <span class="fn">vars</span>:
+        <span class="fn">ntp_server</span>: <span class="str">"10.1.0.254"</span>
+        <span class="fn">syslog_server</span>: <span class="str">"10.1.0.253"</span>
+
+    <span class="fn">ubicacion_barcelona</span>:
+      <span class="fn">children</span>:
+        <span class="fn">cisco_routers</span>:
+        <span class="fn">cisco_switches</span>:
+      <span class="fn">vars</span>:
+        <span class="fn">ntp_server</span>: <span class="str">"10.2.0.254"</span>
+        <span class="fn">syslog_server</span>: <span class="str">"10.2.0.253"</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Patrones de selección de hosts</h2>
+  <p>Al ejecutar playbooks o comandos ad-hoc, puedes apuntar a hosts usando <strong>patrones</strong> que combinan grupos, exclusiones y wildcards:</p>
+
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead>
+        <tr><th>Patrón</th><th>Significado</th><th>Ejemplo de uso</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>all</code></td><td>Todos los hosts del inventario</td><td><code>ansible all -m ping</code></td></tr>
+        <tr><td><code>cisco_switches</code></td><td>Todos los miembros del grupo</td><td><code>ansible cisco_switches -m ios_command</code></td></tr>
+        <tr><td><code>R1-MAD:R2-BCN</code></td><td>Unión de dos hosts (o grupos)</td><td>Apunta a ambos routers simultáneamente</td></tr>
+        <tr><td><code>cisco:&amp;ubicacion_madrid</code></td><td>Intersección: hosts en ambos grupos</td><td>Solo dispositivos Cisco en Madrid</td></tr>
+        <tr><td><code>cisco:!firewalls</code></td><td>Exclusión: Cisco excepto firewalls</td><td>Todo Cisco menos ASA/FTD</td></tr>
+        <tr><td><code>SW*</code></td><td>Wildcard: hosts que empiecen con SW</td><td>Todos los switches por nombre</td></tr>
+        <tr><td><code>~REGEX</code></td><td>Expresión regular</td><td><code>~(R1|R2).*MAD</code> para R1-MAD y R2-MAD</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="info-box info">
+    <div class="info-box-title">ℹ️ Concepto de intersección y exclusión</div>
+    <p>Los operadores <code>&amp;</code> (intersección) y <code>!</code> (exclusión) son extremadamente poderosos. Por ejemplo, para aplicar un parcheo solo a switches de acceso en producción (no en laboratorio): <code>sw_acceso:&amp;produccion:!laboratorio</code>. Esto selecciona hosts que estén en <em>ambos</em> grupos (acceso Y producción) pero <em>no</em> en laboratorio.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 5 — VARIABLES
+═══════════════════════════════════════════ -->
+<div id="tab-variables" class="ans1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Variables: el alma del inventario</h2>
+  <p>Las <strong>variables</strong> en Ansible permiten personalizar el comportamiento por host, por grupo o globalmente. En redes Cisco, las variables no solo definen credenciales: almacenan subnets, VLANs, interfaces, políticas QoS, comunidades SNMP y cualquier dato que diferencie a un dispositivo de otro.</p>
+  <p>Ansible aplica una <strong>precedencia estricta</strong> (variable precedence). Una variable definida en <code>host_vars</code> siempre ganará sobre la misma variable definida en <code>group_vars</code>. Entender esta jerarquía es fundamental para evitar sobrescrituras accidentales.</p>
+
+  <h2 class="section-title">host_vars y group_vars: archivos separados</h2>
+  <p>En lugar de saturar el inventario con variables inline, la mejor práctica es crear dos directorios paralelos al inventario:</p>
+  <ul>
+    <li><code>host_vars/</code> — Contiene un archivo YAML por cada host (nombre del archivo = alias del host).</li>
+    <li><code>group_vars/</code> — Contiene un archivo YAML por cada grupo (nombre del archivo = nombre del grupo).</li>
+  </ul>
+
+  <div class="file-tree">
+<span class="folder">proyecto_red/</span>
+├── inventory.yml
+├── <span class="folder">host_vars/</span>
+│   ├── <span class="file">R1-MAD.yml</span>          <span class="comment"># Variables exclusivas de R1-MAD</span>
+│   ├── <span class="file">SW-Core-01.yml</span>     <span class="comment"># Variables exclusivas del core switch</span>
+│   └── <span class="file">FW-ASA-01.yml</span>      <span class="comment"># Variables del firewall</span>
+├── <span class="folder">group_vars/</span>
+│   ├── <span class="file">all.yml</span>            <span class="comment"># Variables globales (todas las conexiones)</span>
+│   ├── <span class="file">cisco_routers.yml</span>  <span class="comment"># Solo routers Cisco</span>
+│   ├── <span class="file">cisco_switches.yml</span> <span class="comment"># Solo switches Cisco</span>
+│   └── <span class="file">firewalls.yml</span>      <span class="comment"># Variables específicas de ASA/FTD</span>
+└── playbooks/
+    └── configurar_ntp.yml
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">group_vars/all.yml — Variables globales de conexión</div>
+    <pre><code><span class="cmt"># Aplican a TODOS los hosts del inventario</span>
+<span class="fn">ansible_connection</span>: network_cli
+<span class="fn">ansible_python_interpreter</span>: <span class="str">"/usr/bin/python3"</span>
+<span class="fn">ansible_user</span>: admin
+<span class="fn">ansible_ssh_pass</span>: <span class="str">"{{ vault_cisco_pass }}"</span>
+<span class="fn">ansible_become</span>: <span class="kw">yes</span>
+<span class="fn">ansible_become_method</span>: enable
+<span class="fn">ansible_network_os</span>: ios</code></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">group_vars/cisco_switches.yml — Variables por función</div>
+    <pre><code><span class="cmt"># Solo aplican a switches Cisco</span>
+<span class="fn">vlans_default</span>:
+  - { <span class="fn">id</span>: <span class="num">10</span>, <span class="fn">name</span>: <span class="str">"NATIVA"</span> }
+  - { <span class="fn">id</span>: <span class="num">999</span>, <span class="fn">name</span>: <span class="str">"BLACKHOLE"</span> }
+
+<span class="fn">spanning_tree_mode</span>: rapid-pvst
+<span class="fn">portfast_default</span>: <span class="kw">true</span>
+
+<span class="fn">syslog_servers</span>:
+  - <span class="str">"10.0.0.100"</span>
+  - <span class="str">"10.0.0.101"</span></code></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">host_vars/SW-Core-01.yml — Variables exclusivas de un host</div>
+    <pre><code><span class="cmt"># Este switch es el VTP Server y tiene VLANs adicionales</span>
+<span class="fn">vtp_mode</span>: server
+<span class="fn">vtp_domain</span>: <span class="str">"EMPRESA_CORP"</span>
+
+<span class="fn">vlans_extra</span>:
+  - { <span class="fn">id</span>: <span class="num">100</span>, <span class="fn">name</span>: <span class="str">"FINANZAS"</span> }
+  - { <span class="fn">id</span>: <span class="num">200</span>, <span class="fn">name</span>: <span class="str">"RRHH"</span> }
+
+<span class="fn">uplink_trunk_ports</span>:
+  - <span class="str">"GigabitEthernet1/0/24"</span>
+  - <span class="str">"GigabitEthernet1/0/25"</span>
+
+<span class="cmt"># Sobrescribo la variable global solo para este host</span>
+<span class="fn">ansible_user</span>: <span class="str">"core_admin"</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Variables de conexión específicas de red</h2>
+  <p>Estas variables son <strong>reservadas por Ansible</strong> y controlan cómo se establece la conexión. Son las más importantes para ingenieros de red:</p>
+
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead>
+        <tr><th>Variable</th><th>Descripción</th><th>Ejemplo típico</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>ansible_host</code></td><td>IP o FQDN del dispositivo</td><td><code>192.168.1.1</code></td></tr>
+        <tr><td><code>ansible_connection</code></td><td>Plugin de conexión</td><td><code>network_cli</code>, <code>httpapi</code>, <code>netconf</code></td></tr>
+        <tr><td><code>ansible_network_os</code></td><td>Sistema operativo de red</td><td><code>ios</code>, <code>iosxr</code>, <code>nxos</code>, <code>asa</code></td></tr>
+        <tr><td><code>ansible_user</code></td><td>Usuario para autenticación</td><td><code>admin</code></td></tr>
+        <tr><td><code>ansible_ssh_pass</code></td><td>Contraseña SSH (usar Vault)</td><td><code>"{{ vault_pass }}"</code></td></tr>
+        <tr><td><code>ansible_ssh_private_key_file</code></td><td>Ruta a clave SSH privada</td><td><code>~/.ssh/id_rsa</code></td></tr>
+        <tr><td><code>ansible_port</code></td><td>Puerto SSH (si no es 22)</td><td><code>22</code>, <code>830</code></td></tr>
+        <tr><td><code>ansible_become</code></td><td>Escalar privilegios</td><td><code>yes</code></td></tr>
+        <tr><td><code>ansible_become_method</code></td><td>Método de escalado</td><td><code>enable</code> (Cisco), <code>sudo</code> (Linux)</td></tr>
+        <tr><td><code>ansible_httpapi_use_ssl</code></td><td>HTTPS para httpapi</td><td><code>true</code></td></tr>
+        <tr><td><code>ansible_httpapi_validate_certs</code></td><td>Validar certificados SSL</td><td><code>false</code> (labs)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="section-title">Jerarquía de precedencia de variables (simplificada)</h2>
+  <p>Ansible evalúa más de 20 niveles de precedencia. Para el examen CCNA y la práctica diaria, estos son los que debes memorizar (de menor a mayor prioridad):</p>
+  <ol>
+    <li><strong>all</strong> (variables más genéricas)</li>
+    <li><strong>group_vars/all</strong></li>
+    <li><strong>group_vars/&lt;grupo&gt;</strong> (grupos más amplios primero)</li>
+    <li><strong>group_vars/&lt;subgrupo&gt;</strong></li>
+    <li><strong>host_vars/&lt;host&gt;</strong> (variables más específicas)</li>
+    <li><strong>Variables inline</strong> en el inventario (mayor prioridad)</li>
+    <li><strong>Extra vars</strong> con <code>-e</code> en línea de comandos (ganan a todo)</li>
+  </ol>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚡ Trampa de precedencia</div>
+    <p>Un error común es definir <code>ansible_user: admin</code> en <code>group_vars/all.yml</code> y luego sorprenderse porque un switch específico usa <code>ansible_user: backup</code> definido en <code>host_vars/SW1.yml</code>. Recuerda: <strong>más específico siempre gana sobre más genérico</strong>.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 6 — DINÁMICOS
+═══════════════════════════════════════════ -->
+<div id="tab-dinamicos" class="ans1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Inventarios Dinámicos: la nube y el CMDB como fuente de verdad</h2>
+  <p>Los <strong>inventarios dinámicos</strong> no son archivos estáticos. Son <strong>plugins</strong> o <strong>scripts</strong> que consultan una fuente externa (API de cloud, base de datos, orquestador) y generan el inventario en tiempo real durante la ejecución del playbook. Esto es esencial en entornos cloud donde las instancias EC2 o VMs de Azure aparecen y desaparecen constantemente.</p>
+  <p>Ansible soporta decenas de plugins oficiales. Para redes empresariales, los más relevantes son <strong>AWS EC2</strong>, <strong>Azure Resource Manager</strong>, <strong>VMware</strong> y <strong>NetBox</strong> (el CMDB open-source preferido por ingenieros de red).</p>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">☁️</div>
+      <h3>AWS EC2</h3>
+      <p>Filtra instancias por tags, regiones o VPCs. Ideal para routers virtuales (CSR 1000v) o firewalls en cloud. Requiere credenciales AWS configuradas.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">Ⓜ️</div>
+      <h3>Azure RM</h3>
+      <p>Consulta Resource Groups, VMs y scale sets. Soporta autenticación por Service Principal o Managed Identity. Perfecto para Azure Network Virtual Appliances.</p>
+        </div>
+    <div class="concept-card">
+      <div class="concept-icon">🔍</div>
+      <h3>NetBox</h3>
+      <p>El CMDB open-source diseñado específicamente para infraestructura de red. Almacena racks, dispositivos, interfaces, IPs, VLANs y cables. Integración nativa con Ansible vía plugin.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🖥️</div>
+      <h3>VMware vCenter</h3>
+      <p>Descubre VMs, templates y clusters. Útil para entornos híbridos donde routers virtuales (CSR, Nexus 9000v) conviven con servidores en vSphere.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">📋</div>
+      <h3>ServiceNow</h3>
+      <p>Integración con CMDBs enterprise. Consulta la tabla cmdb_ci_netgear para obtener routers, switches y firewalls registrados en tu ITSM.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">⚡</div>
+      <h3>Custom Scripts</h3>
+      <p>Puedes escribir tu propio script en Python que devuelva JSON con el formato requerido por Ansible. Útil para bases de datos internas o APIs propietarias.</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">Plugin AWS EC2: filtrado por tags</h2>
+  <p>El plugin <code>amazon.aws.aws_ec2</code> es el más utilizado para infraestructura cloud. En lugar de listar IPs manualmente, defines filtros que seleccionan instancias basadas en tags de AWS:</p>
+
+  <div class="code-block">
+    <div class="code-label">aws_ec2.yml — Inventario dinámico AWS</div>
+    <pre><code><span class="fn">plugin</span>: amazon.aws.aws_ec2
+<span class="fn">regions</span>:
+  - eu-west-1
+  - us-east-1
+
+<span class="cmt"># Filtros: solo instancias con tag Environment=Production</span>
+<span class="fn">filters</span>:
+  <span class="fn">tag:Environment</span>: Production
+  <span class="fn">instance-state-name</span>: running
+
+<span class="cmt"># Agrupamiento por tags</span>
+<span class="fn">keyed_groups</span>:
+  - <span class="fn">key</span>: tags.Role
+    <span class="fn">prefix</span>: aws
+    <span class="fn">separator</span>: <span class="str">"_"</span>
+  - <span class="fn">key</span>: tags.Location
+    <span class="fn">prefix</span>: site
+
+<span class="cmt"># Variables compuestas</span>
+<span class="fn">compose</span>:
+  <span class="fn">ansible_host</span>: public_ip_address | default(private_ip_address)
+  <span class="fn">ansible_network_os</span>: <span class="str">"ios"</span></code></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">Comandos de verificación</div>
+    <pre><code><span class="cmt"># Listar hosts descubiertos por el plugin</span>
+ansible-inventory -i aws_ec2.yml --graph
+
+<span class="cmt"># Ver variables asignadas a un host específico</span>
+ansible-inventory -i aws_ec2.yml --host i-0a1b2c3d4e5f6789a
+
+<span class="cmt"># Ejecutar playbook contra grupos generados dinámicamente</span>
+ansible-playbook -i aws_ec2.yml backup_routers.yml --limit aws_csr1000v</code></pre>
+  </div>
+
+  <h2 class="section-title">Plugin NetBox: la fuente de verdad para redes</h2>
+  <p><strong>NetBox</strong> es un CMDB (Configuration Management Database) open-source desarrollado específicamente para ingenieros de red. Almacena racks, dispositivos, interfaces, IPs, prefixos, VLANs, cables y circuitos. Su integración con Ansible es impecable mediante el plugin <code>netbox.netbox.nb_inventory</code>.</p>
+
+  <div class="code-block">
+    <div class="code-label">netbox_inventory.yml — Inventario dinámico NetBox</div>
+    <pre><code><span class="fn">plugin</span>: netbox.netbox.nb_inventory
+<span class="fn">api_endpoint</span>: <span class="str">"https://netbox.tuempresa.com"</span>
+<span class="fn">token</span>: <span class="str">"{{ lookup('env', 'NETBOX_TOKEN') }}"</span>
+<span class="fn">validate_certs</span>: <span class="kw">true</span>
+
+<span class="cmt"># Qué dispositivos incluir (filtrado por plataforma)</span>
+<span class="fn">filters</span>:
+  <span class="fn">platform</span>: <span class="str">"cisco-ios"</span>
+
+<span class="cmt"># Agrupar por sitio y rol</span>
+<span class="fn">group_by</span>:
+  - <span class="fn">site.slug</span>
+  - <span class="fn">device_role.slug</span>
+  - <span class="fn">platform.slug</span>
+
+<span class="cmt"># Variables compuestas desde NetBox</span>
+<span class="fn">compose</span>:
+  <span class="fn">ansible_host</span>: <span class="str">"primary_ip.address | ansible.utils.ipaddr('address')"</span>
+  <span class="fn">ansible_network_os</span>: <span class="str">"platform.slug"</span>
+  <span class="fn">site_code</span>: <span class="str">"site.slug"</span>
+
+<span class="cmt"># Incluir custom fields como variables</span>
+<span class="fn">query_filters</span>:
+  - <span class="fn">has_primary_ip</span>: <span class="kw">true</span></code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Ventajas de NetBox + Ansible</div>
+    <ul>
+      <li><strong>Fuente única de verdad:</strong> Si un técnico cambia la IP de un switch en NetBox, Ansible lo descubre automáticamente sin modificar archivos.</li>
+      <li><strong>Documentación viva:</strong> El inventario siempre refleja la realidad física: racks, conexiones, interfaces.</li>
+      <li><strong>Filtrado inteligente:</strong> Puedes ejecutar playbooks solo en "todos los routers Cisco del sitio Madrid que tengan primary_ip".</li>
+      <li><strong>Custom fields:</strong> Extiende NetBox con campos personalizados (número de ticket, fecha de mantenimiento) y úsalos como variables en Ansible.</li>
+    </ul>
+  </div>
+
+  <h2 class="section-title">Azure Resource Manager: redes híbridas</h2>
+  <p>Para entornos Microsoft Azure, el plugin <code>azure.azcollection.azure_rm</code> descubre VMs, scale sets y network interfaces. Es ideal cuando tienes Network Virtual Appliances (NVAs) como Cisco CSR 1000v o FortiGate en Azure:</p>
+
+  <div class="code-block">
+    <div class="code-label">azure_rm.yml — Inventario dinámico Azure</div>
+    <pre><code><span class="fn">plugin</span>: azure.azcollection.azure_rm
+<span class="fn">subscription_id</span>: <span class="str">"12345678-1234-1234-1234-123456789abc"</span>
+<span class="fn">resource_groups</span>:
+  - <span class="str">"RG-NETWORK-PROD"</span>
+  - <span class="str">"RG-NETWORK-DR"</span>
+
+<span class="cmt"># Filtrar por tags</span>
+<span class="fn">include_vm_resource_groups</span>:
+  - <span class="str">"RG-NETWORK*"</span>
+
+<span class="fn">keyed_groups</span>:
+  - <span class="fn">key</span>: tags.environment
+    <span class="fn">prefix</span>: env
+  - <span class="fn">key</span>: tags.role
+    <span class="fn">prefix</span>: role
+
+<span class="fn">conditional_groups</span>:
+  <span class="fn">cisco_routers</span>: <span class="str">"tags.role == 'csr1000v'"</span>
+  <span class="fn">firewalls</span>: <span class="str">"tags.role == 'nva-firewall'"</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Combinando estáticos y dinámicos</h2>
+  <p>Puedes usar un <strong>directorio</strong> como inventario, colocando dentro archivos estáticos y dinámicos. Ansible los fusiona en un único inventario unificado:</p>
+
+  <div class="file-tree">
+<span class="folder">inventario_produccion/</span>
+├── <span class="file">inventory.yml</span>          <span class="comment"># Estático: routers físicos on-premise</span>
+├── <span class="file">aws_ec2.yml</span>          <span class="comment"># Dinámico: CSR 1000v en AWS</span>
+├── <span class="file">azure_rm.yml</span>         <span class="comment"># Dinámico: NVAs en Azure</span>
+├── <span class="file">netbox_inventory.yml</span> <span class="comment"># Dinámico: todo desde CMDB</span>
+├── <span class="folder">group_vars/</span>
+│   ├── <span class="file">all.yml</span>
+│   ├── <span class="file">cisco_routers.yml</span>
+│   └── <span class="file">firewalls.yml</span>
+└── <span class="folder">host_vars/</span>
+    └── <span class="file">R1-MAD.yml</span>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">Ejecución con directorio de inventario</div>
+    <pre><code><span class="cmt"># Apuntar a un directorio completo como inventario</span>
+ansible-playbook -i inventario_produccion/ site.yml
+
+<span class="cmt"># Ver la fusión completa de todos los orígenes</span>
+ansible-inventory -i inventario_produccion/ --graph --vars</code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚡ Precaución con inventarios dinámicos</div>
+    <p>Los inventarios dinámicos dependen de conectividad a APIs externas. Si NetBox o AWS están caídos, tu playbook fallará antes de comenzar. Para operaciones críticas, genera una <strong>caché estática</strong> periódicamente con <code>ansible-inventory -i dinamico.yml --yaml --output estatico_cache.yml</code>.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 7 — MEJORES PRÁCTICAS
+═══════════════════════════════════════════ -->
+<div id="tab-practicas" class="ans1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Mejores prácticas para inventarios de red</h2>
+  <p>Un inventario bien diseñado es la diferencia entre una automatización que escala elegantemente y un desastre de mantenimiento. Estas prácticas han sido validadas en producción en redes de miles de dispositivos:</p>
+
+  <h2 class="section-title">1. Nunca almacenes contraseñas en texto plano</h2>
+  <p>Usa <strong>Ansible Vault</strong> para cifrar variables sensibles. Vault usa AES-256 y se integra transparentemente con los playbooks:</p>
+
+  <div class="code-block">
+    <div class="code-label">Cifrado con Ansible Vault</div>
+    <pre><code><span class="cmt"># Crear archivo cifrado para contraseñas</span>
+ansible-vault create group_vars/all/vault.yml
+
+<span class="cmt"># Editar archivo cifrado existente</span>
+ansible-vault edit group_vars/all/vault.yml
+
+<span class="cmt"># Contenido de vault.yml (cifrado en disco)</span>
+<span class="fn">vault_cisco_pass</span>: <span class="str">"SuperSecreta123!"</span>
+<span class="fn">vault_snmp_community</span>: <span class="str">"C0mmun1ty_Str0ng"</span>
+
+<span class="cmt"># Referencia desde variables no cifradas</span>
+<span class="cmt"># group_vars/all.yml:</span>
+<span class="fn">ansible_ssh_pass</span>: <span class="str">"{{ vault_cisco_pass }}"</span>
+
+<span class="cmt"># Ejecutar playbook con vault</span>
+ansible-playbook site.yml --ask-vault-pass
+<span class="cmt"># O con archivo de contraseña (automatización CI/CD)</span>
+ansible-playbook site.yml --vault-password-file ~/.vault_pass.txt</code></pre>
+  </div>
+
+  <h2 class="section-title">2. Usa nombres descriptivos, no IPs solas</h2>
+  <p>Un inventario con <code>192.168.1.1</code> como alias es inmantenible. Usa convenciones de nomenclatura:</p>
+  <ul>
+    <li><code>R1-MAD-EDGE</code> — Router 1, Madrid, borde WAN</li>
+    <li><code>SW-CORE-BCN-01</code> — Switch core, Barcelona, número 01</li>
+    <li><code>FW-ASA-DR</code> — Firewall ASA, sitio Disaster Recovery</li>
+  </ul>
+
+  <h2 class="section-title">3. Separa entornos con directorios</h2>
+  <p>Nunca mezcles producción y laboratorio en el mismo archivo. Usa estructura de directorios:</p>
+
+  <div class="file-tree">
+<span class="folder">inventories/</span>
+├── <span class="folder">production/</span>
+│   ├── <span class="file">inventory.yml</span>
+│   ├── <span class="folder">group_vars/</span>
+│   └── <span class="folder">host_vars/</span>
+├── <span class="folder">staging/</span>
+│   ├── <span class="file">inventory.yml</span>
+│   ├── <span class="folder">group_vars/</span>
+│   └── <span class="folder">host_vars/</span>
+└── <span class="folder">laboratory/</span>
+    ├── <span class="file">inventory.yml</span>
+    ├── <span class="folder">group_vars/</span>
+    └── <span class="folder">host_vars/</span>
+  </div>
+
+  <h2 class="section-title">4. Documenta con comentarios y metadata</h2>
+  <p>Ansible ignora los comentarios, pero los ingenieros no. Documenta el propósito de cada grupo:</p>
+
+  <div class="code-block">
+    <div class="code-label">inventory_documentado.yml</div>
+    <pre><code><span class="cmt"># ============================================================</span>
+<span class="cmt"># GRUPO: cisco_wan_routers</span>
+<span class="cmt"># PROPOSITO: Routers de borde WAN con BGP a ISP</span>
+<span class="cmt"># RESPONSABLE: Equipo Core Network</span>
+<span class="cmt"># ULTIMO CAMBIO: 2024-03-15 — Añadido R3-MAD</span>
+<span class="cmt"># ============================================================</span>
+<span class="kw">cisco_wan_routers</span>:
+  <span class="fn">hosts</span>:
+    <span class="fn">R1-MAD-EDGE</span>:
+      <span class="fn">ansible_host</span>: <span class="num">10.1.0.1</span>
+      <span class="fn">bgp_asn</span>: <span class="num">64512</span>
+      <span class="fn">isp_peer</span>: <span class="str">"Telefonica"</span></code></pre>
+  </div>
+
+  <h2 class="section-title">5. Valida antes de ejecutar</h2>
+  <p>Ansible proporciona herramientas para verificar tu inventario antes de tocar dispositivos de producción:</p>
+
+  <div class="code-block">
+    <div class="code-label">Comandos de validación esenciales</div>
+    <pre><code><span class="cmt"># Ver estructura de grupos y hosts</span>
+ansible-inventory -i inventory.yml --graph
+
+<span class="cmt"># Ver todas las variables de un host específico</span>
+ansible-inventory -i inventory.yml --host R1-MAD --yaml
+
+<span class="cmt"># Verificar conectividad sin ejecutar cambios</span>
+ansible all -i inventory.yml -m ping --check
+
+<span class="cmt"># Simulación completa de playbook (dry run)</span>
+ansible-playbook -i inventory.yml site.yml --check --diff</code></pre>
+  </div>
+
+  <h2 class="section-title">6. Variables de conexión: el checklist obligatorio</h2>
+  <p>Antes de declarar un inventario "listo", verifica estos puntos para cada grupo de dispositivos:</p>
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">✅</div>
+      <h3>IP Reachable</h3>
+      <p>Verifica conectividad ICMP y SSH desde el Control Node. Usa <code>ping</code> y <code>ssh -v</code> para diagnosticar.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">✅</div>
+      <h3>Credenciales válidas</h3>
+      <p>Confirma que el usuario tiene privilegios suficientes (level 15 en Cisco) y que la contraseña no ha expirado.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">✅</div>
+      <h3>Protocolo correcto</h3>
+      <p>IOS antiguo → <code>network_cli</code>. IOS-XE moderno → <code>httpapi</code> o <code>netconf</code>. Verifica con <code>show ip ssh</code>.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">✅</div>
+      <h3>Ansible_network_os</h3>
+      <p>Debe coincidir exactamente: <code>ios</code>, <code>nxos</code>, <code>iosxr</code>, <code>asa</code>. Un typo aquí causa fallos crípticos.</p>
+    </div>
+  </div>
+
+  <div class="info-box info">
+    <div class="info-box-title">ℹ️ Convención de nomenclatura recomendada</div>
+    <p>Establece un estándar de nombres para aliases: <code>&lt;TIPO&gt;-&lt;FUNCIÓN&gt;-&lt;SITE&gt;-&lt;NÚMERO&gt;</code>. Ejemplos: <code>R-WAN-MAD-01</code>, <code>SW-CORE-BCN-01</code>, <code>FW-ASA-DR-01</code>. Esto permite usar patrones como <code>SW-*-MAD-*</code> para seleccionar todos los switches de Madrid.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 8 — REFERENCIA
+═══════════════════════════════════════════ -->
+<div id="tab-referencia" class="ans1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Tabla de Referencia — Inventarios y Variables</h2>
+  <div id="refTableAns1"></div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 9 — QUIZ
+═══════════════════════════════════════════ -->
+<div id="tab-quiz" class="ans1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Quiz — Inventarios y Variables Ansible</h2>
+  <p style="font-size:.83rem;color:#6b7a9a;margin-bottom:20px;">10 preguntas estilo CCNA Domain 6.6. Evalúa tu comprensión de formatos INI/YAML, jerarquías de grupos, precedencia de variables e inventarios dinámicos.</p>
+  <div id="quizContainerAns1"></div>
+</div>
+</div>
+
+</div><!-- /.tabs-wrap -->
+
+<script>
+// ── NAVEGACIÓN DRAWER ────────────────────────────────
+function ccnaToggle() {
+  document.getElementById('ccnaDrawer').classList.toggle('open');
+  document.getElementById('ccnaOverlay').classList.toggle('show');
+}
+function ccnaClose() {
+  document.getElementById('ccnaDrawer').classList.remove('open');
+  document.getElementById('ccnaOverlay').classList.remove('show');
+}
+
+// ── TABS ──────────────────────────────────────────────
+function showTabAns1(id, btn) {
+  document.querySelectorAll('.ans1-tab-content').forEach(t => t.classList.remove('ans1-active'));
+  document.querySelectorAll('.ans1-tab-btn').forEach(b => b.classList.remove('ans1-active'));
+  document.getElementById('tab-' + id).classList.add('ans1-active');
+  if (btn) btn.classList.add('ans1-active');
+}
+
+// ── TABLA DE REFERENCIA ──────────────────────────────
+function buildRefTable() {
+  var container = document.getElementById('refTableAns1');
+  if (!container) return;
+
+  var secciones = [
+    {
+      titulo: 'FORMATOS DE INVENTARIO',
+      cols: ['Formato','Extensión','Ventaja principal','Cuándo usarlo'],
+      filas: [
+        ['INI','.ini','Rápido de escribir, sintaxis simple','Redes pequeñas (< 50 hosts), labs'],
+        ['YAML','.yml','Jerarquías anidadas, listas nativas','Redes medianas/grandes, variables complejas'],
+        ['Directorio','Carpeta con múltiples archivos','Fusión de estáticos y dinámicos','Entornos híbridos on-premise + cloud'],
+        ['Script Python','.py (ejecutable)','Personalización total','APIs propietarias o bases de datos internas']
+      ]
+    },
+    {
+      titulo: 'VARIABLES DE CONEXIÓN RESERVADAS',
+      cols: ['Variable','Descripción','Ejemplo'],
+      filas: [
+        ['ansible_host','IP o FQDN del dispositivo','192.168.1.1'],
+        ['ansible_connection','Plugin de conexión','network_cli, httpapi, netconf'],
+        ['ansible_network_os','Sistema operativo de red','ios, nxos, iosxr, asa'],
+        ['ansible_user','Usuario de autenticación','admin'],
+        ['ansible_ssh_pass','Contraseña SSH (usar Vault)','{{ vault_pass }}'],
+        ['ansible_port','Puerto SSH (default 22)','22, 830'],
+        ['ansible_become','Escalar privilegios','yes'],
+        ['ansible_become_method','Método de escalado','enable (Cisco), sudo (Linux)']
+      ]
+    },
+    {
+      titulo: 'PRECEDENCIA DE VARIABLES (mayor a menor)',
+      cols: ['Nivel','Origen','Prioridad'],
+      filas: [
+        ['Extra vars','-e en línea de comandos','MAYOR (gana a todo)'],
+        ['Host vars','host_vars/<host>.yml','Alta'],
+        ['Group vars','group_vars/<grupo>.yml','Media-Alta'],
+        ['Group vars all','group_vars/all.yml','Media'],
+        ['Inventory inline','Variables en línea del host','Media-Baja'],
+        ['Inventory group vars','[grupo:vars] en INI/YAML','Baja'],
+        ['all','Variables globales [all:vars]','MENOR']
+      ]
+    },
+    {
+      titulo: 'PLUGINS DE INVENTARIO DINÁMICO',
+      cols: ['Plugin','Fuente','Caso de uso principal'],
+      filas: [
+        ['amazon.aws.aws_ec2','AWS EC2','Routers virtuales CSR en cloud, filtrado por tags'],
+        ['azure.azcollection.azure_rm','Azure Resource Manager','NVAs y VMs en Azure'],
+        ['netbox.netbox.nb_inventory','NetBox CMDB','Fuente de verdad para infraestructura física'],
+        ['community.vmware.vmware_vm_inventory','VMware vCenter','Routers virtuales en vSphere'],
+        ['servicenow.servicenow.now','ServiceNow','Integración con CMDB enterprise']
+      ]
+    },
+    {
+      titulo: 'PATRONES DE SELECCIÓN DE HOSTS',
+      cols: ['Patrón','Significado','Ejemplo'],
+      filas: [
+        ['all','Todos los hosts','ansible all -m ping'],
+        ['grupo','Miembros de un grupo','ansible cisco_routers -m ios_command'],
+        ['host1:host2','Unión (OR)','R1:R2 o cisco:juniper'],
+        ['grupo1:&grupo2','Intersección (AND)','cisco:&ubicacion_madrid'],
+        ['grupo:!excluido','Exclusión (NOT)','cisco:!firewalls'],
+        ['prefijo*','Wildcard','SW* selecciona todos los switches'],
+        ['~regex','Expresión regular','~(R1|R2).*MAD']
+      ]
+    },
+    {
+      titulo: 'COMANDOS CLI ESENCIALES',
+      cols: ['Comando','Descripción'],
+      filas: [
+        ['ansible-inventory --graph','Visualiza jerarquía de grupos y hosts'],
+        ['ansible-inventory --host <nombre>','Muestra todas las variables de un host'],
+        ['ansible-inventory --yaml --output <file>','Exporta inventario a YAML estático'],
+        ['ansible all -i <inv> -m ping','Prueba de conectividad a todos los hosts'],
+        ['ansible-playbook -i <inv> site.yml --check','Ejecución en modo simulación (dry run)'],
+        ['ansible-vault create <file>','Crea archivo cifrado para secretos'],
+        ['ansible-vault edit <file>','Edita archivo cifrado existente']
+      ]
+    }
+  ];
+
+  var html = '';
+  secciones.forEach(function(sec) {
+    html += '<h3 style="font-family:Orbitron,sans-serif;font-size:.8rem;color:#ef4444;letter-spacing:2px;margin:24px 0 10px;text-transform:uppercase;">▸ ' + sec.titulo + '</h3>';
+    html += '<div class="table-wrap"><table class="ref-table"><thead><tr>';
+    sec.cols.forEach(function(c) { html += '<th>' + c + '</th>'; });
+    html += '</tr></thead><tbody>';
+    sec.filas.forEach(function(f) {
+      html += '<tr>';
+      f.forEach(function(c) { html += '<td>' + c + '</td>'; });
+      html += '</tr>';
+    });
+    html += '</tbody></table></div>';
+  });
+  container.innerHTML = html;
+}
+
+// ── QUIZ ─────────────────────────────────────────────
+function initQuiz() {
+  var container = document.getElementById('quizContainerAns1');
+  if (!container) return;
+
+  var qs = [
+    {
+      q: '¿Qué archivo define los dispositivos que Ansible gestionará y cómo conectarse a ellos?',
+      opts: ['ansible.cfg','El playbook (site.yml)','El inventario (inventory.ini o inventory.yml)','El rol (roles/base_cisco)'],
+      ans: 2,
+      exp: 'El <strong>inventario</strong> es el mapa de infraestructura. Sin él, Ansible no sabe a qué IPs conectarse ni qué credenciales usar. ansible.cfg configura el comportamiento global; los playbooks definen las tareas.'
+    },
+    {
+      q: 'En un inventario INI, ¿qué sintaxis se usa para definir un grupo que contiene otros grupos (grupo de grupos)?',
+      opts: ['[grupo:members]','[grupo:children]','[grupo:parents]','[grupo:groups]'],
+      ans: 1,
+      exp: 'La sintaxis correcta es <strong>[grupo:children]</strong>. Esto crea una jerarquía donde el grupo padre hereda todos los hosts de sus grupos hijos. Por ejemplo: [cisco:children] con cisco_routers y cisco_switches debajo.'
+    },
+    {
+      q: '¿Cuál de las siguientes variables tiene MAYOR precedencia (sobrescribe a las demás)?',
+      opts: ['group_vars/all.yml','host_vars/R1.yml','Variables inline en el inventario','Extra vars (-e en línea de comandos)'],
+      ans: 3,
+      exp: 'Las <strong>extra vars</strong> pasadas con <code>-e</code> en la línea de comandos tienen la mayor precedencia de todas. Luego vienen host_vars, luego group_vars específicos, luego group_vars/all, y finalmente variables inline.'
+    },
+    {
+      q: 'Un administrador quiere ejecutar un playbook solo en los switches de acceso del sitio Madrid. ¿Qué patrón de selección usaría?',
+      opts: ['sw_acceso','madrid','sw_acceso:&madrid','sw_acceso:!madrid'],
+      ans: 2,
+      exp: 'El patrón <strong>sw_acceso:&madrid</strong> usa el operador de intersección <code>&</code> para seleccionar solo los hosts que pertenecen AMBOS grupos simultáneamente: switches de acceso Y ubicados en Madrid.'
+    },
+    {
+      q: '¿Qué directorio se utiliza para almacenar variables específicas de un único host, evitando saturar el archivo de inventario principal?',
+      opts: ['group_vars/','host_vars/','vars/','inventories/'],
+      ans: 1,
+      exp: 'El directorio <strong>host_vars/</strong> contiene archivos YAML nombrados exactamente como el alias del host (ej. R1.yml). Ansible los carga automáticamente. group_vars/ es para variables por grupo, no por host individual.'
+    },
+    {
+      q: 'En formato YAML, ¿cuál es la clave raíz obligatoria que contiene todo el inventario?',
+      opts: ['hosts','inventory','all','nodes'],
+      ans: 2,
+      exp: 'En inventarios YAML, la clave raíz es <strong>all</strong>. Dentro de <code>all</code> se definen <code>children</code> (grupos) y <code>hosts</code> (hosts directos). Esta estructura es obligatoria para que Ansible parse correctamente el archivo.'
+    },
+    {
+      q: '¿Qué plugin de inventario dinámico consultaría para obtener hosts desde un CMDB especializado en infraestructura de red como NetBox?',
+      opts: ['amazon.aws.aws_ec2','netbox.netbox.nb_inventory','azure.azcollection.azure_rm','servicenow.servicenow.now'],
+      ans: 1,
+      exp: 'El plugin <strong>netbox.netbox.nb_inventory</strong> es el estándar para integrar Ansible con NetBox. Filtra dispositivos por site, role, platform y compone variables como ansible_host desde el primary_ip de NetBox.'
+    },
+    {
+      q: '¿Cuál es la ventaja principal de usar inventarios dinámicos (ej. AWS EC2) sobre estáticos?',
+      opts: ['Son más seguros que los estáticos','Se actualizan automáticamente cuando cambia la infraestructura cloud','No requieren credenciales','Son más rápidos de escribir a mano'],
+      ans: 1,
+      exp: 'Los inventarios dinámicos <strong>se actualizan en tiempo real</strong>. Si una instancia EC2 se crea o destruye, el plugin lo refleja automáticamente en la siguiente ejecución. Los estáticos requieren edición manual para cada cambio.'
+    },
+    {
+      q: 'Para cifrar contraseñas almacenadas en variables de inventario, ¿qué herramienta de Ansible se debe utilizar?',
+      opts: ['Ansible Galaxy','Ansible Vault','Ansible Tower','Ansible Lint'],
+      ans: 1,
+      exp: '<strong>Ansible Vault</strong> proporciona cifrado AES-256 para archivos YAML/INI. Galaxy es un repositorio de roles; Tower es la interfaz web enterprise; Lint verifica la sintaxis de playbooks.'
+    },
+    {
+      q: 'En un inventario INI, ¿cómo se define el rango de hosts SW-Acc-01 hasta SW-Acc-48?',
+      opts: ['SW-Acc-[01-48]','SW-Acc-[01:48]','SW-Acc-{01..48}','SW-Acc-(01:48)'],
+      ans: 1,
+      exp: 'La sintaxis correcta de rangos en inventarios INI usa <strong>dos puntos (:)</strong>: <code>SW-Acc-[01:48]</code>. Los guiones no funcionan. Esto genera automáticamente 48 entradas de host con IPs correlativas si se usa <code>ansible_host=10.0.1.[1:48]</code>.'
+    }
+  ];
+
+  var html = '';
+  qs.forEach(function(q, i) {
+    html += '<div class="quiz-question" id="qans1' + i + '">' +
+      '<div class="quiz-q-num">PREGUNTA ' + (i+1) + ' DE ' + qs.length + ' · M8 ANSIBLE TEMA 2</div>' +
+      '<div class="quiz-q-text">' + q.q + '</div>' +
+      '<div class="quiz-opts">';
+    q.opts.forEach(function(o, j) {
+      html += '<button class="quiz-opt" data-qi="' + i + '" data-sel="' + j + '" data-ans="' + q.ans + '">' + o + '</button>';
+    });
+    html += '</div></div>';
+  });
+  container.innerHTML = html;
+
+  window._ans1Exp = {};
+  qs.forEach(function(q, i) { window._ans1Exp[i] = q.exp; });
+
+  container.querySelectorAll('.quiz-opt').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var qi  = parseInt(this.dataset.qi);
+      var sel = parseInt(this.dataset.sel);
+      var ans = parseInt(this.dataset.ans);
+      var qDiv = document.getElementById('qans1' + qi);
+      var btns = qDiv.querySelectorAll('.quiz-opt');
+
+      btns.forEach(function(b) { b.disabled = true; });
+      btns[sel].classList.add(sel === ans ? 'correct' : 'wrong');
+      if (sel !== ans) btns[ans].classList.add('correct');
+
+      var expDiv = document.createElement('div');
+      expDiv.className = 'quiz-explanation';
+      expDiv.innerHTML = '<strong>' + (sel===ans ? '✅ Correcto!' : '❌ Incorrecto.') + '</strong> ' + window._ans1Exp[qi];
+      qDiv.appendChild(expDiv);
+    });
+  });
+}
+
+// ── INICIALIZACIÓN ────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  buildRefTable();
+  initQuiz();
+});
+</script>
+</body>
+</html>
+     
