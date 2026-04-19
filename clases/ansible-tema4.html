@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ansible — Módulos cisco.ios · M8 T4 | CCNA Academy</title>
+  <meta name="description" content="Clase magistral de módulos cisco.ios: ios_command, ios_config, ios_facts, ios_interfaces, ios_vlans. Automatiza routers y switches Cisco con Ansible. CCNA Domain 6.6.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── ANSIBLE ACCENT TOKENS ── */
+:root{ --ansible:#ef4444; --ansible-d:#dc2626; --ansible-glow:rgba(239,68,68,.12); }
+
+/* ── BASE ── */
+body{font-family:'Exo 2',sans-serif;background:#07090f;color:#e2e8f0;margin:0;}
+.class-hero{background:linear-gradient(135deg,#06080f 0%,#080d18 60%,#0a1020 100%);}
+
+/* ── HERO ── */
+.class-hero{padding:56px 24px 48px;border-bottom:1px solid rgba(239,68,68,.08);position:relative;overflow:hidden;}
+.class-hero::before{content:'';position:absolute;top:-60px;right:-80px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(239,68,68,.06) 0%,transparent 70%);pointer-events:none;}
+.class-hero-inner{max-width:900px;margin:0 auto;position:relative;z-index:1;}
+.class-badge{font-family:'Share Tech Mono',monospace;font-size:.63rem;color:#ef4444;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;}
+.class-title{font-family:'Orbitron',sans-serif;font-size:clamp(1.6rem,3.8vw,2.6rem);font-weight:900;letter-spacing:3px;color:#c2d0e8;margin-bottom:12px;line-height:1.1;}
+.class-title-accent{background:linear-gradient(135deg,#ef4444,#dc2626);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.class-subtitle{font-size:.92rem;color:#6b7a9a;line-height:1.72;margin-bottom:20px;max-width:700px;}
+.class-meta{display:flex;gap:12px;flex-wrap:wrap;}
+.meta-item{font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#4a5780;padding:4px 10px;border:1px solid rgba(239,68,68,.15);border-radius:4px;}
+
+/* ── TABS ── */
+.ans1-tabs-wrap{max-width:1100px;margin:0 auto;padding:0 16px 40px;}
+.ans1-tabs-bar{display:flex;gap:4px;padding:20px 0 0;flex-wrap:wrap;border-bottom:1px solid rgba(239,68,68,.12);margin-bottom:0;}
+.ans1-tab-btn{padding:8px 13px;border-radius:8px 8px 0 0;font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#4a5780;background:none;border:1px solid transparent;cursor:pointer;transition:all .18s;white-space:nowrap;border-bottom:none;}
+.ans1-tab-btn:hover{color:#c2d0e8;background:rgba(239,68,68,.06);}
+.ans1-tab-btn.ans1-active{color:#ef4444;background:#0d1220;border-color:rgba(239,68,68,.25);border-bottom:1px solid #0d1220;}
+.ans1-tab-content{display:none;background:#0d1220;border:1px solid rgba(239,68,68,.08);border-top:none;border-radius:0 0 12px 12px;padding:32px;}
+.ans1-tab-content.ans1-active{display:block;}
+.content-block{max-width:880px;}
+.section-title{font-family:'Orbitron',sans-serif;font-size:.95rem;color:#ef4444;letter-spacing:2px;margin:28px 0 14px;padding-bottom:8px;border-bottom:1px solid rgba(239,68,68,.15);}
+.section-title:first-child{margin-top:0;}
+p{color:#8294b8;line-height:1.75;margin-bottom:14px;font-size:.9rem;}
+ul,ol{color:#8294b8;padding-left:1.4rem;margin-bottom:14px;font-size:.9rem;}
+li{margin-bottom:5px;line-height:1.65;}
+strong{color:#c2d0e8;}
+code{font-family:'Share Tech Mono',monospace;font-size:.82rem;background:rgba(239,68,68,.1);color:#ef4444;padding:1px 6px;border-radius:4px;border:1px solid rgba(239,68,68,.2);}
+
+/* INFO BOXES */
+.info-box{border-radius:8px;padding:14px 18px;margin:18px 0;border-left:3px solid;}
+.info-box.tip{background:rgba(239,68,68,.06);border-color:#ef4444;}
+.info-box.warning{background:rgba(251,191,36,.05);border-color:#fbbf24;}
+.info-box.info{background:rgba(56,189,248,.05);border-color:#38bdf8;}
+.info-box-title{font-family:'Share Tech Mono',monospace;font-size:.73rem;color:#ef4444;margin-bottom:8px;}
+.info-box.warning .info-box-title{color:#fbbf24;}
+.info-box.info .info-box-title{color:#38bdf8;}
+
+/* CODE BLOCKS */
+.code-block{background:#050810;border:1px solid rgba(239,68,68,.15);border-left:3px solid #ef4444;border-radius:8px;padding:0;margin:16px 0;overflow:hidden;}
+.code-label{background:rgba(239,68,68,.08);padding:8px 16px;font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#4a5780;letter-spacing:2px;text-transform:uppercase;border-bottom:1px solid rgba(239,68,68,.1);}
+.code-block pre{margin:0;padding:18px;overflow-x:auto;}
+.code-block code{background:none;border:none;padding:0;color:#a8b4c8;font-size:.79rem;line-height:1.8;display:block;}
+
+/* SYNTAX */
+.cmt{color:#3a4a60;font-style:italic;}
+.kw {color:#c792ea;}
+.fn {color:#82aaff;}
+.str{color:#c3e88d;}
+.num{color:#f78c6c;}
+
+/* CONCEPT GRID */
+.concept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin:16px 0;}
+.concept-card{background:#090d1a;border:1px solid rgba(239,68,68,.1);border-radius:10px;padding:16px;}
+.concept-icon{font-size:1.8rem;margin-bottom:8px;}
+.concept-card h3{font-family:'Share Tech Mono',monospace;font-size:.77rem;color:#ef4444;margin-bottom:8px;}
+.concept-card p{font-size:.8rem;margin:0;}
+
+/* ARCHITECTURE DIAGRAM */
+.ans-flow{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin:20px 0;padding:20px;background:#090d1a;border-radius:10px;border:1px solid rgba(239,68,68,.1);}
+.ans-box{background:#0d1220;border:1px solid rgba(239,68,68,.2);border-radius:8px;padding:14px 18px;text-align:center;min-width:110px;}
+.ans-box-label{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:#ef4444;margin-bottom:4px;}
+.ans-box-val{font-size:.8rem;color:#c2d0e8;}
+.ans-arrow{font-size:1.4rem;color:#ef4444;}
+
+/* TABLE */
+.table-wrap{overflow-x:auto;margin:16px 0;}
+.ref-table{width:100%;border-collapse:collapse;font-size:.8rem;}
+.ref-table th{background:#090d1a;color:#ef4444;font-family:'Share Tech Mono',monospace;font-size:.67rem;padding:10px 12px;text-align:left;border:1px solid rgba(239,68,68,.15);letter-spacing:1px;}
+.ref-table td{padding:9px 12px;border:1px solid rgba(255,255,255,.04);color:#8294b8;}
+.ref-table tr:hover td{background:rgba(239,68,68,.04);}
+.ref-table code{font-size:.77rem;}
+
+/* QUIZ */
+.quiz-question{background:#090d1a;border:1px solid rgba(239,68,68,.12);border-radius:10px;padding:20px;margin-bottom:14px;}
+.quiz-q-num{font-family:'Share Tech Mono',monospace;font-size:.62rem;color:#374060;margin-bottom:8px;}
+.quiz-q-text{font-size:.9rem;color:#c2d0e8;margin-bottom:14px;line-height:1.6;}
+.quiz-opts{display:flex;flex-direction:column;gap:7px;}
+.quiz-opt{padding:10px 14px;border-radius:7px;border:1px solid rgba(239,68,68,.12);background:#0d1220;color:#6b7a9a;cursor:pointer;font-size:.84rem;text-align:left;transition:all .15s;font-family:'Exo 2',sans-serif;}
+.quiz-opt:hover:not(:disabled){border-color:rgba(239,68,68,.4);color:#c2d0e8;}
+.quiz-opt.correct{border-color:#34d399;background:rgba(52,211,153,.08);color:#34d399;}
+.quiz-opt.wrong{border-color:#f87171;background:rgba(248,113,113,.08);color:#f87171;}
+.quiz-explanation{margin-top:10px;padding:10px 14px;background:rgba(239,68,68,.07);border-left:3px solid #ef4444;border-radius:6px;font-size:.82rem;color:#a0aec0;line-height:1.65;}
+
+/* COMPARE TABLE */
+.compare-highlight{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);}
+.compare-highlight td{color:#c2d0e8 !important;}
+
+/* NAV & DRAWER */
+.navbar{position:fixed;top:0;left:0;right:0;height:56px;background:#080a10;border-bottom:1px solid rgba(239,68,68,.1);display:flex;align-items:center;padding:0 24px;z-index:1000;}
+.navbar-toggle{background:none;border:1px solid rgba(239,68,68,.3);color:#ef4444;padding:6px 12px;border-radius:6px;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:.75rem;margin-right:16px;}
+.navbar-brand{font-family:'Orbitron',sans-serif;font-weight:700;color:#ef4444;text-decoration:none;font-size:1.1rem;}
+.navbar-brand span{color:#dc2626;}
+.navbar-spacer{flex:1;}
+.navbar-link{color:#6b7a9a;text-decoration:none;font-size:.8rem;transition:color .2s;}
+.navbar-link:hover{color:#c2d0e8;}
+.nav-spacer{height:56px;}
+.ccna-drawer{position:fixed;top:0;left:0;bottom:0;width:280px;background:#0d1220;border-right:1px solid rgba(239,68,68,.2);transform:translateX(-100%);transition:transform .3s;z-index:2000;overflow-y:auto;}
+.ccna-drawer.open{transform:translateX(0);}
+.ccna-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);opacity:0;visibility:hidden;transition:all .3s;z-index:1500;}
+.ccna-overlay.show{opacity:1;visibility:visible;}
+.drawer-header{padding:20px;border-bottom:1px solid rgba(239,68,68,.2);display:flex;justify-content:space-between;align-items:center;}
+.drawer-header h2{font-family:'Orbitron',sans-serif;font-size:.8rem;color:#ef4444;margin:0;letter-spacing:2px;}
+.drawer-close{background:none;border:none;color:#6b7a9a;font-size:1.2rem;cursor:pointer;}
+.drawer-section{padding:16px;border-bottom:1px solid rgba(239,68,68,.1);}
+.drawer-section-title{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#374060;margin-bottom:12px;letter-spacing:1px;text-transform:uppercase;}
+.drawer-link{display:block;padding:10px 12px;color:#8294b8;text-decoration:none;font-size:.85rem;border-radius:6px;transition:all .2s;margin-bottom:4px;}
+.drawer-link:hover{background:rgba(239,68,68,.1);color:#c2d0e8;}
+.drawer-link.active{background:rgba(239,68,68,.2);color:#ef4444;border-left:3px solid #ef4444;}
+.dl-icon{margin-right:8px;}
+
+@media(max-width:680px){
+  .ans1-tab-btn{font-size:.6rem;padding:6px 9px;}
+  .ans1-tab-content{padding:18px 12px;}
+  .concept-grid{grid-template-columns:1fr;}
+  .ans-flow{flex-direction:column;}
+}
+</style>
+</head>
+<body>
+
+<div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
+<nav class="ccna-drawer" id="ccnaDrawer">
+  <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
+  <div class="drawer-section"><div class="drawer-section-title">General</div>
+    <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M1 · Fundamentos</div>
+    <a href="fundamentos.html" class="drawer-link"><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
+    <a href="subnetting.html"  class="drawer-link"><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
+    <a href="ipv6.html"        class="drawer-link"><span class="dl-icon">6️⃣</span> IPv6</a>
+    <a href="arp.html"         class="drawer-link"><span class="dl-icon">📡</span> ARP</a>
+    <a href="rip.html"         class="drawer-link"><span class="dl-icon">🔄</span> RIP</a>
+    <a href="protocolos-internet.html" class="drawer-link"><span class="dl-icon">🌍</span> Protocolos Internet</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M2 · Dispositivos Cisco</div>
+    <a href="router.html"         class="drawer-link"><span class="dl-icon">📡</span> Routers Cisco</a>
+    <a href="switches-cisco.html" class="drawer-link"><span class="dl-icon">🔀</span> Switches Cisco</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M3 · Switching</div>
+    <a href="vlan.html"               class="drawer-link"><span class="dl-icon">🏷️</span> VLANs</a>
+    <a href="inter-vlan-routing.html" class="drawer-link"><span class="dl-icon">🔁</span> Inter-VLAN Routing</a>
+    <a href="stp.html"                class="drawer-link"><span class="dl-icon">🌳</span> STP</a>
+    <a href="etherchannel.html"       class="drawer-link"><span class="dl-icon">🔗</span> EtherChannel</a>
+    <a href="port-security.html"      class="drawer-link"><span class="dl-icon">🔒</span> Port Security</a>
+    <a href="cdp-lldp.html"           class="drawer-link"><span class="dl-icon">🔍</span> CDP / LLDP</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M4 · Routing</div>
+    <a href="routing.html"            class="drawer-link"><span class="dl-icon">🗺️</span> Routing Estático</a>
+    <a href="ospf.html"               class="drawer-link"><span class="dl-icon">⭕</span> OSPF</a>
+    <a href="eigrp.html"              class="drawer-link"><span class="dl-icon">⚡</span> EIGRP</a>
+    <a href="ospfv2-masterclass.html" class="drawer-link"><span class="dl-icon">🎯</span> OSPFv2 Masterclass</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M5 · Servicios IP</div>
+    <a href="dhcp.html" class="drawer-link"><span class="dl-icon">📋</span> DHCP</a>
+    <a href="nat.html"  class="drawer-link"><span class="dl-icon">🔄</span> NAT / PAT</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M6 · Seguridad</div>
+    <a href="acl.html" class="drawer-link"><span class="dl-icon">🛡️</span> ACLs</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M7 · WAN &amp; QoS</div>
+    <a href="wan.html" class="drawer-link"><span class="dl-icon">🌍</span> WAN</a>
+    <a href="qos.html" class="drawer-link"><span class="dl-icon">📊</span> QoS</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M8 · Automatización</div>
+    <a href="m8-automatizacion.html" class="drawer-link"><span class="dl-icon">🤖</span> M8 — Vista General</a>
+    <a href="python-redes.html"      class="drawer-link"><span class="dl-icon">🐍</span> Python para Redes</a>
+    <a href="json-datos.html"        class="drawer-link"><span class="dl-icon">📋</span> JSON y Datos</a>
+    <a href="rest-apis.html"         class="drawer-link"><span class="dl-icon">🌐</span> REST APIs</a>
+    <a href="ansible-redes.html"     class="drawer-link"><span class="dl-icon">⚙️</span> Ansible Hub</a>
+    <a href="ansible-tema1.html"     class="drawer-link"><span class="dl-icon">01</span> T1 — Arquitectura</a>
+    <a href="ansible-tema2.html"     class="drawer-link"><span class="dl-icon">02</span> T2 — Inventarios</a>
+    <a href="ansible-tema3.html"     class="drawer-link"><span class="dl-icon">03</span> T3 — Playbooks YAML</a>
+    <a href="ansible-tema4.html"     class="drawer-link active"><span class="dl-icon">04</span> T4 — Módulos cisco.ios</a>
+  </div>
+  <div class="drawer-section"><div class="drawer-section-title">⚡ Herramientas</div>
+    <a href="asistente.html"          class="drawer-link"><span class="dl-icon">🤖</span> Asistente IA</a>
+    <a href="netbot.html"             class="drawer-link"><span class="dl-icon">⚙️</span> NetBot Config</a>
+    <a href="calculadora.html"        class="drawer-link"><span class="dl-icon">🧮</span> Calculadora IP</a>
+    <a href="../laboratorios-pkt.html"   class="drawer-link"><span class="dl-icon">🧪</span> Labs Packet Tracer</a>
+    <a href="../banco-preguntas.html" class="drawer-link"><span class="dl-icon">📝</span> Banco de Preguntas</a></div>
+</nav>
+
+<header class="navbar">
+  <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
+  <a href="../index.html" class="navbar-brand">CISCO<span> ACADEMY</span></a>
+  <div class="navbar-spacer"></div>
+  <a href="ansible-redes.html" class="navbar-link">← Ansible Hub</a>
+</header>
+<div class="nav-spacer"></div>
+
+<!-- HERO -->
+<section class="class-hero" style="border-bottom:1px solid rgba(239,68,68,.2);">
+  <div class="class-hero-inner">
+    <div class="class-badge" style="color:#ef4444;">M8 · AUTOMATIZACIÓN · ANSIBLE · TEMA 4 DE 7</div>
+    <h1 class="class-title">MÓDULOS <span class="class-title-accent">cisco.ios — Automatización IOS</span></h1>
+    <p class="class-subtitle">La colección oficial de Ansible para Cisco IOS. Domina ios_command, ios_config, ios_facts, ios_interfaces e ios_vlans para gestionar routers y switches Cisco con idempotencia real. Desde comandos show hasta configuración declarativa completa de VLANs e interfaces.</p>
+    <div class="class-meta">
+      <span class="meta-item" style="border-color:rgba(239,68,68,.2);color:#ef4444;">🧩 cisco.ios</span>
+      <span class="meta-item">🎯 CCNA Domain 6.6</span>
+      <span class="meta-item">⏱ ~90 min lectura</span>
+      <span class="meta-item">📡 ios_command / ios_config</span>
+      <span class="meta-item">🔍 ios_facts / ios_vlans</span>
+    </div>
+  </div>
+</section>
+
+<!-- TABS -->
+<div class="ans1-tabs-wrap">
+  <div class="ans1-tabs-bar">
+    <button class="ans1-tab-btn ans1-active" onclick="showTabAns1('intro',this)">🧩 Intro</button>
+    <button class="ans1-tab-btn" onclick="showTabAns1('ios-command',this)">📡 ios_command</button>
+    <button class="ans1-tab-btn" onclick="showTabAns1('ios-config',this)">⚙️ ios_config</button>
+    <button class="ans1-tab-btn" onclick="showTabAns1('ios-facts',this)">🔍 ios_facts</button>
+    <button class="ans1-tab-btn" onclick="showTabAns1('ios-interfaces',this)">🔌 ios_interfaces</button>
+    <button class="ans1-tab-btn" onclick="showTabAns1('ios-vlans',this)">🏷️ ios_vlans</button>
+    <button class="ans1-tab-btn" onclick="showTabAns1('referencia',this)">📊 Ref</button>
+    <button class="ans1-tab-btn" onclick="showTabAns1('quiz',this)">🎯 Quiz</button>
+  </div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 1 — INTRO
+═══════════════════════════════════════════ -->
+<div id="tab-intro" class="ans1-tab-content ans1-active">
+<div class="content-block">
+  <h2 class="section-title">La colección cisco.ios: automatización nativa</h2>
+  <p>La colección <code>cisco.ios</code> es el conjunto oficial de módulos de Ansible mantenido por Cisco y Red Hat. Proporciona una interfaz declarativa y idempotente para gestionar dispositivos que ejecutan <strong>Cisco IOS, IOS-XE e IOS-XR</strong>. Desde routers de borde hasta switches Catalyst, estos módulos traducen tu intención (YAML) en comandos CLI ejecutados vía SSH.</p>
+  <p>A diferencia de enviar comandos raw por SSH (como harías con un script Python básico), los módulos <code>cisco.ios</code> entienden el contexto de configuración de Cisco. Saben que <code>interface GigabitEthernet1/0/1</code> requiere entrar en modo de configuración de interfaz, que las VLANs deben verificarse contra <code>show vlan brief</code>, y que un cambio en una ACL puede requerir recrearla completamente.</p>
+  <p>Esta colección es la que más preguntas genera en el examen CCNA dentro del Domain 6.6, porque demuestra la diferencia entre automatización declarativa (dices QUÉ quieres) versus imperativa (dices CÓMO hacerlo paso a paso).</p>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Concepto clave del examen CCNA</div>
+    <p>El dominio 6.6 evalúa si reconoces las herramientas de gestión de configuración. La pregunta frecuente es: <em>"¿Qué módulo de Ansible se usa para ejecutar comandos show en un router Cisco?"</em> La respuesta es <strong>ios_command</strong>. Para enviar configuración declarativa, la respuesta es <strong>ios_config</strong>.</p>
+  </div>
+
+  <h2 class="section-title">Arquitectura de la colección cisco.ios</h2>
+  <div class="ans-flow">
+    <div class="ans-box">
+      <div class="ans-box-label">PLAYBOOK YAML</div>
+      <div class="ans-box-val">Tus tareas declarativa</div>
+    </div>
+    <div class="ans-arrow">→</div>
+    <div class="ans-box">
+      <div class="ans-box-label">MÓDULO cisco.ios</div>
+      <div class="ans-box-val">ios_config / ios_command</div>
+    </div>
+    <div class="ans-arrow">→</div>
+    <div class="ans-box">
+      <div class="ans-box-label">NETWORK_CLI</div>
+      <div class="ans-box-val">SSH al dispositivo</div>
+    </div>
+    <div class="ans-arrow">→</div>
+    <div class="ans-box">
+      <div class="ans-box-label">ROUTER/SWITCH</div>
+      <div class="ans-box-val">IOS / IOS-XE</div>
+    </div>
+  </div>
+
+  <h2 class="section-title">Instalación y verificación de la colección</h2>
+  <p>Ansible separa el motor core de las colecciones específicas de plataformas. Para usar cualquier módulo <code>cisco.ios</code>, primero debes instalar la colección desde Ansible Galaxy:</p>
+
+  <div class="code-block">
+    <div class="code-label">Instalación y verificación</div>
+    <pre><code><span class="cmt"># Instalar la colección oficial (última versión estable)</span>
+ansible-galaxy collection install cisco.ios
+
+<span class="cmt"># Instalar versión específica (recomendado en producción)</span>
+ansible-galaxy collection install cisco.ios:==9.0.0
+
+<span class="cmt"># Ver colecciones instaladas y sus rutas</span>
+ansible-galaxy collection list | <span class="fn">grep</span> cisco.ios
+
+<span class="cmt"># Documentación de un módulo específico</span>
+ansible-doc cisco.ios.ios_config
+ansible-doc cisco.ios.ios_command</code></pre>
+  </div>
+
+  <h2 class="section-title">Módulos principales de la colección</h2>
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">📡</div>
+      <h3>ios_command</h3>
+      <p>Ejecuta comandos show y exec en modo privilegiado. Devuelve la salida en stdout para análisis o validación. No modifica configuración.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">⚙️</div>
+      <h3>ios_config</h3>
+      <p>Envía configuración al dispositivo de forma idempotente. Soporta líneas sueltas, parents, before/after y templates Jinja2.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🔍</div>
+      <h3>ios_facts</h3>
+      <p>Recopila información del hardware, software, interfaces y configuración. Equivalente a ejecutar múltiples show commands y parsear la salida.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🔌</div>
+      <h3>ios_interfaces</h3>
+      <p>Gestión declarativa de interfaces: habilitar/deshabilitar, descripciones, velocidad, dúplex, encapsulación. Idempotente por diseño.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🏷️</div>
+      <h3>ios_vlans</h3>
+      <p>Crea, modifica y elimina VLANs en switches Catalyst. Valida contra el VLAN database y reporta cambios solo cuando es necesario.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🛡️</div>
+      <h3>ios_acls / ios_banner</h3>
+      <p>Módulos especializados para listas de acceso, banners MOTD/login, logging, NTP, usuarios y más. Cada uno gestiona un subsistema específico de IOS.</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">Requisitos previos en el dispositivo Cisco</h2>
+  <p>Para que los módulos funcionen, el dispositivo Cisco debe cumplir:</p>
+  <ul>
+    <li><strong>SSH habilitado:</strong> <code>ip ssh version 2</code>, <code>crypto key generate rsa</code></li>
+    <li><strong>Usuario con privilegios:</strong> Nivel 15 o <code>enable</code> password configurado para escalado</li>
+    <li><strong>Terminal length 0:</strong> Algunos módulos requieren que el prompt no pagine (Ansible lo configura automáticamente en la mayoría de casos)</li>
+    <li><strong>Almacenamiento suficiente:</strong> Para módulos que copian archivos (config backups, IOS upgrades)</li>
+  </ul>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚡ Diferencia clave: ios_command vs ios_config</div>
+    <p><strong>ios_command</strong> ejecuta comandos en modo EXEC (show, ping, traceroute). <strong>ios_config</strong> entra en modo de configuración global o de interfaz. Nunca uses <code>ios_command</code> para enviar <code>configure terminal</code> — usa <code>ios_config</code> que maneja los modos de configuración de forma segura y verifica errores de sintaxis.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 2 — IOS_COMMAND
+═══════════════════════════════════════════ -->
+<div id="tab-ios-command" class="ans1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">ios_command: ejecutar show y validar estado</h2>
+  <p>El módulo <code>ios_command</code> es el más simple y el que más se usa para operaciones de <strong>lectura</strong>. Ejecuta comandos en modo privilegiado (enable) y devuelve la salida como texto plano en la variable <code>stdout</code>. Es ideal para:</p>
+  <ul>
+    <li>Recolección de información (inventario, versiones, contadores)</li>
+    <li>Validación post-cambio (verificar que una interfaz está up, que una ruta existe)</li>
+    <li> troubleshooting automatizado (ping extendido, traceroute)</li>
+  </ul>
+
+  <div class="code-block">
+    <div class="code-label">ios_command_basico.yml — Comandos show simples</div>
+    <pre><code><span class="kw">---</span>
+  - <span class="fn">name</span>: <span class="str">"Obtener información de routers"</span>
+  <span class="fn">hosts</span>: cisco_routers
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Ejecutar show version"</span>
+      <span class="fn">cisco.ios.ios_command</span>:
+        <span class="fn">commands</span>:
+          - <span class="str">"show version"</span>
+      <span class="fn">register</span>: <span class="str">"version_output"</span>
+
+    - <span class="fn">name</span>: <span class="str">"Mostrar versión de IOS"</span>
+      <span class="fn">ansible.builtin.debug</span>:
+        <span class="fn">msg</span>: <span class="str">"{{ version_output.stdout[0] | regex_search('Version ([^,]+)') }}"</span></code></pre>
+  </div>
+
+  <h2 class="section-title">wait_for: validar condiciones antes de continuar</h2>
+  <p>El parámetro <code>wait_for</code> permite especificar condiciones que deben cumplirse en la salida del comando antes de que Ansible considere la task exitosa. Es fundamental para:</p>
+  <ul>
+    <li>Esperar a que una interfaz esté <code>up/up</code> después de un cambio</li>
+    <li>Verificar que un vecino BGP aparezca en <code>show ip bgp summary</code></li>
+    <li>Confirmar que una VLAN existe antes de continuar</li>
+  </ul>
+
+  <div class="code-block">
+    <div class="code-label">ios_command_wait_for.yml — Validación de estado</div>
+    <pre><code><span class="kw">---</span>
+- <span class="fn">name</span>: <span class="str">"Validar que interfaz WAN está levantada"</span>
+  <span class="fn">hosts</span>: cisco_routers
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Verificar estado de GigabitEthernet0/0/0"</span>
+      <span class="fn">cisco.ios.ios_command</span>:
+        <span class="fn">commands</span>:
+          - <span class="str">"show ip interface brief GigabitEthernet0/0/0"</span>
+        <span class="fn">wait_for</span>:
+          - <span class="str">"result[0] contains 'up'"</span>
+          - <span class="str">"result[0] contains 'up'"</span>
+        <span class="fn">retries</span>: <span class="num">5</span>
+        <span class="fn">interval</span>: <span class="num">10</span>
+      <span class="fn">register</span>: <span class="str">"wan_status"</span>
+
+    - <span class="fn">name</span>: <span class="str">"Fallar si la interfaz no está operativa"</span>
+      <span class="fn">ansible.builtin.fail</span>:
+        <span class="fn">msg</span>: <span class="str">"La interfaz WAN no está levantada"</span>
+      <span class="fn">when</span>: <span class="str">"'down' in wan_status.stdout[0]"</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Comandos múltiples y parseo con regex</h2>
+  <p>Puedes pasar una lista de comandos y luego analizar la salida usando filtros Jinja2 como <code>regex_search</code>, <code>regex_findall</code> o <code>split</code>:</p>
+
+  <div class="code-block">
+    <div class="code-label">ios_command_multiple.yml — Parseo avanzado</div>
+    <pre><code><span class="kw">---</span>
+- <span class="fn">name</span>: <span class="str">"Auditoría de interfaces"</span>
+  <span class="fn">hosts</span>: cisco_switches
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Obtener estado de todas las interfaces"</span>
+      <span class="fn">cisco.ios.ios_command</span>:
+        <span class="fn">commands</span>:
+          - <span class="str">"show ip interface brief"</span>
+          - <span class="str">"show interfaces description"</span>
+      <span class="fn">register</span>: <span class="str">"interfaces_data"</span>
+
+    - <span class="fn">name</span>: <span class="str">"Contar interfaces en estado up"</span>
+      <span class="fn">ansible.builtin.debug</span>:
+        <span class="fn">msg</span>: <span class="str">"Interfaces activas: {{ interfaces_data.stdout[0] | regex_findall(' up  +up ') | length }}"</span></code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Tip de examen CCNA</div>
+    <p>El módulo <code>ios_command</code> es de <strong>solo lectura</strong> para comandos EXEC. Si el examen pregunta cómo verificar el estado de una interfaz o recolectar información de un router Cisco sin modificar configuración, la respuesta es siempre <strong>ios_command</strong>.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 3 — IOS_CONFIG
+═══════════════════════════════════════════ -->
+<div id="tab-ios-config" class="ans1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">ios_config: configuración declarativa e idempotente</h2>
+  <p>El módulo <code>ios_config</code> es el más poderoso de la colección. Permite enviar configuración a dispositivos Cisco de forma que Ansible verifica primero si el cambio es necesario. Si la configuración deseada ya existe, reporta <code>ok</code> sin enviar comandos. Si no existe o difiere, aplica los cambios y reporta <code>changed</code>.</p>
+  <p>Este módulo soporta múltiples estrategias de inserción: líneas sueltas (<code>lines</code>), configuración por secciones (<code>parents</code>), reemplazo completo de secciones (<code>replace: config</code>), y templates Jinja2 (<code>src</code>).</p>
+
+  <div class="code-block">
+    <div class="code-label">ios_config_lines.yml — Configuración simple con lines</div>
+    <pre><code><span class="kw">---</span>
+- <span class="fn">name</span>: <span class="str">"Configurar hostname y banner"</span>
+  <span class="fn">hosts</span>: cisco_routers
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Aplicar hostname"</span>
+      <span class="fn">cisco.ios.ios_config</span>:
+        <span class="fn">lines</span>:
+          - <span class="str">"hostname {{ inventory_hostname }}"</span>
+
+    - <span class="fn">name</span>: <span class="str">"Configurar banner MOTD"</span>
+      <span class="fn">cisco.ios.ios_config</span>:
+        <span class="fn">lines</span>:
+          - <span class="str">"banner motd #Acceso autorizado unicamente#"</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Parents: configurar submodos de IOS</h2>
+  <p>Cuando necesitas configurar dentro de un submodo (interfaz, línea, router o vlan), usa <code>parents</code> para indicar el contexto. Ansible entra en ese modo, aplica las líneas y sale:</p>
+
+  <div class="code-block">
+    <div class="code-label">ios_config_parents.yml — Configuración de interfaz</div>
+    <pre><code><span class="kw">---</span>
+- <span class="fn">name</span>: <span class="str">"Configurar interfaces de acceso"</span>
+  <span class="fn">hosts</span>: cisco_switches
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Configurar puerto de acceso VLAN 10"</span>
+      <span class="fn">cisco.ios.ios_config</span>:
+        <span class="fn">lines</span>:
+          - <span class="str">"switchport mode access"</span>
+          - <span class="str">"switchport access vlan 10"</span>
+          - <span class="str">"spanning-tree portfast"</span>
+          - <span class="str">"no shutdown"</span>
+        <span class="fn">parents</span>: <span class="str">"interface GigabitEthernet1/0/5"</span>
+
+    - <span class="fn">name</span>: <span class="str">"Configurar interfaz WAN"</span>
+      <span class="fn">cisco.ios.ios_config</span>:
+        <span class="fn">lines</span>:
+          - <span class="str">"description Enlace a ISP"</span>
+          - <span class="str">"ip address 203.0.113.1 255.255.255.252"</span>
+          - <span class="str">"no shutdown"</span>
+        <span class="fn">parents</span>: <span class="str">"interface GigabitEthernet0/0/0"</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Idempotencia con match y before/after</h2>
+  <p>Para garantizar idempotencia en secciones complejas, <code>ios_config</code> ofrece:</p>
+  <ul>
+    <li><code>match: line</code> — Verifica que cada línea exista (default, más permisivo)</li>
+    <li><code>match: strict</code> — Las líneas deben estar en el orden exacto</li>
+    <li><code>match: exact</code> — La sección debe coincidir palabra por palabra, eliminando líneas extra</li>
+    <li><code>before</code> — Comandos a ejecutar ANTES de aplicar los cambios</li>
+    <li><code>after</code> — Comandos a ejecutar DESPUÉS</li>
+  </ul>
+
+  <div class="code-block">
+    <div class="code-label">ios_config_idempotencia.yml — Control preciso</div>
+    <pre><code><span class="kw">---</span>
+- <span class="fn">name</span>: <span class="str">"Configurar ACL de forma idempotente"</span>
+  <span class="fn">hosts</span>: cisco_routers
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Asegurar ACL ENTRADA_INTERNET"</span>
+      <span class="fn">cisco.ios.ios_config</span>:
+        <span class="fn">lines</span>:
+          - <span class="str">"permit tcp any any eq 80"</span>
+          - <span class="str">"permit tcp any any eq 443"</span>
+          - <span class="str">"deny ip 10.0.0.0 0.255.255.255 any log"</span>
+          - <span class="str">"permit ip any any"</span>
+        <span class="fn">parents</span>: <span class="str">"ip access-list extended ENTRADA_INTERNET"</span>
+        <span class="fn">before</span>:
+          - <span class="str">"no ip access-list extended ENTRADA_INTERNET"</span>
+        <span class="fn">match</span>: <span class="str">"exact"</span>
+        <span class="fn">replace</span>: <span class="str">"block"</span></code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚡ Peligro de match: exact</div>
+    <p><code>match: exact</code> eliminará cualquier línea en la sección que no esté en tu lista <code>lines</code>. Si la ACL ya tenía entradas adicionales manuales, serán borradas. Úsalo solo cuando quieras un estado 100% definido por el playbook.</p>
+  </div>
+
+  <h2 class="section-title">Templates Jinja2: configuración masiva</h2>
+  <p>Para configuraciones extensas o repetitivas, usa el parámetro <code>src</code> para cargar un template Jinja2. Esto separa la lógica (playbook) de los datos (variables) y la presentación (template):</p>
+
+  <div class="code-block">
+    <div class="code-label">ios_config_template.yml — Uso de plantillas</div>
+    <pre><code><span class="kw">---</span>
+- <span class="fn">name</span>: <span class="str">"Aplicar configuración desde template"</span>
+  <span class="fn">hosts</span>: cisco_routers
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+
+  <span class="fn">vars</span>:
+    <span class="fn">interfaces_wan</span>:
+      - { <span class="fn">name</span>: <span class="str">"GigabitEthernet0/0/0"</span>, <span class="fn">ip</span>: <span class="str">"203.0.113.1 255.255.255.252"</span>, <span class="fn">desc</span>: <span class="str">"ISP Primario"</span> }
+      - { <span class="fn">name</span>: <span class="str">"GigabitEthernet0/0/1"</span>, <span class="fn">ip</span>: <span class="str">"198.51.100.1 255.255.255.252"</span>, <span class="fn">desc</span>: <span class="str">"ISP Backup"</span> }
+
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Aplicar template de interfaces"</span>
+      <span class="fn">cisco.ios.ios_config</span>:
+        <span class="fn">src</span>: <span class="str">"templates/interfaces_wan.j2"</span>
+      <span class="fn">notify</span>: <span class="str">"Guardar config"</span>
+
+  <span class="fn">handlers</span>:
+    - <span class="fn">name</span>: <span class="str">"Guardar config"</span>
+      <span class="fn">cisco.ios.ios_command</span>:
+        <span class="fn">commands</span>: <span class="str">"write memory"</span></code></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">templates/interfaces_wan.j2 — Plantilla Jinja2</div>
+    <pre><code>{% for intf in interfaces_wan %}
+interface {{ intf.name }}
+ description {{ intf.desc }}
+ ip address {{ intf.ip }}
+ no shutdown
+{% endfor %}</code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 4 — IOS_FACTS
+═══════════════════════════════════════════ -->
+<div id="tab-ios-facts" class="ans1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">ios_facts: inventario inteligente del dispositivo</h2>
+  <p>El módulo <code>ios_facts</code> recopila información del dispositivo Cisco y la expone como variables de Ansible (facts). Estos facts incluyen datos de hardware, software, interfaces, configuración y más. Son fundamentales para tomar decisiones condicionales basadas en el estado real del equipo.</p>
+  <p>A diferencia de <code>ios_command</code> donde tú parseas manualmente la salida con regex, <code>ios_facts</code> devuelve datos estructurados listos para usar: diccionarios de interfaces, listas de neighbors, versión de IOS, modelo de hardware, etc.</p>
+
+  <div class="code-block">
+    <div class="code-label">ios_facts_basico.yml — Recopilación completa</div>
+    <pre><code><span class="kw">---</span>
+- <span class="fn">name</span>: <span class="str">"Recopilar facts de routers Cisco"</span>
+  <span class="fn">hosts</span>: cisco_routers
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Obtener todos los facts"</span>
+      <span class="fn">cisco.ios.ios_facts</span>:
+        <span class="fn">gather_subset</span>:
+          - <span class="str">"all"</span>
+      <span class="fn">register</span>: <span class="str">"facts_result"</span>
+
+    - <span class="fn">name</span>: <span class="str">"Mostrar versión de IOS"</span>
+      <span class="fn">ansible.builtin.debug</span>:
+        <span class="fn">msg</span>: <span class="str">"Versión: {{ ansible_net_version }}"</span>
+
+    - <span class="fn">name</span>: <span class="str">"Mostrar modelo de hardware"</span>
+      <span class="fn">ansible.builtin.debug</span>:
+        <span class="fn">msg</span>: <span class="str">"Modelo: {{ ansible_net_model }}"</span>
+
+    - <span class="fn">name</span>: <span class="str">"Mostrar hostname"</span>
+      <span class="fn">ansible.builtin.debug</span>:
+        <span class="fn">msg</span>: <span class="str">"Hostname: {{ ansible_net_hostname }}"</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Subconjuntos de facts (gather_subset)</h2>
+  <p>Puedes limitar la recolección para acelerar la ejecución:</p>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead>
+        <tr><th>Subset</th><th>Información recopilada</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>hardware</code></td><td>Modelo, memoria, flash, slots, serial number</td></tr>
+        <tr><td><code>interfaces</code></td><td>Lista de interfaces, IPs, estados, contadores, MACs</td></tr>
+        <tr><td><code>config</code></td><td>Running-config completo (texto plano)</td></tr>
+        <tr><td><code>min</code></td><td>Hostname, versión, imagen (mínimo indispensable)</td></tr>
+        <tr><td><code>all</code></td><td>Todo lo anterior (default)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="section-title">Facts clave disponibles</h2>
+  <div class="code-block">
+    <div class="code-label">Facts más utilizados en automatización</div>
+    <pre><code><span class="cmt"># Información general</span>
+ansible_net_hostname        <span class="cmt"># Hostname del dispositivo</span>
+ansible_net_version         <span class="cmt"># Versión de IOS/IOS-XE</span>
+ansible_net_image           <span class="cmt"># Ruta de la imagen boot</span>
+ansible_net_model           <span class="cmt"># Modelo de hardware (ISR4331, C9300, etc.)</span>
+ansible_net_serialnum       <span class="cmt"># Número de serie</span>
+
+<span class="cmt"># Interfaces (diccionario ansible_net_interfaces)</span>
+ansible_net_interfaces.GigabitEthernet1.ipv4.address  <span class="cmt"># IP de interfaz</span>
+ansible_net_interfaces.GigabitEthernet1.macaddress    <span class="cmt"># MAC address</span>
+ansible_net_interfaces.GigabitEthernet1.operstatus    <span class="cmt"># up / down</span>
+ansible_net_interfaces.GigabitEthernet1.lineprotocol  <span class="cmt"># up / down</span>
+
+<span class="cmt"># Configuración</span>
+ansible_net_config          <span class="cmt"># Running-config completo</span>
+ansible_net_communities     <span class="cmt"># Comunidades SNMP configuradas</span></code></pre>
+  </div>
+
+  <div class="info-box info">
+    <div class="info-box-title">ℹ️ Uso condicional basado en facts</div>
+    <p>Puedes usar facts en condicionales <code>when</code> para adaptar el playbook al hardware. Ejemplo: aplicar una configuración solo en modelos C9300: <code>when: "'C9300' in ansible_net_model"</code>. O verificar la versión de IOS antes de aplicar una feature: <code>when: "ansible_net_version is version('16.9', '>=')"</code>.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 5 — IOS_INTERFACES
+═══════════════════════════════════════════ -->
+<div id="tab-ios-interfaces" class="ans1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">ios_interfaces: gestión declarativa de interfaces</h2>
+  <p>El módulo <code>ios_interfaces</code> proporciona una interfaz completamente declarativa para gestionar interfaces físicas y lógicas en dispositivos Cisco IOS. En lugar de enviar comandos CLI imperativos, defines el estado deseado de cada propiedad y Ansible se encarga de alcanzarlo.</p>
+  <p>Este módulo es idempotente por diseño: si la interfaz ya tiene la configuración deseada, no se envían comandos. Si falta algo, aplica solo los cambios necesarios.</p>
+
+  <div class="code-block">
+    <div class="code-label">ios_interfaces_basico.yml — Configuración declarativa</div>
+    <pre><code><span class="kw">---</span>
+- <span class="fn">name</span>: <span class="str">"Configurar interfaces de switches"</span>
+  <span class="fn">hosts</span>: cisco_switches
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Asegurar estado de interfaces de acceso"</span>
+      <span class="fn">cisco.ios.ios_interfaces</span>:
+        <span class="fn">config</span>:
+          - <span class="fn">name</span>: <span class="str">"GigabitEthernet1/0/1"</span>
+            <span class="fn">description</span>: <span class="str">"Puerto usuario VLAN 10"</span>
+            <span class="fn">enabled</span>: <span class="kw">true</span>
+            <span class="fn">mode</span>: <span class="str">"layer2"</span>
+          - <span class="fn">name</span>: <span class="str">"GigabitEthernet1/0/2"</span>
+            <span class="fn">description</span>: <span class="str">"Puerto usuario VLAN 20"</span>
+            <span class="fn">enabled</span>: <span class="kw">true</span>
+            <span class="fn">mode</span>: <span class="str">"layer2"</span>
+          - <span class="fn">name</span>: <span class="str">"GigabitEthernet1/0/24"</span>
+            <span class="fn">description</span>: <span class="str">"Uplink a Core"</span>
+            <span class="fn">enabled</span>: <span class="kw">true</span>
+            <span class="fn">mode</span>: <span class="str">"layer2"</span>
+            <span class="fn">duplex</span>: <span class="str">"full"</span>
+            <span class="fn">speed</span>: <span class="num">1000</span>
+        <span class="fn">state</span>: <span class="str">"replaced"</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Parámetros clave de ios_interfaces</h2>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead>
+        <tr><th>Parámetro</th><th>Valores</th><th>Descripción</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>name</code></td><td>String</td><td>Nombre exacto de la interfaz (ej. GigabitEthernet1/0/1)</td></tr>
+        <tr><td><code>description</code></td><td>String</td><td>Descripción de la interfaz</td></tr>
+        <tr><td><code>enabled</code></td><td>true / false</td><td>Administratively up o shutdown</td></tr>
+        <tr><td><code>speed</code></td><td>10, 100, 1000, auto</td><td>Velocidad en Mbps</td></tr>
+        <tr><td><code>duplex</code></td><td>full, half, auto</td><td>Modo dúplex</td></tr>
+        <tr><td><code>mtu</code></td><td>Integer</td><td>MTU de la interfaz</td></tr>
+        <tr><td><code>mode</code></td><td>layer2, layer3</td><td>Modo de capa (switchport vs routed)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="section-title">Estados de operación: merged, replaced, overridden, deleted</h2>
+  <p>El parámetro <code>state</code> define cómo Ansible aplica la configuración:</p>
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">➕</div>
+      <h3>merged (default)</h3>
+      <p>Añade o modifica solo los parámetros especificados, preservando el resto de la configuración existente de la interfaz.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🔄</div>
+      <h3>replaced</h3>
+      <p>Reemplaza la configuración de las interfaces listadas, eliminando parámetros no mencionados en esas interfaces específicas.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">⚠️</div>
+      <h3>overridden</h3>
+      <p>Reemplaza TODAS las interfaces del dispositivo. Las interfaces no listadas vuelven a su estado default. ¡Peligroso!</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🗑️</div>
+      <h3>deleted</h3>
+      <p>Elimina la configuración de las interfaces especificadas, devolviéndolas a valores de fábrica.</p>
+    </div>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚡ Precaución con state: overridden</div>
+    <p><code>state: overridden</code> afecta a TODAS las interfaces del switch, no solo las que listas. Si omites la interfaz de management o el uplink, podrías dejar el dispositivo inaccesible. Úsalo solo en playbooks de provisión inicial (ZTP).</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 6 — IOS_VLANS
+═══════════════════════════════════════════ -->
+<div id="tab-ios-vlans" class="ans1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">ios_vlans: gestión declarativa del VLAN database</h2>
+  <p>El módulo <code>ios_vlans</code> permite crear, modificar y eliminar VLANs en switches Cisco Catalyst de forma completamente declarativa. En lugar de enviar <code>vlan 10</code> y <code>name VENTAS</code> como comandos sueltos, defines una lista de VLANs con sus propiedades y Ansible garantiza que el switch termine con exactamente esa configuración.</p>
+  <p>Este módulo es especialmente valioso porque maneja automáticamente el modo VTP: si el switch está en modo <code>server</code> o <code>transparent</code>, crea las VLANs localmente. Si está en modo <code>client</code>, falla con un mensaje claro.</p>
+
+  <div class="code-block">
+    <div class="code-label">ios_vlans_basico.yml — VLANs declarativo</div>
+    <pre><code><span class="kw">---</span>
+- <span class="fn">name</span>: <span class="str">"Configurar VLANs en switches core"</span>
+  <span class="fn">hosts</span>: cisco_switches
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Asegurar VLANs de producción"</span>
+      <span class="fn">cisco.ios.ios_vlans</span>:
+        <span class="fn">config</span>:
+          - <span class="fn">vlan_id</span>: <span class="num">10</span>
+            <span class="fn">name</span>: <span class="str">"VENTAS"</span>
+            <span class="fn">state</span>: <span class="str">"active"</span>
+          - <span class="fn">vlan_id</span>: <span class="num">20</span>
+            <span class="fn">name</span>: <span class="str">"IT"</span>
+            <span class="fn">state</span>: <span class="str">"active"</span>
+          - <span class="fn">vlan_id</span>: <span class="num">30</span>
+            <span class="fn">name</span>: <span class="str">"RRHH"</span>
+            <span class="fn">state</span>: <span class="str">"active"</span>
+          - <span class="fn">vlan_id</span>: <span class="num">99</span>
+            <span class="fn">name</span>: <span class="str">"NATIVA"</span>
+            <span class="fn">state</span>: <span class="str">"active"</span>
+        <span class="fn">state</span>: <span class="str">"merged"</span>
+      <span class="fn">notify</span>: <span class="str">"Guardar configuración"</span>
+
+  <span class="fn">handlers</span>:
+    - <span class="fn">name</span>: <span class="str">"Guardar configuración"</span>
+      <span class="fn">cisco.ios.ios_command</span>:
+        <span class="fn">commands</span>: <span class="str">"write memory"</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Parámetros de ios_vlans</h2>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead>
+        <tr><th>Parámetro</th><th>Valores</th><th>Descripción</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>vlan_id</code></td><td>1-4094</td><td>Número de VLAN</td></tr>
+        <tr><td><code>name</code></td><td>String (32 chars)</td><td>Nombre descriptivo de la VLAN</td></tr>
+        <tr><td><code>state</code></td><td>active, suspend</td><td>Estado operativo de la VLAN</td></tr>
+        <tr><td><code>shutdown</code></td><td>enabled, disabled</td><td>Apagar la VLAN localmente</td></tr>
+        <tr><td><code>mtu</code></td><td>Integer</td><td>MTU específico de la VLAN</td></tr>
+        <tr><td><code>remote_span</code></td><td>true, false</td><td>VLAN para Remote SPAN</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="section-title">Comparativa: ios_config vs ios_vlans</h2>
+  <p>¿Cuándo usar cada módulo para VLANs?</p>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead>
+        <tr><th>Característica</th><th>ios_config (lines)</th><th>ios_vlans (resource)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Enfoque</strong></td><td>Imperativo (comandos)</td><td>Declarativo (estado deseado)</td></tr>
+        <tr><td><strong>Idempotencia</strong></td><td>Requiere match/regex</td><td>Nativa y automática</td></tr>
+        <tr><td><strong>Velocidad</strong></td><td>Rápido (pocos comandos)</td><td>Más lento (parsea VLAN database)</td></tr>
+        <tr><td><strong>Validación</strong></td><td>Manual (asserts)</td><td>Automática (diff integrado)</td></tr>
+        <tr><td><strong>Recomendado</strong></td><td>Cambios puntuales</td><td>Gestión completa del VLAN database</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Tip de producción</div>
+    <p>Para operaciones masivas de VLANs (crear 50 VLANs en 20 switches), <code>ios_vlans</code> es más seguro porque valida automáticamente que no haya duplicados, que los IDs estén en rango, y que los nombres no excedan 32 caracteres. Con <code>ios_config</code>, un error de tipeo en un comando podría dejar el VLAN database inconsistente.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 7 — REFERENCIA
+═══════════════════════════════════════════ -->
+<div id="tab-referencia" class="ans1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Tabla de Referencia — Módulos cisco.ios</h2>
+  <div id="refTableAns1"></div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 8 — QUIZ
+═══════════════════════════════════════════ -->
+<div id="tab-quiz" class="ans1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Quiz — Módulos cisco.ios y Automatización IOS</h2>
+  <p style="font-size:.83rem;color:#6b7a9a;margin-bottom:20px;">10 preguntas estilo CCNA Domain 6.6. Evalúa tu comprensión de ios_command, ios_config, ios_facts, ios_interfaces e ios_vlans.</p>
+  <div id="quizContainerAns1"></div>
+</div>
+</div>
+
+</div><!-- /.tabs-wrap -->
+
+<script>
+// ── NAVEGACIÓN DRAWER ────────────────────────────────
+function ccnaToggle() {
+  document.getElementById('ccnaDrawer').classList.toggle('open');
+  document.getElementById('ccnaOverlay').classList.toggle('show');
+}
+function ccnaClose() {
+  document.getElementById('ccnaDrawer').classList.remove('open');
+  document.getElementById('ccnaOverlay').classList.remove('show');
+}
+
+// ── TABS ──────────────────────────────────────────────
+function showTabAns1(id, btn) {
+  document.querySelectorAll('.ans1-tab-content').forEach(t => t.classList.remove('ans1-active'));
+  document.querySelectorAll('.ans1-tab-btn').forEach(b => b.classList.remove('ans1-active'));
+  document.getElementById('tab-' + id).classList.add('ans1-active');
+  if (btn) btn.classList.add('ans1-active');
+}
+
+// ── TABLA DE REFERENCIA ──────────────────────────────
+function buildRefTable() {
+  var container = document.getElementById('refTableAns1');
+  if (!container) return;
+
+  var secciones = [
+    {
+      titulo: 'MÓDULOS PRINCIPALES cisco.ios',
+      cols: ['Módulo','Tipo','Función principal','Caso de uso típico'],
+      filas: [
+        ['ios_command','Lectura','Ejecutar comandos show/exec','Verificar estado, recolectar datos'],
+        ['ios_config','Escritura','Enviar configuración CLI','VLANs, interfaces, ACLs, rutas'],
+        ['ios_facts','Lectura','Recopilar facts estructurados','Inventario, condicionales por modelo'],
+        ['ios_interfaces','Escritura','Gestionar interfaces declarativo','Habilitar/deshabilitar, speed, duplex'],
+        ['ios_vlans','Escritura','Gestionar VLANs declarativo','Crear/modificar VLAN database'],
+        ['ios_banner','Escritura','Configurar banners','MOTD, login, exec'],
+        ['ios_logging','Escritura','Servidores syslog','Centralización de logs'],
+        ['ios_ntp','Escritura','Servidores NTP','Sincronización horaria'],
+        ['ios_acls','Escritura','Listas de acceso','Filtrado de tráfico declarativo'],
+        ['ios_static_routes','Escritura','Rutas estáticas','Rutas por defecto o específicas']
+      ]
+    },
+    {
+      titulo: 'PARÁMETROS CLAVE DE ios_config',
+      cols: ['Parámetro','Descripción','Ejemplo'],
+      filas: [
+        ['lines','Lista de comandos a configurar','["hostname R1", "ip domain-name lab.local"]'],
+        ['parents','Contexto de configuración (submodo)','"interface GigabitEthernet1/0/1"'],
+        ['before','Comandos a ejecutar ANTES','["no ip access-list extended ACL"]'],
+        ['after','Comandos a ejecutar DESPUÉS','["do write memory"]'],
+        ['match','Estrategia de comparación','line, strict, exact'],
+        ['replace','Reemplazo de sección','block, config'],
+        ['src','Template Jinja2 externo','"templates/base_config.j2"']
+      ]
+    },
+    {
+      titulo: 'FACTS CLAVE DE ios_facts',
+      cols: ['Fact','Descripción'],
+      filas: [
+        ['ansible_net_hostname','Hostname actual del dispositivo'],
+        ['ansible_net_version','Versión de IOS/IOS-XE'],
+        ['ansible_net_model','Modelo de hardware'],
+        ['ansible_net_serialnum','Número de serie'],
+        ['ansible_net_image','Imagen de boot actual'],
+        ['ansible_net_interfaces','Diccionario con todas las interfaces'],
+        ['ansible_net_config','Running-config completo']
+      ]
+    },
+    {
+      titulo: 'ESTADOS DE ios_interfaces / ios_vlans',
+      cols: ['Estado','Comportamiento'],
+      filas: [
+        ['merged (default)','Añade/modifica solo lo especificado, preserva el resto'],
+        ['replaced','Reemplaza la configuración de los recursos listados'],
+        ['overridden','Reemplaza TODOS los recursos del dispositivo (¡peligroso!)'],
+        ['deleted','Elimina la configuración de los recursos especificados']
+      ]
+    },
+    {
+      titulo: 'COMPARATIVA ios_command vs ios_config',
+      cols: ['Aspecto','ios_command','ios_config'],
+      filas: [
+        ['Modo Cisco','EXEC (show, ping)','Configuración global/submodos'],
+        ['Modifica config','No','Sí'],
+        ['Idempotencia','N/A (solo lectura)','Nativa con match/parents'],
+        ['Retorno','stdout (texto plano)','changed/ok/failed'],
+        ['Uso examen CCNA','Verificar estado','Aplicar configuración']
+      ]
+    },
+    {
+      titulo: 'COMANDOS CLI ESENCIALES',
+      cols: ['Comando','Descripción'],
+      filas: [
+        ['ansible-doc cisco.ios.ios_config','Documentación completa del módulo'],
+        ['ansible-galaxy collection install cisco.ios','Instalar colección oficial'],
+        ['ansible-playbook site.yml --check','Simular ejecución sin cambios'],
+        ['ansible-playbook site.yml --diff','Mostrar diferencias de configuración'],
+        ['ansible-playbook site.yml --tags "vlan"','Ejecutar solo tasks de VLANs']
+      ]
+    }
+  ];
+
+  var html = '';
+  secciones.forEach(function(sec) {
+    html += '<h3 style="font-family:Orbitron,sans-serif;font-size:.8rem;color:#ef4444;letter-spacing:2px;margin:24px 0 10px;text-transform:uppercase;">▸ ' + sec.titulo + '</h3>';
+    html += '<div class="table-wrap"><table class="ref-table"><thead><tr>';
+    sec.cols.forEach(function(c) { html += '<th>' + c + '</th>'; });
+    html += '</tr></thead><tbody>';
+    sec.filas.forEach(function(f) {
+      html += '<tr>';
+      f.forEach(function(c) { html += '<td>' + c + '</td>'; });
+      html += '</tr>';
+    });
+    html += '</tbody></table></div>';
+  });
+  container.innerHTML = html;
+}
+
+// ── QUIZ ─────────────────────────────────────────────
+function initQuiz() {
+  var container = document.getElementById('quizContainerAns1');
+  if (!container) return;
+
+  var qs = [
+    {
+      q: '¿Qué módulo de cisco.ios se utiliza para ejecutar comandos "show" y recolectar información de un router Cisco sin modificar su configuración?',
+      opts: ['ios_config','ios_command','ios_facts','ios_interfaces'],
+      ans: 1,
+      exp: '<strong>ios_command</strong> ejecuta comandos en modo EXEC (show, ping, traceroute) y devuelve la salida en stdout. Es de solo lectura y no modifica la configuración del dispositivo.'
+    },
+    {
+      q: '¿Cuál es la principal ventaja de usar ios_config en lugar de ios_command para enviar "configure terminal"?',
+      opts: ['ios_config es más rápido','ios_config maneja modos de configuración de forma segura, verifica errores de sintaxis y es idempotente','ios_command no soporta SSH','ios_config no requiere credenciales'],
+      ans: 1,
+      exp: '<strong>ios_config</strong> está diseñado específicamente para configuración. Entra y sale de submodos automáticamente, maneja el prompt de IOS, verifica errores de sintaxis y soporta idempotencia mediante match/parents. Nunca uses ios_command para config terminal.'
+    },
+    {
+      q: 'El módulo ios_facts recopila información del dispositivo y la almacena en:',
+      opts: ['Un archivo CSV en el Control Node','Variables de facts accesibles como ansible_net_*','La memoria flash del router','El inventario de Ansible'],
+      ans: 1,
+      exp: '<strong>ios_facts</strong> recopila datos estructurados y los expone como variables de facts (ej. <code>ansible_net_version</code>, <code>ansible_net_model</code>, <code>ansible_net_interfaces</code>). Estas variables están disponibles durante todo el play para condicionales y debug.'
+    },
+    {
+      q: 'Para garantizar que una ACL en Cisco IOS sea reemplazada completamente (eliminando entradas manuales no deseadas), ¿qué parámetro de ios_config usarías?',
+      opts: ['match: line','match: exact','parents: "ip access-list extended ACL"','replace: config'],
+      ans: 1,
+      exp: '<strong>match: exact</strong> verifica que la sección coincida palabra por palabra. Si hay líneas adicionales en el dispositivo que no están en tu lista <code>lines</code>, serán eliminadas. Es la forma más estricta de garantizar un estado deseado preciso.'
+    },
+    {
+      q: '¿Qué módulo de cisco.ios permite gestionar interfaces de forma declarativa, especificando propiedades como description, speed, duplex y enabled?',
+      opts: ['ios_config','ios_command','ios_interfaces','ios_vlans'],
+      ans: 2,
+      exp: '<strong>ios_interfaces</strong> es el módulo declarativo para gestionar propiedades de interfaces físicas y lógicas. Soporta estados merged, replaced, overridden y deleted para controlar cómo se aplica la configuración.'
+    },
+    {
+      q: 'En ios_interfaces, ¿qué estado reemplaza la configuración de TODAS las interfaces del dispositivo, incluyendo las no mencionadas en el playbook?',
+      opts: ['merged','replaced','overridden','deleted'],
+      ans: 2,
+      exp: '<strong>state: overridden</strong> afecta a todas las interfaces del dispositivo. Las interfaces listadas se configuran según el playbook; las no listadas vuelven a sus valores por defecto. Es extremadamente peligroso en producción.'
+    },
+    {
+      q: '¿Qué módulo de cisco.ios es el más adecuado para crear y gestionar el VLAN database de forma declarativa e idempotente?',
+      opts: ['ios_config con lines','ios_command','ios_vlans','ios_facts'],
+      ans: 2,
+      exp: '<strong>ios_vlans</strong> gestiona el VLAN database de forma declarativa. Valida automáticamente rangos de ID, duplicados y longitud de nombres. Es más seguro que usar ios_config con comandos sueltos para operaciones masivas de VLANs.'
+    },
+    {
+      q: 'Para esperar a que una interfaz específica esté en estado "up" antes de continuar con el playbook, ¿qué parámetro de ios_command usarías?',
+      opts: ['register','wait_for','retries','until'],
+      ans: 1,
+      exp: 'El parámetro <strong>wait_for</strong> de ios_command permite especificar condiciones que deben cumplirse en la salida. Ejemplo: <code>wait_for: "result[0] contains \'up\'"</code>. Combinado con <code>retries</code> e <code>interval</code>, permite polling hasta que la condición se cumpla.'
+    },
+    {
+      q: '¿Cuál de los siguientes NO es un subset válido para gather_subset en ios_facts?',
+      opts: ['hardware','interfaces','config','routing'],
+      ans: 3,
+      exp: 'Los subsets válidos de <strong>ios_facts</strong> son: <code>hardware</code>, <code>interfaces</code>, <code>config</code>, <code>min</code> y <code>all</code>. No existe un subset <code>routing</code> nativo en ios_facts; para información de routing se usa <code>ios_command</code> con <code>show ip route</code>.'
+    },
+    {
+      q: 'Un playbook necesita aplicar una configuración solo en switches modelo C9300. ¿Qué fact de ios_facts consultarías en el condicional "when"?',
+      opts: ['ansible_net_version','ansible_net_model','ansible_net_hostname','ansible_net_image'],
+      ans: 1,
+      exp: '<strong>ansible_net_model</strong> contiene el modelo de hardware del dispositivo (ej. "C9300-48P", "ISR4331/K9"). El condicional sería: <code>when: "\'C9300\' in ansible_net_model"</code>. Esto permite adaptar el playbook al hardware real.'
+    }
+  ];
+
+  var html = '';
+  qs.forEach(function(q, i) {
+    html += '<div class="quiz-question" id="qans1' + i + '">' +
+      '<div class="quiz-q-num">PREGUNTA ' + (i+1) + ' DE ' + qs.length + ' · M8 ANSIBLE TEMA 4</div>' +
+      '<div class="quiz-q-text">' + q.q + '</div>' +
+      '<div class="quiz-opts">';
+    q.opts.forEach(function(o, j) {
+      html += '<button class="quiz-opt" data-qi="' + i + '" data-sel="' + j + '" data-ans="' + q.ans + '">' + o + '</button>';
+    });
+    html += '</div></div>';
+  });
+  container.innerHTML = html;
+
+  window._ans1Exp = {};
+  qs.forEach(function(q, i) { window._ans1Exp[i] = q.exp; });
+
+  container.querySelectorAll('.quiz-opt').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var qi  = parseInt(this.dataset.qi);
+      var sel = parseInt(this.dataset.sel);
+      var ans = parseInt(this.dataset.ans);
+      var qDiv = document.getElementById('qans1' + qi);
+      var btns = qDiv.querySelectorAll('.quiz-opt');
+
+      btns.forEach(function(b) { b.disabled = true; });
+      btns[sel].classList.add(sel === ans ? 'correct' : 'wrong');
+      if (sel !== ans) btns[ans].classList.add('correct');
+
+      var expDiv = document.createElement('div');
+      expDiv.className = 'quiz-explanation';
+      expDiv.innerHTML = '<strong>' + (sel===ans ? '✅ Correcto!' : '❌ Incorrecto.') + '</strong> ' + window._ans1Exp[qi];
+      qDiv.appendChild(expDiv);
+    });
+  });
+}
+
+// ── INICIALIZACIÓN ────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  buildRefTable();
+  initQuiz();
+});
+</script>
+</body>
+</html>
