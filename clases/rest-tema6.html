@@ -1,0 +1,1586 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>APIs con Python — Librería requests · M8 T6 | CCNA Academy</title>
+  <meta name="description" content="Domina la librería requests de Python para consumir APIs REST. Autenticación Basic y Bearer, manejo de JSON, headers, SSL verify, errores HTTP, paginación y proyectos reales. CCNA Domain 6.5.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── HERO acento Python ── */
+.class-hero { background: linear-gradient(135deg, #06080f 0%, #080d18 60%, #0a1020 100%); }
+
+/* ── REST ACCENT TOKENS ── */
+:root{ --rest:#38bdf8; --rest-d:#0ea5e9; --rest-glow:rgba(56,189,248,.12); }
+
+/* ── BASE CLASS STYLES ── */
+body{font-family:'Exo 2',sans-serif;background:#07090f;color:#e2e8f0;}
+.class-hero{padding:56px 24px 48px;border-bottom:1px solid rgba(56,189,248,.08);position:relative;overflow:hidden;}
+.class-hero::before{content:'';position:absolute;top:-60px;right:-80px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(56,189,248,.06) 0%,transparent 70%);pointer-events:none;}
+.class-hero-inner{max-width:900px;margin:0 auto;position:relative;z-index:1;}
+.class-badge{font-family:'Share Tech Mono',monospace;font-size:.63rem;color:#38bdf8;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;}
+.class-title{font-family:'Orbitron',sans-serif;font-size:clamp(1.6rem,3.8vw,2.6rem);font-weight:900;letter-spacing:3px;color:#c2d0e8;margin-bottom:12px;line-height:1.1;}
+.class-subtitle{font-size:.92rem;color:#6b7a9a;line-height:1.72;margin-bottom:20px;max-width:700px;}
+.class-meta{display:flex;gap:12px;flex-wrap:wrap;}
+.meta-item{font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#4a5780;padding:4px 10px;border:1px solid rgba(56,189,248,.15);border-radius:4px;}
+.rest5-tabs-wrap{max-width:1100px;margin:0 auto;padding:0 16px 40px;}
+.rest5-tabs-bar{display:flex;gap:4px;padding:20px 0 0;flex-wrap:wrap;border-bottom:1px solid rgba(56,189,248,.12);margin-bottom:0;}
+.rest5-tab-btn{padding:8px 13px;border-radius:8px 8px 0 0;font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#4a5780;background:none;border:1px solid transparent;cursor:pointer;transition:all .18s;white-space:nowrap;border-bottom:none;}
+.rest5-tab-btn:hover{color:#c2d0e8;background:rgba(56,189,248,.06);}
+.rest5-tab-btn.rest5-active{color:#38bdf8;background:#0d1220;border-color:rgba(56,189,248,.25);border-bottom:1px solid #0d1220;}
+.rest5-tab-content{display:none;background:#0d1220;border:1px solid rgba(56,189,248,.08);border-top:none;border-radius:0 0 12px 12px;padding:32px;}
+.rest5-tab-content.rest5-active{display:block;}
+.content-block{max-width:880px;}
+.section-title{font-family:'Orbitron',sans-serif;font-size:.95rem;color:#38bdf8;letter-spacing:2px;margin:28px 0 14px;padding-bottom:8px;border-bottom:1px solid rgba(56,189,248,.15);}
+.section-title:first-child{margin-top:0;}
+p{color:#8294b8;line-height:1.75;margin-bottom:14px;font-size:.9rem;}
+ul,ol{color:#8294b8;padding-left:1.4rem;margin-bottom:14px;font-size:.9rem;}
+li{margin-bottom:5px;line-height:1.65;}
+strong{color:#c2d0e8;}
+code{font-family:'Share Tech Mono',monospace;font-size:.82rem;background:rgba(56,189,248,.1);color:#38bdf8;padding:1px 6px;border-radius:4px;border:1px solid rgba(56,189,248,.2);}
+
+/* INFO BOXES */
+.info-box{border-radius:8px;padding:14px 18px;margin:18px 0;border-left:3px solid;}
+.info-box.tip{background:rgba(56,189,248,.06);border-color:#38bdf8;}
+.info-box.warning{background:rgba(251,191,36,.05);border-color:#fbbf24;}
+.info-box.danger{background:rgba(248,113,113,.05);border-color:#f87171;}
+.info-box-title{font-family:'Share Tech Mono',monospace;font-size:.73rem;color:#38bdf8;margin-bottom:8px;}
+.info-box.warning .info-box-title{color:#fbbf24;}
+.info-box.danger .info-box-title{color:#f87171;}
+
+/* CODE BLOCKS */
+.code-block{background:#050810;border:1px solid rgba(56,189,248,.15);border-left:3px solid #38bdf8;border-radius:8px;padding:0;margin:16px 0;overflow:hidden;}
+.code-label{background:rgba(56,189,248,.08);padding:8px 16px;font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#4a5780;letter-spacing:2px;text-transform:uppercase;border-bottom:1px solid rgba(56,189,248,.1);}
+.code-block pre{margin:0;padding:18px;overflow-x:auto;}
+.code-block code{background:none;border:none;padding:0;color:#a8b4c8;font-size:.79rem;line-height:1.8;display:block;}
+
+/* SYNTAX HIGHLIGHTING */
+.cmt{color:#3a4a60;font-style:italic;}
+.kw {color:#c792ea;}
+.fn {color:#82aaff;}
+.str{color:#c3e88d;}
+.num{color:#f78c6c;}
+.cls{color:#ffcb6b;}
+
+/* CONCEPT GRID */
+.concept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin:16px 0;}
+.concept-card{background:#090d1a;border:1px solid rgba(56,189,248,.1);border-radius:10px;padding:16px;}
+.concept-icon{font-size:1.8rem;margin-bottom:8px;}
+.concept-card h3{font-family:'Share Tech Mono',monospace;font-size:.77rem;color:#38bdf8;margin-bottom:8px;}
+.concept-card p{font-size:.8rem;margin:0;}
+
+/* REF TABLE */
+.table-wrap{overflow-x:auto;margin:16px 0;}
+.ref-table{width:100%;border-collapse:collapse;font-size:.8rem;}
+.ref-table th{background:#090d1a;color:#38bdf8;font-family:'Share Tech Mono',monospace;font-size:.67rem;padding:10px 12px;text-align:left;border:1px solid rgba(56,189,248,.15);letter-spacing:1px;}
+.ref-table td{padding:9px 12px;border:1px solid rgba(255,255,255,.04);color:#8294b8;}
+.ref-table tr:hover td{background:rgba(56,189,248,.04);}
+.ref-table code{font-size:.77rem;}
+
+/* QUIZ */
+.quiz-question{background:#090d1a;border:1px solid rgba(56,189,248,.12);border-radius:10px;padding:20px;margin-bottom:14px;}
+.quiz-q-num{font-family:'Share Tech Mono',monospace;font-size:.62rem;color:#374060;margin-bottom:8px;}
+.quiz-q-text{font-size:.9rem;color:#c2d0e8;margin-bottom:14px;line-height:1.6;}
+.quiz-opts{display:flex;flex-direction:column;gap:7px;}
+.quiz-opt{padding:10px 14px;border-radius:7px;border:1px solid rgba(56,189,248,.12);background:#0d1220;color:#6b7a9a;cursor:pointer;font-size:.84rem;text-align:left;transition:all .15s;font-family:'Exo 2',sans-serif;}
+.quiz-opt:hover:not(:disabled){border-color:rgba(56,189,248,.4);color:#c2d0e8;}
+.quiz-opt.correct{border-color:#34d399;background:rgba(52,211,153,.08);color:#34d399;}
+.quiz-opt.wrong{border-color:#f87171;background:rgba(248,113,113,.08);color:#f87171;}
+.quiz-explanation{margin-top:10px;padding:10px 14px;background:rgba(56,189,248,.07);border-left:3px solid #38bdf8;border-radius:6px;font-size:.82rem;color:#a0aec0;line-height:1.65;}
+
+/* FLOW DIAGRAM */
+.mk-flow{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin:20px 0;padding:20px;background:#090d1a;border-radius:10px;border:1px solid rgba(56,189,248,.1);}
+.mk-box{background:#0d1220;border:1px solid rgba(56,189,248,.2);border-radius:8px;padding:14px 18px;text-align:center;min-width:110px;}
+.mk-box-label{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:#38bdf8;margin-bottom:4px;}
+.mk-box-val{font-size:.8rem;color:#c2d0e8;}
+.mk-arrow{font-size:1.4rem;color:#38bdf8;}
+
+/* ENDPOINT CARD */
+.endpoint-card{background:#050810;border:1px solid rgba(56,189,248,.12);border-radius:8px;padding:16px;margin:12px 0;}
+.endpoint-method{display:inline-block;font-family:'Share Tech Mono',monospace;font-size:.7rem;padding:3px 8px;border-radius:4px;margin-right:8px;font-weight:700;}
+.get{background:rgba(52,211,153,.12);color:#34d399;}
+.post{background:rgba(56,189,248,.12);color:#38bdf8;}
+.put{background:rgba(251,191,36,.12);color:#fbbf24;}
+.delete{background:rgba(248,113,113,.12);color:#f87171;}
+.endpoint-path{font-family:'Share Tech Mono',monospace;font-size:.78rem;color:#c2d0e8;}
+.endpoint-desc{font-size:.82rem;color:#6b7a9a;margin-top:6px;}
+
+/* COMPARISON TABLE */
+.compare-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin:16px 0;}
+.compare-card{background:#090d1a;border:1px solid rgba(56,189,248,.1);border-radius:10px;padding:18px;}
+.compare-card h4{font-family:'Share Tech Mono',monospace;font-size:.8rem;color:#38bdf8;margin-bottom:10px;}
+.compare-card ul{margin:0;padding-left:1.2rem;font-size:.82rem;}
+
+/* Navbar y Drawer */
+.navbar{position:fixed;top:0;left:0;right:0;height:56px;background:#080a10;border-bottom:1px solid rgba(56,189,248,.1);display:flex;align-items:center;padding:0 24px;z-index:1000;}
+.navbar-toggle{background:none;border:1px solid rgba(56,189,248,.3);color:#38bdf8;padding:6px 12px;border-radius:6px;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:.75rem;margin-right:16px;}
+.navbar-brand{font-family:'Orbitron',sans-serif;font-weight:700;color:#38bdf8;text-decoration:none;font-size:1.1rem;}
+.navbar-brand span{color:#0ea5e9;}
+.navbar-spacer{flex:1;}
+.navbar-link{color:#6b7a9a;text-decoration:none;font-size:.8rem;transition:color .2s;}
+.navbar-link:hover{color:#c2d0e8;}
+.nav-spacer{height:56px;}
+.ccna-drawer{position:fixed;top:0;left:0;bottom:0;width:280px;background:#0d1220;border-right:1px solid rgba(56,189,248,.2);transform:translateX(-100%);transition:transform .3s;z-index:2000;overflow-y:auto;}
+.ccna-drawer.open{transform:translateX(0);}
+.ccna-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);opacity:0;visibility:hidden;transition:all .3s;z-index:1500;}
+.ccna-overlay.show{opacity:1;visibility:visible;}
+.drawer-header{padding:20px;border-bottom:1px solid rgba(56,189,248,.2);display:flex;justify-content:space-between;align-items:center;}
+.drawer-header h2{font-family:'Orbitron',sans-serif;font-size:.8rem;color:#38bdf8;margin:0;letter-spacing:2px;}
+.drawer-close{background:none;border:none;color:#6b7a9a;font-size:1.2rem;cursor:pointer;}
+.drawer-section{padding:16px;border-bottom:1px solid rgba(56,189,248,.1);}
+.drawer-section-title{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#374060;margin-bottom:12px;letter-spacing:1px;text-transform:uppercase;}
+.drawer-link{display:block;padding:10px 12px;color:#8294b8;text-decoration:none;font-size:.85rem;border-radius:6px;transition:all .2s;margin-bottom:4px;}
+.drawer-link:hover{background:rgba(56,189,248,.1);color:#c2d0e8;}
+.drawer-link.active{background:rgba(56,189,248,.2);color:#38bdf8;border-left:3px solid #38bdf8;}
+.dl-icon{margin-right:8px;}
+
+@media(max-width:680px){
+  .rest5-tab-btn{font-size:.6rem;padding:6px 9px;}
+  .rest5-tab-content{padding:18px 12px;}
+  .concept-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
+<nav class="ccna-drawer" id="ccnaDrawer">
+  <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
+  <div class="drawer-section"><div class="drawer-section-title">General</div>
+    <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M1 · Fundamentos</div>
+    <a href="fundamentos.html" class="drawer-link"><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
+    <a href="subnetting.html"  class="drawer-link"><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
+    <a href="ipv6.html"        class="drawer-link"><span class="dl-icon">6️⃣</span> IPv6</a>
+    <a href="arp.html"         class="drawer-link"><span class="dl-icon">📡</span> ARP</a>
+    <a href="rip.html"         class="drawer-link"><span class="dl-icon">🔄</span> RIP</a>
+    <a href="protocolos-internet.html" class="drawer-link"><span class="dl-icon">🌍</span> Protocolos Internet</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M2 · Dispositivos Cisco</div>
+    <a href="router.html"         class="drawer-link"><span class="dl-icon">📡</span> Routers Cisco</a>
+    <a href="switches-cisco.html" class="drawer-link"><span class="dl-icon">🔀</span> Switches Cisco</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M3 · Switching</div>
+    <a href="vlan.html"               class="drawer-link"><span class="dl-icon">🏷️</span> VLANs</a>
+    <a href="inter-vlan-routing.html" class="drawer-link"><span class="dl-icon">🔁</span> Inter-VLAN Routing</a>
+    <a href="stp.html"                class="drawer-link"><span class="dl-icon">🌳</span> STP</a>
+    <a href="etherchannel.html"       class="drawer-link"><span class="dl-icon">🔗</span> EtherChannel</a>
+    <a href="port-security.html"      class="drawer-link"><span class="dl-icon">🔒</span> Port Security</a>
+    <a href="cdp-lldp.html"           class="drawer-link"><span class="dl-icon">🔍</span> CDP / LLDP</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M4 · Routing</div>
+    <a href="routing.html"            class="drawer-link"><span class="dl-icon">🗺️</span> Routing Estático</a>
+    <a href="ospf.html"               class="drawer-link"><span class="dl-icon">⭕</span> OSPF</a>
+    <a href="eigrp.html"              class="drawer-link"><span class="dl-icon">⚡</span> EIGRP</a>
+    <a href="ospfv2-masterclass.html" class="drawer-link"><span class="dl-icon">🎯</span> OSPFv2 Masterclass</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M5 · Servicios IP</div>
+    <a href="dhcp.html" class="drawer-link"><span class="dl-icon">📋</span> DHCP</a>
+    <a href="nat.html"  class="drawer-link"><span class="dl-icon">🔄</span> NAT / PAT</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M6 · Seguridad</div>
+    <a href="acl.html" class="drawer-link"><span class="dl-icon">🛡️</span> ACLs</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M7 · WAN &amp; QoS</div>
+    <a href="wan.html" class="drawer-link"><span class="dl-icon">🌍</span> WAN</a>
+    <a href="qos.html" class="drawer-link"><span class="dl-icon">📊</span> QoS</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M8 · Automatización</div>
+    <a href="m8-automatizacion.html" class="drawer-link"><span class="dl-icon">🤖</span> M8 — Vista General</a>
+    <a href="python-redes.html"      class="drawer-link"><span class="dl-icon">🐍</span> Python para Redes</a>
+    <a href="json-datos.html"        class="drawer-link"><span class="dl-icon">📋</span> JSON y Datos</a>
+    <a href="rest-apis.html"         class="drawer-link active"><span class="dl-icon">🌐</span> REST APIs</a>
+    <a href="ansible-redes.html"     class="drawer-link"><span class="dl-icon">⚙️</span> Ansible</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">⚡ Herramientas</div>
+    <a href="asistente.html"          class="drawer-link"><span class="dl-icon">🤖</span> Asistente IA</a>
+    <a href="netbot.html"             class="drawer-link"><span class="dl-icon">⚙️</span> NetBot Config</a>
+    <a href="calculadora.html"        class="drawer-link"><span class="dl-icon">🧮</span> Calculadora IP</a>
+    <a href="../laboratorios-pkt.html"   class="drawer-link"><span class="dl-icon">🧪</span> Labs Packet Tracer</a>
+    <a href="../banco-preguntas.html" class="drawer-link"><span class="dl-icon">📝</span> Banco de Preguntas</a></div>
+</nav>
+
+<header class="navbar">
+  <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
+  <a href="../index.html" class="navbar-brand">CISCO<span> ACADEMY</span></a>
+  <div class="navbar-spacer"></div>
+  <a href="rest-apis.html" class="navbar-link">← REST APIs</a>
+</header>
+<div class="nav-spacer"></div>
+
+<!-- HERO -->
+<section class="class-hero" style="border-bottom:1px solid rgba(56,189,248,.2);">
+  <div class="class-hero-inner">
+    <div class="class-badge" style="color:#38bdf8;">M8 · AUTOMATIZACIÓN · REST APIs · TEMA 6 DE 6</div>
+    <h1 class="class-title">APIs CON PYTHON — <span class="class-title-accent" style="background:linear-gradient(135deg,#38bdf8,#0ea5e9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Librería requests</span></h1>
+    <p class="class-subtitle">El estándar de facto para consumir APIs REST desde Python. Desde el primer GET hasta autenticación compleja, manejo de JSON, errores HTTP, SSL, sesiones persistentes y paginación. La herramienta indispensable del ingeniero de redes moderno para automatizar contra DNA Center, Meraki, SD-WAN controllers y cualquier servicio web.</p>
+    <div class="class-meta">
+      <span class="meta-item" style="border-color:rgba(56,189,248,.2);color:#38bdf8;">🐍 Python 3.8+</span>
+      <span class="meta-item">🎯 CCNA Domain 6.5</span>
+      <span class="meta-item">⏱ ~90 min lectura</span>
+      <span class="meta-item">📦 pip install requests</span>
+      <span class="meta-item">🌐 HTTP/1.1 + JSON</span>
+    </div>
+  </div>
+</section>
+
+<!-- TABS -->
+<div class="rest5-tabs-wrap">
+  <div class="rest5-tabs-bar">
+    <button class="rest5-tab-btn rest5-active" onclick="showTabRest5('intro',this)">🐍 Intro</button>
+    <button class="rest5-tab-btn" onclick="showTabRest5('http',this)">🌐 HTTP</button>
+    <button class="rest5-tab-btn" onclick="showTabRest5('get',this)">📥 GET</button>
+    <button class="rest5-tab-btn" onclick="showTabRest5('post',this)">📤 POST/PUT</button>
+    <button class="rest5-tab-btn" onclick="showTabRest5('auth',this)">🔐 Auth</button>
+    <button class="rest5-tab-btn" onclick="showTabRest5('errores',this)">⚠️ Errores</button>
+    <button class="rest5-tab-btn" onclick="showTabRest5('ssl',this)">🔒 SSL</button>
+    <button class="rest5-tab-btn" onclick="showTabRest5('avanzado',this)">⚡ Avanzado</button>
+    <button class="rest5-tab-btn" onclick="showTabRest5('proyecto',this)">🚀 Proyecto</button>
+    <button class="rest5-tab-btn" onclick="showTabRest5('referencia',this)">📊 Ref</button>
+    <button class="rest5-tab-btn" onclick="showTabRest5('quiz',this)">🎯 Quiz</button>
+  </div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 1 — INTRO
+═══════════════════════════════════════════ -->
+<div id="tab-intro" class="rest5-tab-content rest5-active">
+<div class="content-block">
+  <h2 class="section-title">¿Por qué requests y no urllib?</h2>
+  <p>Python incluye en su librería estándar <code>urllib</code> para realizar peticiones HTTP. Sin embargo, <code>urllib</code> es verboso, poco intuitivo y requiere mucho código boilerplate para tareas simples. <strong>requests</strong>, creada por Kenneth Reitz, se ha convertido en el estándar de facto porque sigue la filosofía <em>"HTTP for Humans"</em>.</p>
+
+  <div class="compare-grid">
+    <div class="compare-card">
+      <h4>❌ urllib (stdlib)</h4>
+      <ul>
+        <li>Verbos: necesitas <code>urllib.request.urlopen</code></li>
+        <li>JSON manual: <code>json.loads(response.read())</code></li>
+        <li>Manejo de errores complejo con <code>URLError</code></li>
+        <li>Headers como diccionarios planos sin helpers</li>
+        <li>Encoding y decodificación manual del body</li>
+      </ul>
+    </div>
+    <div class="compare-card">
+      <h4>✅ requests (3rd party)</h4>
+      <ul>
+        <li>API limpia: <code>requests.get(url)</code></li>
+        <li>JSON integrado: <code>response.json()</code></li>
+        <li>Excepciones claras: <code>ConnectionError</code>, <code>Timeout</code></li>
+        <li>Headers, auth, cookies como parámetros nativos</li>
+        <li>Keep-alive y pooling de conexiones automático</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2 class="section-title">Instalación y primer GET</h2>
+  <div class="code-block">
+    <div class="code-label">Instalación</div>
+    <pre><code>pip install requests</code></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">primer_get.py — Tu primera petición REST</div>
+    <pre><code><span class="kw">import</span> requests
+
+<span class="cmt"># API pública de prueba para CCNA Academy</span>
+url = <span class="str">"https://api.github.com/events"</span>
+
+response = requests.get(url)
+
+<span class="fn">print</span>(<span class="str">f"Status: {response.status_code}"</span>)
+<span class="fn">print</span>(<span class="str">f"Headers: {response.headers['content-type']}"</span>)
+<span class="fn">print</span>(<span class="str">f"JSON: {response.json()[0]['id']}"</span>)</code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Dato clave del examen</div>
+    <p>En el CCNA Domain 6.5 se evalúa que entiendas el <strong>intercambio request-response</strong>. <code>requests</code> abstrae todo el stack TCP/IP y HTTP, pero debes saber que debajo viaja: IP → TCP → TLS (si es HTTPS) → HTTP → payload JSON.</p>
+  </div>
+
+  <h2 class="section-title">Anatomía de un objeto Response</h2>
+  <p>Cada llamada a <code>requests.get/post/put/delete</code> retorna un objeto <code>Response</code> que contiene toda la información del servidor:</p>
+  <ul>
+    <li><code>status_code</code>: Entero HTTP (200, 201, 404, 500...).</li>
+    <li><code>headers</code>: Diccionario con los headers de respuesta (Content-Type, Server, X-Rate-Limit...).</li>
+    <li><code>text</code>: Body crudo como string Unicode.</li>
+    <li><code>content</code>: Body en bytes (útil para imágenes o binarios).</li>
+    <li><code>json()</code>: Método que parsea el body como JSON y retorna dict/list.</li>
+    <li><code>ok</code>: Boolean, True si status_code < 400.</li>
+    <li><code>encoding</code>: Charset detectado (utf-8 por defecto).</li>
+  </ul>
+
+  <div class="code-block">
+    <div class="code-label">response_anatomy.py — Inspeccionando la respuesta</div>
+    <pre><code><span class="kw">import</span> requests
+
+r = requests.get(<span class="str">"https://httpbin.org/get"</span>)
+
+<span class="fn">print</span>(<span class="str">f"¿Éxito? {r.ok}"</span>)           <span class="cmt"># True si 2xx</span>
+<span class="fn">print</span>(<span class="str">f"Código: {r.status_code}"</span>)   <span class="cmt"># 200</span>
+<span class="fn">print</span>(<span class="str">f"Encoding: {r.encoding}"</span>)  <span class="cmt"># utf-8</span>
+<span class="fn">print</span>(<span class="str">f"Servidor: {r.headers.get('Server')}"</span>)
+<span class="fn">print</span>(<span class="str">f"Tipo: {r.headers.get('content-type')}"</span>)
+
+<span class="cmt"># Si la respuesta es JSON, .json() la convierte a Python nativo</span>
+data = r.json()
+<span class="fn">print</span>(data[<span class="str">"origin"</span>])  <span class="cmt"># Tu IP pública</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Requisitos y entorno de laboratorio</h2>
+  <ul>
+    <li><strong>Python 3.8+</strong> (3.10 o 3.11 recomendado).</li>
+    <li><strong>requests</strong> 2.28+ (soporta HTTP/1.1 keep-alive).</li>
+    <li><strong>httpbin.org</strong>: API de prueba indispensable. Devuelve exactamente lo que envías, ideal para debug.</li>
+    <li><strong>JSONPlaceholder</strong>: API REST falsa para posts, users, albums (pruebas de CRUD sin riesgo).</li>
+    <li><strong>Postman/Insomnia</strong>: Aunque este tema es Python puro, tener la colección abierta ayuda a comparar request/response crudos.</li>
+  </ul>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚡ Advertencia para el laboratorio</div>
+    <p>Nunca hagas <code>verify=False</code> en producción (lo veremos en detalle más adelante). En labs locales con certificados autofirmados (DNA Center sandbox, controllers de prueba) está justificado, pero siempre documenta el riesgo de Man-in-the-Middle.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 2 — HTTP FUNDAMENTOS
+═══════════════════════════════════════════ -->
+<div id="tab-http" class="rest5-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Métodos HTTP y su semántica</h2>
+  <p>REST no es un protocolo, es un estilo arquitectónico que usa HTTP como transporte. Cada método tiene un significado preciso que <code>requests</code> expone como funciones de primer nivel:</p>
+
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead><tr><th>Método</th><th>requests</th><th>Uso en redes/APIs</th><th>Idempotente</th></tr></thead>
+      <tbody>
+        <tr><td><span class="endpoint-method get">GET</span></td><td><code>requests.get()</code></td><td>Obtener datos: inventario, clientes, configuración.</td><td>✅ Sí</td></tr>
+        <tr><td><span class="endpoint-method post">POST</span></td><td><code>requests.post()</code></td><td>Crear recurso: nueva VLAN, nuevo usuario, webhook.</td><td>❌ No</td></tr>
+        <tr><td><span class="endpoint-method put">PUT</span></td><td><code>requests.put()</code></td><td>Reemplazar recurso completo: actualizar política.</td><td>✅ Sí</td></tr>
+        <tr><td><span class="endpoint-method put">PATCH</span></td><td><code>requests.patch()</code></td><td>Actualización parcial: cambiar solo el nombre.</td><td>❌ No*</td></tr>
+        <tr><td><span class="endpoint-method delete">DELETE</span></td><td><code>requests.delete()</code></td><td>Eliminar: borrar ACL, remover dispositivo.</td><td>✅ Sí</td></tr>
+        <tr><td><span class="endpoint-method get">HEAD</span></td><td><code>requests.head()</code></td><td>Verificar si recurso existe sin descargar body.</td><td>✅ Sí</td></tr>
+        <tr><td><span class="endpoint-method get">OPTIONS</span></td><td><code>requests.options()</code></td><td>Consultar métodos permitidos por el servidor (CORS).</td><td>✅ Sí</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:.75rem;color:#4a5780;">* PATCH puede ser idempotente dependiendo de la implementación, pero no está garantizado por la especificación.</p>
+
+  <h2 class="section-title">Status Codes: qué dice el servidor</h2>
+  <p>El código de estado es el primer indicador de salud de tu petición. Un ingeniero de redes debe reconocerlos al instante:</p>
+
+  <div class="concept-grid">
+    <div class="concept-card" style="border-top:2px solid #34d399;">
+      <div class="concept-icon">2️⃣</div>
+      <h3 style="color:#34d399;">2xx — Éxito</h3>
+      <p><strong>200 OK</strong>: GET exitoso.<br><strong>201 Created</strong>: POST exitoso, recurso creado.<br><strong>204 No Content</strong>: DELETE exitoso, sin body.</p>
+    </div>
+    <div class="concept-card" style="border-top:2px solid #fbbf24;">
+      <div class="concept-icon">3️⃣</div>
+      <h3 style="color:#fbbf24;">3xx — Redirección</h3>
+      <p><strong>301 Moved</strong>: URL cambió permanentemente.<br><strong>302 Found</strong>: Redirección temporal.<br>Requests sigue redirecciones automáticamente por defecto.</p>
+    </div>
+    <div class="concept-card" style="border-top:2px solid #f87171;">
+      <div class="concept-icon">4️⃣</div>
+      <h3 style="color:#f87171;">4xx — Error cliente</h3>
+      <p><strong>400 Bad Request</strong>: JSON malformado.<br><strong>401 Unauthorized</strong>: Falta token/API key.<br><strong>403 Forbidden</strong>: Sin permisos.<br><strong>404 Not Found</strong>: Recurso inexistente.</p>
+    </div>
+    <div class="concept-card" style="border-top:2px solid #a78bfa;">
+      <div class="concept-icon">5️⃣</div>
+      <h3 style="color:#a78bfa;">5xx — Error servidor</h3>
+      <p><strong>500 Internal Error</strong>: Bug del servidor.<br><strong>502 Bad Gateway</strong>: Proxy/intermediario caído.<br><strong>503 Unavailable</strong>: Servidor sobrecargado.<br><strong>504 Gateway Timeout</strong>: upstream no responde.</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">Headers HTTP: el metadata invisible</h2>
+  <p>Los headers son pares clave-valor que transportan metadatos sobre la petición o la respuesta. En APIs REST modernas controlan todo: autenticación, formato, caché, rate limiting.</p>
+
+  <div class="code-block">
+    <div class="code-label">headers_fundamentals.py — Enviar y recibir headers</div>
+    <pre><code><span class="kw">import</span> requests
+
+<span class="cmt"># Headers de petición (Request Headers)</span>
+headers = {
+    <span class="str">"Accept"</span>: <span class="str">"application/json"</span>,
+    <span class="str">"User-Agent"</span>: <span class="str">"CCNA-Academy-NetworkBot/1.0"</span>,
+    <span class="str">"X-Custom-Header"</span>: <span class="str">"valor-personalizado"</span>
+}
+
+r = requests.get(<span class="str">"https://httpbin.org/headers"</span>, headers=headers)
+
+<span class="cmt"># Headers de respuesta (Response Headers)</span>
+<span class="fn">print</span>(<span class="str">f"Date: {r.headers.get('Date')}"</span>)
+<span class="fn">print</span>(<span class="str">f"Content-Type: {r.headers.get('Content-Type')}"</span>)
+<span class="fn">print</span>(<span class="str">f"X-RateLimit-Remaining: {r.headers.get('X-RateLimit-Remaining', 'N/A')}"</span>)
+
+<span class="cmt"># httpbin devuelve los headers que recibió</span>
+<span class="fn">print</span>(r.json()[<span class="str">"headers"</span>])</code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Headers imprescindibles en redes/APIs</div>
+    <ul>
+      <li><code>Accept: application/json</code>: Indica que esperas JSON, no XML ni HTML.</li>
+      <li><code>Content-Type: application/json</code>: Obligatorio en POST/PUT cuando envías body JSON.</li>
+      <li><code>Authorization: Bearer &lt;token&gt;</code>: Estándar OAuth 2.0 y API Keys.</li>
+      <li><code>X-Auth-Token</code>: Usado por DNA Center (ver Tema 4).</li>
+      <li><code>X-Cisco-Meraki-API-Key</code>: Header propietario de Meraki (ver Tema 5).</li>
+    </ul>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 3 — GET & PARAMS
+═══════════════════════════════════════════ -->
+<div id="tab-get" class="rest5-tab-content">
+<div class="content-block">
+  <h2 class="section-title">GET con Query Parameters</h2>
+  <p>Los parámetros de consulta (query string) se añaden a la URL después del <code>?</code>. Se usan para filtrar, paginar, buscar o limitar resultados. <code>requests</code> permite pasarlos como diccionario vía el parámetro <code>params</code>, evitando errores manuales de URL-encoding.</p>
+
+  <div class="code-block">
+    <div class="code-label">get_params.py — Parámetros de consulta</div>
+    <pre><code><span class="kw">import</span> requests
+
+<span class="cmt"># Ejemplo: obtener solo los primeros 5 posts de userId=1</span>
+url = <span class="str">"https://jsonplaceholder.typicode.com/posts"</span>
+
+payload = {
+    <span class="str">"userId"</span>: <span class="num">1</span>,
+    <span class="str">"_limit"</span>: <span class="num">5</span>
+}
+
+r = requests.get(url, params=payload)
+
+<span class="fn">print</span>(<span class="str">f"URL final: {r.url}"</span>)
+<span class="cmt"># → https://jsonplaceholder.typicode.com/posts?userId=1&_limit=5</span>
+
+posts = r.json()
+<span class="kw">for</span> post <span class="kw">in</span> posts:
+    <span class="fn">print</span>(<span class="str">f"  {post['id']}: {post['title'][:40]}..."</span>)</code></pre>
+  </div>
+
+  <h2 class="section-title">Timeouts: nunca esperes infinito</h2>
+  <p>En redes, los paquetes pueden perderse y las conexiones quedarse colgadas. El parámetro <code>timeout</code> en requests puede ser un número (segundos totales) o una tupla <code>(connect_timeout, read_timeout)</code>.</p>
+
+  <div class="code-block">
+    <div class="code-label">timeout_config.py — Control de tiempos de espera</div>
+    <pre><code><span class="kw">import</span> requests
+<span class="kw">from</span> requests.exceptions <span class="kw">import</span> Timeout, ConnectionError
+
+<span class="kw">try</span>:
+    <span class="cmt"># 3s para conectar, 27s para leer la respuesta</span>
+    r = requests.get(
+        <span class="str">"https://httpbin.org/delay/2"</span>,
+        timeout=(<span class="num">3</span>, <span class="num">27</span>)
+    )
+    <span class="fn">print</span>(r.json())
+
+<span class="kw">except</span> Timeout:
+    <span class="fn">print</span>(<span class="str">"⏱️ El servidor tardó demasiado en responder."</span>)
+
+<span class="kw">except</span> ConnectionError:
+    <span class="fn">print</span>(<span class="str">"🔌 No se pudo establecer conexión TCP. ¿Firewall? ¿URL incorrecta?"</span>)</code></pre>
+  </div>
+
+  <div class="info-box danger">
+    <div class="info-box-title">❌ Error común crítico</div>
+    <p>Si no especificas <code>timeout</code>, requests esperará <strong>indefinidamente</strong> (o hasta que el SO corte el socket). En scripts de monitoreo o automatización, esto bloquea tu ejecución. <strong>Siempre define timeout.</strong></p>
+  </div>
+
+  <h2 class="section-title">Paginación: cuando los datos no caben en una página</h2>
+  <p>Las APIs de redes (DNA Center, Meraki, etc.) no devuelven 10,000 dispositivos en una sola respuesta. Usan paginación. Los tres patrones más comunes:</p>
+  <ul>
+    <li><strong>Offset/Limit</strong>: <code>?offset=0&limit=100</code>, luego <code>?offset=100&limit=100</code>.</li>
+    <li><strong>Page/PerPage</strong>: <code>?page=1&per_page=100</code>.</li>
+    <li><strong>Cursor/Link</strong>: El header <code>Link</code> contiene la URL de la siguiente página (usado por Meraki, GitHub).</li>
+  </ul>
+
+  <div class="code-block">
+    <div class="code-label">pagination_loop.py — Consumir todas las páginas</div>
+    <pre><code><span class="kw">import</span> requests
+
+<span class="kw">def</span> <span class="fn">get_all_items</span>(base_url, per_page=<span class="num">100</span>):
+    <span class="str">"""Patrón offset/limit para APIs tipo DNA Center."""</span>
+    items = []
+    offset = <span class="num">0</span>
+
+    <span class="kw">while</span> <span class="kw">True</span>:
+        r = requests.get(
+            base_url,
+            params={<span class="str">"offset"</span>: offset, <span class="str">"limit"</span>: per_page},
+            timeout=<span class="num">30</span>
+        )
+        r.raise_for_status()
+        page = r.json()
+
+        <span class="kw">if</span> <span class="kw">not</span> page:
+            <span class="kw">break</span>
+
+        items.extend(page)
+        offset += per_page
+
+        <span class="cmt"># Si la última página trae menos de per_page, terminamos</span>
+        <span class="kw">if</span> <span class="fn">len</span>(page) < per_page:
+            <span class="kw">break</span>
+
+    <span class="kw">return</span> items
+
+<span class="cmt"># Uso</span>
+todos = get_all_items(<span class="str">"https://api.ejemplo.com/devices"</span>)
+<span class="fn">print</span>(<span class="str">f"Total de dispositivos: {len(todos)}"</span>)</code></pre>
+  </div>
+
+  <h2 class="section-title">Descarga de archivos: configuraciones, backups, imágenes</h2>
+  <p>En automatización de redes, a menudo necesitas descargar firmware, backups de configuración o logs. Usa <code>response.content</code> (bytes) y escribe en modo binario.</p>
+
+  <div class="code-block">
+    <div class="code-label">download_file.py — Guardar respuesta binaria</div>
+    <pre><code><span class="kw">import</span> requests
+
+url = <span class="str">"https://httpbin.org/bytes/1024"</span>
+
+r = requests.get(url, timeout=<span class="num">30</span>, stream=<span class="kw">True</span>)
+r.raise_for_status()
+
+<span class="kw">with</span> <span class="fn">open</span>(<span class="str">"backup.bin"</span>, <span class="str">"wb"</span>) <span class="kw">as</span> f:
+    <span class="kw">for</span> chunk <span class="kw">in</span> r.iter_content(chunk_size=<span class="num">8192</span>):
+        <span class="kw">if</span> chunk:
+            f.write(chunk)
+
+<span class="fn">print</span>(<span class="str">"✅ Descarga completada con streaming."</span>)</code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 4 — POST/PUT/PATCH/DELETE
+═══════════════════════════════════════════ -->
+<div id="tab-post" class="rest5-tab-content">
+<div class="content-block">
+  <h2 class="section-title">POST: Crear recursos con JSON</h2>
+  <p>Para enviar datos al servidor (crear una VLAN, un usuario, un webhook), usamos <code>requests.post()</code>. El parámetro <code>json=</code> automáticamente: (1) serializa el dict a string JSON, (2) añade el header <code>Content-Type: application/json</code>, y (3) codifica el body.</p>
+
+  <div class="code-block">
+    <div class="code-label">post_json.py — Crear recurso vía JSON</div>
+    <pre><code><span class="kw">import</span> requests
+
+url = <span class="str">"https://jsonplaceholder.typicode.com/posts"</span>
+
+nuevo_post = {
+    <span class="str">"title"</span>: <span class="str">"Configuración VLAN 10"</span>,
+    <span class="str">"body"</span>: <span class="str">"Añadida VLAN 10 a switch core-dist-01"</span>,
+    <span class="str">"userId"</span>: <span class="num">1</span>
+}
+
+r = requests.post(url, json=nuevo_post, timeout=<span class="num">10</span>)
+
+<span class="fn">print</span>(<span class="str">f"Status: {r.status_code}"</span>)  <span class="cmt"># 201 Created</span>
+<span class="fn">print</span>(<span class="str">f"ID asignado: {r.json()['id']}"</span>)  <span class="cmt"># 101</span></code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 json= vs data= vs files=</div>
+    <ul>
+      <li><code>json=payload</code>: Envía JSON. Automáticamente serializa y pone Content-Type: application/json.</li>
+      <li><code>data=payload</code>: Envía form-encoded (como un formulario HTML). Content-Type: application/x-www-form-urlencoded.</li>
+      <li><code>files={"archivo": open(...)}</code>: Multipart/form-data para subir imágenes, firmware, etc.</li>
+    </ul>
+  </div>
+
+  <h2 class="section-title">PUT: Reemplazo completo</h2>
+  <p>PUT envía la representación completa del recurso. Si omites un campo, el servidor podría borrarlo (depende de la implementación). Es idempotente: hacer PUT dos veces con los mismos datos deja el servidor en el mismo estado.</p>
+
+  <div class="code-block">
+    <div class="code-label">put_replace.py — Actualización total</div>
+    <pre><code><span class="kw">import</span> requests
+
+url = <span class="str">"https://jsonplaceholder.typicode.com/posts/1"</span>
+
+update_total = {
+    <span class="str">"id"</span>: <span class="num">1</span>,
+    <span class="str">"title"</span>: <span class="str">"Nueva política QoS"</span>,
+    <span class="str">"body"</span>: <span class="str">"Reemplazo completo del recurso"</span>,
+    <span class="str">"userId"</span>: <span class="num">1</span>
+}
+
+r = requests.put(url, json=update_total, timeout=<span class="num">10</span>)
+<span class="fn">print</span>(<span class="str">f"PUT status: {r.status_code}"</span>)  <span class="cmt"># 200</span></code></pre>
+  </div>
+
+  <h2 class="section-title">PATCH: Actualización parcial</h2>
+  <p>Cuando solo quieres cambiar un campo sin tocar el resto del recurso. Ideal para cambios rápidos: renombrar un dispositivo, cambiar una IP, activar/desactivar una política.</p>
+
+  <div class="code-block">
+    <div class="code-label">patch_partial.py — Actualización selectiva</div>
+    <pre><code><span class="kw">import</span> requests
+
+url = <span class="str">"https://jsonplaceholder.typicode.com/posts/1"</span>
+
+r = requests.patch(
+    url,
+    json={<span class="str">"title"</span>: <span class="str">"Título actualizado sin tocar el body"</span>},
+    timeout=<span class="num">10</span>
+)
+<span class="fn">print</span>(r.json())</code></pre>
+  </div>
+
+  <h2 class="section-title">DELETE: Eliminación de recursos</h2>
+  <p>Usado para remover VLANs, eliminar clientes de la lista blanca, borrar webhooks obsoletos, etc. No lleva body en la mayoría de implementaciones REST.</p>
+
+  <div class="code-block">
+    <div class="code-label">delete_resource.py — Eliminar un recurso</div>
+    <pre><code><span class="kw">import</span> requests
+
+url = <span class="str">"https://jsonplaceholder.typicode.com/posts/1"</span>
+
+r = requests.delete(url, timeout=<span class="num">10</span>)
+<span class="fn">print</span>(<span class="str">f"DELETE status: {r.status_code}"</span>)  <span class="cmt"># 200 o 204</span>
+
+<span class="cmt"># DNA Center ejemplo real</span>
+<span class="cmt"># requests.delete(f"{BASE_URL}/intent/api/v1/global-pool/{pool_id}", headers=headers)</span></code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 5 — AUTENTICACIÓN
+═══════════════════════════════════════════ -->
+<div id="tab-auth" class="rest5-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Autenticación en APIs REST</h2>
+  <p>Las APIs de redes Cisco (DNA Center, Meraki, SD-WAN) requieren autenticación. <code>requests</code> soporta los tres mecanismos principales: Basic Auth, Bearer Token (API Key / OAuth) y Custom Headers.</p>
+
+  <div class="concept-grid">
+    <div class="concept-card" style="border-color:rgba(52,211,153,.2);">
+      <div class="concept-icon">🔑</div>
+      <h3 style="color:#34d399;">Basic Auth</h3>
+      <p>Usuario:contraseña codificados en Base64 en el header Authorization. Usado por switches/routers para APIs legacy y algunos controladores on-prem.</p>
+    </div>
+    <div class="concept-card" style="border-color:rgba(56,189,248,.2);">
+      <div class="concept-icon">🎫</div>
+      <h3 style="color:#38bdf8;">Bearer Token</h3>
+      <p>Token de sesión o JWT enviado en <code>Authorization: Bearer &lt;token&gt;</code>. Usado por DNA Center y la mayoría de APIs modernas.</p>
+    </div>
+    <div class="concept-card" style="border-color:rgba(251,191,36,.2);">
+      <div class="concept-icon">🛡️</div>
+      <h3 style="color:#fbbf24;">Custom Header</h3>
+      <p>API Keys propietarias como <code>X-Cisco-Meraki-API-Key</code> o <code>X-Auth-Token</code>. No usan el header Authorization estándar.</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">Basic Auth</h2>
+  <div class="code-block">
+    <div class="code-label">basic_auth.py — Usuario y contraseña</div>
+    <pre><code><span class="kw">import</span> requests
+<span class="kw">from</span> requests.auth <span class="kw">import</span> HTTPBasicAuth
+
+url = <span class="str">"https://api.example.com/networks"</span>
+
+<span class="cmt"># Opción A: tupla (usuario, password)</span>
+r = requests.get(url, auth=(<span class="str">"admin"</span>, <span class="str">"C1sco123!"</span>), timeout=<span class="num">10</span>)
+
+<span class="cmt"># Opción B: objeto HTTPBasicAuth (explícito)</span>
+r = requests.get(
+    url,
+    auth=HTTPBasicAuth(<span class="str">"admin"</span>, <span class="str">"C1sco123!"</span>),
+    timeout=<span class="num">10</span>
+)
+
+<span class="cmt"># requests codifica automáticamente en Base64:</span>
+<span class="cmt"># Authorization: Basic YWRtaW46QzFzY28xMjMh</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Bearer Token / API Key</h2>
+  <p>El patrón más común en APIs cloud-modernas. Obtienes un token (por login, API key o OAuth) y lo envías en cada petición.</p>
+
+  <div class="code-block">
+    <div class="code-label">bearer_token.py — Patrón estándar</div>
+    <pre><code><span class="kw">import</span> requests
+<span class="kw">import</span> os
+
+<span class="cmt"># Nunca hardcodees tokens. Usa variables de entorno.</span>
+TOKEN = os.getenv(<span class="str">"API_TOKEN"</span>, <span class="str">"tu-token-aqui"</span>)
+BASE_URL = <span class="str">"https://api.example.com/v1"</span>
+
+headers = {
+    <span class="str">"Authorization"</span>: <span class="str">f"Bearer {TOKEN}"</span>,
+    <span class="str">"Content-Type"</span>: <span class="str">"application/json"</span>,
+    <span class="str">"Accept"</span>: <span class="str">"application/json"</span>
+}
+
+<span class="kw">def</span> <span class="fn">get_devices</span>():
+    r = requests.get(
+        <span class="str">f"{BASE_URL}/devices"</span>,
+        headers=headers,
+        timeout=<span class="num">30</span>
+    )
+    r.raise_for_status()
+    <span class="kw">return</span> r.json()
+
+devices = get_devices()
+<span class="fn">print</span>(<span class="str">f"📡 Dispositivos descubiertos: {len(devices)}"</span>)</code></pre>
+  </div>
+
+  <h2 class="section-title">DNA Center: obtención de token + uso</h2>
+  <p>DNA Center requiere un paso previo: hacer POST a <code>/dna/system/api/v1/auth/token</code> con Basic Auth para recibir un <code>X-Auth-Token</code>. Luego usas ese token en todas las llamadas subsiguientes.</p>
+
+  <div class="code-block">
+    <div class="code-label">dnac_auth_pattern.py — Flujo completo</div>
+    <pre><code><span class="kw">import</span> requests
+
+DNAC = <span class="str">"https://sandboxdnac.cisco.com"</span>
+USER = <span class="str">"devnetuser"</span>
+PASS = <span class="str">"Cisco123!"</span>
+
+<span class="cmt"># ── PASO 1: Obtener token ──</span>
+auth_resp = requests.post(
+    <span class="str">f"{DNAC}/dna/system/api/v1/auth/token"</span>,
+    auth=(USER, PASS),
+    timeout=<span class="num">10</span>
+)
+auth_resp.raise_for_status()
+token = auth_resp.json()[<span class="str">"Token"</span>]
+
+<span class="cmt"># ── PASO 2: Usar token en endpoints ──</span>
+headers = {
+    <span class="str">"X-Auth-Token"</span>: token,
+    <span class="str">"Content-Type"</span>: <span class="str">"application/json"</span>
+}
+
+r = requests.get(
+    <span class="str">f"{DNAC}/dna/intent/api/v1/network-device"</span>,
+    headers=headers,
+    timeout=<span class="num">30</span>
+)
+
+<span class="kw">for</span> dev <span class="kw">in</span> r.json()[<span class="str">"response"</span>]:
+    <span class="fn">print</span>(<span class="str">f"{dev['hostname']} — {dev['managementIpAddress']}"</span>)</code></pre>
+  </div>
+
+  <h2 class="section-title">Meraki: API Key como header propietario</h2>
+  <p>Meraki no usa <code>Authorization</code>. Usa un header propietario. Es un anti-patrón común que debes conocer.</p>
+
+  <div class="code-block">
+    <div class="code-label">meraki_auth.py — Header X-Cisco-Meraki-API-Key</div>
+    <pre><code><span class="kw">import</span> requests
+<span class="kw">import</span> os
+
+API_KEY = os.getenv(<span class="str">"MERAKI_API_KEY"</span>)
+
+headers = {
+    <span class="str">"X-Cisco-Meraki-API-Key"</span>: API_KEY,
+    <span class="str">"Content-Type"</span>: <span class="str">"application/json"</span>
+}
+
+r = requests.get(
+    <span class="str">"https://api.meraki.com/api/v1/organizations"</span>,
+    headers=headers,
+    timeout=<span class="num">30</span>
+)
+<span class="fn">print</span>(r.json())</code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚡ Seguridad: nunca subas credenciales a Git</div>
+    <p>Usa <code>python-dotenv</code> para cargar variables de entorno desde un archivo <code>.env</code> (agregado a <code>.gitignore</code>), o utiliza gestores de secretos como HashiCorp Vault, AWS Secrets Manager o las variables de entorno del sistema CI/CD.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 6 — ERRORES Y EXCEPCIONES
+═══════════════════════════════════════════ -->
+<div id="tab-errores" class="rest5-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Manejo profesional de errores HTTP</h2>
+  <p>Un script de red que se detiene con un traceback feo no es automatización, es un desastre. <code>requests</code> lanza excepciones específicas que debes capturar para reintentar, loggear o alertar.</p>
+
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead><tr><th>Excepción</th><th>Cuándo ocurre</th><th>Acción recomendada</th></tr></thead>
+      <tbody>
+        <tr><td><code>ConnectionError</code></td><td>No se puede resolver DNS o establecer TCP.</td><td>Verificar URL, firewall, interfaz de red.</td></tr>
+        <tr><td><code>Timeout</code></td><td>El servidor no responde en el tiempo límite.</td><td>Aumentar timeout o verificar carga del servidor.</td></tr>
+        <tr><td><code>TooManyRedirects</code></td><td>Bucle de redirecciones HTTP.</td><td>Verificar URL final, desactivar redirects si es necesario.</td></tr>
+        <tr><td><code>HTTPError</code></td><td>Status 4xx o 5xx tras <code>raise_for_status()</code>.</td><td>Loggear status, leer mensaje de error, reintentar si es 5xx.</td></tr>
+        <tr><td><code>JSONDecodeError</code></td><td>La respuesta no es JSON válido.</td><td>Verificar Content-Type, leer <code>response.text</code> crudo.</td></tr>
+        <tr><td><code>SSLError</code></td><td>Certificado TLS inválido o no confiable.</td><td>En labs: verify=False. En prod: usar certificado válido.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="section-title">raise_for_status(): la línea que nunca debe faltar</h2>
+  <p>Después de cada petición, <code>r.raise_for_status()</code> verifica si <code>r.ok</code> es False. Si el status es 4xx o 5xx, lanza <code>HTTPError</code> con el código y la URL. Es la forma más limpia de fallar rápido (fail fast).</p>
+
+  <div class="code-block">
+    <div class="code-label">error_handling.py — Patrón robusto de producción</div>
+    <pre><code><span class="kw">import</span> requests
+<span class="kw">from</span> requests.exceptions <span class="kw">import</span> (
+    ConnectionError, Timeout, HTTPError,
+    RequestException, JSONDecodeError
+)
+
+<span class="kw">def</span> <span class="fn">safe_api_call</span>(method, url, **kwargs):
+    <span class="str">"""Ejecuta una llamada REST con manejo completo de errores."""</span>
+    <span class="kw">try</span>:
+        r = requests.request(method, url, timeout=<span class="num">30</span>, **kwargs)
+        r.raise_for_status()
+
+        <span class="cmt"># Solo intenta parsear JSON si el content-type lo indica</span>
+        <span class="kw">if</span> <span class="str">"application/json"</span> <span class="kw">in</span> r.headers.get(<span class="str">"Content-Type"</span>, <span class="str">""</span>):
+            <span class="kw">return</span> r.json()
+        <span class="kw">return</span> r.text
+
+    <span class="kw">except</span> ConnectionError:
+        <span class="fn">print</span>(<span class="str">f"🔌 [CONN] No se pudo conectar a {url}"</span>)
+        <span class="kw">return</span> <span class="kw">None</span>
+
+    <span class="kw">except</span> Timeout:
+        <span class="fn">print</span>(<span class="str">f"⏱️ [TIME] Timeout en {url}"</span>)
+        <span class="kw">return</span> <span class="kw">None</span>
+
+    <span class="kw">except</span> HTTPError <span class="kw">as</span> e:
+        <span class="fn">print</span>(<span class="str">f"❌ [HTTP {r.status_code}] {e}"</span>)
+        <span class="cmt"># Aquí puedes agregar lógica específica por código</span>
+        <span class="kw">if</span> r.status_code == <span class="num">429</span>:
+            <span class="fn">print</span>(<span class="str">"   → Rate limit excedido. Reintentar con backoff."</span>)
+        <span class="kw">elif</span> r.status_code == <span class="num">401</span>:
+            <span class="fn">print</span>(<span class="str">"   → Token expirado o inválido. Refrescar credenciales."</span>)
+        <span class="kw">return</span> <span class="kw">None</span>
+
+    <span class="kw">except</span> JSONDecodeError:
+        <span class="fn">print</span>(<span class="str">f"📄 [JSON] Respuesta no es JSON válido: {r.text[:200]}"</span>)
+        <span class="kw">return</span> <span class="kw">None</span>
+
+    <span class="kw">except</span> RequestException <span class="kw">as</span> e:
+        <span class="fn">print</span>(<span class="str">f"⚠️  [REQ] Error inesperado: {e}"</span>)
+        <span class="kw">return</span> <span class="kw">None</span>
+
+<span class="cmt"># Uso</span>
+resultado = safe_api_call(<span class="str">"GET"</span>, <span class="str">"https://httpbin.org/status/404"</span>)</code></pre>
+  </div>
+
+  <h2 class="section-title">Reintentos inteligentes con backoff exponencial</h2>
+  <p>Los errores 5xx y los timeouts transitorios son comunes en controladores sobrecargados. Un retry con backoff exponencial (esperar 1s, 2s, 4s, 8s...) reduce la carga y aumenta la resiliencia.</p>
+
+  <div class="code-block">
+    <div class="code-label">retry_backoff.py — Resiliencia en automatización</div>
+    <pre><code><span class="kw">import</span> time
+<span class="kw">import</span> requests
+<span class="kw">from</span> requests.exceptions <span class="kw">import</span> RequestException
+
+<span class="kw">def</span> <span class="fn">request_with_retry</span>(method, url, max_retries=<span class="num">3</span>, **kwargs):
+    <span class="str">"""Reintenta con backoff exponencial ante errores 5xx o excepciones."""</span>
+    <span class="kw">for</span> intento <span class="kw">in</span> <span class="fn">range</span>(max_retries + <span class="num">1</span>):
+        <span class="kw">try</span>:
+            r = requests.request(method, url, timeout=<span class="num">30</span>, **kwargs)
+
+            <span class="cmt"># Si es 5xx, reintentar</span>
+            <span class="kw">if</span> <span class="num">500</span> <= r.status_code < <span class="num">600</span> <span class="kw">and</span> intento < max_retries:
+                wait = <span class="num">2</span> ** intento
+                <span class="fn">print</span>(<span class="str">f"⚠️  {r.status_code} — Reintento {intento+1}/{max_retries} en {wait}s..."</span>)
+                time.sleep(wait)
+                <span class="kw">continue</span>
+
+            r.raise_for_status()
+            <span class="kw">return</span> r
+
+        <span class="kw">except</span> RequestException <span class="kw">as</span> e:
+            <span class="kw">if</span> intento == max_retries:
+                <span class="kw">raise</span>
+            wait = <span class="num">2</span> ** intento
+            <span class="fn">print</span>(<span class="str">f"⚠️  {e} — Reintento {intento+1}/{max_retries} en {wait}s..."</span>)
+            time.sleep(wait)
+
+    <span class="kw">return</span> <span class="kw">None</span>
+
+<span class="cmt"># Uso</span>
+r = request_with_retry(<span class="str">"GET"</span>, <span class="str">"https://httpbin.org/status/500"</span>)
+<span class="kw">if</span> r:
+    <span class="fn">print</span>(<span class="str">"✅ Éxito tras reintentos"</span>)</code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Tip: la librería urllib3.retry</div>
+    <p>Para casos complejos, <code>requests</code> usa <code>urllib3</code> debajo. Puedes configurar un <code>HTTPAdapter</code> con <code>Retry(total=5, backoff_factor=1, status_forcelist=[500, 502, 503, 504])</code> para retries automáticos a nivel de sesión sin escribir loops manuales.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 7 — SSL Y VERIFY
+═══════════════════════════════════════════ -->
+<div id="tab-ssl" class="rest5-tab-content">
+<div class="content-block">
+  <h2 class="section-title">SSL/TLS y el parámetro verify</h2>
+  <p>Por defecto, <code>requests</code> verifica el certificado TLS del servidor (<code>verify=True</code>). Esto protege contra ataques Man-in-the-Middle. Sin embargo, en laboratorios, sandboxes y controladores internos con certificados autofirmados, la verificación fallará con <code>SSLError</code>.</p>
+
+  <div class="mk-flow">
+    <div class="mk-box"><div class="mk-box-label">CLIENTE</div><div class="mk-box-val">Python requests</div></div>
+    <div class="mk-arrow">→ TLS →</div>
+    <div class="mk-box"><div class="mk-box-label">HANDSHAKE</div><div class="mk-box-val">Certificado servidor</div></div>
+    <div class="mk-arrow">→ validar →</div>
+    <div class="mk-box"><div class="mk-box-label">CA STORE</div><div class="mk-box-val">Certifi / sistema</div></div>
+  </div>
+
+  <h2 class="section-title">verify=False: uso en laboratorios</h2>
+  <p>Deshabilitar la verificación SSL es útil en entornos controlados, pero genera una advertencia de seguridad. Suprímela solo si entiendes el riesgo.</p>
+
+  <div class="code-block">
+    <div class="code-label">ssl_lab.py — Desactivar verificación en sandbox</div>
+    <pre><code><span class="kw">import</span> requests
+<span class="kw">from</span> urllib3.exceptions <span class="kw">import</span> InsecureRequestWarning
+
+<span class="cmt"># Suprimir advertencia en labs (NO en producción)</span>
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+
+<span class="cmt"># DNA Center sandbox usa cert autofirmado</span>
+r = requests.get(
+    <span class="str">"https://sandboxdnac.cisco.com/dna/system/api/v1/auth/token"</span>,
+    auth=(<span class="str">"devnetuser"</span>, <span class="str">"Cisco123!"</span>),
+    verify=<span class="kw">False</span>,
+    timeout=<span class="num">10</span>
+)
+
+<span class="fn">print</span>(<span class="str">f"Status: {r.status_code}"</span>)</code></pre>
+  </div>
+
+  <div class="info-box danger">
+    <div class="info-box-title">🛑 NUNCA en producción</div>
+    <p><code>verify=False</code> expone tu script a ataques Man-in-the-Middle. Un atacante en la misma red (ARP spoofing) podría interceptar credenciales y tokens. En producción, usa siempre <code>verify=True</code> (por defecto) y, si es necesario, apunta <code>verify</code> al archivo CABundle de tu empresa:</p>
+    <p><code>requests.get(url, verify="/path/to/enterprise-ca-bundle.crt")</code></p>
+  </div>
+
+  <h2 class="section-title">Certificados de cliente (mTLS)</h2>
+  <p>Algunas APIs de red requieren autenticación mutua TLS: el cliente debe presentar un certificado X.509 válido. <code>requests</code> lo soporta vía el parámetro <code>cert</code>.</p>
+
+  <div class="code-block">
+    <div class="code-label">mtls_auth.py — Autenticación con certificado cliente</div>
+    <pre><code><span class="kw">import</span> requests
+
+<span class="cmt"># cert=(certificado_cliente, clave_privada)</span>
+r = requests.get(
+    <span class="str">"https://api.segura.empresa.com/networks"</span>,
+    cert=(<span class="str">"client.crt"</span>, <span class="str">"client.key"</span>),
+    verify=<span class="str">"ca-empresa.crt"</span>,
+    timeout=<span class="num">30</span>
+)
+
+<span class="fn">print</span>(r.status_code)</code></pre>
+  </div>
+
+  <h2 class="section-title">Inspección del certificado del servidor</h2>
+  <p>Para troubleshooting de conectividad HTTPS, a veces necesitas verificar qué certificado presenta el servidor, su CN, SAN y fecha de expiración.</p>
+
+  <div class="code-block">
+    <div class="code-label">inspect_cert.py — Ver certificado sin requests</div>
+    <pre><code><span class="kw">import</span> ssl
+<span class="kw">import</span> socket
+<span class="kw">import</span> datetime
+
+hostname = <span class="str">"api.meraki.com"</span>
+context = ssl.create_default_context()
+
+<span class="kw">with</span> socket.create_connection((hostname, <span class="num">443</span>), timeout=<span class="num">5</span>) <span class="kw">as</span> sock:
+    <span class="kw">with</span> context.wrap_socket(sock, server_hostname=hostname) <span class="kw">as</span> ssock:
+        cert = ssock.getpeercert()
+        expire = cert[<span class="str">"notAfter"</span>]
+        <span class="fn">print</span>(<span class="str">f"Subject: {cert['subject']}"</span>)
+        <span class="fn">print</span>(<span class="str">f"Expira: {expire}"</span>)
+        <span class="fn">print</span>(<span class="str">f"Cipher: {ssock.cipher()[0]}"</span>)</code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 8 — AVANZADO
+═══════════════════════════════════════════ -->
+<div id="tab-avanzado" class="rest5-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Sessions: persistencia y eficiencia</h2>
+  <p>Una <code>Session</code> reutiliza la conexión TCP subyacente (keep-alive) entre peticiones. Esto reduce la latencia del handshake TLS y permite compartir cookies, headers y autenticación entre llamadas. Es obligatorio en scripts que hacen 50+ peticiones.</p>
+
+  <div class="code-block">
+    <div class="code-label">session_persistence.py — Reutilizar conexiones</div>
+    <pre><code><span class="kw">import</span> requests
+
+<span class="cmt"># Sin session: cada requests.get() abre y cierra TCP+TLS</span>
+<span class="cmt"># Con session: keep-alive automático</span>
+
+session = requests.Session()
+session.headers.update({
+    <span class="str">"Accept"</span>: <span class="str">"application/json"</span>,
+    <span class="str">"User-Agent"</span>: <span class="str">"CCNA-NetworkBot/1.0"</span>
+})
+session.auth = (<span class="str">"admin"</span>, <span class="str">"C1sco123!"</span>)
+
+urls = [
+    <span class="str">"https://httpbin.org/get"</span>,
+    <span class="str">"https://httpbin.org/ip"</span>,
+    <span class="str">"https://httpbin.org/user-agent"</span>
+]
+
+<span class="kw">for</span> url <span class="kw">in</span> urls:
+    r = session.get(url, timeout=<span class="num">10</span>)
+    <span class="fn">print</span>(<span class="str">f"{url}: {r.status_code}"</span>)
+
+session.close()</code></pre>
+  </div>
+
+  <h2 class="section-title">Cookies y estado de sesión</h2>
+  <p>Las cookies son headers <code>Set-Cookie</code> que el servidor envía y el cliente debe devolver en peticiones subsiguientes. <code>Session</code> las maneja automáticamente.</p>
+
+  <div class="code-block">
+    <div class="code-label">cookies_session.py — Persistencia de estado</div>
+    <pre><code><span class="kw">import</span> requests
+
+s = requests.Session()
+
+<span class="cmt"># Login que devuelve cookie de sesión</span>
+login = s.post(
+    <span class="str">"https://httpbin.org/cookies/set/sessionid/abc123"</span>,
+    timeout=<span class="num">10</span>
+)
+
+<span class="cmt"># La siguiente petición envía automáticamente la cookie</span>
+r = s.get(<span class="str">"https://httpbin.org/cookies"</span>, timeout=<span class="num">10</span>)
+<span class="fn">print</span>(r.json())  <span class="cmt"># {"cookies": {"sessionid": "abc123"}}</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Proxies: redirección de tráfico</h2>
+  <p>En entornos corporativos, el tráfico HTTP/HTTPS debe pasar por un proxy. <code>requests</code> lo soporta vía diccionario por protocolo.</p>
+
+  <div class="code-block">
+    <div class="code-label">proxy_config.py — Tráfico vía proxy corporativo</div>
+    <pre><code><span class="kw">import</span> requests
+
+proxies = {
+    <span class="str">"http"</span>: <span class="str">"http://proxy.empresa.com:8080"</span>,
+    <span class="str">"https"</span>: <span class="str">"http://proxy.empresa.com:8080"</span>,
+}
+
+<span class="cmt"># Si el proxy requiere auth:</span>
+<span class="cmt"># "http": "http://usuario:pass@proxy.empresa.com:8080"</span>
+
+r = requests.get(
+    <span class="str">"https://api.meraki.com/api/v1/organizations"</span>,
+    headers={<span class="str">"X-Cisco-Meraki-API-Key"</span>: <span class="str">"tu-key"</span>},
+    proxies=proxies,
+    timeout=<span class="num">30</span>
+)</code></pre>
+  </div>
+
+  <h2 class="section-title">Rate Limiting manual + throttling</h2>
+  <p>Además de manejar 429, es mejor <em>prevenir</em> el rate limit controlando la frecuencia de envío desde el cliente.</p>
+
+  <div class="code-block">
+    <div class="code-label">rate_limit_client.py — Throttling proactivo</div>
+    <pre><code><span class="kw">import</span> time
+<span class="kw">import</span> requests
+
+<span class="kw">class</span> <span class="fn">ThrottledClient</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, requests_per_second=<span class="num">5</span>):
+        self.min_interval = <span class="num">1.0</span> / requests_per_second
+        self.last_request = <span class="num">0</span>
+        self.session = requests.Session()
+
+    <span class="kw">def</span> <span class="fn">request</span>(self, method, url, **kwargs):
+        elapsed = time.time() - self.last_request
+        <span class="kw">if</span> elapsed < self.min_interval:
+            time.sleep(self.min_interval - elapsed)
+
+        r = self.session.request(method, url, timeout=<span class="num">30</span>, **kwargs)
+        self.last_request = time.time()
+        <span class="kw">return</span> r
+
+<span class="cmt"># Uso: máximo 2 req/s para no saturar al controller</span>
+client = ThrottledClient(requests_per_second=<span class="num">2</span>)
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">10</span>):
+    r = client.request(<span class="str">"GET"</span>, <span class="str">"https://httpbin.org/get"</span>)
+    <span class="fn">print</span>(<span class="str">f"{i}: {r.status_code}"</span>)</code></pre>
+  </div>
+
+  <h2 class="section-title">Hooks: interceptar request/response</h2>
+  <p>Los hooks permiten ejecutar código automáticamente en cada respuesta. Útil para logging centralizado, métricas o validaciones globales.</p>
+
+  <div class="code-block">
+    <div class="code-label">response_hooks.py — Logging automático</div>
+    <pre><code><span class="kw">import</span> requests
+
+<span class="kw">def</span> <span class="fn">log_response</span>(response, *args, **kwargs):
+    <span class="fn">print</span>(<span class="str">f"[HOOK] {response.request.method} {response.url} → {response.status_code}"</span>)
+
+session = requests.Session()
+session.hooks[<span class="str">"response"</span>].append(log_response)
+
+r = session.get(<span class="str">"https://httpbin.org/get"</span>, timeout=<span class="num">10</span>)
+<span class="cmt"># Imprime automáticamente antes de retornar</span></code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 9 — PROYECTO FINAL
+═══════════════════════════════════════════ -->
+<div id="tab-proyecto" class="rest5-tab-content">
+<div class="content-block">
+  <h2 class="section-title">🚀 Proyecto Final — Cliente REST Genérico para Redes</h2>
+  <p>Este proyecto consolida todo: sesiones persistentes, autenticación configurable (Basic, Bearer, API Key), manejo robusto de errores, reintentos automáticos, logging, paginación y exportación a JSON/CSV. Es un cliente reutilizable que puedes apuntar a DNA Center, Meraki, o cualquier API REST de infraestructura.</p>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Escenario de producción</div>
+    <p>Eres el líder de automatización de red. Tu equipo usa 3 plataformas distintas: DNA Center (Bearer/X-Auth), Meraki (API Key header) y un IPAM interno (Basic Auth). Necesitas un cliente unificado que cualquier compañero pueda usar sin entender los detalles de cada API. Esta clase <code>RestClient</code> es la solución.</p>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">rest_client.py — Cliente universal de red</div>
+    <pre><code><span class="cmt">#!/usr/bin/env python3</span>
+<span class="cmt">"""
+rest_client.py
+CCNA Academy M8 T6 — Cliente REST Genérico para Automatización de Redes
+────────────────────────────────────────────────────────────────────────
+Soporta: Basic Auth, Bearer Token, API Key custom, reintentos, paginación,
+logging estructurado y exportación CSV/JSON.
+"""</span>
+
+<span class="kw">import</span> csv
+<span class="kw">import</span> json
+<span class="kw">import</span> logging
+<span class="kw">import</span> time
+<span class="kw">from</span> typing <span class="kw">import</span> Optional, Dict, Any
+<span class="kw">import</span> requests
+<span class="kw">from</span> requests.auth <span class="kw">import</span> HTTPBasicAuth
+<span class="kw">from</span> requests.adapters <span class="kw">import</span> HTTPAdapter
+<span class="kw">from</span> requests.packages.urllib3.util.retry <span class="kw">import</span> Retry
+
+logging.basicConfig(
+    level=logging.INFO,
+    format=<span class="str">"%(asctime)s [%(levelname)s] %(message)s"</span>
+)
+
+
+<span class="kw">class</span> <span class="cls">RestClient</span>:
+    <span class="str">"""Cliente REST genérico para APIs de infraestructura de red."""</span>
+
+    <span class="kw">def</span> <span class="fn">__init__</span>(
+        self,
+        base_url: <span class="fn">str</span>,
+        auth_type: <span class="fn">str</span> = <span class="str">"none"</span>,
+        credentials: Optional[Dict[<span class="fn">str</span>, <span class="fn">str</span>]] = <span class="kw">None</span>,
+        verify_ssl: <span class="fn">bool</span> = <span class="kw">True</span>,
+        timeout: <span class="fn">int</span> = <span class="num">30</span>,
+        max_retries: <span class="fn">int</span> = <span class="num">3</span>
+    ):
+        self.base_url = base_url.rstrip(<span class="str">"/"</span>)
+        self.timeout = timeout
+        self.verify_ssl = verify_ssl
+        self.session = requests.Session()
+
+        <span class="cmt"># ── Configurar retries a nivel de conexión ──</span>
+        retry_strategy = Retry(
+            total=max_retries,
+            backoff_factor=<span class="num">1</span>,
+            status_forcelist=[<span class="num">500</span>, <span class="num">502</span>, <span class="num">503</span>, <span class="num">504</span>],
+            allowed_methods=[<span class="str">"GET"</span>, <span class="str">"POST"</span>, <span class="str">"PUT"</span>, <span class="str">"DELETE"</span>, <span class="str">"PATCH"</span>]
+        )
+        adapter = HTTPAdapter(max_retries=retry_strategy)
+        self.session.mount(<span class="str">"https://"</span>, adapter)
+        self.session.mount(<span class="str">"http://"</span>, adapter)
+
+        <span class="cmt"># ── Configurar autenticación ──</span>
+        <span class="kw">if</span> auth_type == <span class="str">"basic"</span>:
+            self.session.auth = HTTPBasicAuth(
+                credentials[<span class="str">"username"</span>],
+                credentials[<span class="str">"password"</span>]
+            )
+
+        <span class="kw">elif</span> auth_type == <span class="str">"bearer"</span>:
+            self.session.headers.update({
+                <span class="str">"Authorization"</span>: <span class="str">f"Bearer {credentials['token']}"</span>
+            })
+
+        <span class="kw">elif</span> auth_type == <span class="str">"api_key"</span>:
+            header_name = credentials.get(<span class="str">"header"</span>, <span class="str">"X-API-Key"</span>)
+            self.session.headers.update({
+                header_name: credentials[<span class="str">"key"</span>]
+            })
+
+        <span class="cmt"># Headers globales</span>
+        self.session.headers.update({
+            <span class="str">"Accept"</span>: <span class="str">"application/json"</span>,
+            <span class="str">"Content-Type"</span>: <span class="str">"application/json"</span>,
+            <span class="str">"User-Agent"</span>: <span class="str">"CCNA-RestClient/1.0"</span>
+        })
+
+        <span class="kw">if</span> <span class="kw">not</span> verify_ssl:
+            requests.packages.urllib3.disable_warnings()
+            self.session.verify = <span class="kw">False</span>
+
+    <span class="kw">def</span> <span class="fn">request</span>(
+        self,
+        method: <span class="fn">str</span>,
+        endpoint: <span class="fn">str</span>,
+        params: Optional[Dict] = <span class="kw">None</span>,
+        json_data: Optional[Dict] = <span class="kw">None</span>,
+        extra_headers: Optional[Dict] = <span class="kw">None</span>
+    ) -> Optional[Dict[<span class="fn">str</span>, Any]]:
+        <span class="str">"""Ejecuta una petición REST con manejo completo de errores."""</span>
+        url = <span class="str">f"{self.base_url}/{endpoint.lstrip('/')}"</span>
+        headers = extra_headers <span class="kw">or</span> {}
+
+        <span class="kw">try</span>:
+            logging.info(<span class="str">f"{method} {url}"</span>)
+            r = self.session.request(
+                method, url,
+                params=params,
+                json=json_data,
+                headers=headers,
+                timeout=self.timeout
+            )
+            r.raise_for_status()
+
+            <span class="kw">if</span> r.status_code == <span class="num">204</span>:
+                <span class="kw">return</span> {<span class="str">"success"</span>: <span class="kw">True</span>, <span class="str">"status"</span>: <span class="num">204</span>}
+
+            <span class="kw">return</span> r.json()
+
+        <span class="kw">except</span> requests.exceptions.HTTPError <span class="kw">as</span> e:
+            logging.error(<span class="str">f"HTTP {r.status_code}: {e}"</span>)
+            <span class="kw">return</span> {<span class="str">"error"</span>: <span class="str">f"HTTP {r.status_code}"</span>, <span class="str">"detail"</span>: <span class="fn">str</span>(e)}
+
+        <span class="kw">except</span> requests.exceptions.ConnectionError:
+            logging.error(<span class="str">f"ConnectionError: {url}"</span>)
+            <span class="kw">return</span> {<span class="str">"error"</span>: <span class="str">"Connection failed"</span>}
+
+        <span class="kw">except</span> requests.exceptions.Timeout:
+            logging.error(<span class="str">f"Timeout: {url}"</span>)
+            <span class="kw">return</span> {<span class="str">"error"</span>: <span class="str">"Timeout"</span>}
+
+        <span class="kw">except</span> Exception <span class="kw">as</span> e:
+            logging.error(<span class="str">f"Unexpected: {e}"</span>)
+            <span class="kw">return</span> {<span class="str">"error"</span>: <span class="str">"Unexpected exception"</span>}
+
+    <span class="kw">def</span> <span class="fn">get_all_pages</span>(
+        self,
+        endpoint: <span class="fn">str</span>,
+        params: Optional[Dict] = <span class="kw">None</span>,
+        limit_key: <span class="fn">str</span> = <span class="str">"limit"</span>,
+        offset_key: <span class="fn">str</span> = <span class="str">"offset"</span>,
+        page_size: <span class="fn">int</span> = <span class="num">100</span>
+    ) -> <span class="fn">list</span>:
+        <span class="str">"""Paginación offset/limit genérica."""</span>
+        all_items = []
+        params = <span class="fn">dict</span>(params <span class="kw">or</span> {})
+        params[limit_key] = page_size
+        params[offset_key] = <span class="num">0</span>
+
+        <span class="kw">while</span> <span class="kw">True</span>:
+            data = self.request(<span class="str">"GET"</span>, endpoint, params=params)
+            <span class="kw">if</span> <span class="kw">not</span> data <span class="kw">or</span> <span class="str">"error"</span> <span class="kw">in</span> data:
+                <span class="kw">break</span>
+
+            <span class="cmt"># Soporte para respuestas envueltas (DNA Center style)</span>
+            items = data <span class="kw">if</span> <span class="fn">isinstance</span>(data, <span class="fn">list</span>) <span class="kw">else</span> data.get(<span class="str">"response"</span>, [])
+            <span class="kw">if</span> <span class="kw">not</span> items:
+                <span class="kw">break</span>
+
+            all_items.extend(items)
+            params[offset_key] += page_size
+
+            <span class="kw">if</span> <span class="fn">len</span>(items) < page_size:
+                <span class="kw">break</span>
+
+        <span class="kw">return</span> all_items
+
+    <span class="kw">def</span> <span class="fn">export_json</span>(self, data, filename):
+        <span class="kw">with</span> <span class="fn">open</span>(filename, <span class="str">"w"</span>, encoding=<span class="str">"utf-8"</span>) <span class="kw">as</span> f:
+            json.dump(data, f, indent=<span class="num">2</span>, ensure_ascii=<span class="kw">False</span>)
+        logging.info(<span class="str">f"💾 JSON exportado: {filename}"</span>)
+
+    <span class="kw">def</span> <span class="fn">export_csv</span>(self, data: <span class="fn">list</span>, filename: <span class="fn">str</span>):
+        <span class="kw">if</span> <span class="kw">not</span> data:
+            <span class="kw">return</span>
+        <span class="kw">with</span> <span class="fn">open</span>(filename, <span class="str">"w"</span>, newline=<span class="str">""</span>, encoding=<span class="str">"utf-8"</span>) <span class="kw">as</span> f:
+            writer = csv.DictWriter(f, fieldnames=data[<span class="num">0</span>].keys())
+            writer.writeheader()
+            writer.writerows(data)
+        logging.info(<span class="str">f"📊 CSV exportado: {filename}"</span>)
+
+
+<span class="cmt"># ══════════════════════════════════════════════════════</span>
+<span class="cmt"># DEMOSTRACIÓN DE USO</span>
+<span class="cmt"># ══════════════════════════════════════════════════════</span>
+<span class="kw">if</span> __name__ == <span class="str">"__main__"</span>:
+    <span class="cmt"># Ejemplo contra JSONPlaceholder (API pública de prueba)</span>
+    client = RestClient(
+        base_url=<span class="str">"https://jsonplaceholder.typicode.com"</span>,
+        auth_type=<span class="str">"none"</span>,
+        verify_ssl=<span class="kw">True</span>
+    )
+
+    <span class="cmt"># GET simple</span>
+    post = client.request(<span class="str">"GET"</span>, <span class="str">"/posts/1"</span>)
+    <span class="fn">print</span>(<span class="str">f"📄 Post: {post['title']}"</span>)
+
+    <span class="cmt"># POST con JSON</span>
+    nuevo = client.request(
+        <span class="str">"POST"</span>, <span class="str">"/posts"</span>,
+        json_data={<span class="str">"title"</span>: <span class="str">"Nueva VLAN"</span>, <span class="str">"body"</span>: <span class="str">"VLAN 100 creada"</span>, <span class="str">"userId"</span>: <span class="num">1</span>}
+    )
+    <span class="fn">print</span>(<span class="str">f"✅ Creado con ID: {nuevo.get('id')}"</span>)
+
+    <span class="cmt"># Exportar</span>
+    client.export_json(post, <span class="str">"post_1.json"</span>)</code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">▶️ Cómo adaptar a tu entorno</div>
+    <ol>
+      <li><strong>DNA Center</strong>: <code>auth_type="bearer"</code> pero primero obtén el token vía POST /auth/token y luego pásalo en credentials.</li>
+      <li><strong>Meraki</strong>: <code>auth_type="api_key"</code>, credentials={"header": "X-Cisco-Meraki-API-Key", "key": "tu-key"}.</li>
+      <li><strong>Controladores legacy</strong>: <code>auth_type="basic"</code> con username/password.</li>
+      <li>Para paginación por cursor (Meraki, GitHub), sobrescribe <code>get_all_pages()</code> para leer el header <code>Link</code> en lugar de offset/limit.</li>
+    </ol>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 10 — REFERENCIA
+═══════════════════════════════════════════ -->
+<div id="tab-referencia" class="rest5-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Tabla de Referencia — Librería requests</h2>
+  <div id="refTableRest6"></div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 11 — QUIZ
+═══════════════════════════════════════════ -->
+<div id="tab-quiz" class="rest5-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Quiz — APIs con Python requests</h2>
+  <p style="font-size:.83rem;color:#6b7a9a;margin-bottom:20px;">10 preguntas estilo CCNA Domain 6.5. Evalúa tu dominio de HTTP, autenticación, manejo de errores y buenas prácticas con requests.</p>
+  <div id="quizContainerRest6"></div>
+</div>
+</div>
+
+</div><!-- /.tabs-wrap -->
+
+<script>
+// ── NAVEGACIÓN DRAWER ────────────────────────────────
+function ccnaToggle() {
+  document.getElementById('ccnaDrawer').classList.toggle('open');
+  document.getElementById('ccnaOverlay').classList.toggle('show');
+}
+function ccnaClose() {
+  document.getElementById('ccnaDrawer').classList.remove('open');
+  document.getElementById('ccnaOverlay').classList.remove('show');
+}
+
+// ── TABS ──────────────────────────────────────────────
+function showTabRest5(id, btn) {
+  document.querySelectorAll('.rest5-tab-content').forEach(t => t.classList.remove('rest5-active'));
+  document.querySelectorAll('.rest5-tab-btn').forEach(b => b.classList.remove('rest5-active'));
+  document.getElementById('tab-' + id).classList.add('rest5-active');
+  if (btn) btn.classList.add('rest5-active');
+}
+
+// ── TABLA DE REFERENCIA ──────────────────────────────
+function buildRefTable() {
+  var container = document.getElementById('refTableRest6');
+  if (!container) return;
+
+  var secciones = [
+    {
+      titulo: 'MÉTODOS REQUESTS Y USO',
+      cols: ['Método','Función','Uso típico en redes'],
+      filas: [
+        ['<span class="endpoint-method get">GET</span>','<code>requests.get(url)</code>','Obtener inventario, estado de dispositivos, clientes.'],
+        ['<span class="endpoint-method post">POST</span>','<code>requests.post(url, json=payload)</code>','Crear VLAN, claim device, generar token de auth.'],
+        ['<span class="endpoint-method put">PUT</span>','<code>requests.put(url, json=payload)</code>','Reemplazar configuración completa de política.'],
+        ['<span class="endpoint-method put">PATCH</span>','<code>requests.patch(url, json=payload)</code>','Actualizar nombre, IP o campo específico.'],
+        ['<span class="endpoint-method delete">DELETE</span>','<code>requests.delete(url)</code>','Eliminar ACL, remover webhook, borrar recurso.'],
+        ['<span class="endpoint-method get">HEAD</span>','<code>requests.head(url)</code>','Verificar disponibilidad sin descargar body.'],
+      ]
+    },
+    {
+      titulo: 'PARÁMETROS CLAVE DE REQUESTS',
+      cols: ['Parámetro','Tipo','Descripción'],
+      filas: [
+        ['<code>params</code>','dict','Query parameters: ?offset=0&limit=100'],
+        ['<code>json</code>','dict','Serializa a JSON y pone Content-Type: application/json.'],
+        ['<code>data</code>','dict/str','Form-encoded o body crudo.'],
+        ['<code>headers</code>','dict','Headers HTTP personalizados.'],
+        ['<code>auth</code>','tuple/HTTPBasicAuth','Basic Auth (usuario, password).'],
+        ['<code>timeout</code>','int/tuple','Segundos de espera (connect, read).'],
+        ['<code>verify</code>','bool/str','Verificar SSL (True/False/path a CA bundle).'],
+        ['<code>cert</code>','tuple/str','Certificado cliente para mTLS.'],
+        ['<code>proxies</code>','dict','Diccionario {protocol: proxy_url}.'],
+        ['<code>stream</code>','bool','Descarga en chunks sin cargar todo en RAM.']
+      ]
+    },
+    {
+      titulo: 'EXCEPCIONES Y ERRORES',
+      cols: ['Excepción','Causa','Solución'],
+      filas: [
+        ['<code>ConnectionError</code>','DNS, firewall, servidor caído.','Verificar URL, conectividad de red, puerto.'],
+        ['<code>Timeout</code>','Servidor no responde a tiempo.','Aumentar timeout, revisar carga del servidor.'],
+        ['<code>HTTPError</code>','Status 4xx/5xx tras raise_for_status().','Validar payload, permisos, reintentar si es 5xx.'],
+        ['<code>TooManyRedirects</code>','Bucle de redirecciones.','Verificar URL final, parámetro allow_redirects.'],
+        ['<code>JSONDecodeError</code>','Respuesta no es JSON válido.','Revisar Content-Type, leer response.text.'],
+        ['<code>SSLError</code>','Certificado inválido o autofirmado.','En labs: verify=False. En prod: usar CA válido.']
+      ]
+    },
+    {
+      titulo: 'OBJETO RESPONSE — ATRIBUTOS',
+      cols: ['Atributo','Descripción'],
+      filas: [
+        ['<code>status_code</code>','Entero HTTP (200, 201, 404...).'],
+        ['<code>ok</code>','True si status_code < 400.'],
+        ['<code>headers</code>','CaseInsensitiveDict con headers de respuesta.'],
+        ['<code>text</code>','Body como string Unicode.'],
+        ['<code>content</code>','Body como bytes (binarios).'],
+        ['<code>json()</code>','Método: parsea body y retorna dict/list.'],
+        ['<code>encoding</code>','Charset detectado (utf-8 por defecto).'],
+        ['<code>url</code>','URL final tras redirecciones y params.'],
+        ['<code>elapsed</code>','Timedelta de duración de la petición.'],
+        ['<code>raise_for_status()</code>','Lanza HTTPError si status >= 400.']
+      ]
+    },
+    {
+      titulo: 'HEADERS COMUNES EN APIS DE RED',
+      cols: ['Header','Valor ejemplo','Uso'],
+      filas: [
+        ['<code>Accept</code>','application/json','Indicar formato esperado.'],
+        ['<code>Content-Type</code>','application/json','Formato del body enviado.'],
+        ['<code>Authorization</code>','Bearer eyJ0...','Token OAuth/JWT.'],
+        ['<code>X-Auth-Token</code>','(token)','DNA Center.'],
+        ['<code>X-Cisco-Meraki-API-Key</code>','(key larga)','Meraki Dashboard API.'],
+        ['<code>User-Agent</code>','NetworkBot/1.0','Identificación del cliente.']
+      ]
+    }
+  ];
+
+  var html = '';
+  secciones.forEach(function(sec) {
+    html += '<h3 style="font-family:Orbitron,sans-serif;font-size:.8rem;color:#38bdf8;letter-spacing:2px;margin:24px 0 10px;text-transform:uppercase;">▸ ' + sec.titulo + '</h3>';
+    html += '<div class="table-wrap"><table class="ref-table"><thead><tr>';
+    sec.cols.forEach(function(c) { html += '<th>' + c + '</th>'; });
+    html += '</tr></thead><tbody>';
+    sec.filas.forEach(function(f) {
+      html += '<tr>';
+      f.forEach(function(c) { html += '<td>' + c + '</td>'; });
+      html += '</tr>';
+    });
+    html += '</tbody></table></div>';
+  });
+  container.innerHTML = html;
+}
+
+// ── QUIZ ─────────────────────────────────────────────
+function initQuiz() {
+  var container = document.getElementById('quizContainerRest6');
+  if (!container) return;
+
+  var qs = [
+    {
+      q: '¿Cuál es la forma correcta de enviar un payload JSON en una petición POST con requests?',
+      opts: ['requests.post(url, data=payload)','requests.post(url, json=payload)','requests.post(url, body=payload)','requests.post(url, payload=json)'],
+      ans: 1,
+      exp: 'El parámetro <strong>json=</strong> serializa automáticamente el diccionario a string JSON y añade el header <code>Content-Type: application/json</code>. <code>data=</code> enviaría form-encoded.'
+    },
+    {
+      q: 'Un script recibe <code>requests.exceptions.Timeout</code>. ¿Qué indica esta excepción?',
+      opts: ['La URL no existe (DNS falló).','El servidor cerró la conexión inesperadamente.','El servidor no respondió dentro del tiempo límite especificado.','El certificado SSL es inválido.'],
+      ans: 2,
+      exp: '<strong>Timeout</strong> significa que la conexión TCP se estableció pero el servidor no envió la respuesta completa dentro del tiempo especificado en el parámetro <code>timeout</code>.'
+    },
+    {
+      q: '¿Cuál es el propósito de <code>r.raise_for_status()</code> después de una petición requests?',
+      opts: ['Verificar que la respuesta sea JSON válido.','Lanzar una excepción HTTPError si el status code es 4xx o 5xx.','Forzar al servidor a responder más rápido.','Convertir automáticamente la respuesta a dict.'],
+      ans: 1,
+      exp: '<code>raise_for_status()</code> es el patrón "fail fast": si <code>r.ok</code> es False (status >= 400), lanza <code>HTTPError</code> inmediatamente con la URL y el código de error.'
+    },
+    {
+      q: 'Para autenticar en DNA Center, ¿qué header se utiliza después de obtener el token?',
+      opts: ['Authorization: Bearer','X-Cisco-Meraki-API-Key','X-Auth-Token','Api-Key'],
+      ans: 2,
+      exp: 'DNA Center usa el header propietario <strong>X-Auth-Token</strong> (obtenido previamente vía POST a /auth/token con Basic Auth). Authorization: Bearer es el estándar OAuth; Meraki usa X-Cisco-Meraki-API-Key.'
+    },
+    {
+      q: 'En un laboratorio con certificado autofirmado, ¿cómo evitas el SSLError en requests?',
+      opts: ['auth=("admin","pass")','timeout=0','verify=False','headers={"SSL": "off"}'],
+      ans: 2,
+      exp: '<code>verify=False</code> desactiva la verificación del certificado TLS. <strong>Advertencia:</strong> solo en entornos controlados/labs. En producción siempre usa verify=True o apunta a un CA bundle corporativo.'
+    },
+    {
+      q: '¿Qué objeto de requests permite reutilizar la conexión TCP y compartir headers/cookies entre múltiples peticiones?',
+      opts: ['requests.Connection','requests.Session','requests.Pool','requests.Context'],
+      ans: 1,
+      exp: '<strong>requests.Session()</strong> mantiene un pool de conexiones HTTP (keep-alive), comparte cookies y aplica headers/autenticación a todas las peticiones realizadas mediante ese objeto.'
+    },
+    {
+      q: '¿Cuál es la diferencia entre PUT y PATCH en una API REST?',
+      opts: ['PUT es solo para crear; PATCH es solo para eliminar.','PUT reemplaza el recurso completo; PATCH actualiza campos parciales.','PUT requiere autenticación; PATCH no.','PATCH es más rápido porque usa UDP.'],
+      ans: 1,
+      exp: '<strong>PUT</strong> envía la representación completa del recurso (idempotente). <strong>PATCH</strong> envía solo los campos a modificar, sin afectar el resto. Es útil para cambios mínimos como renombrar un dispositivo.'
+    },
+    {
+      q: '¿Qué parámetro de requests.get() se usa para enviar query parameters como ?limit=10&offset=0?',
+      opts: ['body','data','params','query'],
+      ans: 2,
+      exp: 'El parámetro <strong>params</strong> recibe un diccionario que requests convierte automáticamente en query string, codificando caracteres especiales correctamente (URL encoding).'
+    },
+    {
+      q: 'Una API devuelve HTTP 429. ¿Qué significa y qué estrategia es correcta?',
+      opts: ['Recurso no encontrado; verificar URL.','Error interno del servidor; reintentar inmediatamente.','Rate limit excedido; esperar y reintentar con backoff.','No autorizado; regenerar token.'],
+      ans: 2,
+      exp: 'HTTP <strong>429 Too Many Requests</strong> indica que se excedió el límite de peticiones por unidad de tiempo. La estrategia correcta es leer el header <code>Retry-After</code> si existe, esperar y reintentar con backoff exponencial.'
+    },
+    {
+      q: 'Al descargar un firmware grande (500MB) vía API, ¿qué parámetro es recomendable usar para no consumir toda la RAM?',
+      opts: ['json=True','stream=True','verify=False','allow_redirects=True'],
+      ans: 1,
+      exp: '<strong>stream=True</strong> evita que requests cargue todo el body en memoria de una vez. Luego puedes iterar con <code>r.iter_content(chunk_size=8192)</code> y escribir a disco por fragmentos.'
+    }
+  ];
+
+  var html = '';
+  qs.forEach(function(q, i) {
+    html += '<div class="quiz-question" id="qr6' + i + '">' +
+      '<div class="quiz-q-num">PREGUNTA ' + (i+1) + ' DE ' + qs.length + ' · M8 REQUESTS Tema 6</div>' +
+      '<div class="quiz-q-text">' + q.q + '</div>' +
+      '<div class="quiz-opts">';
+    q.opts.forEach(function(o, j) {
+      html += '<button class="quiz-opt" data-qi="' + i + '" data-sel="' + j + '" data-ans="' + q.ans + '">' + o + '</button>';
+    });
+    html += '</div></div>';
+  });
+  container.innerHTML = html;
+
+  window._rest6Exp = {};
+  qs.forEach(function(q, i) { window._rest6Exp[i] = q.exp; });
+
+  container.querySelectorAll('.quiz-opt').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var qi  = parseInt(this.dataset.qi);
+      var sel = parseInt(this.dataset.sel);
+      var ans = parseInt(this.dataset.ans);
+      var qDiv = document.getElementById('qr6' + qi);
+      var btns = qDiv.querySelectorAll('.quiz-opt');
+
+      btns.forEach(function(b) { b.disabled = true; });
+      btns[sel].classList.add(sel === ans ? 'correct' : 'wrong');
+      if (sel !== ans) btns[ans].classList.add('correct');
+
+      var expDiv = document.createElement('div');
+      expDiv.className = 'quiz-explanation';
+      expDiv.innerHTML = '<strong>' + (sel===ans ? '✅ Correcto!' : '❌ Incorrecto.') + '</strong> ' + window._rest6Exp[qi];
+      qDiv.appendChild(expDiv);
+    });
+  });
+}
+
+// ── INICIALIZACIÓN ────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  buildRefTable();
+  initQuiz();
+});
+</script>
+</body>
+</html>
