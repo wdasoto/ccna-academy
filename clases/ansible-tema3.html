@@ -1,0 +1,1462 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ansible — Playbooks YAML · M8 T3 | CCNA Academy</title>
+  <meta name="description" content="Clase magistral de Playbooks Ansible: Plays, Tasks, Handlers, When/Loop. Escribe automatizaciones de red Cisco en YAML con idempotencia real. CCNA Domain 6.6.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── ANSIBLE ACCENT TOKENS ── */
+:root{ --ansible:#ef4444; --ansible-d:#dc2626; --ansible-glow:rgba(239,68,68,.12); }
+
+/* ── BASE ── */
+body{font-family:'Exo 2',sans-serif;background:#07090f;color:#e2e8f0;margin:0;}
+.class-hero{background:linear-gradient(135deg,#06080f 0%,#080d18 60%,#0a1020 100%);}
+
+/* ── HERO ── */
+.class-hero{padding:56px 24px 48px;border-bottom:1px solid rgba(239,68,68,.08);position:relative;overflow:hidden;}
+.class-hero::before{content:'';position:absolute;top:-60px;right:-80px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(239,68,68,.06) 0%,transparent 70%);pointer-events:none;}
+.class-hero-inner{max-width:900px;margin:0 auto;position:relative;z-index:1;}
+.class-badge{font-family:'Share Tech Mono',monospace;font-size:.63rem;color:#ef4444;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;}
+.class-title{font-family:'Orbitron',sans-serif;font-size:clamp(1.6rem,3.8vw,2.6rem);font-weight:900;letter-spacing:3px;color:#c2d0e8;margin-bottom:12px;line-height:1.1;}
+.class-title-accent{background:linear-gradient(135deg,#ef4444,#dc2626);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.class-subtitle{font-size:.92rem;color:#6b7a9a;line-height:1.72;margin-bottom:20px;max-width:700px;}
+.class-meta{display:flex;gap:12px;flex-wrap:wrap;}
+.meta-item{font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#4a5780;padding:4px 10px;border:1px solid rgba(239,68,68,.15);border-radius:4px;}
+
+/* ── TABS ── */
+.ans1-tabs-wrap{max-width:1100px;margin:0 auto;padding:0 16px 40px;}
+.ans1-tabs-bar{display:flex;gap:4px;padding:20px 0 0;flex-wrap:wrap;border-bottom:1px solid rgba(239,68,68,.12);margin-bottom:0;}
+.ans1-tab-btn{padding:8px 13px;border-radius:8px 8px 0 0;font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#4a5780;background:none;border:1px solid transparent;cursor:pointer;transition:all .18s;white-space:nowrap;border-bottom:none;}
+.ans1-tab-btn:hover{color:#c2d0e8;background:rgba(239,68,68,.06);}
+.ans1-tab-btn.ans1-active{color:#ef4444;background:#0d1220;border-color:rgba(239,68,68,.25);border-bottom:1px solid #0d1220;}
+.ans1-tab-content{display:none;background:#0d1220;border:1px solid rgba(239,68,68,.08);border-top:none;border-radius:0 0 12px 12px;padding:32px;}
+.ans1-tab-content.ans1-active{display:block;}
+.content-block{max-width:880px;}
+.section-title{font-family:'Orbitron',sans-serif;font-size:.95rem;color:#ef4444;letter-spacing:2px;margin:28px 0 14px;padding-bottom:8px;border-bottom:1px solid rgba(239,68,68,.15);}
+.section-title:first-child{margin-top:0;}
+p{color:#8294b8;line-height:1.75;margin-bottom:14px;font-size:.9rem;}
+ul,ol{color:#8294b8;padding-left:1.4rem;margin-bottom:14px;font-size:.9rem;}
+li{margin-bottom:5px;line-height:1.65;}
+strong{color:#c2d0e8;}
+code{font-family:'Share Tech Mono',monospace;font-size:.82rem;background:rgba(239,68,68,.1);color:#ef4444;padding:1px 6px;border-radius:4px;border:1px solid rgba(239,68,68,.2);}
+
+/* INFO BOXES */
+.info-box{border-radius:8px;padding:14px 18px;margin:18px 0;border-left:3px solid;}
+.info-box.tip{background:rgba(239,68,68,.06);border-color:#ef4444;}
+.info-box.warning{background:rgba(251,191,36,.05);border-color:#fbbf24;}
+.info-box.info{background:rgba(56,189,248,.05);border-color:#38bdf8;}
+.info-box-title{font-family:'Share Tech Mono',monospace;font-size:.73rem;color:#ef4444;margin-bottom:8px;}
+.info-box.warning .info-box-title{color:#fbbf24;}
+.info-box.info .info-box-title{color:#38bdf8;}
+
+/* CODE BLOCKS */
+.code-block{background:#050810;border:1px solid rgba(239,68,68,.15);border-left:3px solid #ef4444;border-radius:8px;padding:0;margin:16px 0;overflow:hidden;}
+.code-label{background:rgba(239,68,68,.08);padding:8px 16px;font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#4a5780;letter-spacing:2px;text-transform:uppercase;border-bottom:1px solid rgba(239,68,68,.1);}
+.code-block pre{margin:0;padding:18px;overflow-x:auto;}
+.code-block code{background:none;border:none;padding:0;color:#a8b4c8;font-size:.79rem;line-height:1.8;display:block;}
+
+/* SYNTAX */
+.cmt{color:#3a4a60;font-style:italic;}
+.kw {color:#c792ea;}
+.fn {color:#82aaff;}
+.str{color:#c3e88d;}
+.num{color:#f78c6c;}
+
+/* CONCEPT GRID */
+.concept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin:16px 0;}
+.concept-card{background:#090d1a;border:1px solid rgba(239,68,68,.1);border-radius:10px;padding:16px;}
+.concept-icon{font-size:1.8rem;margin-bottom:8px;}
+.concept-card h3{font-family:'Share Tech Mono',monospace;font-size:.77rem;color:#ef4444;margin-bottom:8px;}
+.concept-card p{font-size:.8rem;margin:0;}
+
+/* ARCHITECTURE DIAGRAM */
+.ans-flow{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin:20px 0;padding:20px;background:#090d1a;border-radius:10px;border:1px solid rgba(239,68,68,.1);}
+.ans-box{background:#0d1220;border:1px solid rgba(239,68,68,.2);border-radius:8px;padding:14px 18px;text-align:center;min-width:110px;}
+.ans-box-label{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:#ef4444;margin-bottom:4px;}
+.ans-box-val{font-size:.8rem;color:#c2d0e8;}
+.ans-arrow{font-size:1.4rem;color:#ef4444;}
+
+/* TABLE */
+.table-wrap{overflow-x:auto;margin:16px 0;}
+.ref-table{width:100%;border-collapse:collapse;font-size:.8rem;}
+.ref-table th{background:#090d1a;color:#ef4444;font-family:'Share Tech Mono',monospace;font-size:.67rem;padding:10px 12px;text-align:left;border:1px solid rgba(239,68,68,.15);letter-spacing:1px;}
+.ref-table td{padding:9px 12px;border:1px solid rgba(255,255,255,.04);color:#8294b8;}
+.ref-table tr:hover td{background:rgba(239,68,68,.04);}
+.ref-table code{font-size:.77rem;}
+
+/* QUIZ */
+.quiz-question{background:#090d1a;border:1px solid rgba(239,68,68,.12);border-radius:10px;padding:20px;margin-bottom:14px;}
+.quiz-q-num{font-family:'Share Tech Mono',monospace;font-size:.62rem;color:#374060;margin-bottom:8px;}
+.quiz-q-text{font-size:.9rem;color:#c2d0e8;margin-bottom:14px;line-height:1.6;}
+.quiz-opts{display:flex;flex-direction:column;gap:7px;}
+.quiz-opt{padding:10px 14px;border-radius:7px;border:1px solid rgba(239,68,68,.12);background:#0d1220;color:#6b7a9a;cursor:pointer;font-size:.84rem;text-align:left;transition:all .15s;font-family:'Exo 2',sans-serif;}
+.quiz-opt:hover:not(:disabled){border-color:rgba(239,68,68,.4);color:#c2d0e8;}
+.quiz-opt.correct{border-color:#34d399;background:rgba(52,211,153,.08);color:#34d399;}
+.quiz-opt.wrong{border-color:#f87171;background:rgba(248,113,113,.08);color:#f87171;}
+.quiz-explanation{margin-top:10px;padding:10px 14px;background:rgba(239,68,68,.07);border-left:3px solid #ef4444;border-radius:6px;font-size:.82rem;color:#a0aec0;line-height:1.65;}
+
+/* COMPARE TABLE */
+.compare-highlight{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);}
+.compare-highlight td{color:#c2d0e8 !important;}
+
+/* NAV & DRAWER */
+.navbar{position:fixed;top:0;left:0;right:0;height:56px;background:#080a10;border-bottom:1px solid rgba(239,68,68,.1);display:flex;align-items:center;padding:0 24px;z-index:1000;}
+.navbar-toggle{background:none;border:1px solid rgba(239,68,68,.3);color:#ef4444;padding:6px 12px;border-radius:6px;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:.75rem;margin-right:16px;}
+.navbar-brand{font-family:'Orbitron',sans-serif;font-weight:700;color:#ef4444;text-decoration:none;font-size:1.1rem;}
+.navbar-brand span{color:#dc2626;}
+.navbar-spacer{flex:1;}
+.navbar-link{color:#6b7a9a;text-decoration:none;font-size:.8rem;transition:color .2s;}
+.navbar-link:hover{color:#c2d0e8;}
+.nav-spacer{height:56px;}
+.ccna-drawer{position:fixed;top:0;left:0;bottom:0;width:280px;background:#0d1220;border-right:1px solid rgba(239,68,68,.2);transform:translateX(-100%);transition:transform .3s;z-index:2000;overflow-y:auto;}
+.ccna-drawer.open{transform:translateX(0);}
+.ccna-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);opacity:0;visibility:hidden;transition:all .3s;z-index:1500;}
+.ccna-overlay.show{opacity:1;visibility:visible;}
+.drawer-header{padding:20px;border-bottom:1px solid rgba(239,68,68,.2);display:flex;justify-content:space-between;align-items:center;}
+.drawer-header h2{font-family:'Orbitron',sans-serif;font-size:.8rem;color:#ef4444;margin:0;letter-spacing:2px;}
+.drawer-close{background:none;border:none;color:#6b7a9a;font-size:1.2rem;cursor:pointer;}
+.drawer-section{padding:16px;border-bottom:1px solid rgba(239,68,68,.1);}
+.drawer-section-title{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#374060;margin-bottom:12px;letter-spacing:1px;text-transform:uppercase;}
+.drawer-link{display:block;padding:10px 12px;color:#8294b8;text-decoration:none;font-size:.85rem;border-radius:6px;transition:all .2s;margin-bottom:4px;}
+.drawer-link:hover{background:rgba(239,68,68,.1);color:#c2d0e8;}
+.drawer-link.active{background:rgba(239,68,68,.2);color:#ef4444;border-left:3px solid #ef4444;}
+.dl-icon{margin-right:8px;}
+
+/* FILE TREE */
+.file-tree{background:#050810;border:1px solid rgba(239,68,68,.15);border-radius:8px;padding:18px 22px;font-family:'Share Tech Mono',monospace;font-size:.78rem;color:#8294b8;line-height:1.8;margin:16px 0;}
+.file-tree .folder{color:#ef4444;}
+.file-tree .file{color:#a8b4c8;}
+.file-tree .comment{color:#3a4a60;font-style:italic;}
+
+@media(max-width:680px){
+  .ans1-tab-btn{font-size:.6rem;padding:6px 9px;}
+  .ans1-tab-content{padding:18px 12px;}
+  .concept-grid{grid-template-columns:1fr;}
+  .ans-flow{flex-direction:column;}
+}
+</style>
+</head>
+<body>
+
+<div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
+<nav class="ccna-drawer" id="ccnaDrawer">
+  <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
+  <div class="drawer-section"><div class="drawer-section-title">General</div>
+    <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M1 · Fundamentos</div>
+    <a href="fundamentos.html" class="drawer-link"><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
+    <a href="subnetting.html"  class="drawer-link"><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
+    <a href="ipv6.html"        class="drawer-link"><span class="dl-icon">6️⃣</span> IPv6</a>
+    <a href="arp.html"         class="drawer-link"><span class="dl-icon">📡</span> ARP</a>
+    <a href="rip.html"         class="drawer-link"><span class="dl-icon">🔄</span> RIP</a>
+    <a href="protocolos-internet.html" class="drawer-link"><span class="dl-icon">🌍</span> Protocolos Internet</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M2 · Dispositivos Cisco</div>
+    <a href="router.html"         class="drawer-link"><span class="dl-icon">📡</span> Routers Cisco</a>
+    <a href="switches-cisco.html" class="drawer-link"><span class="dl-icon">🔀</span> Switches Cisco</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M3 · Switching</div>
+    <a href="vlan.html"               class="drawer-link"><span class="dl-icon">🏷️</span> VLANs</a>
+    <a href="inter-vlan-routing.html" class="drawer-link"><span class="dl-icon">🔁</span> Inter-VLAN Routing</a>
+    <a href="stp.html"                class="drawer-link"><span class="dl-icon">🌳</span> STP</a>
+    <a href="etherchannel.html"       class="drawer-link"><span class="dl-icon">🔗</span> EtherChannel</a>
+    <a href="port-security.html"      class="drawer-link"><span class="dl-icon">🔒</span> Port Security</a>
+    <a href="cdp-lldp.html"           class="drawer-link"><span class="dl-icon">🔍</span> CDP / LLDP</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M4 · Routing</div>
+    <a href="routing.html"            class="drawer-link"><span class="dl-icon">🗺️</span> Routing Estático</a>
+    <a href="ospf.html"               class="drawer-link"><span class="dl-icon">⭕</span> OSPF</a>
+    <a href="eigrp.html"              class="drawer-link"><span class="dl-icon">⚡</span> EIGRP</a>
+    <a href="ospfv2-masterclass.html" class="drawer-link"><span class="dl-icon">🎯</span> OSPFv2 Masterclass</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M5 · Servicios IP</div>
+    <a href="dhcp.html" class="drawer-link"><span class="dl-icon">📋</span> DHCP</a>
+    <a href="nat.html"  class="drawer-link"><span class="dl-icon">🔄</span> NAT / PAT</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M6 · Seguridad</div>
+    <a href="acl.html" class="drawer-link"><span class="dl-icon">🛡️</span> ACLs</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M7 · WAN &amp; QoS</div>
+    <a href="wan.html" class="drawer-link"><span class="dl-icon">🌍</span> WAN</a>
+    <a href="qos.html" class="drawer-link"><span class="dl-icon">📊</span> QoS</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M8 · Automatización</div>
+    <a href="m8-automatizacion.html" class="drawer-link"><span class="dl-icon">🤖</span> M8 — Vista General</a>
+    <a href="python-redes.html"      class="drawer-link"><span class="dl-icon">🐍</span> Python para Redes</a>
+    <a href="json-datos.html"        class="drawer-link"><span class="dl-icon">📋</span> JSON y Datos</a>
+    <a href="rest-apis.html"         class="drawer-link"><span class="dl-icon">🌐</span> REST APIs</a>
+    <a href="ansible-redes.html"     class="drawer-link"><span class="dl-icon">⚙️</span> Ansible Hub</a>
+    <a href="ansible-tema1.html"     class="drawer-link"><span class="dl-icon">01</span> T1 — Arquitectura</a>
+    <a href="ansible-tema2.html"     class="drawer-link"><span class="dl-icon">02</span> T2 — Inventarios</a>
+    <a href="ansible-tema3.html"     class="drawer-link active"><span class="dl-icon">03</span> T3 — Playbooks YAML</a>
+  </div>
+  <div class="drawer-section"><div class="drawer-section-title">⚡ Herramientas</div>
+    <a href="asistente.html"          class="drawer-link"><span class="dl-icon">🤖</span> Asistente IA</a>
+    <a href="netbot.html"             class="drawer-link"><span class="dl-icon">⚙️</span> NetBot Config</a>
+    <a href="calculadora.html"        class="drawer-link"><span class="dl-icon">🧮</span> Calculadora IP</a>
+    <a href="../laboratorios-pkt.html"   class="drawer-link"><span class="dl-icon">🧪</span> Labs Packet Tracer</a>
+    <a href="../banco-preguntas.html" class="drawer-link"><span class="dl-icon">📝</span> Banco de Preguntas</a></div>
+</nav>
+
+<header class="navbar">
+  <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
+  <a href="../index.html" class="navbar-brand">CISCO<span> ACADEMY</span></a>
+  <div class="navbar-spacer"></div>
+  <a href="ansible-redes.html" class="navbar-link">← Ansible Hub</a>
+</header>
+<div class="nav-spacer"></div>
+
+<!-- HERO -->
+<section class="class-hero" style="border-bottom:1px solid rgba(239,68,68,.2);">
+  <div class="class-hero-inner">
+    <div class="class-badge" style="color:#ef4444;">M8 · AUTOMATIZACIÓN · ANSIBLE · TEMA 3 DE 7</div>
+    <h1 class="class-title">PLAYBOOKS <span class="class-title-accent">YAML — Escribir Automatizaciones</span></h1>
+    <p class="class-subtitle">La unidad central de Ansible. Aprende a escribir plays y tasks en YAML para configurar cientos de dispositivos Cisco simultáneamente con el mismo esfuerzo que uno. Domina la idempotencia, los handlers, los condicionales y los bucles para crear automatizaciones de red robustas, legibles y mantenibles.</p>
+    <div class="class-meta">
+      <span class="meta-item" style="border-color:rgba(239,68,68,.2);color:#ef4444;">📋 YAML</span>
+      <span class="meta-item">🎯 CCNA Domain 6.6</span>
+      <span class="meta-item">⏱ ~90 min lectura</span>
+      <span class="meta-item">⚡ Plays / Tasks / Handlers</span>
+      <span class="meta-item">🔁 When / Loop</span>
+    </div>
+  </div>
+</section>
+
+<!-- TABS -->
+<div class="ans1-tabs-wrap">
+  <div class="ans1-tabs-bar">
+    <button class="ans1-tab-btn ans1-active" onclick="showTabAns1('intro',this)">📍 Intro</button>
+    <button class="ans1-tab-btn" onclick="showTabAns1('plays',this)">🎭 Plays</button>
+    <button class="ans1-tab-btn" onclick="showTabAns1('tasks',this)">⚡ Tasks</button>
+    <button class="ans1-tab-btn" onclick="showTabAns1('handlers',this)">🔔 Handlers</button>
+    <button class="ans1-tab-btn" onclick="showTabAns1('when-loop',this)">🔁 When / Loop</button>
+    <button class="ans1-tab-btn" onclick="showTabAns1('yaml-avanzado',this)">🧬 YAML Avanzado</button>
+    <button class="ans1-tab-btn" onclick="showTabAns1('practicas',this)">🚀 Prácticas Cisco</button>
+    <button class="ans1-tab-btn" onclick="showTabAns1('referencia',this)">📊 Ref</button>
+    <button class="ans1-tab-btn" onclick="showTabAns1('quiz',this)">🎯 Quiz</button>
+  </div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 1 — INTRO
+═══════════════════════════════════════════ -->
+<div id="tab-intro" class="ans1-tab-content ans1-active">
+<div class="content-block">
+  <h2 class="section-title">¿Qué es un Playbook en Ansible?</h2>
+  <p>Un <strong>playbook</strong> es un archivo YAML que contiene una serie de "plays" ordenados. Cada play mapea un grupo de hosts a un conjunto de tareas (tasks) que se ejecutan secuencialmente. Si el inventario es el <em>mapa</em> de tu infraestructura, el playbook es el <em>plan de batalla</em>: define qué hacer, en qué orden, y con qué herramientas.</p>
+  <p>A diferencia de los <strong>comandos ad-hoc</strong> (de un solo uso en línea de comandos), los playbooks son <strong>repetibles, versionables y auditables</strong>. Puedes guardarlos en Git, revisarlos en pull requests y ejecutarlos en pipelines CI/CD. Un comando ad-hoc sirve para una prueba rápida; un playbook es la automatización de producción.</p>
+  <p>En el contexto de redes Cisco, un playbook puede configurar simultáneamente VLANs en 50 switches, aplicar ACLs en 20 routers, verificar el estado de interfaces y guardar la configuración —todo en una sola ejecución idempotente.</p>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Concepto clave del examen CCNA</div>
+    <p>El dominio 6.6 evalúa si entiendes la diferencia entre <strong>comandos ad-hoc</strong> y <strong>playbooks</strong>. La pregunta clásica es: <em>"¿Qué archivo YAML declarativo de Ansible contiene plays, tasks y handlers para gestionar configuración?"</em> La respuesta es el <strong>playbook</strong>.</p>
+  </div>
+
+  <h2 class="section-title">Anatomía mínima de un Playbook</h2>
+  <p>Todo playbook comienza con tres guiones (<code>---</code>) y contiene una lista de plays. Cada play es un diccionario YAML con al menos dos claves: <code>hosts</code> (dónde ejecutar) y <code>tasks</code> (qué hacer).</p>
+
+  <div class="code-block">
+    <div class="code-label">playbook_minimo.yml — Hola mundo de red</div>
+    <pre><code><span class="cmt"># --- Inicio del documento YAML</span>
+<span class="kw">---</span>
+- <span class="fn">name</span>: <span class="str">"Verificar conectividad con switches Cisco"</span>
+  <span class="fn">hosts</span>: cisco_switches
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Ejecutar show version"</span>
+      <span class="fn">cisco.ios.ios_command</span>:
+        <span class="fn">commands</span>:
+          - <span class="str">"show version"</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Ad-hoc vs. Playbook: la evolución</h2>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead>
+        <tr><th>Característica</th><th>Comando Ad-hoc</th><th>Playbook YAML</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Complejidad</strong></td><td>Una sola tarea</td><td>Múltiples plays y tasks ordenados</td></tr>
+        <tr><td><strong>Reutilización</strong></td><td>No se guarda</td><td>Archivo versionable en Git</td></tr>
+        <tr><td><strong>Idempotencia</strong></td><td>Depende del módulo</td><td>Garantizada por diseño declarativo</td></tr>
+        <tr><td><strong>Handlers</strong></td><td>No soporta</td><td>Notificaciones y triggers complejos</td></tr>
+        <tr><td><strong>Condicionales</strong></td><td>No soporta</td><td><code>when</code>, <code>loop</code>, <code>block/rescue</code></td></tr>
+        <tr><td><strong>Tags</strong></td><td>No soporta</td><td>Ejecutar subsets de tareas</td></tr>
+        <tr><td><strong>Caso de uso red</strong></td><td>Verificación rápida (<code>show</code>)</td><td>Configuración masiva y orquestación</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="section-title">El flujo de ejecución de un Playbook</h2>
+  <div class="ans-flow">
+    <div class="ans-box">
+      <div class="ans-box-label">1. PARSEO</div>
+      <div class="ans-box-val">YAML + Inventario</div>
+    </div>
+    <div class="ans-arrow">→</div>
+    <div class="ans-box">
+      <div class="ans-box-label">2. FORKING</div>
+      <div class="ans-box-val">5 hosts paralelos</div>
+    </div>
+    <div class="ans-arrow">→</div>
+    <div class="ans-box">
+      <div class="ans-box-label">3. TASK 1</div>
+      <div class="ans-box-val">En todos los hosts</div>
+    </div>
+    <div class="ans-arrow">→</div>
+    <div class="ans-box">
+      <div class="ans-box-label">4. TASK 2</div>
+      <div class="ans-box-val">En todos los hosts</div>
+    </div>
+    <div class="ans-arrow">→</div>
+    <div class="ans-box">
+      <div class="ans-box-label">5. HANDLERS</div>
+      <div class="ans-box-val">Si hubo cambios</div>
+    </div>
+  </div>
+
+  <h2 class="section-title">Los cuatro pilares de un playbook de red</h2>
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">🎭</div>
+      <h3>Plays</h3>
+      <p>Mapean grupos de hosts a tareas. Un playbook puede tener múltiples plays: primero routers, luego switches, luego firewalls.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">⚡</div>
+      <h3>Tasks</h3>
+      <p>Llamadas a módulos que realizan trabajo. Cada task usa un módulo (ios_config, ios_command) y reporta ok/changed/failed.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🔔</div>
+      <h3>Handlers</h3>
+      <p>Tareas especiales que solo se ejecutan cuando son notificadas por un cambio. Ideales para <code>write memory</code> tras modificar config.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🔁</div>
+      <h3>When / Loop</h3>
+      <p>Condicionales (<code>when</code>) y bucles (<code>loop</code>) que adaptan la ejecución al contexto. Aplicar VLANs solo en switches core, por ejemplo.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🎯</div>
+      <h3>Idempotencia</h3>
+      <p>Ejecuta el playbook una o mil veces: el estado final es idéntico. Ansible solo cambia lo que difiere del estado deseado.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🏷️</div>
+      <h3>Tags</h3>
+      <p>Etiqueta tareas para ejecutar subsets. <code>ansible-playbook site.yml --tags "vlan"</code> solo configura VLANs, saltando el resto.</p>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 2 — PLAYS
+═══════════════════════════════════════════ -->
+<div id="tab-plays" class="ans1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Anatomía de un Play</h2>
+  <p>Un <strong>play</strong> es un mapeo entre un conjunto de hosts y las tareas que se les aplicarán. Es la unidad de ejecución de nivel superior dentro de un playbook. Un playbook puede contener múltiples plays, ejecutándose secuencialmente de arriba hacia abajo.</p>
+  <p>Cada play es un diccionario YAML con directivas que controlan el comportamiento global de esa fase de la automatización.</p>
+
+  <div class="code-block">
+    <div class="code-label">play_completo.yml — Directivas de un play</div>
+    <pre><code><span class="kw">---</span>
+- <span class="fn">name</span>: <span class="str">"Configurar routers Cisco WAN"</span>
+  <span class="fn">hosts</span>: cisco_routers
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+  <span class="fn">connection</span>: network_cli
+
+  <span class="fn">vars</span>:
+    <span class="fn">ntp_server_primario</span>: <span class="str">"10.0.0.254"</span>
+    <span class="fn">syslog_server</span>: <span class="str">"10.0.0.253"</span>
+
+  <span class="fn">vars_files</span>:
+    - <span class="str">"secrets/vault.yml"</span>
+
+  <span class="fn">become</span>: <span class="kw">yes</span>
+  <span class="fn">become_method</span>: enable
+
+  <span class="fn">strategy</span>: linear
+  <span class="fn">serial</span>: <span class="num">3</span>
+
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Configurar NTP"</span>
+      <span class="fn">cisco.ios.ios_config</span>:
+        <span class="fn">lines</span>:
+          - <span class="str">"ntp server {{ ntp_server_primario }}"</span>
+
+  <span class="fn">handlers</span>:
+    - <span class="fn">name</span>: <span class="str">"Guardar configuración"</span>
+      <span class="fn">cisco.ios.ios_command</span>:
+        <span class="fn">commands</span>: <span class="str">"write memory"</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Directivas fundamentales de un play</h2>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead>
+        <tr><th>Directiva</th><th>Descripción</th><th>Ejemplo típico</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>name</code></td><td>Descripción legible del play (aparece en output)</td><td><code>"Configurar switches core"</code></td></tr>
+        <tr><td><code>hosts</code></td><td>Grupo o patrón de hosts del inventario</td><td><code>cisco_switches</code>, <code>all</code>, <code>R1</code></td></tr>
+        <tr><td><code>gather_facts</code></td><td>Recopilar facts del sistema. En red suele ser <code>no</code></td><td><code>no</code>, <code>yes</code></td></tr>
+        <tr><td><code>connection</code></td><td>Plugin de conexión</td><td><code>network_cli</code>, <code>local</code>, <code>httpapi</code></td></tr>
+        <tr><td><code>vars</code></td><td>Diccionario de variables inline</td><td><code>ntp_server: "10.0.0.1"</code></td></tr>
+        <tr><td><code>vars_files</code></td><td>Lista de archivos YAML externos con variables</td><td><code>- "vars/produccion.yml"</code></td></tr>
+        <tr><td><code>become</code></td><td>Escalar privilegios</td><td><code>yes</code></td></tr>
+        <tr><td><code>become_method</code></td><td>Método de escalado</td><td><code>enable</code> (Cisco), <code>sudo</code></td></tr>
+        <tr><td><code>tags</code></td><td>Etiquetas para ejecutar solo este play</td><td><code>- "produccion"</code></td></tr>
+        <tr><td><code>strategy</code></td><td>Estrategia de ejecución</td><td><code>linear</code>, <code>free</code>, <code>debug</code></td></tr>
+        <tr><td><code>serial</code></td><td>Número de hosts simultáneos (rolling update)</td><td><code>3</code>, <code>"30%"</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="section-title">Múltiples plays en un solo playbook</h2>
+  <p>La verdadera potencia de Ansible aparece cuando orquestas diferentes tipos de dispositivos en secuencia. Primero configuras routers, luego switches, luego verificas conectividad end-to-end:</p>
+
+  <div class="code-block">
+    <div class="code-label">multiples_plays.yml — Orquestación completa</div>
+    <pre><code><span class="kw">---</span>
+- <span class="fn">name</span>: <span class="str">"PASO 1: Configurar routers WAN"</span>
+  <span class="fn">hosts</span>: cisco_routers
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Aplicar configuración BGP"</span>
+      <span class="fn">cisco.ios.ios_config</span>:
+        <span class="fn">src</span>: <span class="str">"templates/bgp_config.j2"</span>
+
+- <span class="fn">name</span>: <span class="str">"PASO 2: Configurar switches core"</span>
+  <span class="fn">hosts</span>: cisco_switches
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Configurar VLANs de producción"</span>
+      <span class="fn">cisco.ios.ios_vlans</span>:
+        <span class="fn">config</span>:
+          - <span class="fn">vlan_id</span>: <span class="num">10</span>
+            <span class="fn">name</span>: <span class="str">"VENTAS"</span>
+
+- <span class="fn">name</span>: <span class="str">"PASO 3: Verificar conectividad"</span>
+  <span class="fn">hosts</span>: localhost
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Ping desde servidor de monitoreo"</span>
+      <span class="fn">ansible.builtin.ping</span>:
+        <span class="fn">data</span>: <span class="str">"alive"</span></code></pre>
+  </div>
+
+  <div class="info-box info">
+    <div class="info-box-title">ℹ️ Estrategia de ejecución: linear vs. free</div>
+    <p>Por defecto, Ansible usa <code>strategy: linear</code>: cada task debe completarse en TODOS los hosts antes de pasar a la siguiente task. Con <code>strategy: free</code>, cada host avanza independientemente. Para redes, <code>linear</code> es más seguro porque te permite detectar fallos temprano antes de propagar cambios.</p>
+  </div>
+
+  <h2 class="section-title">gather_facts en entornos de red</h2>
+  <p>En servidores Linux, <code>gather_facts: yes</code> recopila información del sistema (CPU, memoria, OS). En dispositivos de red Cisco, el módulo equivalente es <code>ios_facts</code> o <code>nxos_facts</code>. Por defecto, desactiva <code>gather_facts</code> en plays de red para ahorrar tiempo, y usa los módulos específicos de facts cuando los necesites.</p>
+
+  <div class="code-block">
+    <div class="code-label">facts_red.yml — Recopilación selectiva en Cisco</div>
+    <pre><code>- <span class="fn">name</span>: <span class="str">"Obtener información de hardware"</span>
+  <span class="fn">hosts</span>: cisco_routers
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Recopilar facts del router"</span>
+      <span class="fn">cisco.ios.ios_facts</span>:
+        <span class="fn">gather_subset</span>:
+          - <span class="str">"hardware"</span>
+          - <span class="str">"interfaces"</span>
+      <span class="fn">register</span>: <span class="str">"router_facts"</span>
+
+    - <span class="fn">name</span>: <span class="str">"Mostrar versión de IOS"</span>
+      <span class="fn">ansible.builtin.debug</span>:
+        <span class="fn">msg</span>: <span class="str">"El router {{ inventory_hostname }} ejecuta {{ router_facts.ansible_facts.ansible_net_version }}"</span></code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 3 — TASKS
+═══════════════════════════════════════════ -->
+<div id="tab-tasks" class="ans1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Tasks: la unidad atómica de trabajo</h2>
+  <p>Una <strong>task</strong> es una llamada a un módulo de Ansible con argumentos específicos. Es la acción más pequeña que puedes ejecutar. Las tasks se procesan secuencialmente dentro de un play, y Ansible espera a que cada task termine en todos los hosts antes de pasar a la siguiente.</p>
+  <p>Cada task debe tener un <code>name</code> descriptivo. Aunque es opcional, es obligatorio para mantenibilidad: el output de Ansible mostrará este nombre mientras ejecuta, facilitando la depuración.</p>
+
+  <div class="code-block">
+    <div class="code-label">tasks_ejemplo.yml — Estructura de tasks</div>
+    <pre><code><span class="kw">---</span>
+- <span class="fn">name</span>: <span class="str">"Configurar switches de acceso"</span>
+  <span class="fn">hosts</span>: cisco_switches
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Asegurar que la VLAN 10 existe"</span>
+      <span class="fn">cisco.ios.ios_config</span>:
+        <span class="fn">lines</span>:
+          - <span class="str">"vlan 10"</span>
+          - <span class="str">" name VENTAS"</span>
+
+    - <span class="fn">name</span>: <span class="str">"Configurar descripción de interfaz"</span>
+      <span class="fn">cisco.ios.ios_config</span>:
+        <span class="fn">lines</span>:
+          - <span class="str">"interface GigabitEthernet1/0/1"</span>
+          - <span class="str">" description Enlace a Router WAN"</span>
+        <span class="fn">parents</span>: <span class="str">"interface GigabitEthernet1/0/1"</span>
+
+    - <span class="fn">name</span>: <span class="str">"Verificar estado de interfaces"</span>
+      <span class="fn">cisco.ios.ios_command</span>:
+        <span class="fn">commands</span>:
+          - <span class="str">"show ip interface brief"</span>
+      <span class="fn">register</span>: <span class="str">"output_interfaces"</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Módulos esenciales para redes Cisco</h2>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead>
+        <tr><th>Módulo</th><th>Propósito</th><th>Ejemplo de uso</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>ios_config</code></td><td>Enviar configuración CLI a IOS/IOS-XE</td><td>Crear VLANs, interfaces, rutas estáticas</td></tr>
+        <tr><td><code>ios_command</code></td><td>Ejecutar comandos show/exec</td><td><code>show version</code>, <code>show running-config</code></td></tr>
+        <tr><td><code>ios_facts</code></td><td>Recopilar información del dispositivo</td><td>Hardware, interfaces, versión de IOS</td></tr>
+        <tr><td><code>ios_vlans</code></td><td>Gestionar VLANs de forma declarativa</td><td>Asegurar que VLANs existan con estados específicos</td></tr>
+        <tr><td><code>ios_banner</code></td><td>Configurar banners MOTD/login</td><td>Avisos legales y de seguridad</td></tr>
+        <tr><td><code>ios_logging</code></td><td>Configurar servidores syslog</td><td>Centralizar logs en servidor Graylog/Splunk</td></tr>
+        <tr><td><code>ios_ntp</code></td><td>Configurar servidores NTP</td><td>Sincronización horaria de red</td></tr>
+        <tr><td><code>ios_static_routes</code></td><td>Gestionar rutas estáticas</td><td>Rutas por defecto o específicas</td></tr>
+        <tr><td><code>nxos_config</code></td><td>Configuración para NX-OS</td><td>Switches Nexus 9K, VLANs, VXLAN</td></tr>
+        <tr><td><code>nxos_command</code></td><td>Comandos show en NX-OS</td><td><code>show vpc</code>, <code>show interface status</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="section-title">Estados de retorno de una task</h2>
+  <p>Ansible reporta el resultado de cada task con un color y estado específico. Entender estos estados es crucial para interpretar la salida de un playbook:</p>
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">🟢</div>
+      <h3>ok</h3>
+      <p>La tarea se ejecutó pero no realizó cambios (idempotencia). El estado deseado ya existía.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🟡</div>
+      <h3>changed</h3>
+      <p>La tarea realizó un cambio en el dispositivo. Se notifica a los handlers si hay <code>notify</code>.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🔴</div>
+      <h3>failed</h3>
+      <p>La tarea falló (comando inválido, credenciales incorrectas, dispositivo inalcanzable). Detiene el play por defecto.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🔵</div>
+      <h3>skipped</h3>
+      <p>La tarea fue omitida por un condicional <code>when</code> que evaluó falso.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">⚫</div>
+      <h3>unreachable</h3>
+      <p>Ansible no pudo conectarse al host (SSH caído, IP inalcanzable). Se reintenta según <code>retries</code>.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🟣</div>
+      <h3>rescued</h3>
+      <p>La tarea falló pero fue capturada por un bloque <code>rescue</code> (manejo de errores).</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">Idempotencia real en redes Cisco</h2>
+  <p>La idempotencia significa que puedes ejecutar el mismo playbook múltiples veces sin efectos secundarios. Los módulos <code>ios_config</code> y <code>nxos_config</code> logran esto comparando la configuración deseada con el running-config actual antes de enviar comandos.</p>
+
+  <div class="code-block">
+    <div class="code-label">idempotencia_real.yml — Solo cambia si es necesario</div>
+    <pre><code><span class="kw">---</span>
+- <span class="fn">name</span>: <span class="str">"Configuración idempotente de SNMP"</span>
+  <span class="fn">hosts</span>: cisco_routers
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Asegurar comunidad SNMP readonly"</span>
+      <span class="fn">cisco.ios.ios_config</span>:
+        <span class="fn">lines</span>:
+          - <span class="str">"snmp-server community {{ snmp_community }} RO"</span>
+        <span class="fn">parents</span>: <span class="str">"snmp-server community {{ snmp_community }} RO"</span>
+        <span class="fn">before</span>: <span class="str">"no snmp-server community {{ snmp_community }}"</span>
+        <span class="fn">match</span>: <span class="str">"exact"</span>
+
+  <span class="fn">vars</span>:
+    <span class="fn">snmp_community</span>: <span class="str">"NetManage2024"</span></code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Tip de idempotencia en ios_config</div>
+    <p>Usa las directivas <code>parents</code>, <code>before</code>, <code>after</code> y <code>match</code> para controlar exactamente cómo Ansible compara la configuración. <code>match: exact</code> asegura que la sección coincida palabra por palabra; <code>match: line</code> es más permisivo y solo verifica que cada línea exista.</p>
+  </div>
+
+  <h2 class="section-title">Tags: ejecutar solo lo que necesitas</h2>
+  <p>Los <strong>tags</strong> permiten etiquetar tareas y ejecutar solo un subconjunto del playbook. Esto es vital cuando tienes un playbook monolítico y solo quieres aplicar una parte (ej. solo NTP, solo VLANs):</p>
+
+  <div class="code-block">
+    <div class="code-label">tags_ejemplo.yml — Ejecución selectiva</div>
+    <pre><code><span class="kw">---</span>
+- <span class="fn">name</span>: <span class="str">"Configuración completa de switches"</span>
+  <span class="fn">hosts</span>: cisco_switches
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Configurar VLANs"</span>
+      <span class="fn">cisco.ios.ios_vlans</span>:
+        <span class="fn">config</span>:
+          - <span class="fn">vlan_id</span>: <span class="num">10</span>
+            <span class="fn">name</span>: <span class="str">"VENTAS"</span>
+      <span class="fn">tags</span>: [<span class="str">"vlan"</span>, <span class="str">"produccion"</span>]
+
+    - <span class="fn">name</span>: <span class="str">"Configurar NTP"</span>
+      <span class="fn">cisco.ios.ios_ntp</span>:
+        <span class="fn">config</span>:
+          - <span class="fn">server</span>: <span class="str">"10.0.0.254"</span>
+            <span class="fn">version</span>: <span class="num">4</span>
+      <span class="fn">tags</span>: [<span class="str">"ntp"</span>, <span class="str">"produccion"</span>]
+
+    - <span class="fn">name</span>: <span class="str">"Configurar Syslog"</span>
+      <span class="fn">cisco.ios.ios_logging</span>:
+        <span class="fn">config</span>:
+          - <span class="fn">dest</span>: <span class="str">"host"</span>
+            <span class="fn">name</span>: <span class="str">"10.0.0.253"</span>
+      <span class="fn">tags</span>: [<span class="str">"syslog"</span>]</code></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">Ejecución con tags</div>
+    <pre><code><span class="cmt"># Ejecutar solo tareas etiquetadas como "vlan"</span>
+ansible-playbook site.yml --tags <span class="str">"vlan"</span>
+
+<span class="cmt"># Ejecutar todo EXCEPTO syslog</span>
+ansible-playbook site.yml --skip-tags <span class="str">"syslog"</span>
+
+<span class="cmt"># Listar todas las tags disponibles en un playbook</span>
+ansible-playbook site.yml --list-tags</code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 4 — HANDLERS
+═══════════════════════════════════════════ -->
+<div id="tab-handlers" class="ans1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Handlers: acciones reactivas ante cambios</h2>
+  <p>Un <strong>handler</strong> es una task especial que solo se ejecuta cuando es <strong>notificada</strong> por otra task que reportó un estado <code>changed</code>. Los handlers se acumulan durante todo el play y se disparan una única vez al final, después de que todas las tasks normales hayan terminado.</p>
+  <p>En redes Cisco, el caso de uso más común es: <em>"Si cambié la configuración de cualquier interfaz, VLAN o ruta, guarda la configuración con write memory al final"</em>. Sin handlers, tendrías que incluir <code>write memory</code> en cada task, lo cual es ineficiente y peligroso.</p>
+
+  <div class="ans-flow">
+    <div class="ans-box">
+      <div class="ans-box-label">TASK 1</div>
+      <div class="ans-box-val">Configura VLAN</div>
+      <div style="font-size:.65rem;color:#8294b8;margin-top:4px;">changed → notify</div>
+    </div>
+    <div class="ans-arrow">→</div>
+    <div class="ans-box">
+      <div class="ans-box-label">TASK 2</div>
+      <div class="ans-box-val">Configura NTP</div>
+      <div style="font-size:.65rem;color:#8294b8;margin-top:4px;">ok → no notify</div>
+    </div>
+    <div class="ans-arrow">→</div>
+    <div class="ans-box">
+      <div class="ans-box-label">TASK 3</div>
+      <div class="ans-box-val">Configura SNMP</div>
+      <div style="font-size:.65rem;color:#8294b8;margin-top:4px;">changed → notify</div>
+    </div>
+    <div class="ans-arrow">→</div>
+    <div class="ans-box" style="border-color:rgba(239,68,68,.4);background:rgba(239,68,68,.08);">
+      <div class="ans-box-label">FIN DEL PLAY</div>
+      <div class="ans-box-val">Handlers ejecutados</div>
+      <div style="font-size:.65rem;color:#8294b8;margin-top:4px;">write memory (1 sola vez)</div>
+    </div>
+  </div>
+
+  <h2 class="section-title">Sintaxis de notify y handlers</h2>
+  <div class="code-block">
+    <div class="code-label">handlers_basico.yml — Guardar config solo si hubo cambios</div>
+    <pre><code><span class="kw">---</span>
+- <span class="fn">name</span>: <span class="str">"Configurar switches con persistencia"</span>
+  <span class="fn">hosts</span>: cisco_switches
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Asegurar VLAN 20"</span>
+      <span class="fn">cisco.ios.ios_config</span>:
+        <span class="fn">lines</span>:
+          - <span class="str">"vlan 20"</span>
+          - <span class="str">" name IT"</span>
+      <span class="fn">notify</span>: <span class="str">"Guardar configuración"</span>
+
+    - <span class="fn">name</span>: <span class="str">"Configurar descripción de uplink"</span>
+      <span class="fn">cisco.ios.ios_config</span>:
+        <span class="fn">lines</span>:
+          - <span class="str">"description Uplink a Core"</span>
+        <span class="fn">parents</span>: <span class="str">"interface GigabitEthernet1/0/24"</span>
+      <span class="fn">notify</span>: <span class="str">"Guardar configuración"</span>
+
+  <span class="fn">handlers</span>:
+    - <span class="fn">name</span>: <span class="str">"Guardar configuración"</span>
+      <span class="fn">cisco.ios.ios_command</span>:
+        <span class="fn">commands</span>: <span class="str">"write memory"</span>
+      <span class="fn">listen</span>: <span class="str">"Guardar configuración"</span></code></pre>
+  </div>
+
+  <h2 class="section-title">listen: notificación por nombre genérico</h2>
+  <p>Además de <code>notify: "Nombre exacto del handler"</code>, puedes usar <code>listen</code> en el handler para crear canales de notificación. Esto permite que múltiples handlers respondan a un mismo evento, o que notifiques con nombres genéricos como <code>"config changed"</code>.</p>
+
+  <div class="code-block">
+    <div class="code-label">handlers_listen.yml — Múltiples acciones por cambio</div>
+    <pre><code><span class="kw">---</span>
+- <span class="fn">name</span>: <span class="str">"Configuración con múltiples reacciones"</span>
+  <span class="fn">hosts</span>: cisco_routers
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Actualizar ACL de entrada"</span>
+      <span class="fn">cisco.ios.ios_config</span>:
+        <span class="fn">lines</span>:
+          - <span class="str">"ip access-list extended BLOCK_BAD"</span>
+          - <span class="str">" deny ip 10.0.99.0 0.0.0.255 any"</span>
+      <span class="fn">notify</span>: <span class="str">"config_changed"</span>
+
+  <span class="fn">handlers</span>:
+    - <span class="fn">name</span>: <span class="str">"Persistir configuración"</span>
+      <span class="fn">cisco.ios.ios_command</span>:
+        <span class="fn">commands</span>: <span class="str">"write memory"</span>
+      <span class="fn">listen</span>: <span class="str">"config_changed"</span>
+
+    - <span class="fn">name</span>: <span class="str">"Enviar log a syslog"</span>
+      <span class="fn">cisco.ios.ios_command</span>:
+        <span class="fn">commands</span>: <span class="str">"send log Cambio aplicado por Ansible"</span>
+      <span class="fn">listen</span>: <span class="str">"config_changed"</span></code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚡ Comportamiento crítico de los handlers</div>
+    <p>Los handlers se ejecutan <strong>una sola vez</strong> por play, incluso si son notificados por múltiples tasks. Si un handler falla, Ansible lo marca como fallido y no lo reintenta para otros hosts a menos que uses <code>force_handlers: true</code> en el play. Además, si un play posterior en el mismo playbook notifica un handler del play anterior, ese handler <strong>no</strong> se ejecutará: los handlers son locales a su play.</p>
+  </div>
+
+  <h2 class="section-title">force_handlers: ejecutar aunque falle una task</h2>
+  <p>Por defecto, si una task falla en un host, Ansible aborta el play para ese host y <strong>no ejecuta los handlers</strong> acumulados. Esto puede dejar el dispositivo con cambios en running-config pero sin guardar. Usa <code>force_handlers: true</code> para garantizar la persistencia:</p>
+
+  <div class="code-block">
+    <div class="code-label">force_handlers.yml — Persistencia garantizada</div>
+    <pre><code><span class="kw">---</span>
+- <span class="fn">name</span>: <span class="str">"Configuración crítica con persistencia forzada"</span>
+  <span class="fn">hosts</span>: cisco_switches
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+  <span class="fn">force_handlers</span>: <span class="kw">true</span>
+
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Configurar VLANs"</span>
+      <span class="fn">cisco.ios.ios_vlans</span>:
+        <span class="fn">config</span>:
+          - <span class="fn">vlan_id</span>: <span class="num">99</span>
+            <span class="fn">name</span>: <span class="str">"NATIVA"</span>
+      <span class="fn">notify</span>: <span class="str">"Guardar config"</span>
+
+    - <span class="fn">name</span>: <span class="str">"Esta task puede fallar"</span>
+      <span class="fn">cisco.ios.ios_command</span>:
+        <span class="fn">commands</span>: <span class="str">"show inventario"</span>
+
+  <span class="fn">handlers</span>:
+    - <span class="fn">name</span>: <span class="str">"Guardar config"</span>
+      <span class="fn">cisco.ios.ios_command</span>:
+        <span class="fn">commands</span>: <span class="str">"write memory"</span></code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 5 — WHEN / LOOP
+═══════════════════════════════════════════ -->
+<div id="tab-when-loop" class="ans1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">When: condicionales que adaptan la ejecución</h2>
+  <p>La directiva <code>when</code> permite ejecutar una task solo si se cumple una condición. En redes Cisco, esto es fundamental para aplicar configuraciones diferentes según el modelo del switch, la ubicación, el rol del dispositivo o el resultado de una task anterior.</p>
+  <p>Ansible evalúa la expresión de <code>when</code> para cada host individualmente. Si la condición es falsa, la task se marca como <code>skipped</code> para ese host y continúa con la siguiente.</p>
+
+  <div class="code-block">
+    <div class="code-label">when_basico.yml — Condicionales por grupo y facts</div>
+    <pre><code><span class="kw">---</span>
+- <span class="fn">name</span>: <span class="str">"Configuración condicional por sitio"</span>
+  <span class="fn">hosts</span>: cisco_devices
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Configurar NTP para Madrid"</span>
+      <span class="fn">cisco.ios.ios_config</span>:
+        <span class="fn">lines</span>: <span class="str">"ntp server 10.1.0.254"</span>
+      <span class="fn">when</span>: <span class="str">"site == 'madrid'"</span>
+
+    - <span class="fn">name</span>: <span class="str">"Configurar NTP para Barcelona"</span>
+      <span class="fn">cisco.ios.ios_config</span>:
+        <span class="fn">lines</span>: <span class="str">"ntp server 10.2.0.254"</span>
+      <span class="fn">when</span>: <span class="str">"site == 'barcelona'"</span>
+
+    - <span class="fn">name</span>: <span class="str">"Aplicar solo en switches core"</span>
+      <span class="fn">cisco.ios.ios_config</span>:
+        <span class="fn">lines</span>: <span class="str">"ip routing"</span>
+      <span class="fn">when</span>:
+        - <span class="str">"'cisco_switches' in group_names"</span>
+        - <span class="str">"device_role == 'core'"</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Operadores y tests comunes en when</h2>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead>
+        <tr><th>Expresión</th><th>Significado</th><th>Ejemplo</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>var == 'valor'</code></td><td>Igualdad</td><td><code>ansible_network_os == 'ios'</code></td></tr>
+        <tr><td><code>var != 'valor'</code></td><td>Desigualdad</td><td><code>site != 'laboratorio'</code></td></tr>
+        <tr><td><code>'sub' in var</code></td><td>Contiene substring</td><td><code>'cisco' in group_names</code></td></tr>
+        <tr><td><code>var is defined</code></td><td>Variable existe</td><td><code>ntp_server is defined</code></td></tr>
+        <tr><td><code>var is not defined</code></td><td>Variable no existe</td><td><code>backup_server is not defined</code></td></tr>
+        <tr><td><code>var | bool</code></td><td>Convertir a booleano</td><td><code>enable_qos | bool</code></td></tr>
+        <tr><td><code>var is none</code></td><td>Variable es null</td><td><code>result.stdout is none</code></td></tr>
+        <tr><td><code>inventory_hostname</code></td><td>Nombre del host actual</td><td><code>inventory_hostname == 'R1'</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="section-title">Loop: iterar sobre listas y diccionarios</h2>
+  <p>Los <strong>loops</strong> permiten ejecutar la misma task múltiples veces con diferentes valores. En redes Cisco, esto es esencial para configurar VLANs, interfaces, rutas estáticas o servidores NTP/Syslog sin repetir código.</p>
+
+  <div class="code-block">
+    <div class="code-label">loop_lista.yml — Crear múltiples VLANs</div>
+    <pre><code><span class="kw">---</span>
+- <span class="fn">name</span>: <span class="str">"Configurar VLANs masivamente"</span>
+  <span class="fn">hosts</span>: cisco_switches
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+
+  <span class="fn">vars</span>:
+    <span class="fn">vlans_red</span>:
+      - { <span class="fn">id</span>: <span class="num">10</span>, <span class="fn">nombre</span>: <span class="str">"VENTAS"</span> }
+      - { <span class="fn">id</span>: <span class="num">20</span>, <span class="fn">nombre</span>: <span class="str">"IT"</span> }
+      - { <span class="fn">id</span>: <span class="num">30</span>, <span class="fn">nombre</span>: <span class="str">"RRHH"</span> }
+      - { <span class="fn">id</span>: <span class="num">40</span>, <span class="fn">nombre</span>: <span class="str">"GUEST"</span> }
+
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Asegurar VLANs existen"</span>
+      <span class="fn">cisco.ios.ios_config</span>:
+        <span class="fn">lines</span>:
+          - <span class="str">"vlan {{ item.id }}"</span>
+          - <span class="str">" name {{ item.nombre }}"</span>
+      <span class="fn">loop</span>: <span class="str">"{{ vlans_red }}"</span>
+      <span class="fn">notify</span>: <span class="str">"Guardar config"</span>
+
+  <span class="fn">handlers</span>:
+    - <span class="fn">name</span>: <span class="str">"Guardar config"</span>
+      <span class="fn">cisco.ios.ios_command</span>:
+        <span class="fn">commands</span>: <span class="str">"write memory"</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Loop con diccionarios: with_dict</h2>
+  <p>Cuando tus datos están estructurados como diccionarios (clave-valor), puedes iterar sobre ellos usando <code>loop</code> con la filtro <code>dict2items</code> o el lookup <code>with_dict</code>:</p>
+
+  <div class="code-block">
+    <div class="code-label">loop_diccionario.yml — Configurar interfaces desde dict</div>
+    <pre><code><span class="kw">---</span>
+- <span class="fn">name</span>: <span class="str">"Configurar interfaces desde diccionario"</span>
+  <span class="fn">hosts</span>: cisco_routers
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+
+  <span class="fn">vars</span>:
+    <span class="fn">interfaces_wan</span>:
+      <span class="fn">GigabitEthernet0/0/0</span>:
+        <span class="fn">desc</span>: <span class="str">"Enlace a ISP Primario"</span>
+        <span class="fn">ip</span>: <span class="str">"203.0.113.1 255.255.255.252"</span>
+      <span class="fn">GigabitEthernet0/0/1</span>:
+        <span class="fn">desc</span>: <span class="str">"Enlace a ISP Backup"</span>
+        <span class="fn">ip</span>: <span class="str">"198.51.100.1 255.255.255.252"</span>
+
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Configurar interfaz WAN"</span>
+      <span class="fn">cisco.ios.ios_config</span>:
+        <span class="fn">lines</span>:
+          - <span class="str">"description {{ item.value.desc }}"</span>
+          - <span class="str">"ip address {{ item.value.ip }}"</span>
+        <span class="fn">parents</span>: <span class="str">"interface {{ item.key }}"</span>
+      <span class="fn">loop</span>: <span class="str">"{{ interfaces_wan | dict2items }}"</span></code></pre>
+  </div>
+
+  <h2 class="section-title">loop_control: personalizar la iteración</h2>
+  <p>La directiva <code>loop_control</code> permite modificar el comportamiento del loop: cambiar el nombre de la variable <code>item</code>, mostrar labels personalizadas, o pausar entre iteraciones:</p>
+
+  <div class="code-block">
+    <div class="code-label">loop_control.yml — Control avanzado de bucles</div>
+    <pre><code><span class="kw">---</span>
+- <span class="fn">name</span>: <span class="str">"Actualización controlada de switches"</span>
+  <span class="fn">hosts</span>: cisco_switches
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+  <span class="fn">serial</span>: <span class="num">1</span>
+
+  <span class="fn">vars</span>:
+    <span class="fn">switches_por_actualizar</span>:
+      - <span class="str">"SW-Acc-01"</span>
+      - <span class="str">"SW-Acc-02"</span>
+      - <span class="str">"SW-Acc-03"</span>
+
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Aplicar cambio en switch"</span>
+      <span class="fn">cisco.ios.ios_config</span>:
+        <span class="fn">lines</span>: <span class="str">"spanning-tree portfast default"</span>
+      <span class="fn">loop</span>: <span class="str">"{{ switches_por_actualizar }}"</span>
+      <span class="fn">loop_control</span>:
+        <span class="fn">loop_var</span>: <span class="str">"switch_item"</span>
+        <span class="fn">label</span>: <span class="str">"Procesando {{ switch_item }}"</span>
+        <span class="fn">pause</span>: <span class="num">5</span>
+      <span class="fn">when</span>: <span class="str">"inventory_hostname == switch_item"</span></code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Combinación when + loop</div>
+    <p>Puedes combinar <code>when</code> y <code>loop</code> en la misma task. Ansible evalúa el <code>when</code> para CADA iteración del loop. Esto permite filtrar elementos de la lista dinámicamente. Ejemplo: <code>loop: "{{ all_vlans }}" when: "item.site == site"</code> solo procesa las VLANs del sitio actual.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 6 — YAML AVANZADO
+═══════════════════════════════════════════ -->
+<div id="tab-yaml-avanzado" class="ans1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">YAML avanzado para playbooks profesionales</h2>
+  <p> Dominar YAML más allá de la sintaxis básica te permite escribir playbooks más compactos, reutilizables y libres de errores. Estas técnicas son especialmente útiles cuando trabajas con configuraciones de red extensas.</p>
+
+  <h2 class="section-title">Anchors (&) y Aliases (*): reutilizar bloques</h2>
+  <p>Los <strong>anchors</strong> permiten marcar una sección de YAML para reutilizarla posteriormente con un <strong>alias</strong>. Esto evita repetir configuraciones comunes (como credenciales o parámetros de conexión) en múltiples plays.</p>
+
+  <div class="code-block">
+    <div class="code-label">yaml_anchors.yml — Reutilización de bloques</div>
+    <pre><code><span class="kw">---</span>
+<span class="cmt"># Definimos un anchor con credenciales comunes</span>
+<span class="fn">conexion_cisco</span>: &<span class="fn">cisco_defaults</span>
+  <span class="fn">ansible_connection</span>: network_cli
+  <span class="fn">ansible_network_os</span>: ios
+  <span class="fn">ansible_user</span>: admin
+  <span class="fn">ansible_become</span>: <span class="kw">yes</span>
+  <span class="fn">ansible_become_method</span>: enable
+
+<span class="fn">conexion_nxos</span>: &<span class="fn">nxos_defaults</span>
+  <span class="fn">ansible_connection</span>: network_cli
+  <span class="fn">ansible_network_os</span>: nxos
+  <span class="fn">ansible_user</span>: admin
+
+<span class="kw">---</span>
+- <span class="fn">name</span>: <span class="str">"Configurar routers IOS"</span>
+  <span class="fn">hosts</span>: cisco_routers
+  <span class="fn">vars</span>:
+    <span class="cmt"># Reutilizamos el anchor con el alias *</span>
+    <<<: *<span class="fn">cisco_defaults</span>
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Configurar hostname"</span>
+      <span class="fn">cisco.ios.ios_config</span>:
+        <span class="fn">lines</span>: <span class="str">"hostname {{ inventory_hostname }}"</span>
+
+- <span class="fn">name</span>: <span class="str">"Configurar switches Nexus"</span>
+  <span class="fn">hosts</span>: nexus_switches
+  <span class="fn">vars</span>:
+    <<<: *<span class="fn">nxos_defaults</span>
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Crear VLAN"</span>
+      <span class="fn">cisco.nxos.nxos_vlans</span>:
+        <span class="fn">config</span>:
+          - <span class="fn">vlan_id</span>: <span class="num">10</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Multilinea: literal (|) y folded (>)</h2>
+  <p>En redes Cisco, a menudo necesitas pasar bloques de configuración multilinea. YAML ofrece dos operadores:</p>
+  <ul>
+    <li><code>|</code> (pipe): Preserva saltos de línea y espacios. Cada línea del bloque se convierte en un elemento de lista o un string con newlines.</li>
+    <li><code>></code> (folded): Reemplaza saltos de línea por espacios. Útil para descripciones largas en una sola línea lógica.</li>
+  </ul>
+
+  <div class="code-block">
+    <div class="code-label">yaml_multilinea.yml — Bloques de configuración</div>
+    <pre><code><span class="kw">---</span>
+- <span class="fn">name</span>: <span class="str">"Aplicar ACL multilinea"</span>
+  <span class="fn">hosts</span>: cisco_routers
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+
+  <span class="fn">vars</span>:
+    <span class="cmt"># Literal: preserva saltos de línea para ios_config</span>
+    <span class="fn">acl_entrada</span>: |
+      ip access-list extended ENTRADA_INTERNET
+       permit tcp any any eq 80
+       permit tcp any any eq 443
+       deny ip 10.0.0.0 0.255.255.255 any log
+       permit ip any any
+
+    <span class="cmt"># Folded: descripción larga en una línea</span>
+    <span class="fn">banner_motd</span>: >
+      Acceso autorizado unicamente.
+      Todo intento de conexion no autorizada sera registrado
+      y reportado a las autoridades competentes.
+
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Aplicar ACL"</span>
+      <span class="fn">cisco.ios.ios_config</span>:
+        <span class="fn">lines</span>: <span class="str">"{{ acl_entrada | split('\n') }}"</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Cuidado con tipos de datos implícitos</h2>
+  <p>YAML 1.1 (usado por Ansible) interpreta ciertos strings como booleanos. Esto es una fuente clásica de bugs en configuraciones de red:</p>
+
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead>
+        <tr><th>Valor escrito</th><th>YAML lo interpreta como</th><th>Solución</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>yes</code>, <code>no</code></td><td>Booleano true/false</td><td><code>"yes"</code>, <code>"no"</code> (entre comillas)</td></tr>
+        <tr><td><code>on</code>, <code>off</code></td><td>Booleano true/false</td><td><code>"on"</code>, <code>"off"</code></td></tr>
+        <tr><td><code>1.10</code></td><td>Float 1.1</td><td><code>"1.10"</code> (preservar el cero final)</td></tr>
+        <tr><td><code>10.08</code></td><td>Error (octal inválido)</td><td><code>"10.08"</code></td></tr>
+        <tr><td><code>192.168.1.010</code></td><td>Octal (pierde el 10)</td><td><code>"192.168.1.010"</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚡ Trampa clásica en versiones IOS</div>
+    <p>Si defines <code>version: 1.10</code> en YAML para una variable de IOS, Ansible lo envía como <code>1.1</code> (float). Si la versión exacta es crítica (ej. para validación de compatibilidad), siempre usa comillas: <code>version: "1.10"</code>.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 7 — PRÁCTICAS CISCO
+═══════════════════════════════════════════ -->
+<div id="tab-practicas" class="ans1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Playbooks prácticos para redes Cisco</h2>
+  <p>Esta sección contiene tres playbooks completos, documentados línea por línea, que puedes usar directamente en producción o adaptar a tu entorno. Representan los casos de uso más comunes: backup masivo, configuración inicial estandarizada y verificación post-cambio.</p>
+
+  <h2 class="section-title">Playbook 1: Backup masivo de configuraciones</h2>
+  <p>Este playbook se conecta a todos los dispositivos Cisco, extrae el running-config y lo guarda localmente con timestamp. Es el primer playbook que debe implementar cualquier equipo de red antes de tocar configuraciones.</p>
+
+  <div class="code-block">
+    <div class="code-label">backup_configuraciones.yml — Backup con timestamp</div>
+    <pre><code><span class="kw">---</span>
+- <span class="fn">name</span>: <span class="str">"BACKUP: Guardar configuraciones de todos los dispositivos"</span>
+  <span class="fn">hosts</span>: cisco_routers:cisco_switches
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+  <span class="fn">connection</span>: network_cli
+
+  <span class="fn">vars</span>:
+    <span class="fn">backup_dir</span>: <span class="str">"./backups/{{ ansible_date_time.date }}"</span>
+
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Asegurar que el directorio de backup existe"</span>
+      <span class="fn">ansible.builtin.file</span>:
+        <span class="fn">path</span>: <span class="str">"{{ backup_dir }}"</span>
+        <span class="fn">state</span>: directory
+      <span class="fn">delegate_to</span>: localhost
+      <span class="fn">run_once</span>: <span class="kw">yes</span>
+
+    - <span class="fn">name</span>: <span class="str">"Obtener running-config del dispositivo"</span>
+      <span class="fn">cisco.ios.ios_command</span>:
+        <span class="fn">commands</span>:
+          - <span class="str">"show running-config"</span>
+      <span class="fn">register</span>: <span class="str">"running_config"</span>
+
+    - <span class="fn">name</span>: <span class="str">"Guardar configuración en archivo local"</span>
+      <span class="fn">ansible.builtin.copy</span>:
+        <span class="fn">content</span>: <span class="str">"{{ running_config.stdout[0] }}"</span>
+        <span class="fn">dest</span>: <span class="str">"{{ backup_dir }}/{{ inventory_hostname }}.cfg"</span>
+      <span class="fn">delegate_to</span>: localhost
+
+    - <span class="fn">name</span>: <span class="str">"Confirmar backup exitoso"</span>
+      <span class="fn">ansible.builtin.debug</span>:
+        <span class="fn">msg</span>: <span class="str">"Backup guardado: {{ backup_dir }}/{{ inventory_hostname }}.cfg"</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Playbook 2: Configuración inicial estandarizada</h2>
+  <p>Este playbook aplica una configuración base (baseline) a switches de acceso nuevos: VLANs, NTP, SNMP, SSH hardening y banner. Usa variables por grupo y handlers para persistir.</p>
+
+  <div class="code-block">
+    <div class="code-label">baseline_switches.yml — Configuración base completa</div>
+    <pre><code><span class="kw">---</span>
+- <span class="fn">name</span>: <span class="str">"BASELINE: Configurar switches de acceso nuevos"</span>
+  <span class="fn">hosts</span>: cisco_switches
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+  <span class="fn">connection</span>: network_cli
+
+  <span class="fn">vars</span>:
+    <span class="fn">vlans</span>:
+      - { <span class="fn">id</span>: <span class="num">10</span>, <span class="fn">name</span>: <span class="str">"VENTAS"</span> }
+      - { <span class="fn">id</span>: <span class="num">20</span>, <span class="fn">name</span>: <span class="str">"IT"</span> }
+      - { <span class="fn">id</span>: <span class="num">99</span>, <span class="fn">name</span>: <span class="str">"NATIVA"</span> }
+    <span class="fn">ntp_servers</span>:
+      - <span class="str">"10.0.0.254"</span>
+      - <span class="str">"10.0.0.253"</span>
+    <span class="fn">snmp_community</span>: <span class="str">"NetManage2024"</span>
+    <span class="fn">syslog_server</span>: <span class="str">"10.0.0.100"</span>
+
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"1. Configurar hostname"</span>
+      <span class="fn">cisco.ios.ios_config</span>:
+        <span class="fn">lines</span>: <span class="str">"hostname {{ inventory_hostname }}"</span>
+      <span class="fn">notify</span>: <span class="str">"Guardar configuracion"</span>
+
+    - <span class="fn">name</span>: <span class="str">"2. Crear VLANs"</span>
+      <span class="fn">cisco.ios.ios_vlans</span>:
+        <span class="fn">config</span>:
+          - <span class="fn">vlan_id</span>: <span class="str">"{{ item.id }}"</span>
+            <span class="fn">name</span>: <span class="str">"{{ item.name }}"</span>
+      <span class="fn">loop</span>: <span class="str">"{{ vlans }}"</span>
+      <span class="fn">notify</span>: <span class="str">"Guardar configuracion"</span>
+
+    - <span class="fn">name</span>: <span class="str">"3. Configurar NTP"</span>
+      <span class="fn">cisco.ios.ios_config</span>:
+        <span class="fn">lines</span>: <span class="str">"ntp server {{ item }}"</span>
+      <span class="fn">loop</span>: <span class="str">"{{ ntp_servers }}"</span>
+      <span class="fn">notify</span>: <span class="str">"Guardar configuracion"</span>
+
+    - <span class="fn">name</span>: <span class="str">"4. Configurar SNMP readonly"</span>
+      <span class="fn">cisco.ios.ios_config</span>:
+        <span class="fn">lines</span>: <span class="str">"snmp-server community {{ snmp_community }} RO"</span>
+      <span class="fn">notify</span>: <span class="str">"Guardar configuracion"</span>
+
+    - <span class="fn">name</span>: <span class="str">"5. Configurar Syslog"</span>
+      <span class="fn">cisco.ios.ios_config</span>:
+        <span class="fn">lines</span>:
+          - <span class="str">"logging {{ syslog_server }}"</span>
+          - <span class="str">"logging trap informational"</span>
+      <span class="fn">notify</span>: <span class="str">"Guardar configuracion"</span>
+
+    - <span class="fn">name</span>: <span class="str">"6. Hardening SSH v2"</span>
+      <span class="fn">cisco.ios.ios_config</span>:
+        <span class="fn">lines</span>:
+          - <span class="str">"ip ssh version 2"</span>
+          - <span class="str">"ip ssh time-out 60"</span>
+          - <span class="str">"ip ssh authentication-retries 3"</span>
+      <span class="fn">notify</span>: <span class="str">"Guardar configuracion"</span>
+
+    - <span class="fn">name</span>: <span class="str">"7. Configurar banner MOTD"</span>
+      <span class="fn">cisco.ios.ios_banner</span>:
+        <span class="fn">banner</span>: motd
+        <span class="fn">text</span>: |
+          Acceso autorizado unicamente.
+          Desconexion inmediata si no tiene permiso.
+        <span class="fn">state</span>: present
+      <span class="fn">notify</span>: <span class="str">"Guardar configuracion"</span>
+
+  <span class="fn">handlers</span>:
+    - <span class="fn">name</span>: <span class="str">"Guardar configuracion"</span>
+      <span class="fn">cisco.ios.ios_command</span>:
+        <span class="fn">commands</span>: <span class="str">"write memory"</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Playbook 3: Verificación post-cambio con assert</h2>
+  <p>Este playbook ejecuta comandos show después de un cambio y valida que el resultado contenga los valores esperados. Si algo falla, el playbook reporta error inmediatamente:</p>
+
+  <div class="code-block">
+    <div class="code-label">verificacion_post_cambio.yml — Validación automática</div>
+    <pre><code><span class="kw">---</span>
+- <span class="fn">name</span>: <span class="str">"VERIFICACION: Validar cambios aplicados"</span>
+  <span class="fn">hosts</span>: cisco_switches
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Verificar que VLAN 10 existe"</span>
+      <span class="fn">cisco.ios.ios_command</span>:
+        <span class="fn">commands</span>: <span class="str">"show vlan brief"</span>
+      <span class="fn">register</span>: <span class="str">"vlan_output"</span>
+
+    - <span class="fn">name</span>: <span class="str">"Validar que VLAN 10 esta presente"</span>
+      <span class="fn">ansible.builtin.assert</span>:
+        <span class="fn">that</span>:
+          - <span class="str">"'10  VENTAS' in vlan_output.stdout[0]"</span>
+        <span class="fn">fail_msg</span>: <span class="str">"ERROR: La VLAN 10 no se encuentra configurada"</span>
+        <span class="fn">success_msg</span>: <span class="str">"VLAN 10 verificada correctamente"</span>
+
+    - <span class="fn">name</span>: <span class="str">"Verificar estado de interfaz uplink"</span>
+      <span class="fn">cisco.ios.ios_command</span>:
+        <span class="fn">commands</span>: <span class="str">"show ip interface brief GigabitEthernet1/0/24"</span>
+      <span class="fn">register</span>: <span class="str">"int_status"</span>
+
+    - <span class="fn">name</span>: <span class="str">"Validar que uplink esta UP/UP"</span>
+      <span class="fn">ansible.builtin.assert</span>:
+        <span class="fn">that</span>:
+          - <span class="str">"'up' in int_status.stdout[0]"</span>
+          - <span class="str">"'up' in int_status.stdout[0].split()[-1]"</span>
+        <span class="fn">fail_msg</span>: <span class="str">"CRITICO: El uplink no esta levantado"</span></code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Patrón de orquestación recomendado</div>
+    <p>En producción, ejecuta siempre en este orden: <strong>1) Backup</strong> (playbook 1), <strong>2) Cambio</strong> (playbook 2 con <code>--check --diff</code> primero), <strong>3) Verificación</strong> (playbook 3). Solo si la verificación pasa, considera el cambio exitoso. Este patrón elimina el 90% de los rollbacks manuales.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 8 — REFERENCIA
+═══════════════════════════════════════════ -->
+<div id="tab-referencia" class="ans1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Tabla de Referencia — Playbooks YAML</h2>
+  <div id="refTableAns1"></div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 9 — QUIZ
+═══════════════════════════════════════════ -->
+<div id="tab-quiz" class="ans1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Quiz — Playbooks YAML y Automatización</h2>
+  <p style="font-size:.83rem;color:#6b7a9a;margin-bottom:20px;">10 preguntas estilo CCNA Domain 6.6. Evalúa tu comprensión de plays, tasks, handlers, condicionales y bucles en Ansible.</p>
+  <div id="quizContainerAns1"></div>
+</div>
+</div>
+
+</div><!-- /.tabs-wrap -->
+
+<script>
+// ── NAVEGACIÓN DRAWER ────────────────────────────────
+function ccnaToggle() {
+  document.getElementById('ccnaDrawer').classList.toggle('open');
+  document.getElementById('ccnaOverlay').classList.toggle('show');
+}
+function ccnaClose() {
+  document.getElementById('ccnaDrawer').classList.remove('open');
+  document.getElementById('ccnaOverlay').classList.remove('show');
+}
+
+// ── TABS ──────────────────────────────────────────────
+function showTabAns1(id, btn) {
+  document.querySelectorAll('.ans1-tab-content').forEach(t => t.classList.remove('ans1-active'));
+  document.querySelectorAll('.ans1-tab-btn').forEach(b => b.classList.remove('ans1-active'));
+  document.getElementById('tab-' + id).classList.add('ans1-active');
+  if (btn) btn.classList.add('ans1-active');
+}
+
+// ── TABLA DE REFERENCIA ──────────────────────────────
+function buildRefTable() {
+  var container = document.getElementById('refTableAns1');
+  if (!container) return;
+
+  var secciones = [
+    {
+      titulo: 'DIRECTIVAS DE UN PLAY',
+      cols: ['Directiva','Descripción','Ejemplo'],
+      filas: [
+        ['name','Descripción legible del play','"Configurar routers WAN"'],
+        ['hosts','Grupo o patrón de hosts','cisco_routers, all, R1'],
+        ['gather_facts','Recopilar facts del sistema','no (redes), yes (servidores)'],
+        ['connection','Plugin de conexión','network_cli, httpapi, local'],
+        ['vars','Variables inline del play','ntp_server: "10.0.0.1"'],
+        ['vars_files','Archivos externos de variables','- "secrets.yml"'],
+        ['become','Escalar privilegios','yes'],
+        ['become_method','Método de escalado','enable (Cisco), sudo'],
+        ['strategy','Estrategia de ejecución','linear (default), free'],
+        ['serial','Hosts simultáneos (rolling)','3, "30%"'],
+        ['force_handlers','Ejecutar handlers aunque falle','true'],
+        ['tags','Etiquetas para ejecución selectiva','- "produccion"']
+      ]
+    },
+    {
+      titulo: 'MÓDULOS CISCO MÁS UTILIZADOS',
+      cols: ['Módulo','Función','Caso de uso'],
+      filas: [
+        ['ios_config','Enviar configuración CLI','VLANs, interfaces, ACLs, rutas'],
+        ['ios_command','Ejecutar show/exec','Verificación, recolección de datos'],
+        ['ios_facts','Recopilar información','Hardware, versión IOS, interfaces'],
+        ['ios_vlans','Gestionar VLANs declarativo','Asegurar VLANs específicas'],
+        ['ios_banner','Configurar banners','MOTD, login, exec'],
+        ['ios_logging','Servidores syslog','Centralización de logs'],
+        ['ios_ntp','Configurar NTP','Sincronización horaria'],
+        ['nxos_config','Configuración Nexus','Switches Nexus 9K, VXLAN'],
+        ['nxos_command','Comandos Nexus','show vpc, interface status']
+      ]
+    },
+    {
+      titulo: 'ESTADOS DE RETORNO DE TASKS',
+      cols: ['Estado','Color','Significado'],
+      filas: [
+        ['ok','Verde','Sin cambios, estado deseado ya existía'],
+        ['changed','Amarillo','Se realizó un cambio en el dispositivo'],
+        ['failed','Rojo','Error en la ejecución'],
+        ['skipped','Azul','Omitido por condicional when'],
+        ['unreachable','Gris','No se pudo conectar al host'],
+        ['rescued','Morado','Fallo capturado por block/rescue']
+      ]
+    },
+    {
+      titulo: 'HANDLERS VS. TASKS NORMALES',
+      cols: ['Característica','Task normal','Handler'],
+      filas: [
+        ['Ejecución','Inmediata (secuencial)','Diferida (final del play)'],
+        ['Disparador','Siempre','Solo si notify + changed'],
+        ['Frecuencia','Una vez por task','Una vez por play (acumulativo)'],
+        ['Caso de uso red','Configurar VLAN','Guardar config (write memory)'],
+        ['force_handlers','No aplica','Ejecuta aunque falle una task']
+      ]
+    },
+    {
+      titulo: 'CONDICIONALES Y BUCLES',
+      cols: ['Directiva','Descripción','Ejemplo'],
+      filas: [
+        ['when','Ejecutar solo si condición es verdadera','when: site == "madrid"'],
+        ['loop','Iterar sobre lista','loop: "{{ vlans }}"'],
+        ['loop_control','Personalizar iteración','loop_var, label, pause'],
+        ['with_items','Loop legacy (equivalente a loop)','with_items: "{{ list }}"'],
+        ['with_dict','Iterar diccionario','with_dict: "{{ interfaces }}"'],
+        ['register','Guardar resultado en variable','register: output'],
+        ['delegate_to','Ejecutar task en otro host','delegate_to: localhost']
+      ]
+    },
+    {
+      titulo: 'COMANDOS CLI ESENCIALES',
+      cols: ['Comando','Descripción'],
+      filas: [
+        ['ansible-playbook site.yml','Ejecutar playbook completo'],
+        ['ansible-playbook site.yml --check','Modo simulación (dry run)'],
+        ['ansible-playbook site.yml --diff','Mostrar diferencias de cambios'],
+        ['ansible-playbook site.yml --tags "vlan"','Ejecutar solo tasks con tag'],
+        ['ansible-playbook site.yml --skip-tags "test"','Omitir tasks con tag'],
+        ['ansible-playbook site.yml --limit R1','Ejecutar solo en host R1'],
+        ['ansible-playbook site.yml --start-at-task','Iniciar desde task específica'],
+        ['ansible-playbook site.yml --step','Confirmar cada task interactivamente']
+      ]
+    }
+  ];
+
+  var html = '';
+  secciones.forEach(function(sec) {
+    html += '<h3 style="font-family:Orbitron,sans-serif;font-size:.8rem;color:#ef4444;letter-spacing:2px;margin:24px 0 10px;text-transform:uppercase;">▸ ' + sec.titulo + '</h3>';
+    html += '<div class="table-wrap"><table class="ref-table"><thead><tr>';
+    sec.cols.forEach(function(c) { html += '<th>' + c + '</th>'; });
+    html += '</tr></thead><tbody>';
+    sec.filas.forEach(function(f) {
+      html += '<tr>';
+      f.forEach(function(c) { html += '<td>' + c + '</td>'; });
+      html += '</tr>';
+    });
+    html += '</tbody></table></div>';
+  });
+  container.innerHTML = html;
+}
+
+// ── QUIZ ─────────────────────────────────────────────
+function initQuiz() {
+  var container = document.getElementById('quizContainerAns1');
+  if (!container) return;
+
+  var qs = [
+    {
+      q: '¿Qué directiva en un play define el grupo de hosts del inventario sobre el que se ejecutarán las tareas?',
+      opts: ['tasks','hosts','name','connection'],
+      ans: 1,
+      exp: 'La directiva <strong>hosts</strong> mapea el play a un grupo o patrón del inventario (ej. <code>cisco_routers</code>, <code>all</code>). Sin ella, Ansible no sabría a qué dispositivos aplicar las tasks.'
+    },
+    {
+      q: '¿Cuál es la diferencia principal entre un comando ad-hoc y un playbook?',
+      opts: ['Los ad-hoc usan Python y los playbooks usan YAML','Los ad-hoc son para una sola tarea; los playbooks son repetibles, versionables y pueden contener múltiples plays','Los ad-hoc son más seguros que los playbooks','Los playbooks no soportan idempotencia'],
+      ans: 1,
+      exp: 'Los <strong>comandos ad-hoc</strong> son de un solo uso en línea de comandos. Los <strong>playbooks</strong> son archivos YAML declarativos que contienen plays, tasks, handlers y pueden versionarse en Git. Son la unidad central de automatización en Ansible.'
+    },
+    {
+      q: 'Un handler en Ansible se ejecuta:',
+      opts: ['Inmediatamente después de cada task','Solo al final del play, y solo si fue notificado por una task que reportó "changed"','Antes de las tasks normales','Solo si el playbook falla'],
+      ans: 1,
+      exp: 'Los <strong>handlers</strong> se acumulan durante el play y se ejecutan <strong>una sola vez al final</strong>, solo si fueron notificados por una task que realizó cambios (<code>changed</code>). Son ideales para acciones como <code>write memory</code>.'
+    },
+    {
+      q: '¿Qué directiva se usa para ejecutar una task solo si se cumple una condición específica?',
+      opts: ['loop','notify','when','register'],
+      ans: 2,
+      exp: 'La directiva <strong>when</strong> evalúa una expresión condicional. Si es verdadera, la task se ejecuta; si es falsa, se marca como <code>skipped</code>. Permite adaptar la automatización al contexto de cada dispositivo.'
+    },
+    {
+      q: '¿Cuál es el propósito de la directiva "register" en una task?',
+      opts: ['Registrar la task en un handler','Guardar el resultado de la task en una variable para usar posteriormente','Registrar el playbook en el inventario','Crear una variable de grupo'],
+      ans: 1,
+      exp: '<strong>register</strong> captura la salida de una task (stdout, rc, changed, failed) en una variable. Luego puedes usar esa variable en condicionales (<code>when</code>), debug o asserts para tomar decisiones basadas en el resultado.'
+    },
+    {
+      q: 'En un playbook de red Cisco, ¿por qué se recomienda usar "gather_facts: no"?',
+      opts: ['Porque los routers Cisco no tienen CPU','Para ahorrar tiempo, ya que los facts de Linux no aplican a dispositivos de red; se usan módulos específicos como ios_facts','Porque está prohibido por el examen CCNA','Porque gather_facts solo funciona con SSH keys'],
+      ans: 1,
+      exp: 'En dispositivos de red, <code>gather_facts: no</code> acelera la ejecución porque los facts estándar de Linux (memoria, CPU) no aplican. Si necesitas información del dispositivo, usas módulos específicos como <code>ios_facts</code> o <code>nxos_facts</code>.'
+    },
+    {
+      q: '¿Qué operador en un condicional "when" verifica si una variable existe y tiene un valor asignado?',
+      opts: ['is empty','is defined','is none','is present'],
+      ans: 1,
+      exp: 'El operador <strong>is defined</strong> comprueba que la variable existe. Su opuesto es <code>is not defined</code>. <code>is none</code> verifica si la variable existe pero es null. Son fundamentales para evitar errores de variable indefinida.'
+    },
+    {
+      q: 'Un administrador quiere aplicar cambios solo a switches core. ¿Qué patrón de condicional es correcto?',
+      opts: ['when: "device_role == core"','when: "device_role == \'core\'"','when: device_role == "core"','when: "core" in device_role'],
+      ans: 1,
+      exp: 'La sintaxis correcta requiere comillas para el string <code>\'core\'</code> dentro de la expresión Jinja2/YAML: <code>when: "device_role == \'core\'"</code> o <code>when: device_role == "core"</code> (sin comillas externas si no hay ambigüedad).'
+    },
+    {
+      q: '¿Qué directiva permite iterar sobre una lista de VLANs para crearlas todas en una sola task?',
+      opts: ['with_items','loop','with_dict','Todas las anteriores'],
+      ans: 3,
+      exp: 'Todas son válidas, pero <strong>loop</strong> es la directiva moderna recomendada por Ansible (reemplaza a <code>with_items</code>). <code>with_dict</code> itera diccionarios. Para listas simples como VLANs, <code>loop: "{{ vlans }}"</code> es el estándar actual.'
+    },
+    {
+      q: '¿Qué opción de línea de comandos ejecuta un playbook en modo simulación sin aplicar cambios reales?',
+      opts: ['--diff','--check','--verbose','--tags'],
+      ans: 1,
+      exp: 'La opción <strong>--check</strong> ejecuta el playbook en modo "dry run". Ansible reporta qué cambios haría (<code>changed</code>) pero no los aplica. Combinado con <code>--diff</code>, muestra las diferencias línea por línea. Es obligatorio probar en producción.'
+    }
+  ];
+
+  var html = '';
+  qs.forEach(function(q, i) {
+    html += '<div class="quiz-question" id="qans1' + i + '">' +
+      '<div class="quiz-q-num">PREGUNTA ' + (i+1) + ' DE ' + qs.length + ' · M8 ANSIBLE TEMA 3</div>' +
+      '<div class="quiz-q-text">' + q.q + '</div>' +
+      '<div class="quiz-opts">';
+    q.opts.forEach(function(o, j) {
+      html += '<button class="quiz-opt" data-qi="' + i + '" data-sel="' + j + '" data-ans="' + q.ans + '">' + o + '</button>';
+    });
+    html += '</div></div>';
+  });
+  container.innerHTML = html;
+
+  window._ans1Exp = {};
+  qs.forEach(function(q, i) { window._ans1Exp[i] = q.exp; });
+
+  container.querySelectorAll('.quiz-opt').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var qi  = parseInt(this.dataset.qi);
+      var sel = parseInt(this.dataset.sel);
+      var ans = parseInt(this.dataset.ans);
+      var qDiv = document.getElementById('qans1' + qi);
+      var btns = qDiv.querySelectorAll('.quiz-opt');
+
+      btns.forEach(function(b) { b.disabled = true; });
+      btns[sel].classList.add(sel === ans ? 'correct' : 'wrong');
+      if (sel !== ans) btns[ans].classList.add('correct');
+
+      var expDiv = document.createElement('div');
+      expDiv.className = 'quiz-explanation';
+      expDiv.innerHTML = '<strong>' + (sel===ans ? '✅ Correcto!' : '❌ Incorrecto.') + '</strong> ' + window._ans1Exp[qi];
+      qDiv.appendChild(expDiv);
+    });
+  });
+}
+
+// ── INICIALIZACIÓN ────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  buildRefTable();
+  initQuiz();
+});
+</script>
+</body>
+</html>
