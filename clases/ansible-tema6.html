@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ansible — Troubleshooting y Auditoría · M8 T6 | CCNA Academy</title>
+  <meta name="description" content="Clase magistral de Troubleshooting y Auditoría con Ansible: ios_facts, assert, debug, compliance y reportes automáticos de infraestructura Cisco. CCNA Domain 6.6.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── ANSIBLE ACCENT TOKENS ── */
+:root{ --ansible:#ef4444; --ansible-d:#dc2626; --ansible-glow:rgba(239,68,68,.12); }
+
+/* ── BASE ── */
+body{font-family:'Exo 2',sans-serif;background:#07090f;color:#e2e8f0;margin:0;}
+.class-hero{background:linear-gradient(135deg,#06080f 0%,#080d18 60%,#0a1020 100%);}
+
+/* ── HERO ── */
+.class-hero{padding:56px 24px 48px;border-bottom:1px solid rgba(239,68,68,.08);position:relative;overflow:hidden;}
+.class-hero::before{content:'';position:absolute;top:-60px;right:-80px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(239,68,68,.06) 0%,transparent 70%);pointer-events:none;}
+.class-hero-inner{max-width:900px;margin:0 auto;position:relative;z-index:1;}
+.class-badge{font-family:'Share Tech Mono',monospace;font-size:.63rem;color:#ef4444;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;}
+.class-title{font-family:'Orbitron',sans-serif;font-size:clamp(1.6rem,3.8vw,2.6rem);font-weight:900;letter-spacing:3px;color:#c2d0e8;margin-bottom:12px;line-height:1.1;}
+.class-title-accent{background:linear-gradient(135deg,#ef4444,#dc2626);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.class-subtitle{font-size:.92rem;color:#6b7a9a;line-height:1.72;margin-bottom:20px;max-width:700px;}
+.class-meta{display:flex;gap:12px;flex-wrap:wrap;}
+.meta-item{font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#4a5780;padding:4px 10px;border:1px solid rgba(239,68,68,.15);border-radius:4px;}
+
+/* ── TABS ── */
+.ans1-tabs-wrap{max-width:1100px;margin:0 auto;padding:0 16px 40px;}
+.ans1-tabs-bar{display:flex;gap:4px;padding:20px 0 0;flex-wrap:wrap;border-bottom:1px solid rgba(239,68,68,.12);margin-bottom:0;}
+.ans1-tab-btn{padding:8px 13px;border-radius:8px 8px 0 0;font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#4a5780;background:none;border:1px solid transparent;cursor:pointer;transition:all .18s;white-space:nowrap;border-bottom:none;}
+.ans1-tab-btn:hover{color:#c2d0e8;background:rgba(239,68,68,.06);}
+.ans1-tab-btn.ans1-active{color:#ef4444;background:#0d1220;border-color:rgba(239,68,68,.25);border-bottom:1px solid #0d1220;}
+.ans1-tab-content{display:none;background:#0d1220;border:1px solid rgba(239,68,68,.08);border-top:none;border-radius:0 0 12px 12px;padding:32px;}
+.ans1-tab-content.ans1-active{display:block;}
+.content-block{max-width:880px;}
+.section-title{font-family:'Orbitron',sans-serif;font-size:.95rem;color:#ef4444;letter-spacing:2px;margin:28px 0 14px;padding-bottom:8px;border-bottom:1px solid rgba(239,68,68,.15);}
+.section-title:first-child{margin-top:0;}
+p{color:#8294b8;line-height:1.75;margin-bottom:14px;font-size:.9rem;}
+ul,ol{color:#8294b8;padding-left:1.4rem;margin-bottom:14px;font-size:.9rem;}
+li{margin-bottom:5px;line-height:1.65;}
+strong{color:#c2d0e8;}
+code{font-family:'Share Tech Mono',monospace;font-size:.82rem;background:rgba(239,68,68,.1);color:#ef4444;padding:1px 6px;border-radius:4px;border:1px solid rgba(239,68,68,.2);}
+
+/* INFO BOXES */
+.info-box{border-radius:8px;padding:14px 18px;margin:18px 0;border-left:3px solid;}
+.info-box.tip{background:rgba(239,68,68,.06);border-color:#ef4444;}
+.info-box.warning{background:rgba(251,191,36,.05);border-color:#fbbf24;}
+.info-box.info{background:rgba(56,189,248,.05);border-color:#38bdf8;}
+.info-box-title{font-family:'Share Tech Mono',monospace;font-size:.73rem;color:#ef4444;margin-bottom:8px;}
+.info-box.warning .info-box-title{color:#fbbf24;}
+.info-box.info .info-box-title{color:#38bdf8;}
+
+/* CODE BLOCKS */
+.code-block{background:#050810;border:1px solid rgba(239,68,68,.15);border-left:3px solid #ef4444;border-radius:8px;padding:0;margin:16px 0;overflow:hidden;}
+.code-label{background:rgba(239,68,68,.08);padding:8px 16px;font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#4a5780;letter-spacing:2px;text-transform:uppercase;border-bottom:1px solid rgba(239,68,68,.1);}
+.code-block pre{margin:0;padding:18px;overflow-x:auto;}
+.code-block code{background:none;border:none;padding:0;color:#a8b4c8;font-size:.79rem;line-height:1.8;display:block;}
+
+/* SYNTAX */
+.cmt{color:#3a4a60;font-style:italic;}
+.kw {color:#c792ea;}
+.fn {color:#82aaff;}
+.str{color:#c3e88d;}
+.num{color:#f78c6c;}
+
+/* CONCEPT GRID */
+.concept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin:16px 0;}
+.concept-card{background:#090d1a;border:1px solid rgba(239,68,68,.1);border-radius:10px;padding:16px;}
+.concept-icon{font-size:1.8rem;margin-bottom:8px;}
+.concept-card h3{font-family:'Share Tech Mono',monospace;font-size:.77rem;color:#ef4444;margin-bottom:8px;}
+.concept-card p{font-size:.8rem;margin:0;}
+
+/* ARCHITECTURE DIAGRAM */
+.ans-flow{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin:20px 0;padding:20px;background:#090d1a;border-radius:10px;border:1px solid rgba(239,68,68,.1);}
+.ans-box{background:#0d1220;border:1px solid rgba(239,68,68,.2);border-radius:8px;padding:14px 18px;text-align:center;min-width:110px;}
+.ans-box-label{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:#ef4444;margin-bottom:4px;}
+.ans-box-val{font-size:.8rem;color:#c2d0e8;}
+.ans-arrow{font-size:1.4rem;color:#ef4444;}
+
+/* TABLE */
+.table-wrap{overflow-x:auto;margin:16px 0;}
+.ref-table{width:100%;border-collapse:collapse;font-size:.8rem;}
+.ref-table th{background:#090d1a;color:#ef4444;font-family:'Share Tech Mono',monospace;font-size:.67rem;padding:10px 12px;text-align:left;border:1px solid rgba(239,68,68,.15);letter-spacing:1px;}
+.ref-table td{padding:9px 12px;border:1px solid rgba(255,255,255,.04);color:#8294b8;}
+.ref-table tr:hover td{background:rgba(239,68,68,.04);}
+.ref-table code{font-size:.77rem;}
+
+/* QUIZ */
+.quiz-question{background:#090d1a;border:1px solid rgba(239,68,68,.12);border-radius:10px;padding:20px;margin-bottom:14px;}
+.quiz-q-num{font-family:'Share Tech Mono',monospace;font-size:.62rem;color:#374060;margin-bottom:8px;}
+.quiz-q-text{font-size:.9rem;color:#c2d0e8;margin-bottom:14px;line-height:1.6;}
+.quiz-opts{display:flex;flex-direction:column;gap:7px;}
+.quiz-opt{padding:10px 14px;border-radius:7px;border:1px solid rgba(239,68,68,.12);background:#0d1220;color:#6b7a9a;cursor:pointer;font-size:.84rem;text-align:left;transition:all .15s;font-family:'Exo 2',sans-serif;}
+.quiz-opt:hover:not(:disabled){border-color:rgba(239,68,68,.4);color:#c2d0e8;}
+.quiz-opt.correct{border-color:#34d399;background:rgba(52,211,153,.08);color:#34d399;}
+.quiz-opt.wrong{border-color:#f87171;background:rgba(248,113,113,.08);color:#f87171;}
+.quiz-explanation{margin-top:10px;padding:10px 14px;background:rgba(239,68,68,.07);border-left:3px solid #ef4444;border-radius:6px;font-size:.82rem;color:#a0aec0;line-height:1.65;}
+
+/* COMPARE TABLE */
+.compare-highlight{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);}
+.compare-highlight td{color:#c2d0e8 !important;}
+
+/* NAV & DRAWER */
+.navbar{position:fixed;top:0;left:0;right:0;height:56px;background:#080a10;border-bottom:1px solid rgba(239,68,68,.1);display:flex;align-items:center;padding:0 24px;z-index:1000;}
+.navbar-toggle{background:none;border:1px solid rgba(239,68,68,.3);color:#ef4444;padding:6px 12px;border-radius:6px;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:.75rem;margin-right:16px;}
+.navbar-brand{font-family:'Orbitron',sans-serif;font-weight:700;color:#ef4444;text-decoration:none;font-size:1.1rem;}
+.navbar-brand span{color:#dc2626;}
+.navbar-spacer{flex:1;}
+.navbar-link{color:#6b7a9a;text-decoration:none;font-size:.8rem;transition:color .2s;}
+.navbar-link:hover{color:#c2d0e8;}
+.nav-spacer{height:56px;}
+.ccna-drawer{position:fixed;top:0;left:0;bottom:0;width:280px;background:#0d1220;border-right:1px solid rgba(239,68,68,.2);transform:translateX(-100%);transition:transform .3s;z-index:2000;overflow-y:auto;}
+.ccna-drawer.open{transform:translateX(0);}
+.ccna-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);opacity:0;visibility:hidden;transition:all .3s;z-index:1500;}
+.ccna-overlay.show{opacity:1;visibility:visible;}
+.drawer-header{padding:20px;border-bottom:1px solid rgba(239,68,68,.2);display:flex;justify-content:space-between;align-items:center;}
+.drawer-header h2{font-family:'Orbitron',sans-serif;font-size:.8rem;color:#ef4444;margin:0;letter-spacing:2px;}
+.drawer-close{background:none;border:none;color:#6b7a9a;font-size:1.2rem;cursor:pointer;}
+.drawer-section{padding:16px;border-bottom:1px solid rgba(239,68,68,.1);}
+.drawer-section-title{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#374060;margin-bottom:12px;letter-spacing:1px;text-transform:uppercase;}
+.drawer-link{display:block;padding:10px 12px;color:#8294b8;text-decoration:none;font-size:.85rem;border-radius:6px;transition:all .2s;margin-bottom:4px;}
+.drawer-link:hover{background:rgba(239,68,68,.1);color:#c2d0e8;}
+.drawer-link.active{background:rgba(239,68,68,.2);color:#ef4444;border-left:3px solid #ef4444;}
+.dl-icon{margin-right:8px;}
+
+/* FILE TREE */
+.file-tree{background:#050810;border:1px solid rgba(239,68,68,.15);border-radius:8px;padding:18px 22px;font-family:'Share Tech Mono',monospace;font-size:.78rem;color:#8294b8;line-height:1.8;margin:16px 0;}
+.file-tree .folder{color:#ef4444;}
+.file-tree .file{color:#a8b4c8;}
+.file-tree .comment{color:#3a4a60;font-style:italic;}
+
+@media(max-width:680px){
+  .ans1-tab-btn{font-size:.6rem;padding:6px 9px;}
+  .ans1-tab-content{padding:18px 12px;}
+  .concept-grid{grid-template-columns:1fr;}
+  .ans-flow{flex-direction:column;}
+}
+</style>
+</head>
+<body>
+
+<div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
+<nav class="ccna-drawer" id="ccnaDrawer">
+  <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
+  <div class="drawer-section"><div class="drawer-section-title">General</div>
+    <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M1 · Fundamentos</div>
+    <a href="fundamentos.html" class="drawer-link"><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
+    <a href="subnetting.html"  class="drawer-link"><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
+    <a href="ipv6.html"        class="drawer-link"><span class="dl-icon">6️⃣</span> IPv6</a>
+    <a href="arp.html"         class="drawer-link"><span class="dl-icon">📡</span> ARP</a>
+    <a href="rip.html"         class="drawer-link"><span class="dl-icon">🔄</span> RIP</a>
+    <a href="protocolos-internet.html" class="drawer-link"><span class="dl-icon">🌍</span> Protocolos Internet</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M2 · Dispositivos Cisco</div>
+    <a href="router.html"         class="drawer-link"><span class="dl-icon">📡</span> Routers Cisco</a>
+    <a href="switches-cisco.html" class="drawer-link"><span class="dl-icon">🔀</span> Switches Cisco</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M3 · Switching</div>
+    <a href="vlan.html"               class="drawer-link"><span class="dl-icon">🏷️</span> VLANs</a>
+    <a href="inter-vlan-routing.html" class="drawer-link"><span class="dl-icon">🔁</span> Inter-VLAN Routing</a>
+    <a href="stp.html"                class="drawer-link"><span class="dl-icon">🌳</span> STP</a>
+    <a href="etherchannel.html"       class="drawer-link"><span class="dl-icon">🔗</span> EtherChannel</a>
+    <a href="port-security.html"      class="drawer-link"><span class="dl-icon">🔒</span> Port Security</a>
+    <a href="cdp-lldp.html"           class="drawer-link"><span class="dl-icon">🔍</span> CDP / LLDP</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M4 · Routing</div>
+    <a href="routing.html"            class="drawer-link"><span class="dl-icon">🗺️</span> Routing Estático</a>
+    <a href="ospf.html"               class="drawer-link"><span class="dl-icon">⭕</span> OSPF</a>
+    <a href="eigrp.html"              class="drawer-link"><span class="dl-icon">⚡</span> EIGRP</a>
+    <a href="ospfv2-masterclass.html" class="drawer-link"><span class="dl-icon">🎯</span> OSPFv2 Masterclass</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M5 · Servicios IP</div>
+    <a href="dhcp.html" class="drawer-link"><span class="dl-icon">📋</span> DHCP</a>
+    <a href="nat.html"  class="drawer-link"><span class="dl-icon">🔄</span> NAT / PAT</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M6 · Seguridad</div>
+    <a href="acl.html" class="drawer-link"><span class="dl-icon">🛡️</span> ACLs</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M7 · WAN &amp; QoS</div>
+    <a href="wan.html" class="drawer-link"><span class="dl-icon">🌍</span> WAN</a>
+    <a href="qos.html" class="drawer-link"><span class="dl-icon">📊</span> QoS</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M8 · Automatización</div>
+    <a href="m8-automatizacion.html" class="drawer-link"><span class="dl-icon">🤖</span> M8 — Vista General</a>
+    <a href="python-redes.html"      class="drawer-link"><span class="dl-icon">🐍</span> Python para Redes</a>
+    <a href="json-datos.html"        class="drawer-link"><span class="dl-icon">📋</span> JSON y Datos</a>
+    <a href="rest-apis.html"         class="drawer-link"><span class="dl-icon">🌐</span> REST APIs</a>
+    <a href="ansible-redes.html"     class="drawer-link"><span class="dl-icon">⚙️</span> Ansible Hub</a>
+    <a href="ansible-tema1.html"     class="drawer-link"><span class="dl-icon">01</span> T1 — Arquitectura</a>
+    <a href="ansible-tema2.html"     class="drawer-link"><span class="dl-icon">02</span> T2 — Inventarios</a>
+    <a href="ansible-tema3.html"     class="drawer-link"><span class="dl-icon">03</span> T3 — Playbooks YAML</a>
+    <a href="ansible-tema4.html"     class="drawer-link"><span class="dl-icon">04</span> T4 — Módulos cisco.ios</a>
+    <a href="ansible-tema5.html"     class="drawer-link"><span class="dl-icon">05</span> T5 — Roles, Jinja2 y Vault</a>
+    <a href="ansible-tema6.html"     class="drawer-link active"><span class="dl-icon">06</span> T6 — Troubleshooting y Auditoría</a>
+  </div>
+  <div class="drawer-section"><div class="drawer-section-title">⚡ Herramientas</div>
+    <a href="asistente.html"          class="drawer-link"><span class="dl-icon">🤖</span> Asistente IA</a>
+    <a href="netbot.html"             class="drawer-link"><span class="dl-icon">⚙️</span> NetBot Config</a>
+    <a href="calculadora.html"        class="drawer-link"><span class="dl-icon">🧮</span> Calculadora IP</a>
+    <a href="../laboratorios-pkt.html"   class="drawer-link"><span class="dl-icon">🧪</span> Labs Packet Tracer</a>
+    <a href="../banco-preguntas.html" class="drawer-link"><span class="dl-icon">📝</span> Banco de Preguntas</a></div>
+</nav>
+
+<header class="navbar">
+  <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
+  <a href="../index.html" class="navbar-brand">CISCO<span> ACADEMY</span></a>
+  <div class="navbar-spacer"></div>
+  <a href="ansible-redes.html" class="navbar-link">← Ansible Hub</a>
+</header>
+<div class="nav-spacer"></div>
+
+<!-- HERO -->
+<section class="class-hero" style="border-bottom:1px solid rgba(239,68,68,.2);">
+  <div class="class-hero-inner">
+    <div class="class-badge" style="color:#ef4444;">M8 · AUTOMATIZACIÓN · ANSIBLE · TEMA 6 DE 7</div>
+    <h1 class="class-title">TROUBLESHOOTING <span class="class-title-accent">y Auditoría</span></h1>
+    <p class="class-subtitle">Usa Ansible para verificar configuraciones, auditar compliance de seguridad y generar reportes automáticos de toda tu infraestructura Cisco en minutos. Transforma el troubleshooting reactivo en auditoría proactiva con ios_facts, assert, debug y generación de informes.</p>
+    <div class="class-meta">
+      <span class="meta-item" style="border-color:rgba(239,68,68,.2);color:#ef4444;">🔍 ios_facts</span>
+      <span class="meta-item">🎯 CCNA Domain 6.6</span>
+      <span class="meta-item">⏱ ~90 min lectura</span>
+      <span class="meta-item">✅ assert / debug</span>
+      <span class="meta-item">📊 Compliance</span>
+    </div>
+  </div>
+</section>
+
+<!-- TABS -->
+<div class="ans1-tabs-wrap">
+  <div class="ans1-tabs-bar">
+    <button class="ans1-tab-btn ans1-active" onclick="showTabAns1('intro',this)">📍 Intro</button>
+    <button class="ans1-tab-btn" onclick="showTabAns1('ios-facts',this)">🔍 ios_facts</button>
+    <button class="ans1-tab-btn" onclick="showTabAns1('assert-debug',this)">✅ Assert / Debug</button>
+    <button class="ans1-tab-btn" onclick="showTabAns1('compliance',this)">🛡️ Compliance</button>
+    <button class="ans1-tab-btn" onclick="showTabAns1('reportes',this)">📊 Reportes</button>
+    <button class="ans1-tab-btn" onclick="showTabAns1('practicas',this)">🚀 Prácticas</button>
+    <button class="ans1-tab-btn" onclick="showTabAns1('referencia',this)">📊 Ref</button>
+    <button class="ans1-tab-btn" onclick="showTabAns1('quiz',this)">🎯 Quiz</button>
+  </div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 1 — INTRO
+═══════════════════════════════════════════ -->
+<div id="tab-intro" class="ans1-tab-content ans1-active">
+<div class="content-block">
+  <h2 class="section-title">Ansible como herramienta de red team</h2>
+  <p>La mayoría de los ingenieros asocian Ansible con <em>configuración</em>: desplegar VLANs, crear ACLs, modificar rutas. Pero su verdadero superpoder en operaciones de red es el <strong>troubleshooting y la auditoría</strong>. Un playbook de Ansible puede conectarse a 500 switches simultáneamente, verificar que todos cumplen una política de seguridad, detectar interfaces caídas, validar versiones de IOS y generar un reporte ejecutivo en minutos.</p>
+  <p>Esto transforma el modelo de trabajo de <strong>reactivo</strong> (esperar que un usuario reporte un problema) a <strong>proactivo</strong> (detectar desviaciones antes de que causen incidentes). En el contexto del examen CCNA Domain 6.6, entender este caso de uso demuestra madurez en la gestión de infraestructura programable.</p>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Concepto clave del examen CCNA</div>
+    <p>El dominio 6.6 evalúa el uso de herramientas de automatización para gestión de configuración <strong>y</strong> monitoreo. La pregunta puede ser: <em>"¿Qué módulo de Ansible permite verificar el estado de interfaces en múltiples switches simultáneamente?"</em> La respuesta es <strong>ios_facts</strong> (para datos estructurados) o <strong>ios_command</strong> (para salida raw), combinado con <strong>assert</strong> para validación.</p>
+  </div>
+
+  <h2 class="section-title">El ciclo de auditoría continua</h2>
+  <div class="ans-flow">
+    <div class="ans-box">
+      <div class="ans-box-label">1. RECOLECTAR</div>
+      <div class="ans-box-val">ios_facts / ios_command</div>
+    </div>
+    <div class="ans-arrow">→</div>
+    <div class="ans-box">
+      <div class="ans-box-label">2. VALIDAR</div>
+      <div class="ans-box-val">assert / when</div>
+    </div>
+    <div class="ans-arrow">→</div>
+    <div class="ans-box">
+      <div class="ans-box-label">3. REPORTAR</div>
+      <div class="ans-box-val">debug / template</div>
+    </div>
+    <div class="ans-arrow">→</div>
+    <div class="ans-box">
+      <div class="ans-box-label">4. REMEDIAR</div>
+      <div class="ans-box-val">ios_config / notify</div>
+    </div>
+  </div>
+
+  <h2 class="section-title">Casos de uso de troubleshooting con Ansible</h2>
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">🔍</div>
+      <h3>Validación Post-Cambio</h3>
+      <p>Después de un mantenimiento, verifica automáticamente que BGP neighbors estén up, que las VLANs existan y que los uplinks no hayan caído.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🛡️</div>
+      <h3>Auditoría de Seguridad</h3>
+      <p>Confirma que Telnet está deshabilitado, que SSH v2 está activo, que no hay contraseñas por defecto y que las ACLs están aplicadas en todas las interfaces WAN.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">📊</div>
+      <h3>Inventario Automático</h3>
+      <p>Genera un CSV o JSON con modelo, versión de IOS, número de serie, interfaces up/down y capacidad de puertos de toda la red en segundos.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">⚡</div>
+      <h3>Detección de Drift</h3>
+      <p>Compara el running-config actual contra un baseline esperado. Detecta configuraciones "shadow" añadidas manualmente que desvían el estándar.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🔔</div>
+      <h3>Alertas Proactivas</h3>
+      <p>Ejecuta playbooks programados vía cron o AWX que alertan si la utilización de CPU supera umbral, si hay interfaces con errores CRC o si un vecino OSPF desaparece.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">📋</div>
+      <h3>Compliance Regulatorio</h3>
+      <p>Genera evidencia documentada de que todos los dispositivos cumplen PCI-DSS, ISO 27001 o políticas internas de seguridad. Exportable a PDF/Excel.</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">Herramientas del arsenal de auditoría</h2>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead>
+        <tr><th>Herramienta</th><th>Función en Troubleshooting</th><th>Módulo Ansible</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Facts estructurados</td><td>Recopilar hardware, software, interfaces</td><td><code>ios_facts</code>, <code>nxos_facts</code></td></tr>
+        <tr><td>Comandos show</td><td>Obtener salida específica de CLI</td><td><code>ios_command</code></td></tr>
+        <tr><td>Validación</td><td>Verificar que una condición es verdadera</td><td><code>assert</code></td></tr>
+        <tr><td>Depuración</td><td>Mostrar variables durante ejecución</td><td><code>debug</code></td></tr>
+        <tr><td>Condicionales</td><td>Acciones basadas en resultados</td><td><code>when</code>, <code>failed_when</code></td></tr>
+        <tr><td>Reportes</td><td>Generar archivos de salida</td><td><code>template</code>, <code>copy</code>, <code>lineinfile</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 2 — IOS_FACTS
+═══════════════════════════════════════════ -->
+<div id="tab-ios-facts" class="ans1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">ios_facts: el scanner de tu red</h2>
+  <p>El módulo <code>ios_facts</code> es la herramienta más poderosa para auditoría porque no solo ejecuta un comando: <strong>parsea la salida</strong> y la convierte en datos estructurados (diccionarios y listas) que puedes consultar, filtrar y validar sin escribir una sola expresión regular.</p>
+  <p>En una operación de troubleshooting, puedes recopilar facts de 200 routers en paralelo y luego analizarlos localmente en el Control Node. Esto elimina la necesidad de conectarte manualmente a cada dispositivo para ejecutar <code>show version</code>, <code>show interfaces</code> o <code>show inventory</code>.</p>
+
+  <div class="code-block">
+    <div class="code-label">auditoria_facts.yml — Recolección masiva</div>
+    <pre><code><span class="kw">---</span>
+- <span class="fn">name</span>: <span class="str">"AUDITORIA: Recopilar facts de toda la red"</span>
+  <span class="fn">hosts</span>: cisco_all
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+  <span class="fn">connection</span>: network_cli
+
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Recopilar facts completos"</span>
+      <span class="fn">cisco.ios.ios_facts</span>:
+        <span class="fn">gather_subset</span>:
+          - <span class="str">"hardware"</span>
+          - <span class="str">"interfaces"</span>
+          - <span class="str">"config"</span>
+      <span class="fn">register</span>: <span class="str">"device_facts"</span>
+
+    - <span class="fn">name</span>: <span class="str">"Mostrar versión de IOS"</span>
+      <span class="fn">ansible.builtin.debug</span>:
+        <span class="fn">msg</span>: <span class="str">"{{ inventory_hostname }} ejecuta IOS {{ device_facts.ansible_facts.ansible_net_version }}"</span>
+
+    - <span class="fn">name</span>: <span class="str">"Verificar modelo de hardware"</span>
+      <span class="fn">ansible.builtin.debug</span>:
+        <span class="fn">msg</span>: <span class="str">"Modelo: {{ device_facts.ansible_facts.ansible_net_model }}"</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Facts de hardware: auditoría de activos</h2>
+  <p>Los facts de hardware permiten generar un inventario completo sin depender de hojas de Excel desactualizadas:</p>
+
+  <div class="code-block">
+    <div class="code-label">facts_hardware.yml — Inventario de activos</div>
+    <pre><code><span class="kw">---</span>
+- <span class="fn">name</span>: <span class="str">"Generar inventario de hardware"</span>
+  <span class="fn">hosts</span>: cisco_routers
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Obtener facts de hardware"</span>
+      <span class="fn">cisco.ios.ios_facts</span>:
+        <span class="fn">gather_subset</span>:
+          - <span class="str">"hardware"</span>
+      <span class="fn">register</span>: <span class="str">"hw_facts"</span>
+
+    - <span class="fn">name</span>: <span class="str">"Extraer información crítica"</span>
+      <span class="fn">ansible.builtin.set_fact</span>:
+        <span class="fn">device_info</span>:
+          <span class="fn">hostname</span>: <span class="str">"{{ hw_facts.ansible_facts.ansible_net_hostname }}"</span>
+          <span class="fn">model</span>: <span class="str">"{{ hw_facts.ansible_facts.ansible_net_model }}"</span>
+          <span class="fn">version</span>: <span class="str">"{{ hw_facts.ansible_facts.ansible_net_version }}"</span>
+          <span class="fn">serial</span>: <span class="str">"{{ hw_facts.ansible_facts.ansible_net_serialnum }}"</span>
+          <span class="fn">image</span>: <span class="str">"{{ hw_facts.ansible_facts.ansible_net_image }}"</span>
+
+    - <span class="fn">name</span>: <span class="str">"Validar que el número de serie existe"</span>
+      <span class="fn">ansible.builtin.assert</span>:
+        <span class="fn">that</span>:
+          - <span class="str">"device_info.serial | length > 0"</span>
+        <span class="fn">fail_msg</span>: <span class="str">"No se pudo obtener el número de serie"</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Facts de interfaces: detección de problemas</h2>
+  <p>El diccionario <code>ansible_net_interfaces</code> contiene el estado de cada interfaz. Puedes iterar sobre él para detectar interfaces administratively down, errores de duplex o ausencia de descripción:</p>
+
+  <div class="code-block">
+    <div class="code-label">facts_interfaces.yml — Detección de interfaces problemáticas</div>
+    <pre><code><span class="kw">---</span>
+- <span class="fn">name</span>: <span class="str">"Auditoría de interfaces"</span>
+  <span class="fn">hosts</span>: cisco_switches
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Recopolar facts de interfaces"</span>
+      <span class="fn">cisco.ios.ios_facts</span>:
+        <span class="fn">gather_subset</span>:
+          - <span class="str">"interfaces"</span>
+      <span class="fn">register</span>: <span class="str">"intf_facts"</span>
+
+    - <span class="fn">name</span>: <span class="str">"Detectar interfaces sin descripción"</span>
+      <span class="fn">ansible.builtin.debug</span>:
+        <span class="fn">msg</span>: <span class="str">"ALERTA: {{ item.key }} no tiene descripción"</span>
+      <span class="fn">loop</span>: <span class="str">"{{ intf_facts.ansible_facts.ansible_net_interfaces | dict2items }}"</span>
+      <span class="fn">when</span>:
+        - <span class="str">"item.value.description is not defined or item.value.description == ''"</span>
+        - <span class="str">"'Loopback' not in item.key"</span>
+        - <span class="str">"'Null' not in item.key"</span>
+
+    - <span class="fn">name</span>: <span class="str">"Detectar interfaces down administratively"</span>
+      <span class="fn">ansible.builtin.debug</span>:
+        <span class="fn">msg</span>: <span class="str">"{{ item.key }} está administratively down"</span>
+      <span class="fn">loop</span>: <span class="str">"{{ intf_facts.ansible_facts.ansible_net_interfaces | dict2items }}"</span>
+      <span class="fn">when</span>:
+        - <span class="str">"item.value.operstatus == 'down'"</span>
+        - <span class="str">"item.value.lineprotocol == 'down'"</span></code></pre>
+  </div>
+
+  <div class="info-box info">
+    <div class="info-box-title">ℹ️ Ventaja sobre comandos show manuales</div>
+    <p>Con <code>ios_facts</code>, obtienes datos estructurados como <code>item.value.bandwidth</code>, <code>item.value.mtu</code>, <code>item.value.ipv4</code> (lista de IPs) sin parsear texto. Esto elimina errores humanos y permite comparar numéricamente (ej. MTU &lt; 1500).</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 3 — ASSERT / DEBUG
+═══════════════════════════════════════════ -->
+<div id="tab-assert-debug" class="ans1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">assert: validación automática de políticas</h2>
+  <p>El módulo <code>assert</code> es la herramienta de auditoría por excelencia. Evalúa una lista de condiciones y, si alguna es falsa, detiene el playbook reportando un mensaje de error personalizado. Es ideal para verificar compliance: <em>"Todos los routers deben ejecutar IOS 16.9 o superior"</em>, <em>"Telnet debe estar deshabilitado"</em>, <em>"Toda interfaz WAN debe tener una ACL aplicada"</em>.</p>
+
+  <div class="code-block">
+    <div class="code-label">assert_compliance.yml — Validación de políticas</div>
+    <pre><code><span class="kw">---</span>
+- <span class="fn">name</span>: <span class="str">"COMPLIANCE: Validar políticas de seguridad"</span>
+  <span class="fn">hosts</span>: cisco_routers
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Recopolar facts"</span>
+      <span class="fn">cisco.ios.ios_facts</span>:
+        <span class="fn">gather_subset</span>:
+          - <span class="str">"config"</span>
+          - <span class="str">"hardware"</span>
+      <span class="fn">register</span>: <span class="str">"audit_facts"</span>
+
+    - <span class="fn">name</span>: <span class="str">"VALIDAR 1: IOS versión mínima 16.9"</span>
+      <span class="fn">ansible.builtin.assert</span>:
+        <span class="fn">that</span>:
+          - <span class="str">"audit_facts.ansible_facts.ansible_net_version is version('16.9', '>=')"</span>
+        <span class="fn">fail_msg</span>: <span class="str">"FALLO: {{ inventory_hostname }} ejecuta {{ audit_facts.ansible_facts.ansible_net_version }}, se requiere >= 16.9"</span>
+        <span class="fn">success_msg</span>: <span class="str">"OK: Versión de IOS cumple el requisito"</span>
+
+    - <span class="fn">name</span>: <span class="str">"VALIDAR 2: SSH v2 está habilitado"</span>
+      <span class="fn">ansible.builtin.assert</span>:
+        <span class="fn">that</span>:
+          - <span class="str">"'ip ssh version 2' in audit_facts.ansible_facts.ansible_net_config"</span>
+        <span class="fn">fail_msg</span>: <span class="str">"CRITICO: SSH v2 no está configurado"</span>
+        <span class="fn">success_msg</span>: <span class="str">"OK: SSH v2 habilitado"</span>
+
+    - <span class="fn">name</span>: <span class="str">"VALIDAR 3: Telnet está deshabilitado"</span>
+      <span class="fn">ansible.builtin.assert</span>:
+        <span class="fn">that</span>:
+          - <span class="str">"'transport input ssh' in audit_facts.ansible_facts.ansible_net_config"</span>
+        <span class="fn">fail_msg</span>: <span class="str">"CRITICO: Telnet podría estar habilitado en líneas vty"</span>
+        <span class="fn">success_msg</span>: <span class="str">"OK: Solo SSH permitido en vty"</span></code></pre>
+  </div>
+
+  <h2 class="section-title">debug: el printf del network engineer</h2>
+  <p>El módulo <code>debug</code> muestra información en la consola durante la ejecución. Es indispensable para troubleshooting de playbooks: ver el valor de una variable, confirmar que un fact se cargó correctamente, o mostrar el resultado de un comando show.</p>
+
+  <div class="code-block">
+    <div class="code-label">debug_troubleshooting.yml — Depuración en tiempo real</div>
+    <pre><code><span class="kw">---</span>
+- <span class="fn">name</span>: <span class="str">"Troubleshooting de conectividad"</span>
+  <span class="fn">hosts</span>: cisco_routers
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Obtener tabla de routing"</span>
+      <span class="fn">cisco.ios.ios_command</span>:
+        <span class="fn">commands</span>: <span class="str">"show ip route"</span>
+      <span class="fn">register</span>: <span class="str">"routing_table"</span>
+
+    - <span class="fn">name</span>: <span class="str">"DEBUG: Mostrar salida cruda"</span>
+      <span class="fn">ansible.builtin.debug</span>:
+        <span class="fn">var</span>: <span class="str">"routing_table.stdout_lines"</span>
+
+    - <span class="fn">name</span>: <span class="str">"DEBUG: Mostrar solo rutas OSPF"</span>
+      <span class="fn">ansible.builtin.debug</span>:
+        <span class="fn">msg</span>: <span class="str">"Rutas OSPF: {{ routing_table.stdout[0] | regex_findall('O\\s+([0-9./]+)') }}"</span>
+
+    - <span class="fn">name</span>: <span class="str">"DEBUG: Verificar variable interna"</span>
+      <span class="fn">ansible.builtin.debug</span>:
+        <span class="fn">msg</span>: <span class="str">"Host: {{ inventory_hostname }}, Grupos: {{ group_names }}, OS: {{ ansible_network_os }}"</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Combinando assert con register para validación dinámica</h2>
+  <p>Puedes encadenar tareas: primero ejecutas un comando, registras el resultado, y luego validas con assert:</p>
+
+  <div class="code-block">
+    <div class="code-label">assert_dinamico.yml — Validación post-comando</div>
+    <pre><code><span class="kw">---</span>
+- <span class="fn">name</span>: <span class="str">"Validar estado de vecinos BGP"</span>
+  <span class="fn">hosts</span>: cisco_routers
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Obtener resumen de BGP"</span>
+      <span class="fn">cisco.ios.ios_command</span>:
+        <span class="fn">commands</span>: <span class="str">"show ip bgp summary"</span>
+      <span class="fn">register</span>: <span class="str">"bgp_summary"</span>
+
+    - <span class="fn">name</span>: <span class="str">"DEBUG: Ver salida"</span>
+      <span class="fn">ansible.builtin.debug</span>:
+        <span class="fn">var</span>: <span class="str">"bgp_summary.stdout[0]"</span>
+
+    - <span class="fn">name</span>: <span class="str">"ASSERT: Debe tener al menos un vecino establecido"</span>
+      <span class="fn">ansible.builtin.assert</span>:
+        <span class="fn">that</span>:
+          - <span class="str">"'Established' in bgp_summary.stdout[0] or 'Idle' not in bgp_summary.stdout[0]"</span>
+        <span class="fn">fail_msg</span>: <span class="str">"ALERTA: No hay vecinos BGP en estado Established"</span>
+        <span class="fn">success_msg</span>: <span class="str">"OK: Vecinos BGP detectados"</span></code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Tip de producción</div>
+    <p>Usa <code>ignore_errors: true</code> en la task de <code>assert</code> si quieres que el playbook continúe auditando todos los dispositivos aunque algunos fallen. Luego genera un reporte de solo los fallidos al final.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 4 — COMPLIANCE
+═══════════════════════════════════════════ -->
+<div id="tab-compliance" class="ans1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Compliance de seguridad: automatización de políticas</h2>
+  <p>El <strong>compliance</strong> es la verificación sistemática de que los dispositivos cumplen un conjunto de políticas de seguridad y operación. En redes Cisco, esto incluye: versiones de IOS parcheadas, protocolos de management seguros, ACLs aplicadas, logging habilitado, y contraseñas fuertes.</p>
+  <p>Ansible convierte este proceso de "revisión manual de 50 páginas de configuración" en un playbook de 30 líneas que audita 500 dispositivos en 5 minutos y genera un reporte con dispositivos compliant y no-compliant.</p>
+
+  <h2 class="section-title">Playbook de compliance completo</h2>
+  <div class="code-block">
+    <div class="code-label">compliance_seguridad.yml — Auditoría CISCO hardening</div>
+    <pre><code><span class="kw">---</span>
+- <span class="fn">name</span>: <span class="str">"COMPLIANCE: Auditoría de seguridad Cisco"</span>
+  <span class="fn">hosts</span>: cisco_all
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+
+  <span class="fn">vars</span>:
+    <span class="fn">ios_version_minima</span>: <span class="str">"16.9.4"</span>
+    <span class="fn">politicas</span>:
+      - <span class="fn">nombre</span>: <span class="str">"SSH v2 habilitado"</span>
+        <span class="fn">comando_buscar</span>: <span class="str">"ip ssh version 2"</span>
+      - <span class="fn">nombre</span>: <span class="str">"Telnet deshabilitado en vty"</span>
+        <span class="fn">comando_buscar</span>: <span class="str">"transport input ssh"</span>
+      - <span class="fn">nombre</span>: <span class="str">"Servicio password-encryption"</span>
+        <span class="fn">comando_buscar</span>: <span class="str">"service password-encryption"</span>
+      - <span class="fn">nombre</span>: <span class="str">"Logging habilitado"</span>
+        <span class="fn">comando_buscar</span>: <span class="str">"logging "</span>
+      - <span class="fn">nombre</span>: <span class="str">"NTP configurado"</span>
+        <span class="fn">comando_buscar</span>: <span class="str">"ntp server"</span>
+
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Recopolar running-config"</span>
+      <span class="fn">cisco.ios.ios_facts</span>:
+        <span class="fn">gather_subset</span>:
+          - <span class="str">"config"</span>
+          - <span class="str">"hardware"</span>
+      <span class="fn">register</span>: <span class="str">"facts"</span>
+
+    - <span class="fn">name</span>: <span class="str">"VALIDAR: Versión de IOS mínima"</span>
+      <span class="fn">ansible.builtin.assert</span>:
+        <span class="fn">that</span>:
+          - <span class="str">"facts.ansible_facts.ansible_net_version is version(ios_version_minima, '>=')"</span>
+        <span class="fn">fail_msg</span>: <span class="str">"FALLO: IOS desactualizado"</span>
+        <span class="fn">success_msg</span>: <span class="str">"OK: IOS actualizado"</span>
+      <span class="fn">ignore_errors</span>: <span class="kw">true</span>
+      <span class="fn">register</span>: <span class="str">"check_version"</span>
+
+    - <span class="fn">name</span>: <span class="str">"VALIDAR: Políticas de configuración"</span>
+      <span class="fn">ansible.builtin.assert</span>:
+        <span class="fn">that</span>:
+          - <span class="str">"item.comando_buscar in facts.ansible_facts.ansible_net_config"</span>
+        <span class="fn">fail_msg</span>: <span class="str">"FALLO: {{ item.nombre }} no está configurado"</span>
+        <span class="fn">success_msg</span>: <span class="str">"OK: {{ item.nombre }}"</span>
+      <span class="fn">loop</span>: <span class="str">"{{ politicas }}"</span>
+      <span class="fn">ignore_errors</span>: <span class="kw">true</span>
+      <span class="fn">register</span>: <span class="str">"checks_politicas"</span>
+
+    - <span class="fn">name</span>: <span class="str">"DEBUG: Resultados de compliance"</span>
+      <span class="fn">ansible.builtin.debug</span>:
+        <span class="fn">msg</span>: <span class="str">"Dispositivo {{ inventory_hostname }} - Resultado: {{ 'PASS' if not checks_politicas.failed else 'FAIL' }}"</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Detección de configuraciones "shadow"</h2>
+  <p>Una desviación común es cuando un ingeniero modifica manualmente un dispositivo y no actualiza el playbook. Puedes detectar esto comparando el running-config contra un baseline esperado:</p>
+
+  <div class="code-block">
+    <div class="code-label">drift_detection.yml — Detección de desviaciones</div>
+    <pre><code><span class="kw">---</span>
+- <span class="fn">name</span>: <span class="str">"DETECTAR DRIFT: Comparar contra baseline"</span>
+  <span class="fn">hosts</span>: cisco_switches
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+
+  <span class="fn">vars</span>:
+    <span class="fn">baseline_obligatorio</span>:
+      - <span class="str">"spanning-tree mode rapid-pvst"</span>
+      - <span class="str">"ip ssh version 2"</span>
+      - <span class="str">"service timestamps debug datetime msec"</span>
+      - <span class="str">"service timestamps log datetime msec"</span>
+
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Obtener running-config"</span>
+      <span class="fn">cisco.ios.ios_command</span>:
+        <span class="fn">commands</span>: <span class="str">"show running-config"</span>
+      <span class="fn">register</span>: <span class="str">"running"</span>
+
+    - <span class="fn">name</span>: <span class="str">"Verificar líneas del baseline"</span>
+      <span class="fn">ansible.builtin.debug</span>:
+        <span class="fn">msg</span>: <span class="str">"FALTA: {{ item }} no está en {{ inventory_hostname }}"</span>
+      <span class="fn">loop</span>: <span class="str">"{{ baseline_obligatorio }}"</span>
+      <span class="fn">when</span>: <span class="str">"item not in running.stdout[0]"</span></code></pre>
+  </div>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">📋</div>
+      <h3>PCI-DSS</h3>
+      <p>Valida cifrado TLS 1.2+, segmentación de VLANs para datos de tarjetas, logging de accesos y eliminación de cuentas por defecto.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🏛️</div>
+      <h3>ISO 27001</h3>
+      <p>Audita controles de acceso, gestión de cambios documentada, backups de configuración y políticas de contraseñas en todos los dispositivos.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🏭</div>
+      <h3>NIST / CIS</h3>
+      <p>Verifica hardening según benchmarks CIS para Cisco IOS: deshabilitar servicios innecesarios, SNMP seguro, y control de acceso al management plane.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🏢</div>
+      <h3>Políticas Internas</h3>
+      <p>Cada empresa define sus propias reglas: "Todo switch debe tener NTP de Madrid", "Ninguna interfaz puede quedarse sin descripción", etc.</p>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 5 — REPORTES
+═══════════════════════════════════════════ -->
+<div id="tab-reportes" class="ans1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Generación de reportes automáticos</h2>
+  <p>Una auditoría sin reporte es una conversación olvidada. Ansible puede generar informes en múltiples formatos: texto plano, Markdown, HTML, CSV, JSON o incluso enviarlos por correo o a Slack. La estrategia es recopolar facts en variables, agregarlas con <code>set_fact</code>, y luego usar <code>template</code> para renderizar un archivo de salida.</p>
+
+  <h2 class="section-title">Reporte CSV: inventario de interfaces</h2>
+  <div class="code-block">
+    <div class="code-label">reporte_csv.yml — Exportar a Excel</div>
+    <pre><code><span class="kw">---</span>
+- <span class="fn">name</span>: <span class="str">"REPORTE: Inventario de interfaces a CSV"</span>
+  <span class="fn">hosts</span>: cisco_switches
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Obtener facts de interfaces"</span>
+      <span class="fn">cisco.ios.ios_facts</span>:
+        <span class="fn">gather_subset</span>:
+          - <span class="str">"interfaces"</span>
+      <span class="fn">register</span>: <span class="str">"intf_data"</span>
+
+    - <span class="fn">name</span>: <span class="str">"Agregar datos a lista de reporte"</span>
+      <span class="fn">ansible.builtin.set_fact</span>:
+        <span class="fn">report_lines</span>: <span class="str">"{{ report_lines | default([]) + [{ 'host': inventory_hostname, 'interface': item.key, 'status': item.value.operstatus, 'ip': item.value.ipv4 | default('N/A') }] }}"</span>
+      <span class="fn">loop</span>: <span class="str">"{{ intf_data.ansible_facts.ansible_net_interfaces | dict2items }}"</span>
+
+  <span class="fn">post_tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Generar archivo CSV en Control Node"</span>
+      <span class="fn">ansible.builtin.template</span>:
+        <span class="fn">src</span>: <span class="str">"reporte_interfaces.csv.j2"</span>
+        <span class="fn">dest</span>: <span class="str">"/tmp/reporte_interfaces_{{ ansible_date_time.date }}.csv"</span>
+      <span class="fn">delegate_to</span>: localhost
+      <span class="fn">run_once</span>: <span class="kw">yes</span></code></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">templates/reporte_interfaces.csv.j2</div>
+    <pre><code>Hostname,Interfaz,Estado,IP
+{% for line in report_lines | default([]) %}
+{{ line.host }},{{ line.interface }},{{ line.status }},{{ line.ip }}
+{% endfor %}</code></pre>
+  </div>
+
+  <h2 class="section-title">Reporte HTML: dashboard ejecutivo</h2>
+
+
+  <div class="code-block">
+    <div class="code-label">reporte_html.yml — Dashboard visual</div>
+    <pre><code><span class="kw">---</span>
+- <span class="fn">name</span>: <span class="str">"REPORTE: Dashboard de compliance HTML"</span>
+  <span class="fn">hosts</span>: cisco_all
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Auditar cada dispositivo"</span>
+      <span class="fn">ansible.builtin.include_tasks</span>:
+        <span class="fn">file</span>: <span class="str">"auditar_dispositivo.yml"</span>
+
+  <span class="fn">post_tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Generar reporte HTML"</span>
+      <span class="fn">ansible.builtin.template</span>:
+        <span class="fn">src</span>: <span class="str">"dashboard_compliance.html.j2"</span>
+        <span class="fn">dest</span>: <span class="str">"/tmp/compliance_report_{{ ansible_date_time.date }}.html"</span>
+      <span class="fn">delegate_to</span>: localhost
+      <span class="fn">run_once</span>: <span class="kw">yes</span></code></pre>
+  </div>
+
+
+
+
+  <div class="code-block">
+    <div class="code-label">templates/dashboard_compliance.html.j2 — Plantilla Jinja2</div>
+    <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="es"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;title&gt;Reporte de Compliance - {{ ansible_date_time.date }}&lt;/title&gt;
+  &lt;style&gt;
+    body{font-family:system-ui,-apple-system,sans-serif;background:#0f172a;color:#e2e8f0;padding:40px;}
+    h1{color:#ef4444;border-bottom:2px solid #ef4444;padding-bottom:10px;}
+    table{width:100%;border-collapse:collapse;margin-top:20px;background:#1e293b;border-radius:8px;overflow:hidden;}
+    th{background:#ef4444;color:#fff;padding:12px;text-align:left;}
+    td{padding:10px 12px;border-bottom:1px solid #334155;}
+    tr:hover{background:#334155;}
+    .pass{color:#34d399;font-weight:bold;}
+    .fail{color:#f87171;font-weight:bold;}
+    .summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin:20px 0;}
+    .card{background:#1e293b;padding:20px;border-radius:8px;border-left:4px solid #ef4444;}
+    .card h3{margin:0 0 8px;font-size:1.1rem;color:#94a3b8;}
+    .card p{margin:0;font-size:1.5rem;font-weight:bold;color:#fff;}
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;🔍 Auditoría de Compliance Cisco&lt;/h1&gt;
+  &lt;p&gt;Generado el {{ ansible_date_time.iso8601 }}&lt;/p&gt;
+  
+  &lt;div class="summary"&gt;
+    &lt;div class="card"&gt;
+      &lt;h3&gt;Total Dispositivos&lt;/h3&gt;
+      &lt;p&gt;{{ ansible_play_hosts | length }}&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div class="card"&gt;
+      &lt;h3&gt;Compliant&lt;/h3&gt;
+      &lt;p style="color:#34d399;"&gt;{{ compliance_pass | default(0) }}&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div class="card"&gt;
+      &lt;h3&gt;No Compliant&lt;/h3&gt;
+      &lt;p style="color:#f87171;"&gt;{{ compliance_fail | default(0) }}&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;table&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th&gt;Hostname&lt;/th&gt;
+        &lt;th&gt;Modelo&lt;/th&gt;
+        &lt;th&gt;IOS&lt;/th&gt;
+        &lt;th&gt;Estado&lt;/th&gt;
+        &lt;th&gt;Fallos&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+      {% for host in groups['cisco_all'] %}
+      &lt;tr&gt;
+        &lt;td&gt;{{ host }}&lt;/td&gt;
+        &lt;td&gt;{{ hostvars[host]['ansible_net_model'] | default('N/A') }}&lt;/td&gt;
+        &lt;td&gt;{{ hostvars[host]['ansible_net_version'] | default('N/A') }}&lt;/td&gt;
+        &lt;td class="{{ 'pass' if hostvars[host]['compliant'] else 'fail' }}"&gt;
+          {{ 'PASS' if hostvars[host]['compliant'] else 'FAIL' }}
+        &lt;/td&gt;
+        &lt;td&gt;{{ hostvars[host]['fallos'] | default('Ninguno') }}&lt;/td&gt;
+      &lt;/tr&gt;
+      {% endfor %}
+    &lt;/tbody&gt;
+  &lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+  </div>
+
+  <h2 class="section-title">Reporte JSON: integración con sistemas externos</h2>
+  <p>Para integrar con Grafana, Splunk, ServiceNow o un CMDB, el formato JSON es ideal. Ansible puede generar un archivo JSON estructurado usando el filtro <code>to_nice_json</code>:</p>
+
+  <div class="code-block">
+    <div class="code-label">reporte_json.yml — Exportar para APIs</div>
+    <pre><code><span class="kw">---</span>
+- <span class="fn">name</span>: <span class="str">"REPORTE: Exportar facts a JSON"</span>
+  <span class="fn">hosts</span>: cisco_all
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Recopolar facts completos"</span>
+      <span class="fn">cisco.ios.ios_facts</span>:
+        <span class="fn">gather_subset</span>: <span class="str">"all"</span>
+      <span class="fn">register</span>: <span class="str">"device_facts"</span>
+
+    - <span class="fn">name</span>: <span class="str">"Estructurar datos del dispositivo"</span>
+      <span class="fn">ansible.builtin.set_fact</span>:
+        <span class="fn">device_report</span>:
+          <span class="fn">hostname</span>: <span class="str">"{{ inventory_hostname }}"</span>
+          <span class="fn">timestamp</span>: <span class="str">"{{ ansible_date_time.iso8601 }}"</span>
+          <span class="fn">hardware</span>:
+            <span class="fn">model</span>: <span class="str">"{{ device_facts.ansible_facts.ansible_net_model }}"</span>
+            <span class="fn">serial</span>: <span class="str">"{{ device_facts.ansible_facts.ansible_net_serialnum }}"</span>
+            <span class="fn">version</span>: <span class="str">"{{ device_facts.ansible_facts.ansible_net_version }}"</span>
+          <span class="fn">interfaces</span>: <span class="str">"{{ device_facts.ansible_facts.ansible_net_interfaces }}"</span>
+          <span class="fn">compliance_status</span>: <span class="str">"{{ 'PASS' if compliance_check is succeeded else 'FAIL' }}"</span>
+
+  <span class="fn">post_tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Generar JSON agregado"</span>
+      <span class="fn">ansible.builtin.copy</span>:
+        <span class="fn">content</span>: <span class="str">"{{ {'auditoria': {'fecha': ansible_date_time.date, 'dispositivos': ansible_play_hosts | map('extract', hostvars, 'device_report') | list}} | to_nice_json }}"</span>
+        <span class="fn">dest</span>: <span class="str">"/tmp/auditoria_network_{{ ansible_date_time.date }}.json"</span>
+      <span class="fn">delegate_to</span>: localhost
+      <span class="fn">run_once</span>: <span class="kw">yes</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Estrategia de agregación de datos</h2>
+  <p>Un patrón clave para reportes es usar <code>set_fact</code> por host y luego agregar en el <code>post_tasks</code> con <code>delegate_to: localhost</code> y <code>run_once: yes</code>. Esto evita race conditions y genera un único archivo de salida:</p>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Patrón de diseño: Gather → Process → Aggregate → Render</div>
+    <p><strong>1. Gather:</strong> Cada host recopila sus propios facts.<br>
+    <strong>2. Process:</strong> Validaciones y transformaciones por host (set_fact).<br>
+    <strong>3. Aggregate:</strong> Tarea única en localhost que lee hostvars de todos.<br>
+    <strong>4. Render:</strong> Template Jinja2 itera sobre hostvars para generar el reporte final.</p>
+  </div>
+
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead>
+        <tr><th>Módulo</th><th>Uso en Reportes</th><th>Ejemplo</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>template</code></td><td>Renderizar Jinja2 a cualquier formato</td><td>HTML, CSV, XML, LaTeX</td></tr>
+        <tr><td><code>copy</code></td><td>Escribir contenido generado con filtros</td><td>JSON con to_nice_json</td></tr>
+        <tr><td><code>lineinfile</code></td><td>Agregar líneas a un log centralizado</td><td>Append a auditoria.log</td></tr>
+        <tr><td><code>mail</code></td><td>Enviar reporte por email</td><td>Adjuntar CSV al finalizar</td></tr>
+        <tr><td><code>uri</code></td><td>POST a API externa</td><td>Enviar JSON a ServiceNow</td></tr>
+        <tr><td><code>slack</code></td><td>Notificación a canal</td><td>Alertar si hay fallos</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 6 — PRÁCTICAS
+═══════════════════════════════════════════ -->
+<div id="tab-practicas" class="ans1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Lab 1: Inventario automatizado de 3 routers</h2>
+  <p><strong>Escenario:</strong> Tienes tres routers Cisco (R1, R2, R3) y necesitas generar un CSV con hostname, modelo, versión de IOS y número de serie para el departamento de compras (renovación de smartnet).</p>
+  
+  <div class="code-block">
+    <div class="code-label">lab1_inventario.yml</div>
+    <pre><code><span class="kw">---</span>
+- <span class="fn">name</span>: <span class="str">"LAB 1: Inventario de hardware"</span>
+  <span class="fn">hosts</span>: cisco_routers
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Obtener facts de hardware"</span>
+      <span class="fn">cisco.ios.ios_facts</span>:
+        <span class="fn">gather_subset</span>: <span class="str">"hardware"</span>
+      <span class="fn">register</span>: <span class="str">"hw"</span>
+
+    - <span class="fn">name</span>: <span class="str">"Estructurar datos"</span>
+      <span class="fn">ansible.builtin.set_fact</span>:
+        <span class="fn">inv_data</span>:
+          <span class="fn">host</span>: <span class="str">"{{ inventory_hostname }}"</span>
+          <span class="fn">modelo</span>: <span class="str">"{{ hw.ansible_facts.ansible_net_model }}"</span>
+          <span class="fn">version</span>: <span class="str">"{{ hw.ansible_facts.ansible_net_version }}"</span>
+          <span class="fn">serial</span>: <span class="str">"{{ hw.ansible_facts.ansible_net_serialnum }}"</span>
+
+  <span class="fn">post_tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Generar CSV"</span>
+      <span class="fn">ansible.builtin.template</span>:
+        <span class="fn">src</span>: <span class="str">"inventario.csv.j2"</span>
+        <span class="fn">dest</span>: <span class="str">"./inventario_hardware.csv"</span>
+      <span class="fn">delegate_to</span>: localhost
+      <span class="fn">run_once</span>: <span class="kw">yes</span></code></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">templates/inventario.csv.j2</div>
+    <pre><code>Hostname,Modelo,Version_IOS,Serial
+{% for host in ansible_play_hosts %}
+{{ hostvars[host]['inv_data']['host'] }},{{ hostvars[host]['inv_data']['modelo'] }},{{ hostvars[host]['inv_data']['version'] }},{{ hostvars[host]['inv_data']['serial'] }}
+{% endfor %}</code></pre>
+  </div>
+
+  <h2 class="section-title">Lab 2: Auditoría de seguridad post-migración</h2>
+  <p><strong>Escenario:</strong> Acabas de migrar 10 switches a una nueva política de seguridad. Debes verificar que: (1) SSH v2 está activo, (2) Telnet está deshabilitado, (3) todas las interfaces access tienen port-security, (4) existe un banner MOTD.</p>
+
+  <div class="code-block">
+    <div class="code-label">lab2_post_migracion.yml</div>
+    <pre><code><span class="kw">---</span>
+- <span class="fn">name</span>: <span class="str">"LAB 2: Validar post-migración"</span>
+  <span class="fn">hosts</span>: cisco_switches
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Obtener configuración"</span>
+      <span class="fn">cisco.ios.ios_facts</span>:
+        <span class="fn">gather_subset</span>: <span class="str">"config"</span>
+      <span class="fn">register</span>: <span class="str">"cfg"</span>
+
+    - <span class="fn">name</span>: <span class="str">"CHECK 1: SSH v2"</span>
+      <span class="fn">ansible.builtin.assert</span>:
+        <span class="fn">that</span>: <span class="str">"'ip ssh version 2' in cfg.ansible_facts.ansible_net_config"</span>
+        <span class="fn">fail_msg</span>: <span class="str">"FALLO: SSH v2 no configurado"</span>
+      <span class="fn">ignore_errors</span>: <span class="kw">yes</span>
+
+    - <span class="fn">name</span>: <span class="str">"CHECK 2: No Telnet"</span>
+      <span class="fn">ansible.builtin.assert</span>:
+        <span class="fn">that</span>: <span class="str">"'transport input none' in cfg.ansible_facts.ansible_net_config or 'transport input ssh' in cfg.ansible_facts.ansible_net_config"</span>
+        <span class="fn">fail_msg</span>: <span class="str">"FALLO: Telnet podría estar habilitado"</span>
+      <span class="fn">ignore_errors</span>: <span class="kw">yes</span>
+
+    - <span class="fn">name</span>: <span class="str">"CHECK 3: Banner MOTD"</span>
+      <span class="fn">ansible.builtin.assert</span>:
+        <span class="fn">that</span>: <span class="str">"'banner motd' in cfg.ansible_facts.ansible_net_config"</span>
+        <span class="fn">fail_msg</span>: <span class="str">"FALLO: No hay banner MOTD"</span>
+      <span class="fn">ignore_errors</span>: <span class="kw">yes</span></code></pre>
+  </div>
+
+  <h2 class="section-title">Lab 3: Detección de interfaces caídas con alerta</h2>
+  <p><strong>Escenario:</strong> Monitorizar interfaces críticas (uplinks) y generar una alerta si están down. El reporte debe identificar qué interfaz de qué switch falló.</p>
+
+  <div class="code-block">
+    <div class="code-label">lab3_interfaces_criticas.yml</div>
+    <pre><code><span class="kw">---</span>
+- <span class="fn">name</span>: <span class="str">"LAB 3: Monitoreo de uplinks"</span>
+  <span class="fn">hosts</span>: cisco_switches
+  <span class="fn">gather_facts</span>: <span class="kw">no</span>
+  <span class="fn">vars</span>:
+    <span class="fn">uplinks_criticos</span>: <span class="str">"['GigabitEthernet0/1','GigabitEthernet0/2']"</span>
+
+  <span class="fn">tasks</span>:
+    - <span class="fn">name</span>: <span class="str">"Obtener estado de interfaces"</span>
+      <span class="fn">cisco.ios.ios_facts</span>:
+        <span class="fn">gather_subset</span>: <span class="str">"interfaces"</span>
+      <span class="fn">register</span>: <span class="str">"intf"</span>
+
+    - <span class="fn">name</span>: <span class="str">"Verificar uplinks críticos"</span>
+      <span class="fn">ansible.builtin.debug</span>:
+        <span class="fn">msg</span>: <span class="str">"CRITICO: {{ inventory_hostname }} - {{ item }} está {{ intf.ansible_facts.ansible_net_interfaces[item].operstatus }}"</span>
+      <span class="fn">loop</span>: <span class="str">"{{ uplinks_criticos }}"</span>
+      <span class="fn">when</span>: <span class="str">"intf.ansible_facts.ansible_net_interfaces[item].operstatus != 'up'"</span></code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚠️ Consideraciones para el examen CCNA</div>
+    <p>En el examen, las preguntas de automatización suelen enfocarse en:<br>
+    • Diferencia entre <code>ios_facts</code> (datos estructurados) y <code>ios_command</code> (salida raw).<br>
+    • Uso de <code>register</code> para guardar resultados y <code>debug</code> para inspeccionar.<br>
+    • <code>assert</code> como método de validación de configuración.<br>
+    • <code>when</code> para ejecución condicional basada en facts.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 7 — REFERENCIA
+═══════════════════════════════════════════ -->
+<div id="tab-referencia" class="ans1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Módulos clave de auditoría</h2>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead>
+        <tr><th>Módulo</th><th>Propósito</th><th>Ejemplo de uso</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>cisco.ios.ios_facts</code></td><td>Recopilar datos estructurados del dispositivo</td><td>Hardware, interfaces, configuración</td></tr>
+        <tr><td><code>cisco.ios.ios_command</code></td><td>Ejecutar comandos show arbitrarios</td><td>show ip route, show ip bgp summary</td></tr>
+        <tr><td><code>ansible.builtin.assert</code></td><td>Validar condiciones y fallar si no se cumplen</td><td>Verificar versión IOS mínima</td></tr>
+        <tr><td><code>ansible.builtin.debug</code></td><td>Imprimir variables en consola</td><td>Depurar valores durante ejecución</td></tr>
+        <tr><td><code>ansible.builtin.set_fact</code></td><td>Crear variables personalizadas</td><td>Agregar datos a un reporte</td></tr>
+        <tr><td><code>ansible.builtin.template</code></td><td>Renderizar archivos Jinja2</td><td>Generar HTML, CSV, XML</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="section-title">Subconjuntos de ios_facts</h2>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead>
+        <tr><th>gather_subset</th><th>Datos incluidos</th><th>Variable resultante</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>hardware</code></td><td>Modelo, versión, serial, memoria</td><td><code>ansible_net_model</code>, <code>ansible_net_version</code></td></tr>
+        <tr><td><code>interfaces</code></td><td>Estado, IP, MTU, bandwidth, descripción</td><td><code>ansible_net_interfaces</code></td></tr>
+        <tr><td><code>config</code></td><td>Running-config completo como string</td><td><code>ansible_net_config</code></td></tr>
+        <tr><td><code>all</code></td><td>Todo lo anterior</td><td>Todas las variables net_*</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="section-title">Variables de facts de red comunes</h2>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead>
+        <tr><th>Variable</th><th>Descripción</th><th>Ejemplo</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>ansible_net_hostname</code></td><td>Nombre del dispositivo</td><td>Router-CORE-01</td></tr>
+        <tr><td><code>ansible_net_model</code></td><td>Modelo de hardware</td><td>ISR4331/K9</td></tr>
+        <tr><td><code>ansible_net_version</code></td><td>Versión de IOS/XE</td><td>16.9.4</td></tr>
+        <tr><td><code>ansible_net_serialnum</code></td><td>Número de serie</td><td>FTX1234A567</td></tr>
+        <tr><td><code>ansible_net_image</code></td><td>Imagen de IOS cargada</td><td>bootflash:isr4300-universalk9.16.09.04.SPA.bin</td></tr>
+        <tr><td><code>ansible_net_interfaces</code></td><td>Diccionario de interfaces</td><td>Gi0/0/0, Gi0/0/1...</td></tr>
+        <tr><td><code>ansible_net_config</code></td><td>Running-config completo</td><td>String multilinea</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="section-title">Filtros Jinja2 útiles para reportes</h2>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead>
+        <tr><th>Filtro</th><th>Función</th><th>Ejemplo</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>dict2items</code></td><td>Convertir diccionario a lista para loop</td><td><code>interfaces | dict2items</code></td></tr>
+        <tr><td><code>selectattr</code></td><td>Filtrar objetos por atributo</td><td><code>users | selectattr('level', 'equalto', 15)</code></td></tr>
+        <tr><td><code>map</code></td><td>Extraer atributo de lista de objetos</td><td><code>hosts | map(attribute='name')</code></td></tr>
+        <tr><td><code>default</code></td><td>Valor por defecto si undefined</td><td><code>item.ip | default('N/A')</code></td></tr>
+        <tr><td><code>to_nice_json</code></td><td>JSON formateado con indentación</td><td><code>data | to_nice_json</code></td></tr>
+        <tr><td><code>to_nice_yaml</code></td><td>YAML formateado</td><td><code>data | to_nice_yaml</code></td></tr>
+        <tr><td><code>version</code></td><td>Comparar versiones semánticas</td><td><code>ios | version('16.9', '>=')</code></td></tr>
+        <tr><td><code>regex_findall</code></td><td>Extraer patrones de texto</td><td><code>output | regex_findall('\\d+\\.\\d+')</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 8 — QUIZ
+═══════════════════════════════════════════ -->
+<div id="tab-quiz" class="ans1-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Evaluación de conocimientos</h2>
+
+  <div class="quiz-question">
+    <div class="quiz-q-num">PREGUNTA 1 DE 5</div>
+    <div class="quiz-q-text">¿Qué módulo de Ansible convierte la salida de <code>show version</code> y <code>show interfaces</code> en datos estructurados (diccionarios y listas) sin necesidad de parsear texto manualmente?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" onclick="ansCheck(this,false)">A) ios_command</button>
+      <button class="quiz-opt" onclick="ansCheck(this,true)">B) ios_facts</button>
+      <button class="quiz-opt" onclick="ansCheck(this,false)">C) ios_config</button>
+      <button class="quiz-opt" onclick="ansCheck(this,false)">D) net_get</button>
+    </div>
+    <div class="quiz-explanation" style="display:none;">
+      <strong>Correcto:</strong> <code>ios_facts</code> recopila y parsea automáticamente información del dispositivo en variables estructuradas como <code>ansible_net_version</code>, <code>ansible_net_interfaces</code>, etc. <code>ios_command</code> devuelve texto crudo que requiere parsing manual.
+    </div>
+  </div>
+
+  <div class="quiz-question">
+    <div class="quiz-q-num">PREGUNTA 2 DE 5</div>
+    <div class="quiz-q-text">En un playbook de compliance, deseas verificar que todos los routers ejecutan IOS 16.9 o superior. ¿Qué construcción de Ansible es la más adecuada?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" onclick="ansCheck(this,false)">A) when: ios_version &gt;= "16.9"</button>
+      <button class="quiz-opt" onclick="ansCheck(this,true)">B) assert: that: "ios_version is version('16.9', '&gt;=')"</button>
+      <button class="quiz-opt" onclick="ansCheck(this,false)">C) failed_when: ios_version &lt; "16.9"</button>
+      <button class="quiz-opt" onclick="ansCheck(this,false)">D) loop: ios_version | version_compare</button>
+    </div>
+    <div class="quiz-explanation" style="display:none;">
+      <strong>Correcto:</strong> El módulo <code>assert</code> está diseñado específicamente para validaciones de compliance. El filtro <code>version</code> compara correctamente versiones semánticas (16.10 es mayor que 16.9, lo cual una comparación de strings fallaría).
+    </div>
+  </div>
+
+  <div class="quiz-question">
+    <div class="quiz-q-num">PREGUNTA 3 DE 5</div>
+    <div class="quiz-q-text">Necesitas que el playbook de auditoría continúe ejecutándose en todos los dispositivos aunque uno falle la validación. ¿Qué parámetro debes añadir a la task de assert?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" onclick="ansCheck(this,false)">A) ignore_unreachable: yes</button>
+      <button class="quiz-opt" onclick="ansCheck(this,true)">B) ignore_errors: yes</button>
+      <button class="quiz-opt" onclick="ansCheck(this,false)">C) any_errors_fatal: no</button>
+      <button class="quiz-opt" onclick="ansCheck(this,false)">D) force_handlers: yes</button>
+    </div>
+    <div class="quiz-explanation" style="display:none;">
+      <strong>Correcto:</strong> <code>ignore_errors: yes</code> permite que el playbook continúe a pesar de que la validación falle en un host específico. Esto es crucial para auditorías masivas donde quieres reportar todos los fallos, no detenerte en el primero.
+    </div>
+  </div>
+
+  <div class="quiz-question">
+    <div class="quiz-q-num">PREGUNTA 4 DE 5</div>
+    <div class="quiz-q-text">¿Cuál es el propósito de <code>delegate_to: localhost</code> combinado con <code>run_once: yes</code> en la sección <code>post_tasks</code> de un playbook de reportes?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" onclick="ansCheck(this,false)">A) Ejecutar la tarea en todos los hosts pero solo una vez por host</button>
+      <button class="quiz-opt" onclick="ansCheck(this,true)">B) Generar un único archivo de reporte en el nodo de control agregando datos de todos los hosts</button>
+      <button class="quiz-opt" onclick="ansCheck(this,false)">C) Conectarse a localhost vía SSH para obtener facts del control node</button>
+      <button class="quiz-opt" onclick="ansCheck(this,false)">D) Evitar que el playbook se ejecute en dispositivos de producción</button>
+    </div>
+    <div class="quiz-explanation" style="display:none;">
+      <strong>Correcto:</strong> Este patrón permite que una sola tarea en el nodo de control genere el reporte final, accediendo a <code>hostvars</code> de todos los hosts auditados. Sin <code>run_once</code>, se generarían múltiples archivos sobrescribiéndose.
+    </div>
+  </div>
+
+  <div class="quiz-question">
+    <div class="quiz-q-num">PREGUNTA 5 DE 5</div>
+    <div class="quiz-q-text">Un ingeniero ejecuta <code>ios_facts</code> con <code>gather_subset: interfaces</code>. ¿Qué estructura de datos proporciona Ansible para acceder al estado operacional de GigabitEthernet0/1?</div>
+    <div class="quiz-opts">
+      <button class="quiz-opt" onclick="ansCheck(this,false)">A) ansible_interfaces[0].status</button>
+      <button class="quiz-opt" onclick="ansCheck(this,true)">B) ansible_net_interfaces['GigabitEthernet0/1'].operstatus</button>
+      <button class="quiz-opt" onclick="ansCheck(this,false)">C) ansible_facts.interfaces.Gi0/1.state</button>
+      <button class="quiz-opt" onclick="ansCheck(this,false)">D) ios_facts.interfaces[1].operational</button>
+    </div>
+    <div class="quiz-explanation" style="display:none;">
+      <strong>Correcto:</strong> <code>ansible_net_interfaces</code> es un diccionario donde las claves son los nombres de interfaz y los valores incluyen <code>operstatus</code>, <code>lineprotocol</code>, <code>description</code>, <code>ipv4</code>, etc.
+    </div>
+  </div>
+</div>
+</div>
+
+</div><!-- /ans1-tabs-wrap -->
+
+<script>
+/* ── TABS ── */
+function showTabAns1(id,btn){
+  document.querySelectorAll('.ans1-tab-content').forEach(t=>t.classList.remove('ans1-active'));
+  document.querySelectorAll('.ans1-tab-btn').forEach(b=>b.classList.remove('ans1-active'));
+  document.getElementById('tab-'+id).classList.add('ans1-active');
+  btn.classList.add('ans1-active');
+}
+
+/* ── QUIZ ── */
+function ansCheck(btn,isCorrect){
+  const parent=btn.closest('.quiz-question');
+  parent.querySelectorAll('.quiz-opt').forEach(b=>{
+    b.disabled=true;
+    b.style.cursor='default';
+  });
+  if(isCorrect){
+    btn.classList.add('correct');
+  }else{
+    btn.classList.add('wrong');
+    parent.querySelectorAll('.quiz-opt').forEach(b=>{
+      if(b.onclick.toString().includes('true')) b.classList.add('correct');
+    });
+  }
+  parent.querySelector('.quiz-explanation').style.display='block';
+}
+
+/* ── DRAWER ── */
+function ccnaToggle(){
+  document.getElementById('ccnaDrawer').classList.toggle('open');
+  document.getElementById('ccnaOverlay').classList.toggle('show');
+}
+function ccnaClose(){
+  document.getElementById('ccnaDrawer').classList.remove('open');
+  document.getElementById('ccnaOverlay').classList.remove('show');
+}
+</script>
+
+</body>
+</html>
