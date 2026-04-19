@@ -1,0 +1,1704 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proyecto — Dashboard de Red vía APIs · M8 T7 | CCNA Academy</title>
+  <meta name="description" content="Construye un dashboard multi-API que consulta DNA Center y RESTCONF para generar informes HTML de estado de red, interfaces y alertas. Proyecto final CCNA Domain 6.5.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── HERO acento Dashboard ── */
+.class-hero { background: linear-gradient(135deg, #06080f 0%, #080d18 60%, #0a1020 100%); }
+
+/* ── REST ACCENT TOKENS ── */
+:root{ --rest:#38bdf8; --rest-d:#0ea5e9; --rest-glow:rgba(56,189,248,.12); }
+
+/* ── BASE CLASS STYLES ── */
+body{font-family:'Exo 2',sans-serif;background:#07090f;color:#e2e8f0;}
+.class-hero{padding:56px 24px 48px;border-bottom:1px solid rgba(56,189,248,.08);position:relative;overflow:hidden;}
+.class-hero::before{content:'';position:absolute;top:-60px;right:-80px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(56,189,248,.06) 0%,transparent 70%);pointer-events:none;}
+.class-hero-inner{max-width:900px;margin:0 auto;position:relative;z-index:1;}
+.class-badge{font-family:'Share Tech Mono',monospace;font-size:.63rem;color:#38bdf8;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;}
+.class-title{font-family:'Orbitron',sans-serif;font-size:clamp(1.6rem,3.8vw,2.6rem);font-weight:900;letter-spacing:3px;color:#c2d0e8;margin-bottom:12px;line-height:1.1;}
+.class-subtitle{font-size:.92rem;color:#6b7a9a;line-height:1.72;margin-bottom:20px;max-width:700px;}
+.class-meta{display:flex;gap:12px;flex-wrap:wrap;}
+.meta-item{font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#4a5780;padding:4px 10px;border:1px solid rgba(56,189,248,.15);border-radius:4px;}
+.rest5-tabs-wrap{max-width:1100px;margin:0 auto;padding:0 16px 40px;}
+.rest5-tabs-bar{display:flex;gap:4px;padding:20px 0 0;flex-wrap:wrap;border-bottom:1px solid rgba(56,189,248,.12);margin-bottom:0;}
+.rest5-tab-btn{padding:8px 13px;border-radius:8px 8px 0 0;font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#4a5780;background:none;border:1px solid transparent;cursor:pointer;transition:all .18s;white-space:nowrap;border-bottom:none;}
+.rest5-tab-btn:hover{color:#c2d0e8;background:rgba(56,189,248,.06);}
+.rest5-tab-btn.rest5-active{color:#38bdf8;background:#0d1220;border-color:rgba(56,189,248,.25);border-bottom:1px solid #0d1220;}
+.rest5-tab-content{display:none;background:#0d1220;border:1px solid rgba(56,189,248,.08);border-top:none;border-radius:0 0 12px 12px;padding:32px;}
+.rest5-tab-content.rest5-active{display:block;}
+.content-block{max-width:880px;}
+.section-title{font-family:'Orbitron',sans-serif;font-size:.95rem;color:#38bdf8;letter-spacing:2px;margin:28px 0 14px;padding-bottom:8px;border-bottom:1px solid rgba(56,189,248,.15);}
+.section-title:first-child{margin-top:0;}
+p{color:#8294b8;line-height:1.75;margin-bottom:14px;font-size:.9rem;}
+ul,ol{color:#8294b8;padding-left:1.4rem;margin-bottom:14px;font-size:.9rem;}
+li{margin-bottom:5px;line-height:1.65;}
+strong{color:#c2d0e8;}
+code{font-family:'Share Tech Mono',monospace;font-size:.82rem;background:rgba(56,189,248,.1);color:#38bdf8;padding:1px 6px;border-radius:4px;border:1px solid rgba(56,189,248,.2);}
+
+/* INFO BOXES */
+.info-box{border-radius:8px;padding:14px 18px;margin:18px 0;border-left:3px solid;}
+.info-box.tip{background:rgba(56,189,248,.06);border-color:#38bdf8;}
+.info-box.warning{background:rgba(251,191,36,.05);border-color:#fbbf24;}
+.info-box.danger{background:rgba(248,113,113,.05);border-color:#f87171;}
+.info-box.success{background:rgba(52,211,153,.05);border-color:#34d399;}
+.info-box-title{font-family:'Share Tech Mono',monospace;font-size:.73rem;color:#38bdf8;margin-bottom:8px;}
+.info-box.warning .info-box-title{color:#fbbf24;}
+.info-box.danger .info-box-title{color:#f87171;}
+.info-box.success .info-box-title{color:#34d399;}
+
+/* CODE BLOCKS */
+.code-block{background:#050810;border:1px solid rgba(56,189,248,.15);border-left:3px solid #38bdf8;border-radius:8px;padding:0;margin:16px 0;overflow:hidden;}
+.code-label{background:rgba(56,189,248,.08);padding:8px 16px;font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#4a5780;letter-spacing:2px;text-transform:uppercase;border-bottom:1px solid rgba(56,189,248,.1);}
+.code-block pre{margin:0;padding:18px;overflow-x:auto;}
+.code-block code{background:none;border:none;padding:0;color:#a8b4c8;font-size:.79rem;line-height:1.8;display:block;}
+
+/* SYNTAX HIGHLIGHTING */
+.cmt{color:#3a4a60;font-style:italic;}
+.kw {color:#c792ea;}
+.fn {color:#82aaff;}
+.str{color:#c3e88d;}
+.num{color:#f78c6c;}
+.cls{color:#ffcb6b;}
+
+/* CONCEPT GRID */
+.concept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin:16px 0;}
+.concept-card{background:#090d1a;border:1px solid rgba(56,189,248,.1);border-radius:10px;padding:16px;}
+.concept-icon{font-size:1.8rem;margin-bottom:8px;}
+.concept-card h3{font-family:'Share Tech Mono',monospace;font-size:.77rem;color:#38bdf8;margin-bottom:8px;}
+.concept-card p{font-size:.8rem;margin:0;}
+
+/* REF TABLE */
+.table-wrap{overflow-x:auto;margin:16px 0;}
+.ref-table{width:100%;border-collapse:collapse;font-size:.8rem;}
+.ref-table th{background:#090d1a;color:#38bdf8;font-family:'Share Tech Mono',monospace;font-size:.67rem;padding:10px 12px;text-align:left;border:1px solid rgba(56,189,248,.15);letter-spacing:1px;}
+.ref-table td{padding:9px 12px;border:1px solid rgba(255,255,255,.04);color:#8294b8;}
+.ref-table tr:hover td{background:rgba(56,189,248,.04);}
+.ref-table code{font-size:.77rem;}
+
+/* QUIZ */
+.quiz-question{background:#090d1a;border:1px solid rgba(56,189,248,.12);border-radius:10px;padding:20px;margin-bottom:14px;}
+.quiz-q-num{font-family:'Share Tech Mono',monospace;font-size:.62rem;color:#374060;margin-bottom:8px;}
+.quiz-q-text{font-size:.9rem;color:#c2d0e8;margin-bottom:14px;line-height:1.6;}
+.quiz-opts{display:flex;flex-direction:column;gap:7px;}
+.quiz-opt{padding:10px 14px;border-radius:7px;border:1px solid rgba(56,189,248,.12);background:#0d1220;color:#6b7a9a;cursor:pointer;font-size:.84rem;text-align:left;transition:all .15s;font-family:'Exo 2',sans-serif;}
+.quiz-opt:hover:not(:disabled){border-color:rgba(56,189,248,.4);color:#c2d0e8;}
+.quiz-opt.correct{border-color:#34d399;background:rgba(52,211,153,.08);color:#34d399;}
+.quiz-opt.wrong{border-color:#f87171;background:rgba(248,113,113,.08);color:#f87171;}
+.quiz-explanation{margin-top:10px;padding:10px 14px;background:rgba(56,189,248,.07);border-left:3px solid #38bdf8;border-radius:6px;font-size:.82rem;color:#a0aec0;line-height:1.65;}
+
+/* FLOW DIAGRAM */
+.mk-flow{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin:20px 0;padding:20px;background:#090d1a;border-radius:10px;border:1px solid rgba(56,189,248,.1);}
+.mk-box{background:#0d1220;border:1px solid rgba(56,189,248,.2);border-radius:8px;padding:14px 18px;text-align:center;min-width:110px;}
+.mk-box-label{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:#38bdf8;margin-bottom:4px;}
+.mk-box-val{font-size:.8rem;color:#c2d0e8;}
+.mk-arrow{font-size:1.4rem;color:#38bdf8;}
+
+/* ENDPOINT CARD */
+.endpoint-card{background:#050810;border:1px solid rgba(56,189,248,.12);border-radius:8px;padding:16px;margin:12px 0;}
+.endpoint-method{display:inline-block;font-family:'Share Tech Mono',monospace;font-size:.7rem;padding:3px 8px;border-radius:4px;margin-right:8px;font-weight:700;}
+.get{background:rgba(52,211,153,.12);color:#34d399;}
+.post{background:rgba(56,189,248,.12);color:#38bdf8;}
+.put{background:rgba(251,191,36,.12);color:#fbbf24;}
+.delete{background:rgba(248,113,113,.12);color:#f87171;}
+.endpoint-path{font-family:'Share Tech Mono',monospace;font-size:.78rem;color:#c2d0e8;}
+.endpoint-desc{font-size:.82rem;color:#6b7a9a;margin-top:6px;}
+
+/* COMPARISON TABLE */
+.compare-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin:16px 0;}
+.compare-card{background:#090d1a;border:1px solid rgba(56,189,248,.1);border-radius:10px;padding:18px;}
+.compare-card h4{font-family:'Share Tech Mono',monospace;font-size:.8rem;color:#38bdf8;margin-bottom:10px;}
+.compare-card ul{margin:0;padding-left:1.2rem;font-size:.82rem;}
+
+/* ARCHITECTURE DIAGRAM */
+.arch-diagram{background:#090d1a;border:1px solid rgba(56,189,248,.1);border-radius:10px;padding:24px;margin:16px 0;text-align:center;}
+.arch-row{display:flex;justify-content:center;align-items:center;gap:16px;flex-wrap:wrap;margin:12px 0;}
+.arch-node{background:#0d1220;border:1px solid rgba(56,189,248,.2);border-radius:8px;padding:12px 16px;min-width:140px;text-align:center;}
+.arch-node-label{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:#38bdf8;margin-bottom:4px;}
+.arch-node-val{font-size:.8rem;color:#c2d0e8;}
+.arch-conn{font-size:1.2rem;color:#38bdf8;}
+
+/* PROGRESS BAR */
+.progress-wrap{background:#090d1a;border-radius:6px;height:8px;overflow:hidden;margin:8px 0;}
+.progress-bar{height:100%;background:linear-gradient(90deg,#38bdf8,#0ea5e9);border-radius:6px;transition:width .3s;}
+
+/* DASHBOARD PREVIEW */
+.dash-preview{background:#050810;border:1px solid rgba(56,189,248,.15);border-radius:10px;padding:20px;margin:16px 0;font-family:'Share Tech Mono',monospace;font-size:.75rem;color:#8294b8;line-height:1.8;}
+.dash-preview .dash-header{color:#38bdf8;font-weight:700;border-bottom:1px solid rgba(56,189,248,.2);padding-bottom:8px;margin-bottom:12px;}
+.dash-preview .dash-row{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.03);}
+.dash-preview .dash-status-online{color:#34d399;}
+.dash-preview .dash-status-offline{color:#f87171;}
+.dash-preview .dash-status-warn{color:#fbbf24;}
+
+/* FILE TREE */
+.file-tree{background:#050810;border:1px solid rgba(56,189,248,.1);border-radius:8px;padding:16px;font-family:'Share Tech Mono',monospace;font-size:.75rem;color:#8294b8;line-height:1.9;}
+.file-tree .dir{color:#38bdf8;}
+.file-tree .file{color:#a8b4c8;}
+
+/* Navbar y Drawer */
+.navbar{position:fixed;top:0;left:0;right:0;height:56px;background:#080a10;border-bottom:1px solid rgba(56,189,248,.1);display:flex;align-items:center;padding:0 24px;z-index:1000;}
+.navbar-toggle{background:none;border:1px solid rgba(56,189,248,.3);color:#38bdf8;padding:6px 12px;border-radius:6px;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:.75rem;margin-right:16px;}
+.navbar-brand{font-family:'Orbitron',sans-serif;font-weight:700;color:#38bdf8;text-decoration:none;font-size:1.1rem;}
+.navbar-brand span{color:#0ea5e9;}
+.navbar-spacer{flex:1;}
+.navbar-link{color:#6b7a9a;text-decoration:none;font-size:.8rem;transition:color .2s;}
+.navbar-link:hover{color:#c2d0e8;}
+.nav-spacer{height:56px;}
+.ccna-drawer{position:fixed;top:0;left:0;bottom:0;width:280px;background:#0d1220;border-right:1px solid rgba(56,189,248,.2);transform:translateX(-100%);transition:transform .3s;z-index:2000;overflow-y:auto;}
+.ccna-drawer.open{transform:translateX(0);}
+.ccna-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);opacity:0;visibility:hidden;transition:all .3s;z-index:1500;}
+.ccna-overlay.show{opacity:1;visibility:visible;}
+.drawer-header{padding:20px;border-bottom:1px solid rgba(56,189,248,.2);display:flex;justify-content:space-between;align-items:center;}
+.drawer-header h2{font-family:'Orbitron',sans-serif;font-size:.8rem;color:#38bdf8;margin:0;letter-spacing:2px;}
+.drawer-close{background:none;border:none;color:#6b7a9a;font-size:1.2rem;cursor:pointer;}
+.drawer-section{padding:16px;border-bottom:1px solid rgba(56,189,248,.1);}
+.drawer-section-title{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#374060;margin-bottom:12px;letter-spacing:1px;text-transform:uppercase;}
+.drawer-link{display:block;padding:10px 12px;color:#8294b8;text-decoration:none;font-size:.85rem;border-radius:6px;transition:all .2s;margin-bottom:4px;}
+.drawer-link:hover{background:rgba(56,189,248,.1);color:#c2d0e8;}
+.drawer-link.active{background:rgba(56,189,248,.2);color:#38bdf8;border-left:3px solid #38bdf8;}
+.dl-icon{margin-right:8px;}
+
+@media(max-width:680px){
+  .rest5-tab-btn{font-size:.6rem;padding:6px 9px;}
+  .rest5-tab-content{padding:18px 12px;}
+  .concept-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
+<nav class="ccna-drawer" id="ccnaDrawer">
+  <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
+  <div class="drawer-section"><div class="drawer-section-title">General</div>
+    <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M1 · Fundamentos</div>
+    <a href="fundamentos.html" class="drawer-link"><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
+    <a href="subnetting.html"  class="drawer-link"><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
+    <a href="ipv6.html"        class="drawer-link"><span class="dl-icon">6️⃣</span> IPv6</a>
+    <a href="arp.html"         class="drawer-link"><span class="dl-icon">📡</span> ARP</a>
+    <a href="rip.html"         class="drawer-link"><span class="dl-icon">🔄</span> RIP</a>
+    <a href="protocolos-internet.html" class="drawer-link"><span class="dl-icon">🌍</span> Protocolos Internet</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M2 · Dispositivos Cisco</div>
+    <a href="router.html"         class="drawer-link"><span class="dl-icon">📡</span> Routers Cisco</a>
+    <a href="switches-cisco.html" class="drawer-link"><span class="dl-icon">🔀</span> Switches Cisco</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M3 · Switching</div>
+    <a href="vlan.html"               class="drawer-link"><span class="dl-icon">🏷️</span> VLANs</a>
+    <a href="inter-vlan-routing.html" class="drawer-link"><span class="dl-icon">🔁</span> Inter-VLAN Routing</a>
+    <a href="stp.html"                class="drawer-link"><span class="dl-icon">🌳</span> STP</a>
+    <a href="etherchannel.html"       class="drawer-link"><span class="dl-icon">🔗</span> EtherChannel</a>
+    <a href="port-security.html"      class="drawer-link"><span class="dl-icon">🔒</span> Port Security</a>
+    <a href="cdp-lldp.html"           class="drawer-link"><span class="dl-icon">🔍</span> CDP / LLDP</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M4 · Routing</div>
+    <a href="routing.html"            class="drawer-link"><span class="dl-icon">🗺️</span> Routing Estático</a>
+    <a href="ospf.html"               class="drawer-link"><span class="dl-icon">⭕</span> OSPF</a>
+    <a href="eigrp.html"              class="drawer-link"><span class="dl-icon">⚡</span> EIGRP</a>
+    <a href="ospfv2-masterclass.html" class="drawer-link"><span class="dl-icon">🎯</span> OSPFv2 Masterclass</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M5 · Servicios IP</div>
+    <a href="dhcp.html" class="drawer-link"><span class="dl-icon">📋</span> DHCP</a>
+    <a href="nat.html"  class="drawer-link"><span class="dl-icon">🔄</span> NAT / PAT</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M6 · Seguridad</div>
+    <a href="acl.html" class="drawer-link"><span class="dl-icon">🛡️</span> ACLs</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M7 · WAN &amp; QoS</div>
+    <a href="wan.html" class="drawer-link"><span class="dl-icon">🌍</span> WAN</a>
+    <a href="qos.html" class="drawer-link"><span class="dl-icon">📊</span> QoS</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M8 · Automatización</div>
+    <a href="m8-automatizacion.html" class="drawer-link"><span class="dl-icon">🤖</span> M8 — Vista General</a>
+    <a href="python-redes.html"      class="drawer-link"><span class="dl-icon">🐍</span> Python para Redes</a>
+    <a href="json-datos.html"        class="drawer-link"><span class="dl-icon">📋</span> JSON y Datos</a>
+    <a href="rest-apis.html"         class="drawer-link active"><span class="dl-icon">🌐</span> REST APIs</a>
+    <a href="ansible-redes.html"     class="drawer-link"><span class="dl-icon">⚙️</span> Ansible</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">⚡ Herramientas</div>
+    <a href="asistente.html"          class="drawer-link"><span class="dl-icon">🤖</span> Asistente IA</a>
+    <a href="netbot.html"             class="drawer-link"><span class="dl-icon">⚙️</span> NetBot Config</a>
+    <a href="calculadora.html"        class="drawer-link"><span class="dl-icon">🧮</span> Calculadora IP</a>
+    <a href="../laboratorios-pkt.html"   class="drawer-link"><span class="dl-icon">🧪</span> Labs Packet Tracer</a>
+    <a href="../banco-preguntas.html" class="drawer-link"><span class="dl-icon">📝</span> Banco de Preguntas</a></div>
+</nav>
+
+<header class="navbar">
+  <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
+  <a href="../index.html" class="navbar-brand">CISCO<span> ACADEMY</span></a>
+  <div class="navbar-spacer"></div>
+  <a href="rest-apis.html" class="navbar-link">← REST APIs</a>
+</header>
+<div class="nav-spacer"></div>
+
+<!-- HERO -->
+<section class="class-hero" style="border-bottom:1px solid rgba(56,189,248,.2);">
+  <div class="class-hero-inner">
+    <div class="class-badge" style="color:#38bdf8;">M8 · AUTOMATIZACIÓN · REST APIs · TEMA 7 DE 7</div>
+    <h1 class="class-title">PROYECTO — <span class="class-title-accent" style="background:linear-gradient(135deg,#38bdf8,#0ea5e9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Dashboard de Red vía APIs</span></h1>
+    <p class="class-subtitle">Consolida datos de múltiples controladores y dispositivos en un único panel ejecutivo. Consulta DNA Center para inventario y salud, RESTCONF para configuraciones IOS-XE en tiempo real, y genera informes HTML estáticos o un servidor Flask dinámico. El proyecto final que integra todo el M8.</p>
+    <div class="class-meta">
+      <span class="meta-item" style="border-color:rgba(56,189,248,.2);color:#38bdf8;">📊 Dashboard</span>
+      <span class="meta-item">🎯 CCNA Domain 6.5</span>
+      <span class="meta-item">⏱ ~120 min lectura</span>
+      <span class="meta-item">🐍 Python + Flask</span>
+      <span class="meta-item">🌐 Multi-API</span>
+    </div>
+  </div>
+</section>
+
+<!-- TABS -->
+<div class="rest5-tabs-wrap">
+  <div class="rest5-tabs-bar">
+    <button class="rest5-tab-btn rest5-active" onclick="showTabRest5('arquitectura',this)">🏗️ Arquitectura</button>
+    <button class="rest5-tab-btn" onclick="showTabRest5('dnac',this)">🔬 DNA Center</button>
+    <button class="rest5-tab-btn" onclick="showTabRest5('restconf',this)">📡 RESTCONF</button>
+    <button class="rest5-tab-btn" onclick="showTabRest5('consolidacion',this)">🔄 Consolidación</button>
+    <button class="rest5-tab-btn" onclick="showTabRest5('html-static',this)">📄 HTML Estático</button>
+    <button class="rest5-tab-btn" onclick="showTabRest5('flask',this)">🌐 Flask Live</button>
+    <button class="rest5-tab-btn" onclick="showTabRest5('alertas',this)">🔔 Alertas</button>
+    <button class="rest5-tab-btn" onclick="showTabRest5('proyecto',this)">🚀 Proyecto</button>
+    <button class="rest5-tab-btn" onclick="showTabRest5('referencia',this)">📊 Ref</button>
+    <button class="rest5-tab-btn" onclick="showTabRest5('quiz',this)">🎯 Quiz</button>
+  </div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 1 — ARQUITECTURA
+═══════════════════════════════════════════ -->
+<div id="tab-arquitectura" class="rest5-tab-content rest5-active">
+<div class="content-block">
+  <h2 class="section-title">Visión general del sistema</h2>
+  <p>Este proyecto final del M8 integra dos mundos: <strong>la orquestación centralizada</strong> (DNA Center como fuente única de verdad para topología, inventario y salud) y <strong>la gestión directa de dispositivos</strong> (RESTCONF sobre IOS-XE para configuraciones y estadísticas de interfaces). El resultado es un <strong>dashboard unificado</strong> que los ingenieros de NOC pueden consultar cada mañana o mantener abierto en una pantalla de operaciones.</p>
+
+  <div class="arch-diagram">
+    <div class="arch-row">
+      <div class="arch-node"><div class="arch-node-label">CAPA PRESENTACIÓN</div><div class="arch-node-val">HTML Estático / Flask</div></div>
+    </div>
+    <div class="arch-row"><div class="arch-conn">▼</div></div>
+    <div class="arch-row">
+      <div class="arch-node"><div class="arch-node-label">ORQUESTADOR PYTHON</div><div class="arch-node-val">Dashboard Engine</div></div>
+    </div>
+    <div class="arch-row"><div class="arch-conn">▼ ▼</div></div>
+    <div class="arch-row">
+      <div class="arch-node"><div class="arch-node-label">DNA CENTER</div><div class="arch-node-val">Inventario + Salud</div></div>
+      <div class="arch-conn">+</div>
+      <div class="arch-node"><div class="arch-node-label">IOS-XE vía RESTCONF</div><div class="arch-node-val">Config + Interfaces</div></div>
+    </div>
+  </div>
+
+  <h2 class="section-title">Componentes del sistema</h2>
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">🔬</div>
+      <h3>DNA Center Adapter</h3>
+      <p>Módulo que autentica, obtiene token, consulta /network-device, /interface y /issue, normaliza la respuesta a un schema común.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">📡</div>
+      <h3>RESTCONF Adapter</h3>
+      <p>Conecta directamente a routers/switches IOS-XE vía HTTPS. Lee YANG models (ietf-interfaces, Cisco-IOS-XE-native) y extrae estadísticas en tiempo real.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🔄</div>
+      <h3>Data Merger</h3>
+      <p>Consolida datos de múltiples fuentes, detecta duplicados por serial/IP, enriquece registros y calcula métricas agregadas (uptime, interfaces down).</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">📊</div>
+      <h3>Report Generator</h3>
+      <p>Renderiza HTML con Jinja2 o string templates. Incluye tablas, barras de progreso, badges de estado y sección de alertas críticas.</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">Estructura de archivos del proyecto</h2>
+  <div class="file-tree">
+<span class="dir">dashboard_red/</span>
+├── <span class="file">config.py</span>              <span class="cmt"># Variables de entorno y credenciales</span>
+├── <span class="file">requirements.txt</span>       <span class="cmt"># requests, flask, jinja2</span>
+├── <span class="dir">adapters/</span>
+│   ├── <span class="file">__init__.py</span>
+│   ├── <span class="file">dnac_client.py</span>       <span class="cmt"># DNA Center API client</span>
+│   └── <span class="file">restconf_client.py</span>   <span class="cmt"># RESTCONF client para IOS-XE</span>
+├── <span class="dir">core/</span>
+│   ├── <span class="file">__init__.py</span>
+│   ├── <span class="file">merger.py</span>            <span class="cmt"># Consolida datos multi-fuente</span>
+│   └── <span class="file">alert_engine.py</span>      <span class="cmt"># Lógica de alertas y thresholds</span>
+├── <span class="dir">templates/</span>
+│   ├── <span class="file">report_static.html</span>   <span class="cmt"># Template Jinja2 para reporte batch</span>
+│   └── <span class="file">dashboard_live.html</span>  <span class="cmt"># Template para Flask dinámico</span>
+├── <span class="file">generate_report.py</span>     <span class="cmt"># Versión estática (cron/batch)</span>
+├── <span class="file">app.py</span>                 <span class="cmt"># Servidor Flask (versión live)</span>
+└── <span class="file">README.md</span>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Filosofía del diseño</div>
+    <p>Cada adapter es <strong>independiente y testeable</strong>. Si DNA Center no responde, el dashboard aún muestra datos de RESTCONF. Si un router está offline, se marca como unreachable pero no rompe el reporte. Este patrón se llama <strong>"graceful degradation"</strong> y es fundamental en sistemas de red.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 2 — DNA CENTER ADAPTER
+═══════════════════════════════════════════ -->
+<div id="tab-dnac" class="rest5-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Módulo DNA Center: inventario y salud</h2>
+  <p>DNA Center es el cerebro del campus. A través de su API REST proporciona descubrimiento automatizado, topología, salud de dispositivos (Health Score), problemas activos (Issues) y configuraciones. Nuestro adapter encapsula toda la lógica de autenticación y normalización.</p>
+
+  <div class="endpoint-card">
+    <div><span class="endpoint-method post">POST</span><span class="endpoint-path">/dna/system/api/v1/auth/token</span></div>
+    <div class="endpoint-desc">Obtiene el X-Auth-Token usando Basic Auth. Expira tras 1 hora de inactividad.</div>
+  </div>
+  <div class="endpoint-card">
+    <div><span class="endpoint-method get">GET</span><span class="endpoint-path">/dna/intent/api/v1/network-device</span></div>
+    <div class="endpoint-desc">Lista todos los dispositivos gestionados: hostname, IP, plataforma, software, uptime, reachability.</div>
+  </div>
+  <div class="endpoint-card">
+    <div><span class="endpoint-method get">GET</span><span class="endpoint-path">/dna/intent/api/v1/interface</span></div>
+    <div class="endpoint-desc">Todas las interfaces descubiertas con status administrativo/operacional, VLAN, duplex, velocidad.</div>
+  </div>
+  <div class="endpoint-card">
+    <div><span class="endpoint-method get">GET</span><span class="endpoint-path">/dna/intent/api/v1/issue</span></div>
+    <div class="endpoint-desc">Issues activas priorizadas por severity: Critical, Major, Minor, Warning.</div>
+  </div>
+
+  <h2 class="section-title">Implementación del adapter</h2>
+  <div class="code-block">
+    <div class="code-label">adapters/dnac_client.py — Cliente DNA Center completo</div>
+    <pre><code><span class="cmt">#!/usr/bin/env python3</span>
+<span class="kw">import</span> requests
+<span class="kw">import</span> os
+<span class="kw">from</span> datetime <span class="kw">import</span> datetime
+
+
+<span class="kw">class</span> <span class="cls">DNACenterClient</span>:
+    <span class="str">"""Adapter para Cisco DNA Center API v1."""</span>
+
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, base_url, username, password, verify_ssl=<span class="kw">True</span>):
+        self.base_url = base_url.rstrip(<span class="str">"/"</span>)
+        self.username = username
+        self.password = password
+        self.verify_ssl = verify_ssl
+        self.session = requests.Session()
+        self.session.verify = verify_ssl
+        self.token = <span class="kw">None</span>
+        self.token_expiry = <span class="kw">None</span>
+
+        <span class="kw">if</span> <span class="kw">not</span> verify_ssl:
+            requests.packages.urllib3.disable_warnings()
+
+        self._authenticate()
+
+    <span class="kw">def</span> <span class="fn">_authenticate</span>(self):
+        <span class="str">"""Obtiene token y configura header X-Auth-Token."""</span>
+        auth_url = <span class="str">f"{self.base_url}/dna/system/api/v1/auth/token"</span>
+        resp = self.session.post(
+            auth_url,
+            auth=(self.username, self.password),
+            timeout=<span class="num">10</span>
+        )
+        resp.raise_for_status()
+        data = resp.json()
+        self.token = data[<span class="str">"Token"</span>]
+        self.session.headers.update({
+            <span class="str">"X-Auth-Token"</span>: self.token,
+            <span class="str">"Content-Type"</span>: <span class="str">"application/json"</span>,
+            <span class="str">"Accept"</span>: <span class="str">"application/json"</span>
+        })
+        self.token_expiry = datetime.now()
+        <span class="fn">print</span>(<span class="str">f"🔐 DNA Center autenticado. Token vigente."</span>)
+
+    <span class="kw">def</span> <span class="fn">_request</span>(self, method, endpoint, **kwargs):
+        <span class="str">"""Wrapper con manejo de errores y reintentos simples."""</span>
+        url = <span class="str">f"{self.base_url}{endpoint}"</span>
+        <span class="kw">try</span>:
+            r = self.session.request(method, url, timeout=<span class="num">30</span>, **kwargs)
+            r.raise_for_status()
+            <span class="kw">return</span> r.json()
+        <span class="kw">except</span> requests.exceptions.HTTPError <span class="kw">as</span> e:
+            <span class="kw">if</span> r.status_code == <span class="num">401</span>:
+                <span class="fn">print</span>(<span class="str">"🔄 Token expirado. Reautenticando..."</span>)
+                self._authenticate()
+                <span class="kw">return</span> self._request(method, endpoint, **kwargs)
+            <span class="kw">raise</span>
+
+    <span class="cmt"># ═══════════════════════════════════════════════════</span>
+    <span class="cmt"># MÉTODOS PÚBLICOS</span>
+    <span class="cmt"># ═══════════════════════════════════════════════════</span>
+
+    <span class="kw">def</span> <span class="fn">get_devices</span>(self):
+        <span class="str">"""Retorna lista normalizada de dispositivos."""</span>
+        data = self._request(<span class="str">"GET"</span>, <span class="str">"/dna/intent/api/v1/network-device"</span>)
+        devices = []
+        <span class="kw">for</span> d <span class="kw">in</span> data.get(<span class="str">"response"</span>, []):
+            devices.append({
+                <span class="str">"source"</span>: <span class="str">"dnac"</span>,
+                <span class="str">"id"</span>: d.get(<span class="str">"id"</span>),
+                <span class="str">"hostname"</span>: d.get(<span class="str">"hostname"</span>, <span class="str">"N/A"</span>),
+                <span class="str">"ip"</span>: d.get(<span class="str">"managementIpAddress"</span>),
+                <span class="str">"platform"</span>: d.get(<span class="str">"platformId"</span>, <span class="str">"Unknown"</span>),
+                <span class="str">"software"</span>: d.get(<span class="str">"softwareVersion"</span>, <span class="str">"N/A"</span>),
+                <span class="str">"role"</span>: d.get(<span class="str">"role"</span>, <span class="str">"Unknown"</span>),
+                <span class="str">"uptime"</span>: d.get(<span class="str">"upTime"</span>, <span class="str">"N/A"</span>),
+                <span class="str">"reachability"</span>: d.get(<span class="str">"reachabilityStatus"</span>, <span class="str">"Unknown"</span>),
+                <span class="str">"health"</span>: d.get(<span class="str">"overallHealth"</span>, <span class="num">-1</span>),
+                <span class="str">"serial"</span>: d.get(<span class="str">"serialNumber"</span>, <span class="str">"N/A"</span>)
+            })
+        <span class="kw">return</span> devices
+
+    <span class="kw">def</span> <span class="fn">get_interfaces</span>(self, device_id=<span class="kw">None</span>):
+        <span class="str">"""Retorna interfaces con status operacional."""</span>
+        params = {<span class="str">"deviceId"</span>: device_id} <span class="kw">if</span> device_id <span class="kw">else</span> {}
+        data = self._request(<span class="str">"GET"</span>, <span class="str">"/dna/intent/api/v1/interface"</span>, params=params)
+        interfaces = []
+        <span class="kw">for</span> iface <span class="kw">in</span> data.get(<span class="str">"response"</span>, []):
+            interfaces.append({
+                <span class="str">"source"</span>: <span class="str">"dnac"</span>,
+                <span class="str">"device_id"</span>: iface.get(<span class="str">"deviceId"</span>),
+                <span class="str">"name"</span>: iface.get(<span class="str">"portName"</span>, <span class="str">"N/A"</span>),
+                <span class="str">"admin_status"</span>: iface.get(<span class="str">"adminStatus"</span>, <span class="str">"unknown"</span>),
+                <span class="str">"oper_status"</span>: iface.get(<span class="str">"status"</span>, <span class="str">"unknown"</span>),
+                <span class="str">"vlan"</span>: iface.get(<span class="str">"vlanId"</span>, <span class="str">"N/A"</span>),
+                <span class="str">"speed"</span>: iface.get(<span class="str">"speed"</span>, <span class="str">"N/A"</span>),
+                <span class="str">"duplex"</span>: iface.get(<span class="str">"duplex"</span>, <span class="str">"N/A"</span>),
+                <span class="str">"mac"</span>: iface.get(<span class="str">"macAddress"</span>, <span class="str">"N/A"</span>)
+            })
+        <span class="kw">return</span> interfaces
+
+    <span class="kw">def</span> <span class="fn">get_issues</span>(self, severity=None):
+        <span class="str">"""Retorna issues activas, opcionalmente filtradas por severidad."""</span>
+        params = {<span class="str">"severity"</span>: severity} <span class="kw">if</span> severity <span class="kw">else</span> {}
+        data = self._request(<span class="str">"GET"</span>, <span class="str">"/dna/intent/api/v1/issue"</span>, params=params)
+        issues = []
+        <span class="kw">for</span> issue <span class="kw">in</span> data.get(<span class="str">"response"</span>, []):
+            issues.append({
+                <span class="str">"source"</span>: <span class="str">"dnac"</span>,
+                <span class="str">"name"</span>: issue.get(<span class="str">"name"</span>, <span class="str">"Unknown"</span>),
+                <span class="str">"severity"</span>: issue.get(<span class="str">"severity"</span>, <span class="str">"Unknown"</span>),
+                <span class="str">"category"</span>: issue.get(<span class="str">"category"</span>, <span class="str">"General"</span>),
+                <span class="str">"device"</span>: issue.get(<span class="str">"deviceId"</span>, <span class="str">"N/A"</span>),
+                <span class="str">"description"</span>: issue.get(<span class="str">"description"</span>, <span class="str">""</span>),
+                <span class="str">"timestamp"</span>: issue.get(<span class="str">"issueOccurenceTime"</span>, <span class="str">"N/A"</span>)
+            })
+        <span class="kw">return</span> issues</code></pre>
+  </div>
+
+  <div class="info-box success">
+    <div class="info-box-title">✅ Buenas prácticas implementadas</div>
+    <ul>
+      <li><strong>Reautenticación automática</strong>: Si el token expira (HTTP 401), el cliente se reautentica sin interrumpir el flujo.</li>
+      <li><strong>Normalización de datos</strong>: Todos los métodos retornan diccionarios planos con claves consistentes, independientemente del schema crudo de DNA Center.</li>
+      <li><strong>Session reuse</strong>: Mantiene keep-alive y headers comunes entre peticiones.</li>
+    </ul>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 3 — RESTCONF ADAPTER
+═══════════════════════════════════════════ -->
+<div id="tab-restconf" class="rest5-tab-content">
+<div class="content-block">
+  <h2 class="section-title">RESTCONF sobre IOS-XE: modelo YANG</h2>
+  <p>Mientras DNA Center ve la red desde arriba (orquestación), <strong>RESTCONF</strong> permite hablar directamente con el dispositivo. Usa el modelo de datos <strong>YANG</strong> (RFC 6020) para estructurar la configuración y el estado del equipo. Cada router/switch con IOS-XE 16.6+ expone un servidor RESTCONF en <code>/restconf</code>.</p>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">📡</div>
+      <h3>ietf-interfaces</h3>
+      <p>Modelo estándar IETF para interfaces: nombre, descripción, tipo, enabled, oper-status, estadísticas (in/out octets, errors, drops).</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">⚙️</div>
+      <h3>Cisco-IOS-XE-native</h3>
+      <p>Modelo propietario Cisco que expone toda la configuración nativa: hostname, VLANs, routing, ACLs, NAT, SNMP, usuarios.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">📊</div>
+      <h3>Cisco-IOS-XE-process-cpu</h3>
+      <p>Estadísticas de CPU: uso por proceso, load average, historial de 5 segundos, 1 minuto y 5 minutos.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">💾</div>
+      <h3>Cisco-IOS-XE-memory</h3>
+      <p>Utilización de memoria: total, used, free, hold, reservada por procesos.</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">Endpoints RESTCONF fundamentales</h2>
+  <div class="endpoint-card">
+    <div><span class="endpoint-method get">GET</span><span class="endpoint-path">/restconf/data/ietf-interfaces:interfaces</span></div>
+    <div class="endpoint-desc">Lista todas las interfaces con configuración y estado operacional.</div>
+  </div>
+  <div class="endpoint-card">
+    <div><span class="endpoint-method get">GET</span><span class="endpoint-path">/restconf/data/ietf-interfaces:interfaces/interface={name}</span></div>
+    <div class="endpoint-desc">Detalle de una interfaz específica (ej. GigabitEthernet1).</div>
+  </div>
+  <div class="endpoint-card">
+    <div><span class="endpoint-method get">GET</span><span class="endpoint-path">/restconf/data/Cisco-IOS-XE-native:native/hostname</span></div>
+    <div class="endpoint-desc">Hostname configurado en el dispositivo.</div>
+  </div>
+  <div class="endpoint-card">
+    <div><span class="endpoint-method get">GET</span><span class="endpoint-path">/restconf/data/Cisco-IOS-XE-process-cpu:cpu-usage</span></div>
+    <div class="endpoint-desc">Uso actual de CPU con breakdown por proceso.</div>
+  </div>
+
+  <h2 class="section-title">Implementación del adapter RESTCONF</h2>
+  <div class="code-block">
+    <div class="code-label">adapters/restconf_client.py — Cliente IOS-XE RESTCONF</div>
+    <pre><code><span class="cmt">#!/usr/bin/env python3</span>
+<span class="kw">import</span> requests
+<span class="kw">import</span> urllib3
+
+<span class="kw">class</span> <span class="cls">RestconfClient</span>:
+    <span class="str">"""Adapter para dispositivos IOS-XE vía RESTCONF."""</span>
+
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, host, username, password, port=<span class="num">443</span>, verify_ssl=<span class="kw">False</span>):
+        self.base_url = <span class="str">f"https://{host}:{port}/restconf/data"</span>
+        self.session = requests.Session()
+        self.session.auth = (username, password)
+        self.session.headers.update({
+            <span class="str">"Accept"</span>: <span class="str">"application/yang-data+json"</span>,
+            <span class="str">"Content-Type"</span>: <span class="str">"application/yang-data+json"</span>
+        })
+        self.session.verify = verify_ssl
+
+        <span class="kw">if</span> <span class="kw">not</span> verify_ssl:
+            urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+    <span class="kw">def</span> <span class="fn">_get</span>(self, yang_path):
+        <span class="str">"""GET genérico a un YANG model path."""</span>
+        url = <span class="str">f"{self.base_url}/{yang_path}"</span>
+        r = self.session.get(url, timeout=<span class="num">15</span>)
+        r.raise_for_status()
+        <span class="kw">return</span> r.json()
+
+    <span class="kw">def</span> <span class="fn">get_hostname</span>(self):
+        data = self._get(<span class="str">"Cisco-IOS-XE-native:native/hostname"</span>)
+        <span class="kw">return</span> data.get(<span class="str">"Cisco-IOS-XE-native:hostname"</span>, <span class="str">"N/A"</span>)
+
+    <span class="kw">def</span> <span class="fn">get_interfaces</span>(self):
+        <span class="str">"""Retorna interfaces con estado y estadísticas."""</span>
+        data = self._get(<span class="str">"ietf-interfaces:interfaces"</span>)
+        interfaces = []
+        <span class="kw">for</span> iface <span class="kw">in</span> data.get(<span class="str">"ietf-interfaces:interface"</span>, []):
+            stats = iface.get(<span class="str">"statistics"</span>, {})
+            interfaces.append({
+                <span class="str">"source"</span>: <span class="str">"restconf"</span>,
+                <span class="str">"name"</span>: iface.get(<span class="str">"name"</span>, <span class="str">"N/A"</span>),
+                <span class="str">"description"</span>: iface.get(<span class="str">"description"</span>, <span class="str">""</span>),
+                <span class="str">"type"</span>: iface.get(<span class="str">"type"</span>, <span class="str">"N/A"</span>),
+                <span class="str">"enabled"</span>: iface.get(<span class="str">"enabled"</span>, <span class="kw">False</span>),
+                <span class="str">"oper_status"</span>: iface.get(<span class="str">"oper-status"</span>, <span class="str">"unknown"</span>),
+                <span class="str">"ip"</span>: self._extract_ip(iface),
+                <span class="str">"in_octets"</span>: stats.get(<span class="str">"in-octets"</span>, <span class="num">0</span>),
+                <span class="str">"out_octets"</span>: stats.get(<span class="str">"out-octets"</span>, <span class="num">0</span>),
+                <span class="str">"in_errors"</span>: stats.get(<span class="str">"in-errors"</span>, <span class="num">0</span>),
+                <span class="str">"out_errors"</span>: stats.get(<span class="str">"out-errors"</span>, <span class="num">0</span>)
+            })
+        <span class="kw">return</span> interfaces
+
+    <span class="kw">def</span> <span class="fn">_extract_ip</span>(self, iface):
+        <span class="str">"""Extrae IP de la interfaz si tiene configuración IPv4."""</span>
+        ip_data = iface.get(<span class="str">"ietf-ip:ipv4"</span>, {})
+        addresses = ip_data.get(<span class="str">"address"</span>, [])
+        <span class="kw">if</span> addresses:
+            <span class="kw">return</span> <span class="str">f"{addresses[0]['ip']}/{addresses[0].get('prefix-length','')}"</span>
+        <span class="kw">return</span> <span class="str">"N/A"</span>
+
+    <span class="kw">def</span> <span class="fn">get_cpu_usage</span>(self):
+        <span class="str">"""Retorna uso de CPU del dispositivo."""</span>
+        <span class="kw">try</span>:
+            data = self._get(<span class="str">"Cisco-IOS-XE-process-cpu:cpu-usage"</span>)
+            cpu = data.get(<span class="str">"Cisco-IOS-XE-process-cpu:cpu-usage"</span>, {})
+            <span class="kw">return</span> {
+                <span class="str">"five_seconds"</span>: cpu.get(<span class="str">"cpu-utilization"</span>, {}).get(<span class="str">"five-seconds"</span>, <span class="str">"N/A"</span>),
+                <span class="str">"one_minute"</span>: cpu.get(<span class="str">"cpu-utilization"</span>, {}).get(<span class="str">"one-minute"</span>, <span class="str">"N/A"</span>),
+                <span class="str">"five_minutes"</span>: cpu.get(<span class="str">"cpu-utilization"</span>, {}).get(<span class="str">"five-minutes"</span>, <span class="str">"N/A"</span>)
+            }
+        <span class="kw">except</span> Exception:
+            <span class="kw">return</span> {<span class="str">"five_seconds"</span>: <span class="str">"unavailable"</span>, <span class="str">"one_minute"</span>: <span class="str">"unavailable"</span>}
+
+    <span class="kw">def</span> <span class="fn">get_memory</span>(self):
+        <span class="str">"""Retorna estadísticas de memoria."""</span>
+        <span class="kw">try</span>:
+            data = self._get(<span class="str">"Cisco-IOS-XE-memory:memory-statistics"</span>)
+            mem = data.get(<span class="str">"Cisco-IOS-XE-memory:memory-statistics"</span>, {})
+            <span class="kw">return</span> {
+                <span class="str">"total"</span>: mem.get(<span class="str">"total-memory"</span>, <span class="num">0</span>),
+                <span class="str">"used"</span>: mem.get(<span class="str">"used-memory"</span>, <span class="num">0</span>),
+                <span class="str">"free"</span>: mem.get(<span class="str">"free-memory"</span>, <span class="num">0</span>)
+            }
+        <span class="kw">except</span> Exception:
+            <span class="kw">return</span> {<span class="str">"total"</span>: <span class="num">0</span>, <span class="str">"used"</span>: <span class="num">0</span>, <span class="str">"free"</span>: <span class="num">0</span>}</code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚡ Header Accept crítico en RESTCONF</div>
+    <p>RESTCONF requiere explícitamente <code>Accept: application/yang-data+json</code>. Si omites este header o usas <code>application/json</code> genérico, IOS-XE puede retornar XML o un error 406 Not Acceptable. El header <code>Content-Type</code> también debe ser <code>application/yang-data+json</code> en POST/PUT/PATCH.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 4 — CONSOLIDACIÓN
+═══════════════════════════════════════════ -->
+<div id="tab-consolidacion" class="rest5-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Data Merger: uniendo mundos</h2>
+  <p>El desafío central de un dashboard multi-API es que cada fuente habla un idioma diferente. DNA Center usa <code>managementIpAddress</code> y <code>platformId</code>; RESTCONF usa <code>name</code> y <code>type</code>. El <strong>Data Merger</strong> normaliza, deduplica y enriquece la información para presentar una vista única de la red.</p>
+
+  <div class="arch-diagram">
+    <div class="arch-row">
+      <div class="arch-node"><div class="arch-node-label">FUENTE A</div><div class="arch-node-val">DNA Center<br><small>100 dispositivos</small></div></div>
+      <div class="arch-conn">+</div>
+      <div class="arch-node"><div class="arch-node-label">FUENTE B</div><div class="arch-node-val">RESTCONF<br><small>15 routers edge</small></div></div>
+    </div>
+    <div class="arch-row"><div class="arch-conn">▼</div></div>
+    <div class="arch-row">
+      <div class="arch-node" style="border-color:#34d399;"><div class="arch-node-label">DATA MERGER</div><div class="arch-node-val">Normalizar → Deduplicar → Enriquecer</div></div>
+    </div>
+    <div class="arch-row"><div class="arch-conn">▼</div></div>
+    <div class="arch-row">
+      <div class="arch-node"><div class="arch-node-label">OUTPUT</div><div class="arch-node-val">115 registros unificados</div></div>
+    </div>
+  </div>
+
+  <h2 class="section-title">Reglas de consolidación</h2>
+  <ul>
+    <li><strong>Clave de matching</strong>: Usamos la dirección IP de gestión o el hostname como clave primaria para unificar registros.</li>
+    <li><strong>Prioridad de fuentes</strong>: Si un dispositivo existe en DNA Center y RESTCONF, DNA Center tiene prioridad para metadatos (plataforma, software), pero RESTCONF enriquece con datos en tiempo real (CPU, memoria, stats de interfaces).</li>
+    <li><strong>Marcado de fuente</strong>: Cada registro conserva el campo <code>sources: ["dnac", "restconf"]</code> para trazabilidad.</li>
+    <li><strong>Cálculo de métricas agregadas</strong>: Porcentaje de dispositivos alcanzables, interfaces operativas, issues críticas, uso promedio de CPU.</li>
+  </ul>
+
+  <h2 class="section-title">Implementación del Data Merger</h2>
+  <div class="code-block">
+    <div class="code-label">core/merger.py — Motor de consolidación</div>
+    <pre><code><span class="cmt">#!/usr/bin/env python3</span>
+<span class="kw">from</span> collections <span class="kw">import</span> defaultdict
+
+
+<span class="kw">class</span> <span class="cls">DataMerger</span>:
+    <span class="str">"""Consolida datos de DNA Center y RESTCONF en una vista unificada."""</span>
+
+    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+        self.devices = {}
+        self.interfaces = []
+        self.issues = []
+        self.metrics = {}
+
+    <span class="kw">def</span> <span class="fn">ingest_dnac</span>(self, devices, interfaces, issues):
+        <span class="str">"""Ingesta datos desde DNA Center."""</span>
+        <span class="kw">for</span> d <span class="kw">in</span> devices:
+            key = d[<span class="str">"ip"</span>] <span class="kw">or</span> d[<span class="str">"hostname"</span>]
+            self.devices[key] = {
+                <span class="str">"hostname"</span>: d[<span class="str">"hostname"</span>],
+                <span class="str">"ip"</span>: d[<span class="str">"ip"</span>],
+                <span class="str">"platform"</span>: d[<span class="str">"platform"</span>],
+                <span class="str">"software"</span>: d[<span class="str">"software"</span>],
+                <span class="str">"role"</span>: d[<span class="str">"role"</span>],
+                <span class="str">"reachability"</span>: d[<span class="str">"reachability"</span>],
+                <span class="str">"health"</span>: d[<span class="str">"health"</span>],
+                <span class="str">"serial"</span>: d[<span class="str">"serial"</span>],
+                <span class="str">"sources"</span>: [<span class="str">"dnac"</span>],
+                <span class="str">"cpu"</span>: <span class="kw">None</span>,
+                <span class="str">"memory"</span>: <span class="kw">None</span>
+            }
+        self.interfaces.extend(interfaces)
+        self.issues.extend(issues)
+
+    <span class="kw">def</span> <span class="fn">ingest_restconf</span>(self, host_ip, hostname, interfaces, cpu, memory):
+        <span class="str">"""Ingesta datos desde un dispositivo IOS-XE vía RESTCONF."""</span>
+        key = host_ip
+        <span class="kw">if</span> key <span class="kw">in</span> self.devices:
+            <span class="cmt"># Enriquecer registro existente de DNAC</span>
+            self.devices[key][<span class="str">"cpu"</span>] = cpu
+            self.devices[key][<span class="str">"memory"</span>] = memory
+            <span class="kw">if</span> <span class="str">"restconf"</span> <span class="kw">not in</span> self.devices[key][<span class="str">"sources"</span>]:
+                self.devices[key][<span class="str">"sources"</span>].append(<span class="str">"restconf"</span>)
+        <span class="kw">else</span>:
+            <span class="cmt"># Dispositivo solo en RESTCONF (no gestionado por DNAC)</span>
+            self.devices[key] = {
+                <span class="str">"hostname"</span>: hostname,
+                <span class="str">"ip"</span>: host_ip,
+                <span class="str">"platform"</span>: <span class="str">"IOS-XE"</span>,
+                <span class="str">"software"</span>: <span class="str">"Unknown"</span>,
+                <span class="str">"role"</span>: <span class="str">"Edge"</span>,
+                <span class="str">"reachability"</span>: <span class="str">"Reachable"</span>,
+                <span class="str">"health"</span>: <span class="num">-1</span>,
+                <span class="str">"serial"</span>: <span class="str">"N/A"</span>,
+                <span class="str">"sources"</span>: [<span class="str">"restconf"</span>],
+                <span class="str">"cpu"</span>: cpu,
+                <span class="str">"memory"</span>: memory
+            }
+
+        <span class="cmt"># Añadir interfaces con prefijo de fuente</span>
+        <span class="kw">for</span> iface <span class="kw">in</span> interfaces:
+            iface[<span class="str">"device_ip"</span>] = host_ip
+            iface[<span class="str">"device_hostname"</span>] = hostname
+            self.interfaces.append(iface)
+
+    <span class="kw">def</span> <span class="fn">compute_metrics</span>(self):
+        <span class="str">"""Calcula métricas agregadas del estado de la red."""</span>
+        total = <span class="fn">len</span>(self.devices)
+        reachable = <span class="fn">sum</span>(<span class="num">1</span> <span class="kw">for</span> d <span class="kw">in</span> self.devices.values()
+                          <span class="kw">if</span> d[<span class="str">"reachability"</span>] == <span class="str">"Reachable"</span>)
+        healthy = <span class="fn">sum</span>(<span class="num">1</span> <span class="kw">for</span> d <span class="kw">in</span> self.devices.values()
+                        <span class="kw">if</span> d[<span class="str">"health"</span>] >= <span class="num">80</span> <span class="kw">or</span> d[<span class="str">"health"</span>] == <span class="num">-1</span>)
+
+        up_ifaces = <span class="fn">sum</span>(<span class="num">1</span> <span class="kw">for</span> i <span class="kw">in</span> self.interfaces
+                          <span class="kw">if</span> i.get(<span class="str">"oper_status"</span>) <span class="kw">in</span> [<span class="str">"up"</span>, <span class="str">"ok"</span>])
+
+        critical_issues = <span class="fn">sum</span>(<span class="num">1</span> <span class="kw">for</span> issue <span class="kw">in</span> self.issues
+                                <span class="kw">if</span> issue.get(<span class="str">"severity"</span>) == <span class="str">"CRITICAL"</span>)
+
+        self.metrics = {
+            <span class="str">"total_devices"</span>: total,
+            <span class="str">"reachable_pct"</span>: <span class="fn">round</span>((reachable / total * <span class="num">100</span>), <span class="num">1</span>) <span class="kw">if</span> total <span class="kw">else</span> <span class="num">0</span>,
+            <span class="str">"healthy_pct"</span>: <span class="fn">round</span>((healthy / total * <span class="num">100</span>), <span class="num">1</span>) <span class="kw">if</span> total <span class="kw">else</span> <span class="num">0</span>,
+            <span class="str">"total_interfaces"</span>: <span class="fn">len</span>(self.interfaces),
+            <span class="str">"up_interfaces"</span>: up_ifaces,
+            <span class="str">"up_interfaces_pct"</span>: <span class="fn">round</span>((up_ifaces / <span class="fn">len</span>(self.interfaces) * <span class="num">100</span>), <span class="num">1</span>) <span class="kw">if</span> self.interfaces <span class="kw">else</span> <span class="num">0</span>,
+            <span class="str">"total_issues"</span>: <span class="fn">len</span>(self.issues),
+            <span class="str">"critical_issues"</span>: critical_issues
+        }
+
+    <span class="kw">def</span> <span class="fn">get_devices_list</span>(self):
+        <span class="kw">return</span> <span class="fn">list</span>(self.devices.values())
+
+    <span class="kw">def</span> <span class="fn">get_interfaces_list</span>(self):
+        <span class="kw">return</span> self.interfaces
+
+    <span class="kw">def</span> <span class="fn">get_issues_list</span>(self):
+        <span class="kw">return</span> self.issues
+
+    <span class="kw">def</span> <span class="fn">get_metrics</span>(self):
+        <span class="kw">return</span> self.metrics</code></pre>
+  </div>
+
+  <h2 class="section-title">Motor de alertas unificado</h2>
+  <p>Con los datos consolidados, el motor de alertas evalúa reglas de negocio y genera notificaciones clasificadas por severidad. Estas alertas aparecerán en el dashboard con color distintivo.</p>
+
+  <div class="code-block">
+    <div class="code-label">core/alert_engine.py — Generador de alertas</div>
+    <pre><code><span class="cmt">#!/usr/bin/env python3</span>
+
+
+<span class="kw">class</span> <span class="cls">AlertEngine</span>:
+    <span class="str">"""Evalúa reglas sobre datos consolidados y genera alertas."""</span>
+
+    RULES = [
+        {<span class="str">"name"</span>: <span class="str">"Device Unreachable"</span>, <span class="str">"severity"</span>: <span class="str">"CRITICAL"</span>,
+         <span class="str">"check"</span>: <span class="kw">lambda</span> d: d.get(<span class="str">"reachability"</span>) != <span class="str">"Reachable"</span>},
+        {<span class="str">"name"</span>: <span class="str">"Low Health Score"</span>, <span class="str">"severity"</span>: <span class="str">"WARNING"</span>,
+         <span class="str">"check"</span>: <span class="kw">lambda</span> d: <span class="num">0</span> <= d.get(<span class="str">"health"</span>, <span class="num">100</span>) < <span class="num">70</span>},
+        {<span class="str">"name"</span>: <span class="str">"High CPU Usage"</span>, <span class="str">"severity"</span>: <span class="str">"WARNING"</span>,
+         <span class="str">"check"</span>: <span class="kw">lambda</span> d: d.get(<span class="str">"cpu"</span>) <span class="kw">and</span> d[<span class="str">"cpu"</span>].get(<span class="str">"five_seconds"</span>, <span class="num">0</span>) > <span class="num">80</span>},
+        {<span class="str">"name"</span>: <span class="str">"Interface Down"</span>, <span class="str">"severity"</span>: <span class="str">"MINOR"</span>,
+         <span class="str">"check"</span>: <span class="kw">lambda</span> i: i.get(<span class="str">"oper_status"</span>) <span class="kw">in</span> [<span class="str">"down"</span>, <span class="str">"lower-layer-down"</span>]},
+    ]
+
+    <span class="kw">def</span> <span class="fn">evaluate</span>(self, devices, interfaces):
+        <span class="str">"""Evalúa todas las reglas y retorna alertas."""</span>
+        alerts = []
+
+        <span class="kw">for</span> device <span class="kw">in</span> devices:
+            <span class="kw">for</span> rule <span class="kw">in</span> self.RULES[:<span class="num">3</span>]:
+                <span class="kw">if</span> rule[<span class="str">"check"</span>](device):
+                    alerts.append({
+                        <span class="str">"severity"</span>: rule[<span class="str">"severity"</span>],
+                        <span class="str">"category"</span>: <span class="str">"Device"</span>,
+                        <span class="str">"target"</span>: device.get(<span class="str">"hostname"</span>, device.get(<span class="str">"ip"</span>)),
+                        <span class="str">"message"</span>: rule[<span class="str">"name"</span>],
+                        <span class="str">"source"</span>: <span class="str">","</span>.join(device.get(<span class="str">"sources"</span>, []))
+                    })
+
+        <span class="kw">for</span> iface <span class="kw">in</span> interfaces:
+            rule = self.RULES[<span class="num">3</span>]
+            <span class="kw">if</span> rule[<span class="str">"check"</span>](iface):
+                alerts.append({
+                    <span class="str">"severity"</span>: rule[<span class="str">"severity"</span>],
+                    <span class="str">"category"</span>: <span class="str">"Interface"</span>,
+                    <span class="str">"target"</span>: <span class="str">f"{iface.get('device_hostname','?')}:{iface['name']}"</span>,
+                    <span class="str">"message"</span>: rule[<span class="str">"name"</span>],
+                    <span class="str">"source"</span>: <span class="str">"restconf"</span>
+                })
+
+        <span class="cmt"># Ordenar: CRITICAL > WARNING > MINOR</span>
+        severity_order = {<span class="str">"CRITICAL"</span>: <span class="num">0</span>, <span class="str">"WARNING"</span>: <span class="num">1</span>, <span class="str">"MINOR"</span>: <span class="num">2</span>}
+        alerts.sort(key=<span class="kw">lambda</span> x: severity_order.get(x[<span class="str">"severity"</span>], <span class="num">99</span>))
+        <span class="kw">return</span> alerts</code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 5 — HTML ESTÁTICO
+═══════════════════════════════════════════ -->
+<div id="tab-html-static" class="rest5-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Reporte HTML estático: versión batch</h2>
+  <p>La versión estática es ideal para <strong>reportes programados</strong> (cron jobs cada madrugada) o para enviar por email al equipo de operaciones. Genera un archivo HTML autocontenido con todas las métricas, tablas y alertas. No requiere servidor, se abre directamente en el navegador.</p>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Cuándo usar la versión estática</div>
+    <ul>
+      <li>Reportes diarios/semanales para managers (sin interacción).</li>
+      <li>Auditorías de compliance donde necesitas un archivo inmutable con timestamp.</li>
+      <li>Entornos sin servidor web disponible (bastión SSH, laptop de campo).</li>
+      <li>Adjunto automático a tickets o emails vía script.</li>
+    </ul>
+  </div>
+
+  <h2 class="section-title">Template Jinja2 para reporte estático</h2>
+  <div class="code-block">
+    <div class="code-label">templates/report_static.html — Plantilla del reporte</div>
+    <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;title&gt;Dashboard Red — {{ timestamp }}&lt;/title&gt;
+  &lt;style&gt;
+    body{font-family:sans-serif;background:#0f172a;color:#e2e8f0;padding:20px;}
+    .header{border-bottom:2px solid #38bdf8;padding-bottom:10px;margin-bottom:20px;}
+    .metric-card{background:#1e293b;border-radius:8px;padding:16px;margin:8px;display:inline-block;min-width:150px;}
+    .metric-value{font-size:2rem;color:#38bdf8;font-weight:bold;}
+    .metric-label{font-size:.8rem;color:#94a3b8;}
+    .status-up{color:#34d399;}
+    .status-down{color:#f87171;}
+    .status-warn{color:#fbbf24;}
+    table{width:100%;border-collapse:collapse;margin-top:16px;font-size:.9rem;}
+    th{background:#1e293b;color:#38bdf8;padding:10px;text-align:left;}
+    td{padding:8px;border-bottom:1px solid #334155;}
+    tr:hover{background:#1e293b;}
+    .alert-critical{background:rgba(248,113,113,.1);border-left:3px solid #f87171;}
+    .alert-warning{background:rgba(251,191,36,.1);border-left:3px solid #fbbf24;}
+    .alert-minor{background:rgba(56,189,248,.1);border-left:3px solid #38bdf8;}
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class="header"&gt;
+    &lt;h1&gt;📊 Dashboard de Red&lt;/h1&gt;
+    &lt;p&gt;Generado: {{ timestamp }}&lt;/p&gt;
+  &lt;/div&gt;
+
+  &lt;h2&gt;Métricas Globales&lt;/h2&gt;
+  &lt;div class="metric-card"&gt;
+    &lt;div class="metric-value"&gt;{{ metrics.total_devices }}&lt;/div&gt;
+    &lt;div class="metric-label"&gt;Dispositivos&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class="metric-card"&gt;
+    &lt;div class="metric-value"&gt;{{ metrics.reachable_pct }}%&lt;/div&gt;
+    &lt;div class="metric-label"&gt;Alcanzables&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class="metric-card"&gt;
+    &lt;div class="metric-value"&gt;{{ metrics.up_interfaces_pct }}%&lt;/div&gt;
+    &lt;div class="metric-label"&gt;Interfaces Up&lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;h2&gt;🚨 Alertas Activas ({{ alerts|length }})&lt;/h2&gt;
+  &lt;table&gt;
+    &lt;tr&gt;&lt;th&gt;Severidad&lt;/th&gt;&lt;th&gt;Categoría&lt;/th&gt;&lt;th&gt;Dispositivo&lt;/th&gt;&lt;th&gt;Mensaje&lt;/th&gt;&lt;/tr&gt;
+    {% for alert in alerts %}
+    &lt;tr class="alert-{{ alert.severity|lower }}"&gt;
+      &lt;td&gt;{{ alert.severity }}&lt;/td&gt;
+      &lt;td&gt;{{ alert.category }}&lt;/td&gt;
+      &lt;td&gt;{{ alert.target }}&lt;/td&gt;
+      &lt;td&gt;{{ alert.message }}&lt;/td&gt;
+    &lt;/tr&gt;
+    {% endfor %}
+  &lt;/table&gt;
+
+  &lt;h2&gt;📡 Inventario de Dispositivos&lt;/h2&gt;
+  &lt;table&gt;
+    &lt;tr&gt;&lt;th&gt;Hostname&lt;/th&gt;&lt;th&gt;IP&lt;/th&gt;&lt;th&gt;Plataforma&lt;/th&gt;&lt;th&gt;Rol&lt;/th&gt;&lt;th&gt;Alcanzable&lt;/th&gt;&lt;th&gt;Salud&lt;/th&gt;&lt;/tr&gt;
+    {% for d in devices %}
+    &lt;tr&gt;
+      &lt;td&gt;{{ d.hostname }}&lt;/td&gt;
+      &lt;td&gt;{{ d.ip }}&lt;/td&gt;
+      &lt;td&gt;{{ d.platform }}&lt;/td&gt;
+      &lt;td&gt;{{ d.role }}&lt;/td&gt;
+      &lt;td class="status-{{ 'up' if d.reachability == 'Reachable' else 'down' }}"&gt;
+        {{ d.reachability }}
+      &lt;/td&gt;
+      &lt;td&gt;{{ d.health if d.health != -1 else 'N/A' }}&lt;/td&gt;
+    &lt;/tr&gt;
+    {% endfor %}
+  &lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+  </div>
+
+  <h2 class="section-title">Generador de reporte estático</h2>
+  <div class="code-block">
+    <div class="code-label">generate_report.py — Script batch</div>
+    <pre><code><span class="cmt">#!/usr/bin/env python3</span>
+<span class="kw">import</span> os
+<span class="kw">import</span> json
+<span class="kw">from</span> datetime <span class="kw">import</span> datetime
+<span class="kw">from</span> jinja2 <span class="kw">import</span> Environment, FileSystemLoader
+
+<span class="kw">from</span> adapters.dnac_client <span class="kw">import</span> DNACenterClient
+<span class="kw">from</span> adapters.restconf_client <span class="kw">import</span> RestconfClient
+<span class="kw">from</span> core.merger <span class="kw">import</span> DataMerger
+<span class="kw">from</span> core.alert_engine <span class="kw">import</span> AlertEngine
+
+<span class="kw">def</span> <span class="fn">main</span>():
+    <span class="fn">print</span>(<span class="str">"🚀 Iniciando generación de reporte de red..."</span>)
+
+    <span class="cmt"># ── CONFIGURACIÓN ──</span>
+    merger = DataMerger()
+
+    <span class="cmt"># 1. DNA Center</span>
+    dnac = DNACenterClient(
+        base_url=os.getenv(<span class="str">"DNAC_URL"</span>, <span class="str">"https://sandboxdnac.cisco.com"</span>),
+        username=os.getenv(<span class="str">"DNAC_USER"</span>, <span class="str">"devnetuser"</span>),
+        password=os.getenv(<span class="str">"DNAC_PASS"</span>, <span class="str">"Cisco123!"</span>),
+        verify_ssl=<span class="kw">False</span>
+    )
+    dnac_devices = dnac.get_devices()
+    dnac_interfaces = dnac.get_interfaces()
+    dnac_issues = dnac.get_issues()
+    merger.ingest_dnac(dnac_devices, dnac_interfaces, dnac_issues)
+    <span class="fn">print</span>(<span class="str">f"✅ DNA Center: {len(dnac_devices)} dispositivos"</span>)
+
+    <span class="cmt"># 2. RESTCONF (lista de routers edge)</span>
+    edge_routers = json.loads(os.getenv(<span class="str">"EDGE_ROUTERS"</span>, <span class="str">"[]"</span>))
+    <span class="kw">for</span> router <span class="kw">in</span> edge_routers:
+        <span class="kw">try</span>:
+            rc = RestconfClient(
+                host=router[<span class="str">"ip"</span>],
+                username=router[<span class="str">"user"</span>],
+                password=router[<span class="str">"pass"</span>],
+                verify_ssl=<span class="kw">False</span>
+            )
+            merger.ingest_restconf(
+                host_ip=router[<span class="str">"ip"</span>],
+                hostname=rc.get_hostname(),
+                interfaces=rc.get_interfaces(),
+                cpu=rc.get_cpu_usage(),
+                memory=rc.get_memory()
+            )
+            <span class="fn">print</span>(<span class="str">f"✅ RESTCONF {router['ip']}: OK"</span>)
+        <span class="kw">except</span> Exception <span class="kw">as</span> e:
+            <span class="fn">print</span>(<span class="str">f"⚠️  RESTCONF {router['ip']}: {e}"</span>)
+
+    <span class="cmt"># 3. Consolidar</span>
+    merger.compute_metrics()
+    devices = merger.get_devices_list()
+    interfaces = merger.get_interfaces_list()
+    metrics = merger.get_metrics()
+
+    <span class="cmt"># 4. Evaluar alertas</span>
+    engine = AlertEngine()
+    alerts = engine.evaluate(devices, interfaces)
+
+    <span class="cmt"># 5. Renderizar HTML</span>
+    env = Environment(loader=FileSystemLoader(<span class="str">"templates"</span>))
+    template = env.get_template(<span class="str">"report_static.html"</span>)
+    html_out = template.render(
+        timestamp=datetime.now().strftime(<span class="str">"%Y-%m-%d %H:%M:%S"</span>),
+        devices=devices,
+        interfaces=interfaces,
+        metrics=metrics,
+        alerts=alerts
+    )
+
+    filename = <span class="str">f"reports/network_dashboard_{datetime.now():%Y%m%d_%H%M}.html"</span>
+    os.makedirs(<span class="str">"reports"</span>, exist_ok=<span class="kw">True</span>)
+    <span class="kw">with</span> <span class="fn">open</span>(filename, <span class="str">"w"</span>, encoding=<span class="str">"utf-8"</span>) <span class="kw">as</span> f:
+        f.write(html_out)
+
+    <span class="fn">print</span>(<span class="str">f"🎉 Reporte generado: {filename}"</span>)
+    <span class="fn">print</span>(<span class="str">f"   Dispositivos: {metrics['total_devices']} | Alertas: {len(alerts)}"</span>)
+
+<span class="kw">if</span> __name__ == <span class="str">"__main__"</span>:
+    main()</code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 6 — FLASK DINÁMICO
+═══════════════════════════════════════════ -->
+<div id="tab-flask" class="rest5-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Dashboard Flask: versión en tiempo real</h2>
+  <p>La versión Flask transforma el reporte estático en una <strong>aplicación web interactiva</strong>. Los ingenieros de NOC pueden refrescar la página para ver datos actualizados, filtrar por severidad, o dejar la pestaña abierta en una pantalla de monitoreo. Usa el mismo backend (adapters + merger), pero renderiza vía <code>render_template</code> en cada request.</p>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Cuándo usar la versión Flask</div>
+    <ul>
+      <li>NOC/SOC con pantallas de monitoreo 24/7.</li>
+      <li>Equipos que necesitan refrescar datos bajo demanda.</li>
+      <li>Integración futura con WebSockets para actualizaciones push.</li>
+      <li>Base para añadir endpoints API REST propios (meta-orquestación).</li>
+    </ul>
+  </div>
+
+  <h2 class="section-title">Servidor Flask con recarga de datos</h2>
+  <div class="code-block">
+    <div class="code-label">app.py — Servidor Flask del dashboard</div>
+    <pre><code><span class="cmt">#!/usr/bin/env python3</span>
+<span class="kw">import</span> os
+<span class="kw">import</span> json
+<span class="kw">import</span> threading
+<span class="kw">import</span> time
+<span class="kw">from</span> datetime <span class="kw">import</span> datetime
+<span class="kw">from</span> flask <span class="kw">import</span> Flask, render_template
+
+<span class="kw">from</span> adapters.dnac_client <span class="kw">import</span> DNACenterClient
+<span class="kw">from</span> adapters.restconf_client <span class="kw">import</span> RestconfClient
+<span class="kw">from</span> core.merger <span class="kw">import</span> DataMerger
+<span class="kw">from</span> core.alert_engine <span class="kw">import</span> AlertEngine
+
+app = Flask(__name__)
+
+<span class="cmt"># ── Estado global en memoria (cache) ──</span>
+dashboard_data = {
+    <span class="str">"devices"</span>: [],
+    <span class="str">"interfaces"</span>: [],
+    <span class="str">"metrics"</span>: {},
+    <span class="str">"alerts"</span>: [],
+    <span class="str">"last_update"</span>: <span class="str">"Nunca"</span>
+}
+
+
+<span class="kw">def</span> <span class="fn">refresh_data</span>():
+    <span class="str">"""Función que recarga datos de todas las fuentes."""</span>
+    <span class="kw">global</span> dashboard_data
+    <span class="fn">print</span>(<span class="str">f"[{datetime.now()}] 🔄 Refrescando datos..."</span>)
+
+    merger = DataMerger()
+
+    <span class="cmt"># DNA Center</span>
+    <span class="kw">try</span>:
+        dnac = DNACenterClient(
+            os.getenv(<span class="str">"DNAC_URL"</span>, <span class="str">"https://sandboxdnac.cisco.com"</span>),
+            os.getenv(<span class="str">"DNAC_USER"</span>, <span class="str">"devnetuser"</span>),
+            os.getenv(<span class="str">"DNAC_PASS"</span>, <span class="str">"Cisco123!"</span>),
+            verify_ssl=<span class="kw">False</span>
+        )
+        merger.ingest_dnac(
+            dnac.get_devices(),
+            dnac.get_interfaces(),
+            dnac.get_issues()
+        )
+    <span class="kw">except</span> Exception <span class="kw">as</span> e:
+        <span class="fn">print</span>(<span class="str">f"⚠️ DNA Center error: {e}"</span>)
+
+    <span class="cmt"># RESTCONF routers</span>
+    <span class="kw">for</span> r <span class="kw">in</span> json.loads(os.getenv(<span class="str">"EDGE_ROUTERS"</span>, <span class="str">"[]"</span>)):
+        <span class="kw">try</span>:
+            rc = RestconfClient(r[<span class="str">"ip"</span>], r[<span class="str">"user"</span>], r[<span class="str">"pass"</span>], verify_ssl=<span class="kw">False</span>)
+            merger.ingest_restconf(
+                r[<span class="str">"ip"</span>], rc.get_hostname(),
+                rc.get_interfaces(), rc.get_cpu_usage(), rc.get_memory()
+            )
+        <span class="kw">except</span> Exception <span class="kw">as</span> e:
+            <span class="fn">print</span>(<span class="str">f"⚠️ RESTCONF {r['ip']}: {e}"</span>)
+
+    merger.compute_metrics()
+    devices = merger.get_devices_list()
+    interfaces = merger.get_interfaces_list()
+    alerts = AlertEngine().evaluate(devices, interfaces)
+
+    dashboard_data = {
+        <span class="str">"devices"</span>: devices,
+        <span class="str">"interfaces"</span>: interfaces,
+        <span class="str">"metrics"</span>: merger.get_metrics(),
+        <span class="str">"alerts"</span>: alerts,
+        <span class="str">"last_update"</span>: datetime.now().strftime(<span class="str">"%Y-%m-%d %H:%M:%S"</span>)
+    }
+    <span class="fn">print</span>(<span class="str">f"✅ Datos actualizados. {len(devices)} devs, {len(alerts)} alertas."</span>)
+
+
+<span class="kw">def</span> <span class="fn">background_refresh</span>(interval=<span class="num">300</span>):
+    <span class="str">"""Hilo que refresca datos cada N segundos."""</span>
+    <span class="kw">while</span> <span class="kw">True</span>:
+        refresh_data()
+        time.sleep(interval)
+
+
+<span class="cmt"># ── RUTAS FLASK ──</span>
+<span class="kw">@app.route</span>(<span class="str">"/"</span>)
+<span class="kw">def</span> <span class="fn">dashboard</span>():
+    <span class="kw">return</span> render_template(
+        <span class="str">"dashboard_live.html"</span>,
+        **dashboard_data
+    )
+
+
+<span class="kw">@app.route</span>(<span class="str">"/api/refresh"</span>, methods=[<span class="str">"POST"</span>])
+<span class="kw">def</span> <span class="fn">api_refresh</span>():
+    refresh_data()
+    <span class="kw">return</span> {<span class="str">"status"</span>: <span class="str">"ok"</span>, <span class="str">"last_update"</span>: dashboard_data[<span class="str">"last_update"</span>]}
+
+
+<span class="kw">if</span> __name__ == <span class="str">"__main__"</span>:
+    <span class="cmt"># Carga inicial antes de arrancar</span>
+    refresh_data()
+
+    <span class="cmt"># Iniciar hilo de refresco automático (5 min)</span>
+    t = threading.Thread(target=background_refresh, daemon=<span class="kw">True</span>)
+    t.start()
+
+    app.run(host=<span class="str">"0.0.0.0"</span>, port=<span class="num">5000</span>, debug=<span class="kw">False</span>)</code></pre>
+  </div>
+
+  <h2 class="section-title">Template HTML para Flask (vista previa)</h2>
+  <div class="dash-preview">
+    <div class="dash-header">📊 DASHBOARD LIVE — Última actualización: 2024-01-15 09:30:00</div>
+    <div class="dash-row">
+      <span>Dispositivos totales</span>
+      <span style="color:#38bdf8;font-weight:bold;">115</span>
+    </div>
+    <div class="dash-row">
+      <span>Alcanzables</span>
+      <span class="dash-status-online">98.3%</span>
+    </div>
+    <div class="dash-row">
+      <span>Interfaces Up</span>
+      <span class="dash-status-online">94.2%</span>
+    </div>
+    <div class="dash-row">
+      <span>Alertas Críticas</span>
+      <span class="dash-status-offline">2</span>
+    </div>
+    <div class="dash-row">
+      <span>Alertas Warning</span>
+      <span class="dash-status-warn">7</span>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">templates/dashboard_live.html — Fragmento clave</div>
+    <pre><code>&lt;!-- Barra de métricas con barras de progreso --&gt;
+&lt;div class="metric-row"&gt;
+  &lt;div class="metric"&gt;
+    &lt;span&gt;Dispositivos Alcanzables&lt;/span&gt;
+    &lt;div class="progress-wrap"&gt;
+      &lt;div class="progress-bar" style="width:{{ metrics.reachable_pct }}%"&gt;&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;strong&gt;{{ metrics.reachable_pct }}%&lt;/strong&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Tabla de alertas con color por severidad --&gt;
+{% for alert in alerts %}
+  &lt;div class="alert-card alert-{{ alert.severity|lower }}"&gt;
+    &lt;span class="badge"&gt;{{ alert.severity }}&lt;/span&gt;
+    &lt;strong&gt;{{ alert.target }}&lt;/strong&gt;
+    &lt;p&gt;{{ alert.message }}&lt;/p&gt;
+    &lt;small&gt;Fuente: {{ alert.source }}&lt;/small&gt;
+  &lt;/div&gt;
+{% endfor %}</code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 7 — ALERTAS
+═══════════════════════════════════════════ -->
+<div id="tab-alertas" class="rest5-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Sistema de alertas unificado</h2>
+  <p>Un dashboard sin alertas es solo una tabla bonita. El verdadero valor está en <strong>detectar anomalías automáticamente</strong> y presentarlas priorizadas. Nuestro sistema combina issues de DNA Center con reglas propias sobre datos RESTCONF (CPU, memoria, interfaces down).</p>
+
+  <h2 class="section-title">Tipos de alertas y severidad</h2>
+  <div class="concept-grid">
+    <div class="concept-card" style="border-top:2px solid #f87171;">
+      <div class="concept-icon">🔴</div>
+      <h3 style="color:#f87171;">CRITICAL</h3>
+      <p>Dispositivo no alcanzable, interfaz core down, fallo de hardware detectado. Requiere acción inmediata.</p>
+    </div>
+    <div class="concept-card" style="border-top:2px solid #fbbf24;">
+      <div class="concept-icon">🟡</div>
+      <h3 style="color:#fbbf24;">WARNING</h3>
+      <p>Health score bajo, CPU > 80%, memoria saturada, errores de CRC elevados. Monitorear de cerca.</p>
+    </div>
+    <div class="concept-card" style="border-top:2px solid #38bdf8;">
+      <div class="concept-icon">🔵</div>
+      <h3 style="color:#38bdf8;">MINOR</h3>
+      <p>Interfaz de acceso down, versión de software desactualizada, configuración no óptima.</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">Extensión del motor: reglas custom</h2>
+  <p>Puedes extender <code>alert_engine.py</code> añadiendo reglas específicas de tu organización sin modificar el código core:</p>
+
+  <div class="code-block">
+    <div class="code-label">custom_rules.py — Ejemplos de reglas extendidas</div>
+    <pre><code><span class="cmt"># Añadir al AlertEngine.RULES o cargar desde archivo JSON</span>
+
+CUSTOM_RULES = [
+    {
+        <span class="str">"name"</span>: <span class="str">"Firmware EOL"</span>,
+        <span class="str">"severity"</span>: <span class="str">"WARNING"</span>,
+        <span class="str">"check"</span>: <span class="kw">lambda</span> d: d.get(<span class="str">"software"</span>, <span class="str">""</span>).startswith(<span class="str">"16.6"</span>)
+    },
+    {
+        <span class="str">"name"</span>: <span class="str">"Interface Errors &gt; 1%"</span>,
+        <span class="str">"severity"</span>: <span class="str">"WARNING"</span>,
+        <span class="str">"check"</span>: <span class="kw">lambda</span> i: (
+            i.get(<span class="str">"in_errors"</span>, <span class="num">0</span>) + i.get(<span class="str">"out_errors"</span>, <span class="num">0</span>)
+        ) > <span class="num">1000</span>
+    },
+    {
+        <span class="str">"name"</span>: <span class="str">"Duplicated IP"</span>,
+        <span class="str">"severity"</span>: <span class="str">"CRITICAL"</span>,
+        <span class="str">"check"</span>: <span class="kw">lambda</span> d: <span class="kw">False</span>  <span class="cmt"># Requiere lógica de deduplicación</span>
+    }
+]</code></pre>
+  </div>
+
+  <h2 class="section-title">Exportación de alertas: JSON y webhook</h2>
+  <p>Además del dashboard visual, las alertas pueden exportarse a sistemas externos: Slack, Microsoft Teams, ServiceNow, o un SIEM.</p>
+
+  <div class="code-block">
+    <div class="code-label">webhook_alerts.py — Notificación a Slack</div>
+    <pre><code><span class="kw">import</span> requests
+<span class="kw">import</span> json
+
+<span class="kw">def</span> <span class="fn">send_slack_alert</span>(webhook_url, alert):
+    color = {
+        <span class="str">"CRITICAL"</span>: <span class="str">"#f87171"</span>,
+        <span class="str">"WARNING"</span>: <span class="str">"#fbbf24"</span>,
+        <span class="str">"MINOR"</span>: <span class="str">"#38bdf8"
+    </span>}.get(alert[<span class="str">"severity"</span>], <span class="str">"#94a3b8"</span>)
+
+    payload = {
+        <span class="str">"attachments"</span>: [{
+            <span class="str">"color"</span>: color,
+            <span class="str">"title"</span>: <span class="str">f"{alert['severity']}: {alert['message']}"</span>,
+            <span class="str">"fields"</span>: [
+                {<span class="str">"title"</span>: <span class="str">"Dispositivo"</span>, <span class="str">"value"</span>: alert[<span class="str">"target"</span>], <span class="str">"short"</span>: <span class="kw">True</span>},
+                {<span class="str">"title"</span>: <span class="str">"Fuente"</span>, <span class="str">"value"</span>: alert[<span class="str">"source"</span>], <span class="str">"short"</span>: <span class="kw">True</span>}
+            ],
+            <span class="str">"footer"</span>: <span class="str">"CCNA Network Dashboard"</span>,
+            <span class="str">"ts"</span>: <span class="fn">int</span>(time.time())
+        }]
+    }
+
+    r = requests.post(webhook_url, json=payload, timeout=<span class="num">10</span>)
+    <span class="kw">return</span> r.status_code == <span class="num">200</span></code></pre>
+  </div>
+
+  <div class="info-box success">
+    <div class="info-box-title">✅ Resultado final del sistema de alertas</div>
+    <p>El operador de NOC abre el dashboard y ve inmediatamente:</p>
+    <ul>
+      <li>2 alertas <strong style="color:#f87171;">CRITICAL</strong>: Router-BR-01 no responde, Core-Switch-02 interfaz TenGig0/1 down.</li>
+      <li>7 alertas <strong style="color:#fbbf24;">WARNING</strong>: 3 dispositivos con CPU > 80%, 4 con health score < 70.</li>
+      <li>12 alertas <strong style="color:#38bdf8;">MINOR</strong>: Interfaces de acceso down, firmware desactualizado.</li>
+    </ul>
+    <p>Cada alerta incluye el dispositivo afectado, la fuente de datos (DNA Center o RESTCONF) y una descripción accionable.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 8 — PROYECTO COMPLETO
+═══════════════════════════════════════════ -->
+<div id="tab-proyecto" class="rest5-tab-content">
+<div class="content-block">
+  <h2 class="section-title">🚀 Proyecto Final Integrado</h2>
+  <p>A continuación, el script orquestador completo que une ambas versiones (estática y Flask) en una sola entrada. Ejecuta <code>python dashboard.py --mode static</code> para generar el reporte HTML, o <code>python dashboard.py --mode flask</code> para levantar el servidor web.</p>
+
+  <div class="code-block">
+    <div class="code-label">dashboard.py — Orquestador unificado</div>
+    <pre><code><span class="cmt">#!/usr/bin/env python3</span>
+<span class="cmt">"""
+dashboard.py
+CCNA Academy M8 T7 — Dashboard de Red Multi-API
+────────────────────────────────────────────────
+Orquesta DNA Center + RESTCONF para generar reportes HTML
+estáticos o un servidor Flask en tiempo real.
+
+Uso:
+  python dashboard.py --mode static    # Genera reporte batch
+  python dashboard.py --mode flask     # Levanta servidor en :5000
+"""</span>
+
+<span class="kw">import</span> argparse
+<span class="kw">import</span> os
+<span class="kw">import</span> json
+<span class="kw">import</span> time
+<span class="kw">import</span> threading
+<span class="kw">from</span> datetime <span class="kw">import</span> datetime
+
+<span class="kw">from</span> jinja2 <span class="kw">import</span> Environment, FileSystemLoader
+<span class="kw">from</span> flask <span class="kw">import</span> Flask, render_template <span class="kw">as</span> flask_render
+
+<span class="kw">from</span> adapters.dnac_client <span class="kw">import</span> DNACenterClient
+<span class="kw">from</span> adapters.restconf_client <span class="kw">import</span> RestconfClient
+<span class="kw">from</span> core.merger <span class="kw">import</span> DataMerger
+<span class="kw">from</span> core.alert_engine <span class="kw">import</span> AlertEngine
+
+
+<span class="kw">def</span> <span class="fn">collect_data</span>():
+    <span class="str">"""Recolecta datos de todas las fuentes configuradas."""</span>
+    merger = DataMerger()
+
+    <span class="cmt"># ── DNA Center ──</span>
+    <span class="kw">try</span>:
+        dnac = DNACenterClient(
+            os.getenv(<span class="str">"DNAC_URL"</span>, <span class="str">"https://sandboxdnac.cisco.com"</span>),
+            os.getenv(<span class="str">"DNAC_USER"</span>, <span class="str">"devnetuser"</span>),
+            os.getenv(<span class="str">"DNAC_PASS"</span>, <span class="str">"Cisco123!"</span>),
+            verify_ssl=<span class="kw">False</span>
+        )
+        merger.ingest_dnac(
+            dnac.get_devices(),
+            dnac.get_interfaces(),
+            dnac.get_issues()
+        )
+    <span class="kw">except</span> Exception <span class="kw">as</span> e:
+        <span class="fn">print</span>(<span class="str">f"[DNA-C] Error: {e}"</span>)
+
+    <span class="cmt"># ── RESTCONF Edge Routers ──</span>
+    routers = json.loads(os.getenv(<span class="str">"EDGE_ROUTERS"</span>, <span class="str">"[]"</span>))
+    <span class="kw">for</span> r <span class="kw">in</span> routers:
+        <span class="kw">try</span>:
+            rc = RestconfClient(r[<span class="str">"ip"</span>], r[<span class="str">"user"</span>], r[<span class="str">"pass"</span>], verify_ssl=<span class="kw">False</span>)
+            merger.ingest_restconf(
+                r[<span class="str">"ip"</span>], rc.get_hostname(),
+                rc.get_interfaces(), rc.get_cpu_usage(), rc.get_memory()
+            )
+        <span class="kw">except</span> Exception <span class="kw">as</span> e:
+            <span class="fn">print</span>(<span class="str">f"[RESTCONF {r['ip']}] Error: {e}"</span>)
+
+    merger.compute_metrics()
+    devices = merger.get_devices_list()
+    interfaces = merger.get_interfaces_list()
+    alerts = AlertEngine().evaluate(devices, interfaces)
+
+    <span class="kw">return</span> {
+        <span class="str">"devices"</span>: devices,
+        <span class="str">"interfaces"</span>: interfaces,
+        <span class="str">"metrics"</span>: merger.get_metrics(),
+        <span class="str">"alerts"</span>: alerts,
+        <span class="str">"timestamp"</span>: datetime.now().strftime(<span class="str">"%Y-%m-%d %H:%M:%S"</span>)
+    }
+
+
+<span class="kw">def</span> <span class="fn">run_static</span>():
+    <span class="str">"""Genera reporte HTML estático en disco."""</span>
+    <span class="fn">print</span>(<span class="str">"📄 Modo: REPORTE ESTÁTICO"</span>)
+    data = collect_data()
+
+    env = Environment(loader=FileSystemLoader(<span class="str">"templates"</span>))
+    template = env.get_template(<span class="str">"report_static.html"</span>)
+    html = template.render(**data)
+
+    os.makedirs(<span class="str">"reports"</span>, exist_ok=<span class="kw">True</span>)
+    fname = <span class="str">f"reports/dashboard_{datetime.now():%Y%m%d_%H%M%S}.html"</span>
+    <span class="kw">with</span> <span class="fn">open</span>(fname, <span class="str">"w"</span>, encoding=<span class="str">"utf-8"</span>) <span class="kw">as</span> f:
+        f.write(html)
+
+    <span class="fn">print</span>(<span class="str">f"✅ Reporte guardado: {fname}"</span>)
+    <span class="fn">print</span>(<span class="str">f"   Dispositivos: {data['metrics']['total_devices']}"</span>)
+    <span class="fn">print</span>(<span class="str">f"   Alertas: {len(data['alerts'])}"</span>)
+
+
+<span class="kw">def</span> <span class="fn">run_flask</span>():
+    <span class="str">"""Levanta servidor Flask con refresh automático."""</span>
+    <span class="fn">print</span>(<span class="str">"🌐 Modo: FLASK LIVE DASHBOARD"</span>)
+    app = Flask(__name__)
+    cache = {<span class="str">"data"</span>: collect_data()}
+
+    <span class="kw">def</span> <span class="fn">refresher</span>():
+        <span class="kw">while</span> <span class="kw">True</span>:
+            time.sleep(<span class="num">300</span>)
+            <span class="kw">try</span>:
+                cache[<span class="str">"data"</span>] = collect_data()
+                <span class="fn">print</span>(<span class="str">f"[{datetime.now()}] 🔄 Cache actualizada"</span>)
+            <span class="kw">except</span> Exception <span class="kw">as</span> e:
+                <span class="fn">print</span>(<span class="str">f"Refresh error: {e}"</span>)
+
+    t = threading.Thread(target=refresher, daemon=<span class="kw">True</span>)
+    t.start()
+
+    <span class="kw">@app.route</span>(<span class="str">"/"</span>)
+    <span class="kw">def</span> <span class="fn">index</span>():
+        <span class="kw">return</span> flask_render(<span class="str">"dashboard_live.html"</span>, **cache[<span class="str">"data"</span>])
+
+    <span class="kw">@app.route</span>(<span class="str">"/api/status"</span>)
+    <span class="kw">def</span> <span class="fn">api_status</span>():
+        <span class="kw">return</span> {
+            <span class="str">"devices"</span>: cache[<span class="str">"data"</span>][<span class="str">"metrics"</span>][<span class="str">"total_devices"</span>],
+            <span class="str">"alerts"</span>: <span class="fn">len</span>(cache[<span class="str">"data"</span>][<span class="str">"alerts"</span>]),
+            <span class="str">"last_update"</span>: cache[<span class="str">"data"</span>][<span class="str">"timestamp"</span>]
+        }
+
+    app.run(host=<span class="str">"0.0.0.0"</span>, port=<span class="num">5000</span>)
+
+
+<span class="kw">if</span> __name__ == <span class="str">"__main__"</span>:
+    parser = argparse.ArgumentParser(description=<span class="str">"Dashboard de Red CCNA"</span>)
+    parser.add_argument(
+        <span class="str">"--mode"</span>,
+        choices=[<span class="str">"static"</span>, <span class="str">"flask"</span>],
+        default=<span class="str">"static"</span>,
+        help=<span class="str">"Modo de ejecución"</span>
+    )
+    args = parser.parse_args()
+
+    <span class="kw">if</span> args.mode == <span class="str">"static"</span>:
+        run_static()
+    <span class="kw">else</span>:
+        run_flask()</code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">▶️ Cómo ejecutar el proyecto completo</div>
+    <ol>
+      <li><strong>Instalar dependencias:</strong> <code>pip install requests flask jinja2 python-dotenv</code></li>
+      <li><strong>Configurar variables de entorno</strong> en archivo <code>.env</code>:
+        <ul>
+          <li><code>DNAC_URL=https://sandboxdnac.cisco.com</code></li>
+          <li><code>DNAC_USER=devnetuser</code></li>
+          <li><code>DNAC_PASS=Cisco123!</code></li>
+          <li><code>EDGE_ROUTERS=[{"ip":"10.1.1.1","user":"admin","pass":"C1sco123"}]</code></li>
+        </ul>
+      </li>
+      <li><strong>Ejecutar modo estático:</strong> <code>python dashboard.py --mode static</code></li>
+      <li><strong>Ejecutar modo Flask:</strong> <code>python dashboard.py --mode flask</code> → Abrir http://localhost:5000</li>
+      <li><strong>Automatizar con cron:</strong> <code>*/15 * * * * cd /opt/dashboard && python dashboard.py --mode static</code></li>
+    </ol>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 9 — REFERENCIA
+═══════════════════════════════════════════ -->
+<div id="tab-referencia" class="rest5-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Tabla de Referencia — Dashboard Multi-API</h2>
+  <div id="refTableRest7"></div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 10 — QUIZ
+═══════════════════════════════════════════ -->
+<div id="tab-quiz" class="rest5-tab-content">
+<div class="content-block">
+  <h2 class="section-title">Quiz — Dashboard de Red vía APIs</h2>
+  <p style="font-size:.83rem;color:#6b7a9a;margin-bottom:20px;">10 preguntas estilo CCNA Domain 6.5. Evalúa tu comprensión de arquitectura multi-API, DNA Center, RESTCONF, consolidación de datos y automatización avanzada.</p>
+  <div id="quizContainerRest7"></div>
+</div>
+</div>
+
+</div><!-- /.tabs-wrap -->
+
+<script>
+// ── NAVEGACIÓN DRAWER ────────────────────────────────
+function ccnaToggle() {
+  document.getElementById('ccnaDrawer').classList.toggle('open');
+  document.getElementById('ccnaOverlay').classList.toggle('show');
+}
+function ccnaClose() {
+  document.getElementById('ccnaDrawer').classList.remove('open');
+  document.getElementById('ccnaOverlay').classList.remove('show');
+}
+
+// ── TABS ──────────────────────────────────────────────
+function showTabRest5(id, btn) {
+  document.querySelectorAll('.rest5-tab-content').forEach(t => t.classList.remove('rest5-active'));
+  document.querySelectorAll('.rest5-tab-btn').forEach(b => b.classList.remove('rest5-active'));
+  document.getElementById('tab-' + id).classList.add('rest5-active');
+  if (btn) btn.classList.add('rest5-active');
+}
+
+// ── TABLA DE REFERENCIA ──────────────────────────────
+function buildRefTable() {
+  var container = document.getElementById('refTableRest7');
+  if (!container) return;
+
+  var secciones = [
+    {
+      titulo: 'ADAPTERS Y FUENTES DE DATOS',
+      cols: ['Fuente','Protocolo','Autenticación','Datos principales'],
+      filas: [
+        ['DNA Center','REST API v1','Basic → X-Auth-Token','Inventario, topología, health, issues.'],
+        ['IOS-XE RESTCONF','HTTPS + YANG','HTTP Basic Auth','Interfaces, CPU, memoria, config nativa.'],
+        ['Meraki (extensible)','REST API v1','X-Cisco-Meraki-API-Key','Cloud networks, clientes, uplinks.'],
+        ['NetBox / IPAM','REST API','Token API','IPAM, racks, circuitos, VLAN database.']
+      ]
+    },
+    {
+      titulo: 'ENDPOINTS DNA CENTER CLAVE',
+      cols: ['Método','Endpoint','Propósito'],
+      filas: [
+        ['<span class="endpoint-method post">POST</span>','/dna/system/api/v1/auth/token','Obtener X-Auth-Token.'],
+        ['<span class="endpoint-method get">GET</span>','/dna/intent/api/v1/network-device','Lista de dispositivos gestionados.'],
+        ['<span class="endpoint-method get">GET</span>','/dna/intent/api/v1/interface','Interfaces con admin/oper status.'],
+        ['<span class="endpoint-method get">GET</span>','/dna/intent/api/v1/issue','Issues activas por severidad.'],
+        ['<span class="endpoint-method get">GET</span>','/dna/intent/api/v1/topology','Topología física y lógica.']
+      ]
+    },
+    {
+      titulo: 'ENDPOINTS RESTCONF IOS-XE',
+      cols: ['YANG Model','Path RESTCONF','Datos'],
+      filas: [
+        ['ietf-interfaces','/restconf/data/ietf-interfaces:interfaces','Config y estado de interfaces.'],
+        ['ietf-interfaces','/restconf/data/ietf-interfaces:interfaces/interface={name}','Interfaz específica.'],
+        ['Cisco-IOS-XE-native','/restconf/data/Cisco-IOS-XE-native:native/hostname','Hostname del dispositivo.'],
+        ['Cisco-IOS-XE-process-cpu','/restconf/data/Cisco-IOS-XE-process-cpu:cpu-usage','Uso de CPU.'],
+        ['Cisco-IOS-XE-memory','/restconf/data/Cisco-IOS-XE-memory:memory-statistics','Estadísticas de memoria.']
+      ]
+    },
+    {
+      titulo: 'COMPONENTES DEL DASHBOARD',
+      cols: ['Módulo','Archivo','Función'],
+      filas: [
+        ['Adapter DNAC','adapters/dnac_client.py','Auth, normalización, paginación DNAC.'],
+        ['Adapter RESTCONF','adapters/restconf_client.py','Consulta YANG models, parseo JSON.'],
+        ['Data Merger','core/merger.py','Consolida, deduplica, enriquece, métricas.'],
+        ['Alert Engine','core/alert_engine.py','Reglas de negocio, clasificación severidad.'],
+        ['Reporte estático','generate_report.py','Render Jinja2 → HTML batch.'],
+        ['Servidor Flask','app.py / dashboard.py','Dashboard web en tiempo real.']
+      ]
+    },
+    {
+      titulo: 'HEADERS ESPECÍFICOS POR API',
+      cols: ['Header','Valor','API'],
+      filas: [
+        ['X-Auth-Token','(token)','DNA Center'],
+        ['Accept','application/yang-data+json','RESTCONF'],
+        ['Content-Type','application/yang-data+json','RESTCONF (POST/PUT/PATCH)'],
+        ['X-Cisco-Meraki-API-Key','(key)','Meraki Dashboard'],
+        ['Authorization','Bearer (token)','APIs OAuth 2.0 genéricas']
+      ]
+    }
+  ];
+
+  var html = '';
+  secciones.forEach(function(sec) {
+    html += '<h3 style="font-family:Orbitron,sans-serif;font-size:.8rem;color:#38bdf8;letter-spacing:2px;margin:24px 0 10px;text-transform:uppercase;">▸ ' + sec.titulo + '</h3>';
+    html += '<div class="table-wrap"><table class="ref-table"><thead><tr>';
+    sec.cols.forEach(function(c) { html += '<th>' + c + '</th>'; });
+    html += '</tr></thead><tbody>';
+    sec.filas.forEach(function(f) {
+      html += '<tr>';
+      f.forEach(function(c) { html += '<td>' + c + '</td>'; });
+      html += '</tr>';
+    });
+    html += '</tbody></table></div>';
+  });
+  container.innerHTML = html;
+}
+
+// ── QUIZ ─────────────────────────────────────────────
+function initQuiz() {
+  var container = document.getElementById('quizContainerRest7');
+  if (!container) return;
+
+  var qs = [
+    {
+      q: '¿Qué header de autenticación utiliza DNA Center después de obtener el token?',
+      opts: ['Authorization: Bearer','X-Auth-Token','X-Cisco-Meraki-API-Key','Api-Key'],
+      ans: 1,
+      exp: 'DNA Center requiere el header <strong>X-Auth-Token</strong> en todas las peticiones tras la autenticación inicial vía POST /auth/token. Authorization: Bearer es estándar OAuth; Meraki usa X-Cisco-Meraki-API-Key.'
+    },
+    {
+      q: 'En RESTCONF sobre IOS-XE, ¿qué header Accept es obligatorio para recibir JSON?',
+      opts: ['application/json','application/xml','application/yang-data+json','text/plain'],
+      ans: 2,
+      exp: 'RESTCONF requiere explícitamente <strong>Accept: application/yang-data+json</strong>. Si se omite o se usa application/json genérico, el dispositivo puede retornar XML o un error 406 Not Acceptable.'
+    },
+    {
+      q: '¿Cuál es la función principal del Data Merger en la arquitectura del dashboard?',
+      opts: ['Generar el HTML del reporte.','Autenticar con DNA Center.','Consolidar, normalizar y deduplicar datos de múltiples fuentes.','Configurar routers vía SSH.'],
+      ans: 2,
+      exp: 'El <strong>Data Merger</strong> es el componente central que toma datos de DNA Center (inventario, issues) y RESTCONF (estadísticas en tiempo real), los normaliza a un schema común, elimina duplicados y calcula métricas agregadas.'
+    },
+    {
+      q: '¿Qué modelo de datos YANG se usa para obtener estadísticas de interfaces en IOS-XE?',
+      opts: ['Cisco-IOS-XE-native','ietf-interfaces','Cisco-IOS-XE-process-cpu','Cisco-IOS-XE-memory'],
+      ans: 1,
+      exp: 'El modelo <strong>ietf-interfaces</strong> es el estándar IETF que expone configuración y estado de interfaces (admin-status, oper-status, statistics in/out). Cisco-IOS-XE-native expone configuración propietaria; cpu/memory son modelos separados.'
+    },
+    {
+      q: 'Un dispositivo aparece en DNA Center y también es consultado vía RESTCONF. ¿Qué ocurre en el Data Merger?',
+      opts: ['Se crean dos registros duplicados.','DNA Center sobrescribe completamente los datos de RESTCONF.','Se enriquece el registro de DNA Center con datos de RESTCONF (CPU, memoria).','Se ignora el dispositivo de RESTCONF.'],
+      ans: 2,
+      exp: 'El merger detecta la duplicidad por IP/hostname, mantiene la base de DNA Center (metadatos, plataforma, software) y <strong>enriquece</strong> el registro con datos en tiempo real de RESTCONF: CPU, memoria, estadísticas de interfaces. El campo sources queda como ["dnac", "restconf"].'
+    },
+    {
+      q: 'En la versión Flask del dashboard, ¿cuál es la ventaja de usar threading para refrescar datos?',
+      opts: ['Reduce el consumo de CPU al 0%.','Permite actualizar la cache en segundo plano sin bloquear peticiones web.','Elimina la necesidad de autenticación.','Convierte Flask en un servidor WSGI de producción.'],
+      ans: 1,
+      exp: 'El hilo de refresco en background actualiza la cache de datos cada 5 minutos mientras Flask sigue respondiendo peticiones HTTP instantáneamente desde la cache. Sin threading, cada visitante esperaría 10-30 segundos mientras se consultan las APIs.'
+    },
+    {
+      q: '¿Qué excepción de requests deberías capturar si DNA Center no responde por timeout?',
+      opts: ['ConnectionError','HTTPError','Timeout','JSONDecodeError'],
+      ans: 2,
+      exp: '<strong>requests.exceptions.Timeout</strong> se lanza cuando el servidor no completa la respuesta dentro del tiempo límite especificado. ConnectionError es para fallos de conexión TCP/DNS; HTTPError para status 4xx/5xx; JSONDecodeError para respuestas malformadas.'
+    },
+    {
+      q: '¿Cuál es la mejor práctica para almacenar credenciales de API en el dashboard?',
+      opts: ['Hardcodearlas en el código Python para rapidez.','Guardarlas en un archivo config.py dentro del repositorio Git.','Usar variables de entorno o un gestor de secretos.','Escribirlas en un comentario del código.'],
+      ans: 2,
+      exp: 'Las credenciales nunca deben hardcodearse ni versionarse en Git. El estándar es usar <strong>variables de entorno</strong> (con python-dotenv) o gestores de secretos corporativos (HashiCorp Vault, AWS Secrets Manager).'
+    },
+    {
+      q: 'La alerta "Interface Down" evalúa el campo oper-status de una interfaz. ¿Qué valores indican down?',
+      opts: ['up y ok','down y lower-layer-down','admin-down y disabled','unknown y not-present'],
+      ans: 1,
+      exp: 'En el modelo YANG ietf-interfaces, <strong>oper-status</strong> puede ser "up", "down", "lower-layer-down", "testing", etc. "down" indica que la capa física no está operativa; "lower-layer-down" indica que la interfaz dependiente (ej. subinterface) está caída porque la padre está down.'
+    },
+    {
+      q: '¿Qué ventaja ofrece la versión estática (batch) del dashboard sobre la versión Flask?',
+      opts: ['Es interactiva y se actualiza en tiempo real.','No requiere servidor web y puede enviarse por email o archivarse.','Consume menos CPU que Flask porque usa multithreading.','Permite editar configuraciones de routers directamente.'],
+      ans: 1,
+      exp: 'La versión estática genera un archivo HTML autocontenido que se puede abrir localmente, adjuntar a emails, archivar para auditorías o ejecutar via cron sin necesidad de mantener un proceso servidor activo. Flask es para monitoreo interactivo en pantallas de NOC.'
+    }
+  ];
+
+  var html = '';
+  qs.forEach(function(q, i) {
+    html += '<div class="quiz-question" id="qr7' + i + '">' +
+      '<div class="quiz-q-num">PREGUNTA ' + (i+1) + ' DE ' + qs.length + ' · M8 DASHBOARD Tema 7</div>' +
+      '<div class="quiz-q-text">' + q.q + '</div>' +
+      '<div class="quiz-opts">';
+    q.opts.forEach(function(o, j) {
+      html += '<button class="quiz-opt" data-qi="' + i + '" data-sel="' + j + '" data-ans="' + q.ans + '">' + o + '</button>';
+    });
+    html += '</div></div>';
+  });
+  container.innerHTML = html;
+
+  window._rest7Exp = {};
+  qs.forEach(function(q, i) { window._rest7Exp[i] = q.exp; });
+
+  container.querySelectorAll('.quiz-opt').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var qi  = parseInt(this.dataset.qi);
+      var sel = parseInt(this.dataset.sel);
+      var ans = parseInt(this.dataset.ans);
+      var qDiv = document.getElementById('qr7' + qi);
+      var btns = qDiv.querySelectorAll('.quiz-opt');
+
+      btns.forEach(function(b) { b.disabled = true; });
+      btns[sel].classList.add(sel === ans ? 'correct' : 'wrong');
+      if (sel !== ans) btns[ans].classList.add('correct');
+
+      var expDiv = document.createElement('div');
+      expDiv.className = 'quiz-explanation';
+      expDiv.innerHTML = '<strong>' + (sel===ans ? '✅ Correcto!' : '❌ Incorrecto.') + '</strong> ' + window._rest7Exp[qi];
+      qDiv.appendChild(expDiv);
+    });
+  });
+}
+
+// ── INICIALIZACIÓN ────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  buildRefTable();
+  initQuiz();
+});
+</script>
+</body>
+</html>
