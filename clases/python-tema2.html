@@ -1364,7 +1364,7 @@ function buildRefTable() {
         ["IOS-XE (CSR1000v, ISR4000, Cat9k)","cisco_xe","Similar a IOS pero con más features"],
         ["IOS-XR (ASR9k, NCS)","cisco_xr","CLI completamente diferente. No usa enable"],
         ["NXOS (Nexus 5k/7k/9k)","cisco_nxos","Data center OS. Comandos distintos a IOS"],
-        ["ASA Firewall","cisco_asa","Modo enable especial. 2 prompts: hostname&gt; y hostname#"],
+        ["ASA Firewall","cisco_asa","Modo enable especial. 2 prompts: hostname> y hostname#"],
         ["WLC Wireless","cisco_wlc_ssh","Controladores wireless legacy"],
         ["FTD/Firepower","cisco_ftd","Firepower Threat Defense — nuevo firewall Cisco"],
       ]
@@ -1403,14 +1403,28 @@ function buildRefTable() {
     }
   ];
 
+  const container = document.getElementById("refTablePy2");
+  if (!container) return;
+
   let html = "";
-  secs.forEach(sec => {
-    html += "<h3 style='font-family:Orbitron,sans-serif;font-size:.8rem;color:#00d4aa;letter-spacing:2px;margin:28px 0 12px;text-transform:uppercase;'>&#9658; " + sec.t + "</h3>";
-    html += "<div class='table-wrap'><table class='ref-table'><thead><tr>" + sec.cols.map(c => "<th>" + c + "</th>").join("") + "</tr></thead><tbody>";
-    sec.rows.forEach(r => { html += "<tr>" + r.map(c => "<td>" + c + "</td>").join("") + "</tr>"; });
-    html += "</tbody></table></div>";
+  secs.forEach(function(sec) {
+    html += `<h3 style="font-family:Orbitron,sans-serif;font-size:.8rem;color:#00d4aa;letter-spacing:2px;margin:28px 0 12px;text-transform:uppercase;">&#9658; ${sec.t}</h3>`;
+    html += `<div class="table-wrap"><table class="ref-table"><thead><tr>`;
+    sec.cols.forEach(function(c) {
+      html += `<th>${c}</th>`;
+    });
+    html += `</tr></thead><tbody>`;
+    sec.rows.forEach(function(r) {
+      html += `<tr>`;
+      r.forEach(function(c) {
+        html += `<td>${c}</td>`;
+      });
+      html += `</tr>`;
+    });
+    html += `</tbody></table></div>`;
   });
-  document.getElementById("refTablePy2").innerHTML = html;
+
+  container.innerHTML = html;
 }
 
 // ── QUIZ ─────────────────────────────────────────────────────
