@@ -1,0 +1,2030 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comandos para Solución de Problemas — M2.5 | CCNA Academy</title>
+  <meta name="description" content="Clase magistral completa de troubleshooting Cisco IOS: capa física, enlace de datos, red, routing, switching, VLANs, NAT, ACLs. Desde cero hasta experto CCNA 200-301.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+
+<div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
+<nav class="ccna-drawer" id="ccnaDrawer">
+  <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
+  <div class="drawer-section"><div class="drawer-section-title">General</div>
+    <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M1 · Fundamentos</div>
+    <a href="fundamentos.html"       class="drawer-link "><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
+    <a href="subnetting.html"        class="drawer-link "><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
+    <a href="ipv6.html"              class="drawer-link "><span class="dl-icon">6️⃣</span> IPv6</a>
+    <a href="arp.html"               class="drawer-link "><span class="dl-icon">📡</span> ARP</a>
+    <a href="rip.html"               class="drawer-link "><span class="dl-icon">🔄</span> RIP</a>
+    <a href="protocolos-internet.html" class="drawer-link "><span class="dl-icon">🌍</span> Protocolos Internet</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M2 · Dispositivos Cisco</div>
+    <a href="router.html"            class="drawer-link "><span class="dl-icon">📡</span> Routers Cisco</a>
+    <a href="switches-cisco.html"    class="drawer-link "><span class="dl-icon">🔀</span> Switches Cisco</a></div>
+    <div class="drawer-section"><div class="drawer-section-title">M2.5 · Comandos Cisco</div>
+    <a href="comandos-cisco.html"    class="drawer-link"><span class="dl-icon">⌨️</span> Comandos Configuración Básica</a>
+     <a href="comandos-para-vlan.html" class="drawer-link"><span class="dl-icon">🏷️</span> Comandos para VLAN</a>
+     <a href="comandos-routing.html" class="drawer-link"><span class="dl-icon">🗺️</span> Comandos de Routing</a>
+     <a href="comandos-solucion-problemas.html" class="drawer-link active"><span class="dl-icon">🔧</span> Comandos para Solución de Problemas</a>
+  <div class="drawer-section"><div class="drawer-section-title">M3 · Switching</div>
+    <a href="vlan.html"              class="drawer-link "><span class="dl-icon">🏷️</span> VLANs</a>
+    <a href="inter-vlan-routing.html" class="drawer-link "><span class="dl-icon">🔁</span> Inter-VLAN Routing</a>
+    <a href="stp.html"               class="drawer-link "><span class="dl-icon">🌳</span> STP</a>
+    <a href="etherchannel.html"      class="drawer-link "><span class="dl-icon">🔗</span> EtherChannel</a>
+    <a href="port-security.html"     class="drawer-link "><span class="dl-icon">🔒</span> Port Security</a>
+    <a href="cdp-lldp.html"          class="drawer-link "><span class="dl-icon">🔍</span> CDP / LLDP</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M4 · Routing</div>
+    <a href="routing.html"           class="drawer-link "><span class="dl-icon">🗺️</span> Routing Estático</a>
+    <a href="ospf.html"              class="drawer-link "><span class="dl-icon">⭕</span> OSPF</a>
+    <a href="eigrp.html"             class="drawer-link "><span class="dl-icon">⚡</span> EIGRP</a>
+    <a href="ospfv2-masterclass.html"            class="drawer-link "><span class="dl-icon">🎯</span> OSPFv2 Masterclass</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M5 · Servicios IP</div>
+    <a href="dhcp.html"              class="drawer-link "><span class="dl-icon">📋</span> DHCP</a>
+    <a href="nat.html"               class="drawer-link "><span class="dl-icon">🔄</span> NAT / PAT</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M6 · Seguridad</div>
+    <a href="acl.html"               class="drawer-link "><span class="dl-icon">🛡️</span> ACLs</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M7 · WAN &amp; QoS</div>
+    <a href="wan.html"               class="drawer-link "><span class="dl-icon">🌍</span> WAN</a>
+    <a href="qos.html"               class="drawer-link "><span class="dl-icon">📊</span> QoS</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M8 · Automatización</div>
+    <a href="m8-automatizacion.html"  class="drawer-link"><span class="dl-icon">🤖</span> M8 — Vista General</a>
+    <a href="python-redes.html"       class="drawer-link"><span class="dl-icon">🐍</span> Python para Redes</a>
+    <a href="json-datos.html"         class="drawer-link"><span class="dl-icon">📋</span> JSON y Datos</a>
+    <a href="rest-apis.html"          class="drawer-link"><span class="dl-icon">🌐</span> REST APIs</a>
+    <a href="ansible-redes.html"      class="drawer-link"><span class="dl-icon">⚙️</span> Ansible</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">⚡ Herramientas</div>
+    <a href="asistente.html"         class="drawer-link "><span class="dl-icon">🤖</span> Asistente IA</a>
+    <a href="netbot.html"            class="drawer-link "><span class="dl-icon">⚙️</span> NetBot Config</a>
+    <a href="calculadora.html"       class="drawer-link "><span class="dl-icon">🧮</span> Calculadora IP</a>
+    <a href="../laboratorios-pkt.html"   class="drawer-link "><span class="dl-icon">🧪</span> Labs Packet Tracer</a>
+    <a href="../banco-preguntas.html" class="drawer-link "><span class="dl-icon">📝</span> Banco de Preguntas</a></div>
+</nav>
+<header class="navbar">
+  <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
+  <a href="../index.html" class="navbar-brand">CISCO<span> ACADEMY</span></a>
+  <div class="navbar-spacer"></div>
+  <a href="../index.html" class="navbar-link">← Inicio</a>
+</header>
+<script src="../assets/main.js" defer></script>
+<div class="nav-spacer"></div>
+
+<!-- HERO -->
+<section class="class-hero">
+  <div class="class-hero-inner">
+    <div class="class-badge">M2.5 · COMANDOS TROUBLESHOOTING · CCNA 200-301</div>
+    <h1 class="class-title">Comandos para <span class="class-title-accent">Solución de Problemas</span></h1>
+    <p class="class-subtitle">Domina el diagnóstico sistemático de fallas en redes Cisco. Desde la capa física hasta la capa de aplicación, pasando por switching, routing, VLANs, NAT, ACLs y servicios IP. Metodología Cisco, comandos esenciales y escenarios reales para el examen CCNA 200-301.</p>
+    <div class="class-meta">
+      <span class="meta-item">📋 IOS 15.x / IOS XE</span>
+      <span class="meta-item">🎯 CCNA 200-301 Exam Topic 1.6, 2.5, 3.7, 4.4, 5.2, 6.3</span>
+      <span class="meta-item">⏱ ~100 min lectura</span>
+      <span class="meta-item">🧪 Lab: 2 Switches + 2 Routers + PCs</span>
+    </div>
+  </div>
+</section>
+
+<!-- TABS -->
+<div class="tabs-wrap">
+  <div class="tabs-bar">
+    <button class="tab-btn active" onclick="CmdTroubleshoot.showTabTroubleshoot('conceptos',this)">📖 Conceptos</button>
+    <button class="tab-btn" onclick="CmdTroubleshoot.showTabTroubleshoot('capa1',this)">🔌 Capa 1 - Física</button>
+    <button class="tab-btn" onclick="CmdTroubleshoot.showTabTroubleshoot('capa2',this)">🔗 Capa 2 - Enlace</button>
+    <button class="tab-btn" onclick="CmdTroubleshoot.showTabTroubleshoot('capa3',this)">🌐 Capa 3 - Red</button>
+    <button class="tab-btn" onclick="CmdTroubleshoot.showTabTroubleshoot('switching',this)">🔀 Switching</button>
+    <button class="tab-btn" onclick="CmdTroubleshoot.showTabTroubleshoot('routing',this)">🗺️ Routing</button>
+    <button class="tab-btn" onclick="CmdTroubleshoot.showTabTroubleshoot('servicios',this)">📋 Servicios IP</button>
+    <button class="tab-btn" onclick="CmdTroubleshoot.showTabTroubleshoot('seguridad',this)">🛡️ Seguridad/ACLs</button>
+    <button class="tab-btn" onclick="CmdTroubleshoot.showTabTroubleshoot('metodologia',this)">📋 Metodología</button>
+    <button class="tab-btn" onclick="CmdTroubleshoot.showTabTroubleshoot('lab',this)">🧪 Laboratorio</button>
+    <button class="tab-btn" onclick="CmdTroubleshoot.showTabTroubleshoot('tabla',this)">📊 Referencia</button>
+    <button class="tab-btn" onclick="CmdTroubleshoot.showTabTroubleshoot('quiz',this)">🎯 Quiz</button>
+  </div>
+<!-- Cierre de tabs-bar -->
+
+<!-- ══════════════════════════════════════════════
+     TAB 1 — CONCEPTOS TROUBLESHOOTING
+══════════════════════════════════════════════ -->
+<div id="tab-conceptos" class="tab-content active">
+<div class="content-block">
+  <h2 class="section-title">Fundamentos del Troubleshooting en Redes Cisco</h2>
+  <p>El troubleshooting es una habilidad crítica para cualquier ingeniero de redes. No se trata solo de conocer comandos, sino de aplicar una metodología sistemática para identificar, aislar y resolver problemas de manera eficiente.</p>
+
+  <div class="diagram-box">
+    <div class="diagram-title">Modelo OSI y Troubleshooting por Capas</div>
+    <svg viewBox="0 0 900 500" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:900px;">
+      <!-- Capa 7 -->
+      <rect x="300" y="30" width="300" height="55" rx="6" fill="#0d1220" stroke="#f87171" stroke-width="1.5"/>
+      <text x="350" y="55" fill="#f87171" font-size="11" font-family="Orbitron" font-weight="700">7. APLICACIÓN</text>
+      <text x="350" y="72" fill="#6b7a9a" font-size="9" font-family="Share Tech Mono">HTTP, DNS, DHCP, FTP, SSH</text>
+      <text x="580" y="55" fill="#4a5780" font-size="8" font-family="Share Tech Mono">telnet, ssh, debug</text>
+
+      <!-- Capa 6 -->
+      <rect x="300" y="90" width="300" height="55" rx="6" fill="#0d1220" stroke="#fbbf24" stroke-width="1.5"/>
+      <text x="350" y="115" fill="#fbbf24" font-size="11" font-family="Orbitron" font-weight="700">6. PRESENTACIÓN</text>
+      <text x="350" y="132" fill="#6b7a9a" font-size="9" font-family="Share Tech Mono">SSL/TLS, Codificación</text>
+
+      <!-- Capa 5 -->
+      <rect x="300" y="150" width="300" height="55" rx="6" fill="#0d1220" stroke="#a78bfa" stroke-width="1.5"/>
+      <text x="350" y="175" fill="#a78bfa" font-size="11" font-family="Orbitron" font-weight="700">5. SESIÓN</text>
+      <text x="350" y="192" fill="#6b7a9a" font-size="9" font-family="Share Tech Mono">NetBIOS, RPC</text>
+
+      <!-- Capa 4 -->
+      <rect x="300" y="210" width="300" height="55" rx="6" fill="#0d1220" stroke="#38bdf8" stroke-width="1.5"/>
+      <text x="350" y="235" fill="#38bdf8" font-size="11" font-family="Orbitron" font-weight="700">4. TRANSPORTE</text>
+      <text x="350" y="252" fill="#6b7a9a" font-size="9" font-family="Share Tech Mono">TCP, UDP, Puertos</text>
+      <text x="580" y="235" fill="#4a5780" font-size="8" font-family="Share Tech Mono">show tcp, show udp</text>
+
+      <!-- Capa 3 -->
+      <rect x="300" y="270" width="300" height="55" rx="6" fill="#0d1220" stroke="#00d4aa" stroke-width="2"/>
+      <text x="350" y="295" fill="#00d4aa" font-size="12" font-family="Orbitron" font-weight="700">3. RED</text>
+      <text x="350" y="312" fill="#6b7a9a" font-size="9" font-family="Share Tech Mono">IP, ICMP, Routing, ARP</text>
+      <text x="580" y="295" fill="#4a5780" font-size="8" font-family="Share Tech Mono">ping, traceroute, show ip route</text>
+
+      <!-- Capa 2 -->
+      <rect x="300" y="330" width="300" height="55" rx="6" fill="#0d1220" stroke="#38bdf8" stroke-width="2"/>
+      <text x="350" y="355" fill="#38bdf8" font-size="12" font-family="Orbitron" font-weight="700">2. ENLACE DE DATOS</text>
+      <text x="350" y="372" fill="#6b7a9a" font-size="9" font-family="Share Tech Mono">Ethernet, MAC, VLANs, STP</text>
+      <text x="580" y="355" fill="#4a5780" font-size="8" font-family="Share Tech Mono">show mac, show vlan, show cdp</text>
+
+      <!-- Capa 1 -->
+      <rect x="300" y="390" width="300" height="55" rx="6" fill="#0d1220" stroke="#a78bfa" stroke-width="2"/>
+      <text x="350" y="415" fill="#a78bfa" font-size="12" font-family="Orbitron" font-weight="700">1. FÍSICA</text>
+      <text x="350" y="432" fill="#6b7a9a" font-size="9" font-family="Share Tech Mono">Cables, Velocidad, Dúplex, LED</text>
+      <text x="580" y="415" fill="#4a5780" font-size="8" font-family="Share Tech Mono">show interfaces, speed, duplex</text>
+
+      <!-- Flechas de flujo -->
+      <line x1="200" y1="417" x2="290" y2="417" stroke="#a78bfa" stroke-width="2" marker-end="url(#arrowts)"/>
+      <text x="240" y="410" fill="#a78bfa" font-size="8" font-family="Share Tech Mono">Bottom-Up</text>
+
+      <line x1="610" y1="58" x2="700" y2="58" stroke="#f87171" stroke-width="2" marker-end="url(#arrowts)"/>
+      <text x="640" y="50" fill="#f87171" font-size="8" font-family="Share Tech Mono">Top-Down</text>
+
+      <line x1="200" y1="240" x2="290" y2="240" stroke="#00d4aa" stroke-width="2" marker-end="url(#arrowts)"/>
+      <text x="220" y="232" fill="#00d4aa" font-size="8" font-family="Share Tech Mono">Divide & Conquer</text>
+
+      <defs>
+        <marker id="arrowts" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#00d4aa"/>
+        </marker>
+      </defs>
+    </svg>
+  </div>
+
+  <h3 class="sub-title">Metodologías de Troubleshooting</h3>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead><tr><th>Método</th><th>Descripción</th><th>Cuándo Usar</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Bottom-Up</strong></td><td>Desde capa 1 (física) hacia arriba hasta capa 7</td><td>Problemas nuevos, sin información previa. Más exhaustivo.</td></tr>
+        <tr><td><strong>Top-Down</strong></td><td>Desde capa 7 (aplicación) hacia abajo hasta capa 1</td><td>Problemas de aplicación específica (HTTP, DNS, etc.).</td></tr>
+        <tr><td><strong>Divide & Conquer</strong></td><td>Verificar en capa media (3 o 4) y dividir el problema</td><td>Redes grandes, problema desconocido. Más rápido.</td></tr>
+        <tr><td><strong>Follow the Path</strong></td><td>Seguir la ruta del paquete hop-by-hop</td><td>Problemas de routing, latencia, pérdida de paquetes.</td></tr>
+        <tr><td><strong>Compare Configurations</strong></td><td>Comparar configuración funcional vs no funcional</td><td>Cuando hay un "antes y después" de un cambio.</td></tr>
+        <tr><td><strong>Swap Components</strong></td><td>Reemplazar cables, puertos, módulos sospechosos</td><td>Fallos de hardware, capa física.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="sub-title">Comandos Universales de Diagnóstico</h3>
+  <div class="code-block">
+    <div class="code-label">Comandos básicos aplicables a cualquier problema</div>
+    <pre><code><span class="cmd-comment">! === COMANDOS DE VERIFICACIÓN RÁPIDA ===</span>
+
+<span class="cmd-comment">! 1. Estado de interfaces (Capa 1 y 2)</span>
+SW1# show ip interface brief
+<span class="cmd-comment">! Status: up/up = OK, down/down = capa 1, up/down = capa 2</span>
+
+<span class="cmd-comment">! 2. Conectividad básica (Capa 3)</span>
+SW1# ping 192.168.1.1
+SW1# ping 192.168.1.1 source vlan 10
+<span class="cmd-comment">! Extended ping permite especificar origen, tamaño, repeticiones</span>
+
+<span class="cmd-comment">! 3. Seguimiento de ruta (Capa 3)</span>
+SW1# traceroute 8.8.8.8
+SW1# traceroute 8.8.8.8 source 192.168.1.10
+<span class="cmd-comment">! Identifica en qué salto se detiene el tráfico</span>
+
+<span class="cmd-comment">! 4. Tabla ARP (Resolución IP → MAC)</span>
+SW1# show ip arp
+<span class="cmd-comment">! Si falta una MAC, el problema puede ser capa 2</span>
+
+<span class="cmd-comment">! 5. Verificación de tiempo y logs</span>
+SW1# show clock
+SW1# show logging
+<span class="cmd-comment">! Los logs muestran eventos recientes: errores de interfaz, STP, etc.</span></code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚠️ Regla de Oro del Troubleshooting</div>
+    <p><strong>Nunca asumas, siempre verifica.</strong> Un problema reportado como "no hay Internet" puede ser:</p>
+    <ul>
+      <li>Cable desconectado (Capa 1)</li>
+      <li>Puerto en err-disabled por Port Security (Capa 2)</li>
+      <li>VLAN incorrecta en el puerto (Capa 2)</li>
+      <li>Gateway no configurado en el PC (Capa 3)</li>
+      <li>Ruta estática faltante en el router (Capa 3)</li>
+      <li>ACL bloqueando tráfico DNS (Capa 4)</li>
+      <li>Servidor DNS caído (Capa 7)</li>
+    </ul>
+    <p>Documenta cada paso y cambio. Si no sabes qué cambió, <code>show archive config differences</code> o revisa logs de syslog.</p>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 2 — CAPA 1: FÍSICA
+══════════════════════════════════════════════ -->
+<div id="tab-capa1" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Troubleshooting Capa 1 — Física</h2>
+  <p>La capa física es el fundamento de toda comunicación de red. Problemas aquí afectan todo lo demás. Los comandos de esta sección verifican cables, velocidad, dúplex, LEDs y estado de interfaces.</p>
+
+  <h3 class="sub-title">Verificación de Estado de Interfaces</h3>
+  <div class="code-block">
+    <div class="code-label">Diagnóstico rápido de capa física</div>
+    <pre><code><span class="cmd-comment">! === ESTADO DE INTERFACES ===</span>
+SW1# show ip interface brief
+<span class="cmd-output">Interface              IP-Address      OK? Method Status                Protocol
+GigabitEthernet0/0     192.168.1.1     YES manual up                    up
+GigabitEthernet0/1     unassigned      YES unset  administratively down down
+GigabitEthernet0/2     unassigned      YES unset  down                  down
+Serial0/0/0            10.1.1.1        YES manual up                    up</span>
+
+<span class="cmd-comment">! INTERPRETACIÓN DE ESTADOS:</span>
+<span class="cmd-comment">! up/up       = Todo funciona correctamente</span>
+<span class="cmd-comment">! up/down     = Capa 1 OK, problema capa 2 (encapsulación, clock rate)</span>
+<span class="cmd-comment">! down/down   = Problema capa 1 (cable desconectado, velocidad, dúplex)</span>
+<span class="cmd-comment">! admin down  = Interfaz shutdown manualmente</span>
+
+<span class="cmd-comment">! === INFORMACIÓN DETALLADA DE INTERFAZ ===</span>
+SW1# show interfaces GigabitEthernet0/0
+<span class="cmd-output">GigabitEthernet0/0 is up, line protocol is up
+  Hardware is CN Gigabit Ethernet, address is 0000.0c12.3456
+  Internet address is 192.168.1.1/24
+  MTU 1500 bytes, BW 1000000 Kbit/sec, DLY 10 usec,
+     reliability 255/255, txload 1/255, rxload 1/255
+  Encapsulation ARPA, loopback not set
+  Full-duplex, 1000Mb/s, media type is RJ45
+  input flow-control is off, output flow-control is unsupported
+  5 minute input rate 1000 bits/sec, 2 packets/sec
+  5 minute output rate 2000 bits/sec, 3 packets/sec
+     1524 packets input, 124567 bytes, 0 no buffer
+     Received 45 broadcasts (0 IP multicasts)
+     0 runts, 0 giants, 0 throttles
+     0 input errors, 0 CRC, 0 frame, 0 overrun, 0 ignored
+     0 watchdog, 45 multicast, 0 pause input
+     2341 packets output, 198765 bytes, 0 underruns</span>
+
+<span class="cmd-comment">! CAMPOS CLAVE:</span>
+<span class="cmd-comment">! Full-duplex, 1000Mb/s = Velocidad y dúplex negociados correctamente</span>
+<span class="cmd-comment">! 0 input errors, 0 CRC = No hay errores físicos</span>
+<span class="cmd-comment">! Si hay CRC, frame, overrun = Problema de cable o dúplex</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Velocidad y Dúplex (Speed/Duplex)</h3>
+  <div class="code-block">
+    <div class="code-label">Configuración y verificación de autonegociación</div>
+    <pre><code><span class="cmd-comment">! === CONFIGURAR VELOCIDAD Y DÚPLEX ===</span>
+SW1(config)# interface GigabitEthernet0/1
+SW1(config-if)# speed 100
+SW1(config-if)# duplex full
+<span class="cmd-comment">! Fuerza 100 Mbps full-duplex (NO autonegociar)</span>
+
+SW1(config-if)# speed auto
+SW1(config-if)# duplex auto
+<span class="cmd-comment">! Autonegociación (recomendado en general)</span>
+
+<span class="cmd-comment">! === VERIFICAR NEGOCIACIÓN ===</span>
+SW1# show interfaces GigabitEthernet0/1 | include duplex
+<span class="cmd-output">  Full-duplex, 100Mb/s, media type is RJ45</span>
+
+SW1# show interfaces status
+<span class="cmd-output">Port      Name               Status       Vlan       Duplex  Speed Type
+Gi0/1     PC-VENTAS-01       connected    10         a-full  a-100 10/100/1000BaseTX
+Gi0/2     PC-IT-01           notconnect   20           auto   auto 10/100/1000BaseTX</span>
+<span class="cmd-comment">! a-full = autonegociado full-duplex, a-100 = autonegociado 100Mbps</span>
+<span class="cmd-comment">! notconnect = cable desconectado o problema físico</span>
+
+<span class="cmd-comment">! === PROBLEMA CLÁSICO: DÚPLEX MISMATCH ===</span>
+<span class="cmd-comment">! Un lado en auto, otro en full → resultado: half-duplex</span>
+<span class="cmd-comment">! Síntomas: Lentitud extrema, colisiones, errores CRC</span>
+
+SW1# show interfaces GigabitEthernet0/1 | include duplex
+<span class="cmd-output">  Half-duplex, 100Mb/s, media type is RJ45</span>
+<span class="cmd-comment">! Si el otro lado está en full, esto es un MISMATCH</span>
+
+<span class="cmd-comment">! SOLUCIÓN: Configurar ambos lados igual (auto o fijo)</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Errores de Interfaz y Contadores</h3>
+  <div class="code-block">
+    <div class="code-label">Interpretación de errores físicos</div>
+    <pre><code><span class="cmd-comment">! === CONTADORES DE ERROR ===</span>
+SW1# show interfaces GigabitEthernet0/1 | include error
+<span class="cmd-output">     1524 packets input, 0 no buffer
+     Received 45 broadcasts
+     0 runts, 0 giants, 0 throttles
+     234 input errors, 45 CRC, 12 frame, 0 overrun, 0 ignored
+     0 watchdog, 0 multicast, 0 pause input
+     0 output errors, 0 collisions, 0 interface resets</span>
+
+<span class="cmd-comment">! TIPOS DE ERROR:</span>
+<span class="cmd-comment">! CRC       = Error de verificación de redundancia cíclica (cable dañado, interferencia)</span>
+<span class="cmd-comment">! Frame     = Frame mal formado (dúplex mismatch, problema de clocking)</span>
+<span class="cmd-comment">! Runts     = Frame menor a 64 bytes (colisión, problema físico)</span>
+<span class="cmd-comment">! Giants    = Frame mayor a 1518 bytes (MTU mismatch, jumbo mal configurado)</span>
+<span class="cmd-comment">! Overrun   = Buffer de entrada lleno (sobrecarga de tráfico)</span>
+<span class="cmd-comment">! Ignored   = Frame descartado por falta de buffer</span>
+<span class="cmd-comment">! Collisions= Colisiones en half-duplex (normal), en full-duplex (problema)</span>
+
+<span class="cmd-comment">! === LIMPIAR CONTADORES ===</span>
+SW1# clear counters GigabitEthernet0/1
+<span class="cmd-comment">! Útil para verificar si los errores siguen incrementándose</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">CDP — Cisco Discovery Protocol</h3>
+  <div class="code-block">
+    <div class="code-label">Descubrimiento de vecinos Cisco</div>
+    <pre><code><span class="cmd-comment">! === HABILITAR/DESHABILITAR CDP ===</span>
+SW1(config)# cdp run
+<span class="cmd-comment">! Habilita CDP globalmente</span>
+
+SW1(config)# no cdp run
+<span class="cmd-comment">! Deshabilita CDP globalmente (seguridad)</span>
+
+SW1(config)# interface GigabitEthernet0/1
+SW1(config-if)# cdp enable
+<span class="cmd-comment">! Habilita CDP en interfaz específica</span>
+
+SW1(config-if)# no cdp enable
+<span class="cmd-comment">! Deshabilita CDP en interfaz (evita filtración de info)</span>
+
+<span class="cmd-comment">! === VERIFICAR CDP ===</span>
+SW1# show cdp
+<span class="cmd-output">Global CDP information:
+    Sending CDP packets every 60 seconds
+    Sending a holdtime value of 180 seconds
+    Sending CDPv2 advertisements is enabled</span>
+
+SW1# show cdp neighbors
+<span class="cmd-output">Capability Codes: R - Router, T - Trans Bridge, B - Source Route Bridge
+                  S - Switch, H - Host, I - IGMP, r - Repeater, P - Phone,
+                  D - Remote, C - CVTA, M - Two-port Mac Relay
+
+Device ID        Local Intrfce     Holdtme    Capability  Platform  Port ID
+SW2              Gig 0/1            173            S       WS-C2960  Gig 0/1
+R1               Gig 0/2            142            R       C2911     Gig 0/0</span>
+
+SW1# show cdp neighbors detail
+<span class="cmd-comment">! Muestra información completa: IP, versión IOS, modelo, capacidades</span>
+<span class="cmd-comment">! Útil para documentación y troubleshooting de topología</span>
+
+<span class="cmd-comment">! === LLDP (Estándar IEEE, alternativa a CDP) ===</span>
+SW1(config)# lldp run
+SW1# show lldp neighbors
+SW1# show lldp neighbors detail</code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Checklist Capa 1</div>
+    <ol>
+      <li>¿El cable está conectado firmemente? (ambos extremos)</li>
+      <li>¿Los LEDs de enlace están encendidos (verde/naranja)?</li>
+      <li>¿La interfaz muestra <code>up/up</code> en <code>show ip int brief</code>?</li>
+      <li>¿La velocidad y dúplex coinciden en ambos extremos?</li>
+      <li>¿Hay errores CRC o frame incrementándose?</li>
+      <li>¿El puerto está en <code>shutdown</code> administrativo?</li>
+      <li>¿CDP/LLDP muestra el vecino esperado?</li>
+    </ol>
+  </div>
+</div>
+</div>
+<!-- ══════════════════════════════════════════════
+     TAB 3 — CAPA 2: ENLACE DE DATOS
+══════════════════════════════════════════════ -->
+<div id="tab-capa2" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Troubleshooting Capa 2 — Enlace de Datos</h2>
+  <p>La capa de enlace de datos maneja direccionamiento MAC, VLANs, trunking, STP y EtherChannel. Los problemas aquí son comunes y afectan la comunicación dentro del mismo segmento de red.</p>
+
+  <h3 class="sub-title">Tabla de Direcciones MAC</h3>
+  <div class="code-block">
+    <div class="code-label">Verificar aprendizaje de MACs y asociación de puertos</div>
+    <pre><code><span class="cmd-comment">! === TABLA MAC COMPLETA ===</span>
+SW1# show mac address-table
+<span class="cmd-output">          Mac Address Table
+-------------------------------------------
+
+Vlan    Mac Address       Type        Ports
+----    -----------       --------    -----
+   1    0000.0c12.3456    DYNAMIC     Gi0/1
+  10    0000.0c78.9abc    DYNAMIC     Fa0/1
+  10    0000.0cdef.0123   STATIC      Fa0/2
+  20    0000.0c45.6789    DYNAMIC     Fa0/10
+  99    0000.0caa.bbcc    DYNAMIC     Gi0/2</span>
+
+<span class="cmd-comment">! === FILTRAR POR VLAN ===</span>
+SW1# show mac address-table vlan 10
+<span class="cmd-comment">! Muestra solo MACs en VLAN 10</span>
+
+<span class="cmd-comment">! === FILTRAR POR PUERTO ===</span>
+SW1# show mac address-table interface FastEthernet0/1
+<span class="cmd-comment">! Muestra MACs aprendidas en Fa0/1</span>
+
+<span class="cmd-comment">! === FILTRAR POR DIRECCIÓN MAC ===</span>
+SW1# show mac address-table address 0000.0c78.9abc
+<span class="cmd-comment">! Busca en qué puerto/VLAN está una MAC específica</span>
+
+<span class="cmd-comment">! === MAC ESTÁTICA (SEGURIDAD) ===</span>
+SW1(config)# mac address-table static 0000.0c12.3456 vlan 10 interface FastEthernet0/1
+<span class="cmd-comment">! Asocia MAC estáticamente a puerto (no se envejece)</span>
+
+<span class="cmd-comment">! === LIMPIAR TABLA MAC ===</span>
+SW1# clear mac address-table dynamic
+<span class="cmd-comment">! Fuerza re-aprendizaje (cuidado en producción)</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">VLANs y Asignación de Puertos</h3>
+  <div class="code-block">
+    <div class="code-label">Diagnosticar problemas de segmentación VLAN</div>
+    <pre><code><span class="cmd-comment">! === VERIFICAR VLANs ===</span>
+SW1# show vlan brief
+<span class="cmd-output">VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active    Fa0/3, Fa0/4, Fa0/5, Fa0/6
+10   VENTAS                           active    Fa0/1, Fa0/2
+20   IT_SOPORTE                       active    Fa0/7, Fa0/8, Fa0/9
+99   MANAGEMENT_NATIVE                active    
+999  PARKING_UNUSED                   active    Fa0/10, Fa0/11</span>
+
+<span class="cmd-comment">! === VERIFICAR CONFIGURACIÓN DE PUERTO ===</span>
+SW1# show interfaces FastEthernet0/1 switchport
+<span class="cmd-output">Name: Fa0/1
+Switchport: Enabled
+Administrative Mode: static access
+Operational Mode: static access
+Access Mode VLAN: 10 (VENTAS)
+Trunking Native Mode VLAN: 1 (default)
+Negotiation of Trunking: Off</span>
+
+<span class="cmd-comment">! PROBLEMA COMÚN: Puerto en VLAN incorrecta</span>
+<span class="cmd-comment">! Síntoma: PC no obtiene IP o no puede comunicarse con otros en misma VLAN</span>
+
+<span class="cmd-comment">! SOLUCIÓN:</span>
+SW1(config)# interface FastEthernet0/1
+SW1(config-if)# switchport access vlan 10
+
+<span class="cmd-comment">! === VERIFICAR TRUNKS ===</span>
+SW1# show interfaces trunk
+<span class="cmd-output">Port        Mode             Encapsulation  Status        Native vlan
+Gi0/1       on               802.1q         trunking      99
+Gi0/2       on               802.1q         trunking      99
+
+Port        Vlans allowed on trunk
+Gi0/1       10,20,30,99
+Gi0/2       10,20,30,99</span>
+
+<span class="cmd-comment">! PROBLEMA: VLAN nativa mismatch</span>
+<span class="cmd-comment">! Si un lado tiene native vlan 1 y otro 99: CDP/VTP/STP fallan</span>
+<span class="cmd-comment">! Solución: Ambos lados deben tener misma native VLAN</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Spanning Tree Protocol (STP)</h3>
+  <div class="code-block">
+    <div class="code-label">Diagnosticar loops y estado de puertos STP</div>
+    <pre><code><span class="cmd-comment">! === VERIFICAR STP ===</span>
+SW1# show spanning-tree
+<span class="cmd-output">VLAN0001
+  Spanning tree enabled protocol ieee
+  Root ID    Priority    32769
+             Address     0000.0c12.3456
+             Cost        19
+             Port        1 (GigabitEthernet0/1)
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    32769  (priority 32768 sys-id-ext 1)
+             Address     0000.0c78.9abc
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time  300 sec
+
+Interface           Role Sts Cost      Prio.Nbr Type
+------------------- ---- --- --------- -------- --------------------------------
+Gi0/1               Root FWD 4         128.1    P2p
+Gi0/2               Desg FWD 4         128.2    P2p
+Fa0/1               Desg FWD 19        128.3    P2p Edge
+Fa0/2               Desg FWD 19        128.4    P2p Edge</span>
+
+<span class="cmd-comment">! ESTADOS DE PUERTO STP:</span>
+<span class="cmd-comment">! BLK (Blocking)  = No envía/recibe tráfico de usuario (previene loops)</span>
+<span class="cmd-comment">! LRN (Learning)  = Aprende MACs, no reenvía tráfico</span>
+<span class="cmd-comment">! FWD (Forwarding)= Operación normal</span>
+<span class="cmd-comment">! Root = Puerto raíz (mejor camino hacia el root bridge)</span>
+<span class="cmd-comment">! Desg = Puerto designado (mejor camino para el segmento)</span>
+
+<span class="cmd-comment">! === VERIFICAR ROOT BRIDGE ===</span>
+SW1# show spanning-tree root
+<span class="cmd-output">Root Hello Max Fwd
+Vlan                   Root ID          Cost    Time Age Dly  Root Port
+---------------- -------------------- --------- ---- --- ---  ------------
+VLAN0001         32769 0000.0c12.3456    19      2   20  15  Gi0/1
+VLAN0010         4106  0000.0c12.3456    19      2   20  15  Gi0/1</span>
+
+<span class="cmd-comment">! === PROBLEMA: PUERTO EN BLOCKING ===</span>
+<span class="cmd-comment">! Si un puerto de acceso está BLK, hay loop o topología STP inestable</span>
+
+<span class="cmd-comment">! === PORTFAST (ACCESO RÁPIDO A HOSTS) ===</span>
+SW1(config)# interface range Fa0/1 - 12
+SW1(config-if-range)# spanning-tree portfast
+<span class="cmd-comment">! Salta estados Listening/Learning (30 seg) y va directo a Forwarding</span>
+<span class="cmd-comment">! SOLO en puertos de host final, NUNCA en trunks o switches</span>
+
+<span class="cmd-comment">! === BPDU GUARD (PROTECCIÓN ANTE LOOPS) ===</span>
+SW1(config-if-range)# spanning-tree bpduguard enable
+<span class="cmd-comment">! Si recibe BPDU en puerto portfast, lo pone en err-disabled</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">EtherChannel — Agregación de Enlaces</h3>
+  <div class="code-block">
+    <div class="code-label">Diagnosticar problemas de bundling</div>
+    <pre><code><span class="cmd-comment">! === VERIFICAR ETHERCHANNEL ===</span>
+SW1# show etherchannel summary
+<span class="cmd-output">Flags:  D - down        P - bundled in port-channel
+        I - stand-alone s - suspended
+        H - Hot-standby (LACP only)
+        R - Layer3      S - Layer2
+        U - in use      f - failed to allocate aggregator
+
+Group  Port-channel  Protocol    Ports
+------+-------------+-----------+-----------------------------------------------
+1      Po1(SU)         LACP      Gi0/1(P)    Gi0/2(P)</span>
+<span class="cmd-comment">! SU = Layer2, In Use. (P) = Puerto bundled correctamente.</span>
+
+<span class="cmd-comment">! === PROBLEMAS COMUNES ETHERCHANNEL ===</span>
+<span class="cmd-comment">! 1. Velocidad/dúplex diferente entre miembros</span>
+<span class="cmd-comment">! 2. Configuración de modo diferente (LACP vs PAgP vs ON)</span>
+<span class="cmd-comment">! 3. VLAN allowed diferentes en trunks del port-channel</span>
+<span class="cmd-comment">! 4. Native VLAN mismatch</span>
+
+<span class="cmd-comment">! === VERIFICAR CONFIGURACIÓN ===</span>
+SW1# show etherchannel port-channel
+SW1# show lacp neighbor
+<span class="cmd-comment">! Muestra detalles de negociación LACP</span></code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚠️ Problema Clásico Capa 2: VLAN Mismatch</div>
+    <p><strong>Síntoma:</strong> Dos PCs en la "misma red" no se comunican.</p>
+    <p><strong>Causa:</strong> Un puerto está en VLAN 10, el otro en VLAN 20.</p>
+    <p><strong>Verificación:</strong> <code>show vlan brief</code> y <code>show interfaces switchport</code>.</p>
+    <p><strong>Solución:</strong> Asegurar que ambos puertos access estén en la misma VLAN.</p>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 4 — CAPA 3: RED
+══════════════════════════════════════════════ -->
+<div id="tab-capa3" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Troubleshooting Capa 3 — Red</h2>
+  <p>La capa de red maneja direccionamiento IP, routing, ARP y protocolos ICMP. Los problemas aquí afectan la comunicación entre diferentes redes (subredes).</p>
+
+  <h3 class="sub-title">Tabla ARP y Resolución de Direcciones</h3>
+  <div class="code-block">
+    <div class="code-label">Diagnosticar problemas de mapeo IP-MAC</div>
+    <pre><code><span class="cmd-comment">! === TABLA ARP ===</span>
+R1# show ip arp
+<span class="cmd-output">Protocol  Address          Age (min)  Hardware Addr   Type   Interface
+Internet  192.168.1.1             -   0000.0c12.3456  ARPA   GigabitEthernet0/0
+Internet  192.168.1.10            5   0000.0c78.9abc  ARPA   GigabitEthernet0/0
+Internet  192.168.1.254           0   Incomplete      ARPA</span>
+<span class="cmd-comment">! "Incomplete" = ARP request enviado, no hubo respuesta</span>
+<span class="cmd-comment">! Causa: Host apagado, IP incorrecta, firewall bloqueando ARP</span>
+
+<span class="cmd-comment">! === LIMPIAR ENTRADA ARP ESPECÍFICA ===</span>
+R1# clear ip arp 192.168.1.10
+
+<span class="cmd-comment">! === LIMPIAR TABLA ARP COMPLETA ===</span>
+R1# clear arp-cache
+
+<span class="cmd-comment">! === ARP ESTÁTICO ===</span>
+R1(config)# arp 192.168.1.100 0000.0c12.3456 arpa
+<span class="cmd-comment">! Útil para hosts que no responden ARP (firewall) o seguridad</span>
+
+<span class="cmd-comment">! === PROXY ARP ===</span>
+R1(config)# interface GigabitEthernet0/0
+R1(config-if)# ip proxy-arp
+<span class="cmd-comment">! Responde ARP en nombre de otros hosts (útil en migraciones)</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Ping Extendido y Traceroute</h3>
+  <div class="code-block">
+    <div class="code-label">Diagnóstico avanzado de conectividad</div>
+    <pre><code><span class="cmd-comment">! === PING EXTENDIDO ===</span>
+R1# ping
+Protocol [ip]:
+Target IP address: 192.168.2.10
+Repeat count [5]: 100
+Datagram size [100]: 1500
+Timeout in seconds [2]: 5
+Extended commands [n]: y
+Source address or interface: 192.168.1.1
+Type of service [0]:
+Set DF bit in IP header? [no]: y
+Validate reply data? [no]:
+Data pattern [0xABCD]:
+Loose, Strict, Record, Timestamp, Verbose[none]:
+Sweep range of sizes [n]:
+
+<span class="cmd-comment">! Opciones útiles:</span>
+<span class="cmd-comment">! - Source address: Especificar origen (útil para probar routing)</span>
+<span class="cmd-comment">! - DF bit: Don't Fragment, detecta problemas de MTU</span>
+<span class="cmd-comment">! - Datagram size: Probar con tamaños grandes (MTU issues)</span>
+<span class="cmd-comment">! - Repeat count: 100 pings para detectar pérdida intermitente</span>
+
+<span class="cmd-comment">! === TRACERoute ===</span>
+R1# traceroute 8.8.8.8
+<span class="cmd-output">Type escape sequence to abort.
+Tracing the route to 8.8.8.8
+
+  1 203.0.113.2 4 msec 4 msec 4 msec
+  2 198.51.100.1 12 msec 12 msec 12 msec
+  3 192.0.2.1 20 msec 20 msec 20 msec
+  4  *  *  *
+  5  *  *  *</span>
+<span class="cmd-comment">! * * * = Timeout en ese salto (posible ACL bloqueando ICMP)</span>
+<span class="cmd-comment">! o el router no responde traceroute (común en Internet)</span>
+
+<span class="cmd-comment">! === TRACERoute CON ORIGEN ESPECÍFICO ===</span>
+R1# traceroute 8.8.8.8 source 192.168.1.1</code></pre>
+  </div>
+
+  <h3 class="sub-title">Verificación de Tabla de Routing</h3>
+  <div class="code-block">
+    <div class="code-label">Diagnosticar problemas de enrutamiento</div>
+    <pre><code><span class="cmd-comment">! === TABLA DE ROUTING ===</span>
+R1# show ip route
+<span class="cmd-output">Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area...
+
+Gateway of last resort is 203.0.113.2 to network 0.0.0.0
+
+S*    0.0.0.0/0 [1/0] via 203.0.113.2
+C        192.168.1.0/24 is directly connected, GigabitEthernet0/0
+L        192.168.1.1/32 is directly connected, GigabitEthernet0/0
+O        192.168.2.0/24 [110/2] via 10.1.1.2, 00:15:32, GigabitEthernet0/1</span>
+
+<span class="cmd-comment">! === BUSCAR RUTA ESPECÍFICA ===</span>
+R1# show ip route 192.168.2.10
+<span class="cmd-output">Routing entry for 192.168.2.0/24
+  Known via "ospf 1", distance 110, metric 2, type intra area
+  Last update from 10.1.1.2 on GigabitEthernet0/1, 00:15:32 ago
+  Routing Descriptor Blocks:
+  * 10.1.1.2, from 2.2.2.2, 00:15:32 ago, via GigabitEthernet0/1
+      Route metric is 2, traffic share count is 1</span>
+
+<span class="cmd-comment">! === VERIFICAR NEXT-HOP ALCANZABLE ===</span>
+R1# ping 10.1.1.2
+<span class="cmd-comment">! Si el next-hop no responde, la ruta aparece pero no funciona</span>
+
+<span class="cmd-comment">! === RUTA FLAPPING (INESTABLE) ===</span>
+R1# show ip route | include 00:00
+<span class="cmd-comment">! Muestra rutas que se actualizaron hace segundos (inestables)</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">MTU y Fragmentación IP</h3>
+  <div class="code-block">
+    <div class="code-label">Diagnosticar problemas de tamaño de paquete</div>
+    <pre><code><span class="cmd-comment">! === VERIFICAR MTU DE INTERFAZ ===</span>
+R1# show interfaces GigabitEthernet0/0 | include MTU
+<span class="cmd-output">  MTU 1500 bytes, BW 1000000 Kbit/sec, DLY 10 usec,</span>
+
+<span class="cmd-comment">! === PROBAR MTU CON PING ===</span>
+R1# ping 192.168.2.1 size 1472 df-bit
+<span class="cmd-comment">! 1472 payload + 8 ICMP + 20 IP = 1500 bytes (sin fragmentar)</span>
+<span class="cmd-comment">! Si falla: MTU menor en algún enlace intermedio</span>
+
+<span class="cmd-comment">! === PATH MTU DISCOVERY ===</span>
+R1# traceroute 192.168.2.1
+<span class="cmd-comment">! Usar con DF bit para encontrar el MTU mínimo de la ruta</span>
+
+<span class="cmd-comment">! === TUNNEL MTU (GRE, IPsec) ===</span>
+<span class="cmd-comment">! GRE añade 24 bytes, IPsec añade 56+ bytes</span>
+<span class="cmd-comment">! MTU efectivo = 1500 - overhead = ~1400 bytes</span>
+<span class="cmd-comment">! Síntoma: TCP funciona para HTTP pero no para transferencias grandes</span></code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Checklist Capa 3</div>
+    <ol>
+      <li>¿La IP y máscara son correctas? (<code>show ip interface brief</code>)</li>
+      <li>¿El gateway por defecto está configurado en el host?</li>
+      <li>¿Existe ruta hacia la red destino? (<code>show ip route</code>)</li>
+      <li>¿El next-hop es alcanzable? (<code>ping next-hop</code>)</li>
+      <li>¿La tabla ARP tiene la MAC del next-hop? (<code>show ip arp</code>)</li>
+      <li>¿Hay ACLs bloqueando ICMP o tráfico IP?</li>
+      <li>¿El MTU es suficiente en toda la ruta?</li>
+      <li>¿NAT está traduciendo correctamente?</li>
+    </ol>
+  </div>
+</div>
+</div>
+<!-- ══════════════════════════════════════════════
+     TAB 5 — SWITCHING TROUBLESHOOTING
+══════════════════════════════════════════════ -->
+<div id="tab-switching" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Troubleshooting de Switching Avanzado</h2>
+  <p>Los switches son el corazón de la red local. Problemas como port security, err-disabled, VTP, y spanning tree pueden causar interrupciones masivas si no se diagnostican rápidamente.</p>
+
+  <h3 class="sub-title">Port Security y Err-Disabled</h3>
+  <div class="code-block">
+    <div class="code-label">Diagnosticar y recuperar puertos bloqueados</div>
+    <pre><code><span class="cmd-comment">! === VERIFICAR PUERTOS ERR-DISABLED ===</span>
+SW1# show interfaces status err-disabled
+<span class="cmd-output">Port      Name               Status       Reason
+Fa0/1     PC-VENTAS-01       err-disabled psecure-violation
+Fa0/5     PRINTER-HR         err-disabled dhcp-rate-limit
+Fa0/12    AP-FLOOR2          err-disabled loopback</span>
+
+<span class="cmd-comment">! CAUSAS COMUNES DE ERR-DISABLED:</span>
+<span class="cmd-comment">! - psecure-violation: MAC no autorizada conectada</span>
+<span class="cmd-comment">! - loopback: Loop detectado (loopguard, bpdu-guard)</span>
+<span class="cmd-comment">! - dhcp-rate-limit: DHCP snooping detectó flood de DHCP</span>
+<span class="cmd-comment">! - pagp-flap: EtherChannel inestable</span>
+<span class="cmd-comment">! - dtp-flap: Negociación DTP errática</span>
+
+<span class="cmd-comment">! === RECUPERACIÓN MANUAL ===</span>
+SW1(config)# interface FastEthernet0/1
+SW1(config-if)# shutdown
+SW1(config-if)# no shutdown
+
+<span class="cmd-comment">! === RECUPERACIÓN AUTOMÁTICA ===</span>
+SW1(config)# errdisable recovery cause psecure-violation
+SW1(config)# errdisable recovery cause loopback
+SW1(config)# errdisable recovery interval 300
+<span class="cmd-comment">! Recupera automáticamente después de 300 segundos (5 min)</span>
+
+<span class="cmd-comment">! === VERIFICAR CONFIGURACIÓN DE PORT SECURITY ===</span>
+SW1# show port-security
+<span class="cmd-output">Secure Port  MaxSecureAddr  CurrentAddr  SecurityViolation  Security Action
+                (Count)       (Count)          (Count)
+---------------------------------------------------------------------------
+     Fa0/1          1              1                 0         Restrict
+     Fa0/2          2              2                 0         Restrict</span>
+
+SW1# show port-security interface FastEthernet0/1
+<span class="cmd-output">Port Security              : Enabled
+Port Status                : Secure-up
+Violation Mode             : Restrict
+Maximum MAC Addresses      : 1
+Total MAC Addresses        : 1
+Configured MAC Addresses   : 0
+Sticky MAC Addresses       : 1
+Last Source Address:Vlan   : 0000.0c78.9abc:10
+Security Violation Count   : 0</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">DHCP Snooping — Protección contra Rogue DHCP</h3>
+  <div class="code-block">
+    <div class="code-label">Verificar y diagnosticar problemas DHCP</div>
+    <pre><code><span class="cmd-comment">! === VERIFICAR DHCP SNOOPING ===</span>
+SW1# show ip dhcp snooping
+<span class="cmd-output">Switch DHCP snooping is enabled
+DHCP snooping is configured on following VLANs:
+   10 20 30
+
+Interface        Trusted    Rate limit (pps)
+---------        -------    ----------------
+GigabitEthernet0/1    yes       unlimited
+FastEthernet0/1       no        10 (default)</span>
+
+<span class="cmd-comment">! === PROBLEMA: PC NO OBTIENE IP ===</span>
+<span class="cmd-comment">! Causa 1: Puerto no trusted y servidor DHCP legítimo conectado ahí</span>
+<span class="cmd-comment">! Solución: Puerto hacia servidor DHCP debe ser "trusted"</span>
+
+SW1(config)# interface GigabitEthernet0/1
+SW1(config-if)# ip dhcp snooping trust
+
+<span class="cmd-comment">! Causa 2: Opción 82 insertada por switch, servidor no la soporta</span>
+SW1(config)# no ip dhcp snooping information option
+
+<span class="cmd-comment">! === VERIFICAR BINDINGS DHCP SNOOPING ===</span>
+SW1# show ip dhcp snooping binding
+<span class="cmd-output">MacAddress          IpAddress        Lease(sec)  Type           VLAN  Interface
+------------------  ---------------  ----------  -------------  ----  -----------
+00:00:0C:78:9A:BC   192.168.10.10    86400       dhcp-snooping   10    Fa0/1</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">VTP Troubleshooting</h3>
+  <div class="code-block">
+    <div class="code-label">Diagnosticar sincronización de VLANs</div>
+    <pre><code><span class="cmd-comment">! === VERIFICAR VTP ===</span>
+SW1# show vtp status
+<span class="cmd-output">VTP Version capable             : 1 to 3
+VTP version running             : 2
+VTP Domain Name                 : CCNA-LAB
+VTP Pruning Mode                : Enabled
+VTP Operating Mode                : Server
+Configuration Revision            : 12
+Number of existing VLANs          : 8</span>
+
+<span class="cmd-comment">! === PROBLEMA: SWITCH NO APRENDE VLANs ===</span>
+<span class="cmd-comment">! Verificar 1: Mismo dominio VTP (case-sensitive)</span>
+SW2# show vtp status | include Domain
+<span class="cmd-comment">! Debe coincidir EXACTAMENTE con el servidor</span>
+
+<span class="cmd-comment">! Verificar 2: Misma contraseña VTP</span>
+SW2# show vtp password
+<span class="cmd-comment">! Si hay password en server, debe ser idéntica en cliente</span>
+
+<span class="cmd-comment">! Verificar 3: Hay trunk entre switches (VTP solo viaja por trunks)</span>
+SW2# show interfaces trunk
+
+<span class="cmd-comment">! Verificar 4: Revision number no es mayor en cliente</span>
+<span class="cmd-comment">! Si cliente tiene revision > servidor, el servidor sobrescribe sus VLANs</span>
+
+<span class="cmd-comment">! === SOLUCIÓN: RESET VTP EN CLIENTE ===</span>
+SW2# delete flash:vlan.dat
+SW2# reload
+<span class="cmd-comment">! Al reiniciar, revision = 0 y aprende todo del servidor</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Inter-VLAN Routing</h3>
+  <div class="code-block">
+    <div class="code-label">Diagnosticar routing entre VLANs</div>
+    <pre><code><span class="cmd-comment">! === VERIFICAR SVI (Switch Virtual Interface) ===</span>
+SW1# show ip interface brief
+<span class="cmd-output">Interface              IP-Address      OK? Method Status                Protocol
+Vlan10                 192.168.10.1    YES manual up                    up
+Vlan20                 192.168.20.1    YES manual up                    up
+Vlan99                 192.168.99.1    YES manual up                    up</span>
+
+<span class="cmd-comment">! === PROBLEMA: SVI EN up/down ===</span>
+<span class="cmd-comment">! Causa: No hay puertos físicos en esa VLAN con estado up/up</span>
+<span class="cmd-comment">! Solución: Conectar al menos un dispositivo activo en la VLAN</span>
+
+<span class="cmd-comment">! === VERIFICAR IP ROUTING EN SWITCH ===</span>
+SW1# show ip route
+<span class="cmd-comment">! Si no muestra nada, "ip routing" puede estar deshabilitado</span>
+
+SW1(config)# ip routing
+<span class="cmd-comment">! Habilita routing L3 en el switch (por defecto en switches L3)</span>
+
+<span class="cmd-comment">! === VERIFICAR GATEWAY EN PCs ===</span>
+<span class="cmd-comment">! La PC debe tener como gateway la IP del SVI de su VLAN</span>
+<span class="cmd-comment">! VLAN 10 → Gateway 192.168.10.1</span></code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚠️ Loop de Capa 2: Síntomas y Detección</div>
+    <p><strong>Síntomas de un loop de switching:</strong></p>
+    <ul>
+      <li>Todos los LEDs de todos los switches parpadean al unísono (broadcast storm)</li>
+      <li>CPU del switch al 100%</li>
+      <li>Tráfico extremadamente lento o inexistente</li>
+      <li>Múltiples MACs en múltiples puertos (flapping)</li>
+    </ul>
+    <p><strong>Acción inmediata:</strong> Desconectar cables redundantes hasta que STP estabilice. Verificar <code>show spanning-tree</code> y habilitar <code>spanning-tree portfast bpduguard</code> en puertos de acceso.</p>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 6 — ROUTING TROUBLESHOOTING
+══════════════════════════════════════════════ -->
+<div id="tab-routing" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Troubleshooting de Routing</h2>
+  <p>Los problemas de routing pueden aislar redes enteras. Una metodología sistemática verifica vecinos, tablas de routing, métricas, y políticas de redistribución.</p>
+
+  <h3 class="sub-title">RIP Troubleshooting</h3>
+  <div class="code-block">
+    <div class="code-label">Diagnosticar problemas en RIPv2</div>
+    <pre><code><span class="cmd-comment">! === VERIFICAR RIP ===</span>
+R1# show ip protocols | section rip
+R1# show ip rip database
+R1# debug ip rip
+
+<span class="cmd-comment">! === PROBLEMA: RUTAS RIP NO APARECEN ===</span>
+<span class="cmd-comment">! Causa 1: version 1 en lugar de version 2</span>
+R1(config-router)# version 2
+
+<span class="cmd-comment">! Causa 2: auto-summary activo (subredes discontinuas)</span>
+R1(config-router)# no auto-summary
+
+<span class="cmd-comment">! Causa 3: Interfaz passive</span>
+R1# show ip protocols | include Passive
+<span class="cmd-comment">! Si la interfaz hacia el vecino está passive, no envía updates</span>
+
+<span class="cmd-comment">! Causa 4: ACL bloqueando UDP 520</span>
+R1# show access-lists
+<span class="cmd-comment">! RIP usa UDP puerto 520</span>
+
+<span class="cmd-comment">! Causa 5: Máscara de red en comando network incorrecta</span>
+<span class="cmd-comment">! RIP no usa wildcard mask, usa clase (A/B/C)</span>
+<span class="cmd-comment">! network 192.168.1.0 (correcto para /24)</span>
+<span class="cmd-comment">! network 10.0.0.0 (correcto para cualquier /8)</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">OSPF Troubleshooting</h3>
+  <div class="code-block">
+    <div class="code-label">Diagnosticar adyacencias y rutas OSPF</div>
+    <pre><code><span class="cmd-comment">! === VERIFICAR VECINOS OSPF ===</span>
+R1# show ip ospf neighbor
+<span class="cmd-output">Neighbor ID     Pri   State           Dead Time   Address         Interface
+2.2.2.2           1   INIT/DROTHER    00:00:35    10.1.1.2        GigabitEthernet0/1</span>
+<span class="cmd-comment">! INIT = Solo recibió hello, no se sincronizó</span>
+<span class="cmd-comment">! 2-WAY = Bidireccional (en broadcast, no Full con todos)</span>
+<span class="cmd-comment">! EXSTART/EXCHANGE = Intercambiando LSDB</span>
+<span class="cmd-comment">! LOADING = Solicitando LSA faltantes</span>
+<span class="cmd-comment">! FULL = Sincronización completa</span>
+
+<span class="cmd-comment">! === PROBLEMA: NO FORMA ADYACENCIA ===</span>
+<span class="cmd-comment">! Checklist:</span>
+<span class="cmd-comment">! 1. ¿Misma área? network 10.1.1.0 0.0.0.3 area 0</span>
+<span class="cmd-comment">! 2. ¿Misma máscara de subred en el enlace?</span>
+<span class="cmd-comment">! 3. ¿Hello/Dead timers iguales? (10/40 broadcast, 30/120 NBMA)</span>
+<span class="cmd-comment">! 4. ¿Autenticación coincide? (MD5, key ID, password)</span>
+<span class="cmd-comment">! 5. ¿MTU coincide en ambos lados? (OSPF requiere MTU igual)</span>
+<span class="cmd-comment">! 6. ¿Router ID único? (no duplicado)</span>
+
+<span class="cmd-comment">! === DEBUG OSPF ===</span>
+R1# debug ip ospf adj
+<span class="cmd-comment">! Muestra negociación de adyacencia en tiempo real</span>
+<span class="cmd-comment">! "Mismatched authentication type" = Clave incorrecta</span>
+<span class="cmd-comment">! "Mismatched hello parameters" = Timers o máscara diferente</span>
+
+<span class="cmd-comment">! === VERIFICAR LSDB ===</span>
+R1# show ip ospf database
+<span class="cmd-comment">! Si falta una LSA, puede haber problema de flooding</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">EIGRP Troubleshooting</h3>
+  <div class="code-block">
+    <div class="code-label">Diagnosticar vecinos y rutas EIGRP</div>
+    <pre><code><span class="cmd-comment">! === VERIFICAR VECINOS EIGRP ===</span>
+R1# show ip eigrp neighbors
+<span class="cmd-output">EIGRP-IPv4 Neighbors for AS(100)
+H   Address                 Interface       Hold Uptime   SRTT   RTO  Q  Seq
+                                      (sec)         (ms)       Cnt Num
+0   10.1.1.2                Gi0/1             14 00:15:32   10   100  0  45</span>
+<span class="cmd-comment">! H = Order, SRTT = Smooth Round Trip Time, RTO = Retransmission Timeout</span>
+<span class="cmd-comment">! Q Cnt = Cola de paquetes (si > 0, hay congestión o problema)</span>
+
+<span class="cmd-comment">! === PROBLEMA: NO FORMA ADYACENCIA EIGRP ===</span>
+<span class="cmd-comment">! Requisitos para adyacencia:</span>
+<span class="cmd-comment">! 1. Mismo AS number</span>
+<span class="cmd-comment">! 2. Mismos K values (K1, K2, K3, K4, K5)</span>
+<span class="cmd-comment">! 3. Misma autenticación (si está configurada)</span>
+<span class="cmd-comment">! 4. Misma subred IP</span>
+<span class="cmd-comment">! 5. Interfaz no passive</span>
+
+<span class="cmd-comment">! === VERIFICAR TOPOLOGÍA EIGRP ===</span>
+R1# show ip eigrp topology
+<span class="cmd-output">P 192.168.2.0/24, 1 successors, FD is 2170112
+        via 10.1.1.2 (2170112/2816), GigabitEthernet0/1</span>
+<span class="cmd-comment">! P = Passive (estable), FD = Feasible Distance</span>
+<span class="cmd-comment">! Si aparece "Active" = Router está consultando alternativas (problema)</span>
+
+<span class="cmd-comment">! === STUCK IN ACTIVE (SIA) ===</span>
+<span class="cmd-comment">! Si una ruta permanece Active por mucho tiempo:</span>
+<span class="cmd-comment">! - Enlace inestable hacia vecino</span>
+<span class="cmd-comment">! - Vecino no responde a queries (CPU alta, congestionado)</span>
+<span class="cmd-comment">! - Límite de hops EIGRP alcanzado (default 100)</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">BGP Troubleshooting</h3>
+  <div class="code-block">
+    <div class="code-label">Diagnosticar sesiones BGP y rutas</div>
+    <pre><code><span class="cmd-comment">! === ESTADOS BGP ===</span>
+<span class="cmd-comment">! Idle       = No se ha iniciado conexión</span>
+<span class="cmd-comment">! Connect    = Esperando completar TCP 3-way handshake</span>
+<span class="cmd-comment">! Active     = Intentando establecer conexión TCP</span>
+<span class="cmd-comment">! OpenSent   = Enviado mensaje OPEN</span>
+<span class="cmd-comment">! OpenConfirm = Recibido OPEN del vecino, esperando KEEPALIVE</span>
+<span class="cmd-comment">! Established = Sesión activa, intercambiando updates</span>
+
+R1# show ip bgp summary
+<span class="cmd-output">Neighbor        V    AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
+203.0.113.2     4 65002       0       0        0    0    0 never    Active</span>
+<span class="cmd-comment">! Active = No puede establecer TCP hacia el vecino</span>
+
+<span class="cmd-comment">! === PROBLEMA: BGP EN ACTIVE ===</span>
+<span class="cmd-comment">! 1. ¿Hay conectividad IP? ping 203.0.113.2</span>
+<span class="cmd-comment">! 2. ¿TCP 179 está bloqueado? show access-lists</span>
+<span class="cmd-comment">! 3. ¿AS number correcto? remote-as debe coincidir</span>
+<span class="cmd-comment">! 4. ¿Interfaz de origen correcta? update-source loopback0</span>
+
+<span class="cmd-comment">! === PROBLEMA: RUTAS BGP NO INSTALADAS ===</span>
+<span class="cmd-comment">! BGP muestra ruta pero no está en "show ip route":</span>
+<span class="cmd-comment">! - Next-hop inalcanzable (resolver con ruta estática o IGP)</span>
+<span class="cmd-comment">! - Synchronization activa (obsoleto, desactivar)</span>
+<span class="cmd-comment">! - AS_PATH loop detectado (own AS en path)</span>
+
+<span class="cmd-comment">! === DEBUG BGP ===</span>
+R1# debug ip bgp
+R1# debug ip bgp updates
+<span class="cmd-comment">! Muestra mensajes BGP en tiempo real (muy verboso)</span></code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Comandos Esenciales de Routing</div>
+    <ul>
+      <li><code>show ip route</code> — ¿Existe la ruta? ¿Es correcta?</li>
+      <li><code>show ip protocols</code> — ¿Qué protocolos están activos?</li>
+      <li><code>ping [next-hop]</code> — ¿El siguiente salto responde?</li>
+      <li><code>traceroute [destino]</code> — ¿Dónde se detiene el tráfico?</li>
+      <li><code>debug ip [protocol]</code> — Ver negociación en tiempo real</li>
+      <li><code>show ip cef [red]</code> — ¿CEF tiene la ruta en forwarding?</li>
+    </ul>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 7 — SERVICIOS IP TROUBLESHOOTING
+══════════════════════════════════════════════ -->
+<div id="tab-servicios" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Troubleshooting de Servicios IP</h2>
+  <p>DHCP, DNS y NAT son servicios críticos. Su falla afecta directamente a los usuarios finales. Estos comandos permiten diagnosticar problemas de asignación de IPs, resolución de nombres y traducción de direcciones.</p>
+
+  <h3 class="sub-title">DHCP Troubleshooting</h3>
+  <div class="code-block">
+    <div class="code-label">Diagnosticar problemas de asignación de IPs</div>
+    <pre><code><span class="cmd-comment">! === VERIFICAR POOL DHCP EN ROUTER ===</span>
+R1# show ip dhcp pool
+<span class="cmd-output">Pool LAN-VENTAS :
+ Utilization mark (high/low)    : 100 / 0
+ Subnet size (first/next)       : 0 / 0
+ Total addresses                : 254
+ Leased addresses               : 45
+ Excluded addresses             : 5
+ Pending event                  : none
+
+ 1 subnet is currently in the pool :
+ Current index        IP address range                    Leased/Excluded/Total
+ 192.168.10.50        192.168.10.1     - 192.168.10.254    45     5      254</span>
+
+<span class="cmd-comment">! === VERIFICAR BINDINGS DHCP ===</span>
+R1# show ip dhcp binding
+<span class="cmd-output">IP address      Client-ID/              Lease expiration        Type
+                Hardware address
+192.168.10.10   0000.0c78.9abc           Apr 20 2026 08:15 AM    Automatic
+192.168.10.11   0000.0c45.6789           Apr 20 2026 08:20 AM    Automatic</span>
+
+<span class="cmd-comment">! === PROBLEMA: PC NO OBTIENE IP ===</span>
+<span class="cmd-comment">! Paso 1: Verificar que el pool tiene IPs disponibles</span>
+R1# show ip dhcp pool | include Leased
+<span class="cmd-comment">! Si Leased = Total, el pool está agotado</span>
+
+<span class="cmd-comment">! Paso 2: Verificar que la interfaz tiene helper-address si el DHCP es remoto</span>
+R1(config)# interface GigabitEthernet0/0
+R1(config-if)# ip helper-address 192.168.99.10
+<span class="cmd-comment">! Reenvía broadcasts DHCP a servidor remoto</span>
+
+<span class="cmd-comment">! Paso 3: Verificar exclusions</span>
+R1(config)# ip dhcp excluded-address 192.168.10.1 192.168.10.10
+
+<span class="cmd-comment">! Paso 4: Debug DHCP</span>
+R1# debug ip dhcp server events
+R1# debug ip dhcp server packets
+<span class="cmd-comment">! Muestra DORA (Discover, Offer, Request, Ack) en tiempo real</span>
+
+<span class="cmd-comment">! === RENOVAR IP EN PC (WINDOWS) ===</span>
+C:\> ipconfig /release
+C:\> ipconfig /renew
+<span class="cmd-comment">! Forza nueva solicitud DHCP</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">DNS Troubleshooting</h3>
+  <div class="code-block">
+    <div class="code-label">Diagnosticar resolución de nombres</div>
+    <pre><code><span class="cmd-comment">! === VERIFICAR CONFIGURACIÓN DNS EN ROUTER ===</span>
+R1# show hosts
+<span class="cmd-output">Name/address lookup uses domain service
+Name servers are 8.8.8.8, 8.8.4.4</span>
+
+<span class="cmd-comment">! === CONFIGURAR SERVIDORES DNS ===</span>
+R1(config)# ip name-server 8.8.8.8 8.8.4.4
+R1(config)# ip domain-lookup
+<span class="cmd-comment">! Habilita resolución DNS en el router</span>
+
+<span class="cmd-comment">! === PROBAR RESOLUCIÓN DESDE ROUTER ===</span>
+R1# ping www.google.com
+<span class="cmd-output">Translating "www.google.com"...domain server (8.8.8.8) [OK]
+
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 142.250.80.46, timeout is 2 seconds:
+!!!!!</span>
+
+<span class="cmd-comment">! === PROBLEMA: "UNKNOWN HOST" ===</span>
+<span class="cmd-comment">! Causa 1: No hay DNS configurado en PC o router</span>
+<span class="cmd-comment">! Causa 2: ACL bloqueando UDP 53</span>
+<span class="cmd-comment">! Causa 3: Servidor DNS no responde (probar con ping 8.8.8.8)</span>
+
+<span class="cmd-comment">! === VERIFICAR DNS EN PC ===</span>
+C:\> nslookup www.google.com
+C:\> ipconfig /all | findstr "DNS Servers"
+
+<span class="cmd-comment">! === HOSTS ESTÁTICOS EN ROUTER ===</span>
+R1(config)# ip host web-server 192.168.1.100
+<span class="cmd-comment">! Resolución local sin consultar DNS</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">NAT/PAT Troubleshooting</h3>
+  <div class="code-block">
+    <div class="code-label">Diagnosticar traducción de direcciones</div>
+    <pre><code><span class="cmd-comment">! === VERIFICAR NAT ===</span>
+R1# show ip nat translations
+<span class="cmd-output">Pro Inside global      Inside local       Outside local      Outside global
+tcp 203.0.113.1:51234  192.168.1.10:49152 142.250.80.46:443  142.250.80.46:443</span>
+
+<span class="cmd-comment">! === PROBLEMA: NAT NO FUNCIONA ===</span>
+<span class="cmd-comment">! Causa 1: No hay interfaces inside/outside definidas</span>
+R1# show ip nat statistics
+<span class="cmd-comment">! Debe mostrar "Inside interfaces" y "Outside interfaces"</span>
+
+<span class="cmd-comment">! Causa 2: ACL no incluye al host</span>
+R1# show access-list 1
+<span class="cmd-comment">! Verificar que la IP del host está permitida</span>
+
+<span class="cmd-comment">! Causa 3: Pool agotado (sin overload)</span>
+R1# show ip nat statistics | include active
+<span class="cmd-comment">! Si "Total active translations" = tamaño del pool, se agotó</span>
+
+<span class="cmd-comment">! === DEBUG NAT ===</span>
+R1# debug ip nat
+<span class="cmd-output">NAT: s=192.168.1.10->203.0.113.1, d=8.8.8.8 [12345]</span>
+<span class="cmd-comment">! Si no aparece nada, el tráfico no coincide con la ACL de NAT</span>
+
+<span class="cmd-comment">! === VERIFICAR RUTA POR DEFECTO ===</span>
+R1# show ip route 0.0.0.0
+<span class="cmd-comment">! NAT requiere ruta por defecto para salir a Internet</span></code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚠️ Problema Clásico: "Tengo IP pero no hay Internet"</div>
+    <p><strong>Checklist rápido:</strong></p>
+    <ol>
+      <li>¿La IP está en el rango correcto? (<code>ipconfig</code>)</li>
+      <li>¿El gateway responde? (<code>ping gateway</code>)</li>
+      <li>¿DNS resuelve nombres? (<code>nslookup google.com</code>)</li>
+      <li>¿Hay NAT activo? (<code>show ip nat translations</code> en router)</li>
+      <li>¿El router tiene ruta por defecto? (<code>show ip route 0.0.0.0</code>)</li>
+      <li>¿Hay ACL bloqueando HTTP/HTTPS/DNS?</li>
+    </ol>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 8 — SEGURIDAD Y ACLs
+══════════════════════════════════════════════ -->
+<div id="tab-seguridad" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Troubleshooting de Seguridad y ACLs</h2>
+  <p>Las ACLs (Access Control Lists) son la causa número uno de problemas de conectividad "misteriosos". Un deny implícito o una máscara wildcard incorrecta pueden bloquear tráfico legítimo sin advertencias.</p>
+
+  <h3 class="sub-title">Verificación de ACLs</h3>
+  <div class="code-block">
+    <div class="code-label">Diagnosticar filtros de tráfico</div>
+    <pre><code><span class="cmd-comment">! === VER TODAS LAS ACLs ===</span>
+R1# show access-lists
+<span class="cmd-output">Standard IP access list 1
+    10 permit 192.168.1.0, wildcard bits 0.0.0.255 (45 matches)
+    20 deny   any (12 matches)
+
+Extended IP access list 100
+    10 permit tcp 192.168.1.0 0.0.0.255 any eq www (234 matches)
+    20 permit udp 192.168.1.0 0.0.0.255 any eq dns (89 matches)
+    30 deny ip any any log (5 matches)</span>
+<span class="cmd-comment">! "(matches)" indica cuántos paquetes coincidieron con esa línea</span>
+<span class="cmd-comment">! Si una línea tiene 0 matches, nunca se usó (posible error de lógica)</span>
+
+<span class="cmd-comment">! === VER ACLs APLICADAS EN INTERFACES ===</span>
+R1# show ip interface GigabitEthernet0/0
+<span class="cmd-output">  Inbound  access list is 100
+  Outbound access list is not set</span>
+
+<span class="cmd-comment">! === CONTADORES DE ACL ===</span>
+R1# show access-lists 100
+<span class="cmd-comment">! Observar qué línea está incrementando matches al hacer ping</span>
+
+<span class="cmd-comment">! === PROBLEMA: PING BLOQUEADO POR ACL ===</span>
+<span class="cmd-comment">! ICMP no está permitido explícitamente en ACL extendida</span>
+<span class="cmd-comment">! Solución: Añadir "permit icmp any any" antes del deny implícito</span>
+
+R1(config)# access-list 100 permit icmp any any
+<span class="cmd-comment">! O mejor, permitir solo desde redes internas:</span>
+R1(config)# access-list 100 permit icmp 192.168.1.0 0.0.0.255 any</code></pre>
+  </div>
+
+  <h3 class="sub-title">ACL Estándar vs Extendida</h3>
+  <div class="code-block">
+    <div class="code-label">Diferencias y troubleshooting</div>
+    <pre><code><span class="cmd-comment">! === ACL ESTÁNDAR (1-99, 1300-1999) ===</span>
+<span class="cmd-comment">! Filtra SOLO por IP origen</span>
+<span class="cmd-comment">! Debe aplicarse lo más CERCA del destino posible</span>
+
+R1(config)# access-list 10 permit 192.168.1.0 0.0.0.255
+R1(config)# access-list 10 deny any
+
+<span class="cmd-comment">! === ACL EXTENDIDA (100-199, 2000-2699) ===</span>
+<span class="cmd-comment">! Filtra por IP origen, IP destino, protocolo, puerto</span>
+<span class="cmd-comment">! Debe aplicarse lo más CERCA del origen posible</span>
+
+R1(config)# access-list 100 permit tcp 192.168.1.0 0.0.0.255 any eq 80
+R1(config)# access-list 100 permit tcp 192.168.1.0 0.0.0.255 any eq 443
+R1(config)# access-list 100 permit udp 192.168.1.0 0.0.0.255 any eq 53
+R1(config)# access-list 100 deny ip any any log
+
+<span class="cmd-comment">! === ACL CON NOMBRE (NAMED ACL) ===</span>
+R1(config)# ip access-list extended BLOCK-TELNET
+R1(config-ext-nacl)# permit tcp 192.168.1.0 0.0.0.255 any eq 22
+R1(config-ext-nacl)# deny tcp any any eq 23
+R1(config-ext-nacl)# permit ip any any
+
+<span class="cmd-comment">! Ventaja: Se pueden editar líneas individuales (no en numbered ACL)</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Wildcards y Máscaras Invertidas</h3>
+  <div class="code-block">
+    <div class="code-label">Errores comunes en máscaras ACL</div>
+    <pre><code><span class="cmd-comment">! === WILDCARD MASK ===</span>
+<span class="cmd-comment">! 0 = bit debe coincidir exactamente</span>
+<span class="cmd-comment">! 1 = bit puede ser cualquier valor (ignorado)</span>
+
+<span class="cmd-comment">! Ejemplo: Permitir 192.168.1.0/24</span>
+<span class="cmd-comment">! Máscara de subred:  255.255.255.0</span>
+<span class="cmd-comment">! Wildcard mask:      0.0.0.255</span>
+
+R1(config)# access-list 1 permit 192.168.1.0 0.0.0.255
+
+<span class="cmd-comment">! === ERROR COMÚN: USAR MÁSCARA DE SUBRED EN LUGAR DE WILDCARD ===</span>
+<span class="cmd-comment">! INCORRECTO (pero IOS lo acepta en algunas versiones):</span>
+R1(config)# access-list 1 permit 192.168.1.0 255.255.255.0
+<span class="cmd-comment">! Esto significa: "coincide si los bits NO coinciden" (lógica invertida)</span>
+<span class="cmd-comment">! Resultado: Comportamiento inesperado o bloqueo total</span>
+
+<span class="cmd-comment">! === WILDCARD PARA HOST ESPECÍFICO ===</span>
+R1(config)# access-list 1 permit 192.168.1.10 0.0.0.0
+<span class="cmd-comment">! O abreviado:</span>
+R1(config)# access-list 1 permit host 192.168.1.10
+
+<span class="cmd-comment">! === WILDCARD PARA CUALQUIER IP ===</span>
+R1(config)# access-list 1 permit any
+<span class="cmd-comment">! Equivalente a 0.0.0.0 255.255.255.255</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">SSH y Acceso Remoto Seguro</h3>
+  <div class="code-block">
+    <div class="code-label">Diagnosticar problemas de acceso administrativo</div>
+    <pre><code><span class="cmd-comment">! === VERIFICAR CONFIGURACIÓN SSH ===</span>
+R1# show ip ssh
+<span class="cmd-output">SSH Enabled - version 2.0
+Authentication timeout: 120 secs; Authentication retries: 3</span>
+
+<span class="cmd-comment">! === PROBLEMA: NO PUEDO CONECTAR POR SSH ===</span>
+<span class="cmd-comment">! Causa 1: SSH no habilitado</span>
+R1(config)# ip ssh version 2
+
+<span class="cmd-comment">! Causa 2: No hay clave RSA generada</span>
+R1(config)# crypto key generate rsa modulus 2048
+
+<span class="cmd-comment">! Causa 3: Dominio no configurado (requerido para RSA)</span>
+R1(config)# ip domain-name cisco.com
+
+<span class="cmd-comment">! Causa 4: VTYs configurados solo para telnet</span>
+R1(config)# line vty 0 15
+R1(config-line)# transport input ssh
+<span class="cmd-comment">! O para ambos:</span>
+R1(config-line)# transport input telnet ssh
+
+<span class="cmd-comment">! Causa 5: ACL en VTY bloqueando la IP de administración</span>
+R1(config-line)# access-class 10 in
+
+<span class="cmd-comment">! === VERIFICAR USUARIOS LOCALES ===</span>
+R1# show running-config | include username
+<span class="cmd-comment">! Debe existir al menos un usuario con privilege 15</span>
+
+R1(config)# username admin privilege 15 secret CiscoSecure123!</code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Regla del "Implicit Deny"</div>
+    <p>Toda ACL termina con un <strong>deny any</strong> (estándar) o <strong>deny ip any any</strong> (extendida) implícito e invisible. Si tu tráfico no coincide con ninguna línea permit, será bloqueado <strong>sin logs</strong> (a menos que añadas <code>log</code> al final).</p>
+    <p><strong>Best practice:</strong> Siempre termina ACLs extendidas con <code>permit ip any any log</code> o <code>deny ip any any log</code> para poder ver qué tráfico está siendo afectado.</p>
+  </div>
+</div>
+</div>
+<!-- ══════════════════════════════════════════════
+     TAB 9 — METODOLOGÍA Y HERRAMIENTAS
+══════════════════════════════════════════════ -->
+<div id="tab-metodologia" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Metodología Cisco de Troubleshooting</h2>
+  <p>Una metodología estructurada reduce el tiempo de resolución y evita cambios innecesarios que puedan empeorar el problema. Cisco recomienda un enfoque de 6 pasos.</p>
+
+  <h3 class="sub-title">Los 6 Pasos del Troubleshooting</h3>
+  <div class="process-steps">
+    <div class="process-step">
+      <span class="step-num">1</span>
+      <div class="step-content">
+        <div class="step-title">Identificar el problema</div>
+        <p>Recopilar síntomas: ¿Qué no funciona? ¿Para quién? ¿Desde cuándo? ¿Qué cambió?</p>
+        <code>show logging | include changed<br>show archive config differences</code>
+      </div>
+    </div>
+    <div class="process-step">
+      <span class="step-num">2</span>
+      <div class="step-content">
+        <div class="step-title">Establecer una teoría de la causa probable</div>
+        <p>Aplicar Bottom-Up, Top-Down o Divide & Conquer. No asumir, verificar cada capa.</p>
+        <code>show ip interface brief<br>show vlan brief<br>show ip route</code>
+      </div>
+    </div>
+    <div class="process-step">
+      <span class="step-num">3</span>
+      <div class="step-content">
+        <div class="step-title">Probar la teoría</div>
+        <p>Usar comandos de verificación para confirmar o descartar la hipótesis.</p>
+        <code>ping, traceroute, show, debug</code>
+      </div>
+    </div>
+    <div class="process-step">
+      <span class="step-num">4</span>
+      <div class="step-content">
+        <div class="step-title">Establecer un plan de acción</div>
+        <p>Si la teoría se confirma, planificar la solución. Si no, volver al paso 2.</p>
+        <code>Copiar config antes de cambiar: copy running-config backup-config</code>
+      </div>
+    </div>
+    <div class="process-step">
+      <span class="step-num">5</span>
+      <div class="step-content">
+        <div class="step-title">Implementar la solución</div>
+        <p>Aplicar cambios de forma controlada. Un cambio a la vez.</p>
+        <code>configure terminal → cambio → verificación inmediata</code>
+      </div>
+    </div>
+    <div class="process-step">
+      <span class="step-num">6</span>
+      <div class="step-content">
+        <div class="step-title">Verificar la funcionalidad completa</div>
+        <p>Confirmar que el problema se resolvió y no se generaron nuevos problemas.</p>
+        <code>ping end-to-end, traceroute, monitoreo de usuarios</code>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="sub-title">Herramientas Avanzadas de Diagnóstico</h3>
+  <div class="code-block">
+    <div class="code-label">Comandos avanzados para casos complejos</div>
+    <pre><code><span class="cmd-comment">! === SPAN / PORT MIRRORING (MONITOREO DE TRÁFICO) ===</span>
+SW1(config)# monitor session 1 source interface GigabitEthernet0/1 both
+SW1(config)# monitor session 1 destination interface GigabitEthernet0/24
+<span class="cmd-comment">! Todo el tráfico de Gi0/1 se copia a Gi0/24 para análisis con Wireshark</span>
+
+<span class="cmd-comment">! === IP SLA (SERVICE LEVEL AGREEMENTS) ===</span>
+R1(config)# ip sla 1
+R1(config-ip-sla)# icmp-echo 8.8.8.8 source-ip 192.168.1.1
+R1(config-ip-sla)# frequency 30
+R1(config)# ip sla schedule 1 life forever start-time now
+
+R1# show ip sla statistics
+<span class="cmd-comment">! Monitorea latencia, jitter y disponibilidad en tiempo real</span>
+
+<span class="cmd-comment">! === EMBEDDED PACKET CAPTURE (EPC) ===</span>
+R1# monitor capture buffer BUFFER size 2048 max-size 1518 circular
+R1# monitor capture point ip cef POINT GigabitEthernet0/0 both
+R1# monitor capture point associate POINT BUFFER
+R1# monitor capture point start POINT
+<span class="cmd-comment">! Captura paquetes directamente en el router (sin SPAN)</span>
+
+<span class="cmd-comment">! === ARCHIVO DE CONFIGURACIONES ===</span>
+R1# show archive
+<span class="cmd-comment">! Muestra configuraciones guardadas para rollback</span>
+
+R1# configure replace flash:backup-config
+<span class="cmd-comment">! Revertir a configuración anterior si el cambio empeoró el problema</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Documentación y Escalamiento</h3>
+  <div class="code-block">
+    <div class="code-label">Mejores prácticas de documentación</div>
+    <pre><code><span class="cmd-comment">! === COMANDOS ÚTILES PARA DOCUMENTAR ===</span>
+
+<span class="cmd-comment">! 1. Configuración completa</span>
+R1# show running-config
+
+<span class="cmd-comment">! 2. Diferencias desde el último backup</span>
+R1# show archive config differences
+
+<span class="cmd-comment">! 3. Logs recientes</span>
+R1# show logging | last 50
+
+<span class="cmd-comment">! 4. Estado de interfaces</span>
+R1# show ip interface brief
+SW1# show interfaces status
+
+<span class="cmd-comment">! 5. Tablas de routing y switching</span>
+R1# show ip route
+SW1# show mac address-table
+SW1# show vlan brief
+
+<span class="cmd-comment">! 6. Guardar evidencia</span>
+R1# more flash:evidencia.txt
+R1# copy running-config flash:backup-before-change.txt
+
+<span class="cmd-comment">! === PLANTILLA DE ESCALAMIENTO ===</span>
+<span class="cmd-comment">! Antes de escalar a TAC o nivel superior, tener listo:</span>
+<span class="cmd-comment">! - Topología de red afectada</span>
+<span class="cmd-comment">! - Síntomas exactos y hora de inicio</span>
+<span class="cmd-comment">! - Cambios recientes realizados</span>
+<span class="cmd-comment">! - Output de show commands relevantes</span>
+<span class="cmd-comment">! - Resultados de ping/traceroute</span>
+<span class="cmd-comment">! - Configuración actual (sanitizada si es necesario)</span></code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚠️ Precaución con Debug en Producción</div>
+    <p>Los comandos <code>debug</code> consumen mucha CPU y pueden colapsar un router o switch en producción. Reglas:</p>
+    <ul>
+      <li>Siempre usar <code>service timestamps debug datetime msec</code> para timestamps.</li>
+      <li>Usar debug condicional: <code>debug ip packet [ACL]</code> para filtrar.</li>
+      <li>Programar <code>reload in 15</code> antes de debug para auto-recuperación.</li>
+      <li>Deshabilitar inmediatamente con <code>undebug all</code> o <code>no debug all</code>.</li>
+      <li>Preferir <code>show</code> commands sobre <code>debug</code> cuando sea posible.</li>
+    </ul>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 10 — LABORATORIO
+══════════════════════════════════════════════ -->
+<div id="tab-lab" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">🧪 Laboratorio Práctico: Troubleshooting Integral</h2>
+  <p>Este laboratorio presenta una red con múltiples fallas preconfiguradas. El objetivo es aplicar la metodología de troubleshooting para identificar, aislar y resolver cada problema.</p>
+
+  <div class="lab-topology">
+    <div class="diagram-title">Topología del Laboratorio Troubleshooting</div>
+    <svg viewBox="0 0 900 500" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:900px;">
+      <!-- ISP -->
+      <ellipse cx="450" cy="40" rx="70" ry="25" fill="none" stroke="#f87171" stroke-width="2"/>
+      <text x="450" y="45" text-anchor="middle" fill="#f87171" font-size="11" font-family="Orbitron">INTERNET</text>
+
+      <!-- R1 -->
+      <rect x="380" y="100" width="140" height="80" rx="8" fill="#0d1220" stroke="#00d4aa" stroke-width="2"/>
+      <text x="450" y="125" text-anchor="middle" fill="#00d4aa" font-size="12" font-family="Orbitron">R1-EDGE</text>
+      <text x="450" y="145" text-anchor="middle" fill="#6b7a9a" font-size="9" font-family="Share Tech Mono">192.168.1.1/24</text>
+      <text x="450" y="160" text-anchor="middle" fill="#4a5780" font-size="8" font-family="Share Tech Mono">Fallas: NAT, ACL, Route</text>
+
+      <!-- SW1 -->
+      <rect x="200" y="220" width="160" height="90" rx="8" fill="#0d1220" stroke="#38bdf8" stroke-width="2"/>
+      <text x="280" y="245" text-anchor="middle" fill="#38bdf8" font-size="12" font-family="Orbitron">SW1-CORE</text>
+      <text x="280" y="265" text-anchor="middle" fill="#6b7a9a" font-size="9" font-family="Share Tech Mono">VTP Server</text>
+      <text x="280" y="280" text-anchor="middle" fill="#4a5780" font-size="8" font-family="Share Tech Mono">Fallas: VTP, STP, PortSec</text>
+
+      <!-- SW2 -->
+      <rect x="540" y="220" width="160" height="90" rx="8" fill="#0d1220" stroke="#a78bfa" stroke-width="2"/>
+      <text x="620" y="245" text-anchor="middle" fill="#a78bfa" font-size="12" font-family="Orbitron">SW2-ACCESS</text>
+      <text x="620" y="265" text-anchor="middle" fill="#6b7a9a" font-size="9" font-family="Share Tech Mono">VTP Client</text>
+      <text x="620" y="280" text-anchor="middle" fill="#4a5780" font-size="8" font-family="Share Tech Mono">Fallas: VLAN, Duplex</text>
+
+      <!-- PCs -->
+      <rect x="100" y="360" width="80" height="50" rx="4" fill="#090d1a" stroke="#38bdf8" stroke-width="1"/>
+      <text x="140" y="380" text-anchor="middle" fill="#38bdf8" font-size="9" font-family="Share Tech Mono">PC1-VLAN10</text>
+      <text x="140" y="395" text-anchor="middle" fill="#4a5780" font-size="8" font-family="Share Tech Mono">192.168.10.10</text>
+
+      <rect x="240" y="360" width="80" height="50" rx="4" fill="#090d1a" stroke="#a78bfa" stroke-width="1"/>
+      <text x="280" y="380" text-anchor="middle" fill="#a78bfa" font-size="9" font-family="Share Tech Mono">PC2-VLAN20</text>
+      <text x="280" y="395" text-anchor="middle" fill="#4a5780" font-size="8" font-family="Share Tech Mono">192.168.20.10</text>
+
+      <rect x="580" y="360" width="80" height="50" rx="4" fill="#090d1a" stroke="#fbbf24" stroke-width="1"/>
+      <text x="620" y="380" text-anchor="middle" fill="#fbbf24" font-size="9" font-family="Share Tech Mono">PC3-VLAN10</text>
+      <text x="620" y="395" text-anchor="middle" fill="#4a5780" font-size="8" font-family="Share Tech Mono">192.168.10.20</text>
+
+      <!-- Conexiones -->
+      <line x1="450" y1="65" x2="450" y2="100" stroke="#f87171" stroke-width="1.5"/>
+      <line x1="450" y1="180" x2="450" y2="220" stroke="#00d4aa" stroke-width="1.5"/>
+      <line x1="360" y1="265" x2="280" y2="265" stroke="#38bdf8" stroke-width="1.5"/>
+      <line x1="450" y1="265" x2="540" y2="265" stroke="#a78bfa" stroke-width="1.5"/>
+      <line x1="140" y1="360" x2="200" y2="310" stroke="#38bdf8" stroke-width="1"/>
+      <line x1="280" y1="360" x2="280" y2="310" stroke="#a78bfa" stroke-width="1"/>
+      <line x1="620" y1="360" x2="620" y2="310" stroke="#fbbf24" stroke-width="1"/>
+    </svg>
+  </div>
+
+  <h3 class="sub-title">Escenario y Fallas Preconfiguradas</h3>
+  <ul>
+    <li><strong>Fallo 1 (Capa 1):</strong> SW2 Fa0/1 tiene dúplex manual full, PC3 está en auto → mismatch.</li>
+    <li><strong>Fallo 2 (Capa 2):</strong> SW2 no aprendió VLANs por VTP (dominio diferente).</li>
+    <li><strong>Fallo 3 (Capa 2):</strong> Puerto Fa0/2 de SW1 en err-disabled por port security violation.</li>
+    <li><strong>Fallo 4 (Capa 3):</strong> R1 tiene ruta estática incorrecta hacia 192.168.20.0/24.</li>
+    <li><strong>Fallo 5 (Capa 3):</strong> ACL 100 en R1 bloquea tráfico DNS (UDP 53).</li>
+    <li><strong>Fallo 6 (Capa 3):</strong> NAT overload no funciona (falta "overload" en comando).</li>
+    <li><strong>Fallo 7 (Capa 7):</strong> PC1 tiene gateway incorrecto configurado manualmente.</li>
+  </ul>
+
+  <div class="lab-steps">
+    <div class="lab-step">
+      <div class="lab-step-num">Parte 1</div>
+      <div class="lab-step-title">Diagnóstico Capa 1 y 2</div>
+      <div class="code-block" style="margin-top:8px;">
+        <pre><code><span class="cmd-comment">! === EN SW2 ===</span>
+SW2# show interfaces status
+<span class="cmd-comment">! Observar: Fa0/1 a-full, 100 (manual) vs PC3 a-half, 100 (auto)</span>
+<span class="cmd-comment">! SOLUCIÓN:</span>
+SW2(config)# interface Fa0/1
+SW2(config-if)# speed auto
+SW2(config-if)# duplex auto
+
+<span class="cmd-comment">! === EN SW2: VTP ===</span>
+SW2# show vtp status
+<span class="cmd-comment">! Domain Name: CCNA-LAB-BAD (incorrecto, debe ser CCNA-LAB)</span>
+<span class="cmd-comment">! SOLUCIÓN:</span>
+SW2(config)# vtp domain CCNA-LAB
+
+<span class="cmd-comment">! === EN SW1: PORT SECURITY ===</span>
+SW1# show interfaces status err-disabled
+<span class="cmd-comment">! Fa0/2 err-disabled psecure-violation</span>
+<span class="cmd-comment">! SOLUCIÓN:</span>
+SW1(config)# interface Fa0/2
+SW1(config-if)# shutdown
+SW1(config-if)# no shutdown</code></pre>
+      </div>
+    </div>
+
+    <div class="lab-step">
+      <div class="lab-step-num">Parte 2</div>
+      <div class="lab-step-title">Diagnóstico Capa 3 y Servicios</div>
+      <div class="code-block" style="margin-top:8px;">
+        <pre><code><span class="cmd-comment">! === EN R1: RUTA ESTÁTICA ===</span>
+R1# show ip route 192.168.20.0
+<span class="cmd-comment">! Muestra next-hop incorrecto o inexistente</span>
+<span class="cmd-comment">! SOLUCIÓN:</span>
+R1(config)# no ip route 192.168.20.0 255.255.255.0 10.1.1.5
+R1(config)# ip route 192.168.20.0 255.255.255.0 192.168.1.2
+
+<span class="cmd-comment">! === EN R1: ACL ===</span>
+R1# show access-lists 100
+<span class="cmd-comment">! Falta línea para permitir UDP 53</span>
+<span class="cmd-comment">! SOLUCIÓN:</span>
+R1(config)# access-list 100 permit udp any any eq 53
+
+<span class="cmd-comment">! === EN R1: NAT ===</span>
+R1# show ip nat statistics
+<span class="cmd-comment">! No muestra translations</span>
+R1# show running-config | include ip nat
+<span class="cmd-comment">! ip nat inside source list 1 interface GigabitEthernet0/1</span>
+<span class="cmd-comment">! FALTA "overload"</span>
+<span class="cmd-comment">! SOLUCIÓN:</span>
+R1(config)# no ip nat inside source list 1 interface GigabitEthernet0/1
+R1(config)# ip nat inside source list 1 interface GigabitEthernet0/1 overload</code></pre>
+      </div>
+    </div>
+
+    <div class="lab-step">
+      <div class="lab-step-num">Parte 3</div>
+      <div class="lab-step-title">Verificación End-to-End</div>
+      <div class="code-block" style="margin-top:8px;">
+        <pre><code><span class="cmd-comment">! === DESDE PC1 ===</span>
+PC> ping 192.168.20.10      <span class="cmd-comment">! Inter-VLAN routing</span>
+PC> ping 8.8.8.8            <span class="cmd-comment">! Internet via NAT</span>
+PC> nslookup google.com     <span class="cmd-comment">! DNS resolution</span>
+
+<span class="cmd-comment">! === DESDE PC2 ===</span>
+PC> ping 192.168.10.10      <span class="cmd-comment">! Inter-VLAN</span>
+PC> ping 192.168.10.20      <span class="cmd-comment">! Misma VLAN, diferente switch</span>
+
+<span class="cmd-comment">! === DESDE PC3 ===</span>
+PC> ping 192.168.10.10      <span class="cmd-comment">! Misma VLAN</span>
+PC> ping 192.168.20.10      <span class="cmd-comment">! Diferente VLAN</span>
+
+<span class="cmd-comment">! === COMANDOS FINALES ===</span>
+SW1# show vlan brief
+SW1# show mac address-table
+SW1# show interfaces trunk
+SW2# show vtp status
+R1# show ip route
+R1# show ip nat translations
+R1# show access-lists</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">✅ Checklist de Éxito del Laboratorio</div>
+    <ul>
+      <li>✓ Todas las interfaces muestran a-full / a-100 o a-1000</li>
+      <li>✓ SW2 aprendió VLANs 10 y 20 por VTP</li>
+      <li>✓ Puerto Fa0/2 de SW1 está up/up (no err-disabled)</li>
+      <li>✓ R1 tiene ruta correcta hacia 192.168.20.0/24</li>
+      <li>✓ ACL 100 permite DNS (UDP 53)</li>
+      <li>✓ NAT overload muestra translations activas</li>
+      <li>✓ Todos los PCs pueden hacer ping entre sí y a Internet</li>
+    </ul>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 11 — TABLA DE REFERENCIA
+══════════════════════════════════════════════ -->
+<div id="tab-tabla" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Tabla de Referencia Rápida — Troubleshooting</h2>
+  <table class="ref-table">
+    <thead>
+      <tr>
+        <th>Comando</th>
+        <th>Contexto</th>
+        <th>Descripción</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><code>show ip interface brief</code></td><td>exec</td><td>Estado de todas las interfaces (up/down)</td></tr>
+      <tr><td><code>show interfaces [int]</code></td><td>exec</td><td>Detalle de interfaz: errores, dúplex, velocidad</td></tr>
+      <tr><td><code>show interfaces status</code></td><td>exec</td><td>Estado resumido de puertos (connected, notconnect)</td></tr>
+      <tr><td><code>speed {10|100|1000|auto}</code></td><td>config-if</td><td>Configurar velocidad de puerto</td></tr>
+      <tr><td><code>duplex {auto|full|half}</code></td><td>config-if</td><td>Configurar modo dúplex</td></tr>
+      <tr><td><code>cdp run / no cdp run</code></td><td>config</td><td>Habilitar/deshabilitar CDP global</td></tr>
+      <tr><td><code>show cdp neighbors [detail]</code></td><td>exec</td><td>Vecinos Cisco conectados</td></tr>
+      <tr><td><code>show mac address-table</code></td><td>exec</td><td>Tabla MAC con puertos y VLANs</td></tr>
+      <tr><td><code>show vlan brief</code></td><td>exec</td><td>Resumen de VLANs y puertos asignados</td></tr>
+      <tr><td><code>show interfaces trunk</code></td><td>exec</td><td>Estado de trunks y VLANs permitidas</td></tr>
+      <tr><td><code>show vtp status</code></td><td>exec</td><td>Estado del dominio VTP</td></tr>
+      <tr><td><code>show spanning-tree</code></td><td>exec</td><td>Estado STP, root, roles de puerto</td></tr>
+      <tr><td><code>show port-security</code></td><td>exec</td><td>Resumen de port security</td></tr>
+      <tr><td><code>show interfaces status err-disabled</code></td><td>exec</td><td>Puertos en err-disabled y causa</td></tr>
+      <tr><td><code>show ip arp</code></td><td>exec</td><td>Tabla ARP (resolución IP-MAC)</td></tr>
+      <tr><td><code>show ip route</code></td><td>exec</td><td>Tabla de routing completa</td></tr>
+      <tr><td><code>show ip protocols</code></td><td>exec</td><td>Protocolos de routing activos</td></tr>
+      <tr><td><code>show ip ospf neighbor</code></td><td>exec</td><td>Vecinos OSPF y estado</td></tr>
+      <tr><td><code>show ip eigrp neighbors</code></td><td>exec</td><td>Vecinos EIGRP</td></tr>
+      <tr><td><code>show ip bgp summary</code></td><td>exec</td><td>Resumen de sesiones BGP</td></tr>
+      <tr><td><code>show access-lists</code></td><td>exec</td><td>ACLs configuradas con contadores</td></tr>
+      <tr><td><code>show ip dhcp binding</code></td><td>exec</td><td>Leases DHCP asignados</td></tr>
+      <tr><td><code>show ip nat translations</code></td><td>exec</td><td>Traducciones NAT activas</td></tr>
+      <tr><td><code>show logging</code></td><td>exec</td><td>Logs del sistema</td></tr>
+      <tr><td><code>ping [dest]</code></td><td>exec</td><td>Prueba de conectividad básica</td></tr>
+      <tr><td><code>traceroute [dest]</code></td><td>exec</td><td>Seguimiento hop-by-hop</td></tr>
+      <tr><td><code>debug ip [protocol]</code></td><td>exec</td><td>Debug en tiempo real (cuidado)</td></tr>
+      <tr><td><code>clear counters [int]</code></td><td>exec</td><td>Limpiar contadores de interfaz</td></tr>
+      <tr><td><code>clear mac address-table dynamic</code></td><td>exec</td><td>Limpiar tabla MAC dinámica</td></tr>
+      <tr><td><code>clear arp-cache</code></td><td>exec</td><td>Limpiar tabla ARP</td></tr>
+      <tr><td><code>errdisable recovery cause [cause]</code></td><td>config</td><td>Auto-recuperación de err-disabled</td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="section-title" style="margin-top:32px;">Comandos por Tema de Examen CCNA 200-301</h2>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead><tr><th>Tema del examen</th><th>Comandos clave</th><th>Frecuencia</th></tr></thead>
+      <tbody>
+        <tr><td><strong>1.6 Troubleshooting L1</strong></td><td>show interfaces, speed, duplex, cdp</td><td>⭐⭐⭐⭐⭐</td></tr>
+        <tr><td><strong>2.5 Troubleshooting L2</strong></td><td>show mac, show vlan, show trunk, show spanning-tree</td><td>⭐⭐⭐⭐⭐</td></tr>
+        <tr><td><strong>3.7 Troubleshooting Routing</strong></td><td>show ip route, ping, traceroute, debug ip</td><td>⭐⭐⭐⭐⭐</td></tr>
+        <tr><td><strong>4.4 Troubleshooting VLANs</strong></td><td>show vlan, show vtp, show interfaces switchport</td><td>⭐⭐⭐⭐⭐</td></tr>
+        <tr><td><strong>5.2 Troubleshooting DHCP/DNS</strong></td><td>show ip dhcp binding, debug ip dhcp, nslookup</td><td>⭐⭐⭐⭐</td></tr>
+        <tr><td><strong>6.3 Troubleshooting ACLs</strong></td><td>show access-lists, show ip interface, log</td><td>⭐⭐⭐⭐⭐</td></tr>
+        <tr><td><strong>6.2 Port Security</strong></td><td>show port-security, errdisable recovery</td><td>⭐⭐⭐⭐⭐</td></tr>
+        <tr><td><strong>4.3 VTP</strong></td><td>show vtp status, delete flash:vlan.dat</td><td>⭐⭐⭐</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 12 — QUIZ
+══════════════════════════════════════════════ -->
+<div id="tab-quiz" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Quiz — Comandos para Solución de Problemas</h2>
+  <div id="quizContainerTroubleshoot"></div>
+</div>
+</div>
+
+</div>
+<!-- Cierre de tabs-wrap -->
+
+<footer class="footer">
+  <p>© WDS-CCNA Portal · Comandos para Solución de Problemas · M2.5</p>
+  <p style="margin-top:.3rem">Basado en <em>CCNA 200-301 Official Cert Guide</em> (Wendell Odom) · Cisco IOS 15.x/16.x</p>
+  <p style="margin-top:.4rem"><a href="../index.html">← Volver al índice</a></p>
+</footer>
+
+<style>
+.class-hero { background: linear-gradient(135deg, #06080f 0%, #0d1220 60%, #101830 100%); padding: 56px 24px 48px; border-bottom: 1px solid rgba(0,212,170,0.12); position: relative; overflow: hidden; }
+.class-hero::before { content:''; position:absolute; top:-60px; right:-80px; width:400px; height:400px; border-radius:50%; background:radial-gradient(circle, rgba(56,189,248,0.06) 0%, transparent 70%); }
+.class-hero-inner { max-width: 900px; margin: 0 auto; position: relative; z-index: 1; }
+.class-badge { font-family:'Share Tech Mono',monospace; font-size:0.65rem; color:#38bdf8; letter-spacing:3px; text-transform:uppercase; margin-bottom:14px; }
+.class-title { font-family:'Orbitron',sans-serif; font-size:clamp(1.8rem,4vw,2.8rem); font-weight:900; letter-spacing:3px; color:#c2d0e8; line-height:1.1; margin-bottom:12px; }
+.class-title-accent { background:linear-gradient(135deg,#38bdf8,#a78bfa); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; display:block; font-size:0.65em; margin-top:4px; letter-spacing:2px; }
+.class-subtitle { font-size:1rem; color:#6b7a9a; line-height:1.7; margin-bottom:20px; max-width:720px; }
+.class-meta { display:flex; gap:16px; flex-wrap:wrap; }
+.meta-item { font-family:'Share Tech Mono',monospace; font-size:0.72rem; color:#374060; padding:4px 10px; border:1px solid rgba(56,189,248,0.1); border-radius:4px; }
+.tabs-wrap { max-width: 1100px; margin: 0 auto; padding: 0 16px 40px; }
+.tabs-bar { display:flex; gap:4px; padding:20px 0 0; flex-wrap:wrap; border-bottom:1px solid rgba(0,212,170,0.1); }
+.tab-btn { padding:8px 14px; border-radius:8px 8px 0 0; font-family:'Share Tech Mono',monospace; font-size:0.72rem; color:#4a5780; background:none; border:1px solid transparent; cursor:pointer; transition:all 0.18s; white-space:nowrap; border-bottom:none; }
+.tab-btn:hover { color:#c2d0e8; background:rgba(0,212,170,0.05); }
+.tab-btn.active { color:#38bdf8; background:#0d1220; border-color:rgba(56,189,248,0.2); border-bottom:1px solid #0d1220; }
+.tab-content { display:none; background:#0d1220; border:1px solid rgba(0,212,170,0.1); border-top:none; border-radius:0 0 12px 12px; padding:32px; }
+.tab-content.active { display:block; }
+.content-block { max-width: 860px; }
+.section-title { font-family:'Orbitron',sans-serif; font-size:1rem; color:#38bdf8; letter-spacing:2px; margin:28px 0 14px; padding-bottom:8px; border-bottom:1px solid rgba(56,189,248,0.12); }
+.section-title:first-child { margin-top:0; }
+.sub-title { font-family:'Share Tech Mono',monospace; font-size:0.85rem; color:#00d4aa; margin:24px 0 10px; }
+p { color:#8294b8; line-height:1.75; margin-bottom:14px; font-size:0.9rem; }
+ul, ol { color:#8294b8; padding-left:1.4rem; margin-bottom:14px; font-size:0.9rem; }
+li { margin-bottom:5px; line-height:1.65; }
+strong { color:#c2d0e8; }
+code { font-family:'Share Tech Mono',monospace; font-size:0.82rem; background:rgba(56,189,248,0.08); color:#38bdf8; padding:1px 6px; border-radius:4px; border:1px solid rgba(56,189,248,0.15); }
+.info-box { border-radius:8px; padding:14px 18px; margin:18px 0; border-left:3px solid; }
+.info-box.tip { background:rgba(0,212,170,0.05); border-color:#00d4aa; }
+.info-box.warning { background:rgba(251,191,36,0.05); border-color:#fbbf24; }
+.info-box-title { font-family:'Share Tech Mono',monospace; font-size:0.75rem; color:#00d4aa; margin-bottom:8px; }
+.info-box.warning .info-box-title { color:#fbbf24; }
+.diagram-box { background:#050810; border:1px solid rgba(56,189,248,0.12); border-radius:10px; padding:20px; margin:18px 0; }
+.diagram-title { font-family:'Share Tech Mono',monospace; font-size:0.68rem; color:#4a5780; letter-spacing:2px; text-transform:uppercase; margin-bottom:14px; }
+.table-wrap { overflow-x:auto; margin:16px 0; }
+.ref-table { width:100%; border-collapse:collapse; font-size:0.82rem; }
+.ref-table th { background:#090d1a; color:#38bdf8; font-family:'Share Tech Mono',monospace; font-size:0.7rem; padding:10px 12px; text-align:left; border:1px solid rgba(56,189,248,0.1); letter-spacing:1px; }
+.ref-table td { padding:9px 12px; border:1px solid rgba(255,255,255,0.04); color:#8294b8; }
+.ref-table tr:hover td { background:rgba(56,189,248,0.03); }
+.code-block { background:#050810; border:1px solid rgba(56,189,248,0.12); border-left:3px solid #38bdf8; border-radius:8px; padding:0; margin:16px 0; overflow:hidden; }
+.code-label { background:rgba(56,189,248,0.06); padding:8px 16px; font-family:'Share Tech Mono',monospace; font-size:0.65rem; color:#4a5780; letter-spacing:2px; text-transform:uppercase; border-bottom:1px solid rgba(56,189,248,0.08); }
+.code-block pre { margin:0; padding:16px; overflow-x:auto; }
+.code-block code { background:none; border:none; padding:0; color:#a8b4c8; font-size:0.8rem; line-height:1.7; display:block; }
+.cmd-comment { color:#374060; font-style:italic; }
+.cmd-output  { color:#6b7a9a; }
+.concept-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:12px; margin:16px 0; }
+.concept-card { background:#090d1a; border:1px solid rgba(56,189,248,0.1); border-radius:10px; padding:16px; }
+.concept-card.highlight { border-color:rgba(0,212,170,0.3); background:linear-gradient(135deg,rgba(0,212,170,0.05),rgba(56,189,248,0.03)); }
+.concept-icon { font-size:1.8rem; margin-bottom:8px; }
+.concept-card h3 { font-family:'Share Tech Mono',monospace; font-size:0.78rem; color:#38bdf8; margin-bottom:8px; }
+.concept-card p { font-size:0.8rem; margin:0 0 8px; }
+.concept-card code { font-size:0.75rem; display:block; margin-top:8px; padding:8px; background:rgba(0,0,0,0.2); }
+.process-steps { display:flex; flex-direction:column; gap:12px; margin:16px 0; }
+.process-step { display:flex; gap:16px; align-items:flex-start; background:#090d1a; border:1px solid rgba(56,189,248,0.08); border-radius:10px; padding:16px; }
+.step-num { width:50px; height:36px; border-radius:8px; background:rgba(56,189,248,0.1); border:1px solid rgba(56,189,248,0.2); display:flex; align-items:center; justify-content:center; font-family:'Share Tech Mono',monospace; font-size:0.68rem; color:#38bdf8; font-weight:700; flex-shrink:0; }
+.step-content { flex:1; }
+.step-title { font-family:'Share Tech Mono',monospace; font-size:0.82rem; color:#c2d0e8; margin-bottom:6px; }
+.attack-diagram { background:#0a0810; border:1px solid rgba(248,113,113,0.15); border-radius:10px; padding:16px; margin:16px 0; }
+.attack-steps { display:flex; flex-direction:column; gap:8px; margin-top:10px; }
+.attack-step { display:flex; gap:12px; align-items:flex-start; }
+.attack-num { width:24px; height:24px; border-radius:50%; background:rgba(248,113,113,0.2); border:1px solid #f87171; display:flex; align-items:center; justify-content:center; font-family:'Share Tech Mono',monospace; font-size:0.7rem; color:#f87171; flex-shrink:0; }
+.lab-topology { background:#050810; border:1px solid rgba(56,189,248,0.1); border-radius:10px; padding:16px; margin:16px 0; }
+.lab-steps { display:flex; flex-direction:column; gap:16px; margin:16px 0; }
+.lab-step { background:#090d1a; border:1px solid rgba(56,189,248,0.08); border-radius:10px; padding:16px; }
+.lab-step-num { font-family:'Share Tech Mono',monospace; font-size:0.6rem; color:#38bdf8; letter-spacing:2px; text-transform:uppercase; margin-bottom:4px; }
+.lab-step-title { font-family:'Orbitron',sans-serif; font-size:0.8rem; color:#c2d0e8; margin-bottom:8px; }
+.quiz-question { background:#090d1a; border:1px solid rgba(56,189,248,0.1); border-radius:10px; padding:20px; margin-bottom:16px; }
+.quiz-q-num { font-family:'Share Tech Mono',monospace; font-size:0.62rem; color:#4a5780; margin-bottom:8px; }
+.quiz-q-text { font-size:0.9rem; color:#c2d0e8; margin-bottom:14px; line-height:1.6; }
+.quiz-opts { display:flex; flex-direction:column; gap:7px; }
+.quiz-opt { padding:9px 14px; border-radius:7px; border:1px solid rgba(56,189,248,0.1); background:#0d1220; color:#6b7a9a; cursor:pointer; font-size:0.85rem; text-align:left; transition:all 0.15s; }
+.quiz-opt:hover:not(:disabled) { border-color:rgba(56,189,248,0.3); color:#c2d0e8; }
+.quiz-opt.correct { border-color:#34d399; background:rgba(52,211,153,0.08); color:#34d399; }
+.quiz-opt.wrong   { border-color:#f87171; background:rgba(248,113,113,0.08); color:#f87171; }
+.quiz-explanation { margin-top:10px; padding:10px 14px; background:rgba(167,139,250,0.06); border-left:3px solid #a78bfa; border-radius:6px; font-size:0.82rem; color:#a0aec0; line-height:1.6; }
+.footer { border-top:1px solid rgba(0,212,170,0.1); background:#090d1a; padding:32px 24px; text-align:center; margin-top:40px; }
+.footer p { color:#374060; font-size:0.75rem; margin:0; }
+.footer a { color:#4a5780; text-decoration:none; }
+.footer a:hover { color:#00d4aa; }
+@media(max-width:680px) { .tab-btn{font-size:0.65rem;padding:6px 10px;} .tab-content{padding:20px 14px;} .concept-grid{grid-template-columns:1fr;} }
+</style>
+
+<script>
+/* -----------------------------------------------------------------
+   NAMESPACE CmdTroubleshoot - Protege el código contra sobreescritura
+----------------------------------------------------------------- */
+var CmdTroubleshoot = (function() {
+  
+  function showTabTroubleshoot(id, btn) {
+    document.querySelectorAll('.tab-content').forEach(function(t) { t.classList.remove('active'); });
+    document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+    var target = document.getElementById('tab-' + id);
+    if (target) target.classList.add('active');
+    if (btn) btn.classList.add('active');
+    
+    if (id === 'quiz') {
+      initQuiz();
+    }
+    if (id === 'tabla') {
+      buildRefTable();
+    }
+  }
+
+  function buildRefTable() {
+    const data = [
+      ['show ip interface brief', 'Privileged EXEC', 'Estado rápido de interfaces'],
+      ['show interfaces [int]', 'Privileged EXEC', 'Detalle de interfaz y errores'],
+      ['show interfaces status', 'Privileged EXEC', 'Estado resumido de puertos'],
+      ['speed {10|100|1000|auto}', 'Interface Config', 'Configurar velocidad'],
+      ['duplex {auto|full|half}', 'Interface Config', 'Configurar dúplex'],
+      ['cdp run / no cdp run', 'Global Config', 'Habilitar/deshabilitar CDP'],
+      ['show cdp neighbors', 'Privileged EXEC', 'Vecinos Cisco'],
+      ['show mac address-table', 'Privileged EXEC', 'Tabla MAC'],
+      ['show vlan brief', 'Privileged EXEC', 'VLANs y puertos'],
+      ['show interfaces trunk', 'Privileged EXEC', 'Trunks activos'],
+      ['show vtp status', 'Privileged EXEC', 'Estado VTP'],
+      ['show spanning-tree', 'Privileged EXEC', 'Estado STP'],
+      ['show port-security', 'Privileged EXEC', 'Resumen port security'],
+      ['show interfaces status err-disabled', 'Privileged EXEC', 'Puertos err-disabled'],
+      ['show ip arp', 'Privileged EXEC', 'Tabla ARP'],
+      ['show ip route', 'Privileged EXEC', 'Tabla de routing'],
+      ['show ip protocols', 'Privileged EXEC', 'Protocolos activos'],
+      ['show ip ospf neighbor', 'Privileged EXEC', 'Vecinos OSPF'],
+      ['show ip eigrp neighbors', 'Privileged EXEC', 'Vecinos EIGRP'],
+      ['show ip bgp summary', 'Privileged EXEC', 'Resumen BGP'],
+      ['show access-lists', 'Privileged EXEC', 'ACLs y matches'],
+      ['show ip dhcp binding', 'Privileged EXEC', 'Leases DHCP'],
+      ['show ip nat translations', 'Privileged EXEC', 'Traducciones NAT'],
+      ['show logging', 'Privileged EXEC', 'Logs del sistema'],
+      ['ping [dest]', 'Privileged EXEC', 'Conectividad básica'],
+      ['traceroute [dest]', 'Privileged EXEC', 'Seguimiento de ruta'],
+      ['debug ip [protocol]', 'Privileged EXEC', 'Debug tiempo real'],
+      ['clear counters [int]', 'Privileged EXEC', 'Limpiar contadores'],
+      ['errdisable recovery cause', 'Global Config', 'Auto-recuperación err-disabled'],
+    ];
+    const headers = ['Comando', 'Modo/Contexto', 'Descripción/Función'];
+    var html = '<div class="table-wrap"><table class="ref-table"><thead><tr>';
+    for (var i = 0; i < headers.length; i++) {
+      html += '<th>' + headers[i] + '</th>';
+    }
+    html += '</tr></thead><tbody>';
+    for (var i = 0; i < data.length; i++) {
+      html += '<tr>';
+      for (var j = 0; j < data[i].length; j++) {
+        html += '<td>' + data[i][j] + '</td>';
+      }
+      html += '</tr>';
+    }
+    html += '</tbody></table></div>';
+    var refDiv = document.getElementById('refTableTroubleshoot');
+    if (refDiv) refDiv.innerHTML = html;
+  }
+
+  function initQuiz() {
+    const questions = [
+      {
+        q: 'Un puerto muestra "up/down" en "show ip interface brief". ¿Qué capa del modelo OSI tiene el problema?',
+        opts: ['Capa 1 (Física)','Capa 2 (Enlace de datos)','Capa 3 (Red)','Capa 4 (Transporte)'],
+        ans: 1,
+        exp: '"up/down" significa que la capa física está OK (up) pero el protocolo de línea está down. Esto indica un problema de capa 2: encapsulación incorrecta, clock rate faltante en serial, o keepalives fallando.'
+      },
+      {
+        q: '¿Qué comando muestra la causa por la cual un puerto entró en estado err-disabled?',
+        opts: ['show port-security','show interfaces status err-disabled','show err-disabled','show logging'],
+        ans: 1,
+        exp: '"show interfaces status err-disabled" muestra específicamente todos los puertos en err-disabled junto con la causa (psecure-violation, loopback, dhcp-rate-limit, etc.).'
+      },
+      {
+        q: 'Un switch cliente VTP no aprende las VLANs del servidor. ¿Cuál es la causa MÁS probable?',
+        opts: ['El switch está en modo transparente','El dominio VTP no coincide','No hay trunks configurados','Todas las anteriores'],
+        ans: 3,
+        exp: 'Todas son causas válidas: modo transparente no aprende VLANs, dominio diferente impide sincronización, y VTP solo viaja por trunks. En el examen, verifica siempre estos tres puntos.'
+      },
+      {
+        q: '¿Qué significa el estado "FULL/DR" en "show ip ospf neighbor"?',
+        opts: ['El vecino es Designated Router y la LSDB está sincronizada','El vecino está caído','La adyacencia está en proceso de sincronización','El vecino es Backup Designated Router'],
+        ans: 0,
+        exp: 'FULL = Base de datos LSDB completamente sincronizada. DR = Designated Router (elegido en redes multiacceso para optimizar flooding de LSAs).'
+      },
+      {
+        q: 'Una ACL extendida bloquea tráfico HTTP pero no debería. ¿Qué comando ayuda a identificar qué línea de la ACL está coincidendo?',
+        opts: ['show access-lists','show ip interface','show ip access-lists','show running-config'],
+        ans: 0,
+        exp: '"show access-lists" muestra el contador de "matches" por cada línea de la ACL. Esto permite identificar exactamente qué regla está capturando el tráfico y ajustarla.'
+      },
+      {
+        q: 'PC no obtiene IP por DHCP. El servidor DHCP está en otra subred. ¿Qué comando falta en el router?',
+        opts: ['ip dhcp relay','ip helper-address','ip forward-protocol dhcp','dhcp relay-agent'],
+        ans: 1,
+        exp: '"ip helper-address [ip-servidor]" en la interfaz del cliente reenvía broadcasts DHCP al servidor remoto. Sin esto, los broadcasts no cruzan routers.'
+      },
+      {
+        q: '¿Qué tipo de error en "show interfaces" indica un problema de cable o interferencia electromagnética?',
+        opts: ['Runts','Giants','CRC','Overrun'],
+        ans: 2,
+        exp: 'CRC (Cyclic Redundancy Check) errors indican que el frame llegó corrupto, típicamente por cable dañado, conectores flojos, o interferencia EMI/RFI.'
+      },
+      {
+        q: 'En EIGRP, ¿qué requisito NO es necesario para formar adyacencia?',
+        opts: ['Mismo AS number','Mismos K values','Misma máscara de subred','Misma área OSPF'],
+        ans: 3,
+        exp: 'EIGRP no usa el concepto de "área". Eso es específico de OSPF. EIGRP requiere mismo AS, mismos K values, misma autenticación y misma subred.'
+      },
+      {
+        q: 'Una ruta estática flotante tiene AD=10. La ruta principal tiene AD=1. ¿Cuándo se instala la flotante?',
+        opts: ['Cuando la principal tiene métrica mayor','Cuando la principal desaparece de la tabla','Cuando hay congestión','Nunca, porque 10 > 1'],
+        ans: 1,
+        exp: 'La ruta flotante se instala SOLO cuando la ruta principal (menor AD) ya no está en la tabla de routing. Mientras la principal exista, la flotante permanece en standby.'
+      },
+      {
+        q: '¿Qué comando permite recuperar automáticamente un puerto err-disabled por violación de port security?',
+        opts: ['errdisable recovery cause psecure-violation','no port-security violation','auto-recover port-security','spanning-tree portfast recovery'],
+        ans: 0,
+        exp: '"errdisable recovery cause psecure-violation" habilita la recuperación automática. También se puede configurar el intervalo con "errdisable recovery interval [segundos]".'
+      },
+      {
+        q: 'NAT overload no funciona. "show ip nat statistics" no muestra interfaces inside/outside. ¿Qué falta?',
+        opts: ['La ACL de NAT','El pool de direcciones','Los comandos ip nat inside / ip nat outside','El comando overload'],
+        ans: 2,
+        exp: 'Sin "ip nat inside" en la interfaz LAN y "ip nat outside" en la interfaz WAN, NAT no puede determinar qué tráfico traducir ni hacia dónde. Es el paso más básico y olvidado.'
+      },
+      {
+        q: '¿Cuál es el propósito de "ip ospf priority 0" en una interfaz?',
+        opts: ['Hacer que el router sea siempre DR','Evitar que la interfaz participe en elección DR/BDR','Establecer costo 0','Deshabilitar OSPF en la interfaz'],
+        ans: 1,
+        exp: 'Prioridad 0 significa que la interfaz NUNCA será DR ni BDR. Útil para routers que no deben asumir roles de designated router en una red multiacceso.'
+      }
+    ];
+
+    var container = document.getElementById('quizContainerTroubleshoot');
+    if (!container) return;
+    
+    if (container.innerHTML.trim() !== '') return;
+    
+    var html = '';
+    for (var i = 0; i < questions.length; i++) {
+      var q = questions[i];
+      var optsHtml = '';
+      for (var j = 0; j < q.opts.length; j++) {
+        optsHtml += '<button class="quiz-opt" data-qi="' + i + '" data-sel="' + j + '" data-ans="' + q.ans + '">' + q.opts[j] + '</button>';
+      }
+      html += '<div class="quiz-question" id="qqt' + i + '">' +
+        '<div class="quiz-q-num">PREGUNTA ' + (i+1) + ' DE ' + questions.length + '</div>' +
+        '<div class="quiz-q-text">' + q.q + '</div>' +
+        '<div class="quiz-opts">' + optsHtml + '</div>' +
+        '</div>';
+    }
+    container.innerHTML = html;
+
+    window._troubleshootExp = {};
+    for (var i = 0; i < questions.length; i++) { 
+      window._troubleshootExp[i] = questions[i].exp; 
+    }
+
+    var buttons = container.querySelectorAll('.quiz-opt');
+    for (var k = 0; k < buttons.length; k++) {
+      buttons[k].addEventListener('click', function() {
+        var qi  = parseInt(this.getAttribute('data-qi'), 10);
+        var sel = parseInt(this.getAttribute('data-sel'), 10);
+        var ans = parseInt(this.getAttribute('data-ans'), 10);
+        answerQT(qi, sel, ans, window._troubleshootExp[qi]);
+      });
+    }
+  }
+
+  function answerQT(qi, sel, correct, exp) {
+    var qDiv = document.getElementById('qqt' + qi);
+    var btns = qDiv.querySelectorAll('.quiz-opt');
+    for (var i = 0; i < btns.length; i++) { 
+      btns[i].disabled = true; 
+    }
+    btns[sel].classList.add(sel === correct ? 'correct' : 'wrong');
+    if (sel !== correct) btns[correct].classList.add('correct');
+    var expDiv = document.createElement('div');
+    expDiv.className = 'quiz-explanation';
+    expDiv.innerHTML = '<strong>' + (sel===correct?'✅ Correcto!':'❌ Incorrecto.') + '</strong> ' + exp;
+    qDiv.appendChild(expDiv);
+  }
+
+  function init() {
+    // No inicializamos tablas/quiz aquí, se hace al abrir pestaña
+  }
+
+  return {
+    showTabTroubleshoot: showTabTroubleshoot,
+    init: init
+  };
+  
+})();
+
+// Inicializar cuando la ventana esté completamente cargada
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+      CmdTroubleshoot.init();
+    }, 100);
+  });
+} else {
+  setTimeout(function() {
+    CmdTroubleshoot.init();
+  }, 100);
+}
+</script>
+</body>
+</html>
