@@ -258,3 +258,14 @@ document.addEventListener('DOMContentLoaded', function(){
   buildDynamicIndex();
   buildNetBot();
 });
+// DRAWER ACTIVE LINK — Dynamic Highlighting
+(function(){
+  const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+  document.querySelectorAll('.drawer-link').forEach(link => {
+    link.classList.remove('active');
+    const linkPage = (link.getAttribute('href') || '').split('/').pop();
+    if(linkPage === currentPage || (currentPage === '' && linkPage === 'index.html')){
+      link.classList.add('active');
+    }
+  });
+})();
