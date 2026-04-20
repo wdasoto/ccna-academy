@@ -1,0 +1,1884 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comandos de Seguridad — M2.5 | CCNA Academy</title>
+  <meta name="description" content="Clase magistral completa de comandos de seguridad Cisco IOS: contraseñas, SSH, ACLs, port security, NTP, login block, cifrado y hardening. Desde cero hasta experto CCNA 200-301.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+
+<div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
+<nav class="ccna-drawer" id="ccnaDrawer">
+  <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
+  <div class="drawer-section"><div class="drawer-section-title">General</div>
+    <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M1 · Fundamentos</div>
+    <a href="fundamentos.html"       class="drawer-link "><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
+    <a href="subnetting.html"        class="drawer-link "><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
+    <a href="ipv6.html"              class="drawer-link "><span class="dl-icon">6️⃣</span> IPv6</a>
+    <a href="arp.html"               class="drawer-link "><span class="dl-icon">📡</span> ARP</a>
+    <a href="rip.html"               class="drawer-link "><span class="dl-icon">🔄</span> RIP</a>
+    <a href="protocolos-internet.html" class="drawer-link "><span class="dl-icon">🌍</span> Protocolos Internet</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M2 · Dispositivos Cisco</div>
+    <a href="router.html"            class="drawer-link "><span class="dl-icon">📡</span> Routers Cisco</a>
+    <a href="switches-cisco.html"    class="drawer-link "><span class="dl-icon">🔀</span> Switches Cisco</a></div>
+    <div class="drawer-section"><div class="drawer-section-title">M2.5 · Comandos Cisco</div>
+    <a href="comandos-cisco.html"    class="drawer-link"><span class="dl-icon">⌨️</span> Comandos Configuración Básica</a>
+     <a href="comandos-para-vlan.html" class="drawer-link"><span class="dl-icon">🏷️</span> Comandos para VLAN</a>
+  <a href="comandos-routing.html" class="drawer-link"><span class="dl-icon">📘</span> Comandos de Routing</a>
+  <a href="comandos-solucion-problemas.html" class="drawer-link"><span class="dl-icon">🔧</span> Comandos para Solución de Problemas</a>
+  <a href="Comandos-para-DHCP.html" class="drawer-link"><span class="dl-icon">📋</span> Comandos para DHCP</a>
+  <a href="Comandos-de-seguridad.html" class="drawer-link active"><span class="dl-icon">🛡️</span> Comandos de Seguridad</a>
+  <div class="drawer-section"><div class="drawer-section-title">M3 · Switching</div>
+    <a href="vlan.html"              class="drawer-link "><span class="dl-icon">🏷️</span> VLANs</a>
+    <a href="inter-vlan-routing.html" class="drawer-link "><span class="dl-icon">🔁</span> Inter-VLAN Routing</a>
+    <a href="stp.html"               class="drawer-link "><span class="dl-icon">🌳</span> STP</a>
+    <a href="etherchannel.html"      class="drawer-link "><span class="dl-icon">🔗</span> EtherChannel</a>
+    <a href="port-security.html"     class="drawer-link "><span class="dl-icon">🔒</span> Port Security</a>
+    <a href="cdp-lldp.html"          class="drawer-link "><span class="dl-icon">🔍</span> CDP / LLDP</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M4 · Routing</div>
+    <a href="routing.html"           class="drawer-link "><span class="dl-icon">🗺️</span> Routing Estático</a>
+    <a href="ospf.html"              class="drawer-link "><span class="dl-icon">⭕</span> OSPF</a>
+    <a href="eigrp.html"             class="drawer-link "><span class="dl-icon">⚡</span> EIGRP</a>
+    <a href="ospfv2-masterclass.html"            class="drawer-link "><span class="dl-icon">🎯</span> OSPFv2 Masterclass</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M5 · Servicios IP</div>
+    <a href="dhcp.html"              class="drawer-link "><span class="dl-icon">📋</span> DHCP</a>
+    <a href="nat.html"               class="drawer-link "><span class="dl-icon">🔄</span> NAT / PAT</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M6 · Seguridad</div>
+    <a href="acl.html"               class="drawer-link "><span class="dl-icon">🛡️</span> ACLs</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M7 · WAN &amp; QoS</div>
+    <a href="wan.html"               class="drawer-link "><span class="dl-icon">🌍</span> WAN</a>
+    <a href="qos.html"               class="drawer-link "><span class="dl-icon">📊</span> QoS</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M8 · Automatización</div>
+    <a href="m8-automatizacion.html"  class="drawer-link"><span class="dl-icon">🤖</span> M8 — Vista General</a>
+    <a href="python-redes.html"       class="drawer-link"><span class="dl-icon">🐍</span> Python para Redes</a>
+    <a href="json-datos.html"         class="drawer-link"><span class="dl-icon">📋</span> JSON y Datos</a>
+    <a href="rest-apis.html"          class="drawer-link"><span class="dl-icon">🌐</span> REST APIs</a>
+    <a href="ansible-redes.html"      class="drawer-link"><span class="dl-icon">⚙️</span> Ansible</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">⚡ Herramientas</div>
+    <a href="asistente.html"         class="drawer-link "><span class="dl-icon">🤖</span> Asistente IA</a>
+    <a href="netbot.html"            class="drawer-link "><span class="dl-icon">⚙️</span> NetBot Config</a>
+    <a href="calculadora.html"       class="drawer-link "><span class="dl-icon">🧮</span> Calculadora IP</a>
+    <a href="../laboratorios-pkt.html"   class="drawer-link "><span class="dl-icon">🧪</span> Labs Packet Tracer</a>
+    <a href="../banco-preguntas.html" class="drawer-link "><span class="dl-icon">📝</span> Banco de Preguntas</a></div>
+</nav>
+<header class="navbar">
+  <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
+  <a href="../index.html" class="navbar-brand">CISCO<span> ACADEMY</span></a>
+  <div class="navbar-spacer"></div>
+  <a href="../index.html" class="navbar-link">← Inicio</a>
+</header>
+<script src="../assets/main.js" defer></script>
+<div class="nav-spacer"></div>
+
+<!-- HERO -->
+<section class="class-hero">
+  <div class="class-hero-inner">
+    <div class="class-badge">M2.5 · COMANDOS SEGURIDAD · HARDENING CISCO IOS</div>
+    <h1 class="class-title">Comandos de <span class="class-title-accent">Seguridad</span></h1>
+    <p class="class-subtitle">Domina la seguridad de dispositivos Cisco IOS desde la autenticación local hasta ACLs, Port Security, SSH, NTP y políticas de bloqueo de acceso. Protege switches y routers contra accesos no autorizados, ataques de capa 2 y vulnerabilidades de administración. Esencial para CCNA 200-301 Exam Topics 6.1, 6.2, 6.3.</p>
+    <div class="class-meta">
+      <span class="meta-item">📋 IOS 15.x / IOS XE</span>
+      <span class="meta-item">🎯 CCNA 200-301 Exam Topic 6.1, 6.2, 6.3</span>
+      <span class="meta-item">⏱ ~100 min lectura</span>
+      <span class="meta-item">🧪 Lab: 2 Routers + 2 Switches + 2 PCs</span>
+    </div>
+  </div>
+</section>
+
+<!-- TABS -->
+<div class="tabs-wrap">
+  <div class="tabs-bar">
+    <button class="tab-btn active" onclick="CmdSec.showTabSec('conceptos',this)">📖 Conceptos</button>
+    <button class="tab-btn" onclick="CmdSec.showTabSec('contrasenas',this)">🔐 Contraseñas</button>
+    <button class="tab-btn" onclick="CmdSec.showTabSec('ssh',this)">🔒 SSH</button>
+    <button class="tab-btn" onclick="CmdSec.showTabSec('acls',this)">🛡️ ACLs</button>
+    <button class="tab-btn" onclick="CmdSec.showTabSec('portsec',this)">🔌 Port Security</button>
+    <button class="tab-btn" onclick="CmdSec.showTabSec('ntp',this)">⏰ NTP</button>
+    <button class="tab-btn" onclick="CmdSec.showTabSec('loginblock',this)">🚫 Login Block</button>
+    <button class="tab-btn" onclick="CmdSec.showTabSec('verificacion',this)">📡 Verificación</button>
+    <button class="tab-btn" onclick="CmdSec.showTabSec('troubleshooting',this)">🔧 Troubleshooting</button>
+    <button class="tab-btn" onclick="CmdSec.showTabSec('lab',this)">🧪 Laboratorio</button>
+    <button class="tab-btn" onclick="CmdSec.showTabSec('tabla',this)">📊 Referencia</button>
+    <button class="tab-btn" onclick="CmdSec.showTabSec('quiz',this)">🎯 Quiz</button>
+  </div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 1 — CONCEPTOS DE SEGURIDAD
+══════════════════════════════════════════════ -->
+<div id="tab-conceptos" class="tab-content active">
+<div class="content-block">
+  <h2 class="section-title">Fundamentos de Seguridad en Cisco IOS</h2>
+  <p>La seguridad en redes Cisco se divide en múltiples capas: protección del plano de administración (acceso al dispositivo), plano de control (protocolos de routing), plano de datos (tráfico de usuarios) y seguridad física. Esta clase cubre los comandos esenciales para hardening de dispositivos Cisco.</p>
+
+  <div class="diagram-box">
+    <div class="diagram-title">Pilares de Seguridad Cisco IOS</div>
+    <svg viewBox="0 0 800 360" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:800px;">
+      <!-- Física -->
+      <rect x="50" y="250" width="140" height="80" rx="6" fill="#0d1220" stroke="#374060" stroke-width="1"/>
+      <text x="120" y="280" text-anchor="middle" fill="#6b7a9a" font-size="11" font-family="Orbitron">FÍSICA</text>
+      <text x="120" y="300" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">Contraseñas consola</text>
+      <text x="120" y="315" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">Bloqueo sala</text>
+
+      <!-- Administración -->
+      <rect x="230" y="250" width="140" height="80" rx="6" fill="#0d1220" stroke="#38bdf8" stroke-width="2"/>
+      <text x="300" y="280" text-anchor="middle" fill="#38bdf8" font-size="11" font-family="Orbitron">ADMINISTRACIÓN</text>
+      <text x="300" y="300" text-anchor="middle" fill="#8294b8" font-size="9" font-family="Share Tech Mono">SSH / Enable Secret</text>
+      <text x="300" y="315" text-anchor="middle" fill="#8294b8" font-size="9" font-family="Share Tech Mono">Login Block / AAA</text>
+
+      <!-- Control -->
+      <rect x="410" y="250" width="140" height="80" rx="6" fill="#0d1220" stroke="#a78bfa" stroke-width="2"/>
+      <text x="480" y="280" text-anchor="middle" fill="#a78bfa" font-size="11" font-family="Orbitron">CONTROL</text>
+      <text x="480" y="300" text-anchor="middle" fill="#8294b8" font-size="9" font-family="Share Tech Mono">Routing seguro</text>
+      <text x="480" y="315" text-anchor="middle" fill="#8294b8" font-size="9" font-family="Share Tech Mono">NTP / Logging</text>
+
+      <!-- Datos -->
+      <rect x="590" y="250" width="140" height="80" rx="6" fill="#0d1220" stroke="#00d4aa" stroke-width="2"/>
+      <text x="660" y="280" text-anchor="middle" fill="#00d4aa" font-size="11" font-family="Orbitron">DATOS</text>
+      <text x="660" y="300" text-anchor="middle" fill="#8294b8" font-size="9" font-family="Share Tech Mono">ACLs / Port Security</text>
+      <text x="660" y="315" text-anchor="middle" fill="#8294b8" font-size="9" font-family="Share Tech Mono">DHCP Snooping / DAI</text>
+
+      <!-- Pirámide -->
+      <polygon points="400,30 120,250 680,250" fill="none" stroke="#374060" stroke-width="1" stroke-dasharray="4,3"/>
+      <text x="400" y="60" text-anchor="middle" fill="#c2d0e8" font-size="14" font-family="Orbitron" font-weight="700">DEFENSA EN PROFUNDIDAD</text>
+      <text x="400" y="80" text-anchor="middle" fill="#4a5780" font-size="10" font-family="Share Tech Mono">Múltiples capas de protección</text>
+
+      <!-- Conexiones -->
+      <line x1="190" y1="290" x2="230" y2="290" stroke="#38bdf8" stroke-width="1"/>
+      <line x1="370" y1="290" x2="410" y2="290" stroke="#a78bfa" stroke-width="1"/>
+      <line x1="550" y1="290" x2="590" y2="290" stroke="#00d4aa" stroke-width="1"/>
+    </svg>
+  </div>
+
+  <h3 class="sub-title">Jerarquía de Contraseñas en Cisco IOS</h3>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead><tr><th>Nivel</th><th>Comando</th><th>Propósito</th><th>Seguridad</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Consola</strong></td><td><code>password</code></td><td>Acceso físico por puerto console</td><td>Texto plano (sin cifrado)</td></tr>
+        <tr><td><strong>VTY</strong></td><td><code>password</code></td><td>Acceso remoto Telnet/SSH</td><td>Texto plano (sin cifrado)</td></tr>
+        <tr><td><strong>Enable</strong></td><td><code>enable password</code></td><td>Modo privilegiado EXEC</td><td>Texto plano (sin cifrado)</td></tr>
+        <tr><td><strong>Enable Secret</strong></td><td><code>enable secret</code></td><td>Modo privilegiado EXEC</td><td>Hash MD5 (más seguro)</td></tr>
+        <tr><td><strong>Usuario local</strong></td><td><code>username secret</code></td><td>Autenticación local por usuario</td><td>Hash SHA-256 (IOS 15+)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="sub-title">Principios de Hardening Cisco</h3>
+  <div class="concept-grid">
+    <div class="concept-card highlight">
+      <div class="concept-icon">🔐</div>
+      <h3>Cifrado de Contraseñas</h3>
+      <p>Todas las contraseñas en running-config deben estar cifradas. Usa <code>service password-encryption</code> para tipo 7 y <code>enable secret</code> para tipo 5/8/9.</p>
+      <code>service password-encryption</code>
+    </div>
+    <div class="concept-card highlight">
+      <div class="concept-icon">🔒</div>
+      <h3>SSH sobre Telnet</h3>
+      <p>Nunca uses Telnet (texto plano). Configura siempre SSH v2 con dominio, RSA key y solo transport input ssh.</p>
+      <code>transport input ssh</code>
+    </div>
+    <div class="concept-card highlight">
+      <div class="concept-icon">🛡️</div>
+      <h3>Control de Acceso</h3>
+      <p>Usa ACLs para restringir quién puede administrar el dispositivo y qué tráfico puede atravesarlo.</p>
+      <code>access-class 10 in</code>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🔌</div>
+      <h3>Seguridad de Capa 2</h3>
+      <p>Port Security, DHCP Snooping y DAI protegen contra MAC flooding, rogue DHCP y ARP spoofing.</p>
+      <code>switchport port-security</code>
+    </div>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚠️ Regla de Oro: Nunca uses "enable password" en producción</div>
+    <p>El comando <code>enable password</code> almacena la contraseña en texto plano o con cifrado reversible tipo 7 (Vigenère). Siempre usa <code>enable secret</code> que aplica hash MD5 (tipo 5) o SHA-256 (tipo 8/9 en IOS moderno). Si configuras ambos, <code>enable secret</code> tiene prioridad.</p>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 2 — CONTRASEÑAS Y AUTENTICACIÓN
+══════════════════════════════════════════════ -->
+<div id="tab-contrasenas" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Contraseñas, Usuarios y Cifrado</h2>
+  <p>La primera línea de defensa es controlar quién puede acceder al dispositivo. Cisco IOS ofrece múltiples mecanismos de autenticación local que deben configurarse correctamente para evitar accesos no autorizados.</p>
+
+  <h3 class="sub-title">Comandos de Contraseña Básicos</h3>
+  <div class="code-block">
+    <div class="code-label">Configuración de contraseñas de acceso</div>
+    <pre><code><span class="cmd-comment">! === CONTRASEÑA DE CONSOLA ===</span>
+R1(config)# line console 0
+R1(config-line)# password CiscoConsole123!
+R1(config-line)# login
+<span class="cmd-comment">! "login" fuerza autenticación con la contraseña configurada</span>
+R1(config-line)# exit
+
+<span class="cmd-comment">! === CONTRASEÑA DE LÍNEAS VTY (Telnet/SSH) ===</span>
+R1(config)# line vty 0 15
+R1(config-line)# password CiscoVTY123!
+R1(config-line)# login
+R1(config-line)# exit
+
+<span class="cmd-comment">! === ENABLE PASSWORD (NO RECOMENDADO) ===</span>
+R1(config)# enable password CiscoEnable123!
+<span class="cmd-comment">! Almacenado en texto plano o cifrado tipo 7 (débil)</span>
+<span class="cmd-comment">! Fácilmente reversible con herramientas online</span>
+
+<span class="cmd-comment">! === ENABLE SECRET (RECOMENDADO) ===</span>
+R1(config)# enable secret CiscoSecret123!
+<span class="cmd-comment">! Hash MD5 (tipo 5) - NO reversible</span>
+<span class="cmd-comment">! Si existe enable secret, enable password se ignora</span>
+
+<span class="cmd-comment">! === CIFRAR TODAS LAS CONTRASEÑAS EN RUNNING-CONFIG ===</span>
+R1(config)# service password-encryption
+<span class="cmd-comment">! Cifra contraseñas tipo 7 (Vigenère) - reversible pero oculta</span>
+<span class="cmd-comment">! NO cifra enable secret (ya está hasheado)</span>
+<span class="cmd-comment">! NO cifra username secret (ya está hasheado)</span>
+
+<span class="cmd-comment">! === VERIFICAR EN RUNNING-CONFIG ===</span>
+R1# show running-config | section enable
+<span class="cmd-output">enable secret 5 $1$mERr$H7PDMLdMZ8n.ZGfZ8n.ZGf0
+enable password 7 0822455D0A16</span>
+<span class="cmd-comment">! 5 = MD5 hash (enable secret)</span>
+<span class="cmd-comment">! 7 = Cifrado tipo 7 reversible (enable password con service password-encryption)</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Autenticación Local con Usuarios</h3>
+  <div class="code-block">
+    <div class="code-label">Creación de usuarios locales seguros</div>
+    <pre><code><span class="cmd-comment">! === USUARIO CON CONTRASEÑA TIPO 0 (TEXTO PLANO) ===</span>
+R1(config)# username admin password AdminPass123!
+<span class="cmd-comment">! ⚠️ Se ve en texto plano en running-config</span>
+
+<span class="cmd-comment">! === USUARIO CON CONTRASEÑA TIPO 7 (CIFRADO) ===</span>
+R1(config)# username admin password 7 0822455D0A16
+<span class="cmd-comment">! Cifrado reversible tipo 7</span>
+
+<span class="cmd-comment">! === USUARIO CON SECRET (HASH - RECOMENDADO) ===</span>
+R1(config)# username admin secret AdminSecret123!
+<span class="cmd-comment">! Hash SHA-256 (tipo 8 en IOS 15+) o MD5 (tipo 5)</span>
+<span class="cmd-comment">! MUCHO más seguro que password</span>
+
+<span class="cmd-comment">! === USUARIO CON PRIVILEGIOS ESPECÍFICOS ===</span>
+R1(config)# username soporte secret Soporte123!
+R1(config)# username soporte privilege 5
+<span class="cmd-comment">! Nivel de privilegio 5 (por defecto 1 = usuario, 15 = admin)</span>
+
+<span class="cmd-comment">! === AUTENTICACIÓN LOCAL EN LÍNEAS ===</span>
+R1(config)# line console 0
+R1(config-line)# login local
+<span class="cmd-comment">! Usa base de datos local de usuarios (username)</span>
+<span class="cmd-comment">! En lugar de password de línea genérica</span>
+
+R1(config)# line vty 0 15
+R1(config-line)# login local
+R1(config-line)# transport input ssh
+<span class="cmd-comment">! Solo SSH, autenticación por usuario local</span>
+
+<span class="cmd-comment">! === LONGITUD MÍNIMA DE CONTRASEÑAS ===</span>
+R1(config)# security passwords min-length 10
+<span class="cmd-comment">! Obliga a que TODAS las contraseñas nuevas tengan mínimo 10 caracteres</span>
+<span class="cmd-comment">! Aplica a enable secret, username, line passwords</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Banner de Advertencia Legal</h3>
+  <div class="code-block">
+    <div class="code-label">Mensajes de advertencia de acceso</div>
+    <pre><code><span class="cmd-comment">! === BANNER DEL DÍA (MOTD) ===</span>
+R1(config)# banner motd #
+*********************************************
+* ACCESO RESTRINGIDO - SISTEMA CORPORATIVO  *
+* Solo personal autorizado.                 *
+* Toda actividad es monitoreada y grabada.  *
+*********************************************
+#
+<span class="cmd-comment">! Se muestra ANTES de la autenticación</span>
+<span class="cmd-comment">! Importante legalmente: establece expectativa de privacidad</span>
+
+<span class="cmd-comment">! === BANNER DE INICIO DE SESIÓN ===</span>
+R1(config)# banner login #
+Bienvenido a la red corporativa.
+Por favor identifícate con tus credenciales.
+#
+<span class="cmd-comment">! Se muestra DESPUÉS de MOTD, ANTES de login</span>
+
+<span class="cmd-comment">! === BANNER DE EXEC ===</span>
+R1(config)# banner exec #
+Has accedido al dispositivo R1-HQ.
+Último mantenimiento: 2026-04-20
+#
+<span class="cmd-comment">! Se muestra DESPUÉS de autenticación exitosa</span></code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Jerarquía de Seguridad de Contraseñas</div>
+    <p>De MENOS a MÁS seguro:</p>
+    <ol>
+      <li><code>password</code> → Texto plano</li>
+      <li><code>password 7</code> → Cifrado tipo 7 (reversible)</li>
+      <li><code>secret</code> → Hash MD5 tipo 5</li>
+      <li><code>secret 5</code> → Hash MD5 explícito</li>
+      <li><code>secret 8</code> → Hash SHA-256 con salt (IOS 15.3+)</li>
+      <li><code>secret 9</code> → Hash scrypt (IOS 15.3+, más seguro)</li>
+    </ol>
+    <p>Usa siempre <code>username [nombre] secret [pass]</code> y <code>enable secret [pass]</code>.</p>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 3 — SSH (Secure Shell)
+══════════════════════════════════════════════ -->
+<div id="tab-ssh" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Configuración de SSH Seguro</h2>
+  <p>SSH (Secure Shell) es el estándar para administración remota segura de dispositivos Cisco. Reemplaza completamente a Telnet al cifrar todo el tráfico de administración. La configuración requiere un nombre de dominio, generación de clave RSA y ajuste de líneas VTY.</p>
+
+  <h3 class="sub-title">Pasos para habilitar SSH v2</h3>
+  <div class="code-block">
+    <div class="code-label">Configuración completa de SSH en router/switch</div>
+    <pre><code><span class="cmd-comment">! === PASO 1: NOMBRE DE HOST ===</span>
+R1(config)# hostname R1-HQ
+<span class="cmd-comment">! El hostname forma parte del prompt SSH</span>
+
+<span class="cmd-comment">! === PASO 2: DOMINIO IP (OBLIGATORIO PARA RSA) ===</span>
+R1(config)# ip domain-name ciscoacademy.local
+<span class="cmd-comment">! El dominio se usa para generar el par de claves RSA</span>
+<span class="cmd-comment">! Sin esto, crypto key generate rsa falla</span>
+
+<span class="cmd-comment">! === PASO 3: GENERAR CLAVE RSA ===</span>
+R1(config)# crypto key generate rsa
+<span class="cmd-output">The name for the keys will be: R1-HQ.ciscoacademy.local
+Choose the size of the key modulus in the range of 360 to 4096
+for your General Purpose Keys. Choosing a key modulus greater than
+512 may take a few minutes.
+
+How many bits in the modulus [512]: 2048
+% Generating 2048 bit RSA keys, keys will be non-exportable...
+[OK] (elapsed time was 3 seconds)</span>
+
+<span class="cmd-comment">! 2048 bits = mínimo recomendado (1024 es inseguro hoy)</span>
+<span class="cmd-comment">! 4096 bits = máxima seguridad (tarda más en generarse)</span>
+
+<span class="cmd-comment">! === PASO 4: FORZAR SSH V2 ===</span>
+R1(config)# ip ssh version 2
+<span class="cmd-comment">! SSHv1 tiene vulnerabilidades conocidas</span>
+<span class="cmd-comment">! SSHv2 es el único protocolo seguro</span>
+
+<span class="cmd-comment">! === PASO 5: CONFIGURAR LÍNEAS VTY ===</span>
+R1(config)# line vty 0 15
+R1(config-line)# transport input ssh
+<span class="cmd-comment">! ⬆️ CRÍTICO: Solo permite SSH, bloquea Telnet</span>
+<span class="cmd-comment">! transport input telnet = solo Telnet (INSEGURO)</span>
+<span class="cmd-comment">! transport input all = Telnet + SSH (NO recomendado)</span>
+<span class="cmd-comment">! transport input none = bloquea todo acceso remoto</span>
+
+R1(config-line)# login local
+<span class="cmd-comment">! Usa base de datos local de usuarios</span>
+
+<span class="cmd-comment">! === PASO 6: CREAR USUARIO PARA SSH ===</span>
+R1(config)# username admin secret CiscoAdmin123!
+R1(config)# username admin privilege 15
+<span class="cmd-comment">! Privilege 15 = acceso completo sin necesidad de "enable"</span>
+
+<span class="cmd-comment">! === PASO 7: TIEMPOS DE SESIÓN SSH ===</span>
+R1(config)# ip ssh time-out 60
+<span class="cmd-comment">! Desconecta sesión inactiva después de 60 segundos</span>
+
+R1(config)# ip ssh authentication-retries 3
+<span class="cmd-comment">! Máximo 3 intentos fallidos de contraseña por conexión</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Eliminar y Regenerar Clave RSA</h3>
+  <div class="code-block">
+    <div class="code-label">Gestión de claves criptográficas</div>
+    <pre><code><span class="cmd-comment">! === VER CLAVE RSA ACTUAL ===</span>
+R1# show crypto key mypubkey rsa
+<span class="cmd-output">% Key pair was generated at: 10:32:15 UTC Apr 20 2026
+Key name: R1-HQ.ciscoacademy.local
+Usage: General Purpose Key
+Key is not exportable.
+Key size: 2048
+...</span>
+
+<span class="cmd-comment">! === ELIMINAR CLAVE RSA ===</span>
+R1(config)# crypto key zeroize rsa
+<span class="cmd-comment">! ⚠️ Esto deshabilita SSH completamente</span>
+<span class="cmd-comment">! Requiere regenerar la clave para volver a usar SSH</span>
+
+<span class="cmd-comment">! === REGENERAR CON MÁS BITS ===</span>
+R1(config)# crypto key generate rsa modulus 4096
+<span class="cmd-comment">! Genera clave de 4096 bits (máxima seguridad)</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Conexión SSH desde otro dispositivo Cisco</h3>
+  <div class="code-block">
+    <div class="code-label">Cliente SSH integrado en IOS</div>
+    <pre><code><span class="cmd-comment">! === CONECTAR POR SSH DESDE OTRO ROUTER ===</span>
+R2# ssh -l admin 192.168.1.1
+<span class="cmd-comment">! -l = especifica usuario</span>
+<span class="cmd-comment">! Se solicitará contraseña interactivamente</span>
+
+<span class="cmd-comment">! === CONECTAR CON VERSIÓN ESPECÍFICA ===</span>
+R2# ssh -v 2 -l admin 192.168.1.1
+<span class="cmd-comment">! Fuerza SSH versión 2</span>
+
+<span class="cmd-comment">! === CONECTAR A PUERTO ESPECÍFICO ===</span>
+R2# ssh -p 2222 -l admin 192.168.1.1
+<span class="cmd-comment">! Si el servidor SSH escucha en puerto alternativo</span>
+
+<span class="cmd-comment">! === VER SESIONES SSH ACTIVAS ===</span>
+R1# show ssh
+<span class="cmd-output">Connection Version Mode Encryption  Hmac     State                 Username
+0          2.0     IN   aes256-ctr sha1     Session started       admin</span>
+
+<span class="cmd-comment">! === VER USUARIOS CONECTADOS ===</span>
+R1# show users
+<span class="cmd-output">Line       User       Host(s)              Idle       Location
+* 0 con 0   admin      idle                 00:00:00
+  2 vty 0   admin      192.168.1.2          00:02:15</span></code></pre>
+  </div>
+
+  <div class="attack-diagram" style="border-color:rgba(248,113,113,0.3);">
+    <div class="diagram-title" style="color:#f87171;">⚠️ ATAQUE: Intercepción Telnet vs Protección SSH</div>
+    <div class="attack-steps">
+      <div class="attack-step">
+        <span class="attack-num" style="border-color:#f87171;color:#f87171;background:rgba(248,113,113,0.1);">1</span>
+        <span style="color:#8294b8;"><strong>Telnet expone todo:</strong> Un atacante con acceso al segmento de red (sniffer) puede capturar usuarios, contraseñas y comandos en texto plano. Wireshark muestra todo legible.</span>
+      </div>
+      <div class="attack-step">
+        <span class="attack-num" style="border-color:#f87171;color:#f87171;background:rgba(248,113,113,0.1);">2</span>
+        <span style="color:#8294b8;"><strong>SSH cifra la sesión:</strong> Todo el tráfico entre cliente y servidor va cifrado con algoritmos simétricos (AES) y asimétricos (RSA/ECDSA). Incluso si se captura, es irrompible sin la clave privada.</span>
+      </div>
+      <div class="attack-step">
+        <span class="attack-num" style="border-color:#f87171;color:#f87171;background:rgba(248,113,113,0.1);">3</span>
+        <span style="color:#8294b8;"><strong>Best Practice:</strong> Deshabilitar Telnet completamente (<code>transport input ssh</code>), usar solo usuarios locales con <code>secret</code>, y mantener claves RSA de 2048+ bits.</span>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<!-- ══════════════════════════════════════════════
+     TAB 4 — ACLs (Access Control Lists)
+══════════════════════════════════════════════ -->
+<div id="tab-acls" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Access Control Lists (ACLs)</h2>
+  <p>Las ACLs son listas secuenciales de condiciones permit/deny que filtran tráfico basado en direcciones IP, protocolos, puertos y otros criterios. Son fundamentales para seguridad de red, NAT, QoS y control de routing.</p>
+
+  <h3 class="sub-title">ACL Standard vs Extended</h3>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead><tr><th>Característica</th><th>Standard</th><th>Extended</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Números</strong></td><td>1-99, 1300-1999</td><td>100-199, 2000-2699</td></tr>
+        <tr><td><strong>Filtra por</strong></td><td>Solo IP origen</td><td>IP origen/destino, protocolo, puertos</td></tr>
+        <tr><td><strong>Ubicación recomendada</strong></td><td>Cerca del destino</td><td>Cerca del origen</td></tr>
+        <tr><td><strong>Uso típico</strong></td><td>Control de acceso básico, VTY</td><td>Filtrado de tráfico específico, NAT</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="sub-title">ACL Standard — Configuración y Aplicación</h3>
+  <div class="code-block">
+    <div class="code-label">Filtrado por dirección IP origen</div>
+    <pre><code><span class="cmd-comment">! === CREAR ACL STANDARD NUMERADA ===</span>
+R1(config)# access-list 10 permit 192.168.10.0 0.0.0.255
+<span class="cmd-comment">! Permite red 192.168.10.0/24</span>
+<span class="cmd-comment">! Wildcard mask: 0.0.0.255 = /24 (bits 0 = deben coincidir)</span>
+
+R1(config)# access-list 10 deny 192.168.20.0 0.0.0.255
+<span class="cmd-comment">! Niega red 192.168.20.0/24</span>
+
+R1(config)# access-list 10 permit any
+<span class="cmd-comment">! ⬆️ IMPLÍCITO AL FINAL: deny any</span>
+<span class="cmd-comment">! Pero es buena práctica agregar permit any explícito para logging</span>
+
+<span class="cmd-comment">! === CREAR ACL STANDARD NOMBRADA ===</span>
+R1(config)# ip access-list standard ADMIN-ACCESS
+R1(config-std-nacl)# permit 192.168.99.0 0.0.0.255
+R1(config-std-nacl)# permit host 10.1.1.5
+<span class="cmd-comment">! "host" = wildcard 0.0.0.0 (IP exacta)</span>
+R1(config-std-nacl)# deny any log
+<span class="cmd-comment">! "log" genera mensaje syslog cuando se activa esta regla</span>
+
+<span class="cmd-comment">! === APLICAR ACL A INTERFAZ ===</span>
+R1(config)# interface GigabitEthernet0/1
+R1(config-if)# ip access-group 10 in
+<span class="cmd-comment">! "in" = filtra tráfico ENTRANTE a la interfaz</span>
+<span class="cmd-comment">! "out" = filtra tráfico SALIENTE de la interfaz</span>
+
+<span class="cmd-comment">! === APLICAR ACL A LÍNEAS VTY (CONTROL REMOTO) ===</span>
+R1(config)# line vty 0 15
+R1(config-line)# access-class 10 in
+<span class="cmd-comment">! "access-class" en lugar de "access-group" para líneas</span>
+<span class="cmd-comment">! Solo permite acceso SSH/Telnet desde IPs de la ACL 10</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">ACL Extended — Filtrado Avanzado</h3>
+  <div class="code-block">
+    <div class="code-label">Filtrado por protocolo, puertos y direcciones</div>
+    <pre><code><span class="cmd-comment">! === ACL EXTENDED NUMERADA ===</span>
+R1(config)# access-list 100 permit tcp 192.168.10.0 0.0.0.255 any eq 80
+<span class="cmd-comment">! Permite HTTP desde VLAN 10 a cualquier destino</span>
+
+R1(config)# access-list 100 permit tcp 192.168.10.0 0.0.0.255 any eq 443
+<span class="cmd-comment">! Permite HTTPS desde VLAN 10</span>
+
+R1(config)# access-list 100 deny ip 192.168.10.0 0.0.0.255 192.168.20.0 0.0.0.255
+<span class="cmd-comment">! Bloquea TODO tráfico entre VLAN 10 y VLAN 20</span>
+
+R1(config)# access-list 100 permit ip any any
+<span class="cmd-comment">! Permite todo lo demás</span>
+
+<span class="cmd-comment">! === ACL EXTENDED NOMBRADA ===</span>
+R1(config)# ip access-list extended FILTRO-WEB
+R1(config-ext-nacl)# permit tcp any any eq 80
+R1(config-ext-nacl)# permit tcp any any eq 443
+R1(config-ext-nacl)# deny tcp any any eq 23
+<span class="cmd-comment">! Bloquea Telnet explícitamente</span>
+R1(config-ext-nacl)# deny icmp any any echo
+<span class="cmd-comment">! Bloquea ping (ICMP echo request)</span>
+R1(config-ext-nacl)# permit ip any any
+
+<span class="cmd-comment">! === OPERADORES DE PUERTO ===</span>
+<span class="cmd-comment">! eq     = equal (igual a)</span>
+<span class="cmd-comment">! neq    = not equal (distinto de)</span>
+<span class="cmd-comment">! gt     = greater than (mayor que)</span>
+<span class="cmd-comment">! lt     = less than (menor que)</span>
+<span class="cmd-comment">! range  = rango de puertos (ej: range 1000 2000)</span>
+
+R1(config-ext-nacl)# permit tcp any any range 20 21
+<span class="cmd-comment">! Permite FTP (puertos 20 y 21)</span>
+
+<span class="cmd-comment">! === APLICAR ACL EXTENDED ===</span>
+R1(config)# interface GigabitEthernet0/0
+R1(config-if)# ip access-group 100 in</code></pre>
+  </div>
+
+  <h3 class="sub-title">Wildcard Masks — Cálculo Rápido</h3>
+  <div class="code-block">
+    <div class="code-label">Fórmula y ejemplos comunes</div>
+    <pre><code><span class="cmd-comment">! === FÓRMULA ===</span>
+<span class="cmd-comment">! Wildcard = 255.255.255.255 - Máscara de subred</span>
+
+<span class="cmd-comment">! /24 (255.255.255.0)    → 0.0.0.255</span>
+<span class="cmd-comment">! /16 (255.255.0.0)      → 0.0.255.255</span>
+<span class="cmd-comment">! /30 (255.255.255.252)  → 0.0.0.3</span>
+<span class="cmd-comment">! /32 (host)             → 0.0.0.0</span>
+
+<span class="cmd-comment">! === ACL PARA HOST ESPECÍFICO ===</span>
+R1(config)# access-list 10 permit 192.168.1.5 0.0.0.0
+<span class="cmd-comment">! o equivalente:</span>
+R1(config)# access-list 10 permit host 192.168.1.5
+
+<span class="cmd-comment">! === ACL PARA RANGO IMPAR (ej: IPs .1, .3, .5, .7) ===</span>
+R1(config)# access-list 10 permit 192.168.1.1 0.0.0.6
+<span class="cmd-comment">! Wildcard 0.0.0.6 = 00000110 en binario</span>
+<span class="cmd-comment">! Último octeto: 1, 3, 5, 7 (bits variables en posiciones 1 y 2)</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Modificar y Eliminar ACLs</h3>
+  <div class="code-block">
+    <div class="code-label">Gestión de ACLs existentes</div>
+    <pre><code><span class="cmd-comment">! === ACLs NUMERADAS: NO se pueden editar línea por línea ===</span>
+<span class="cmd-comment">! Debes borrarla completa y reescribirla</span>
+R1(config)# no access-list 10
+<span class="cmd-comment">! Elimina TODA la ACL 10</span>
+
+<span class="cmd-comment">! === ACLs NOMBRADAS: SÍ se pueden editar ===</span>
+R1(config)# ip access-list standard ADMIN-ACCESS
+R1(config-std-nacl)# no permit 192.168.99.0 0.0.0.255
+<span class="cmd-comment">! Elimina línea específica</span>
+R1(config-std-nacl)# 15 permit 192.168.88.0 0.0.0.255
+<span class="cmd-comment">! Inserta línea con número de secuencia 15</span>
+
+<span class="cmd-comment">! === VER ACLs CON NÚMEROS DE SECUENCIA ===</span>
+R1# show ip access-lists
+<span class="cmd-output">Standard IP access list ADMIN-ACCESS
+    10 permit 192.168.10.0, wildcard bits 0.0.0.255
+    15 permit 192.168.88.0, wildcard bits 0.0.0.255
+    20 deny   any log</span>
+
+<span class="cmd-comment">! === REMOVER ACL DE INTERFAZ ===</span>
+R1(config)# interface GigabitEthernet0/1
+R1(config-if)# no ip access-group 10 in</code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚠️ Regla Crítica: Orden de las ACLs y deny any implícito</div>
+    <p>Las ACLs se evalúan <strong>secuencialmente de arriba hacia abajo</strong>. La primera coincidencia determina la acción. Si ninguna regla coincide, se aplica el <strong>deny any implícito</strong> al final.</p>
+    <p><strong>Error común:</strong> Poner <code>permit any</code> al principio — todo el tráfico pasa y las reglas siguientes nunca se evalúan. <code>permit any</code> debe ir al final (o no ponerse, dependiendo de la política).</p>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 5 — PORT SECURITY
+══════════════════════════════════════════════ -->
+<div id="tab-portsec" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Port Security en Switches Cisco</h2>
+  <p>Port Security es una función de capa 2 que restringe el tráfico de entrada en un puerto basándose en la dirección MAC del dispositivo conectado. Protege contra MAC flooding, conexiones no autorizadas y ataques de suplantación.</p>
+
+  <h3 class="sub-title">Configuración Básica de Port Security</h3>
+  <div class="code-block">
+    <div class="code-label">Protección de puertos de acceso</div>
+    <pre><code><span class="cmd-comment">! === HABILITAR PORT SECURITY ===</span>
+SW1(config)# interface FastEthernet0/1
+SW1(config-if)# switchport mode access
+SW1(config-if)# switchport port-security
+<span class="cmd-comment">! Activa port security en el puerto</span>
+<span class="cmd-comment">! Por defecto: máximo 1 MAC, violation shutdown</span>
+
+<span class="cmd-comment">! === CONFIGURAR MAC ESTÁTICA ===</span>
+SW1(config-if)# switchport port-security mac-address 0000.0c12.3456
+<span class="cmd-comment">! Solo permite esta MAC específica</span>
+
+<span class="cmd-comment">! === CONFIGURAR MAC STICKY (APRENDIZAJE DINÁMICO PERMANENTE) ===</span>
+SW1(config-if)# switchport port-security mac-address sticky
+<span class="cmd-comment">! Aprende la primera MAC que se conecta y la guarda en running-config</span>
+<span class="cmd-comment">! Combina flexibilidad de dinámico con persistencia de estático</span>
+
+<span class="cmd-comment">! === CONFIGURAR MÁXIMO DE MACs ===</span>
+SW1(config-if)# switchport port-security maximum 3
+<span class="cmd-comment">! Permite hasta 3 MACs (útil para IP Phone + PC + laptop)</span>
+
+<span class="cmd-comment">! === CONFIGURAR ACCIÓN ANTE VIOLACIÓN ===</span>
+SW1(config-if)# switchport port-security violation ?
+  protect   <span class="cmd-comment">! Descarta tráfico desconocido, NO alerta, NO desactiva puerto</span>
+  restrict  <span class="cmd-comment">! Descarta + envía SNMP trap + syslog (recomendado)</span>
+  shutdown  <span class="cmd-comment">! Pone puerto en err-disabled (default, más drástico)</span>
+
+SW1(config-if)# switchport port-security violation restrict
+
+<span class="cmd-comment">! === CONFIGURACIÓN COMPLETA RECOMENDADA ===</span>
+SW1(config)# interface FastEthernet0/1
+SW1(config-if)# description PC-VENTAS-01
+SW1(config-if)# switchport mode access
+SW1(config-if)# switchport access vlan 10
+SW1(config-if)# switchport port-security
+SW1(config-if)# switchport port-security maximum 2
+SW1(config-if)# switchport port-security mac-address sticky
+SW1(config-if)# switchport port-security violation restrict
+SW1(config-if)# spanning-tree portfast
+SW1(config-if)# no shutdown</code></pre>
+  </div>
+
+  <h3 class="sub-title">Recuperación de Puerto err-disabled</h3>
+  <div class="code-block">
+    <div class="code-label">Métodos de recuperación automática y manual</div>
+    <pre><code><span class="cmd-comment">! === VER PUERTOS ERR-DISABLED ===</span>
+SW1# show interface status err-disabled
+<span class="cmd-output">Port      Name               Status       Reason
+Fa0/1     PC-VENTAS-01       err-disabled psecure-violation</span>
+
+<span class="cmd-comment">! === RECUPERACIÓN MANUAL ===</span>
+SW1(config)# interface FastEthernet0/1
+SW1(config-if)# shutdown
+SW1(config-if)# no shutdown
+<span class="cmd-comment">! Ciclo administrativo para reactivar</span>
+
+<span class="cmd-comment">! === RECUPERACIÓN AUTOMÁTICA ===</span>
+SW1(config)# errdisable recovery cause psecure-violation
+SW1(config)# errdisable recovery interval 300
+<span class="cmd-comment">! Recupera automáticamente después de 300 segundos (5 min)</span>
+
+<span class="cmd-comment">! === VERIFICAR CAUSAS DE ERRDISABLE CONFIGURADAS ===</span>
+SW1# show errdisable recovery
+<span class="cmd-output">ErrDisable Reason            Timer Status
+-----------------            -------------
+arp-inspection               Disabled
+bpduguard                    Disabled
+channel-misconfig (STP)      Disabled
+dhcp-rate-limit              Disabled
+dtp-flapping                 Disabled
+psecure-violation            Enabled</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Verificación de Port Security</h3>
+  <div class="code-block">
+    <div class="code-label">Comandos de monitoreo</div>
+    <pre><code><span class="cmd-comment">! === RESUMEN DE PORT SECURITY ===</span>
+SW1# show port-security
+<span class="cmd-output">Secure Port  MaxSecureAddr  CurrentAddr  SecurityViolation  Security Action
+                (Count)       (Count)          (Count)
+---------------------------------------------------------------------------
+Fa0/1                2            1                  0           Restrict
+---------------------------------------------------------------------------
+Total Addresses in System (excluding one mac per port)     : 0
+Max Addresses limit in System (excluding one mac per port) : 4096</span>
+
+<span class="cmd-comment">! === DETALLE POR PUERTO ===</span>
+SW1# show port-security interface FastEthernet0/1
+<span class="cmd-output">Port Security              : Enabled
+Port Status                : Secure-up
+Violation Mode             : Restrict
+Maximum MAC Addresses      : 2
+Total MAC Addresses        : 1
+Configured MAC Addresses   : 0
+Sticky MAC Addresses       : 1
+Last Source Address:Vlan   : 0000.0c12.3456:10
+Security Violation Count   : 0</span>
+
+<span class="cmd-comment">! === VER MACs STICKY APRENDIDAS ===</span>
+SW1# show port-security address
+<span class="cmd-output">Secure Mac Address Table
+-----------------------------------------------------------------------------
+Vlan    Mac Address       Type                          Ports   Remaining Age
+                                                                    (mins)
+----    -----------       ----                          -----   -------------
+  10    0000.0c12.3456    SecureSticky                  Fa0/1        -</span></code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Buena Práctica: Port Security + Sticky en Puertos de Acceso</div>
+    <p>En todos los puertos de acceso donde conectas PCs fijas:</p>
+    <ol>
+      <li>Configura <code>switchport port-security</code></li>
+      <li>Usa <code>switchport port-security mac-address sticky</code></li>
+      <li>Establece <code>maximum 2</code> si hay teléfonos IP</li>
+      <li>Usa <code>violation restrict</code> para no desactivar puertos críticos</li>
+      <li>Guarda running-config para persistir las MACs sticky</li>
+    </ol>
+  </div>
+</div>
+</div>
+<!-- ══════════════════════════════════════════════
+     TAB 6 — NTP (Network Time Protocol)
+══════════════════════════════════════════════ -->
+<div id="tab-ntp" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Sincronización de Tiempo con NTP</h2>
+  <p>La sincronización horaria es crítica para la seguridad: logs precisos, certificados digitales válidos, troubleshooting correlacionado y prevención de ataques de replay. Cisco IOS soporta NTP como cliente y servidor.</p>
+
+  <h3 class="sub-title">Configuración de Cliente NTP</h3>
+  <div class="code-block">
+    <div class="code-label">Sincronización con servidor NTP</div>
+    <pre><code><span class="cmd-comment">! === CONFIGURAR SERVIDOR NTP ===</span>
+R1(config)# ntp server 192.168.99.5
+<span class="cmd-comment">! Servidor NTP interno o público (pool.ntp.org)</span>
+
+R1(config)# ntp server 192.168.99.5 prefer
+<span class="cmd-comment">! "prefer" = este servidor tiene prioridad si hay múltiples</span>
+
+<span class="cmd-comment">! === CONFIGURAR ZONA HORARIA ===</span>
+R1(config)# clock timezone EST -5
+<span class="cmd-comment">! EST = Eastern Standard Time, -5 = UTC-5</span>
+
+R1(config)# clock summer-time EDT recurring
+<span class="cmd-comment">! Horario de verano automático</span>
+
+<span class="cmd-comment">! === CONFIGURAR FECHA/HORA MANUAL (si no hay NTP) ===</span>
+R1# clock set 14:30:00 20 April 2026
+<span class="cmd-comment">! Formato: HH:MM:SS Day Month Year</span>
+
+<span class="cmd-comment">! === VERIFICAR SINCRONIZACIÓN ===</span>
+R1# show ntp status
+<span class="cmd-output">Clock is synchronized, stratum 3, reference is 192.168.99.5
+nominal freq is 250.0000 Hz, actual freq is 249.9987 Hz, precision is 2**18
+ntp uptime is 2345000 (1/100 of seconds), resolution is 4000
+reference time is E7B2F3A1.8B2C4D5E (14:25:10.546 EST Mon Apr 20 2026)
+clock offset is 2.34 msec, root delay is 15.67 msec
+root dispersion is 23.45 msec, peer dispersion is 5.67 msec</span>
+
+<span class="cmd-comment">! "Clock is synchronized" = sincronizado correctamente</span>
+<span class="cmd-comment">! Stratum 3 = distancia de 3 saltos del reloj atómico (stratum 0)</span>
+
+<span class="cmd-comment">! === VER SERVIDORES NTP CONFIGURADOS ===</span>
+R1# show ntp associations
+<span class="cmd-output">address         ref clock       st   when   poll reach  delay  offset   disp
+*~192.168.99.5   192.168.1.1      2     45     64   377   15.6    2.34   5.67
+ * = current synced, # = selected, + = candidate, ~ = configured</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">NTP Seguro (Autenticación)</h3>
+  <div class="code-block">
+    <div class="code-label">Protección contra spoofing de tiempo</div>
+    <pre><code><span class="cmd-comment">! === CONFIGURAR CLAVE NTP ===</span>
+R1(config)# ntp authentication-key 1 md5 CiscoNTP123!
+<span class="cmd-comment">! Crea clave MD5 número 1</span>
+
+R1(config)# ntp authenticate
+<span class="cmd-comment">! Habilita autenticación NTP</span>
+
+R1(config)# ntp trusted-key 1
+<span class="cmd-comment">! Marca la clave 1 como confiable</span>
+
+R1(config)# ntp server 192.168.99.5 key 1
+<span class="cmd-comment">! Usa clave 1 para autenticar con este servidor</span>
+
+<span class="cmd-comment">! === VERIFICAR AUTENTICACIÓN ===</span>
+R1# show ntp status
+<span class="cmd-comment">! Debe mostrar "Clock is authenticated and synchronized"</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">NTP como Servidor</h3>
+  <div class="code-block">
+    <div class="code-label">El router actúa como servidor NTP</div>
+    <pre><code><span class="cmd-comment">! === HABILITAR SERVIDOR NTP ===</span>
+R1(config)# ntp master 3
+<span class="cmd-comment">! Stratum 3 = anuncia este stratum a clientes</span>
+<span class="cmd-comment">! No uses stratum 1 a menos que tengas reloj atómico/GPS</span>
+
+<span class="cmd-comment">! === RESTRINGIR ACCESO NTP CON ACL ===</span>
+R1(config)# access-list 20 permit 192.168.10.0 0.0.0.255
+R1(config)# ntp access-group serve 20
+<span class="cmd-comment">! Solo sirve tiempo a la red 192.168.10.0/24</span>
+
+R1(config)# ntp access-group peer 20
+<span class="cmd-comment">! Solo acepta peers (sincronización) desde esa red</span></code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 7 — LOGIN BLOCK (BLOQUEO DE ACCESO)
+══════════════════════════════════════════════ -->
+<div id="tab-loginblock" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Login Block-for — Protección contra Fuerza Bruta</h2>
+  <p>El comando <code>login block-for</code> protege las líneas VTY y Console contra ataques de fuerza bruta al bloquear temporalmente los intentos de inicio de sesión después de un número definido de fallos en un período de tiempo.</p>
+
+  <h3 class="sub-title">Configuración de Bloqueo de Login</h3>
+  <div class="code-block">
+    <div class="code-label">Mitigación de ataques de fuerza bruta</div>
+    <pre><code><span class="cmd-comment">! === BLOQUEO DE ACCESO TRAS INTENTOS FALLIDOS ===</span>
+R1(config)# login block-for 300 attempts 5 within 120
+<span class="cmd-comment">! Sintaxis: login block-for [segundos-bloqueo] attempts [N] within [segundos-ventana]</span>
+<span class="cmd-comment">! Si hay 5 intentos fallidos en 120 segundos (2 min), bloquea durante 300 seg (5 min)</span>
+
+<span class="cmd-comment">! === CONFIGURAR MENSAJE DURANTE BLOQUEO ===</span>
+R1(config)# login quiet-mode access-class 20
+<span class="cmd-comment">! Durante el bloqueo, SOLO permite conexiones desde IPs de la ACL 20</span>
+<span class="cmd-comment">! Útil para crear una "lista blanca" de administradores</span>
+
+<span class="cmd-comment">! === CREAR ACL PARA ACCESO DURANTE BLOQUEO ===</span>
+R1(config)# access-list 20 permit 192.168.99.10
+R1(config)# access-list 20 permit 10.1.1.0 0.0.0.255
+<span class="cmd-comment">! Solo estas IPs pueden acceder cuando el sistema está en quiet mode</span>
+
+<span class="cmd-comment">! === DELAY ENTRE INTENTOS (Ralentizar fuerza bruta) ===</span>
+R1(config)# login delay 3
+<span class="cmd-comment">! Espera 3 segundos entre cada prompt de login</span>
+<span class="cmd-comment">! Ralentiza ataques automatizados significativamente</span>
+
+<span class="cmd-comment">! === VERIFICAR ESTADO DE BLOQUEO ===</span>
+R1# show login
+<span class="cmd-output">A default login delay of 3 seconds is applied.
+No Quiet-Mode access list has been configured.
+
+All successful login is logged and generate SNMP traps.
+All failed login is logged and generate SNMP traps.
+
+Login block-for 300 attempts 5 within 120 is configured.</span>
+
+<span class="cmd-comment">! === VER SI ESTÁ ACTIVAMENTE BLOQUEADO ===</span>
+R1# show login failures
+<span class="cmd-output">Information about login failures with the device.
+Username    SourceIPAddr    lPort     TimeStamp           Count
+admin       203.0.113.45    vty 0     14:30:15 UTC Mon Apr 20 2026   3</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Combinación con ACLs de VTY</h3>
+  <div class="code-block">
+    <div class="code-label">Defensa en profundidad para acceso remoto</div>
+    <pre><code><span class="cmd-comment">! === ACL PARA ADMINISTRACIÓN REMOTA ===</span>
+R1(config)# access-list 20 permit 192.168.99.0 0.0.0.255
+R1(config)# access-list 20 permit host 10.1.1.100
+R1(config)# access-list 20 deny any log
+
+<span class="cmd-comment">! === APLICAR A LÍNEAS VTY ===</span>
+R1(config)# line vty 0 15
+R1(config-line)# access-class 20 in
+R1(config-line)# transport input ssh
+R1(config-line)# login local
+R1(config-line)# exec-timeout 5 0
+<span class="cmd-comment">! Desconecta sesión inactiva después de 5 minutos</span>
+
+<span class="cmd-comment">! === CONFIGURAR TIEMPO DE SESIÓN EN CONSOLA TAMBIÉN ===</span>
+R1(config)# line console 0
+R1(config-line)# exec-timeout 3 0
+<span class="cmd-comment">! 3 minutos de inactividad en consola</span>
+
+<span class="cmd-comment">! === LOGGING DE ACCESOS ===</span>
+R1(config)# login on-success log
+R1(config)# login on-failure log
+<span class="cmd-comment">! Genera syslog cada vez que alguien inicia sesión o falla</span></code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚠️ Importante: Quiet Mode vs ACL Regular</div>
+    <p><code>login block-for</code> entra en "quiet mode" cuando se detectan intentos masivos. Durante quiet mode, <strong>todas las conexiones son rechazadas</strong> excepto las de la ACL configurada con <code>login quiet-mode access-class</code>.</p>
+    <p>Esto es diferente de las ACLs regulares de VTY: las ACLs de VTY filtran siempre, mientras que quiet mode solo se activa durante el bloqueo temporal tras intentos fallidos.</p>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 8 — VERIFICACIÓN
+══════════════════════════════════════════════ -->
+<div id="tab-verificacion" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Comandos de Verificación de Seguridad</h2>
+  <p>Verificar la configuración de seguridad es tan importante como configurarla. Estos comandos te permiten auditar el estado de protección de tus dispositivos Cisco.</p>
+
+  <div class="concept-grid">
+    <div class="concept-card highlight">
+      <div class="concept-icon">🔐</div>
+      <h3>show running-config</h3>
+      <p>Inspecciona configuración activa con filtros para contraseñas, líneas y servicios.</p>
+      <code>show run | section line<br>show run | include password</code>
+    </div>
+    <div class="concept-card highlight">
+      <div class="concept-icon">🔒</div>
+      <h3>show ip ssh / show ssh</h3>
+      <p>Verifica versión SSH, claves RSA y sesiones activas cifradas.</p>
+      <code>show ip ssh<br>show ssh</code>
+    </div>
+    <div class="concept-card highlight">
+      <div class="concept-icon">🛡️</div>
+      <h3>show ip access-lists</h3>
+      <p>Muestra ACLs con contadores de coincidencias por regla.</p>
+      <code>show ip access-lists<br>show ip int | include access</code>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🔌</div>
+      <h3>show port-security</h3>
+      <p>Estado de port security, violaciones y MACs aprendidas.</p>
+      <code>show port-security<br>show port-security int fa0/1</code>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">⏰</div>
+      <h3>show ntp status</h3>
+      <p>Confirma sincronización horaria y stratum.</p>
+      <code>show ntp status<br>show clock</code>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🚫</div>
+      <h3>show login</h3>
+      <p>Estado de bloqueo de login y configuración de quiet mode.</p>
+      <code>show login<br>show login failures</code>
+    </div>
+  </div>
+
+  <h3 class="sub-title">Auditoría de Configuración de Seguridad</h3>
+  <div class="code-block">
+    <div class="code-label">Checklist de verificación rápida</div>
+    <pre><code><span class="cmd-comment">! === VERIFICAR CONTRASEÑAS ===</span>
+R1# show running-config | section enable
+<span class="cmd-comment">! Debe mostrar "enable secret", NO "enable password"</span>
+
+R1# show running-config | section username
+<span class="cmd-comment">! Debe mostrar "secret", NO "password"</span>
+
+R1# show running-config | include service password
+<span class="cmd-comment">! Debe mostrar "service password-encryption"</span>
+
+<span class="cmd-comment">! === VERIFICAR SSH ===</span>
+R1# show ip ssh
+<span class="cmd-output">SSH Enabled - version 2.0
+Authentication timeout: 60 secs; Authentication retries: 3</span>
+<span class="cmd-comment">! Versión 2.0 = SSHv2 (correcto)</span>
+
+R1# show crypto key mypubkey rsa
+<span class="cmd-comment">! Confirma que existe clave RSA generada</span>
+
+<span class="cmd-comment">! === VERIFICAR LÍNEAS VTY ===</span>
+R1# show running-config | section line vty
+<span class="cmd-output">line vty 0 15
+ access-class 20 in
+ exec-timeout 5 0
+ login local
+ transport input ssh</span>
+<span class="cmd-comment">! transport input ssh = correcto (sin telnet)</span>
+<span class="cmd-comment">! login local = autenticación por usuario</span>
+
+<span class="cmd-comment">! === VERIFICAR ACLs APLICADAS ===</span>
+R1# show ip interface brief | include access
+R1# show ip interface GigabitEthernet0/0
+<span class="cmd-comment">! Buscar "Inbound access list" o "Outgoing access list"</span>
+
+<span class="cmd-comment">! === VERIFICAR PORT SECURITY ===</span>
+SW1# show port-security
+SW1# show port-security address
+
+<span class="cmd-comment">! === VERIFICAR NTP ===</span>
+R1# show ntp status
+R1# show clock
+<span class="cmd-comment">! Hora debe ser correcta y "Clock is synchronized"</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Contadores de ACLs — Detección de Tráfico</h3>
+  <div class="code-block">
+    <div class="code-label">Interpretación de matches en ACLs</div>
+    <pre><code>R1# show ip access-lists
+<span class="cmd-output">Standard IP access list 10
+    10 permit 192.168.10.0, wildcard bits 0.0.0.255 (45 matches)
+    20 deny   any (12 matches)
+
+Extended IP access list 100
+    10 permit tcp 192.168.10.0 0.0.0.255 any eq www (234 matches)
+    20 permit tcp 192.168.10.0 0.0.0.255 any eq 443 (567 matches)
+    30 deny ip 192.168.10.0 0.0.0.255 192.168.20.0 0.0.0.255 (3 matches)
+    40 permit ip any any (1890 matches)</span>
+
+<span class="cmd-comment">! === CAMPOS CLAVE ===</span>
+<span class="cmd-comment">! (N matches) = cuántos paquetes coincidieron con esa regla</span>
+<span class="cmd-comment">! Si una regla deny tiene muchos matches, puede indicar ataque o mala configuración</span>
+<span class="cmd-comment">! Si permit any tiene matches inesperados, revisar reglas anteriores</span>
+
+<span class="cmd-comment">! === LIMPIAR CONTADORES ===</span>
+R1# clear ip access-list counters
+R1# clear ip access-list counters 100</code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 9 — TROUBLESHOOTING
+══════════════════════════════════════════════ -->
+<div id="tab-troubleshooting" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Troubleshooting de Seguridad en Cisco IOS</h2>
+  <p>Los problemas de seguridad pueden bloquear acceso legítimo o dejar vulnerabilidades abiertas. Esta guía cubre los escenarios más frecuentes en exámenes y producción.</p>
+
+  <h3 class="sub-title">Problema 1: No puedo acceder por SSH</h3>
+  <div class="process-steps">
+    <div class="process-step">
+      <span class="step-num">1</span>
+      <div class="step-content">
+        <div class="step-title">Verificar clave RSA</div>
+        <code>show crypto key mypubkey rsa</code>
+        <br>Si no hay clave, generar con <code>crypto key generate rsa</code>.
+      </div>
+    </div>
+    <div class="process-step">
+      <span class="step-num">2</span>
+      <div class="step-content">
+        <div class="step-title">Verificar dominio IP</div>
+        <code>show running-config | include domain</code>
+        <br>Debe existir <code>ip domain-name</code> para generar clave RSA.
+      </div>
+    </div>
+    <div class="process-step">
+      <span class="step-num">3</span>
+      <div class="step-content">
+        <div class="step-title">Verificar líneas VTY</div>
+        <code>show running-config | section line vty</code>
+        <br>Debe tener <code>transport input ssh</code> y <code>login local</code>.
+      </div>
+    </div>
+    <div class="process-step">
+      <span class="step-num">4</span>
+      <div class="step-content">
+        <div class="step-title">Verificar usuario local</div>
+        <code>show running-config | section username</code>
+        <br>Debe existir al menos un usuario con <code>secret</code>.
+      </div>
+    </div>
+  </div>
+
+  <h3 class="sub-title">Problema 2: ACL bloquea tráfico legítimo</h3>
+  <div class="code-block">
+    <div class="code-label">Diagnóstico de filtrado incorrecto</div>
+    <pre><code><span class="cmd-comment">! === SÍNTOMA: Ping funciona pero HTTP no ===</span>
+
+<span class="cmd-comment">! Paso 1: Verificar ACL aplicada</span>
+R1# show ip interface GigabitEthernet0/1
+<span class="cmd-comment">! ¿Hay "Inbound access list" o "Outgoing access list"?</span>
+
+<span class="cmd-comment">! Paso 2: Ver contenido de ACL</span>
+R1# show ip access-lists 100
+<span class="cmd-comment">! ¿Está permitido el puerto 80/tcp?
+! ¿Hay un "deny ip any any" antes del permit?</span>
+
+<span class="cmd-comment">! Paso 3: Ver contadores</span>
+R1# show ip access-lists 100
+<span class="cmd-comment">! ¿La regla deny tiene matches incrementando?
+! Eso confirma que el tráfico está siendo bloqueado por esa regla</span>
+
+<span class="cmd-comment">! Paso 4: Corregir orden de reglas</span>
+R1(config)# ip access-list extended 100
+R1(config-ext-nacl)# no 20
+<span class="cmd-comment">! Eliminar regla problemática</span>
+R1(config-ext-nacl)# 15 permit tcp any any eq 80
+<span class="cmd-comment">! Agregar antes del deny</span>
+
+<span class="cmd-comment">! === ACL STANDARD BLOQUEA ADMINISTRADOR ===</span>
+<span class="cmd-comment">! Si aplicaste ACL standard a interfaz y te quedaste fuera:</span>
+<span class="cmd-comment">! Debes acceder por consola física (no afectada por ACL de interfaz)</span>
+<span class="cmd-comment">! o reiniciar el dispositivo si no hay acceso físico</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Problema 3: Puerto en err-disabled por Port Security</h3>
+  <div class="code-block">
+    <div class="code-label">Recuperación y prevención</div>
+    <pre><code><span class="cmd-comment">! === DIAGNÓSTICO ===</span>
+SW1# show interface status err-disabled
+<span class="cmd-output">Port      Name               Status       Reason
+Fa0/5     PC-RH-03           err-disabled psecure-violation</span>
+
+<span class="cmd-comment">! === VER DETALLE ===</span>
+SW1# show port-security interface FastEthernet0/5
+<span class="cmd-output">Security Violation Count   : 1
+Last Source Address:Vlan   : 0000.0caa.bbcc:10</span>
+
+<span class="cmd-comment">! Causa: Se conectó dispositivo con MAC diferente a la configurada</span>
+
+<span class="cmd-comment">! === SOLUCIÓN 1: Recuperar puerto ===</span>
+SW1(config)# interface FastEthernet0/5
+SW1(config-if)# shutdown
+SW1(config-if)# no shutdown
+
+<span class="cmd-comment">! === SOLUCIÓN 2: Ajustar configuración ===</span>
+SW1(config-if)# switchport port-security maximum 3
+<span class="cmd-comment">! Aumentar límite si hay teléfono + PC</span>
+
+SW1(config-if)# switchport port-security mac-address sticky
+<span class="cmd-comment">! Aprender nueva MAC</span>
+
+<span class="cmd-comment">! === SOLUCIÓN 3: Cambiar a restrict (no shutdown) ===</span>
+SW1(config-if)# switchport port-security violation restrict
+<span class="cmd-comment">! Evita que el puerto se desactive, solo descarta tráfico</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Problema 4: Login block-for bloquea al administrador</h3>
+  <div class="code-block">
+    <div class="code-label">Acceso durante quiet mode</div>
+    <pre><code><span class="cmd-comment">! === VERIFICAR SI ESTÁ EN QUIET MODE ===</span>
+R1# show login
+<span class="cmd-output">Quiet-Mode access list 20 is configured and is applied.
+Router is enabled to watch for login Attacks.
+If more than 5 login failures occur in 120 seconds or less,
+logins will be disabled for 300 seconds.
+
+Router is currently in QUIET mode.
+Only following hosts are allowed to log in:
+  [192.168.99.10]</span>
+
+<span class="cmd-comment">! SOLUCIÓN: Acceder desde IP de la ACL quiet-mode</span>
+<span class="cmd-comment">! o esperar 300 segundos a que expire el bloqueo</span>
+
+<span class="cmd-comment">! === PREVENCIÓN: Agregar tu IP a quiet-mode ACL ===</span>
+R1(config)# access-list 20 permit host 192.168.99.100
+<span class="cmd-comment">! Tu estación de trabajo siempre podrá acceder incluso en quiet mode</span></code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Checklist de Troubleshooting Seguridad</div>
+    <ol>
+      <li>¿Hay <strong>enable secret</strong> configurado? (<code>show run | sec enable</code>)</li>
+      <li>¿Las líneas VTY tienen <strong>transport input ssh</strong>?</li>
+      <li>¿Existe <strong>ip domain-name</strong> y <strong>crypto key</strong>?</li>
+      <li>¿Hay usuarios locales con <strong>secret</strong>?</li>
+      <li>¿Las ACLs tienen el <strong>orden correcto</strong>?</li>
+      <li>¿La ACL está aplicada en la <strong>dirección correcta</strong> (in/out)?</li>
+      <li>¿Port Security tiene <strong>violation shutdown</strong> bloqueando puertos?</li>
+      <li>¿NTP está <strong>sincronizado</strong> para logs correctos?</li>
+      <li>¿<strong>login block-for</strong> está en quiet mode?</li>
+      <li>¿Hay <strong>exec-timeout</strong> en líneas para prevenir sesiones abandonadas?</li>
+    </ol>
+  </div>
+</div>
+</div>
+<!-- ══════════════════════════════════════════════
+     TAB 10 — LABORATORIO
+══════════════════════════════════════════════ -->
+<div id="tab-lab" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">🧪 Laboratorio Práctico: Hardening Completo de Router y Switch</h2>
+  <p>Este laboratorio integra todos los comandos de seguridad aprendidos en una topología empresarial realista. Configurarás autenticación segura, SSH, ACLs, Port Security, NTP y protección contra fuerza bruta.</p>
+
+  <div class="lab-topology">
+    <div class="diagram-title">Topología del Laboratorio de Seguridad</div>
+    <svg viewBox="0 0 900 480" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:900px;">
+      <!-- Admin PC -->
+      <rect x="30" y="30" width="120" height="80" rx="6" fill="#0d1220" stroke="#38bdf8" stroke-width="2"/>
+      <text x="90" y="60" text-anchor="middle" fill="#38bdf8" font-size="12" font-family="Orbitron">ADMIN-PC</text>
+      <text x="90" y="80" text-anchor="middle" fill="#6b7a9a" font-size="9" font-family="Share Tech Mono">192.168.99.100</text>
+      <text x="90" y="95" text-anchor="middle" fill="#4a5780" font-size="8" font-family="Share Tech Mono">SSH Client</text>
+
+      <!-- Router -->
+      <rect x="350" y="20" width="200" height="120" rx="8" fill="#0d1220" stroke="#00d4aa" stroke-width="2"/>
+      <text x="450" y="50" text-anchor="middle" fill="#00d4aa" font-size="14" font-family="Orbitron" font-weight="700">R1-HQ</text>
+      <text x="450" y="70" text-anchor="middle" fill="#6b7a9a" font-size="10" font-family="Share Tech Mono">SSH + ACLs + NTP Client</text>
+      <text x="450" y="90" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">Gi0/0: 192.168.10.1</text>
+      <text x="450" y="105" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">Gi0/1: 192.168.99.1</text>
+      <text x="450" y="120" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">Login Block + Enable Secret</text>
+
+      <!-- Switch -->
+      <rect x="350" y="220" width="200" height="120" rx="8" fill="#0d1220" stroke="#a78bfa" stroke-width="2"/>
+      <text x="450" y="250" text-anchor="middle" fill="#a78bfa" font-size="14" font-family="Orbitron" font-weight="700">SW-ACCESS</text>
+      <text x="450" y="270" text-anchor="middle" fill="#6b7a9a" font-size="10" font-family="Share Tech Mono">Port Security + VLANs</text>
+      <text x="450" y="290" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">Fa0/1-6: VLAN 10 (PortSec)</text>
+      <text x="450" y="305" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">Fa0/7-12: VLAN 20 (PortSec)</text>
+      <text x="450" y="320" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">Gi0/1: Trunk to R1</text>
+
+      <!-- PCs -->
+      <rect x="100" y="360" width="80" height="50" rx="4" fill="#090d1a" stroke="#38bdf8" stroke-width="1"/>
+      <text x="140" y="380" text-anchor="middle" fill="#38bdf8" font-size="9" font-family="Share Tech Mono">PC1-VLAN10</text>
+      <text x="140" y="395" text-anchor="middle" fill="#4a5780" font-size="8" font-family="Share Tech Mono">192.168.10.10</text>
+
+      <rect x="220" y="360" width="80" height="50" rx="4" fill="#090d1a" stroke="#a78bfa" stroke-width="1"/>
+      <text x="260" y="380" text-anchor="middle" fill="#a78bfa" font-size="9" font-family="Share Tech Mono">PC2-VLAN20</text>
+      <text x="260" y="395" text-anchor="middle" fill="#4a5780" font-size="8" font-family="Share Tech Mono">192.168.20.10</text>
+
+      <!-- NTP Server -->
+      <rect x="700" y="30" width="120" height="80" rx="6" fill="#0d1220" stroke="#fbbf24" stroke-width="2"/>
+      <text x="760" y="55" text-anchor="middle" fill="#fbbf24" font-size="11" font-family="Orbitron">NTP-SRV</text>
+      <text x="760" y="75" text-anchor="middle" fill="#6b7a9a" font-size="9" font-family="Share Tech Mono">192.168.99.5</text>
+      <text x="760" y="90" text-anchor="middle" fill="#4a5780" font-size="8" font-family="Share Tech Mono">Stratum 2</text>
+
+      <!-- Conexiones -->
+      <line x1="150" y1="70" x2="350" y2="80" stroke="#38bdf8" stroke-width="2"/>
+      <text x="250" y="65" fill="#38bdf8" font-size="8" font-family="Share Tech Mono">VLAN 99</text>
+
+      <line x1="450" y1="140" x2="450" y2="220" stroke="#00d4aa" stroke-width="2"/>
+      <text x="465" y="185" fill="#00d4aa" font-size="8" font-family="Share Tech Mono">Trunk</text>
+
+      <line x1="180" y1="385" x2="350" y2="300" stroke="#38bdf8" stroke-width="1"/>
+      <line x1="300" y1="385" x2="380" y2="300" stroke="#a78bfa" stroke-width="1"/>
+
+      <line x1="550" y1="80" x2="700" y2="70" stroke="#fbbf24" stroke-width="2"/>
+      <text x="625" y="65" fill="#fbbf24" font-size="8" font-family="Share Tech Mono">NTP</text>
+    </svg>
+  </div>
+
+  <h3 class="sub-title">Objetivos del Laboratorio</h3>
+  <ul>
+    <li>Configurar R1-HQ con enable secret, usuarios locales y cifrado</li>
+    <li>Habilitar SSH v2 con dominio, clave RSA 2048 y líneas VTY seguras</li>
+    <li>Aplicar ACL standard para restringir administración remota</li>
+    <li>Configurar login block-for contra fuerza bruta</li>
+    <li>Sincronizar tiempo con servidor NTP</li>
+    <li>Configurar SW-ACCESS con Port Security sticky en todos los puertos de acceso</li>
+    <li>Verificar seguridad end-to-end</li>
+  </ul>
+
+  <div class="lab-steps">
+    <div class="lab-step">
+      <div class="lab-step-num">Parte 1</div>
+      <div class="lab-step-title">Hardening de R1-HQ (Autenticación + SSH + ACLs)</div>
+      <div class="code-block" style="margin-top:8px;">
+        <pre><code><span class="cmd-comment">! === CONFIGURACIÓN INICIAL ===</span>
+Router> enable
+Router# configure terminal
+Router(config)# hostname R1-HQ
+
+<span class="cmd-comment">! === CONTRASEÑAS Y CIFRADO ===</span>
+R1-HQ(config)# enable secret CiscoSecret2026!
+R1-HQ(config)# service password-encryption
+R1-HQ(config)# security passwords min-length 12
+
+<span class="cmd-comment">! === USUARIOS LOCALES ===</span>
+R1-HQ(config)# username admin secret AdminSecure2026!
+R1-HQ(config)# username admin privilege 15
+R1-HQ(config)# username soporte secret Soporte2026!
+R1-HQ(config)# username soporte privilege 5
+
+<span class="cmd-comment">! === BANNERS ===</span>
+R1-HQ(config)# banner motd #
+ACCESO RESTRINGIDO - SISTEMA CORPORATIVO
+Autorizado solo para personal de IT.
+Toda actividad es monitoreada y grabada.
+#
+
+<span class="cmd-comment">! === DOMINIO Y SSH ===</span>
+R1-HQ(config)# ip domain-name empresa.local
+R1-HQ(config)# crypto key generate rsa modulus 2048
+R1-HQ(config)# ip ssh version 2
+R1-HQ(config)# ip ssh time-out 60
+R1-HQ(config)# ip ssh authentication-retries 3
+
+<span class="cmd-comment">! === ACL PARA ADMINISTRACIÓN REMOTA ===</span>
+R1-HQ(config)# access-list 20 permit 192.168.99.0 0.0.0.255
+R1-HQ(config)# access-list 20 permit host 10.1.1.100
+R1-HQ(config)# access-list 20 deny any log
+
+<span class="cmd-comment">! === LÍNEAS VTY SEGURAS ===</span>
+R1-HQ(config)# line vty 0 15
+R1-HQ(config-line)# access-class 20 in
+R1-HQ(config-line)# exec-timeout 5 0
+R1-HQ(config-line)# login local
+R1-HQ(config-line)# transport input ssh
+R1-HQ(config-line)# exit
+
+<span class="cmd-comment">! === LÍNEA CONSOLA ===</span>
+R1-HQ(config)# line console 0
+R1-HQ(config-line)# exec-timeout 3 0
+R1-HQ(config-line)# login local
+R1-HQ(config-line)# exit
+
+<span class="cmd-comment">! === BLOQUEO CONTRA FUERZA BRUTA ===</span>
+R1-HQ(config)# login block-for 300 attempts 5 within 120
+R1-HQ(config)# login quiet-mode access-class 20
+R1-HQ(config)# login delay 3
+R1-HQ(config)# login on-failure log
+R1-HQ(config)# login on-success log
+
+<span class="cmd-comment">! === NTP ===</span>
+R1-HQ(config)# ntp server 192.168.99.5
+R1-HQ(config)# clock timezone EST -5
+R1-HQ(config)# clock summer-time EDT recurring
+
+<span class="cmd-comment">! === INTERFACES ===</span>
+R1-HQ(config)# interface GigabitEthernet0/0
+R1-HQ(config-if)# ip address 192.168.10.1 255.255.255.0
+R1-HQ(config-if)# no shutdown
+
+R1-HQ(config)# interface GigabitEthernet0/1
+R1-HQ(config-if)# ip address 192.168.99.1 255.255.255.0
+R1-HQ(config-if)# no shutdown
+
+<span class="cmd-comment">! === VERIFICACIÓN ===</span>
+R1-HQ# show ip ssh
+R1-HQ# show ssh
+R1-HQ# show login
+R1-HQ# show ntp status
+R1-HQ# copy running-config startup-config</code></pre>
+      </div>
+    </div>
+
+    <div class="lab-step">
+      <div class="lab-step-num">Parte 2</div>
+      <div class="lab-step-title">Configuración SW-ACCESS (Port Security)</div>
+      <div class="code-block" style="margin-top:8px;">
+        <pre><code><span class="cmd-comment">! === CONFIGURACIÓN INICIAL ===</span>
+Switch> enable
+Switch# configure terminal
+Switch(config)# hostname SW-ACCESS
+
+<span class="cmd-comment">! === VLANs ===</span>
+SW-ACCESS(config)# vlan 10
+SW-ACCESS(config-vlan)# name VENTAS
+SW-ACCESS(config-vlan)# exit
+SW-ACCESS(config)# vlan 20
+SW-ACCESS(config-vlan)# name IT
+SW-ACCESS(config-vlan)# exit
+SW-ACCESS(config)# vlan 99
+SW-ACCESS(config-vlan)# name MANAGEMENT
+SW-ACCESS(config-vlan)# exit
+
+<span class="cmd-comment">! === TRUNK HACIA R1 ===</span>
+SW-ACCESS(config)# interface GigabitEthernet0/1
+SW-ACCESS(config-if)# switchport mode trunk
+SW-ACCESS(config-if)# switchport trunk allowed vlan 10,20,99
+SW-ACCESS(config-if)# switchport trunk native vlan 99
+SW-ACCESS(config-if)# switchport nonegotiate
+SW-ACCESS(config-if)# no shutdown
+
+<span class="cmd-comment">! === PUERTOS VLAN 10 CON PORT SECURITY ===</span>
+SW-ACCESS(config)# interface range FastEthernet0/1 - 6
+SW-ACCESS(config-if-range)# switchport mode access
+SW-ACCESS(config-if-range)# switchport access vlan 10
+SW-ACCESS(config-if-range)# switchport port-security
+SW-ACCESS(config-if-range)# switchport port-security maximum 2
+SW-ACCESS(config-if-range)# switchport port-security mac-address sticky
+SW-ACCESS(config-if-range)# switchport port-security violation restrict
+SW-ACCESS(config-if-range)# spanning-tree portfast
+SW-ACCESS(config-if-range)# no shutdown
+
+<span class="cmd-comment">! === PUERTOS VLAN 20 CON PORT SECURITY ===</span>
+SW-ACCESS(config)# interface range FastEthernet0/7 - 12
+SW-ACCESS(config-if-range)# switchport mode access
+SW-ACCESS(config-if-range)# switchport access vlan 20
+SW-ACCESS(config-if-range)# switchport port-security
+SW-ACCESS(config-if-range)# switchport port-security maximum 2
+SW-ACCESS(config-if-range)# switchport port-security mac-address sticky
+SW-ACCESS(config-if-range)# switchport port-security violation restrict
+SW-ACCESS(config-if-range)# spanning-tree portfast
+SW-ACCESS(config-if-range)# no shutdown
+
+<span class="cmd-comment">! === PUERTOS NO UTILIZADOS ===</span>
+SW-ACCESS(config)# vlan 999
+SW-ACCESS(config-vlan)# name PARKING
+SW-ACCESS(config-vlan)# exit
+SW-ACCESS(config)# interface range FastEthernet0/13 - 24
+SW-ACCESS(config-if-range)# switchport access vlan 999
+SW-ACCESS(config-if-range)# shutdown
+
+<span class="cmd-comment">! === VERIFICACIÓN ===</span>
+SW-ACCESS# show port-security
+SW-ACCESS# show port-security address
+SW-ACCESS# copy running-config startup-config</code></pre>
+      </div>
+    </div>
+
+    <div class="lab-step">
+      <div class="lab-step-num">Parte 3</div>
+      <div class="lab-step-title">Pruebas de Seguridad End-to-End</div>
+      <div class="code-block" style="margin-top:8px;">
+        <pre><code><span class="cmd-comment">! === PRUEBA 1: SSH desde ADMIN-PC (192.168.99.100) ===</span>
+ADMIN-PC> ssh -l admin 192.168.99.1
+<span class="cmd-comment">! Debe conectar exitosamente</span>
+
+<span class="cmd-comment">! === PRUEBA 2: Telnet debe FALLAR ===</span>
+ADMIN-PC> telnet 192.168.99.1
+<span class="cmd-comment">! Debe rechazar conexión (transport input ssh)</span>
+
+<span class="cmd-comment">! === PRUEBA 3: Acceso desde IP no autorizada ===</span>
+<span class="cmd-comment">! Intentar SSH desde 203.0.113.50 (fuera de ACL 20)</span>
+<span class="cmd-comment">! Debe fallar silenciosamente</span>
+
+<span class="cmd-comment">! === PRUEBA 4: Fuerza bruta y login block ===</span>
+<span class="cmd-comment">! Intentar 5 logins fallidos rápidamente desde una PC</span>
+<span class="cmd-comment">! El 6to intento debe ser bloqueado por 300 segundos</span>
+R1-HQ# show login
+R1-HQ# show login failures
+
+<span class="cmd-comment">! === PRUEBA 5: Port Security ===</span>
+<span class="cmd-comment">! Conectar PC no autorizada en Fa0/1 (MAC diferente)</span>
+SW-ACCESS# show port-security interface FastEthernet0/1
+<span class="cmd-comment">! Debe mostrar violation count incrementado</span>
+<span class="cmd-comment">! Puerto debe seguir up (restrict) pero descartar tráfico</span>
+
+<span class="cmd-comment">! === PRUEBA 6: NTP ===</span>
+R1-HQ# show ntp status
+<span class="cmd-comment">! Debe mostrar "Clock is synchronized"</span>
+R1-HQ# show clock
+<span class="cmd-comment">! Hora debe coincidir con servidor NTP</span>
+
+<span class="cmd-comment">! === VERIFICACIÓN FINAL ===</span>
+R1-HQ# show running-config | section enable
+R1-HQ# show ip ssh
+R1-HQ# show ip access-lists
+SW-ACCESS# show port-security</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">✅ Checklist de Éxito del Laboratorio</div>
+    <ul>
+      <li>✓ SSH funciona desde 192.168.99.100, Telnet es rechazado</li>
+      <li>✓ Acceso desde IPs fuera de ACL 20 es bloqueado</li>
+      <li>✓ Login block-for activa quiet mode tras 5 intentos fallidos</li>
+      <li>✓ NTP sincronizado y hora correcta</li>
+      <li>✓ Port Security sticky aprende MACs en Fa0/1-12</li>
+      <li>✓ Violación de MAC desconocida incrementa contador (restrict)</li>
+      <li>✓ Puertos no utilizados en VLAN 999 y shutdown</li>
+      <li>✓ Configuración guardada en startup-config</li>
+    </ul>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 11 — TABLA DE REFERENCIA
+══════════════════════════════════════════════ -->
+<div id="tab-tabla" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Tabla de Referencia Rápida — Comandos de Seguridad</h2>
+  <table class="ref-table">
+    <thead>
+      <tr>
+        <th>Comando</th>
+        <th>Contexto</th>
+        <th>Descripción</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><code>enable password PASS</code></td><td>config</td><td>Contraseña enable (texto plano, NO usar)</td></tr>
+      <tr><td><code>enable secret PASS</code></td><td>config</td><td>Contraseña enable con hash (recomendado)</td></tr>
+      <tr><td><code>username NAME password PASS</code></td><td>config</td><td>Usuario local con contraseña texto plano</td></tr>
+      <tr><td><code>username NAME secret PASS</code></td><td>config</td><td>Usuario local con hash (recomendado)</td></tr>
+      <tr><td><code>service password-encryption</code></td><td>config</td><td>Cifra contraseñas tipo 7 en running-config</td></tr>
+      <tr><td><code>security passwords min-length N</code></td><td>config</td><td>Longitud mínima de contraseñas</td></tr>
+      <tr><td><code>banner motd # TEXTO #</code></td><td>config</td><td>Mensaje antes del login</td></tr>
+      <tr><td><code>ip domain-name DOMINIO</code></td><td>config</td><td>Domino para generación de clave RSA</td></tr>
+      <tr><td><code>crypto key generate rsa</code></td><td>config</td><td>Genera par de claves RSA para SSH</td></tr>
+      <tr><td><code>crypto key zeroize rsa</code></td><td>config</td><td>Elimina claves RSA (deshabilita SSH)</td></tr>
+      <tr><td><code>ip ssh version 2</code></td><td>config</td><td>Fuerza SSH versión 2</td></tr>
+      <tr><td><code>ip ssh time-out SEG</code></td><td>config</td><td>Tiempo máximo de sesión SSH inactiva</td></tr>
+      <tr><td><code>ip ssh authentication-retries N</code></td><td>config</td><td>Intentos de autenticación SSH</td></tr>
+      <tr><td><code>transport input {telnet | ssh | none | all}</code></td><td>config-line</td><td>Protocolos permitidos en línea VTY</td></tr>
+      <tr><td><code>login local</code></td><td>config-line</td><td>Autenticación por base de usuarios local</td></tr>
+      <tr><td><code>exec-timeout MIN [SEG]</code></td><td>config-line</td><td>Tiempo de inactividad antes de desconexión</td></tr>
+      <tr><td><code>access-list N {permit | deny} IP WC</code></td><td>config</td><td>Crea regla ACL standard numerada</td></tr>
+      <tr><td><code>ip access-list standard NOMBRE</code></td><td>config</td><td>Crea ACL standard nombrada</td></tr>
+      <tr><td><code>ip access-list extended NOMBRE</code></td><td>config</td><td>Crea ACL extended nombrada</td></tr>
+      <tr><td><code>permit | deny protocol SRC DST [op PORT]</code></td><td>config-(ext)-nacl</td><td>Regla dentro de ACL</td></tr>
+      <tr><td><code>ip access-group N {in | out}</code></td><td>config-if</td><td>Aplica ACL a interfaz</td></tr>
+      <tr><td><code>access-class N {in | out}</code></td><td>config-line</td><td>Aplica ACL a líneas VTY/Console</td></tr>
+      <tr><td><code>switchport port-security</code></td><td>config-if</td><td>Habilita port security en puerto</td></tr>
+      <tr><td><code>switchport port-security maximum N</code></td><td>config-if</td><td>Máximo de MACs permitidas</td></tr>
+      <tr><td><code>switchport port-security mac-address MAC</code></td><td>config-if</td><td>MAC estática permitida</td></tr>
+      <tr><td><code>switchport port-security mac-address sticky</code></td><td>config-if</td><td>Aprende MAC dinámicamente (permanente)</td></tr>
+      <tr><td><code>switchport port-security violation {shutdown | restrict | protect}</code></td><td>config-if</td><td>Acción ante violación de seguridad</td></tr>
+      <tr><td><code>show port-security [interface IF]</code></td><td>exec</td><td>Estado de port security</td></tr>
+      <tr><td><code>ntp server IP [prefer]</code></td><td>config</td><td>Configura servidor NTP</td></tr>
+      <tr><td><code>ntp master STRATUM</code></td><td>config</td><td>Router como servidor NTP</td></tr>
+      <tr><td><code>clock timezone ZONA OFFSET</code></td><td>config</td><td>Zona horaria local</td></tr>
+      <tr><td><code>login block-for S attempts N within S</code></td><td>config</td><td>Bloqueo tras intentos fallidos</td></tr>
+      <tr><td><code>login quiet-mode access-class N</code></td><td>config</td><td>ACL de excepción durante quiet mode</td></tr>
+      <tr><td><code>login delay SEG</code></td><td>config</td><td>Retardo entre prompts de login</td></tr>
+      <tr><td><code>show login</code></td><td>exec</td><td>Estado de bloqueo de login</td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="section-title" style="margin-top:32px;">Comandos por Tema de Examen CCNA 200-301</h2>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead><tr><th>Tema del examen</th><th>Comandos clave</th><th>Frecuencia</th></tr></thead>
+      <tbody>
+        <tr><td><strong>6.1 Contraseñas</strong></td><td>enable secret, service password-encryption, username secret</td><td>⭐⭐⭐⭐⭐</td></tr>
+        <tr><td><strong>6.1 SSH</strong></td><td>ip domain-name, crypto key generate rsa, transport input ssh</td><td>⭐⭐⭐⭐⭐</td></tr>
+        <tr><td><strong>6.2 ACLs Standard</strong></td><td>access-list, permit/deny, wildcard, access-group</td><td>⭐⭐⭐⭐⭐</td></tr>
+        <tr><td><strong>6.2 ACLs Extended</strong></td><td>ip access-list extended, eq, range, protocol</td><td>⭐⭐⭐⭐⭐</td></tr>
+        <tr><td><strong>6.2 ACLs VTY</strong></td><td>access-class, line vty, login local</td><td>⭐⭐⭐⭐</td></tr>
+        <tr><td><strong>6.2 Port Security</strong></td><td>switchport port-security, sticky, violation, maximum</td><td>⭐⭐⭐⭐⭐</td></tr>
+        <tr><td><strong>6.3 NTP</strong></td><td>ntp server, clock timezone, show ntp status</td><td>⭐⭐⭐</td></tr>
+        <tr><td><strong>6.3 Login Block</strong></td><td>login block-for, login quiet-mode</td><td>⭐⭐⭐</td></tr>
+        <tr><td><strong>6.1 Banner</strong></td><td>banner motd</td><td>⭐⭐⭐</td></tr>
+        <tr><td><strong>6.2 Verificación</strong></td><td>show ip access-lists, show port-security, show ip ssh</td><td>⭐⭐⭐⭐⭐</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 12 — QUIZ
+══════════════════════════════════════════════ -->
+<div id="tab-quiz" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Quiz — Comandos de Seguridad</h2>
+  <div id="quizContainerSec"></div>
+</div>
+</div>
+
+</div>
+<!-- Cierre de tabs-wrap -->
+
+<footer class="footer">
+  <p>© WDS-CCNA Portal · Comandos de Seguridad · M2.5</p>
+  <p style="margin-top:.3rem">Basado en <em>CCNA 200-301 Official Cert Guide</em> (Wendell Odom) · Cisco IOS 15.x/16.x</p>
+  <p style="margin-top:.4rem"><a href="../index.html">← Volver al índice</a></p>
+</footer>
+
+<style>
+.class-hero { background: linear-gradient(135deg, #06080f 0%, #0d1220 60%, #101830 100%); padding: 56px 24px 48px; border-bottom: 1px solid rgba(0,212,170,0.12); position: relative; overflow: hidden; }
+.class-hero::before { content:''; position:absolute; top:-60px; right:-80px; width:400px; height:400px; border-radius:50%; background:radial-gradient(circle, rgba(56,189,248,0.06) 0%, transparent 70%); }
+.class-hero-inner { max-width: 900px; margin: 0 auto; position: relative; z-index: 1; }
+.class-badge { font-family:'Share Tech Mono',monospace; font-size:0.65rem; color:#38bdf8; letter-spacing:3px; text-transform:uppercase; margin-bottom:14px; }
+.class-title { font-family:'Orbitron',sans-serif; font-size:clamp(1.8rem,4vw,2.8rem); font-weight:900; letter-spacing:3px; color:#c2d0e8; line-height:1.1; margin-bottom:12px; }
+.class-title-accent { background:linear-gradient(135deg,#38bdf8,#a78bfa); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; display:block; font-size:0.65em; margin-top:4px; letter-spacing:2px; }
+.class-subtitle { font-size:1rem; color:#6b7a9a; line-height:1.7; margin-bottom:20px; max-width:720px; }
+.class-meta { display:flex; gap:16px; flex-wrap:wrap; }
+.meta-item { font-family:'Share Tech Mono',monospace; font-size:0.72rem; color:#374060; padding:4px 10px; border:1px solid rgba(56,189,248,0.1); border-radius:4px; }
+.tabs-wrap { max-width: 1100px; margin: 0 auto; padding: 0 16px 40px; }
+.tabs-bar { display:flex; gap:4px; padding:20px 0 0; flex-wrap:wrap; border-bottom:1px solid rgba(0,212,170,0.1); }
+.tab-btn { padding:8px 14px; border-radius:8px 8px 0 0; font-family:'Share Tech Mono',monospace; font-size:0.72rem; color:#4a5780; background:none; border:1px solid transparent; cursor:pointer; transition:all 0.18s; white-space:nowrap; border-bottom:none; }
+.tab-btn:hover { color:#c2d0e8; background:rgba(0,212,170,0.05); }
+.tab-btn.active { color:#38bdf8; background:#0d1220; border-color:rgba(56,189,248,0.2); border-bottom:1px solid #0d1220; }
+.tab-content { display:none; background:#0d1220; border:1px solid rgba(0,212,170,0.1); border-top:none; border-radius:0 0 12px 12px; padding:32px; }
+.tab-content.active { display:block; }
+.content-block { max-width: 860px; }
+.section-title { font-family:'Orbitron',sans-serif; font-size:1rem; color:#38bdf8; letter-spacing:2px; margin:28px 0 14px; padding-bottom:8px; border-bottom:1px solid rgba(56,189,248,0.12); }
+.section-title:first-child { margin-top:0; }
+.sub-title { font-family:'Share Tech Mono',monospace; font-size:0.85rem; color:#00d4aa; margin:24px 0 10px; }
+p { color:#8294b8; line-height:1.75; margin-bottom:14px; font-size:0.9rem; }
+ul, ol { color:#8294b8; padding-left:1.4rem; margin-bottom:14px; font-size:0.9rem; }
+li { margin-bottom:5px; line-height:1.65; }
+strong { color:#c2d0e8; }
+code { font-family:'Share Tech Mono',monospace; font-size:0.82rem; background:rgba(56,189,248,0.08); color:#38bdf8; padding:1px 6px; border-radius:4px; border:1px solid rgba(56,189,248,0.15); }
+.info-box { border-radius:8px; padding:14px 18px; margin:18px 0; border-left:3px solid; }
+.info-box.tip { background:rgba(0,212,170,0.05); border-color:#00d4aa; }
+.info-box.warning { background:rgba(251,191,36,0.05); border-color:#fbbf24; }
+.info-box-title { font-family:'Share Tech Mono',monospace; font-size:0.75rem; color:#00d4aa; margin-bottom:8px; }
+.info-box.warning .info-box-title { color:#fbbf24; }
+.diagram-box { background:#050810; border:1px solid rgba(56,189,248,0.12); border-radius:10px; padding:20px; margin:18px 0; }
+.diagram-title { font-family:'Share Tech Mono',monospace; font-size:0.68rem; color:#4a5780; letter-spacing:2px; text-transform:uppercase; margin-bottom:14px; }
+.table-wrap { overflow-x:auto; margin:16px 0; }
+.ref-table { width:100%; border-collapse:collapse; font-size:0.82rem; }
+.ref-table th { background:#090d1a; color:#38bdf8; font-family:'Share Tech Mono',monospace; font-size:0.7rem; padding:10px 12px; text-align:left; border:1px solid rgba(56,189,248,0.1); letter-spacing:1px; }
+.ref-table td { padding:9px 12px; border:1px solid rgba(255,255,255,0.04); color:#8294b8; }
+.ref-table tr:hover td { background:rgba(56,189,248,0.03); }
+.code-block { background:#050810; border:1px solid rgba(56,189,248,0.12); border-left:3px solid #38bdf8; border-radius:8px; padding:0; margin:16px 0; overflow:hidden; }
+.code-label { background:rgba(56,189,248,0.06); padding:8px 16px; font-family:'Share Tech Mono',monospace; font-size:0.65rem; color:#4a5780; letter-spacing:2px; text-transform:uppercase; border-bottom:1px solid rgba(56,189,248,0.08); }
+.code-block pre { margin:0; padding:16px; overflow-x:auto; }
+.code-block code { background:none; border:none; padding:0; color:#a8b4c8; font-size:0.8rem; line-height:1.7; display:block; }
+.cmd-comment { color:#374060; font-style:italic; }
+.cmd-output  { color:#6b7a9a; }
+.concept-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:12px; margin:16px 0; }
+.concept-card { background:#090d1a; border:1px solid rgba(56,189,248,0.1); border-radius:10px; padding:16px; }
+.concept-card.highlight { border-color:rgba(0,212,170,0.3); background:linear-gradient(135deg,rgba(0,212,170,0.05),rgba(56,189,248,0.03)); }
+.concept-icon { font-size:1.8rem; margin-bottom:8px; }
+.concept-card h3 { font-family:'Share Tech Mono',monospace; font-size:0.78rem; color:#38bdf8; margin-bottom:8px; }
+.concept-card p { font-size:0.8rem; margin:0 0 8px; }
+.concept-card code { font-size:0.75rem; display:block; margin-top:8px; padding:8px; background:rgba(0,0,0,0.2); }
+.process-steps { display:flex; flex-direction:column; gap:12px; margin:16px 0; }
+.process-step { display:flex; gap:16px; align-items:flex-start; background:#090d1a; border:1px solid rgba(56,189,248,0.08); border-radius:10px; padding:16px; }
+.step-num { width:50px; height:36px; border-radius:8px; background:rgba(56,189,248,0.1); border:1px solid rgba(56,189,248,0.2); display:flex; align-items:center; justify-content:center; font-family:'Share Tech Mono',monospace; font-size:0.68rem; color:#38bdf8; font-weight:700; flex-shrink:0; }
+.step-content { flex:1; }
+.step-title { font-family:'Share Tech Mono',monospace; font-size:0.82rem; color:#c2d0e8; margin-bottom:6px; }
+.attack-diagram { background:#0a0810; border:1px solid rgba(248,113,113,0.15); border-radius:10px; padding:16px; margin:16px 0; }
+.attack-steps { display:flex; flex-direction:column; gap:8px; margin-top:10px; }
+.attack-step { display:flex; gap:12px; align-items:flex-start; }
+.attack-num { width:24px; height:24px; border-radius:50%; background:rgba(248,113,113,0.2); border:1px solid #f87171; display:flex; align-items:center; justify-content:center; font-family:'Share Tech Mono',monospace; font-size:0.7rem; color:#f87171; flex-shrink:0; }
+.lab-topology { background:#050810; border:1px solid rgba(56,189,248,0.1); border-radius:10px; padding:16px; margin:16px 0; }
+.lab-steps { display:flex; flex-direction:column; gap:16px; margin:16px 0; }
+.lab-step { background:#090d1a; border:1px solid rgba(56,189,248,0.08); border-radius:10px; padding:16px; }
+.lab-step-num { font-family:'Share Tech Mono',monospace; font-size:0.6rem; color:#38bdf8; letter-spacing:2px; text-transform:uppercase; margin-bottom:4px; }
+.lab-step-title { font-family:'Orbitron',sans-serif; font-size:0.8rem; color:#c2d0e8; margin-bottom:8px; }
+.quiz-question { background:#090d1a; border:1px solid rgba(56,189,248,0.1); border-radius:10px; padding:20px; margin-bottom:16px; }
+.quiz-q-num { font-family:'Share Tech Mono',monospace; font-size:0.62rem; color:#4a5780; margin-bottom:8px; }
+.quiz-q-text { font-size:0.9rem; color:#c2d0e8; margin-bottom:14px; line-height:1.6; }
+.quiz-opts { display:flex; flex-direction:column; gap:7px; }
+.quiz-opt { padding:9px 14px; border-radius:7px; border:1px solid rgba(56,189,248,0.1); background:#0d1220; color:#6b7a9a; cursor:pointer; font-size:0.85rem; text-align:left; transition:all 0.15s; }
+.quiz-opt:hover:not(:disabled) { border-color:rgba(56,189,248,0.3); color:#c2d0e8; }
+.quiz-opt.correct { border-color:#34d399; background:rgba(52,211,153,0.08); color:#34d399; }
+.quiz-opt.wrong   { border-color:#f87171; background:rgba(248,113,113,0.08); color:#f87171; }
+.quiz-explanation { margin-top:10px; padding:10px 14px; background:rgba(167,139,250,0.06); border-left:3px solid #a78bfa; border-radius:6px; font-size:0.82rem; color:#a0aec0; line-height:1.6; }
+.footer { border-top:1px solid rgba(0,212,170,0.1); background:#090d1a; padding:32px 24px; text-align:center; margin-top:40px; }
+.footer p { color:#374060; font-size:0.75rem; margin:0; }
+.footer a { color:#4a5780; text-decoration:none; }
+.footer a:hover { color:#00d4aa; }
+@media(max-width:680px) { .tab-btn{font-size:0.65rem;padding:6px 10px;} .tab-content{padding:20px 14px;} .concept-grid{grid-template-columns:1fr;} }
+</style>
+
+<script>
+/* -----------------------------------------------------------------
+   NAMESPACE CmdSec - Protege el código contra sobreescritura
+----------------------------------------------------------------- */
+var CmdSec = (function() {
+  
+  function showTabSec(id, btn) {
+    document.querySelectorAll('.tab-content').forEach(function(t) { t.classList.remove('active'); });
+    document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+    var target = document.getElementById('tab-' + id);
+    if (target) target.classList.add('active');
+    if (btn) btn.classList.add('active');
+    
+    if (id === 'quiz') {
+      initQuiz();
+    }
+    if (id === 'tabla') {
+      buildRefTable();
+    }
+  }
+
+  function buildRefTable() {
+    const data = [
+      ['enable secret PASS', 'Global Config', 'Contraseña enable con hash MD5/SHA'],
+      ['enable password PASS', 'Global Config', 'Contraseña enable (texto plano, obsoleto)'],
+      ['username NAME secret PASS', 'Global Config', 'Usuario local con hash seguro'],
+      ['username NAME password PASS', 'Global Config', 'Usuario local (texto plano)'],
+      ['service password-encryption', 'Global Config', 'Cifra contraseñas tipo 7'],
+      ['security passwords min-length N', 'Global Config', 'Longitud mínima obligatoria'],
+      ['banner motd # TEXTO #', 'Global Config', 'Mensaje antes de autenticación'],
+      ['ip domain-name DOMINIO', 'Global Config', 'Dominio para clave RSA'],
+      ['crypto key generate rsa', 'Global Config', 'Genera par de claves RSA'],
+      ['crypto key zeroize rsa', 'Global Config', 'Elimina claves RSA'],
+      ['ip ssh version 2', 'Global Config', 'Fuerza SSHv2'],
+      ['ip ssh time-out SEG', 'Global Config', 'Timeout de sesión SSH'],
+      ['ip ssh authentication-retries N', 'Global Config', 'Intentos fallidos SSH'],
+      ['transport input ssh', 'config-line', 'Solo permite SSH en línea'],
+      ['transport input none', 'config-line', 'Bloquea todo acceso remoto'],
+      ['login local', 'config-line', 'Autenticación por usuarios locales'],
+      ['exec-timeout MIN [SEG]', 'config-line', 'Desconexión por inactividad'],
+      ['access-list N permit/deny IP WC', 'Global Config', 'Regla ACL standard numerada'],
+      ['ip access-list standard NOMBRE', 'Global Config', 'Crea ACL standard nombrada'],
+      ['ip access-list extended NOMBRE', 'Global Config', 'Crea ACL extended nombrada'],
+      ['permit/deny protocol SRC DST', 'config-(ext)-nacl', 'Regla dentro de ACL'],
+      ['ip access-group N in/out', 'config-if', 'Aplica ACL a interfaz'],
+      ['access-class N in/out', 'config-line', 'Aplica ACL a líneas VTY'],
+      ['switchport port-security', 'config-if', 'Habilita port security'],
+      ['switchport port-security maximum N', 'config-if', 'Máximo MACs permitidas'],
+      ['switchport port-security mac-address MAC', 'config-if', 'MAC estática permitida'],
+      ['switchport port-security mac-address sticky', 'config-if', 'Aprendizaje dinámico permanente'],
+      ['switchport port-security violation shutdown', 'config-if', 'Desactiva puerto si viola'],
+      ['switchport port-security violation restrict', 'config-if', 'Descarta y alerta si viola'],
+      ['switchport port-security violation protect', 'config-if', 'Descarta silenciosamente'],
+      ['show port-security', 'Privileged EXEC', 'Estado de port security'],
+      ['show port-security interface IF', 'Privileged EXEC', 'Detalle por puerto'],
+      ['errdisable recovery cause psecure-violation', 'Global Config', 'Recuperación automática'],
+      ['ntp server IP', 'Global Config', 'Servidor NTP'],
+      ['ntp master STRATUM', 'Global Config', 'Servidor NTP local'],
+      ['clock timezone ZONA OFFSET', 'Global Config', 'Zona horaria'],
+      ['clock set HH:MM:SS DAY MONTH YEAR', 'Privileged EXEC', 'Hora manual'],
+      ['login block-for S attempts N within S', 'Global Config', 'Bloqueo anti fuerza bruta'],
+      ['login quiet-mode access-class N', 'Global Config', 'ACL excepción en bloqueo'],
+      ['login delay SEG', 'Global Config', 'Retardo entre logins'],
+      ['show login', 'Privileged EXEC', 'Estado de bloqueo'],
+      ['show login failures', 'Privileged EXEC', 'Intentos fallidos recientes'],
+    ];
+    const headers = ['Comando', 'Modo/Contexto', 'Descripción/Función'];
+    var html = '<div class="table-wrap"><table class="ref-table"><thead><tr>';
+    for (var i = 0; i < headers.length; i++) {
+      html += '<th>' + headers[i] + '</th>';
+    }
+    html += '</tr></thead><tbody>';
+    for (var i = 0; i < data.length; i++) {
+      html += '<tr>';
+      for (var j = 0; j < data[i].length; j++) {
+        html += '<td>' + data[i][j] + '</td>';
+      }
+      html += '</tr>';
+    }
+    html += '</tbody></table></div>';
+    var refDiv = document.getElementById('refTableSec');
+    if (refDiv) refDiv.innerHTML = html;
+  }
+
+  function initQuiz() {
+    const questions = [
+      {
+        q: '¿Cuál es la diferencia principal entre "enable password" y "enable secret"?',
+        opts: ['enable password es más seguro','enable secret usa hash irreversible','No hay diferencia','enable password solo funciona en consola'],
+        ans: 1,
+        exp: '"enable secret" almacena la contraseña con hash MD5 (tipo 5) o SHA-256 (tipo 8/9), irreversible. "enable password" se almacena en texto plano o con cifrado tipo 7 reversible (Vigenère). Si ambos existen, enable secret tiene prioridad.'
+      },
+      {
+        q: '¿Qué comando cifra TODAS las contraseñas en texto plano del running-config?',
+        opts: ['enable secret','username secret','service password-encryption','crypto encrypt passwords'],
+        ans: 2,
+        exp: '"service password-encryption" cifra con tipo 7 todas las contraseñas en texto plano (líneas, enable password, username password). NO cifra enable secret ni username secret porque ya están hasheados. El cifrado tipo 7 es reversible pero oculta las contraseñas a simple vista.'
+      },
+      {
+        q: 'Para habilitar SSH en un router Cisco, ¿qué comando es OBLIGATORIO antes de generar la clave RSA?',
+        opts: ['ip ssh version 2','transport input ssh','ip domain-name','crypto key generate rsa'],
+        ans: 2,
+        exp: '"ip domain-name" es obligatorio porque la clave RSA se nombra automáticamente como hostname.dominio. Sin dominio configurado, "crypto key generate rsa" falla o genera advertencias. SSH v2 y transport input se configuran DESPUÉS de generar la clave.'
+      },
+      {
+        q: '¿Qué comando en líneas VTY bloquea completamente el acceso Telnet permitiendo solo SSH?',
+        opts: ['no telnet','transport input ssh','ip ssh enable','login ssh'],
+        ans: 1,
+        exp: '"transport input ssh" en modo config-line permite SOLO conexiones SSH. "transport input telnet" permite solo Telnet (inseguro). "transport input all" permite ambos. "transport input none" bloquea todo acceso remoto. Es la mejor práctica de seguridad.'
+      },
+      {
+        q: 'En una ACL standard, ¿qué criterio se usa para filtrar?',
+        opts: ['IP origen, destino y puerto','Solo dirección IP origen','Solo dirección IP destino','Protocolo y puerto únicamente'],
+        ans: 1,
+        exp: 'Las ACLs standard (1-99, 1300-1999) filtran únicamente por dirección IP origen. No pueden filtrar por destino, protocolo ni puertos. Las ACLs extended (100-199) sí filtran por origen, destino, protocolo y puertos.'
+      },
+      {
+        q: '¿Cuál es el efecto del "deny any" implícito al final de toda ACL?',
+        opts: ['Permite todo el tráfico no especificado','Bloquea todo el tráfico que no coincide con reglas anteriores','No tiene efecto','Solo bloquea tráfico de broadcast'],
+        ans: 1,
+        exp: 'Toda ACL tiene un "deny any" implícito al final. Si un paquete no coincide con ninguna regla explícita, es descartado silenciosamente. Por eso es común agregar "permit any" explícito al final si se desea permitir el resto del tráfico.'
+      },
+      {
+        q: '¿Qué hace "switchport port-security mac-address sticky"?',
+        opts: ['Borra las MACs aprendidas','Aprende la primera MAC dinámicamente y la guarda permanentemente','Configura una MAC estática manualmente','Deshabilita el aprendizaje de MACs'],
+        ans: 1,
+        exp: '"sticky" aprende dinámicamente la primera MAC que se conecta al puerto y la convierte en una entrada estática equivalente, guardándola en running-config. Combina la facilidad de configuración dinámica con la persistencia de la estática. Requiere guardar running-config.'
+      },
+      {
+        q: 'Un puerto con port security muestra "err-disabled". ¿Qué acción de violación causó esto?',
+        opts: ['protect','restrict','shutdown','sticky'],
+        ans: 2,
+        exp: '"shutdown" (valor por defecto) pone el puerto en estado err-disabled cuando se detecta una violación de port security. "protect" descarta silenciosamente sin desactivar. "restrict" descarta y genera alertas SNMP/syslog pero mantiene el puerto up. "sticky" no es una acción de violación.'
+      },
+      {
+        q: '¿Qué comando configura un bloqueo temporal tras 5 intentos fallidos de login en 2 minutos, bloqueando por 5 minutos?',
+        opts: ['login block 5 minutes','login block-for 300 attempts 5 within 120','block login 5 attempts 2','login quiet-mode 300'],
+        ans: 1,
+        exp: 'La sintaxis exacta es "login block-for [segundos-bloqueo] attempts [N] within [segundos-ventana]". 300 segundos = 5 minutos de bloqueo, 5 intentos, ventana de 120 segundos (2 min). Es fundamental para protección contra fuerza bruta.'
+      },
+      {
+        q: '¿Para qué sirve "ntp server" en un router Cisco?',
+        opts: ['Para que el router sirva tiempo a otros','Para sincronizar el reloj del router con un servidor externo','Para configurar la zona horaria','Para habilitar el protocolo NTP'],
+        ans: 1,
+        exp: '"ntp server IP" configura el router como CLIENTE NTP, sincronizando su reloj con el servidor especificado. Para que el router actúe como SERVIDOR NTP se usa "ntp master [stratum]". La zona horaria se configura con "clock timezone".'
+      },
+      {
+        q: '¿Cuál es la longitud mínima recomendada de clave RSA para SSH en producción según mejores prácticas actuales?',
+        opts: ['512 bits','1024 bits','2048 bits','256 bits'],
+        ans: 2,
+        exp: '2048 bits es el mínimo recomendado hoy para claves RSA. 1024 bits se considera inseguro. 4096 bits ofrece máxima seguridad pero tarda más en generarse. En el examen CCNA, 1024 es el mínimo aceptable pero 2048 es la mejor práctica.'
+      },
+      {
+        q: '¿Qué comando aplica una ACL a las líneas VTY para restringir quién puede acceder por SSH/Telnet?',
+        opts: ['ip access-group','access-class','line access-list','vty filter'],
+        ans: 1,
+        exp: '"access-class [ACL] {in | out}" se usa en modo config-line (líneas VTY o console) para aplicar ACLs de control de acceso administrativo. "ip access-group" se usa en interfaces (config-if). Es un error común en el examen confundir ambos.'
+      }
+    ];
+
+    var container = document.getElementById('quizContainerSec');
+    if (!container) return;
+    
+    if (container.innerHTML.trim() !== '') return;
+    
+    var html = '';
+    for (var i = 0; i < questions.length; i++) {
+      var q = questions[i];
+      var optsHtml = '';
+      for (var j = 0; j < q.opts.length; j++) {
+        optsHtml += '<button class="quiz-opt" data-qi="' + i + '" data-sel="' + j + '" data-ans="' + q.ans + '">' + q.opts[j] + '</button>';
+      }
+      html += '<div class="quiz-question" id="qqs' + i + '">' +
+        '<div class="quiz-q-num">PREGUNTA ' + (i+1) + ' DE ' + questions.length + '</div>' +
+        '<div class="quiz-q-text">' + q.q + '</div>' +
+        '<div class="quiz-opts">' + optsHtml + '</div>' +
+        '</div>';
+    }
+    container.innerHTML = html;
+
+    window._secExp = {};
+    for (var i = 0; i < questions.length; i++) { 
+      window._secExp[i] = questions[i].exp; 
+    }
+
+    var buttons = container.querySelectorAll('.quiz-opt');
+    for (var k = 0; k < buttons.length; k++) {
+      buttons[k].addEventListener('click', function() {
+        var qi  = parseInt(this.getAttribute('data-qi'), 10);
+        var sel = parseInt(this.getAttribute('data-sel'), 10);
+        var ans = parseInt(this.getAttribute('data-ans'), 10);
+        answerQS(qi, sel, ans, window._secExp[qi]);
+      });
+    }
+  }
+
+  function answerQS(qi, sel, correct, exp) {
+    var qDiv = document.getElementById('qqs' + qi);
+    var btns = qDiv.querySelectorAll('.quiz-opt');
+    for (var i = 0; i < btns.length; i++) { 
+      btns[i].disabled = true; 
+    }
+    btns[sel].classList.add(sel === correct ? 'correct' : 'wrong');
+    if (sel !== correct) btns[correct].classList.add('correct');
+    var expDiv = document.createElement('div');
+    expDiv.className = 'quiz-explanation';
+    expDiv.innerHTML = '<strong>' + (sel===correct?'✅ Correcto!':'❌ Incorrecto.') + '</strong> ' + exp;
+    qDiv.appendChild(expDiv);
+  }
+
+  function init() {
+    // No inicializamos tablas/quiz aquí, se hace al abrir pestaña
+  }
+
+  return {
+    showTabSec: showTabSec,
+    init: init
+  };
+  
+})();
+
+// Inicializar cuando la ventana esté completamente cargada
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+      CmdSec.init();
+    }, 100);
+  });
+} else {
+  setTimeout(function() {
+    CmdSec.init();
+  }, 100);
+}
+</script>
+</body>
+</html>
