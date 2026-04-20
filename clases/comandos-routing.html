@@ -1,0 +1,2231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comandos de Routing — M2.5 | CCNA Academy</title>
+  <meta name="description" content="Clase magistral completa de comandos de Routing Cisco IOS: estático, RIP, OSPF, EIGRP, BGP, NAT/PAT, verificación y troubleshooting. Desde cero hasta experto CCNA 200-301.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+
+<div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
+<nav class="ccna-drawer" id="ccnaDrawer">
+  <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
+  <div class="drawer-section"><div class="drawer-section-title">General</div>
+    <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M1 · Fundamentos</div>
+    <a href="fundamentos.html"       class="drawer-link "><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
+    <a href="subnetting.html"        class="drawer-link "><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
+    <a href="ipv6.html"              class="drawer-link "><span class="dl-icon">6️⃣</span> IPv6</a>
+    <a href="arp.html"               class="drawer-link "><span class="dl-icon">📡</span> ARP</a>
+    <a href="rip.html"               class="drawer-link "><span class="dl-icon">🔄</span> RIP</a>
+    <a href="protocolos-internet.html" class="drawer-link "><span class="dl-icon">🌍</span> Protocolos Internet</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M2 · Dispositivos Cisco</div>
+    <a href="router.html"            class="drawer-link "><span class="dl-icon">📡</span> Routers Cisco</a>
+    <a href="switches-cisco.html"    class="drawer-link "><span class="dl-icon">🔀</span> Switches Cisco</a></div>
+    <div class="drawer-section"><div class="drawer-section-title">M2.5 · Comandos Cisco</div>
+    <a href="comandos-cisco.html"    class="drawer-link"><span class="dl-icon">⌨️</span> Comandos Configuración Básica</a>
+     <a href="comandos-para-vlan.html" class="drawer-link"><span class="dl-icon">🏷️</span> Comandos para VLAN</a>
+     <a href="comandos-routing.html" class="drawer-link active"><span class="dl-icon">🗺️</span> Comandos de Routing</a>
+  <div class="drawer-section"><div class="drawer-section-title">M3 · Switching</div>
+    <a href="vlan.html"              class="drawer-link "><span class="dl-icon">🏷️</span> VLANs</a>
+    <a href="inter-vlan-routing.html" class="drawer-link "><span class="dl-icon">🔁</span> Inter-VLAN Routing</a>
+    <a href="stp.html"               class="drawer-link "><span class="dl-icon">🌳</span> STP</a>
+    <a href="etherchannel.html"      class="drawer-link "><span class="dl-icon">🔗</span> EtherChannel</a>
+    <a href="port-security.html"     class="drawer-link "><span class="dl-icon">🔒</span> Port Security</a>
+    <a href="cdp-lldp.html"          class="drawer-link "><span class="dl-icon">🔍</span> CDP / LLDP</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M4 · Routing</div>
+    <a href="routing.html"           class="drawer-link "><span class="dl-icon">🗺️</span> Routing Estático</a>
+    <a href="ospf.html"              class="drawer-link "><span class="dl-icon">⭕</span> OSPF</a>
+    <a href="eigrp.html"             class="drawer-link "><span class="dl-icon">⚡</span> EIGRP</a>
+    <a href="ospfv2-masterclass.html"            class="drawer-link "><span class="dl-icon">🎯</span> OSPFv2 Masterclass</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M5 · Servicios IP</div>
+    <a href="dhcp.html"              class="drawer-link "><span class="dl-icon">📋</span> DHCP</a>
+    <a href="nat.html"               class="drawer-link "><span class="dl-icon">🔄</span> NAT / PAT</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M6 · Seguridad</div>
+    <a href="acl.html"               class="drawer-link "><span class="dl-icon">🛡️</span> ACLs</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M7 · WAN &amp; QoS</div>
+    <a href="wan.html"               class="drawer-link "><span class="dl-icon">🌍</span> WAN</a>
+    <a href="qos.html"               class="drawer-link "><span class="dl-icon">📊</span> QoS</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M8 · Automatización</div>
+    <a href="m8-automatizacion.html"  class="drawer-link"><span class="dl-icon">🤖</span> M8 — Vista General</a>
+    <a href="python-redes.html"       class="drawer-link"><span class="dl-icon">🐍</span> Python para Redes</a>
+    <a href="json-datos.html"         class="drawer-link"><span class="dl-icon">📋</span> JSON y Datos</a>
+    <a href="rest-apis.html"          class="drawer-link"><span class="dl-icon">🌐</span> REST APIs</a>
+    <a href="ansible-redes.html"      class="drawer-link"><span class="dl-icon">⚙️</span> Ansible</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">⚡ Herramientas</div>
+    <a href="asistente.html"         class="drawer-link "><span class="dl-icon">🤖</span> Asistente IA</a>
+    <a href="netbot.html"            class="drawer-link "><span class="dl-icon">⚙️</span> NetBot Config</a>
+    <a href="calculadora.html"       class="drawer-link "><span class="dl-icon">🧮</span> Calculadora IP</a>
+    <a href="../laboratorios-pkt.html"   class="drawer-link "><span class="dl-icon">🧪</span> Labs Packet Tracer</a>
+    <a href="../banco-preguntas.html" class="drawer-link "><span class="dl-icon">📝</span> Banco de Preguntas</a></div>
+</nav>
+<header class="navbar">
+  <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
+  <a href="../index.html" class="navbar-brand">CISCO<span> ACADEMY</span></a>
+  <div class="navbar-spacer"></div>
+  <a href="../index.html" class="navbar-link">← Inicio</a>
+</header>
+<script src="../assets/main.js" defer></script>
+<div class="nav-spacer"></div>
+
+<!-- HERO -->
+<section class="class-hero">
+  <div class="class-hero-inner">
+    <div class="class-badge">M2.5 · COMANDOS ROUTING · CAPA 3</div>
+    <h1 class="class-title">Comandos de <span class="class-title-accent">Routing</span></h1>
+    <p class="class-subtitle">Domina la configuración, administración y troubleshooting de protocolos de enrutamiento en Cisco IOS. Desde rutas estáticas hasta OSPF, EIGRP, BGP y NAT/PAT. La base fundamental para conectividad inter-redes en routers Cisco CCNA.</p>
+    <div class="class-meta">
+      <span class="meta-item">📋 IOS 15.x / IOS XE</span>
+      <span class="meta-item">🎯 CCNA 200-301 Exam Topic 3.1, 3.2, 3.3, 3.4, 3.5</span>
+      <span class="meta-item">⏱ ~120 min lectura</span>
+      <span class="meta-item">🧪 Lab: 3 Routers + 2 Switches + 1 ISP</span>
+    </div>
+  </div>
+</section>
+
+<!-- TABS -->
+<div class="tabs-wrap">
+  <div class="tabs-bar">
+    <button class="tab-btn active" onclick="CmdRouting.showTabRouting('conceptos',this)">📖 Conceptos</button>
+    <button class="tab-btn" onclick="CmdRouting.showTabRouting('estatico',this)">🗺️ Rutas Estáticas</button>
+    <button class="tab-btn" onclick="CmdRouting.showTabRouting('rip',this)">🔄 RIP</button>
+    <button class="tab-btn" onclick="CmdRouting.showTabRouting('ospf',this)">⭕ OSPF</button>
+    <button class="tab-btn" onclick="CmdRouting.showTabRouting('eigrp',this)">⚡ EIGRP</button>
+    <button class="tab-btn" onclick="CmdRouting.showTabRouting('bgp',this)">🌐 BGP</button>
+    <button class="tab-btn" onclick="CmdRouting.showTabRouting('nat',this)">🔄 NAT/PAT</button>
+    <button class="tab-btn" onclick="CmdRouting.showTabRouting('verificacion',this)">📡 Verificación</button>
+    <button class="tab-btn" onclick="CmdRouting.showTabRouting('troubleshooting',this)">🔧 Troubleshooting</button>
+    <button class="tab-btn" onclick="CmdRouting.showTabRouting('lab',this)">🧪 Laboratorio</button>
+    <button class="tab-btn" onclick="CmdRouting.showTabRouting('tabla',this)">📊 Referencia</button>
+    <button class="tab-btn" onclick="CmdRouting.showTabRouting('quiz',this)">🎯 Quiz</button>
+  </div>
+<!-- Cierre de tabs-bar -->
+
+<!-- ══════════════════════════════════════════════
+     TAB 1 — CONCEPTOS ROUTING
+══════════════════════════════════════════════ -->
+<div id="tab-conceptos" class="tab-content active">
+<div class="content-block">
+  <h2 class="section-title">Fundamentos de Routing en Cisco IOS</h2>
+  <p>El routing (enrutamiento) es el proceso de seleccionar el mejor camino para enviar paquetes IP desde una red origen hacia una red destino. Los routers Cisco utilizan tablas de enrutamiento que pueden aprenderse dinámicamente mediante protocolos o configurarse manualmente.</p>
+
+  <div class="diagram-box">
+    <div class="diagram-title">Clasificación de Protocolos de Routing</div>
+    <svg viewBox="0 0 900 500" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:900px;">
+      <!-- Router Central -->
+      <rect x="380" y="200" width="140" height="100" rx="8" fill="#0d1220" stroke="#00d4aa" stroke-width="2"/>
+      <text x="450" y="235" text-anchor="middle" fill="#00d4aa" font-size="14" font-family="Orbitron" font-weight="700">ROUTER</text>
+      <text x="450" y="255" text-anchor="middle" fill="#6b7a9a" font-size="10" font-family="Share Tech Mono">Tabla de Routing</text>
+      <text x="450" y="275" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">Decisiones de forwarding</text>
+
+      <!-- Estático -->
+      <rect x="50" y="50" width="200" height="120" rx="8" fill="#0d1220" stroke="#38bdf8" stroke-width="2"/>
+      <text x="150" y="80" text-anchor="middle" fill="#38bdf8" font-size="12" font-family="Orbitron" font-weight="700">RUTAS ESTÁTICAS</text>
+      <text x="150" y="105" text-anchor="middle" fill="#6b7a9a" font-size="9" font-family="Share Tech Mono">• ip route [red] [mask]</text>
+      <text x="150" y="120" text-anchor="middle" fill="#6b7a9a" font-size="9" font-family="Share Tech Mono">• ip route [red] [mask] [next-hop]</text>
+      <text x="150" y="135" text-anchor="middle" fill="#6b7a9a" font-size="9" font-family="Share Tech Mono">• ip route [red] [mask] [salida]</text>
+      <text x="150" y="155" text-anchor="middle" fill="#4a5780" font-size="8" font-family="Share Tech Mono">Administrador configura manualmente</text>
+
+      <!-- Dinámico - IGP -->
+      <rect x="50" y="330" width="200" height="150" rx="8" fill="#0d1220" stroke="#a78bfa" stroke-width="2"/>
+      <text x="150" y="360" text-anchor="middle" fill="#a78bfa" font-size="12" font-family="Orbitron" font-weight="700">IGP - INTERIOR</text>
+      <text x="150" y="385" text-anchor="middle" fill="#6b7a9a" font-size="9" font-family="Share Tech Mono">• RIP (Distance Vector)</text>
+      <text x="150" y="400" text-anchor="middle" fill="#6b7a9a" font-size="9" font-family="Share Tech Mono">• OSPF (Link-State)</text>
+      <text x="150" y="415" text-anchor="middle" fill="#6b7a9a" font-size="9" font-family="Share Tech Mono">• EIGRP (Advanced DV)</text>
+      <text x="150" y="435" text-anchor="middle" fill="#4a5780" font-size="8" font-family="Share Tech Mono">Dentro de un AS (Sistema Autónomo)</text>
+      <text x="150" y="450" text-anchor="middle" fill="#4a5780" font-size="8" font-family="Share Tech Mono">Rápidos, convergencia eficiente</text>
+
+      <!-- Dinámico - EGP -->
+      <rect x="650" y="330" width="200" height="120" rx="8" fill="#0d1220" stroke="#fbbf24" stroke-width="2"/>
+      <text x="750" y="360" text-anchor="middle" fill="#fbbf24" font-size="12" font-family="Orbitron" font-weight="700">EGP - EXTERIOR</text>
+      <text x="750" y="385" text-anchor="middle" fill="#6b7a9a" font-size="9" font-family="Share Tech Mono">• BGP (Path Vector)</text>
+      <text x="750" y="405" text-anchor="middle" fill="#6b7a9a" font-size="9" font-family="Share Tech Mono">• Entre AS diferentes</text>
+      <text x="750" y="425" text-anchor="middle" fill="#4a5780" font-size="8" font-family="Share Tech Mono">Internet, políticas de routing</text>
+
+      <!-- NAT -->
+      <rect x="650" y="50" width="200" height="120" rx="8" fill="#0d1220" stroke="#f87171" stroke-width="2"/>
+      <text x="750" y="80" text-anchor="middle" fill="#f87171" font-size="12" font-family="Orbitron" font-weight="700">NAT / PAT</text>
+      <text x="750" y="105" text-anchor="middle" fill="#6b7a9a" font-size="9" font-family="Share Tech Mono">• ip nat inside/outside</text>
+      <text x="750" y="120" text-anchor="middle" fill="#6b7a9a" font-size="9" font-family="Share Tech Mono">• ip nat pool / overload</text>
+      <text x="750" y="135" text-anchor="middle" fill="#6b7a9a" font-size="9" font-family="Share Tech Mono">• ip nat inside source static</text>
+      <text x="750" y="155" text-anchor="middle" fill="#4a5780" font-size="8" font-family="Share Tech Mono">Traducción de direcciones privadas</text>
+
+      <!-- Flechas -->
+      <line x1="250" y1="110" x2="380" y2="220" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <line x1="250" y1="405" x2="380" y2="280" stroke="#a78bfa" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <line x1="520" y1="250" x2="650" y2="390" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <line x1="520" y1="230" x2="650" y2="110" stroke="#f87171" stroke-width="1.5" stroke-dasharray="4,3"/>
+
+      <!-- Leyenda -->
+      <text x="450" y="480" text-anchor="middle" fill="#4a5780" font-size="8" font-family="Share Tech Mono">AD: Estático(1) < OSPF(110) < IS-IS(115) < RIP(120) < EIGRP Ext(170) < BGP Ext(200)</text>
+    </svg>
+  </div>
+
+  <h3 class="sub-title">Tipos de Rutas en la Tabla de Routing</h3>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead><tr><th>Código</th><th>Tipo</th><th>Origen</th><th>Distancia Administrativa</th></tr></thead>
+      <tbody>
+        <tr><td><strong>C</strong></td><td>Connected</td><td>Interfaz directamente conectada</td><td>0</td></tr>
+        <tr><td><strong>L</strong></td><td>Local</td><td>Dirección IP de interfaz local</td><td>0</td></tr>
+        <tr><td><strong>S</strong></td><td>Static</td><td>Configurada manualmente</td><td>1</td></tr>
+        <tr><td><strong>S*</strong></td><td>Static default</td><td>Ruta por defecto estática</td><td>1</td></tr>
+        <tr><td><strong>R</strong></td><td>RIP</td><td>Routing Information Protocol</td><td>120</td></tr>
+        <tr><td><strong>D</strong></td><td>EIGRP Internal</td><td>Enhanced Interior Gateway Routing Protocol</td><td>90</td></tr>
+        <tr><td><strong>D EX</strong></td><td>EIGRP External</td><td>Redistribuida en EIGRP</td><td>170</td></tr>
+        <tr><td><strong>O</strong></td><td>OSPF Internal</td><td>Open Shortest Path First</td><td>110</td></tr>
+        <tr><td><strong>O IA</strong></td><td>OSPF Inter-Area</td><td>Entre áreas OSPF</td><td>110</td></tr>
+        <tr><td><strong>O E1/E2</strong></td><td>OSPF External</td><td>Redistribuida en OSPF</td><td>110</td></tr>
+        <tr><td><strong>B</strong></td><td>BGP</td><td>Border Gateway Protocol</td><td>20 (eBGP) / 200 (iBGP)</td></tr>
+        <tr><td><strong>i</strong></td><td>IS-IS</td><td>Intermediate System to Intermediate System</td><td>115</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="sub-title">Distancia Administrativa (AD) — Prioridad de Fuentes</h3>
+  <div class="code-block">
+    <div class="code-label">Jerarquía de confianza en Cisco IOS</div>
+    <pre><code><span class="cmd-comment">! === DISTANCIA ADMINISTRATIVA POR DEFECTO ===</span>
+<span class="cmd-comment">! Valor más bajo = Más confiable</span>
+
+<span class="cmd-comment">! Protocolo                    AD    Descripción</span>
+<span class="cmd-comment">! --------------------------  ----  --------------------------------</span>
+<span class="cmd-comment">! Connected (C)                0    Interfaz física conectada</span>
+<span class="cmd-comment">! Local (L)                    0    Dirección IP de la interfaz</span>
+<span class="cmd-comment">! Static (S)                   1    Ruta configurada manualmente</span>
+<span class="cmd-comment">! eBGP                        20    BGP externo (entre AS)</span>
+<span class="cmd-comment">! EIGRP Internal (D)          90    Rutas aprendidas por EIGRP</span>
+<span class="cmd-comment">! OSPF (O)                   110    Rutas aprendidas por OSPF</span>
+<span class="cmd-comment">! IS-IS (i)                  115    Intermediate System to Intermediate System</span>
+<span class="cmd-comment">! RIP (R)                    120    Routing Information Protocol</span>
+<span class="cmd-comment">! EIGRP External (D EX)      170    Redistribuidas en EIGRP</span>
+<span class="cmd-comment">! iBGP                       200    BGP interno (dentro del AS)</span>
+<span class="cmd-comment">! Unknown/Unusable           255    Ruta descartada</span>
+
+<span class="cmd-comment">! === CAMBIAR DISTANCIA ADMINISTRATIVA ===</span>
+R1(config)# router ospf 1
+R1(config-router)# distance 150
+<span class="cmd-comment">! Cambia AD de OSPF de 110 a 150 (menos preferido que RIP)</span>
+
+R1(config)# ip route 192.168.100.0 255.255.255.0 10.1.1.2 5
+<span class="cmd-comment">! Ruta estática flotante con AD=5 (más preferida que default 1)</span>
+<span class="cmd-comment">! Útil para backup: si la principal falla, esta entra en acción</span></code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚠️ Conflicto de Rutas: AD vs Métrica</div>
+    <p>Cuando un router aprende la misma red por múltiples fuentes, primero compara la <strong>Distancia Administrativa (AD)</strong>. La ruta con menor AD gana y se instala en la tabla de routing. Solo si la AD es igual, se compara la <strong>métrica</strong> (costo del protocolo).</p>
+    <p><strong>Ejemplo:</strong> Si OSPF (AD 110) y RIP (AD 120) anuncian la misma red, OSPF gana aunque RIP tenga "mejor" métrica (menos saltos). Para forzar el uso de RIP, cambia su AD o usa rutas estáticas con AD menor.</p>
+  </div>
+
+  <h3 class="sub-title">Métricas por Protocolo</h3>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead><tr><th>Protocolo</th><th>Métrica</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr><td><strong>RIP</strong></td><td>Hop Count</td><td>Número de saltos (routers). Máximo 15.</td></tr>
+        <tr><td><strong>OSPF</strong></td><td>Cost</td><td>Costo acumulado basado en ancho de banda. Fórmula: 10^8 / BW (bps).</td></tr>
+        <tr><td><strong>EIGRP</strong></td><td>Composite</td><td>Bandwidth + Delay (por defecto). También puede incluir Load, Reliability, MTU.</td></tr>
+        <tr><td><strong>BGP</strong></td><td>Path Attributes</td><td>Atributos como AS-Path, Local Preference, MED. No hay métrica numérica simple.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 2 — RUTAS ESTÁTICAS
+══════════════════════════════════════════════ -->
+<div id="tab-estatico" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Configuración de Rutas Estáticas</h2>
+  <p>Las rutas estáticas son configuradas manualmente por el administrador. No consumen ancho de banda por actualizaciones de routing, son seguras (no se anuncian), pero no se adaptan automáticamente a cambios en la topología.</p>
+
+  <h3 class="sub-title">Ruta Estática Básica (Next-Hop IP)</h3>
+  <div class="code-block">
+    <div class="code-label">Configuración con dirección IP del siguiente salto</div>
+    <pre><code><span class="cmd-comment">! === RUTA ESTÁTICA CON NEXT-HOP ===</span>
+<span class="cmd-comment">! Formato: ip route [red-destino] [máscara] [next-hop-ip]</span>
+
+R1(config)# ip route 192.168.2.0 255.255.255.0 10.1.1.2
+<span class="cmd-comment">! Para llegar a 192.168.2.0/24, enviar paquetes a 10.1.1.2</span>
+<span class="cmd-comment">! Requiere que 10.1.1.2 sea alcanzable (resoluble ARP en segmento local)</span>
+
+<span class="cmd-comment">! === RUTA ESTÁTICA CON INTERFAZ DE SALIDA ===</span>
+R1(config)# ip route 192.168.2.0 255.255.255.0 Serial0/0/0
+<span class="cmd-comment">! Para llegar a 192.168.2.0/24, usar interfaz Serial0/0/0</span>
+<span class="cmd-comment">! El router no necesita resolver ARP, usa directamente la interfaz</span>
+<span class="cmd-comment">! ⚠️ Solo recomendado en interfaces punto-a-punto (seriales, tunnel)</span>
+
+<span class="cmd-comment">! === RUTA ESTÁTICA CON NEXT-HOP + INTERFAZ (RECOMENDADO) ===</span>
+R1(config)# ip route 192.168.2.0 255.255.255.0 Serial0/0/0 10.1.1.2
+<span class="cmd-comment">! Combina interfaz de salida + next-hop</span>
+<span class="cmd-comment">! Ventaja: No depende de resolución ARP y valida next-hop</span>
+<span class="cmd-comment">! Mejor práctica para interfaces multiacceso (Ethernet)</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Ruta por Defecto (Default Route / Gateway of Last Resort)</h3>
+  <div class="code-block">
+    <div class="code-label">Configuración de ruta 0.0.0.0/0</div>
+    <pre><code><span class="cmd-comment">! === RUTA POR DEFECTO ===</span>
+<span class="cmd-comment">! Se usa cuando no hay coincidencia específica en la tabla de routing</span>
+
+R1(config)# ip route 0.0.0.0 0.0.0.0 203.0.113.1
+<span class="cmd-comment">! Todo tráfico no conocido se envía al ISP (203.0.113.1)</span>
+<span class="cmd-comment">! Equivalente a "Gateway of Last Resort"</span>
+
+<span class="cmd-comment">! === VERIFICAR RUTA POR DEFECTO ===</span>
+R1# show ip route
+<span class="cmd-output">Gateway of last resort is 203.0.113.1 to network 0.0.0.0
+
+S*    0.0.0.0/0 [1/0] via 203.0.113.1</span>
+<span class="cmd-comment">! S* = Static default route</span>
+<span class="cmd-comment">! [1/0] = AD=1, Métrica=0</span>
+
+<span class="cmd-comment">! === RUTA POR DEFECTO CON INTERFAZ ===</span>
+R1(config)# ip route 0.0.0.0 0.0.0.0 GigabitEthernet0/0 203.0.113.1
+<span class="cmd-comment">! Especificar interfaz evita problemas de next-hop inalcanzable</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Rutas Estáticas Flotantes (Floating Static Routes)</h3>
+  <div class="code-block">
+    <div class="code-label">Backup automático con distancia administrativa modificada</div>
+    <pre><code><span class="cmd-comment">! === RUTA ESTÁTICA FLOTANTE (BACKUP) ===</span>
+<span class="cmd-comment">! Si la ruta principal falla, la backup entra automáticamente</span>
+
+<span class="cmd-comment">! Ruta principal (AD por defecto = 1):</span>
+R1(config)# ip route 192.168.100.0 255.255.255.0 10.1.1.2
+
+<span class="cmd-comment">! Ruta backup (AD = 10, mayor que 1):</span>
+R1(config)# ip route 192.168.100.0 255.255.255.0 10.1.2.2 10
+<span class="cmd-comment">! Solo se instala si la principal (AD 1) desaparece</span>
+
+<span class="cmd-comment">! === VERIFICAR RUTA FLOTANTE ===</span>
+R1# show ip route
+<span class="cmd-comment">! Cuando principal está activa:</span>
+<span class="cmd-output">S    192.168.100.0/24 [1/0] via 10.1.1.2</span>
+
+<span class="cmd-comment">! Cuando principal falla:</span>
+<span class="cmd-output">S    192.168.100.0/24 [10/0] via 10.1.2.2</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Rutas Estáticas Recursivas y Null0</h3>
+  <div class="code-block">
+    <div class="code-label">Descarte de tráfico y agregación de rutas</div>
+    <pre><code><span class="cmd-comment">! === RUTA ESTÁTICA A NULL0 (BLACKHOLE) ===</span>
+<span class="cmd-comment">! Descarta tráfico hacia una red específica</span>
+
+R1(config)# ip route 192.168.200.0 255.255.255.0 Null0
+<span class="cmd-comment">! Todo tráfico a 192.168.200.0/24 se descarta silenciosamente</span>
+<span class="cmd-comment">! Útil para bloquear rangos de IPs maliciosas o no utilizadas</span>
+
+<span class="cmd-comment">! === AGREGACIÓN DE RUTAS (SUMARIZACIÓN) ===</span>
+<span class="cmd-comment">! Resumir múltiples redes en una sola ruta estática</span>
+
+<span class="cmd-comment">! Redes individuales:</span>
+<span class="cmd-comment">! 192.168.0.0/24, 192.168.1.0/24, 192.168.2.0/24, 192.168.3.0/24</span>
+
+<span class="cmd-comment">! Ruta agregada:</span>
+R1(config)# ip route 192.168.0.0 255.255.252.0 10.1.1.2
+<span class="cmd-comment">! /22 cubre 192.168.0.0 - 192.168.3.255 (4 redes /24)</span>
+
+<span class="cmd-comment">! === RUTA ESTÁTICA RECURSIVA ===</span>
+R1(config)# ip route 10.0.0.0 255.0.0.0 192.168.1.1
+<span class="cmd-comment">! El next-hop 192.168.1.1 debe ser alcanzable por otra ruta</span>
+<span class="cmd-comment">! Si 192.168.1.1 no es accesible, esta ruta desaparece de la tabla</span></code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Best Practice: Rutas Estáticas</div>
+    <ul>
+      <li>Usa <strong>next-hop + interfaz</strong> en redes multiacceso (Ethernet) para evitar problemas de ARP.</li>
+      <li>Usa solo <strong>interfaz de salida</strong> en enlaces punto-a-punto (seriales, tunnels).</li>
+      <li>Configura <strong>rutas flotantes</strong> para redundancia en enlaces críticos.</li>
+      <li>Documenta cada ruta estática con <code>description</code> o comentarios.</li>
+      <li>En redes grandes, preferir protocolos dinámicos para mantenibilidad.</li>
+    </ul>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 3 — RIP
+══════════════════════════════════════════════ -->
+<div id="tab-rip" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Routing Information Protocol (RIP)</h2>
+  <p>RIP es un protocolo de vector de distancia que usa el número de saltos (hop count) como métrica. Es simple pero limitado (máximo 15 saltos). RIPv2 soporta VLSM, CIDR y autenticación. RIPng es la versión para IPv6.</p>
+
+  <h3 class="sub-title">Configuración Básica RIPv2</h3>
+  <div class="code-block">
+    <div class="code-label">Activar RIP y anunciar redes</div>
+    <pre><code><span class="cmd-comment">! === CONFIGURACIÓN RIPv2 BÁSICA ===</span>
+
+R1(config)# router rip
+R1(config-router)# version 2
+<span class="cmd-comment">! Fuerza uso de RIPv2 (soporta VLSM, CIDR, multicast)</span>
+
+R1(config-router)# no auto-summary
+<span class="cmd-comment">! Desactiva sumarización automática por clase (A/B/C)</span>
+<span class="cmd-comment">! OBLIGATORIO para redes con VLSM/subredes discontinuas</span>
+
+R1(config-router)# network 192.168.1.0
+<span class="cmd-comment">! Anuncia todas las subredes de 192.168.1.0/24</span>
+<span class="cmd-comment">! NO se escribe la máscara en RIP (usa clase por defecto)</span>
+
+R1(config-router)# network 10.0.0.0
+<span class="cmd-comment">! Anuncia todas las subredes de 10.0.0.0/8 (clase A)</span>
+
+<span class="cmd-comment">! === CONFIGURACIÓN COMPLETA ===</span>
+R1(config)# router rip
+R1(config-router)# version 2
+R1(config-router)# no auto-summary
+R1(config-router)# network 192.168.1.0
+R1(config-router)# network 10.0.0.0
+R1(config-router)# passive-interface GigabitEthernet0/0
+<span class="cmd-comment">! No envía actualizaciones RIP por Gi0/0 (red de usuarios)</span>
+<span class="cmd-comment">! Pero sí recibe y procesa actualizaciones entrantes</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Rutas por Defecto en RIP (Default-Information Originate)</h3>
+  <div class="code-block">
+    <div class="code-label">Propagar ruta 0.0.0.0/0 por RIP</div>
+    <pre><code><span class="cmd-comment">! === PROPAGAR RUTA POR DEFECTO VÍA RIP ===</span>
+
+<span class="cmd-comment">! Paso 1: Configurar ruta estática default en el router frontera</span>
+R1(config)# ip route 0.0.0.0 0.0.0.0 203.0.113.1
+
+<span class="cmd-comment">! Paso 2: Propagarla por RIP a todos los routers vecinos</span>
+R1(config)# router rip
+R1(config-router)# default-information originate
+<span class="cmd-comment">! Inyecta la ruta 0.0.0.0/0 en las actualizaciones RIP</span>
+
+<span class="cmd-comment">! === VERIFICAR EN ROUTERS INTERNOS ===</span>
+R2# show ip route
+<span class="cmd-output">Gateway of last resort is 192.168.12.1 to network 0.0.0.0
+
+R*    0.0.0.0/0 [120/1] via 192.168.12.1, 00:00:15, GigabitEthernet0/0</span>
+<span class="cmd-comment">! R* = RIP default route, [120/1] = AD 120, 1 hop</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Passive-Interface y Control de Actualizaciones</h3>
+  <div class="code-block">
+    <div class="code-label">Optimizar anuncios RIP</div>
+    <pre><code><span class="cmd-comment">! === PASSIVE-INTERFACE ===</span>
+<span class="cmd-comment">! Evita enviar actualizaciones innecesarias (seguridad + ancho de banda)</span>
+
+R1(config)# router rip
+R1(config-router)# passive-interface GigabitEthernet0/0
+<span class="cmd-comment">! Gi0/0 conecta a usuarios: no envía RIP, pero sí escucha</span>
+
+R1(config-router)# passive-interface default
+<span class="cmd-comment">! Hace TODAS las interfaces pasivas por defecto</span>
+
+R1(config-router)# no passive-interface Serial0/0/0
+<span class="cmd-comment">! Excepto Serial0/0/0 (enlace a otro router): sí envía RIP</span>
+
+<span class="cmd-comment">! === TIMERS RIP (Avanzado) ===</span>
+R1(config-router)# timers basic 30 180 180 240
+<span class="cmd-comment">! Update(30s) Invalid(180s) Holddown(180s) Flush(240s)</span>
+<span class="cmd-comment">! Default: 30 180 180 240. No modificar sin justificación.</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Autenticación RIPv2</h3>
+  <div class="code-block">
+    <div class="code-label">Seguridad básica con contraseña</div>
+    <pre><code><span class="cmd-comment">! === AUTENTICACIÓN RIPv2 (TEXT PLAIN - NO RECOMENDADO) ===</span>
+R1(config)# key chain RIP_AUTH
+R1(config-keychain)# key 1
+R1(config-keychain-key)# key-string Cisco123
+
+R1(config)# interface Serial0/0/0
+R1(config-if)# ip rip authentication key-chain RIP_AUTH
+R1(config-if)# ip rip authentication mode text
+
+<span class="cmd-comment">! === AUTENTICACIÓN RIPv2 (MD5 - RECOMENDADO) ===</span>
+R1(config)# key chain RIP_AUTH_MD5
+R1(config-keychain)# key 1
+R1(config-keychain-key)# key-string SecureRIP2024!
+
+R1(config)# interface Serial0/0/0
+R1(config-if)# ip rip authentication key-chain RIP_AUTH_MD5
+R1(config-if)# ip rip authentication mode md5
+<span class="cmd-comment">! Ambos lados del enlace deben tener la misma key-chain y modo</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">RIPng (IPv6)</h3>
+  <div class="code-block">
+    <div class="code-label">Configuración RIP para IPv6</div>
+    <pre><code><span class="cmd-comment">! === RIPng (IPv6) ===</span>
+<span class="cmd-comment">! No usa comando network, se habilita por interfaz</span>
+
+R1(config)# ipv6 unicast-routing
+<span class="cmd-comment">! Habilitar routing IPv6 globalmente</span>
+
+R1(config)# interface GigabitEthernet0/0
+R1(config-if)# ipv6 address 2001:DB8:ACAD:1::1/64
+R1(config-if)# ipv6 rip RIPNG enable
+<span class="cmd-comment">! Habilita RIPng en esta interfaz con nombre de proceso "RIPNG"</span>
+
+R1(config)# interface Serial0/0/0
+R1(config-if)# ipv6 address 2001:DB8:ACAD:12::1/64
+R1(config-if)# ipv6 rip RIPNG enable
+
+<span class="cmd-comment">! === VERIFICAR RIPng ===</span>
+R1# show ipv6 rip
+R1# show ipv6 route rip</code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚠️ Limitaciones de RIP</div>
+    <ul>
+      <li><strong>Máximo 15 saltos:</strong> Redes mayores a 15 routers son inalcanzables.</li>
+      <li><strong>Convergencia lenta:</strong> Holddown timer de 180 segundos.</li>
+      <li><strong>Métrica simple:</strong> Solo cuenta saltos, ignora ancho de banda.</li>
+      <li><strong>Broadcast RIPv1:</strong> No soporta VLSM. Siempre usa RIPv2.</li>
+      <li><strong>Looping:</strong> Split horizon y poison reverse mitigan pero no eliminan loops.</li>
+    </ul>
+    <p>Para redes modernas, usar <strong>OSPF</strong> o <strong>EIGRP</strong>. RIP solo para compatibilidad legacy o laboratorios educativos.</p>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 4 — OSPF
+══════════════════════════════════════════════ -->
+<div id="tab-ospf" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Open Shortest Path First (OSPF)</h2>
+  <p>OSPF es un protocolo de estado de enlace (link-state) que usa el algoritmo Dijkstra para calcular el camino más corto. Soporta VLSM, CIDR, autenticación, jerarquía por áreas y converge rápidamente. Es el protocolo IGP más usado en redes empresariales.</p>
+
+  <h3 class="sub-title">Configuración OSPFv2 Básica (Single-Area)</h3>
+  <div class="code-block">
+    <div class="code-label">Activar OSPF y anunciar redes con wildcard mask</div>
+    <pre><code><span class="cmd-comment">! === CONFIGURACIÓN OSPFv2 SINGLE-AREA ===</span>
+
+R1(config)# router ospf 1
+<span class="cmd-comment">! Process ID 1 (local al router, puede diferir entre routers)</span>
+
+R1(config-router)# router-id 1.1.1.1
+<span class="cmd-comment">! ID único del router en formato IPv4</span>
+<span class="cmd-comment">! Si no se configura: loopback más alta > IP más alta activa</span>
+
+R1(config-router)# network 192.168.1.0 0.0.0.255 area 0
+<span class="cmd-comment">! Wildcard mask: 0.0.0.255 = /24 inverso (255.255.255.0)</span>
+<span class="cmd-comment">! Área 0 = Backbone (obligatoria en multi-area)</span>
+
+R1(config-router)# network 10.1.1.0 0.0.0.3 area 0
+<span class="cmd-comment">! /30 entre routers: wildcard 0.0.0.3</span>
+
+<span class="cmd-comment">! === CONFIGURACIÓN COMPLETA ===</span>
+R1(config)# router ospf 1
+R1(config-router)# router-id 1.1.1.1
+R1(config-router)# network 192.168.1.0 0.0.0.255 area 0
+R1(config-router)# network 10.1.1.0 0.0.0.3 area 0
+R1(config-router)# passive-interface GigabitEthernet0/0
+
+<span class="cmd-comment">! === VERIFICAR VECINOS ===</span>
+R1# show ip ospf neighbor
+<span class="cmd-output">Neighbor ID     Pri   State           Dead Time   Address         Interface
+2.2.2.2           1   FULL/DR         00:00:35    10.1.1.2        GigabitEthernet0/1</span>
+<span class="cmd-comment">! FULL = Base de datos LSDB sincronizada</span>
+<span class="cmd-comment">! DR = Designated Router (red multiacceso)</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Costo OSPF y Ancho de Banda de Referencia</h3>
+  <div class="code-block">
+    <div class="code-label">Optimizar métricas para enlaces modernos</div>
+    <pre><code><span class="cmd-comment">! === FÓRMULA DE COSTO OSPF ===</span>
+<span class="cmd-comment">! Costo = Ancho de Banda de Referencia / Ancho de Banda Interfaz</span>
+<span class="cmd-comment">! Default reference-bandwidth = 100 Mbps (10^8 bps)</span>
+
+<span class="cmd-comment">! Problema: Enlaces de 1 Gbps o 10 Gbps costan 1 (mínimo)</span>
+<span class="cmd-comment">! 100Mbps/1Gbps = 1, 100Mbps/10Gbps = 1 (igual costo, incorrecto)</span>
+
+<span class="cmd-comment">! === SOLUCIÓN: Cambiar ancho de banda de referencia ===</span>
+R1(config-router)# auto-cost reference-bandwidth 10000
+<span class="cmd-comment">! 10000 = 10 Gbps (en Mbps)</span>
+<span class="cmd-comment">! Ahora: 10Gbps/1Gbps = 10, 10Gbps/100Mbps = 100</span>
+<span class="cmd-comment">! ⚠️ Configurar en TODOS los routers del área OSPF</span>
+
+<span class="cmd-comment">! === ALTERNATIVA: Costo manual por interfaz ===</span>
+R1(config)# interface GigabitEthernet0/0
+R1(config-if)# ip ospf cost 10
+<span class="cmd-comment">! Fuerza costo específico (ignora ancho de banda)</span>
+<span class="cmd-comment">! Útil para influir en ruta preferida sin cambiar reference-bandwidth</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">OSPF Multi-Area y Tipos de Áreas</h3>
+  <div class="code-block">
+    <div class="code-label">Jerarquía OSPF para redes grandes</div>
+    <pre><code><span class="cmd-comment">! === OSPF MULTI-AREA ===</span>
+<span class="cmd-comment">! Backbone (Área 0) + Áreas regulares + Áreas especiales</span>
+
+<span class="cmd-comment">! Router ABR (Area Border Router):</span>
+R1(config)# router ospf 1
+R1(config-router)# router-id 1.1.1.1
+R1(config-router)# network 10.0.0.0 0.0.0.3 area 0
+R1(config-router)# network 10.0.1.0 0.0.0.3 area 1
+<span class="cmd-comment">! Conecta Área 0 con Área 1</span>
+
+<span class="cmd-comment">! === ÁREA STUB (No recibe rutas externas ASBR) ===</span>
+R2(config)# router ospf 1
+R2(config-router)# area 1 stub
+<span class="cmd-comment">! Reduces tamaño de LSDB en routers de área stub</span>
+<span class="cmd-comment">! Solo reciben ruta por defecto para salir del área</span>
+
+<span class="cmd-comment">! === ÁREA TOTALLY STUBBY ===</span>
+R2(config-router)# area 1 stub no-summary
+<span class="cmd-comment">! No recibe rutas externas NI inter-área</span>
+<span class="cmd-comment">! Solo ruta por defecto 0.0.0.0/0 del ABR</span>
+
+<span class="cmd-comment">! === ÁREA NSSA (Not-So-Stubby Area) ===</span>
+R2(config-router)# area 1 nssa
+<span class="cmd-comment">! Permite importar rutas externas con tipo LSA 7</span>
+<span class="cmd-comment">! Útil cuando hay un ASBR dentro de un área stub</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Autenticación OSPF</h3>
+  <div class="code-block">
+    <div class="code-label">Seguridad en adyacencias OSPF</div>
+    <pre><code><span class="cmd-comment">! === AUTENTICACIÓN OSPF POR ÁREA (MD5) ===</span>
+R1(config)# router ospf 1
+R1(config-router)# area 0 authentication message-digest
+
+R1(config)# interface GigabitEthernet0/1
+R1(config-if)# ip ospf message-digest-key 1 md5 CiscoOSPF2024!
+<span class="cmd-comment">! Key ID 1, contraseña CiscoOSPF2024!</span>
+<span class="cmd-comment">! Todos los vecinos en área 0 deben tener la misma key</span>
+
+<span class="cmd-comment">! === AUTENTICACIÓN POR INTERFAZ (MÁS GRANULAR) ===</span>
+R1(config)# interface Serial0/0/0
+R1(config-if)# ip ospf authentication message-digest
+R1(config-if)# ip ospf message-digest-key 1 md5 SecretKey123
+
+<span class="cmd-comment">! === AUTENTICACIÓN SHA (OSPFv3 / IOS moderno) ===</span>
+R1(config)# interface GigabitEthernet0/1
+R1(config-if)# ip ospf authentication key-chain OSPF_SHA
+<span class="cmd-comment">! Requiere configurar key-chain con algoritmo SHA previamente</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">OSPFv3 (IPv6)</h3>
+  <div class="code-block">
+    <div class="code-label">Configuración OSPF para IPv6</div>
+    <pre><code><span class="cmd-comment">! === OSPFv3 (IPv6) ===</span>
+<span class="cmd-comment">! Process ID separado de OSPFv2, se habilita por interfaz</span>
+
+R1(config)# ipv6 unicast-routing
+
+R1(config)# router ospfv3 1
+R1(config-router)# router-id 1.1.1.1
+<span class="cmd-comment">! OSPFv3 requiere router-id manual si no hay IPv4 en el router</span>
+
+R1(config)# interface GigabitEthernet0/0
+R1(config-if)# ipv6 address 2001:DB8:ACAD:1::1/64
+R1(config-if)# ipv6 ospf 1 area 0
+<span class="cmd-comment">! Habilita OSPFv3 process 1, área 0 en esta interfaz</span>
+
+R1(config)# interface Serial0/0/0
+R1(config-if)# ipv6 address 2001:DB8:ACAD:12::1/64
+R1(config-if)# ipv6 ospf 1 area 0
+
+<span class="cmd-comment">! === VERIFICAR OSPFv3 ===</span>
+R1# show ipv6 ospf neighbor
+R1# show ipv6 route ospf
+R1# show ipv6 ospf interface brief</code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 OSPF Designated Router (DR/BDR)</div>
+    <p>En redes multiacceso (Ethernet), OSPF elige un <strong>DR</strong> (Designated Router) y <strong>BDR</strong> (Backup DR) para reducir flooding de LSAs.</p>
+    <ul>
+      <li><strong>Prioridad:</strong> Valor 0-255. Mayor prioridad gana. 0 = nunca será DR.</li>
+      <li><strong>Router ID:</strong> Si prioridad es igual, gana el Router ID más alto.</li>
+      <li><strong>Comando:</strong> <code>ip ospf priority 100</code> en interfaz.</li>
+      <li><strong>Forzar reelección:</strong> <code>clear ip ospf process</code> (reinicia OSPF).</li>
+    </ul>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 5 — EIGRP
+══════════════════════════════════════════════ -->
+<div id="tab-eigrp" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Enhanced Interior Gateway Routing Protocol (EIGRP)</h2>
+  <p>EIGRP es un protocolo híbrido (vector de distancia avanzado) propietario de Cisco. Usa el algoritmo DUAL para cálculo sin loops, converge extremadamente rápido y soporta múltiples protocolos de capa de red (IP, IPX, AppleTalk). EIGRP para IPv6 usa el mismo process ID.</p>
+
+  <h3 class="sub-title">Configuración EIGRP Básica (Named Mode - Moderno)</h3>
+  <div class="code-block">
+    <div class="code-label">Configuración recomendada en IOS 15.x+</div>
+    <pre><code><span class="cmd-comment">! === EIGRP NAMED MODE (RECOMENDADO) ===</span>
+<span class="cmd-comment">! Más flexible, soporta IPv4 e IPv6 en un solo proceso</span>
+
+R1(config)# router eigrp CORPORATIVO
+<span class="cmd-comment">! "CORPORATIVO" = nombre del proceso (case-sensitive)</span>
+
+R1(config-router)# address-family ipv4 autonomous-system 100
+<span class="cmd-comment">! AS 100 debe coincidir en TODOS los routers EIGRP</span>
+
+R1(config-router-af)# af-interface GigabitEthernet0/0
+R1(config-router-af-interface)# passive-interface
+<span class="cmd-comment">! Interfaz pasiva (no envía hellos EIGRP)</span>
+
+R1(config-router-af-interface)# exit
+R1(config-router-af)# network 192.168.1.0 0.0.0.255
+R1(config-router-af)# network 10.1.1.0 0.0.0.3
+
+R1(config-router-af)# eigrp router-id 1.1.1.1
+<span class="cmd-comment">! Router ID único (formato IPv4)</span>
+
+<span class="cmd-comment">! === CONFIGURACIÓN CLÁSICA (Legacy - Aún válida) ===</span>
+R1(config)# router eigrp 100
+R1(config-router)# network 192.168.1.0 0.0.0.255
+R1(config-router)# network 10.1.1.0 0.0.0.3
+R1(config-router)# no auto-summary
+R1(config-router)# eigrp router-id 1.1.1.1
+R1(config-router)# passive-interface GigabitEthernet0/0</code></pre>
+  </div>
+
+  <h3 class="sub-title">Métrica EIGRP y Ancho de Banda/Delay</h3>
+  <div class="code-block">
+    <div class="code-label">Fórmula y tuning de métrica compuesta</div>
+    <pre><code><span class="cmd-comment">! === FÓRMULA DE MÉTRICA EIGRP ===</span>
+<span class="cmd-comment">! Métrica = [K1*Bandwidth + K3*Delay] * 256</span>
+<span class="cmd-comment">! Por defecto: K1=1, K2=0, K3=1, K4=0, K5=0</span>
+<span class="cmd-comment">! Solo se usan Bandwidth y Delay por defecto</span>
+
+<span class="cmd-comment">! === VERIFICAR VALORES K ===</span>
+R1# show ip protocols
+<span class="cmd-output">EIGRP-IPv4 Protocol for AS(100)
+  Metric weight K1=1, K2=0, K3=1, K4=0, K5=0</span>
+
+<span class="cmd-comment">! === MODIFICAR ANCHO DE BANDA (NO RECOMENDADO PARA ROUTING) ===</span>
+<span class="cmd-comment">! Mejor usar "bandwidth" solo para cálculo de métrica, no limita tráfico real</span>
+R1(config)# interface Serial0/0/0
+R1(config-if)# bandwidth 1544
+<span class="cmd-comment">! En Kbps. Usado por EIGRP/OSPF para calcular métrica.</span>
+
+<span class="cmd-comment">! === MODIFICAR DELAY ===</span>
+R1(config-if)# delay 100
+<span class="cmd-comment">! En microsegundos (usec). Influye directamente en métrica EIGRP.</span>
+<span class="cmd-comment">! Útil para influir en selección de ruta sin afectar QoS.</span>
+
+<span class="cmd-comment">! === VARIANZA (BALANCEO DE CARGA DESIGUAL) ===</span>
+R1(config-router-af)# variance 2
+<span class="cmd-comment">! Permite usar rutas con métrica hasta 2x peor que la mejor</span>
+<span class="cmd-comment">! Útil para balancear tráfico por múltiples enlaces de diferente capacidad</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">EIGRP Stub y Seguridad</h3>
+  <div class="code-block">
+    <div class="code-label">Optimización en redes hub-and-spoke</div>
+    <pre><code><span class="cmd-comment">! === EIGRP STUB ===</span>
+<span class="cmd-comment">! Router stub solo anuncia redes conectadas y sumarizadas</span>
+<span class="cmd-comment">! Reduce consultas DUAL y mejora convergencia</span>
+
+R2(config)# router eigrp CORPORATIVO
+R2(config-router)# address-family ipv4 autonomous-system 100
+R2(config-router-af)# eigrp stub connected summary
+<span class="cmd-comment">! Opciones: connected, summary, static, redistributed, receive-only</span>
+
+<span class="cmd-comment">! === AUTENTICACIÓN EIGRP (MD5) ===</span>
+R1(config)# key chain EIGRP_AUTH
+R1(config-keychain)# key 1
+R1(config-keychain-key)# key-string SecureEIGRP2024!
+
+R1(config)# interface Serial0/0/0
+R1(config-if)# ip authentication key-chain eigrp 100 EIGRP_AUTH
+R1(config-if)# ip authentication mode eigrp 100 md5
+
+<span class="cmd-comment">! === AUTENTICACIÓN EIGRP (SHA-256 - Named Mode) ===</span>
+R1(config)# router eigrp CORPORATIVO
+R1(config-router)# address-family ipv4 autonomous-system 100
+R1(config-router-af)# af-interface Serial0/0/0
+R1(config-router-af-interface)# authentication mode hmac-sha-256 SecureKey123</code></pre>
+  </div>
+
+  <h3 class="sub-title">EIGRP para IPv6 (Named Mode)</h3>
+  <div class="code-block">
+    <div class="code-label">Configuración unificada IPv4/IPv6</div>
+    <pre><code><span class="cmd-comment">! === EIGRP PARA IPv6 EN NAMED MODE ===</span>
+
+R1(config)# router eigrp CORPORATIVO
+R1(config-router)# address-family ipv6 autonomous-system 100
+R1(config-router-af)# af-interface GigabitEthernet0/0
+R1(config-router-af-interface)# no shutdown
+<span class="cmd-comment">! EIGRP para IPv6 requiere "no shutdown" por interfaz</span>
+
+R1(config-router-af)# interface GigabitEthernet0/0
+R1(config-if)# ipv6 enable
+R1(config-if)# ipv6 eigrp 100
+
+<span class="cmd-comment">! === VERIFICAR EIGRP IPv6 ===</span>
+R1# show ipv6 eigrp neighbors
+R1# show ipv6 route eigrp
+R1# show eigrp address-family ipv6 neighbors</code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚠️ EIGRP: Requisitos de Adyacencia</div>
+    <p>Para que dos routers formen adyacencia EIGRP, deben coincidir en:</p>
+    <ol>
+      <li><strong>Autonomous System (AS):</strong> Mismo número de proceso.</li>
+      <li><strong>K values:</strong> Mismos valores K1-K5 (métrica).</li>
+      <li><strong>Autenticación:</strong> Misma key-chain y modo (si está configurada).</li>
+      <li><strong>Subnet mask:</strong> Misma máscara de subred en el enlace.</li>
+      <li><strong>Timers:</strong> Hello/Hold (auto-negociados generalmente).</li>
+    </ol>
+    <p>Si alguno falla, los routers no forman adyacencia. Usa <code>show ip eigrp neighbors</code> para diagnosticar.</p>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 6 — BGP
+══════════════════════════════════════════════ -->
+<div id="tab-bgp" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Border Gateway Protocol (BGP)</h2>
+  <p>BGP es el protocolo de routing exterior (EGP) que interconecta sistemas autónomos (AS) en Internet. Usa atributos de ruta para tomar decisiones de routing basadas en políticas, no solo en métrica. Es fundamental para conectividad WAN e Internet.</p>
+
+  <h3 class="sub-title">Configuración BGP Básica (eBGP)</h3>
+  <div class="code-block">
+    <div class="code-label">Conexión entre dos AS diferentes</div>
+    <pre><code><span class="cmd-comment">! === CONFIGURACIÓN eBGP BÁSICA ===</span>
+<span class="cmd-comment">! Router en AS 65001 conectado a ISP en AS 65002</span>
+
+R1(config)# router bgp 65001
+<span class="cmd-comment">! Número de AS local (1-65535 público, 64512-65535 privado)</span>
+
+R1(config-router)# bgp router-id 1.1.1.1
+<span class="cmd-comment">! Router ID único (igual formato que OSPF)</span>
+
+R1(config-router)# neighbor 203.0.113.2 remote-as 65002
+<span class="cmd-comment">! IP del vecino BGP y su AS (diferente = eBGP)</span>
+
+R1(config-router)# neighbor 203.0.113.2 description ISP-PRIMARY
+
+<span class="cmd-comment">! === ANUNCIAR REDES PROPIAS ===</span>
+R1(config-router)# network 192.168.1.0 mask 255.255.255.0
+<span class="cmd-comment">! La red debe existir en la tabla de routing (connected/static/IGP)</span>
+<span class="cmd-comment">! La máscara es obligatoria en BGP (no usa clases)</span>
+
+R1(config-router)# network 10.0.0.0 mask 255.255.0.0
+<span class="cmd-comment">! Anuncia red corporativa a Internet</span>
+
+<span class="cmd-comment">! === VERIFICAR VECINO BGP ===</span>
+R1# show ip bgp summary
+<span class="cmd-output">Neighbor        V    AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
+203.0.113.2     4 65002    1256    1253       12    0    0 5d12h    152</span>
+<span class="cmd-comment">! State/PfxRcd = 152 rutas recibidas del ISP</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">iBGP (Dentro del mismo AS)</h3>
+  <div class="code-block">
+    <div class="code-label">Full-mesh entre routers del mismo AS</div>
+    <pre><code><span class="cmd-comment">! === iBGP ENTRE ROUTERS INTERNOS ===</span>
+<span class="cmd-comment">! Tres routers en AS 65001</span>
+
+R1(config)# router bgp 65001
+R1(config-router)# neighbor 10.1.1.2 remote-as 65001
+<span class="cmd-comment">! Mismo AS = iBGP</span>
+R1(config-router)# neighbor 10.1.1.2 update-source Loopback0
+<span class="cmd-comment">! Usar loopback como origen (más estable que interfaz física)</span>
+
+R1(config-router)# neighbor 10.1.2.2 remote-as 65001
+R1(config-router)# neighbor 10.1.2.2 update-source Loopback0
+
+<span class="cmd-comment">! === REQUISITO iBGP: FULL-MESH O ROUTE REFLECTOR ===</span>
+<span class="cmd-comment">! iBGP no reenvía rutas iBGP a otros vecinos iBGP</span>
+
+<span class="cmd-comment">! Solución 1: Full-mesh (n(n-1)/2 sesiones)</span>
+<span class="cmd-comment">! Solución 2: Route Reflector (recomendado)</span>
+
+R1(config)# router bgp 65001
+R1(config-router)# neighbor 10.1.1.2 route-reflector-client
+R1(config-router)# neighbor 10.1.2.2 route-reflector-client
+<span class="cmd-comment">! R1 actúa como Route Reflector, reenvía rutas entre clientes</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Atributos BGP y Políticas de Routing</h3>
+  <div class="code-block">
+    <div class="code-label">Influir en selección de rutas BGP</div>
+    <pre><code><span class="cmd-comment">! === ATRIBUTOS BGP MÁS IMPORTANTES ===</span>
+<span class="cmd-comment">! 1. WEIGHT (Cisco propietario, local al router, mayor=gana)</span>
+<span class="cmd-comment">! 2. LOCAL_PREF (local al AS, mayor=gana)</span>
+<span class="cmd-comment">! 3. AS_PATH (más corto=gana)</span>
+<span class="cmd-comment">! 4. ORIGIN (IGP < EGP < INCOMPLETE)</span>
+<span class="cmd-comment">! 5. MED (menor=gana, influencia desde AS externo)</span>
+
+<span class="cmd-comment">! === LOCAL PREFERENCE (Preferir un ISP sobre otro) ===</span>
+R1(config)# route-map PREFER-ISP1 permit 10
+R1(config-route-map)# set local-preference 200
+
+R1(config)# router bgp 65001
+R1(config-router)# neighbor 203.0.113.2 route-map PREFER-ISP1 in
+<span class="cmd-comment">! Rutas recibidas de ISP1 tendrán LOCAL_PREF 200 (mayor preferencia)</span>
+
+<span class="cmd-comment">! === AS_PATH PREPEND (Hacer ruta menos atractiva) ===</span>
+R1(config)# route-map LONGER-ASPATH permit 10
+R1(config-route-map)# set as-path prepend 65001 65001 65001
+
+R1(config-router)# neighbor 198.51.100.2 route-map LONGER-ASPATH out
+<span class="cmd-comment">! Añade AS 65001 tres veces al anuncio hacia ISP2</span>
+<span class="cmd-comment">! ISP2 verá path más largo y preferirá otra ruta</span>
+
+<span class="cmd-comment">! === MED (Multi-Exit Discriminator) ===</span>
+R1(config)# route-map SET-MED permit 10
+R1(config-route-map)# set metric 100
+
+R1(config-router)# neighbor 203.0.113.2 route-map SET-MED out
+<span class="cmd-comment">! MED menor es preferido por el AS vecino</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">BGP Path Selection (Algoritmo de Decisión)</h3>
+  <div class="code-block">
+    <div class="code-label">Orden de preferencia de rutas BGP</div>
+    <pre><code><span class="cmd-comment">! === ALGORITMO DE SELECCIÓN BGP (SIMPLIFICADO) ===</span>
+<span class="cmd-comment">! 1.  WEIGHT más alto (Cisco local)</span>
+<span class="cmd-comment">! 2.  LOCAL_PREF más alto (local al AS)</span>
+<span class="cmd-comment">! 3.  Local origin (redes originadas localmente)</span>
+<span class="cmd-comment">! 4.  AS_PATH más corto</span>
+<span class="cmd-comment">! 5.  ORIGIN code (IGP < EGP < INCOMPLETE)</span>
+<span class="cmd-comment">! 6.  MED más bajo</span>
+<span class="cmd-comment">! 7.  eBGP sobre iBGP</span>
+<span class="cmd-comment">! 8.  IGP costo más bajo al next-hop</span>
+<span class="cmd-comment">! 9.  Router ID más bajo del anunciador</span>
+
+<span class="cmd-comment">! === VERIFICAR MEJOR RUTA BGP ===</span>
+R1# show ip bgp
+<span class="cmd-output">   Network          Next Hop            Metric LocPrf Weight Path
+*> 8.8.8.0/24       203.0.113.2              0    200      0 65002 i</span>
+<span class="cmd-comment">! *> = Mejor ruta seleccionada, válida, instalada en RIB</span>
+<span class="cmd-comment">! i  = Origin IGP (red networkada manualmente)</span>
+<span class="cmd-comment">! e  = Origin EGP (obsoleto)</span>
+<span class="cmd-comment">! ?  = Origin INCOMPLETE (redistribuida)</span></code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 BGP Best Practices</div>
+    <ul>
+      <li>Usa <strong>loopbacks</strong> como update-source para sesiones iBGP (estabilidad).</li>
+      <li>Filtra rutas con <strong>prefix-lists</strong> o <strong>route-maps</strong> para evitar propagación incorrecta.</li>
+      <li>Configura <strong>BGP TTL Security</strong> (<code>neighbor x.x.x.x ttl-security hops 1</code>) para proteger sesiones eBGP.</li>
+      <li>Usa <strong>MD5 authentication</strong> en sesiones BGP críticas.</li>
+      <li>Monitorea con <code>show ip bgp neighbors</code> y <code>show ip bgp summary</code> regularmente.</li>
+    </ul>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 7 — NAT / PAT
+══════════════════════════════════════════════ -->
+<div id="tab-nat" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Network Address Translation (NAT) y PAT</h2>
+  <p>NAT traduce direcciones IP privadas a públicas (y viceversa). PAT (Port Address Translation) permite que múltiples hosts compartan una sola IP pública usando diferentes números de puerto. Esencial para conectividad IPv4 con direccionamiento limitado.</p>
+
+  <h3 class="sub-title">NAT Estático (One-to-One)</h3>
+  <div class="code-block">
+    <div class="code-label">Mapeo fijo privado-público</div>
+    <pre><code><span class="cmd-comment">! === NAT ESTÁTICO ===</span>
+<span class="cmd-comment">! Un servidor interno necesita IP pública fija</span>
+
+<span class="cmd-comment">! Paso 1: Definir interfaces inside/outside</span>
+R1(config)# interface GigabitEthernet0/0
+R1(config-if)# ip nat inside
+<span class="cmd-comment">! Interfaz hacia red interna (privada)</span>
+
+R1(config)# interface GigabitEthernet0/1
+R1(config-if)# ip nat outside
+<span class="cmd-comment">! Interfaz hacia Internet (pública)</span>
+
+<span class="cmd-comment">! Paso 2: Crear mapeo estático</span>
+R1(config)# ip nat inside source static 192.168.1.10 203.0.113.10
+<span class="cmd-comment">! 192.168.1.10 (privada) ↔ 203.0.113.10 (pública)</span>
+<span class="cmd-comment">! Útil para servidores web, mail, DNS accesibles desde Internet</span>
+
+<span class="cmd-comment">! === VERIFICAR NAT ESTÁTICO ===</span>
+R1# show ip nat translations
+<span class="cmd-output">Pro Inside global      Inside local       Outside local      Outside global
+--- 203.0.113.10       192.168.1.10       ---                ---</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">NAT Dinámico (Pool de Direcciones)</h3>
+  <div class="code-block">
+    <div class="code-label">Pool de IPs públicas para hosts internos</div>
+    <pre><code><span class="cmd-comment">! === NAT DINÁMICO CON POOL ===</span>
+<span class="cmd-comment">! Múltiples hosts internos comparten pool de IPs públicas</span>
+
+<span class="cmd-comment">! Paso 1: Definir ACL con hosts permitidos para NAT</span>
+R1(config)# access-list 1 permit 192.168.1.0 0.0.0.255
+<span class="cmd-comment">! Red interna 192.168.1.0/24</span>
+
+<span class="cmd-comment">! Paso 2: Crear pool de direcciones públicas</span>
+R1(config)# ip nat pool PUBLIC-POOL 203.0.113.10 203.0.113.20 netmask 255.255.255.0
+<span class="cmd-comment">! 11 direcciones públicas disponibles (10-20)</span>
+
+<span class="cmd-comment">! Paso 3: Asociar ACL con pool</span>
+R1(config)# ip nat inside source list 1 pool PUBLIC-POOL
+<span class="cmd-comment">! Hosts en ACL 1 usarán IPs del pool dinámicamente</span>
+
+<span class="cmd-comment">! === VERIFICAR NAT DINÁMICO ===</span>
+R1# show ip nat translations
+<span class="cmd-output">Pro Inside global      Inside local       Outside local      Outside global
+tcp 203.0.113.10:1024  192.168.1.50:49152 8.8.8.8:443        8.8.8.8:443
+udp 203.0.113.11:512   192.168.1.51:33434 1.1.1.1:53         1.1.1.1:53</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">PAT / NAT Overload (Muchos a Uno)</h3>
+  <div class="code-block">
+    <div class="code-label">Una sola IP pública para toda la red interna</div>
+    <pre><code><span class="cmd-comment">! === PAT (PORT ADDRESS TRANSLATION) ===</span>
+<span class="cmd-comment">! La forma más común de NAT en redes SOHO y empresariales</span>
+
+<span class="cmd-comment">! Método 1: Usar IP de interfaz outside (más común)</span>
+R1(config)# access-list 1 permit 192.168.0.0 0.0.255.255
+<span class="cmd-comment">! Todas las redes RFC 1918 (10/8, 172.16/12, 192.168/16)</span>
+
+R1(config)# ip nat inside source list 1 interface GigabitEthernet0/1 overload
+<span class="cmd-comment">! "overload" = PAT (múltiples hosts, un puerto por sesión)</span>
+<span class="cmd-comment">! Usa la IP de Gi0/1 como dirección pública compartida</span>
+
+<span class="cmd-comment">! Método 2: Usar pool con overload</span>
+R1(config)# ip nat pool PAT-POOL 203.0.113.10 203.0.113.10 netmask 255.255.255.252
+R1(config)# ip nat inside source list 1 pool PAT-POOL overload
+<span class="cmd-comment">! Pool de una sola IP con overload = PAT</span>
+
+<span class="cmd-comment">! === VERIFICAR PAT ===</span>
+R1# show ip nat translations
+<span class="cmd-output">Pro Inside global          Inside local       Outside local      Outside global
+tcp 203.0.113.1:51234      192.168.1.10:49152 142.250.80.46:443  142.250.80.46:443
+tcp 203.0.113.1:51235      192.168.1.11:52000 142.250.80.46:443  142.250.80.46:443
+udp 203.0.113.1:51236      192.168.1.12:33456 8.8.8.8:53         8.8.8.8:53</span>
+<span class="cmd-comment">! Misma IP global (203.0.113.1), diferentes puertos</span>
+
+R1# show ip nat statistics
+<span class="cmd-output">Total active translations: 42 (0 static, 42 dynamic; 42 extended)
+Outside interfaces: GigabitEthernet0/1
+Inside interfaces: GigabitEthernet0/0
+Hits: 15420  Misses: 320</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">NAT para Redundancia y Políticas</h3>
+  <div class="code-block">
+    <div class="code-label">NAT con route-maps y múltiples ISPs</div>
+    <pre><code><span class="cmd-comment">! === NAT BASADO EN RUTA (ROUTE-BASED NAT) ===</span>
+<span class="cmd-comment">! Diferente NAT según el ISP de salida</span>
+
+R1(config)# access-list 10 permit 192.168.1.0 0.0.0.255
+R1(config)# access-list 20 permit 192.168.2.0 0.0.0.255
+
+<span class="cmd-comment">! ISP Principal:</span>
+R1(config)# route-map ISP1-NAT permit 10
+R1(config-route-map)# match ip address 10
+R1(config-route-map)# match interface GigabitEthernet0/1
+
+R1(config)# ip nat inside source route-map ISP1-NAT interface GigabitEthernet0/1 overload
+
+<span class="cmd-comment">! ISP Backup:</span>
+R1(config)# route-map ISP2-NAT permit 10
+R1(config-route-map)# match ip address 20
+R1(config-route-map)# match interface GigabitEthernet0/2
+
+R1(config)# ip nat inside source route-map ISP2-NAT interface GigabitEthernet0/2 overload
+
+<span class="cmd-comment">! === CLEAR NAT TRANSLATIONS ===</span>
+R1# clear ip nat translation *
+<span class="cmd-comment">! Borra todas las traducciones dinámicas (cuidado en producción)</span>
+
+R1# clear ip nat translation inside 192.168.1.10 203.0.113.10
+<span class="cmd-comment">! Borra traducción específica</span></code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚠️ Problemas Comunes de NAT</div>
+    <ul>
+      <li><strong>ACL incorrecta:</strong> Si la ACL no incluye al host, no se traduce.</li>
+      <li><strong>Interfaces inside/outside no definidas:</strong> NAT no funciona sin ellas.</li>
+      <li><strong>Pool agotado:</strong> En NAT dinámico sin overload, si se acaban las IPs, nuevos hosts fallan.</li>
+      <li><strong>ALG (Application Layer Gateway):</strong> FTP, SIP, etc. necesitan inspección especial. Usa <code>ip nat service</code> o deshabilita ALG si causa problemas.</li>
+      <li><strong>IP Routing:</strong> Asegúrate de que <code>ip routing</code> esté habilitado (por defecto en routers).</li>
+    </ul>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 8 — VERIFICACIÓN
+══════════════════════════════════════════════ -->
+<div id="tab-verificacion" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Comandos de Verificación de Routing</h2>
+  <p>La verificación es crítica para confirmar que el routing funciona correctamente. Estos comandos cubren todos los protocolos y escenarios comunes.</p>
+
+  <div class="concept-grid">
+    <div class="concept-card highlight">
+      <div class="concept-icon">📊</div>
+      <h3>show ip route</h3>
+      <p>Tabla de routing completa. Muestra todas las redes conocidas, next-hop, interfaces y métricas.</p>
+      <code>show ip route<br>show ip route ospf<br>show ip route 192.168.1.0</code>
+    </div>
+    <div class="concept-card highlight">
+      <div class="concept-icon">🔍</div>
+      <h3>show ip protocols</h3>
+      <p>Resumen de protocolos de routing activos: timers, networks, filtros, redistribución.</p>
+      <code>show ip protocols<br>show ip protocols summary</code>
+    </div>
+    <div class="concept-card highlight">
+      <div class="concept-icon">🌐</div>
+      <h3>show ip bgp summary</h3>
+      <p>Estado de sesiones BGP, rutas recibidas/anunciadas, tiempo de actividad.</p>
+      <code>show ip bgp summary<br>show ip bgp neighbors</code>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">⭕</div>
+      <h3>show ip ospf neighbor</h3>
+      <p>Vecinos OSPF, estado de adyacencia, DR/BDR, temporizadores.</p>
+      <code>show ip ospf neighbor<br>show ip ospf interface brief</code>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">⚡</div>
+      <h3>show ip eigrp neighbors</h3>
+      <p>Vecinos EIGRP, tiempo de actividad, retransmisiones, Smooth Round Trip Time (SRTT).</p>
+      <code>show ip eigrp neighbors<br>show ip eigrp topology</code>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🔄</div>
+      <h3>show ip rip database</h3>
+      <p>Base de datos de rutas RIP antes de instalar en tabla de routing.</p>
+      <code>show ip rip database<br>show ip protocols | section rip</code>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🗺️</div>
+      <h3>traceroute / trace</h3>
+      <p>Seguimiento hop-by-hop de la ruta hacia un destino. Identifica dónde falla.</p>
+      <code>traceroute 8.8.8.8<br>trace ipv6 2001:db8::1</code>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">📡</div>
+      <h3>ping / extended ping</h3>
+      <p>Prueba de conectividad básica. Extended ping permite especificar origen, tamaño, etc.</p>
+      <code>ping 192.168.1.1<br>ping (modo extendido)</code>
+    </div>
+  </div>
+
+  <h3 class="sub-title">Show ip route — Análisis Detallado</h3>
+  <div class="code-block">
+    <div class="code-label">Interpretación completa de la tabla de routing</div>
+    <pre><code>R1# show ip route
+<span class="cmd-output">Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area 
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2
+       i - IS-IS, su - IS-IS summary, L1 - IS-IS level-1, L2 - IS-IS level-2
+       ia - IS-IS inter area, * - candidate default, U - per-user static route
+       o - ODR, P - periodic downloaded static route, H - NHRP, l - LISP
+       a - application route
+       + - replicated route, % - next hop override, p - overrides from PfR
+
+Gateway of last resort is 203.0.113.1 to network 0.0.0.0
+
+S*    0.0.0.0/0 [1/0] via 203.0.113.1
+                [1/0] via 198.51.100.1
+<span class="cmd-comment">! S* = Static default. [1/0] = AD 1, métrica 0. Dos next-hops (load balancing).</span>
+
+      10.0.0.0/8 is variably subnetted, 4 subnets, 2 masks
+C        10.1.1.0/30 is directly connected, Serial0/0/0
+L        10.1.1.1/32 is directly connected, Serial0/0/0
+O        10.1.2.0/30 [110/128] via 10.1.1.2, 00:15:32, Serial0/0/0
+<span class="cmd-comment">! O = OSPF, [110/128] = AD 110, costo 128. Next-hop 10.1.1.2.</span>
+
+O IA     10.2.0.0/16 [110/138] via 10.1.1.2, 00:10:15, Serial0/0/0
+<span class="cmd-comment">! O IA = OSPF Inter-Area (entre áreas diferentes)</span>
+
+      192.168.1.0/24 is variably subnetted, 2 subnets, 2 masks
+C        192.168.1.0/24 is directly connected, GigabitEthernet0/0
+L        192.168.1.1/32 is directly connected, GigabitEthernet0/0
+
+D        192.168.2.0/24 [90/2170112] via 10.1.1.2, 00:23:45, Serial0/0/0
+<span class="cmd-comment">! D = EIGRP Internal, [90/2170112] = AD 90, métrica compuesta</span>
+
+B        8.8.8.0/24 [20/0] via 203.0.113.2, 00:05:12
+<span class="cmd-comment">! B = BGP, [20/0] = AD 20 (eBGP), métrica 0</span></span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Show ip protocols — Diagnóstico de Protocolos</h3>
+  <div class="code-block">
+    <div class="code-label">Verificar configuración activa de routing</div>
+    <pre><code>R1# show ip protocols
+<span class="cmd-output">*** IP Routing is NSF aware ***
+
+Routing Protocol is "ospf 1"
+  Outgoing update filter list for all interfaces is not set
+  Incoming update filter list for all interfaces is not set
+  Router ID 1.1.1.1
+  Number of areas in this router is 1. 1 normal 0 stub 0 nssa
+  Maximum path: 4
+  Routing for Networks:
+    10.1.1.0 0.0.0.3 area 0
+    192.168.1.0 0.0.0.255 area 0
+  Routing Information Sources:
+    Gateway         Distance      Last Update
+    2.2.2.2              110      00:15:32
+  Distance: (default is 110)
+
+Routing Protocol is "eigrp 100"
+  Outgoing update filter list for all interfaces is not set
+  Incoming update filter list for all interfaces is not set
+  Default networks flagged in outgoing updates
+  Default networks accepted from incoming updates
+  EIGRP-IPv4 Protocol for AS(100)
+    Metric weight K1=1, K2=0, K3=1, K4=0, K5=0
+    NSF-aware route hold timer is 240
+    Router-ID: 1.1.1.1
+    Topology : 0 (base)
+      Active Timer: 3 min
+      Distance: internal 90 external 170
+      Maximum path: 4
+      Maximum hopcount 100
+      Maximum metric variance 1</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Show ip cef y Forwarding</h3>
+  <div class="code-block">
+    <div class="code-label">Verificación de Cisco Express Forwarding</div>
+    <pre><code><span class="cmd-comment">! === CISCO EXPRESS FORWARDING (CEF) ===</span>
+<span class="cmd-comment">! Tabla FIB (Forwarding Information Base) para switching rápido</span>
+
+R1# show ip cef
+<span class="cmd-output">Prefix              Next Hop             Interface
+0.0.0.0/0           203.0.113.1          GigabitEthernet0/1
+10.1.1.0/30         attached             Serial0/0/0
+10.1.1.1/32         receive              Serial0/0/0
+192.168.1.0/24      attached             GigabitEthernet0/0
+192.168.1.1/32      receive              GigabitEthernet0/0</span>
+
+R1# show ip cef 8.8.8.8
+<span class="cmd-output">8.8.8.0/24
+  nexthop 203.0.113.2 GigabitEthernet0/1</span>
+
+<span class="cmd-comment">! === VERIFICAR ADYACENCIA (Resolución L2) ===</span>
+R1# show adjacency
+<span class="cmd-output">Protocol Interface                 Address
+IP       GigabitEthernet0/0        192.168.1.2(5)
+IP       GigabitEthernet0/1        203.0.113.2(5)
+IP       Serial0/0/0               point2point(5)</span></code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 9 — TROUBLESHOOTING
+══════════════════════════════════════════════ -->
+<div id="tab-troubleshooting" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Troubleshooting de Routing — Guía de Diagnóstico</h2>
+  <p>Los problemas de routing pueden afectar toda la red. Esta guía sistemática cubre los escenarios más frecuentes en exámenes y producción.</p>
+
+  <h3 class="sub-title">Problema 1: No hay conectividad entre redes</h3>
+  <div class="process-steps">
+    <div class="process-step">
+      <span class="step-num">1</span>
+      <div class="step-content">
+        <div class="step-title">Verificar interfaces y capa física</div>
+        <code>R1# show ip interface brief</code>
+        <br>Confirmar que las interfaces están <strong>up/up</strong> y tienen IP correcta.
+      </div>
+    </div>
+    <div class="process-step">
+      <span class="step-num">2</span>
+      <div class="step-content">
+        <div class="step-title">Verificar tabla de routing local</div>
+        <code>R1# show ip route</code>
+        <br>¿Existe ruta hacia la red destino? ¿Es la correcta (next-hop alcanzable)?
+      </div>
+    </div>
+    <div class="process-step">
+      <span class="step-num">3</span>
+      <div class="step-content">
+        <div class="step-title">Verificar next-hop alcanzable</div>
+        <code>R1# ping [next-hop-ip]</code>
+        <br>Si el next-hop no responde, el problema está en el enlace o capa 2.
+      </div>
+    </div>
+    <div class="process-step">
+      <span class="step-num">4</span>
+      <div class="step-content">
+        <div class="step-title">Traceroute para identificar punto de falla</div>
+        <code>R1# traceroute [destino]</code>
+        <br>Identifica en qué router/salto se detiene el tráfico.
+      </div>
+    </div>
+  </div>
+
+  <h3 class="sub-title">Problema 2: OSPF no forma adyacencia</h3>
+  <div class="code-block">
+    <div class="code-label">Diagnóstico paso a paso</div>
+    <pre><code><span class="cmd-comment">! === SÍNTOMA: No aparece vecino en "show ip ospf neighbor" ===</span>
+
+<span class="cmd-comment">! Paso 1: Verificar configuración de interfaz</span>
+R1# show ip ospf interface GigabitEthernet0/1
+<span class="cmd-comment">! ¿Está habilitado OSPF en la interfaz?
+! ¿El área coincide con el vecino?</span>
+
+<span class="cmd-comment">! Paso 2: Verificar conectividad IP con vecino</span>
+R1# ping 10.1.1.2
+<span class="cmd-comment">! Si no hay ping, problema de capa 2 o IP</span>
+
+<span class="cmd-comment">! Paso 3: Verificar timers y tipo de red</span>
+R1# show ip ospf interface GigabitEthernet0/1 | include Timer
+<span class="cmd-comment">! Hello/Dead deben coincidir (10/40 en broadcast, 30/120 en NBMA)</span>
+
+<span class="cmd-comment">! Paso 4: Verificar autenticación</span>
+R1# show ip ospf interface GigabitEthernet0/1 | include auth
+<span class="cmd-comment">! Ambos lados deben tener misma autenticación (o ninguna)</span>
+
+<span class="cmd-comment">! Paso 5: Verificar máscara de subred</span>
+R1# show ip interface GigabitEthernet0/1 | include Internet
+<span class="cmd-comment">! Ambos routers deben estar en la misma subred</span>
+
+<span class="cmd-comment">! Paso 6: Verificar si interfaz está passive</span>
+R1# show ip protocols | include Passive
+<span class="cmd-comment">! Passive interface no envía/recibe hellos OSPF</span>
+
+<span class="cmd-comment">! Paso 7: Verificar ACL que bloquee OSPF (protocolo 89)</span>
+R1# show access-lists
+<span class="cmd-comment">! OSPF usa IP protocol 89. Asegurar que no esté bloqueado.</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Problema 3: EIGRP no forma adyacencia</h3>
+  <div class="code-block">
+    <div class="code-label">Checklist de requisitos EIGRP</div>
+    <pre><code><span class="cmd-comment">! === REQUISITOS PARA ADYACENCIA EIGRP ===</span>
+
+<span class="cmd-comment">! 1. Mismo AS number:</span>
+R1# show ip protocols | include AS
+<span class="cmd-comment">! AS 100 en ambos routers</span>
+
+<span class="cmd-comment">! 2. Mismos K values:</span>
+R1# show ip protocols | include K1
+<span class="cmd-comment">! K1=1, K2=0, K3=1, K4=0, K5=0 (por defecto)</span>
+
+<span class="cmd-comment">! 3. Misma autenticación (si está configurada):</span>
+R1# show running-config interface Serial0/0/0 | include auth
+<span class="cmd-comment">! Misma key-chain, mismo modo (MD5/SHA)</span>
+
+<span class="cmd-comment">! 4. Misma subred:</span>
+R1# show ip interface Serial0/0/0 | include Internet
+<span class="cmd-comment">! IP y máscara deben coincidir</span>
+
+<span class="cmd-comment">! 5. No passive interface:</span>
+R1# show ip protocols | include Passive
+<span class="cmd-comment">! Interfaz no debe estar en lista passive</span>
+
+<span class="cmd-comment">! 6. Capa 2 funcionando:</span>
+R1# show cdp neighbors
+<span class="cmd-comment">! ¿Se ve el vecino vía CDP?</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Problema 4: BGP Session Down</h3>
+  <div class="code-block">
+    <div class="code-label">Diagnóstico de sesiones BGP</div>
+    <pre><code><span class="cmd-comment">! === VERIFICAR ESTADO BGP ===</span>
+R1# show ip bgp summary
+<span class="cmd-output">Neighbor        V    AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
+203.0.113.2     4 65002       0       0        0    0    0 never    Idle</span>
+<span class="cmd-comment">! Idle = No se ha iniciado conexión TCP (puerto 179)</span>
+
+<span class="cmd-comment">! === CAUSAS COMUNES ESTADO IDLE ===</span>
+<span class="cmd-comment">! 1. No hay conectividad IP con vecino</span>
+R1# ping 203.0.113.2
+
+<span class="cmd-comment">! 2. Puerto 179 bloqueado por ACL/firewall</span>
+R1# show access-lists
+<span class="cmd-comment">! BGP usa TCP 179. Debe estar permitido bidireccionalmente.</span>
+
+<span class="cmd-comment">! 3. AS number incorrecto en neighbor</span>
+R1# show running-config | section router bgp
+<span class="cmd-comment">! Verificar remote-as coincide con el AS real del vecino</span>
+
+<span class="cmd-comment">! 4. Interface shutdown o IP incorrecta</span>
+R1# show ip interface brief
+
+<span class="cmd-comment">! === ESTADO ACTIVE ===</span>
+<span class="cmd-comment">! El router intenta establecer conexión TCP pero falla</span>
+<span class="cmd-comment">! Causa común: Vecino no tiene ruta de retorno hacia este router</span>
+
+<span class="cmd-comment">! === DEBUG BGP (USAR CON CUIDADO) ===</span>
+R1# debug ip bgp
+R1# debug ip tcp transactions
+<span class="cmd-comment">! Muestra negociación TCP y mensajes BGP en tiempo real</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Problema 5: NAT no traduce direcciones</h3>
+  <div class="code-block">
+    <div class="code-label">Diagnóstico de NAT/PAT</div>
+    <pre><code><span class="cmd-comment">! === VERIFICAR CONFIGURACIÓN NAT ===</span>
+R1# show ip nat statistics
+<span class="cmd-comment">! ¿Hay interfaces inside/outside definidas?</span>
+<span class="cmd-comment">! ¿La ACL coincide con el tráfico que debe traducirse?</span>
+
+<span class="cmd-comment">! === VERIFICAR ACL NAT ===</span>
+R1# show access-list 1
+<span class="cmd-output">Standard IP access list 1
+    10 permit 192.168.1.0, wildcard bits 0.0.0.255</span>
+
+<span class="cmd-comment">! === VERIFICAR TRADUCCIONES ===</span>
+R1# show ip nat translations
+<span class="cmd-comment">! Si está vacío, posibles causas:</span>
+<span class="cmd-comment">! - ACL no incluye al host origen</span>
+<span class="cmd-comment">! - Interfaz inside/outside mal configurada</span>
+<span class="cmd-comment">! - No hay tráfico que coincida (probar con ping desde inside)</span>
+
+<span class="cmd-comment">! === DEBUG NAT ===</span>
+R1# debug ip nat
+<span class="cmd-output">NAT: s=192.168.1.10->203.0.113.1, d=8.8.8.8 [12345]</span>
+<span class="cmd-comment">! Muestra traducciones en tiempo real</span>
+
+<span class="cmd-comment">! === PROBLEMA: NAT OVERLOAD CON UNA SOLA IP ===</span>
+<span class="cmd-comment">! Si "show ip nat translations" muestra muchas entradas y fallan nuevas:</span>
+R1# show ip nat statistics | include translations
+<span class="cmd-comment">! Verificar si se alcanzó límite de puertos (65535 por IP)</span></code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Checklist de Troubleshooting Routing</div>
+    <ol>
+      <li>¿Las interfaces están <strong>up/up</strong> con IP correcta?</li>
+      <li>¿Existe ruta en <strong>show ip route</strong> hacia el destino?</li>
+      <li>¿El <strong>next-hop</strong> es alcanzable (ping)?</li>
+      <li>¿Los <strong>protocolos de routing</strong> están activos (<code>show ip protocols</code>)?</li>
+      <li>¿Los <strong>vecinos</strong> están establecidos (OSPF/EIGRP/BGP)?</li>
+      <li>¿Las <strong>máscaras de subred</strong> coinciden en el enlace?</li>
+      <li>¿Hay <strong>ACLs</strong> bloqueando protocolos de routing?</li>
+      <li>¿La <strong>autenticación</strong> coincide (si está configurada)?</li>
+      <li>¿Hay <strong>rutas flotantes</strong> o <strong>administrative distance</strong> causando conflicto?</li>
+      <li>¿El <strong>NAT</strong> está configurado correctamente (inside/outside, ACL, overload)?</li>
+    </ol>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 10 — LABORATORIO
+══════════════════════════════════════════════ -->
+<div id="tab-lab" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">🧪 Laboratorio Práctico: Routing Completo Enterprise</h2>
+  <p>Este laboratorio integra rutas estáticas, OSPF, EIGRP, BGP, NAT/PAT y troubleshooting en una topología realista de red empresarial con conexión dual-ISP.</p>
+
+  <div class="lab-topology">
+    <div class="diagram-title">Topología del Laboratorio de Routing</div>
+    <svg viewBox="0 0 1000 600" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1000px;">
+      <!-- Internet -->
+      <ellipse cx="500" cy="50" rx="80" ry="30" fill="none" stroke="#f87171" stroke-width="2"/>
+      <text x="500" y="55" text-anchor="middle" fill="#f87171" font-size="12" font-family="Orbitron">INTERNET</text>
+
+      <!-- ISP1 -->
+      <rect x="300" y="120" width="120" height="80" rx="8" fill="#0d1220" stroke="#fbbf24" stroke-width="2"/>
+      <text x="360" y="145" text-anchor="middle" fill="#fbbf24" font-size="11" font-family="Orbitron">ISP-1</text>
+      <text x="360" y="165" text-anchor="middle" fill="#6b7a9a" font-size="9" font-family="Share Tech Mono">AS 65001</text>
+      <text x="360" y="180" text-anchor="middle" fill="#4a5780" font-size="8" font-family="Share Tech Mono">203.0.113.0/30</text>
+
+      <!-- ISP2 -->
+      <rect x="580" y="120" width="120" height="80" rx="8" fill="#0d1220" stroke="#fbbf24" stroke-width="2"/>
+      <text x="640" y="145" text-anchor="middle" fill="#fbbf24" font-size="11" font-family="Orbitron">ISP-2</text>
+      <text x="640" y="165" text-anchor="middle" fill="#6b7a9a" font-size="9" font-family="Share Tech Mono">AS 65002</text>
+      <text x="640" y="180" text-anchor="middle" fill="#4a5780" font-size="8" font-family="Share Tech Mono">198.51.100.0/30</text>
+
+      <!-- R1 Edge -->
+      <rect x="420" y="250" width="160" height="100" rx="8" fill="#0d1220" stroke="#00d4aa" stroke-width="2"/>
+      <text x="500" y="280" text-anchor="middle" fill="#00d4aa" font-size="13" font-family="Orbitron">R1-EDGE</text>
+      <text x="500" y="300" text-anchor="middle" fill="#6b7a9a" font-size="9" font-family="Share Tech Mono">BGP + NAT + Static</text>
+      <text x="500" y="315" text-anchor="middle" fill="#4a5780" font-size="8" font-family="Share Tech Mono">Gi0/0: 192.168.1.1/24</text>
+      <text x="500" y="330" text-anchor="middle" fill="#4a5780" font-size="8" font-family="Share Tech Mono">Gi0/1: 203.0.113.1/30</text>
+      <text x="500" y="342" text-anchor="middle" fill="#4a5780" font-size="8" font-family="Share Tech Mono">Gi0/2: 198.51.100.1/30</text>
+
+      <!-- R2 Core -->
+      <rect x="250" y="420" width="160" height="100" rx="8" fill="#0d1220" stroke="#38bdf8" stroke-width="2"/>
+      <text x="330" y="450" text-anchor="middle" fill="#38bdf8" font-size="13" font-family="Orbitron">R2-CORE</text>
+      <text x="330" y="470" text-anchor="middle" fill="#6b7a9a" font-size="9" font-family="Share Tech Mono">OSPF Area 0</text>
+      <text x="330" y="485" text-anchor="middle" fill="#4a5780" font-size="8" font-family="Share Tech Mono">Gi0/0: 192.168.1.2/24</text>
+      <text x="330" y="500" text-anchor="middle" fill="#4a5780" font-size="8" font-family="Share Tech Mono">Gi0/1: 10.1.1.1/30</text>
+      <text x="330" y="512" text-anchor="middle" fill="#4a5780" font-size="8" font-family="Share Tech Mono">Gi0/2: 10.1.2.1/30</text>
+
+      <!-- R3 Branch -->
+      <rect x="590" y="420" width="160" height="100" rx="8" fill="#0d1220" stroke="#a78bfa" stroke-width="2"/>
+      <text x="670" y="450" text-anchor="middle" fill="#a78bfa" font-size="13" font-family="Orbitron">R3-BRANCH</text>
+      <text x="670" y="470" text-anchor="middle" fill="#6b7a9a" font-size="9" font-family="Share Tech Mono">EIGRP AS 100</text>
+      <text x="670" y="485" text-anchor="middle" fill="#4a5780" font-size="8" font-family="Share Tech Mono">Gi0/0: 192.168.2.1/24</text>
+      <text x="670" y="500" text-anchor="middle" fill="#4a5780" font-size="8" font-family="Share Tech Mono">Gi0/1: 10.1.2.2/30</text>
+      <text x="670" y="512" text-anchor="middle" fill="#4a5780" font-size="8" font-family="Share Tech Mono">S0/0/0: 10.1.3.1/30</text>
+
+      <!-- R4 Remote -->
+      <rect x="800" y="420" width="140" height="80" rx="8" fill="#0d1220" stroke="#fbbf24" stroke-width="2"/>
+      <text x="870" y="450" text-anchor="middle" fill="#fbbf24" font-size="12" font-family="Orbitron">R4-REMOTE</text>
+      <text x="870" y="470" text-anchor="middle" fill="#6b7a9a" font-size="9" font-family="Share Tech Mono">RIPv2</text>
+      <text x="870" y="485" text-anchor="middle" fill="#4a5780" font-size="8" font-family="Share Tech Mono">Gi0/0: 192.168.3.1/24</text>
+      <text x="870" y="500" text-anchor="middle" fill="#4a5780" font-size="8" font-family="Share Tech Mono">S0/0/0: 10.1.3.2/30</text>
+
+      <!-- LANs -->
+      <rect x="100" y="440" width="100" height="60" rx="4" fill="#090d1a" stroke="#38bdf8" stroke-width="1"/>
+      <text x="150" y="465" text-anchor="middle" fill="#38bdf8" font-size="9" font-family="Share Tech Mono">LAN-CORE</text>
+      <text x="150" y="480" text-anchor="middle" fill="#4a5780" font-size="8" font-family="Share Tech Mono">192.168.1.0/24</text>
+
+      <rect x="590" y="560" width="100" height="60" rx="4" fill="#090d1a" stroke="#a78bfa" stroke-width="1"/>
+      <text x="640" y="585" text-anchor="middle" fill="#a78bfa" font-size="9" font-family="Share Tech Mono">LAN-BRANCH</text>
+      <text x="640" y="600" text-anchor="middle" fill="#4a5780" font-size="8" font-family="Share Tech Mono">192.168.2.0/24</text>
+
+      <rect x="820" y="560" width="100" height="60" rx="4" fill="#090d1a" stroke="#fbbf24" stroke-width="1"/>
+      <text x="870" y="585" text-anchor="middle" fill="#fbbf24" font-size="9" font-family="Share Tech Mono">LAN-REMOTE</text>
+      <text x="870" y="600" text-anchor="middle" fill="#4a5780" font-size="8" font-family="Share Tech Mono">192.168.3.0/24</text>
+
+      <!-- Conexiones -->
+      <line x1="500" y1="80" x2="360" y2="120" stroke="#f87171" stroke-width="1.5"/>
+      <line x1="500" y1="80" x2="640" y2="120" stroke="#f87171" stroke-width="1.5"/>
+
+      <line x1="360" y1="200" x2="460" y2="250" stroke="#fbbf24" stroke-width="1.5"/>
+      <line x1="640" y1="200" x2="540" y2="250" stroke="#fbbf24" stroke-width="1.5"/>
+
+      <line x1="500" y1="350" x2="500" y2="380" stroke="#00d4aa" stroke-width="1.5"/>
+      <line x1="500" y1="380" x2="330" y2="420" stroke="#00d4aa" stroke-width="1.5"/>
+      <line x1="500" y1="380" x2="670" y2="420" stroke="#00d4aa" stroke-width="1.5"/>
+
+      <line x1="410" y1="470" x2="200" y2="470" stroke="#38bdf8" stroke-width="1.5"/>
+      <line x1="330" y1="520" x2="670" y2="470" stroke="#a78bfa" stroke-width="1.5"/>
+      <line x1="750" y1="470" x2="800" y2="460" stroke="#fbbf24" stroke-width="1.5"/>
+
+      <line x1="640" y1="520" x2="640" y2="560" stroke="#a78bfa" stroke-width="1.5"/>
+      <line x1="870" y1="500" x2="870" y2="560" stroke="#fbbf24" stroke-width="1.5"/>
+
+      <!-- Protocolos -->
+      <text x="400" y="210" fill="#fbbf24" font-size="8" font-family="Share Tech Mono">eBGP</text>
+      <text x="600" y="210" fill="#fbbf24" font-size="8" font-family="Share Tech Mono">eBGP</text>
+      <text x="420" y="400" fill="#00d4aa" font-size="8" font-family="Share Tech Mono">Static</text>
+      <text x="250" y="490" fill="#38bdf8" font-size="8" font-family="Share Tech Mono">OSPF</text>
+      <text x="500" y="490" fill="#a78bfa" font-size="8" font-family="Share Tech Mono">EIGRP</text>
+      <text x="780" y="450" fill="#fbbf24" font-size="8" font-family="Share Tech Mono">RIPv2</text>
+    </svg>
+  </div>
+
+  <h3 class="sub-title">Objetivos del Laboratorio</h3>
+  <ul>
+    <li>Configurar R1-EDGE con rutas estáticas, BGP dual-homed y NAT/PAT</li>
+    <li>Implementar OSPF Area 0 en R2-CORE y redistribución hacia R1</li>
+    <li>Configurar EIGRP AS 100 entre R2-CORE y R3-BRANCH</li>
+    <li>Configurar RIPv2 en R3-BRANCH y R4-REMOTE</li>
+    <li>Redistribuir rutas entre protocolos (EIGRP ↔ OSPF, RIP ↔ EIGRP)</li>
+    <li>Implementar NAT overload para salida a Internet</li>
+    <li>Verificar conectividad end-to-end y documentar troubleshooting</li>
+  </ul>
+
+  <div class="lab-steps">
+    <div class="lab-step">
+      <div class="lab-step-num">Parte 1</div>
+      <div class="lab-step-title">Configuración R1-EDGE (Static + BGP + NAT)</div>
+      <div class="code-block" style="margin-top:8px;">
+        <pre><code><span class="cmd-comment">! === CONFIGURACIÓN INICIAL ===</span>
+Router> enable
+Router# configure terminal
+Router(config)# hostname R1-EDGE
+
+<span class="cmd-comment">! === INTERFACES ===</span>
+R1-EDGE(config)# interface GigabitEthernet0/0
+R1-EDGE(config-if)# description LAN-CORE
+R1-EDGE(config-if)# ip address 192.168.1.1 255.255.255.0
+R1-EDGE(config-if)# ip nat inside
+R1-EDGE(config-if)# no shutdown
+
+R1-EDGE(config)# interface GigabitEthernet0/1
+R1-EDGE(config-if)# description ISP-1-PRIMARY
+R1-EDGE(config-if)# ip address 203.0.113.1 255.255.255.252
+R1-EDGE(config-if)# ip nat outside
+R1-EDGE(config-if)# no shutdown
+
+R1-EDGE(config)# interface GigabitEthernet0/2
+R1-EDGE(config-if)# description ISP-2-BACKUP
+R1-EDGE(config-if)# ip address 198.51.100.1 255.255.255.252
+R1-EDGE(config-if)# ip nat outside
+R1-EDGE(config-if)# no shutdown
+
+<span class="cmd-comment">! === RUTAS ESTÁTICAS POR DEFECTO (DUAL-HOMED) ===</span>
+R1-EDGE(config)# ip route 0.0.0.0 0.0.0.0 203.0.113.2
+R1-EDGE(config)# ip route 0.0.0.0 0.0.0.0 198.51.100.2 10
+<span class="cmd-comment">! Primaria por ISP-1 (AD 1), backup por ISP-2 (AD 10)</span>
+
+<span class="cmd-comment">! === BGP CONFIGURATION ===</span>
+R1-EDGE(config)# router bgp 65000
+R1-EDGE(config-router)# bgp router-id 1.1.1.1
+R1-EDGE(config-router)# neighbor 203.0.113.2 remote-as 65001
+R1-EDGE(config-router)# neighbor 203.0.113.2 description ISP-1
+R1-EDGE(config-router)# neighbor 198.51.100.2 remote-as 65002
+R1-EDGE(config-router)# neighbor 198.51.100.2 description ISP-2
+
+<span class="cmd-comment">! Anunciar redes corporativas</span>
+R1-EDGE(config-router)# network 192.168.1.0 mask 255.255.255.0
+R1-EDGE(config-router)# network 192.168.2.0 mask 255.255.255.0
+R1-EDGE(config-router)# network 192.168.3.0 mask 255.255.255.0
+
+<span class="cmd-comment">! Política: Preferir ISP-1</span>
+R1-EDGE(config)# route-map PREFER-ISP1 permit 10
+R1-EDGE(config-route-map)# set local-preference 200
+R1-EDGE(config-router)# neighbor 203.0.113.2 route-map PREFER-ISP1 in
+
+<span class="cmd-comment">! === NAT OVERLOAD (PAT) ===</span>
+R1-EDGE(config)# access-list 1 permit 192.168.0.0 0.0.255.255
+R1-EDGE(config)# ip nat inside source list 1 interface GigabitEthernet0/1 overload
+
+<span class="cmd-comment">! Backup NAT por ISP-2</span>
+R1-EDGE(config)# route-map NAT-ISP2 permit 10
+R1-EDGE(config-route-map)# match interface GigabitEthernet0/2
+R1-EDGE(config)# ip nat inside source list 1 route-map NAT-ISP2 interface GigabitEthernet0/2 overload
+
+<span class="cmd-comment">! === VERIFICACIÓN ===</span>
+R1-EDGE# show ip route
+R1-EDGE# show ip bgp summary
+R1-EDGE# show ip nat translations
+R1-EDGE# show ip nat statistics
+R1-EDGE# copy running-config startup-config</code></pre>
+      </div>
+    </div>
+
+    <div class="lab-step">
+      <div class="lab-step-num">Parte 2</div>
+      <div class="lab-step-title">Configuración R2-CORE (OSPF + EIGRP Redistribución)</div>
+      <div class="code-block" style="margin-top:8px;">
+        <pre><code><span class="cmd-comment">! === CONFIGURACIÓN INICIAL ===</span>
+Router(config)# hostname R2-CORE
+
+<span class="cmd-comment">! === INTERFACES ===</span>
+R2-CORE(config)# interface GigabitEthernet0/0
+R2-CORE(config-if)# description TO-R1-EDGE
+R2-CORE(config-if)# ip address 192.168.1.2 255.255.255.0
+R2-CORE(config-if)# no shutdown
+
+R2-CORE(config)# interface GigabitEthernet0/1
+R2-CORE(config-if)# description TO-R3-BRANCH
+R2-CORE(config-if)# ip address 10.1.2.1 255.255.255.252
+R2-CORE(config-if)# no shutdown
+
+R2-CORE(config)# interface GigabitEthernet0/2
+R2-CORE(config-if)# description LAN-CORE-USERS
+R2-CORE(config-if)# ip address 192.168.10.1 255.255.255.0
+R2-CORE(config-if)# no shutdown
+
+<span class="cmd-comment">! === OSPF AREA 0 ===</span>
+R2-CORE(config)# router ospf 1
+R2-CORE(config-router)# router-id 2.2.2.2
+R2-CORE(config-router)# network 192.168.1.0 0.0.0.255 area 0
+R2-CORE(config-router)# network 192.168.10.0 0.0.0.255 area 0
+R2-CORE(config-router)# passive-interface GigabitEthernet0/2
+
+<span class="cmd-comment">! Ruta por defecto desde OSPF (R1 la inyecta)</span>
+<span class="cmd-comment">! O configurar ruta estática default en R2 si R1 no la redistribuye</span>
+
+<span class="cmd-comment">! === EIGRP AS 100 ===</span>
+R2-CORE(config)# router eigrp 100
+R2-CORE(config-router)# network 10.1.2.0 0.0.0.3
+R2-CORE(config-router)# network 192.168.10.0 0.0.0.255
+R2-CORE(config-router)# no auto-summary
+R2-CORE(config-router)# eigrp router-id 2.2.2.2
+R2-CORE(config-router)# passive-interface GigabitEthernet0/2
+
+<span class="cmd-comment">! === REDISTRIBUCIÓN OSPF → EIGRP ===</span>
+R2-CORE(config)# router eigrp 100
+R2-CORE(config-router)# redistribute ospf 1 metric 10000 100 255 1 1500
+<span class="cmd-comment">! metric: bandwidth delay reliability load MTU</span>
+
+<span class="cmd-comment">! === REDISTRIBUCIÓN EIGRP → OSPF ===</span>
+R2-CORE(config)# router ospf 1
+R2-CORE(config-router)# redistribute eigrp 100 subnets
+<span class="cmd-comment">! "subnets" obligatorio para preservar máscaras VLSM</span>
+
+<span class="cmd-comment">! === VERIFICACIÓN ===</span>
+R2-CORE# show ip route
+R2-CORE# show ip ospf neighbor
+R2-CORE# show ip eigrp neighbors
+R2-CORE# show ip protocols
+R2-CORE# copy running-config startup-config</code></pre>
+      </div>
+    </div>
+
+    <div class="lab-step">
+      <div class="lab-step-num">Parte 3</div>
+      <div class="lab-step-title">Configuración R3-BRANCH (EIGRP + RIP Redistribución)</div>
+      <div class="code-block" style="margin-top:8px;">
+        <pre><code><span class="cmd-comment">! === CONFIGURACIÓN INICIAL ===</span>
+Router(config)# hostname R3-BRANCH
+
+<span class="cmd-comment">! === INTERFACES ===</span>
+R3-BRANCH(config)# interface GigabitEthernet0/0
+R3-BRANCH(config-if)# description LAN-BRANCH
+R3-BRANCH(config-if)# ip address 192.168.2.1 255.255.255.0
+R3-BRANCH(config-if)# no shutdown
+
+R3-BRANCH(config)# interface GigabitEthernet0/1
+R3-BRANCH(config-if)# description TO-R2-CORE
+R3-BRANCH(config-if)# ip address 10.1.2.2 255.255.255.252
+R3-BRANCH(config-if)# no shutdown
+
+R3-BRANCH(config)# interface Serial0/0/0
+R3-BRANCH(config-if)# description TO-R4-REMOTE
+R3-BRANCH(config-if)# ip address 10.1.3.1 255.255.255.252
+R3-BRANCH(config-if)# no shutdown
+
+<span class="cmd-comment">! === EIGRP AS 100 ===</span>
+R3-BRANCH(config)# router eigrp 100
+R3-BRANCH(config-router)# network 10.1.2.0 0.0.0.3
+R3-BRANCH(config-router)# network 192.168.2.0 0.0.0.255
+R3-BRANCH(config-router)# no auto-summary
+R3-BRANCH(config-router)# eigrp router-id 3.3.3.3
+R3-BRANCH(config-router)# passive-interface GigabitEthernet0/0
+
+<span class="cmd-comment">! === RIPv2 ===</span>
+R3-BRANCH(config)# router rip
+R3-BRANCH(config-router)# version 2
+R3-BRANCH(config-router)# no auto-summary
+R3-BRANCH(config-router)# network 10.0.0.0
+<span class="cmd-comment">! 10.1.3.0/30 está dentro de 10.0.0.0/8</span>
+
+<span class="cmd-comment">! === REDISTRIBUCIÓN RIP → EIGRP ===</span>
+R3-BRANCH(config)# router eigrp 100
+R3-BRANCH(config-router)# redistribute rip metric 10000 100 255 1 1500
+
+<span class="cmd-comment">! === REDISTRIBUCIÓN EIGRP → RIP ===</span>
+R3-BRANCH(config)# router rip
+R3-BRANCH(config-router)# redistribute eigrp 100 metric 3
+<span class="cmd-comment">! Métrica RIP = hop count (máximo 15)</span>
+
+<span class="cmd-comment">! === VERIFICACIÓN ===</span>
+R3-BRANCH# show ip route
+R3-BRANCH# show ip eigrp neighbors
+R3-BRANCH# show ip rip database
+R3-BRANCH# copy running-config startup-config</code></pre>
+      </div>
+    </div>
+
+    <div class="lab-step">
+      <div class="lab-step-num">Parte 4</div>
+      <div class="lab-step-title">Configuración R4-REMOTE (RIPv2)</div>
+      <div class="code-block" style="margin-top:8px;">
+        <pre><code><span class="cmd-comment">! === CONFIGURACIÓN INICIAL ===</span>
+Router(config)# hostname R4-REMOTE
+
+<span class="cmd-comment">! === INTERFACES ===</span>
+R4-REMOTE(config)# interface GigabitEthernet0/0
+R4-REMOTE(config-if)# description LAN-REMOTE
+R4-REMOTE(config-if)# ip address 192.168.3.1 255.255.255.0
+R4-REMOTE(config-if)# no shutdown
+
+R4-REMOTE(config)# interface Serial0/0/0
+R4-REMOTE(config-if)# description TO-R3-BRANCH
+R4-REMOTE(config-if)# ip address 10.1.3.2 255.255.255.252
+R4-REMOTE(config-if)# no shutdown
+
+<span class="cmd-comment">! === RIPv2 ===</span>
+R4-REMOTE(config)# router rip
+R4-REMOTE(config-router)# version 2
+R4-REMOTE(config-router)# no auto-summary
+R4-REMOTE(config-router)# network 10.0.0.0
+R4-REMOTE(config-router)# network 192.168.3.0
+R4-REMOTE(config-router)# passive-interface GigabitEthernet0/0
+
+<span class="cmd-comment">! === RUTA POR DEFECTO VÍA RIP ===</span>
+<span class="cmd-comment">! R3 inyecta default con "default-information originate"</span>
+
+<span class="cmd-comment">! === VERIFICACIÓN ===</span>
+R4-REMOTE# show ip route
+R4-REMOTE# show ip rip database
+R4-REMOTE# ping 192.168.1.1    <span class="cmd-comment">! R1-EDGE</span>
+R4-REMOTE# ping 8.8.8.8        <span class="cmd-comment">! Internet vía NAT</span>
+R4-REMOTE# copy running-config startup-config</code></pre>
+      </div>
+    </div>
+
+    <div class="lab-step">
+      <div class="lab-step-num">Parte 5</div>
+      <div class="lab-step-title">Verificación End-to-End y Troubleshooting</div>
+      <div class="code-block" style="margin-top:8px;">
+        <pre><code><span class="cmd-comment">! === DESDE PC EN LAN-CORE (192.168.10.10) ===</span>
+PC> ping 192.168.2.1        <span class="cmd-comment">! R3-BRANCH (vía OSPF→EIGRP)</span>
+PC> ping 192.168.3.1        <span class="cmd-comment">! R4-REMOTE (vía OSPF→EIGRP→RIP)</span>
+PC> ping 8.8.8.8            <span class="cmd-comment">! Internet (vía BGP→NAT)</span>
+PC> tracert 8.8.8.8
+<span class="cmd-comment">! Debe mostrar: 192.168.10.1 → 192.168.1.1 → 203.0.113.2 → ...</span>
+
+<span class="cmd-comment">! === DESDE PC EN LAN-REMOTE (192.168.3.10) ===</span>
+PC> ping 192.168.10.10      <span class="cmd-comment">! LAN-CORE (vía RIP→EIGRP→OSPF)</span>
+PC> ping 203.0.113.2        <span class="cmd-comment">! ISP-1 (vía RIP→EIGRP→OSPF→BGP)</span>
+
+<span class="cmd-comment">! === VERIFICAR REDISTRIBUCIÓN ===</span>
+R2-CORE# show ip route
+<span class="cmd-comment">! Debe ver rutas O (OSPF), D (EIGRP), R (RIP), B (BGP)</span>
+
+R2-CORE# show ip protocols
+<span class="cmd-comment">! Verificar "Routing Information Sources" y redistribuciones</span>
+
+<span class="cmd-comment">! === VERIFICAR NAT EN R1-EDGE ===</span>
+R1-EDGE# show ip nat translations
+R1-EDGE# show ip nat statistics
+R1-EDGE# debug ip nat
+<span class="cmd-comment">! Generar tráfico desde LAN y observar traducciones</span>
+
+<span class="cmd-comment">! === VERIFICAR BGP ===</span>
+R1-EDGE# show ip bgp summary
+R1-EDGE# show ip bgp
+R1-EDGE# show ip bgp neighbors 203.0.113.2 advertised-routes
+
+<span class="cmd-comment">! === FALLA SIMULADA: Caída ISP-1 ===</span>
+R1-EDGE(config)# interface GigabitEthernet0/1
+R1-EDGE(config-if)# shutdown
+<span class="cmd-comment">! Verificar que tráfico sale por ISP-2 (198.51.100.2)</span>
+R1-EDGE# show ip route 0.0.0.0
+<span class="cmd-comment">! Debe mostrar ruta por defecto vía 198.51.100.2 (AD 10)</span>
+R1-EDGE(config-if)# no shutdown
+
+<span class="cmd-comment">! === COMANDOS FINALES ===</span>
+R1-EDGE# show ip route
+R2-CORE# show ip route
+R3-BRANCH# show ip route
+R4-REMOTE# show ip route
+R1-EDGE# show ip bgp summary
+R2-CORE# show ip ospf neighbor
+R2-CORE# show ip eigrp neighbors
+R3-BRANCH# show ip rip database</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">✅ Checklist de Éxito del Laboratorio</div>
+    <ul>
+      <li>✓ Conectividad LAN-CORE ↔ LAN-BRANCH ↔ LAN-REMOTE (inter-protocolo)</li>
+      <li>✓ Acceso a Internet desde todas las LANs vía NAT/PAT</li>
+      <li>✓ BGP establecido con ambos ISPs (show ip bgp summary)</li>
+      <li>✓ Failover automático a ISP-2 cuando ISP-1 cae</li>
+      <li>✓ Redistribución funciona sin loops de routing</li>
+      <li>✓ OSPF neighbors FULL, EIGRP neighbors UP, RIP database poblada</li>
+      <li>✓ Tabla de routing en cada router muestra rutas de todos los protocolos</li>
+      <li>✓ Configuración guardada en startup-config en todos los dispositivos</li>
+    </ul>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 11 — TABLA DE REFERENCIA
+══════════════════════════════════════════════ -->
+<div id="tab-tabla" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Tabla de Referencia Rápida — Comandos Routing</h2>
+  <table class="ref-table">
+    <thead>
+      <tr>
+        <th>Comando</th>
+        <th>Contexto</th>
+        <th>Descripción</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><code>ip route [red] [mask] [next-hop]</code></td><td>config</td><td>Ruta estática con next-hop IP</td></tr>
+      <tr><td><code>ip route [red] [mask] [interfaz]</code></td><td>config</td><td>Ruta estática con interfaz de salida</td></tr>
+      <tr><td><code>ip route 0.0.0.0 0.0.0.0 [next-hop]</code></td><td>config</td><td>Ruta por defecto (gateway of last resort)</td></tr>
+      <tr><td><code>ip route [red] [mask] [next-hop] [AD]</code></td><td>config</td><td>Ruta estática flotante (backup)</td></tr>
+      <tr><td><code>router rip</code></td><td>config</td><td>Activar proceso RIP</td></tr>
+      <tr><td><code>version 2</code></td><td>config-router</td><td>Forzar RIPv2</td></tr>
+      <tr><td><code>no auto-summary</code></td><td>config-router</td><td>Desactivar sumarización automática</td></tr>
+      <tr><td><code>network [red]</code></td><td>config-router</td><td>Anunciar red en RIP/OSPF/EIGRP</td></tr>
+      <tr><td><code>passive-interface [int]</code></td><td>config-router</td><td>No enviar actualizaciones por interfaz</td></tr>
+      <tr><td><code>default-information originate</code></td><td>config-router</td><td>Propagar ruta default en RIP/OSPF</td></tr>
+      <tr><td><code>router ospf [process-id]</code></td><td>config</td><td>Activar proceso OSPF</td></tr>
+      <tr><td><code>router-id [id]</code></td><td>config-router</td><td>Router ID único (formato IPv4)</td></tr>
+      <tr><td><code>network [red] [wildcard] area [n]</code></td><td>config-router</td><td>Anunciar red en área OSPF</td></tr>
+      <tr><td><code>auto-cost reference-bandwidth [mbps]</code></td><td>config-router</td><td>Ancho de banda de referencia OSPF</td></tr>
+      <tr><td><code>ip ospf cost [n]</code></td><td>config-if</td><td>Costo manual OSPF en interfaz</td></tr>
+      <tr><td><code>ip ospf priority [n]</code></td><td>config-if</td><td>Prioridad para elección DR/BDR</td></tr>
+      <tr><td><code>router eigrp [AS]</code></td><td>config</td><td>Activar EIGRP clásico</td></tr>
+      <tr><td><code>router eigrp [name]</code></td><td>config</td><td>Activar EIGRP named mode</td></tr>
+      <tr><td><code>address-family ipv4 autonomous-system [AS]</code></td><td>config-router</td><td>AF IPv4 en EIGRP named</td></tr>
+      <tr><td><code>variance [n]</code></td><td>config-router</td><td>Balanceo de carga desigual EIGRP</td></tr>
+      <tr><td><code>eigrp stub [tipo]</code></td><td>config-router</td><td>Router stub EIGRP</td></tr>
+      <tr><td><code>router bgp [AS]</code></td><td>config</td><td>Activar proceso BGP</td></tr>
+      <tr><td><code>neighbor [ip] remote-as [AS]</code></td><td>config-router</td><td>Configurar vecino BGP</td></tr>
+      <tr><td><code>network [red] mask [mask]</code></td><td>config-router</td><td>Anunciar red en BGP</td></tr>
+      <tr><td><code>set local-preference [n]</code></td><td>route-map</td><td>Atributo LOCAL_PREF BGP</td></tr>
+      <tr><td><code>set as-path prepend [AS]...</code></td><td>route-map</td><td>Alargar AS_PATH BGP</td></tr>
+      <tr><td><code>ip nat inside/outside</code></td><td>config-if</td><td>Definir interfaz NAT</td></tr>
+      <tr><td><code>ip nat inside source static [local] [global]</code></td><td>config</td><td>NAT estático</td></tr>
+      <tr><td><code>ip nat inside source list [ACL] pool [pool]</code></td><td>config</td><td>NAT dinámico</td></tr>
+      <tr><td><code>ip nat inside source list [ACL] interface [int] overload</code></td><td>config</td><td>PAT / NAT overload</td></tr>
+      <tr><td><code>show ip route</code></td><td>exec</td><td>Tabla de routing completa</td></tr>
+      <tr><td><code>show ip protocols</code></td><td>exec</td><td>Protocolos de routing activos</td></tr>
+      <tr><td><code>show ip ospf neighbor</code></td><td>exec</td><td>Vecinos OSPF</td></tr>
+      <tr><td><code>show ip eigrp neighbors</code></td><td>exec</td><td>Vecinos EIGRP</td></tr>
+      <tr><td><code>show ip bgp summary</code></td><td>exec</td><td>Resumen de sesiones BGP</td></tr>
+      <tr><td><code>show ip nat translations</code></td><td>exec</td><td>Traducciones NAT activas</td></tr>
+      <tr><td><code>show ip cef</code></td><td>exec</td><td>Tabla de forwarding CEF</td></tr>
+      <tr><td><code>traceroute [destino]</code></td><td>exec</td><td>Seguimiento de ruta</td></tr>
+      <tr><td><code>debug ip [protocolo]</code></td><td>exec</td><td>Debug en tiempo real (cuidado)</td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="section-title" style="margin-top:32px;">Comandos por Tema de Examen CCNA 200-301</h2>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead><tr><th>Tema del examen</th><th>Comandos clave</th><th>Frecuencia</th></tr></thead>
+      <tbody>
+        <tr><td><strong>3.1 Rutas estáticas</strong></td><td>ip route, floating static, default route</td><td>⭐⭐⭐⭐⭐</td></tr>
+        <tr><td><strong>3.2 RIPv2</strong></td><td>router rip, version 2, no auto-summary, passive-interface</td><td>⭐⭐⭐⭐</td></tr>
+        <tr><td><strong>3.3 OSPFv2</strong></td><td>router ospf, network, router-id, cost, DR/BDR</td><td>⭐⭐⭐⭐⭐</td></tr>
+        <tr><td><strong>3.4 EIGRP</strong></td><td>router eigrp, network, no auto-summary, variance</td><td>⭐⭐⭐⭐</td></tr>
+        <tr><td><strong>3.5 NAT/PAT</strong></td><td>ip nat inside/outside, overload, pool, static</td><td>⭐⭐⭐⭐⭐</td></tr>
+        <tr><td><strong>3.6 BGP básico</strong></td><td>router bgp, neighbor, network, show ip bgp</td><td>⭐⭐⭐</td></tr>
+        <tr><td><strong>3.7 Verificación</strong></td><td>show ip route, show ip protocols, traceroute</td><td>⭐⭐⭐⭐⭐</td></tr>
+        <tr><td><strong>3.8 Troubleshooting</strong></td><td>debug ip, show interfaces, ping extendido</td><td>⭐⭐⭐⭐⭐</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 12 — QUIZ
+══════════════════════════════════════════════ -->
+<div id="tab-quiz" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Quiz — Comandos de Routing</h2>
+  <div id="quizContainerRouting"></div>
+</div>
+</div>
+
+</div>
+<!-- Cierre de tabs-wrap -->
+
+<footer class="footer">
+  <p>© WDS-CCNA Portal · Comandos de Routing · M2.5</p>
+  <p style="margin-top:.3rem">Basado en <em>CCNA 200-301 Official Cert Guide</em> (Wendell Odom) · Cisco IOS 15.x/16.x</p>
+  <p style="margin-top:.4rem"><a href="../index.html">← Volver al índice</a></p>
+</footer>
+
+<style>
+.class-hero { background: linear-gradient(135deg, #06080f 0%, #0d1220 60%, #101830 100%); padding: 56px 24px 48px; border-bottom: 1px solid rgba(0,212,170,0.12); position: relative; overflow: hidden; }
+.class-hero::before { content:''; position:absolute; top:-60px; right:-80px; width:400px; height:400px; border-radius:50%; background:radial-gradient(circle, rgba(56,189,248,0.06) 0%, transparent 70%); }
+.class-hero-inner { max-width: 900px; margin: 0 auto; position: relative; z-index: 1; }
+.class-badge { font-family:'Share Tech Mono',monospace; font-size:0.65rem; color:#38bdf8; letter-spacing:3px; text-transform:uppercase; margin-bottom:14px; }
+.class-title { font-family:'Orbitron',sans-serif; font-size:clamp(1.8rem,4vw,2.8rem); font-weight:900; letter-spacing:3px; color:#c2d0e8; line-height:1.1; margin-bottom:12px; }
+.class-title-accent { background:linear-gradient(135deg,#38bdf8,#a78bfa); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; display:block; font-size:0.65em; margin-top:4px; letter-spacing:2px; }
+.class-subtitle { font-size:1rem; color:#6b7a9a; line-height:1.7; margin-bottom:20px; max-width:720px; }
+.class-meta { display:flex; gap:16px; flex-wrap:wrap; }
+.meta-item { font-family:'Share Tech Mono',monospace; font-size:0.72rem; color:#374060; padding:4px 10px; border:1px solid rgba(56,189,248,0.1); border-radius:4px; }
+.tabs-wrap { max-width: 1100px; margin: 0 auto; padding: 0 16px 40px; }
+.tabs-bar { display:flex; gap:4px; padding:20px 0 0; flex-wrap:wrap; border-bottom:1px solid rgba(0,212,170,0.1); }
+.tab-btn { padding:8px 14px; border-radius:8px 8px 0 0; font-family:'Share Tech Mono',monospace; font-size:0.72rem; color:#4a5780; background:none; border:1px solid transparent; cursor:pointer; transition:all 0.18s; white-space:nowrap; border-bottom:none; }
+.tab-btn:hover { color:#c2d0e8; background:rgba(0,212,170,0.05); }
+.tab-btn.active { color:#38bdf8; background:#0d1220; border-color:rgba(56,189,248,0.2); border-bottom:1px solid #0d1220; }
+.tab-content { display:none; background:#0d1220; border:1px solid rgba(0,212,170,0.1); border-top:none; border-radius:0 0 12px 12px; padding:32px; }
+.tab-content.active { display:block; }
+.content-block { max-width: 860px; }
+.section-title { font-family:'Orbitron',sans-serif; font-size:1rem; color:#38bdf8; letter-spacing:2px; margin:28px 0 14px; padding-bottom:8px; border-bottom:1px solid rgba(56,189,248,0.12); }
+.section-title:first-child { margin-top:0; }
+.sub-title { font-family:'Share Tech Mono',monospace; font-size:0.85rem; color:#00d4aa; margin:24px 0 10px; }
+p { color:#8294b8; line-height:1.75; margin-bottom:14px; font-size:0.9rem; }
+ul, ol { color:#8294b8; padding-left:1.4rem; margin-bottom:14px; font-size:0.9rem; }
+li { margin-bottom:5px; line-height:1.65; }
+strong { color:#c2d0e8; }
+code { font-family:'Share Tech Mono',monospace; font-size:0.82rem; background:rgba(56,189,248,0.08); color:#38bdf8; padding:1px 6px; border-radius:4px; border:1px solid rgba(56,189,248,0.15); }
+.info-box { border-radius:8px; padding:14px 18px; margin:18px 0; border-left:3px solid; }
+.info-box.tip { background:rgba(0,212,170,0.05); border-color:#00d4aa; }
+.info-box.warning { background:rgba(251,191,36,0.05); border-color:#fbbf24; }
+.info-box-title { font-family:'Share Tech Mono',monospace; font-size:0.75rem; color:#00d4aa; margin-bottom:8px; }
+.info-box.warning .info-box-title { color:#fbbf24; }
+.diagram-box { background:#050810; border:1px solid rgba(56,189,248,0.12); border-radius:10px; padding:20px; margin:18px 0; }
+.diagram-title { font-family:'Share Tech Mono',monospace; font-size:0.68rem; color:#4a5780; letter-spacing:2px; text-transform:uppercase; margin-bottom:14px; }
+.table-wrap { overflow-x:auto; margin:16px 0; }
+.ref-table { width:100%; border-collapse:collapse; font-size:0.82rem; }
+.ref-table th { background:#090d1a; color:#38bdf8; font-family:'Share Tech Mono',monospace; font-size:0.7rem; padding:10px 12px; text-align:left; border:1px solid rgba(56,189,248,0.1); letter-spacing:1px; }
+.ref-table td { padding:9px 12px; border:1px solid rgba(255,255,255,0.04); color:#8294b8; }
+.ref-table tr:hover td { background:rgba(56,189,248,0.03); }
+.code-block { background:#050810; border:1px solid rgba(56,189,248,0.12); border-left:3px solid #38bdf8; border-radius:8px; padding:0; margin:16px 0; overflow:hidden; }
+.code-label { background:rgba(56,189,248,0.06); padding:8px 16px; font-family:'Share Tech Mono',monospace; font-size:0.65rem; color:#4a5780; letter-spacing:2px; text-transform:uppercase; border-bottom:1px solid rgba(56,189,248,0.08); }
+.code-block pre { margin:0; padding:16px; overflow-x:auto; }
+.code-block code { background:none; border:none; padding:0; color:#a8b4c8; font-size:0.8rem; line-height:1.7; display:block; }
+.cmd-comment { color:#374060; font-style:italic; }
+.cmd-output  { color:#6b7a9a; }
+.concept-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:12px; margin:16px 0; }
+.concept-card { background:#090d1a; border:1px solid rgba(56,189,248,0.1); border-radius:10px; padding:16px; }
+.concept-card.highlight { border-color:rgba(0,212,170,0.3); background:linear-gradient(135deg,rgba(0,212,170,0.05),rgba(56,189,248,0.03)); }
+.concept-icon { font-size:1.8rem; margin-bottom:8px; }
+.concept-card h3 { font-family:'Share Tech Mono',monospace; font-size:0.78rem; color:#38bdf8; margin-bottom:8px; }
+.concept-card p { font-size:0.8rem; margin:0 0 8px; }
+.concept-card code { font-size:0.75rem; display:block; margin-top:8px; padding:8px; background:rgba(0,0,0,0.2); }
+.process-steps { display:flex; flex-direction:column; gap:12px; margin:16px 0; }
+.process-step { display:flex; gap:16px; align-items:flex-start; background:#090d1a; border:1px solid rgba(56,189,248,0.08); border-radius:10px; padding:16px; }
+.step-num { width:50px; height:36px; border-radius:8px; background:rgba(56,189,248,0.1); border:1px solid rgba(56,189,248,0.2); display:flex; align-items:center; justify-content:center; font-family:'Share Tech Mono',monospace; font-size:0.68rem; color:#38bdf8; font-weight:700; flex-shrink:0; }
+.step-content { flex:1; }
+.step-title { font-family:'Share Tech Mono',monospace; font-size:0.82rem; color:#c2d0e8; margin-bottom:6px; }
+.attack-diagram { background:#0a0810; border:1px solid rgba(248,113,113,0.15); border-radius:10px; padding:16px; margin:16px 0; }
+.attack-steps { display:flex; flex-direction:column; gap:8px; margin-top:10px; }
+.attack-step { display:flex; gap:12px; align-items:flex-start; }
+.attack-num { width:24px; height:24px; border-radius:50%; background:rgba(248,113,113,0.2); border:1px solid #f87171; display:flex; align-items:center; justify-content:center; font-family:'Share Tech Mono',monospace; font-size:0.7rem; color:#f87171; flex-shrink:0; }
+.lab-topology { background:#050810; border:1px solid rgba(56,189,248,0.1); border-radius:10px; padding:16px; margin:16px 0; }
+.lab-steps { display:flex; flex-direction:column; gap:16px; margin:16px 0; }
+.lab-step { background:#090d1a; border:1px solid rgba(56,189,248,0.08); border-radius:10px; padding:16px; }
+.lab-step-num { font-family:'Share Tech Mono',monospace; font-size:0.6rem; color:#38bdf8; letter-spacing:2px; text-transform:uppercase; margin-bottom:4px; }
+.lab-step-title { font-family:'Orbitron',sans-serif; font-size:0.8rem; color:#c2d0e8; margin-bottom:8px; }
+.quiz-question { background:#090d1a; border:1px solid rgba(56,189,248,0.1); border-radius:10px; padding:20px; margin-bottom:16px; }
+.quiz-q-num { font-family:'Share Tech Mono',monospace; font-size:0.62rem; color:#4a5780; margin-bottom:8px; }
+.quiz-q-text { font-size:0.9rem; color:#c2d0e8; margin-bottom:14px; line-height:1.6; }
+.quiz-opts { display:flex; flex-direction:column; gap:7px; }
+.quiz-opt { padding:9px 14px; border-radius:7px; border:1px solid rgba(56,189,248,0.1); background:#0d1220; color:#6b7a9a; cursor:pointer; font-size:0.85rem; text-align:left; transition:all 0.15s; }
+.quiz-opt:hover:not(:disabled) { border-color:rgba(56,189,248,0.3); color:#c2d0e8; }
+.quiz-opt.correct { border-color:#34d399; background:rgba(52,211,153,0.08); color:#34d399; }
+.quiz-opt.wrong   { border-color:#f87171; background:rgba(248,113,113,0.08); color:#f87171; }
+.quiz-explanation { margin-top:10px; padding:10px 14px; background:rgba(167,139,250,0.06); border-left:3px solid #a78bfa; border-radius:6px; font-size:0.82rem; color:#a0aec0; line-height:1.6; }
+.footer { border-top:1px solid rgba(0,212,170,0.1); background:#090d1a; padding:32px 24px; text-align:center; margin-top:40px; }
+.footer p { color:#374060; font-size:0.75rem; margin:0; }
+.footer a { color:#4a5780; text-decoration:none; }
+.footer a:hover { color:#00d4aa; }
+@media(max-width:680px) { .tab-btn{font-size:0.65rem;padding:6px 10px;} .tab-content{padding:20px 14px;} .concept-grid{grid-template-columns:1fr;} }
+</style>
+
+<script>
+/* -----------------------------------------------------------------
+   NAMESPACE CmdRouting - Protege el código contra sobreescritura
+----------------------------------------------------------------- */
+var CmdRouting = (function() {
+  
+  function showTabRouting(id, btn) {
+    document.querySelectorAll('.tab-content').forEach(function(t) { t.classList.remove('active'); });
+    document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+    var target = document.getElementById('tab-' + id);
+    if (target) target.classList.add('active');
+    if (btn) btn.classList.add('active');
+    
+    if (id === 'quiz') {
+      initQuiz();
+    }
+    if (id === 'tabla') {
+      buildRefTable();
+    }
+  }
+
+  function buildRefTable() {
+    const data = [
+      ['ip route [red] [mask] [next-hop]', 'Global Config', 'Ruta estática con next-hop IP'],
+      ['ip route [red] [mask] [interfaz]', 'Global Config', 'Ruta estática con interfaz de salida'],
+      ['ip route 0.0.0.0 0.0.0.0 [next-hop]', 'Global Config', 'Ruta por defecto'],
+      ['ip route [red] [mask] [next-hop] [AD]', 'Global Config', 'Ruta estática flotante'],
+      ['router rip', 'Global Config', 'Activar proceso RIP'],
+      ['version 2', 'Config-router', 'Forzar RIPv2'],
+      ['no auto-summary', 'Config-router', 'Desactivar sumarización automática'],
+      ['network [red]', 'Config-router', 'Anunciar red en protocolo IGP'],
+      ['passive-interface [int]', 'Config-router', 'No enviar actualizaciones por interfaz'],
+      ['default-information originate', 'Config-router', 'Propagar ruta default'],
+      ['router ospf [PID]', 'Global Config', 'Activar proceso OSPF'],
+      ['router-id [ID]', 'Config-router', 'Router ID único'],
+      ['network [red] [wildcard] area [n]', 'Config-router', 'Anunciar red en área OSPF'],
+      ['auto-cost reference-bandwidth [mbps]', 'Config-router', 'Ancho de banda ref. OSPF'],
+      ['ip ospf cost [n]', 'Interface Config', 'Costo manual OSPF'],
+      ['ip ospf priority [n]', 'Interface Config', 'Prioridad DR/BDR'],
+      ['router eigrp [AS]', 'Global Config', 'Activar EIGRP clásico'],
+      ['router eigrp [name]', 'Global Config', 'Activar EIGRP named mode'],
+      ['address-family ipv4 autonomous-system [AS]', 'Config-router', 'AF IPv4 EIGRP named'],
+      ['variance [n]', 'Config-router', 'Balanceo carga desigual EIGRP'],
+      ['eigrp stub [tipo]', 'Config-router', 'Router stub EIGRP'],
+      ['router bgp [AS]', 'Global Config', 'Activar proceso BGP'],
+      ['neighbor [ip] remote-as [AS]', 'Config-router', 'Configurar vecino BGP'],
+      ['network [red] mask [mask]', 'Config-router', 'Anunciar red en BGP'],
+      ['set local-preference [n]', 'Route-map', 'Atributo LOCAL_PREF'],
+      ['set as-path prepend [AS]...', 'Route-map', 'Alargar AS_PATH'],
+      ['ip nat inside/outside', 'Interface Config', 'Definir interfaz NAT'],
+      ['ip nat inside source static [L] [G]', 'Global Config', 'NAT estático'],
+      ['ip nat inside source list [ACL] pool [P]', 'Global Config', 'NAT dinámico'],
+      ['ip nat inside source list [ACL] int [I] overload', 'Global Config', 'PAT / NAT overload'],
+      ['show ip route', 'Privileged EXEC', 'Tabla de routing'],
+      ['show ip protocols', 'Privileged EXEC', 'Protocolos activos'],
+      ['show ip ospf neighbor', 'Privileged EXEC', 'Vecinos OSPF'],
+      ['show ip eigrp neighbors', 'Privileged EXEC', 'Vecinos EIGRP'],
+      ['show ip bgp summary', 'Privileged EXEC', 'Resumen BGP'],
+      ['show ip nat translations', 'Privileged EXEC', 'Traducciones NAT'],
+      ['show ip cef', 'Privileged EXEC', 'Tabla forwarding CEF'],
+      ['traceroute [dest]', 'Privileged EXEC', 'Seguimiento de ruta'],
+      ['debug ip [protocol]', 'Privileged EXEC', 'Debug en tiempo real'],
+    ];
+    const headers = ['Comando', 'Modo/Contexto', 'Descripción/Función'];
+    var html = '<div class="table-wrap"><table class="ref-table"><thead><tr>';
+    for (var i = 0; i < headers.length; i++) {
+      html += '<th>' + headers[i] + '</th>';
+    }
+    html += '</tr></thead><tbody>';
+    for (var i = 0; i < data.length; i++) {
+      html += '<tr>';
+      for (var j = 0; j < data[i].length; j++) {
+        html += '<td>' + data[i][j] + '</td>';
+      }
+      html += '</tr>';
+    }
+    html += '</tbody></table></div>';
+    var refDiv = document.getElementById('refTableRouting');
+    if (refDiv) refDiv.innerHTML = html;
+  }
+
+  function initQuiz() {
+    const questions = [
+      {
+        q: '¿Qué comando configura una ruta estática hacia 192.168.2.0/24 con next-hop 10.1.1.2?',
+        opts: ['route static 192.168.2.0 255.255.255.0 10.1.1.2','ip route 192.168.2.0 255.255.255.0 10.1.1.2','static route 192.168.2.0 /24 10.1.1.2','ip static-route 192.168.2.0 10.1.1.2'],
+        ans: 1,
+        exp: 'El comando correcto es "ip route [red] [máscara] [next-hop]". "route static" no existe. La máscara debe ser completa (255.255.255.0), no notación CIDR (/24).'
+      },
+      {
+        q: 'Un router tiene una ruta OSPF (AD 110) y una ruta estática (AD 1) hacia la misma red. ¿Cuál se instala en la tabla de routing?',
+        opts: ['OSPF por ser más moderno','La estática por tener menor AD','Ambas (load balancing)','Ninguna, hay conflicto'],
+        ans: 1,
+        exp: 'La Distancia Administrativa (AD) determina la preferencia. Valor más bajo = más confiable. Estática (AD 1) gana sobre OSPF (AD 110). Solo la ruta ganadora se instala en la tabla de routing (RIB).'
+      },
+      {
+        q: '¿Cuál es el propósito de "no auto-summary" en RIPv2?',
+        opts: ['Desactivar RIP completamente','Evitar sumarización por clase A/B/C','Activar autenticación','Habilitar VLSM en interfaces'],
+        ans: 1,
+        exp: '"no auto-summary" evita que RIP sumarice rutas a los límites de clase (A/B/C). Sin esto, subredes como 192.168.1.0/24 y 192.168.2.0/24 se anunciarían como 192.168.0.0/16, causando problemas de routing.'
+      },
+      {
+        q: 'En OSPF, ¿qué comando cambia el ancho de banda de referencia para cálculo de costo?',
+        opts: ['ip ospf bandwidth-reference','auto-cost reference-bandwidth','ospf cost reference','bandwidth ospf-reference'],
+        ans: 1,
+        exp: '"auto-cost reference-bandwidth [Mbps]" cambia el numerador de la fórmula de costo. Por defecto es 100 (Mbps). En redes con enlaces de 1 Gbps o más, debe aumentarse a 10000 para reflejar costos reales.'
+      },
+      {
+        q: '¿Qué valor de "variance" en EIGRP permite usar rutas con métrica hasta 3 veces peor que la mejor?',
+        opts: ['1','2','3','4'],
+        ans: 2,
+        exp: '"variance 3" permite balanceo de carga desigual usando rutas con métrica hasta 3x la métrica de la ruta principal (successor). Variance 1 = solo rutas de igual costo (por defecto).'
+      },
+      {
+        q: 'En BGP, ¿qué atributo influye en cómo el AS vecino prefiere una ruta sobre otra?',
+        opts: ['WEIGHT','LOCAL_PREF','AS_PATH','MED'],
+        ans: 3,
+        exp: 'MED (Multi-Exit Discriminator) es enviado al AS vecino para influir en su decisión de entrada. WEIGHT y LOCAL_PREF son locales al AS propio. AS_PATH más corto es preferido, pero no es un atributo de "influencia" directa como MED.'
+      },
+      {
+        q: '¿Qué comando configura PAT usando la IP de la interfaz GigabitEthernet0/1?',
+        opts: ['ip nat pool PAT 203.0.113.1 203.0.113.1 netmask 255.255.255.0','ip nat inside source list 1 interface GigabitEthernet0/1 overload','ip nat inside source static 192.168.1.0 203.0.113.1','ip nat outside source list 1 interface GigabitEthernet0/1 overload'],
+        ans: 1,
+        exp: '"ip nat inside source list [ACL] interface [int] overload" configura PAT usando la IP de la interfaz. "overload" habilita la traducción de puertos. La ACL define qué hosts internos pueden usar NAT. "inside" indica dirección del tráfico.'
+      },
+      {
+        q: '¿Dónde se configura "ip nat inside" en un router?',
+        opts: ['En la interfaz hacia Internet','En la interfaz hacia la red interna','En modo global config','En el proceso NAT'],
+        ans: 1,
+        exp: '"ip nat inside" se configura en la interfaz conectada a la red INTERNA (privada). "ip nat outside" va en la interfaz hacia Internet (pública). Sin estas dos configuraciones, NAT no funciona.'
+      },
+      {
+        q: 'Una SVI (interface Vlan10) muestra "up/down". ¿Cuál es la causa probable?',
+        opts: ['La VLAN 10 no existe','No hay puertos físicos en VLAN 10 con estado up/up','El switch no tiene IP routing habilitado','La interfaz está administratively down'],
+        ans: 1,
+        exp: 'Una SVI está "up" administrativamente pero "down" en protocolo cuando NO hay ningún puerto físico en esa VLAN en estado up/up. La SVI necesita al menos un puerto activo en su VLAN. Si la interfaz estuviera admin down, mostraría "administratively down".'
+      },
+      {
+        q: '¿Qué comando muestra la base de datos de rutas RIP antes de instalar en la tabla de routing?',
+        opts: ['show ip route rip','show ip rip database','show rip routes','show ip protocols rip'],
+        ans: 1,
+        exp: '"show ip rip database" muestra todas las rutas aprendidas por RIP, incluyendo las que no se instalan en la tabla de routing (por ejemplo, si hay una ruta mejor por OSPF con menor AD). "show ip route rip" solo muestra las rutas instaladas.'
+      },
+      {
+        q: 'En EIGRP named mode, ¿qué comando habilita IPv4 en el proceso?',
+        opts: ['ipv4 enable','address-family ipv4 autonomous-system [AS]','network ipv4','eigrp ipv4'],
+        ans: 1,
+        exp: 'En EIGRP named mode, se usa "address-family ipv4 autonomous-system [AS]" para activar el AF IPv4. Esto reemplaza el comando "router eigrp [AS]" del modo clásico y permite configurar IPv4 e IPv6 en el mismo proceso.'
+      },
+      {
+        q: '¿Qué significa el código "O IA" en "show ip route"?',
+        opts: ['OSPF Internal Area','OSPF Inter-Area','OSPF Internal Aggregate','OSPF Inactive Area'],
+        ans: 1,
+        exp: '"O IA" = OSPF Inter-Area. Indica una ruta aprendida de otra área OSPF a través de un ABR (Area Border Router). "O" solo = intra-area (misma área). "O E1/E2" = external (redistribuida).'
+      }
+    ];
+
+    var container = document.getElementById('quizContainerRouting');
+    if (!container) return;
+    
+    if (container.innerHTML.trim() !== '') return;
+    
+    var html = '';
+    for (var i = 0; i < questions.length; i++) {
+      var q = questions[i];
+      var optsHtml = '';
+      for (var j = 0; j < q.opts.length; j++) {
+        optsHtml += '<button class="quiz-opt" data-qi="' + i + '" data-sel="' + j + '" data-ans="' + q.ans + '">' + q.opts[j] + '</button>';
+      }
+      html += '<div class="quiz-question" id="qqr' + i + '">' +
+        '<div class="quiz-q-num">PREGUNTA ' + (i+1) + ' DE ' + questions.length + '</div>' +
+        '<div class="quiz-q-text">' + q.q + '</div>' +
+        '<div class="quiz-opts">' + optsHtml + '</div>' +
+        '</div>';
+    }
+    container.innerHTML = html;
+
+    window._routingExp = {};
+    for (var i = 0; i < questions.length; i++) { 
+      window._routingExp[i] = questions[i].exp; 
+    }
+
+    var buttons = container.querySelectorAll('.quiz-opt');
+    for (var k = 0; k < buttons.length; k++) {
+      buttons[k].addEventListener('click', function() {
+        var qi  = parseInt(this.getAttribute('data-qi'), 10);
+        var sel = parseInt(this.getAttribute('data-sel'), 10);
+        var ans = parseInt(this.getAttribute('data-ans'), 10);
+        answerQR(qi, sel, ans, window._routingExp[qi]);
+      });
+    }
+  }
+
+  function answerQR(qi, sel, correct, exp) {
+    var qDiv = document.getElementById('qqr' + qi);
+    var btns = qDiv.querySelectorAll('.quiz-opt');
+    for (var i = 0; i < btns.length; i++) { 
+      btns[i].disabled = true; 
+    }
+    btns[sel].classList.add(sel === correct ? 'correct' : 'wrong');
+    if (sel !== correct) btns[correct].classList.add('correct');
+    var expDiv = document.createElement('div');
+    expDiv.className = 'quiz-explanation';
+    expDiv.innerHTML = '<strong>' + (sel===correct?'✅ Correcto!':'❌ Incorrecto.') + '</strong> ' + exp;
+    qDiv.appendChild(expDiv);
+  }
+
+  function init() {
+    // No inicializamos tablas/quiz aquí, se hace al abrir pestaña
+  }
+
+  return {
+    showTabRouting: showTabRouting,
+    init: init
+  };
+  
+})();
+
+// Inicializar cuando la ventana esté completamente cargada
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+      CmdRouting.init();
+    }, 100);
+  });
+} else {
+  setTimeout(function() {
+    CmdRouting.init();
+  }, 100);
+}
+</script>
+</body>
+</html>
