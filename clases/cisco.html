@@ -1,0 +1,1819 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comandos de Configuración Básica — M2.5 | CCNA Academy</title>
+  <meta name="description" content="Clase magistral completa de comandos Cisco IOS: modos de operación, configuración básica, interfaces, gestión de configuración, verificación y troubleshooting. Desde cero hasta experto CCNA 200-301.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+
+<div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
+<nav class="ccna-drawer" id="ccnaDrawer">
+  <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
+  <div class="drawer-section"><div class="drawer-section-title">General</div>
+    <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M1 · Fundamentos</div>
+    <a href="fundamentos.html"       class="drawer-link "><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
+    <a href="subnetting.html"        class="drawer-link "><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
+    <a href="ipv6.html"              class="drawer-link "><span class="dl-icon">6️⃣</span> IPv6</a>
+    <a href="arp.html"               class="drawer-link "><span class="dl-icon">📡</span> ARP</a>
+    <a href="rip.html"               class="drawer-link "><span class="dl-icon">🔄</span> RIP</a>
+    <a href="protocolos-internet.html" class="drawer-link "><span class="dl-icon">🌍</span> Protocolos Internet</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M2 · Dispositivos Cisco</div>
+    <a href="router.html"            class="drawer-link "><span class="dl-icon">📡</span> Routers Cisco</a>
+    <a href="switches-cisco.html"    class="drawer-link "><span class="dl-icon">🔀</span> Switches Cisco</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M2.5 · Comandos Cisco</div>
+    <a href="comandos-cisco.html"    class="drawer-link active"><span class="dl-icon">⌨️</span> Comandos Configuración Básica</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M3 · Switching</div>
+    <a href="vlan.html"              class="drawer-link "><span class="dl-icon">🏷️</span> VLANs</a>
+    <a href="inter-vlan-routing.html" class="drawer-link "><span class="dl-icon">🔁</span> Inter-VLAN Routing</a>
+    <a href="stp.html"               class="drawer-link "><span class="dl-icon">🌳</span> STP</a>
+    <a href="etherchannel.html"      class="drawer-link "><span class="dl-icon">🔗</span> EtherChannel</a>
+    <a href="port-security.html"     class="drawer-link "><span class="dl-icon">🔒</span> Port Security</a>
+    <a href="cdp-lldp.html"          class="drawer-link "><span class="dl-icon">🔍</span> CDP / LLDP</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M4 · Routing</div>
+    <a href="routing.html"           class="drawer-link "><span class="dl-icon">🗺️</span> Routing Estático</a>
+    <a href="ospf.html"              class="drawer-link "><span class="dl-icon">⭕</span> OSPF</a>
+    <a href="eigrp.html"             class="drawer-link "><span class="dl-icon">⚡</span> EIGRP</a>
+    <a href="ospfv2-masterclass.html"            class="drawer-link "><span class="dl-icon">🎯</span> OSPFv2 Masterclass</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M5 · Servicios IP</div>
+    <a href="dhcp.html"              class="drawer-link "><span class="dl-icon">📋</span> DHCP</a>
+    <a href="nat.html"               class="drawer-link "><span class="dl-icon">🔄</span> NAT / PAT</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M6 · Seguridad</div>
+    <a href="acl.html"               class="drawer-link "><span class="dl-icon">🛡️</span> ACLs</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M7 · WAN &amp; QoS</div>
+    <a href="wan.html"               class="drawer-link "><span class="dl-icon">🌍</span> WAN</a>
+    <a href="qos.html"               class="drawer-link "><span class="dl-icon">📊</span> QoS</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M8 · Automatización</div>
+    <a href="m8-automatizacion.html"  class="drawer-link"><span class="dl-icon">🤖</span> M8 — Vista General</a>
+    <a href="python-redes.html"       class="drawer-link"><span class="dl-icon">🐍</span> Python para Redes</a>
+    <a href="json-datos.html"         class="drawer-link"><span class="dl-icon">📋</span> JSON y Datos</a>
+    <a href="rest-apis.html"          class="drawer-link"><span class="dl-icon">🌐</span> REST APIs</a>
+    <a href="ansible-redes.html"      class="drawer-link"><span class="dl-icon">⚙️</span> Ansible</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">⚡ Herramientas</div>
+    <a href="asistente.html"         class="drawer-link "><span class="dl-icon">🤖</span> Asistente IA</a>
+    <a href="netbot.html"            class="drawer-link "><span class="dl-icon">⚙️</span> NetBot Config</a>
+    <a href="calculadora.html"       class="drawer-link "><span class="dl-icon">🧮</span> Calculadora IP</a>
+    <a href="../laboratorios-pkt.html"   class="drawer-link "><span class="dl-icon">🧪</span> Labs Packet Tracer</a>
+    <a href="../banco-preguntas.html" class="drawer-link "><span class="dl-icon">📝</span> Banco de Preguntas</a></div>
+</nav>
+<header class="navbar">
+  <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
+  <a href="../index.html" class="navbar-brand">CISCO<span> ACADEMY</span></a>
+  <div class="navbar-spacer"></div>
+  <a href="../index.html" class="navbar-link">← Inicio</a>
+</header>
+<script src="../assets/main.js" defer></script>
+<div class="nav-spacer"></div>
+
+<!-- HERO -->
+<section class="class-hero">
+  <div class="class-hero-inner">
+    <div class="class-badge">M2.5 · COMANDOS CISCO · IOS CLI FUNDAMENTALS</div>
+    <h1 class="class-title">Comandos de <span class="class-title-accent">Configuración Básica</span></h1>
+    <p class="class-subtitle">Domina la Interfaz de Línea de Comandos (CLI) de Cisco IOS desde cero. Modos de operación, comandos esenciales, configuración de interfaces, gestión de archivos de configuración y verificación. La base fundamental para cualquier ingeniero de redes Cisco CCNA.</p>
+    <div class="class-meta">
+      <span class="meta-item">📋 IOS 15.x / IOS XE</span>
+      <span class="meta-item">🎯 CCNA 200-301 Exam Topic 1.4, 2.5</span>
+      <span class="meta-item">⏱ ~90 min lectura</span>
+      <span class="meta-item">🧪 Lab: Router + Switch</span>
+    </div>
+  </div>
+</section>
+
+<!-- TABS -->
+<div class="tabs-wrap">
+  <div class="tabs-bar">
+    <button class="tab-btn active" onclick="CmdCisco.showTabCmd('modos',this)">📖 Modos IOS</button>
+    <button class="tab-btn" onclick="CmdCisco.showTabCmd('basicos',this)">🔧 Comandos Básicos</button>
+    <button class="tab-btn" onclick="CmdCisco.showTabCmd('interfaces',this)">🌐 Interfaces</button>
+    <button class="tab-btn" onclick="CmdCisco.showTabCmd('configuracion',this)">💾 Gestión Config</button>
+    <button class="tab-btn" onclick="CmdCisco.showTabCmd('verificacion',this)">📡 Verificación</button>
+    <button class="tab-btn" onclick="CmdCisco.showTabCmd('seguridad',this)">🛡️ Seguridad</button>
+    <button class="tab-btn" onclick="CmdCisco.showTabCmd('lab',this)">🧪 Laboratorio</button>
+    <button class="tab-btn" onclick="CmdCisco.showTabCmd('tabla',this)">📊 Referencia</button>
+    <button class="tab-btn" onclick="CmdCisco.showTabCmd('quiz',this)">🎯 Quiz</button>
+  </div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 1 — MODOS IOS
+══════════════════════════════════════════════ -->
+<div id="tab-modos" class="tab-content active">
+<div class="content-block">
+  <h2 class="section-title">Los 3 Modos Fundamentales de Cisco IOS</h2>
+  <p>El sistema operativo Cisco IOS (Internetwork Operating System) organiza sus comandos en una jerarquía de modos. Comprender esta jerarquía es esencial — cada modo tiene su propio conjunto de comandos disponibles y el prompt cambia para indicarte dónde estás.</p>
+
+  <div class="diagram-box">
+    <div class="diagram-title">Jerarquía de Modos IOS</div>
+    <svg viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:800px;">
+      <!-- User EXEC -->
+      <rect x="300" y="20" width="200" height="60" rx="8" fill="#0d1220" stroke="#6b7a9a" stroke-width="2"/>
+      <text x="400" y="45" text-anchor="middle" fill="#6b7a9a" font-size="14" font-family="Orbitron" font-weight="700">USER EXEC MODE</text>
+      <text x="400" y="65" text-anchor="middle" fill="#4a5780" font-size="11" font-family="Share Tech Mono">Router&gt;</text>
+      
+      <!-- Arrow down -->
+      <line x1="400" y1="80" x2="400" y2="110" stroke="#6b7a9a" stroke-width="2" marker-end="url(#arrowhead)"/>
+      <text x="420" y="100" fill="#4a5780" font-size="10" font-family="Share Tech Mono">enable</text>
+      
+      <!-- Privileged EXEC -->
+      <rect x="300" y="110" width="200" height="60" rx="8" fill="#0d1220" stroke="#38bdf8" stroke-width="2"/>
+      <text x="400" y="135" text-anchor="middle" fill="#38bdf8" font-size="14" font-family="Orbitron" font-weight="700">PRIVILEGED EXEC</text>
+      <text x="400" y="155" text-anchor="middle" fill="#6b7a9a" font-size="11" font-family="Share Tech Mono">Router#</text>
+      
+      <!-- Arrow down -->
+      <line x1="400" y1="170" x2="400" y2="200" stroke="#38bdf8" stroke-width="2"/>
+      <text x="420" y="190" fill="#4a5780" font-size="10" font-family="Share Tech Mono">configure terminal</text>
+      
+      <!-- Global Config -->
+      <rect x="300" y="200" width="200" height="60" rx="8" fill="#0d1220" stroke="#00d4aa" stroke-width="2"/>
+      <text x="400" y="225" text-anchor="middle" fill="#00d4aa" font-size="14" font-family="Orbitron" font-weight="700">GLOBAL CONFIG</text>
+      <text x="400" y="245" text-anchor="middle" fill="#6b7a9a" font-size="11" font-family="Share Tech Mono">Router(config)#</text>
+      
+      <!-- Branches from Global Config -->
+      <line x1="300" y1="230" x2="180" y2="280" stroke="#00d4aa" stroke-width="1.5"/>
+      <line x1="500" y1="230" x2="620" y2="280" stroke="#00d4aa" stroke-width="1.5"/>
+      <line x1="400" y1="260" x2="400" y2="320" stroke="#00d4aa" stroke-width="1.5"/>
+      
+      <!-- Interface Config -->
+      <rect x="80" y="280" width="160" height="50" rx="6" fill="#0d1220" stroke="#a78bfa" stroke-width="1.5"/>
+      <text x="160" y="300" text-anchor="middle" fill="#a78bfa" font-size="11" font-family="Orbitron">INTERFACE CONFIG</text>
+      <text x="160" y="318" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">(config-if)#</text>
+      
+      <!-- Line Config -->
+      <rect x="320" y="320" width="160" height="50" rx="6" fill="#0d1220" stroke="#fbbf24" stroke-width="1.5"/>
+      <text x="400" y="340" text-anchor="middle" fill="#fbbf24" font-size="11" font-family="Orbitron">LINE CONFIG</text>
+      <text x="400" y="358" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">(config-line)#</text>
+      
+      <!-- Router Config -->
+      <rect x="540" y="280" width="160" height="50" rx="6" fill="#0d1220" stroke="#f87171" stroke-width="1.5"/>
+      <text x="620" y="300" text-anchor="middle" fill="#f87171" font-size="11" font-family="Orbitron">ROUTER CONFIG</text>
+      <text x="620" y="318" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">(config-router)#</text>
+      
+      <!-- Labels -->
+      <text x="160" y="275" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">interface</text>
+      <text x="400" y="315" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">line</text>
+      <text x="620" y="275" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">router</text>
+      
+      <defs>
+        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#6b7a9a"/>
+        </marker>
+      </defs>
+    </svg>
+  </div>
+
+  <h3 class="sub-title">1. User EXEC Mode (Modo Usuario)</h3>
+  <p>Es el primer modo al que accedes al conectarte al dispositivo. Tiene privilegios mínimos — solo permite comandos de visualización básica y no permite cambios de configuración.</p>
+  <div class="code-block">
+    <div class="code-label">Prompt y características</div>
+    <pre><code><span class="cmd-comment">! Prompt: Router&gt; o Switch&gt;</span>
+Router&gt; <span class="cmd-comment">(sin #, el &gt; indica modo usuario)</span>
+
+<span class="cmd-comment">! Comandos disponibles limitados:</span>
+Router&gt; show version        <span class="cmd-comment">! Sí: información básica del sistema</span>
+Router&gt; show interfaces       <span class="cmd-comment">! Sí: estado de interfaces</span>
+Router&gt; ping 192.168.1.1      <span class="cmd-comment">! Sí: prueba de conectividad</span>
+Router&gt; enable                <span class="cmd-comment">! Sí: entrar a modo privilegiado</span>
+
+<span class="cmd-comment">! NO disponibles (requieren privilegios):</span>
+Router&gt; configure terminal    <span class="cmd-comment">! ERROR: comando no encontrado</span>
+Router&gt; show running-config   <span class="cmd-comment">! ERROR: información restringida</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">2. Privileged EXEC Mode (Modo Privilegiado)</h3>
+  <p>También llamado <strong>enable mode</strong> o <strong>modo habilitación</strong>. Aquí tienes acceso completo a comandos de visualización, diagnóstico y debug. Es el "modo de lectura completa" del dispositivo.</p>
+  <div class="code-block">
+    <div class="code-label">Acceso y comandos clave</div>
+    <pre><code><span class="cmd-comment">! Entrar desde User EXEC:</span>
+Router&gt; enable
+Router#                        <span class="cmd-comment">! Prompt cambia a #</span>
+
+<span class="cmd-comment">! Si hay contraseña enable configurada, la pedirá:</span>
+Router&gt; enable
+Password: ********
+Router#
+
+<span class="cmd-comment">! Comandos exclusivos de Privileged EXEC:</span>
+Router# show running-config     <span class="cmd-comment">! Configuración activa en RAM</span>
+Router# show startup-config     <span class="cmd-comment">! Configuración de inicio en NVRAM</span>
+Router# show ip route           <span class="cmd-comment">! Tabla de routing</span>
+Router# show ip interface brief <span class="cmd-comment">! Resumen de interfaces IP</span>
+Router# debug ip rip            <span class="cmd-comment">! Debugging de protocolos</span>
+Router# configure terminal      <span class="cmd-comment">! Entrar a modo configuración</span>
+
+<span class="cmd-comment">! Salir a User EXEC:</span>
+Router# disable
+Router&gt;</code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚠️ Seguridad del modo enable</div>
+    <p>El acceso al modo privilegiado debe estar siempre protegido con contraseña. Sin protección, cualquier usuario con acceso físico o remoto puede tomar control total del dispositivo. Usa siempre <code>enable secret</code> en lugar de <code>enable password</code> (la primera está encriptada con MD5, la segunda en texto plano).</p>
+  </div>
+
+  <h3 class="sub-title">3. Global Configuration Mode (Modo Configuración Global)</h3>
+  <p>Desde aquí realizas todos los cambios de configuración del dispositivo. Cada comando que ejecutas afecta el funcionamiento global del router o switch. Desde este modo puedes acceder a submodos específicos.</p>
+  <div class="code-block">
+    <div class="code-label">Entrada y navegación entre modos</div>
+    <pre><code><span class="cmd-comment">! Entrar desde Privileged EXEC:</span>
+Router# configure terminal
+Router(config)#                <span class="cmd-comment">! Prompt indica modo configuración</span>
+
+<span class="cmd-comment">! Abreviatura común:</span>
+Router# conf t                 <span class="cmd-comment">! Cisco acepta abreviaturas únicas</span>
+
+<span class="cmd-comment">! === SUBMODOS DE CONFIGURACIÓN ===</span>
+
+<span class="cmd-comment">! 1. Interface Configuration Mode:</span>
+Router(config)# interface GigabitEthernet0/0
+Router(config-if)#             <span class="cmd-comment">! Configuración de interfaz específica</span>
+
+Router(config-if)# ip address 192.168.1.1 255.255.255.0
+Router(config-if)# no shutdown
+Router(config-if)# exit        <span class="cmd-comment">! Volver a Global Config</span>
+Router(config)#
+
+<span class="cmd-comment">! 2. Line Configuration Mode (líneas de acceso):</span>
+Router(config)# line console 0
+Router(config-line)#           <span class="cmd-comment">! Configuración de puerto de consola</span>
+
+Router(config-line)# password cisco
+Router(config-line)# login
+Router(config-line)# exit
+
+<span class="cmd-comment">! 3. Router Configuration Mode (protocolos de routing):</span>
+Router(config)# router rip
+Router(config-router)#         <span class="cmd-comment">! Configuración de protocolo RIP</span>
+
+Router(config-router)# version 2
+Router(config-router)# network 192.168.1.0
+Router(config-router)# exit
+
+<span class="cmd-comment">! Salir completamente al modo privilegiado:</span>
+Router(config-router)# end     <span class="cmd-comment">! o Ctrl+Z — vuelve directo a #</span>
+Router#</code></pre>
+  </div>
+
+  <h3 class="sub-title">Navegación entre modos: Comandos de salida</h3>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead><tr><th>Comando</th><th>Desde</th><th>Te lleva a</th><th>Uso</th></tr></thead>
+      <tbody>
+        <tr><td><code>enable</code></td><td>User EXEC (&gt;)</td><td>Privileged EXEC (#)</td><td>Elevar privilegios</td></tr>
+        <tr><td><code>disable</code></td><td>Privileged EXEC (#)</td><td>User EXEC (&gt;)</td><td>Reducir privilegios</td></tr>
+        <tr><td><code>configure terminal</code></td><td>Privileged EXEC (#)</td><td>Global Config (config)#</td><td>Entrar a configuración</td></tr>
+        <tr><td><code>exit</code></td><td>Cualquier submodo</td><td>Modo anterior</td><td>Subir un nivel</td></tr>
+        <tr><td><code>end</code> o <code>Ctrl+Z</code></td><td>Cualquier modo config</td><td>Privileged EXEC (#)</td><td>Salir rápido a #</td></tr>
+        <tr><td><code>interface</code></td><td>Global Config</td><td>Interface Config (config-if)#</td><td>Configurar interfaz</td></tr>
+        <tr><td><code>line</code></td><td>Global Config</td><td>Line Config (config-line)#</td><td>Configurar líneas</td></tr>
+        <tr><td><code>router</code></td><td>Global Config</td><td>Router Config (config-router)#</td><td>Configurar routing</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 2 — COMANDOS BÁSICOS
+══════════════════════════════════════════════ -->
+<div id="tab-basicos" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Comandos Básicos de Configuración</h2>
+  <p>Estos son los comandos fundamentales que aparecen en tu imagen de referencia, organizados por función y explicados en profundidad con ejemplos prácticos de CCNA.</p>
+
+  <div class="concept-grid">
+    <div class="concept-card highlight">
+      <div class="concept-icon">🚀</div>
+      <h3>enable</h3>
+      <p>Entra al modo privilegiado (EXEC). El primer comando que ejecutas para obtener control total.</p>
+      <code>Router&gt; enable<br>Router#</code>
+    </div>
+    <div class="concept-card highlight">
+      <div class="concept-icon">⚙️</div>
+      <h3>configure terminal</h3>
+      <p>Entra al modo de configuración global. Abreviado como <code>conf t</code>.</p>
+      <code>Router# conf t<br>Router(config)#</code>
+    </div>
+    <div class="concept-card highlight">
+      <div class="concept-icon">🏷️</div>
+      <h3>hostname</h3>
+      <p>Establece el nombre del dispositivo. Aparece en el prompt y es crucial para identificación.</p>
+      <code>Router(config)# hostname R1<br>R1(config)#</code>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🔌</div>
+      <h3>interface</h3>
+      <p>Accede al modo de configuración de interfaz específica (FastEthernet, GigabitEthernet, Serial, etc.).</p>
+      <code>R1(config)# int g0/0<br>R1(config-if)#</code>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🌐</div>
+      <h3>ip address</h3>
+      <p>Asigna dirección IP y máscara de subred a una interfaz. Requiere <code>no shutdown</code> para activar.</p>
+      <code>ip address 192.168.1.1 255.255.255.0</code>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">✅</div>
+      <h3>no shutdown</h3>
+      <p>Activa (administratively up) una interfaz. Por defecto, las interfaces de router están apagadas.</p>
+      <code>R1(config-if)# no shutdown<br>%LINK-5-CHANGED: Interface... up</code>
+    </div>
+  </div>
+
+  <h3 class="sub-title">Comando enable — Modo de Habilitación</h3>
+  <div class="code-block">
+    <div class="code-label">Uso y comportamiento</div>
+    <pre><code><span class="cmd-comment">! Desde User EXEC, elevar privilegios:</span>
+Router&gt; enable
+Router#
+
+<span class="cmd-comment">! Si existe enable password/secret configurado:</span>
+Router&gt; enable
+Password: <span class="cmd-comment">(no se muestra al escribir)</span>
+Router#
+
+<span class="cmd-comment">! Verificación de seguridad:</span>
+Router# show running-config | include enable
+enable secret 5 $1$mERr$8j9...
+<span class="cmd-comment">! enable secret 5 = encriptado con MD5 (seguro)</span>
+<span class="cmd-comment">! enable password = texto plano (INSEGURO)</span></code></pre>
+  </div>
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Diferencia crítica: enable password vs enable secret</div>
+    <p>Si configuras ambos, <code>enable secret</code> tiene prioridad. Nunca uses <code>enable password</code> en producción — se almacena en texto plano en la configuración. <code>enable secret</code> usa hash MD5 irreversible.</p>
+  </div>
+
+  <h3 class="sub-title">Comando configure terminal — Modo Configuración</h3>
+  <div class="code-block">
+    <div class="code-label">Variantes y accesos</div>
+    <pre><code><span class="cmd-comment">! Forma completa:</span>
+Router# configure terminal
+
+<span class="cmd-comment">! Abreviaturas aceptadas (única por contexto):</span>
+Router# conf t           <span class="cmd-comment">! Más común</span>
+Router# config t
+Router# conf term
+
+<span class="cmd-comment">! Otras variantes de configure:</span>
+Router# configure memory    <span class="cmd-comment">! Carga configuración desde NVRAM</span>
+Router# configure network   <span class="cmd-comment">! Carga desde servidor TFTP/FTP</span>
+Router# configure overwrite <span class="cmd-comment">! Sobrescribe con archivo externo</span>
+Router# configure replace   <span class="cmd-comment">! Reemplazo atómico de configuración</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Comando hostname — Identidad del Dispositivo</h3>
+  <div class="code-block">
+    <div class="code-label">Buenas prácticas de nomenclatura</div>
+    <pre><code><span class="cmd-comment">! Convención recomendada para CCNA y producción:</span>
+<span class="cmd-comment">! [Tipo]-[Ubicación]-[Número] o [Función]-[Site]-[ID]</span>
+
+Router(config)# hostname R1-HQ-CORE      <span class="cmd-comment">! Router 1, HQ, Core</span>
+R1-HQ-CORE(config)# hostname SW-Floor2-01  <span class="cmd-comment">! Switch piso 2, ID 01</span>
+SW-Floor2-01(config)# hostname RT-BRANCH-A <span class="cmd-comment">! Router sucursal A</span>
+
+<span class="cmd-comment">! Reglas: máximo 64 caracteres, sin espacios, case-sensitive</span>
+<span class="cmd-comment">! Caracteres válidos: A-Z, a-z, 0-9, . _ -</span>
+
+<span class="cmd-comment">! El hostname afecta:</span>
+<span class="cmd-comment">! 1. El prompt de comandos</span>
+<span class="cmd-comment">! 2. Los mensajes de syslog (logs del sistema)</span>
+<span class="cmd-comment">! 3. El nombre en CDP/LLDP (descubrimiento de vecinos)</span>
+<span class="cmd-comment">! 4. El nombre de archivo en backups automáticos</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Comandos de Interfaz: interface, ip address, no shutdown</h3>
+  <div class="code-block">
+    <div class="code-label">Configuración completa de interfaz</div>
+    <pre><code><span class="cmd-comment">! === CONFIGURACIÓN DE INTERFAZ DE ROUTER ===</span>
+
+R1(config)# interface GigabitEthernet0/0    <span class="cmd-comment">! Forma completa</span>
+R1(config)# interface gig0/0                <span class="cmd-comment">! Abreviatura común</span>
+R1(config)# int g0/0                        <span class="cmd-comment">! Más corta</span>
+R1(config-if)#
+
+<span class="cmd-comment">! Asignar IP y máscara:</span>
+R1(config-if)# ip address 192.168.1.1 255.255.255.0
+<span class="cmd-comment">! o notación CIDR (en IOS moderno):</span>
+R1(config-if)# ip address 192.168.1.1/24
+
+<span class="cmd-comment">! Activar interfaz (CRÍTICO):</span>
+R1(config-if)# no shutdown
+<span class="cmd-output">%LINK-5-CHANGED: Interface GigabitEthernet0/0, changed state to administratively up
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0, changed state to up</span>
+
+<span class="cmd-comment">! Descripción de la interfaz (opcional pero recomendado):</span>
+R1(config-if)# description LINK-TO-CORE-SW-PORT-Gi0/1
+R1(config-if)# desc WAN-ISP-PRIMARY         <span class="cmd-comment">! abreviado</span>
+
+<span class="cmd-comment">! Salir:</span>
+R1(config-if)# exit
+R1(config)#
+
+<span class="cmd-comment">! === DIFERENCIA CRÍTICA: ROUTER vs SWITCH ===</span>
+<span class="cmd-comment">! ROUTER: Interfaces están administratively down por defecto</span>
+<span class="cmd-comment">! SWITCH: Interfaces están up por defecto al conectar cable</span>
+
+<span class="cmd-comment">! === CONFIGURACIÓN DE INTERFAZ DE SWITCH (Capa 2) ===</span>
+SW1(config)# interface FastEthernet0/1
+SW1(config-if)# switchport mode access
+SW1(config-if)# switchport access vlan 10
+SW1(config-if)# description PC-CONTABILIDAD-01
+<span class="cmd-comment">! En switch L2, NO usamos "ip address" en interfaces de acceso</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Comandos de gestión de configuración: copy y erase</h3>
+  <div class="code-block">
+    <div class="code-label">Guardar, respaldar y eliminar configuración</div>
+    <pre><code><span class="cmd-comment">! === GUARDAR CONFIGURACIÓN (CRÍTICO PARA EXAMEN) ===</span>
+
+<span class="cmd-comment">! Copiar configuración activa (RAM) a configuración de inicio (NVRAM):</span>
+R1# copy running-config startup-config
+<span class="cmd-comment">! Abreviatura universalmente aceptada:</span>
+R1# copy run start
+<span class="cmd-comment">! Versión más corta (IOS moderno):</span>
+R1# wr                                        <span class="cmd-comment">! write memory</span>
+
+<span class="cmd-output">Destination filename [startup-config]?     <span class="cmd-comment">(Enter para confirmar)</span>
+Building configuration...
+[OK]</span>
+
+<span class="cmd-comment">! ⚠️ ADVERTENCIA: Si no ejecutas copy run start, TODO se pierde al reiniciar</span>
+
+<span class="cmd-comment">! === RESPALDAR EN SERVIDOR TFTP ===</span>
+R1# copy running-config tftp:
+Address or name of remote host []? 192.168.1.100
+Destination filename [R1-confg]? R1-backup-2024.cfg
+!!
+<span class="cmd-output">618 bytes copied in 0.052 secs</span>
+
+<span class="cmd-comment">! === RESTAURAR DESDE TFTP ===</span>
+R1# copy tftp: running-config
+<span class="cmd-comment">! o para reemplazar completamente:</span>
+R1# copy tftp: startup-config
+
+<span class="cmd-comment">! === ELIMINAR CONFIGURACIÓN DE INICIO (⚠️ PELIGRO) ===</span>
+R1# erase startup-config
+<span class="cmd-output">Erasing the nvram filesystem will remove all configuration files! Continue? [confirm]y
+[OK]
+Erase of nvram: complete</span>
+
+<span class="cmd-comment">! Reiniciar para arrancar en modo setup:</span>
+R1# reload
+<span class="cmd-comment">! O forzar factory reset completo:</span>
+R1# write erase                               <span class="cmd-comment">! = erase startup-config</span>
+
+<span class="cmd-comment">! === FUSIONAR CONFIGURACIONES (COMANDO PELIGROSO) ===</span>
+R1# copy startup-config running-config
+<span class="cmd-comment">! ⚠️ CUIDADO: Fusiona startup con running, NO reemplaza completamente</span>
+<span class="cmd-comment">! Puede dejar comandos obsoletos de sesiones anteriores</span></code></pre>
+  </div>
+
+  <div class="attack-diagram" style="border-color:rgba(248,113,113,0.3);">
+    <div class="diagram-title" style="color:#f87171;">⚠️ ZONA DE PELIGRO — Comandos que destruyen configuración</div>
+    <div class="attack-steps">
+      <div class="attack-step">
+        <span class="attack-num" style="border-color:#f87171;color:#f87171;background:rgba(248,113,113,0.1);">1</span>
+        <span style="color:#8294b8;"><code>erase startup-config</code> — Elimina configuración de inicio. Al reiniciar, el dispositivo arranca en modo setup o vacío.</span>
+      </div>
+      <div class="attack-step">
+        <span class="attack-num" style="border-color:#f87171;color:#f87171;background:rgba(248,113,113,0.1);">2</span>
+        <span style="color:#8294b8;"><code>write erase</code> — Alias de erase startup-config. Mismo efecto destructivo.</span>
+      </div>
+      <div class="attack-step">
+        <span class="attack-num" style="border-color:#f87171;color:#f87171;background:rgba(248,113,113,0.1);">3</span>
+        <span style="color:#8294b8;"><code>reload</code> sin guardar — Si olvidaste <code>copy run start</code>, perdiste toda la configuración desde el último guardado.</span>
+      </div>
+      <div class="attack-step">
+        <span class="attack-num" style="border-color:#f87171;color:#f87171;background:rgba(248,113,113,0.1);">4</span>
+        <span style="color:#8294b8;"><code>configure replace</code> — Reemplazo atómico. Si el archivo fuente está mal, puedes quedar sin acceso remoto.</span>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="sub-title">Comandos adicionales de la imagen: reload, ip default-gateway, show version</h3>
+  <div class="code-block">
+    <div class="code-label">Comandos de sistema y verificación</div>
+    <pre><code><span class="cmd-comment">! === RELOAD — Reinicio del dispositivo ===</span>
+R1# reload
+<span class="cmd-output">System will be restarted, continue? [confirm]y</span>
+
+<span class="cmd-comment">! Programar reload para evitar quedar bloqueado:</span>
+R1# reload in 10                             <span class="cmd-comment">! Reinicia en 10 minutos</span>
+R1# reload at 14:00                          <span class="cmd-comment">! Reinicia a las 2 PM</span>
+R1# reload cancel                            <span class="cmd-comment">! Cancelar reload programado</span>
+
+<span class="cmd-comment">! === IP DEFAULT-GATEWAY (solo en switches) ===</span>
+<span class="cmd-comment">! Los switches L2 necesitan gateway para management remoto:</span>
+SW1(config)# ip default-gateway 192.168.1.1
+<span class="cmd-comment">! Los routers NO usan este comando — usan rutas estáticas o dinámicas</span>
+
+<span class="cmd-comment">! === SHOW VERSION — Información del sistema ===</span>
+R1# show version
+<span class="cmd-output">Cisco IOS Software, C880 Software...
+System image file is "flash:c880data-universalk9-mz.154-3..."
+
+cisco C881-K9 (revision 1.0) with 236544K/25600K bytes of memory.
+Processor board ID FTX12345678
+
+Configuration register is 0x2102    <span class="cmd-comment">! ← Valor crítico para recuperación</span></span>
+
+<span class="cmd-comment">! === SHOW FLASH / SHOW FILE SYSTEMS ===</span>
+R1# show flash:                              <span class="cmd-comment">! Archivos en memoria flash</span>
+R1# dir                                       <span class="cmd-comment">! Listado de archivos</span>
+R1# show file systems                         <span class="cmd-comment">! Todos los sistemas de archivos</span></code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 3 — INTERFACES
+══════════════════════════════════════════════ -->
+<div id="tab-interfaces" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Configuración Avanzada de Interfaces</h2>
+  
+  <h3 class="sub-title">Tipos de Interfaces en Cisco</h3>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead><tr><th>Tipo</th><th>Nomenclatura</th><th>Uso típico</th><th>Capa OSI</th></tr></thead>
+      <tbody>
+        <tr><td>FastEthernet</td><td>Fa0/0, FastEthernet0/1</td><td>LAN legacy (100 Mbps)</td><td>Capa 1-2</td></tr>
+        <tr><td>GigabitEthernet</td><td>Gi0/0, Gig0/1, g0/0/0</td><td>LAN moderna (1 Gbps)</td><td>Capa 1-2</td></tr>
+        <tr><td>Serial</td><td>Se0/0/0, Serial0/1</td><td>WAN, conexiones punto-a-punto</td><td>Capa 1-2</td></tr>
+        <tr><td>Loopback</td><td>Lo0, Loopback1</td><td>Interfaces virtuales locales</td><td>Capa 3 (lógica)</td></tr>
+        <tr><td>SVI (VLAN)</td><td>Vlan1, Vlan10</td><td>Switch Virtual Interface</td><td>Capa 3 en switch</td></tr>
+        <tr><td>Port-Channel</td><td>Po1, Port-channel1</td><td>EtherChannel (agregación)</td><td>Capa 2-3</td></tr>
+        <tr><td>Tunnel</td><td>Tu0, Tunnel0</td><td>GRE, IPsec VPN</td><td>Capa 3 virtual</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="sub-title">Configuración completa de interfaz de Router</h3>
+  <div class="code-block">
+    <div class="code-label">Ejemplo práctico: Router con LAN y WAN</div>
+    <pre><code><span class="cmd-comment">! === INTERFAZ LAN (GigabitEthernet) ===</span>
+R1(config)# interface GigabitEthernet0/0
+R1(config-if)# description LAN-INTERNAL-VLAN10
+R1(config-if)# ip address 192.168.10.1 255.255.255.0
+R1(config-if)# ip address 192.168.10.1 255.255.255.0 secondary  <span class="cmd-comment">! IP secundaria</span>
+R1(config-if)# no shutdown
+R1(config-if)# duplex auto
+R1(config-if)# speed auto
+<span class="cmd-comment">! o forzar valores:</span>
+R1(config-if)# duplex full
+R1(config-if)# speed 1000
+
+<span class="cmd-comment">! === INTERFAZ WAN (Serial con HDLC/PPP) ===</span>
+R1(config)# interface Serial0/0/0
+R1(config-if)# description WAN-LINK-TO-ISP
+R1(config-if)# ip address 203.0.113.2 255.255.255.252
+R1(config-if)# no shutdown
+R1(config-if)# clock rate 64000        <span class="cmd-comment">! Solo en lado DCE</span>
+R1(config-if)# bandwidth 1544          <span class="cmd-comment">! Métrica para routing</span>
+
+<span class="cmd-comment">! === INTERFAZ LOOPBACK (Virtual) ===</span>
+R1(config)# interface Loopback0
+R1(config-if)# description ROUTER-ID-OSPF
+R1(config-if)# ip address 1.1.1.1 255.255.255.255  <span class="cmd-comment">! /32 host route</span>
+<span class="cmd-comment">! Loopback siempre está up/up, nunca falla físicamente</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Configuración de interfaces de Switch</h3>
+  <div class="code-block">
+    <div class="code-label">Switch L2: Access, Trunk, y SVI</div>
+    <pre><code><span class="cmd-comment">! === PUERTO DE ACCESO (Access Port) ===</span>
+SW1(config)# interface FastEthernet0/1
+SW1(config-if)# description PC-VENTAS-01
+SW1(config-if)# switchport mode access
+SW1(config-if)# switchport access vlan 10
+SW1(config-if)# spanning-tree portfast      <span class="cmd-comment">! Para puertos de host</span>
+SW1(config-if)# no shutdown
+
+<span class="cmd-comment">! === PUERTO TRUNK (802.1Q) ===</span>
+SW1(config)# interface GigabitEthernet0/1
+SW1(config-if)# description TRUNK-TO-CORE-SW
+SW1(config-if)# switchport mode trunk
+SW1(config-if)# switchport trunk allowed vlan 10,20,30,99
+SW1(config-if)# switchport trunk native vlan 99  <span class="cmd-comment">! VLAN nativa diferente a 1</span>
+SW1(config-if)# no shutdown
+
+<span class="cmd-comment">! === SVI — Switch Virtual Interface (Capa 3 en switch) ===</span>
+SW1(config)# interface Vlan10
+SW1(config-if)# description MANAGEMENT-VLAN10
+SW1(config-if)# ip address 192.168.10.2 255.255.255.0
+SW1(config-if)# no shutdown
+<span class="cmd-comment">! La SVI está up solo si hay al menos un puerto en VLAN 10 up/up</span>
+
+<span class="cmd-comment">! Verificar estado de VLANs:</span>
+SW1# show ip interface brief
+SW1# show vlan brief</code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Diferencia clave: Router vs Switch en interfaces</div>
+    <p><strong>Router:</strong> Las interfaces están <code>administratively down</code> por defecto. Debes ejecutar <code>no shutdown</code> explícitamente. Las interfaces son Capa 3 por defecto (rutables).</p>
+    <p><strong>Switch:</strong> Las interfaces están <code>up</code> por defecto al conectar cable. Son Capa 2 por defecto (switching). Para IP en switch, usas SVI (VlanX) o configuras el switch como L3 con <code>ip routing</code>.</p>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 4 — GESTIÓN DE CONFIGURACIÓN
+══════════════════════════════════════════════ -->
+<div id="tab-configuracion" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Gestión de Archivos de Configuración</h2>
+  <p>Comprender la arquitectura de almacenamiento de configuración en Cisco es fundamental para el examen CCNA y para la administración en producción.</p>
+
+  <div class="diagram-box">
+    <div class="diagram-title">Arquitectura de Memoria Cisco</div>
+    <svg viewBox="0 0 700 350" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:700px;">
+      <!-- RAM -->
+      <rect x="50" y="30" width="280" height="120" rx="8" fill="#0d1220" stroke="#00d4aa" stroke-width="2"/>
+      <text x="190" y="55" text-anchor="middle" fill="#00d4aa" font-size="14" font-family="Orbitron" font-weight="700">RAM (Volatile)</text>
+      <text x="190" y="80" text-anchor="middle" fill="#6b7a9a" font-size="11" font-family="Share Tech Mono">Running-Config</text>
+      <text x="190" y="100" text-anchor="middle" fill="#4a5780" font-size="10" font-family="Share Tech Mono">Tabla de routing ARP</text>
+      <text x="190" y="115" text-anchor="middle" fill="#4a5780" font-size="10" font-family="Share Tech Mono">Caché, Buffers, Procesos IOS</text>
+      <text x="190" y="135" text-anchor="middle" fill="#f87171" font-size="9" font-family="Share Tech Mono">⚠️ Se pierde al reiniciar</text>
+      
+      <!-- NVRAM -->
+      <rect x="370" y="30" width="280" height="120" rx="8" fill="#0d1220" stroke="#38bdf8" stroke-width="2"/>
+      <text x="510" y="55" text-anchor="middle" fill="#38bdf8" font-size="14" font-family="Orbitron" font-weight="700">NVRAM (No-Volatile)</text>
+      <text x="510" y="80" text-anchor="middle" fill="#6b7a9a" font-size="11" font-family="Share Tech Mono">Startup-Config</text>
+      <text x="510" y="100" text-anchor="middle" fill="#4a5780" font-size="10" font-family="Share Tech Mono">Configuración de inicio</text>
+      <text x="510" y="115" text-anchor="middle" fill="#4a5780" font-size="10" font-family="Share Tech Mono">Config-register (0x2102)</text>
+      <text x="510" y="135" text-anchor="middle" fill="#34d399" font-size="9" font-family="Share Tech Mono">✓ Persistente tras reinicio</text>
+      
+      <!-- FLASH -->
+      <rect x="50" y="200" width="280" height="120" rx="8" fill="#0d1220" stroke="#a78bfa" stroke-width="2"/>
+      <text x="190" y="225" text-anchor="middle" fill="#a78bfa" font-size="14" font-family="Orbitron" font-weight="700">FLASH (EEPROM)</text>
+      <text x="190" y="250" text-anchor="middle" fill="#6b7a9a" font-size="11" font-family="Share Tech Mono">IOS Image (bin)</text>
+      <text x="190" y="270" text-anchor="middle" fill="#4a5780" font-size="10" font-family="Share Tech Mono">Sistema operativo Cisco IOS</text>
+      <text x="190" y="285" text-anchor="middle" fill="#4a5780" font-size="10" font-family="Share Tech Mono">Archivos de backup, VLAN.dat</text>
+      <text x="190" y="305" text-anchor="middle" fill="#34d399" font-size="9" font-family="Share Tech Mono">✓ Persistente, rewritable</text>
+      
+      <!-- ROM -->
+      <rect x="370" y="200" width="280" height="120" rx="8" fill="#0d1220" stroke="#fbbf24" stroke-width="2"/>
+      <text x="510" y="225" text-anchor="middle" fill="#fbbf24" font-size="14" font-family="Orbitron" font-weight="700">ROM (Read-Only)</text>
+      <text x="510" y="250" text-anchor="middle" fill="#6b7a9a" font-size="11" font-family="Share Tech Mono">Bootloader (ROMMON)</text>
+      <text x="510" y="270" text-anchor="middle" fill="#4a5780" font-size="10" font-family="Share Tech Mono">POST (Power-On Self Test)</text>
+      <text x="510" y="285" text-anchor="middle" fill="#4a5780" font-size="10" font-family="Share Tech Mono">Mini-IOS de recuperación</text>
+      <text x="510" y="305" text-anchor="middle" fill="#f87171" font-size="9" font-family="Share Tech Mono">⚠️ No modificable</text>
+      
+      <!-- Arrows -->
+      <line x1="330" y1="90" x2="370" y2="90" stroke="#00d4aa" stroke-width="2" marker-end="url(#arrowcopy)"/>
+      <text x="350" y="85" text-anchor="middle" fill="#00d4aa" font-size="8" font-family="Share Tech Mono">copy</text>
+      <text x="350" y="105" text-anchor="middle" fill="#00d4aa" font-size="8" font-family="Share Tech Mono">run start</text>
+      
+      <line x1="370" y1="130" x2="330" y2="130" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrowcopy)"/>
+      <text x="350" y="125" text-anchor="middle" fill="#38bdf8" font-size="8" font-family="Share Tech Mono">reload</text>
+      
+      <defs>
+        <marker id="arrowcopy" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#00d4aa"/>
+        </marker>
+      </defs>
+    </svg>
+  </div>
+
+  <h3 class="sub-title">Comandos de gestión de configuración en profundidad</h3>
+  <div class="code-block">
+    <div class="code-label">Flujo completo de gestión de configuración</div>
+    <pre><code><span class="cmd-comment">! === FLUJO NORMAL DE TRABAJO ===</span>
+
+<span class="cmd-comment">! 1. Realizar cambios de configuración:</span>
+R1(config)# hostname CORE-R1
+CORE-R1(config)# interface g0/0
+CORE-R1(config-if)# ip address 10.1.1.1 255.255.255.0
+CORE-R1(config-if)# no shutdown
+
+<span class="cmd-comment">! 2. Verificar cambios en configuración activa:</span>
+CORE-R1# show running-config interface g0/0
+
+<span class="cmd-comment">! 3. Guardar cambios permanentemente:</span>
+CORE-R1# copy running-config startup-config
+<span class="cmd-comment">! o:</span>
+CORE-R1# write memory
+<span class="cmd-comment">! o en IOS moderno:</span>
+CORE-R1# wr
+
+<span class="cmd-comment">! === COMANDOS AVANZADOS DE COPIA ===</span>
+
+<span class="cmd-comment">! Copiar configuración a servidor TFTP (backup):</span>
+R1# copy running-config tftp:
+Address or name of remote host []? 192.168.1.100
+Destination filename [R1-confg]? R1-backup-Jan15.cfg
+!!
+<span class="cmd-output">1256 bytes copied in 0.048 secs</span>
+
+<span class="cmd-comment">! Restaurar desde TFTP:</span>
+R1# copy tftp: running-config
+<span class="cmd-comment">! o reemplazar startup completamente:</span>
+R1# copy tftp: startup-config
+
+<span class="cmd-comment">! Copiar a USB (en routers con puerto USB):</span>
+R1# copy running-config usbflash0:backup.cfg
+
+<span class="cmd-comment">! === COMANDOS DE ELIMINACIÓN ===</span>
+
+<span class="cmd-comment">! Eliminar startup-config (factory reset al reiniciar):</span>
+R1# erase startup-config
+<span class="cmd-output">Erasing the nvram filesystem will remove all configuration files! Continue? [confirm]y
+[OK]</span>
+
+<span class="cmd-comment">! Eliminar VLANs en switch (archivo separado):</span>
+SW1# delete flash:vlan.dat
+<span class="cmd-comment">! ⚠️ erase startup-config NO borra VLANs en switches</span>
+
+<span class="cmd-comment">! Formatear flash (EXTREMO — elimina IOS):</span>
+R1# format flash:
+
+<span class="cmd-comment">! === CONFIGURACIÓN DE RECUPERACIÓN ===</span>
+
+<span class="cmd-comment">! Configurar registro de inicio (boot):</span>
+R1(config)# config-register 0x2102    <span class="cmd-comment">! Normal: carga startup-config</span>
+R1(config)# config-register 0x2142    <span class="cmd-comment">! Recuperación: ignora startup</span>
+
+<span class="cmd-comment">! Ver registro actual:</span>
+R1# show version | include register
+Configuration register is 0x2102</code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚠️ ERROR COMÚN EN EXAMEN CCNA</div>
+    <p><strong>Situación:</strong> Configuras un router, todo funciona, pero al reiniciar pierdes todo.</p>
+    <p><strong>Causa:</strong> Olvidaste ejecutar <code>copy running-config startup-config</code> (o <code>wr</code>).</p>
+    <p><strong>Solución:</strong> Siempre, SIEMPRE, guarda después de cambios exitosos. En Packet Tracer y exámenes, esto te quita puntos.</p>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 5 — VERIFICACIÓN
+══════════════════════════════════════════════ -->
+<div id="tab-verificacion" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Comandos de Verificación (Show Commands)</h2>
+  <p>Los comandos <code>show</code> son tu herramienta principal para troubleshooting y verificación. Dominarlos es esencial para el examen CCNA y para el trabajo real.</p>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">📊</div>
+      <h3>show running-config</h3>
+      <p>Muestra la configuración activa en RAM. Incluye TODOS los comandos aplicados actualmente.</p>
+      <code>show run<br>show run | section router<br>show run | begin interface</code>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">💾</div>
+      <h3>show startup-config</h3>
+      <p>Muestra la configuración guardada en NVRAM. Lo que se cargará al reiniciar.</p>
+      <code>show start</code>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🌐</div>
+      <h3>show ip interface brief</h3>
+      <p>Resumen rápido de todas las interfaces: IP, estado administrativo y protocolo.</p>
+      <code>show ip int brief<br>sh ip int b</code>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🗺️</div>
+      <h3>show ip route</h3>
+      <p>Tabla de routing completa. Muestra cómo llegar a cada red conocida.</p>
+      <code>show ip route<br>show ip route 192.168.1.0</code>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🔍</div>
+      <h3>show interfaces</h3>
+      <p>Estado detallado de interfaces: estadísticas, errores, duplex, velocidad.</p>
+      <code>show int g0/0<br>show int | include error</code>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">⚙️</div>
+      <h3>show version</h3>
+      <p>Información del sistema: modelo, IOS, memoria, interfaces, config-register.</p>
+      <code>show ver | i register</code>
+    </div>
+  </div>
+
+  <h3 class="sub-title">Show running-config — Análisis profundo</h3>
+  <div class="code-block">
+    <div class="code-label">Variantes y filtros útiles</div>
+    <pre><code><span class="cmd-comment">! === FORMAS BÁSICAS ===</span>
+R1# show running-config              <span class="cmd-comment">! Configuración completa</span>
+R1# show run                          <span class="cmd-comment">! Abreviatura</span>
+
+<span class="cmd-comment">! === FILTROS CON PIPE (|) — CRÍTICO PARA EXAMEN ===</span>
+
+<span class="cmd-comment">! begin: muestra desde la primera coincidencia:</span>
+R1# show run | begin interface GigabitEthernet0/0
+<span class="cmd-comment">! Muestra toda la config empezando desde Gi0/0</span>
+
+<span class="cmd-comment">! include: solo líneas que contienen el texto:</span>
+R1# show run | include ip address
+<span class="cmd-output"> ip address 192.168.1.1 255.255.255.0
+ ip address 10.0.0.1 255.255.255.252</span>
+
+<span class="cmd-comment">! exclude: elimina líneas con el texto:</span>
+R1# show run | exclude !               <span class="cmd-comment">! Quita líneas de comentario</span>
+
+<span class="cmd-comment">! section: muestra sección completa:</span>
+R1# show run | section router ospf      <span class="cmd-comment">! Todo el bloque OSPF</span>
+R1# show run | section vty              <span class="cmd-comment">! Líneas VTY (telnet/ssh)</span>
+
+<span class="cmd-comment">! === COMPARAR RUNNING VS STARTUP ===</span>
+R1# show archive config differences nvram:startup-config system:running-config
+<span class="cmd-comment">! Muestra línea por línea qué cambió desde el último guardado</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Show ip interface brief — El comando más usado</h3>
+  <div class="code-block">
+    <div class="code-label">Interpretación de estados</div>
+    <pre><code>R1# show ip interface brief
+<span class="cmd-output">Interface              IP-Address      OK? Method Status                Protocol
+GigabitEthernet0/0     192.168.1.1     YES manual up                    up    
+GigabitEthernet0/1     10.0.0.1        YES manual up                    up    
+GigabitEthernet0/2     unassigned      YES unset  administratively down down  
+Serial0/0/0            203.0.113.2     YES manual up                    down  
+Loopback0              1.1.1.1         YES manual up                    up    </span>
+
+<span class="cmd-comment">! === INTERPRETACIÓN DE ESTADOS ===</span>
+
+<span class="cmd-comment">! Status (estado administrativo):</span>
+<span class="cmd-comment">! - administratively down = ejecutaste "shutdown" o nunca "no shutdown"</span>
+<span class="cmd-comment">! - up = interfaz administrativamente activada</span>
+
+<span class="cmd-comment">! Protocol (estado de capa 2):</span>
+<span class="cmd-comment">! - up = hay conectividad física (carrier detect) y keepalives</span>
+<span class="cmd-comment">! - down = no hay cable, cable desconectado, o vecino apagado</span>
+
+<span class="cmd-comment">! === COMBINACIONES COMUNES ===</span>
+
+<span class="cmd-comment">! up / up      = Todo bien, interfaz funcionando</span>
+<span class="cmd-comment">! up / down    = Cable conectado pero problema de capa 2 (mismatch, keepalives)</span>
+<span class="cmd-comment">! down / down  = No hay cable o interfaz shutdown</span>
+<span class="cmd-comment">! administratively down / down = Interfaz explícitamente apagada</span>
+
+<span class="cmd-comment">! Ejemplo Serial0/0/0 arriba: up/down = cable conectado pero vecino no responde</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Show ip route — Análisis de tabla de routing</h3>
+  <div class="code-block">
+    <div class="code-label">Códigos y interpretación</div>
+    <pre><code>R1# show ip route
+<span class="cmd-output">Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area 
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2
+       i - IS-IS, su - IS-IS summary, L1 - IS-IS level-1, L2 - IS-IS level-2
+       ia - IS-IS inter area, * - candidate default, U - per-user static route
+       o - ODR, P - periodic downloaded static route, H - NHRP, l - LISP
+       a - application route
+       + - replicated route, % - next hop override, p - overrides from PfR
+
+Gateway of last resort is 10.0.0.2 to network 0.0.0.0
+
+S*    0.0.0.0/0 [1/0] via 10.0.0.2
+                [1/0] via 203.0.113.1
+C     10.0.0.0/30 is directly connected, GigabitEthernet0/1
+L     10.0.0.1/32 is directly connected, GigabitEthernet0/1
+C     192.168.1.0/24 is directly connected, GigabitEthernet0/0
+L     192.168.1.1/32 is directly connected, GigabitEthernet0/0
+O     192.168.2.0/24 [110/2] via 10.0.0.2, 00:15:23, GigabitEthernet0/1
+O     192.168.3.0/24 [110/3] via 10.0.0.2, 00:15:23, GigabitEthernet0/1</span>
+
+<span class="cmd-comment">! === ANÁLISIS DE ENTRADAS ===</span>
+
+<span class="cmd-comment">! S* 0.0.0.0/0 = Ruta por defecto (static, candidate default)</span>
+<span class="cmd-comment">! [1/0] = [AD/métrica] → AD=1 (static), métrica=0</span>
+
+<span class="cmd-comment">! C = Connected: red directamente conectada a interfaz local</span>
+<span class="cmd-comment">! L = Local: dirección IP específica asignada a la interfaz (/32)</span>
+
+<span class="cmd-comment">! O = OSPF: ruta aprendida por OSPF</span>
+<span class="cmd-comment">! [110/2] = [AD=110/métrica=2] → costo OSPF de 2</span>
+<span class="cmd-comment">! via 10.0.0.2 = next-hop (IP del router vecino)</span>
+<span class="cmd-comment">! 00:15:23 = tiempo desde que se aprendió la ruta</span>
+<span class="cmd-comment">! GigabitEthernet0/1 = interfaz de salida</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Otros comandos show esenciales</h3>
+  <div class="code-block">
+    <div class="code-label">Comandos de verificación de switch</div>
+       <pre><code><span class="cmd-comment">! === COMANDOS DE SWITCH ESENCIALES ===</span>
+
+<span class="cmd-comment">! Ver tabla MAC (direcciones aprendidas dinámicamente):</span>
+SW1# show mac address-table
+<span class="cmd-output">          Mac Address Table
+-------------------------------------------
+Vlan    Mac Address       Type        Ports
+----    -----------       --------    -----
+   10    0000.0c12.3456    DYNAMIC     Gi0/1
+   10    0000.0c78.9abc    DYNAMIC     Gi0/2
+   20    0000.0cdef.0123   STATIC      Gi0/3</span>
+
+<span class="cmd-comment">! Ver VLANs configuradas:</span>
+SW1# show vlan brief
+<span class="cmd-output">VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active    Gi0/4, Gi0/5, Gi0/6
+10   VENTAS                           active    Gi0/1, Gi0/2
+20   CONTABILIDAD                     active    Gi0/3
+99   MANAGEMENT                       active    
+1002 fddi-default                     act/unsup 
+1003 token-ring-default               act/unsup</span>
+
+<span class="cmd-comment">! Ver estado de puertos trunk:</span>
+SW1# show interfaces trunk
+<span class="cmd-output">Port        Mode             Encapsulation  Status        Native vlan
+Gi0/24      on               802.1q         trunking      99
+
+Port        Vlans allowed on trunk
+Gi0/24      10,20,30,99
+
+Port        Vlans allowed and active in management domain
+Gi0/24      10,20,30,99</span>
+
+<span class="cmd-comment">! Ver CDP/LLDP (vecinos conectados):</span>
+SW1# show cdp neighbors
+<span class="cmd-output">Device ID        Local Intrfce     Holdtme    Capability  Platform  Port ID
+R1-HQ            Gig 0/24           173            R       C881      Gig 0/0
+SW-CORE-01       Gig 0/23           145            S       WS-C2960  Gig 0/1</span>
+
+SW1# show lldp neighbors    <span class="cmd-comment">! Estándar abierto, reemplaza CDP</span>
+
+<span class="cmd-comment">! Ver Spanning Tree:</span>
+SW1# show spanning-tree
+SW1# show spanning-tree vlan 10
+<span class="cmd-comment">! Muestra root bridge, costos, roles de puertos (Root/Designated/Blocked)</span>
+
+<span class="cmd-comment">! Ver EtherChannel (agregación de enlaces):</span>
+SW1# show etherchannel summary
+<span class="cmd-output">Flags:  D - down        P - bundled in port-channel
+        I - stand-alone s - suspended
+        H - Hot-standby (LACP only)
+        R - Layer3      S - Layer2
+        U - in use      f - failed to allocate aggregator
+
+Group  Port-channel  Protocol    Ports
+------+-------------+-----------+-----------------------------------------------
+1      Po1(SU)         LACP      Gi0/1(P)    Gi0/2(P)</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Comandos de verificación de routing</h3>
+  <div class="code-block">
+    <div class="code-label">Protocolos de routing dinámico</div>
+    <pre><code><span class="cmd-comment">! === VERIFICACIÓN DE PROTOCOLOS DE ROUTING ===</span>
+
+<span class="cmd-comment">! Ver procesos de routing activos:</span>
+R1# show ip protocols
+<span class="cmd-output">Routing Protocol is "ospf 1"
+  Outgoing update filter list for all interfaces is not set
+  Incoming update filter list for all interfaces is not set
+  Router ID 1.1.1.1
+  Number of areas in this router is 1. 1 normal 0 stub 0 nssa
+  Maximum path: 4
+  Routing for Networks:
+    10.0.0.0 0.0.0.3 area 0
+    192.168.1.0 0.0.0.255 area 0
+  Routing Information Sources:
+    Gateway         Distance      Last Update
+    10.0.0.2             110      00:12:45
+  Distance: (default is 110)</span>
+
+<span class="cmd-comment">! Ver vecinos OSPF:</span>
+R1# show ip ospf neighbor
+<span class="cmd-output">Neighbor ID     Pri   State           Dead Time   Address         Interface
+2.2.2.2           1   FULL/DR         00:00:39    10.0.0.2        GigabitEthernet0/1
+3.3.3.3           1   FULL/BDR        00:00:41    10.0.12.2       GigabitEthernet0/0</span>
+
+<span class="cmd-comment">! Ver base de datos OSPF (LSDB):</span>
+R1# show ip ospf database
+
+<span class="cmd-comment">! Ver vecinos EIGRP:</span>
+R1# show ip eigrp neighbors
+
+<span class="cmd-comment">! Ver interfaces pasivas (no envían hellos):</span>
+R1# show ip protocols | include Passive
+  Passive Interface(s):
+    GigabitEthernet0/2</span></code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Técnica de troubleshooting: Divide y vencerás</div>
+    <p>Usa <code>show</code> commands en secuencia lógica:</p>
+    <ol>
+      <li><code>show ip interface brief</code> — ¿Las interfaces están up/up?</li>
+      <li><code>show ip route</code> — ¿Conozco la red destino?</li>
+      <li><code>show running-config | section [protocolo]</code> — ¿La configuración es correcta?</li>
+      <li><code>ping</code> y <code>traceroute</code> — ¿Llego al destino?</li>
+      <li><code>debug</code> — ¿Qué está pasando en tiempo real? (con precaución)</li>
+    </ol>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 6 — SEGURIDAD BÁSICA
+══════════════════════════════════════════════ -->
+<div id="tab-seguridad" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Seguridad Básica de Dispositivos Cisco</h2>
+  <p>Proteger el acceso a los dispositivos de red es fundamental. Estos comandos son requeridos en cualquier implementación de producción y frecuentemente evaluados en el examen CCNA.</p>
+
+  <h3 class="sub-title">Jerarquía de contraseñas en Cisco IOS</h3>
+  <div class="code-block">
+    <div class="code-label">Configuración completa de seguridad de acceso</div>
+    <pre><code><span class="cmd-comment">! === 1. CONTRASEÑA DE CONSOLA (acceso físico) ===</span>
+R1(config)# line console 0
+R1(config-line)# password ConsoleSec123
+R1(config-line)# login                    <span class="cmd-comment">! Exige login con contraseña</span>
+R1(config-line)# logging synchronous      <span class="cmd-comment">! Evita que mensajes corten comandos</span>
+R1(config-line)# exec-timeout 5 30        <span class="cmd-comment">! Timeout: 5 min 30 seg de inactividad</span>
+
+<span class="cmd-comment">! === 2. CONTRASEÑA DE VTY (acceso remoto Telnet/SSH) ===</span>
+R1(config)# line vty 0 4                  <span class="cmd-comment">! 5 sesiones simultáneas (0-4)</span>
+R1(config-line)# password VtySec456
+R1(config-line)# login
+R1(config-line)# transport input ssh      <span class="cmd-comment">! Solo SSH, no Telnet (seguro)</span>
+<span class="cmd-comment">! o para permitir ambos (menos seguro):</span>
+R1(config-line)# transport input telnet ssh
+
+<span class="cmd-comment">! === 3. ENABLE PASSWORD vs ENABLE SECRET ===</span>
+
+<span class="cmd-comment">! FORMA INSEGURA (texto plano):</span>
+R1(config)# enable password AdminPass789
+
+<span class="cmd-comment">! FORMA SEGURA (hash MD5 irreversible):</span>
+R1(config)# enable secret SuperSecret999
+<span class="cmd-comment">! Si ambos existen, enable secret tiene prioridad</span>
+
+<span class="cmd-comment">! === 4. ENCRIPTAR TODAS LAS CONTRASEÑAS ===</span>
+R1(config)# service password-encryption
+<span class="cmd-comment">! Aplica cifrado Vigenère débil a passwords en texto plano
+! NO encripta enable secret (ya está hasheado)
+! Muestra "7" en show run: password 7 0822455D0A16</span>
+
+<span class="cmd-comment">! Verificación:</span>
+R1# show running-config | include password
+<span class="cmd-output">enable secret 5 $1$mERr$8j9...
+password 7 0822455D0A16       <span class="cmd-comment">! Encriptado con service password-encryption</span></span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Configuración de SSH (Secure Shell)</h3>
+  <div class="code-block">
+    <div class="code-label">SSH v2 completo — Reemplazo seguro de Telnet</div>
+    <pre><code><span class="cmd-comment">! === REQUISITOS PARA SSH ===</span>
+<span class="cmd-comment">! 1. Hostname diferente de "Router" o "Switch"</span>
+<span class="cmd-comment">! 2. Domain name configurado</span>
+<span class="cmd-comment">! 3. Generar claves RSA (512-4096 bits)</span>
+<span class="cmd-comment">! 4. Crear usuario local con privilegio</span>
+<span class="cmd-comment">! 5. Habilitar SSH en líneas VTY</span>
+
+<span class="cmd-comment">! Paso 1: Hostname (ya debería estar configurado)</span>
+R1(config)# hostname R1-HQ
+
+<span class="cmd-comment">! Paso 2: IP domain name (obligatorio para generar certificado)</span>
+R1(config)# ip domain-name cisco.local
+
+<span class="cmd-comment">! Paso 3: Generar claves RSA (mínimo 768, recomendado 2048)</span>
+R1(config)# crypto key generate rsa
+<span class="cmd-output">The name for the keys will be: R1-HQ.cisco.local
+Choose the size of the key modulus in the range of 360 to 4096 for your
+  General Purpose Keys. Choosing a key modulus greater than 512 may take
+  a few minutes.
+
+How many bits in the modulus [512]: 2048
+% Generating 2048 bit RSA keys, keys will be non-exportable...
+[OK] (elapsed time was 3 seconds)</span>
+
+<span class="cmd-comment">! Paso 4: Crear usuario local con privilegio máximo</span>
+R1(config)# username admin privilege 15 secret AdminSSH2024!
+<span class="cmd-comment">! privilege 15 = nivel de acceso enable automático al loguear</span>
+<span class="cmd-comment">! secret = almacenado con hash (no password)</span>
+
+<span class="cmd-comment">! Paso 5: Configurar VTY para SSH</span>
+R1(config)# line vty 0 4
+R1(config-line)# login local              <span class="cmd-comment">! Usar base de datos local de usuarios</span>
+R1(config-line)# transport input ssh      <span class="cmd-comment">! Solo SSH, bloquear Telnet</span>
+R1(config-line)# exec-timeout 3 0         <span class="cmd-comment">! 3 minutos timeout</span>
+
+<span class="cmd-comment">! Opcional: Versión SSH 2 (más segura que v1)</span>
+R1(config)# ip ssh version 2
+
+<span class="cmd-comment">! Verificación:</span>
+R1# show ip ssh
+<span class="cmd-output">SSH Enabled - version 2.0
+Authentication timeout: 120 secs; Authentication retries: 3</span>
+
+R1# show crypto key mypubkey rsa
+<span class="cmd-output">% Key pair was generated at: 14:32:10 UTC Jan 15 2024
+Key name: R1-HQ.cisco.local
+Usage: General Purpose Key
+Key is not exportable.
+Key Data:
+  30820122 300D0609 2A864886 F70D0101 01050003 82010F00 3082010A...</span></code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚠️ Error común: SSH no funciona</div>
+    <p>Si olvidas <code>ip domain-name</code> antes de generar las claves RSA, el comando <code>crypto key generate rsa</code> fallará o generará claves no utilizables para SSH. Siempre configura domain-name primero.</p>
+  </div>
+
+  <h3 class="sub-title">Banner de seguridad (MOTD y Login)</h3>
+  <div class="code-block">
+    <div class="code-label">Mensajes de advertencia legal</div>
+    <pre><code><span class="cmd-comment">! === BANNER MOTD (Message of the Day) ===</span>
+<span class="cmd-comment">! Aparece ANTES de pedir usuario/contraseña</span>
+<span class="cmd-comment">! Usa delimitador que no aparezca en el mensaje</span>
+
+R1(config)# banner motd #
+****************************************
+*         AVISO DE SEGURIDAD           *
+*                                      *
+* Acceso autorizado unicamente.        *
+* Toda actividad es monitoreada.       *
+*                                      *
+* Contacto: security@empresa.com       *
+****************************************
+#
+
+<span class="cmd-comment">! === BANNER LOGIN ===</span>
+<span class="cmd-comment">! Aparece DESPUÉS de MOTD, antes de login</span>
+R1(config)# banner login #
+Sistema de Redes Empresariales
+Ingrese sus credenciales autorizadas:
+#
+
+<span class="cmd-comment">! === BANNER EXEC ===</span>
+<span class="cmd-comment">! Aparece DESPUÉS de login exitoso, antes del prompt</span>
+R1(config)# banner exec #
+Bienvenido. Usted ha accedido a R1-HQ.
+Ultimo mantenimiento: 2024-01-15
+#
+
+<span class="cmd-comment">! Verificación:</span>
+R1# show banner
+<span class="cmd-output">Banner MOTD:
+****************************************
+*         AVISO DE SEGURIDAD           *
+****************************************</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Seguridad de puertos de switch (Port Security)</h3>
+  <div class="code-block">
+    <div class="code-label">Protección contra MAC flooding y unauthorized access</div>
+    <pre><code><span class="cmd-comment">! === PORT SECURITY EN INTERFAZ DE ACCESO ===</span>
+
+SW1(config)# interface FastEthernet0/1
+SW1(config-if)# switchport mode access
+SW1(config-if)# switchport access vlan 10
+
+<span class="cmd-comment">! Habilitar port security:</span>
+SW1(config-if)# switchport port-security
+<span class="cmd-comment">! Por defecto: máximo 1 MAC, violation = shutdown</span>
+
+<span class="cmd-comment">! Configurar MAC específica (estática):</span>
+SW1(config-if)# switchport port-security mac-address 0000.0c12.3456
+<span class="cmd-comment">! o aprender la primera MAC conectada (sticky):</span>
+SW1(config-if)# switchport port-security mac-address sticky
+
+<span class="cmd-comment">! Permitir hasta 3 MACs (útil para IP phones con PC detrás):</span>
+SW1(config-if)# switchport port-security maximum 3
+
+<span class="cmd-comment">! Configurar acción ante violación:</span>
+SW1(config-if)# switchport port-security violation ?
+  protect   <span class="cmd-comment">! Descarta paquetes desconocidos, no alerta</span>
+  restrict  <span class="cmd-comment">! Descarta + envía SNMP trap + log</span>
+  shutdown  <span class="cmd-comment">! Pone interfaz en error-disabled (default)</span>
+
+SW1(config-if)# switchport port-security violation restrict
+
+<span class="cmd-comment">! Verificación:</span>
+SW1# show port-security
+SW1# show port-security interface fa0/1
+<span class="cmd-output">Port Security              : Enabled
+Port Status                : Secure-up
+Violation Mode             : Restrict
+Maximum MAC Addresses      : 3
+Total MAC Addresses        : 2
+Configured MAC Addresses   : 0
+Sticky MAC Addresses       : 2
+Last Source Address:Vlan   : 0000.0c78.9abc:10
+Security Violation Count   : 0</span></code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 7 — LABORATORIO
+══════════════════════════════════════════════ -->
+<div id="tab-lab" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">🧪 Laboratorio Práctico: Configuración Inicial Completa</h2>
+  <p>Este laboratorio integra todos los comandos aprendidos en una configuración realista de router y switch desde cero. Ideal para practicar en Packet Tracer o GNS3.</p>
+
+  <div class="lab-topology">
+    <div class="diagram-title">Topología del Laboratorio</div>
+    <svg viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:800px;">
+      <!-- PC1 -->
+      <rect x="50" y="300" width="100" height="70" rx="6" fill="#090d1a" stroke="#374060" stroke-width="1"/>
+      <text x="100" y="330" text-anchor="middle" fill="#6b7a9a" font-size="12" font-family="Share Tech Mono">PC1</text>
+      <text x="100" y="350" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">192.168.10.10/24</text>
+      <text x="100" y="365" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">GW: 192.168.10.1</text>
+      
+      <!-- Switch -->
+      <rect x="200" y="280" width="120" height="100" rx="8" fill="#0d1220" stroke="#00d4aa" stroke-width="2"/>
+      <text x="260" y="310" text-anchor="middle" fill="#00d4aa" font-size="14" font-family="Orbitron" font-weight="700">SW-ACCESS</text>
+      <text x="260" y="335" text-anchor="middle" fill="#6b7a9a" font-size="10" font-family="Share Tech Mono">VLAN 10: 192.168.10.2</text>
+      <text x="260" y="355" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">Fa0/1: PC1</text>
+      <text x="260" y="370" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">Gi0/1: Trunk to R1</text>
+      
+      <!-- Router -->
+      <rect x="400" y="260" width="140" height="140" rx="8" fill="#0d1220" stroke="#38bdf8" stroke-width="2"/>
+      <text x="470" y="295" text-anchor="middle" fill="#38bdf8" font-size="16" font-family="Orbitron" font-weight="700">R1-HQ</text>
+      <text x="470" y="320" text-anchor="middle" fill="#6b7a9a" font-size="10" font-family="Share Tech Mono">Gi0/0: 192.168.10.1/24</text>
+      <text x="470" y="340" text-anchor="middle" fill="#6b7a9a" font-size="10" font-family="Share Tech Mono">Gi0/1: 10.0.0.1/30 (WAN)</text>
+      <text x="470" y="360" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">SSH enabled</text>
+      <text x="470" y="375" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">OSPF Area 0</text>
+      
+      <!-- Cloud/ISP -->
+      <ellipse cx="650" cy="330" rx="80" ry="50" fill="#0d1220" stroke="#a78bfa" stroke-width="2" stroke-dasharray="5,3"/>
+      <text x="650" y="325" text-anchor="middle" fill="#a78bfa" font-size="12" font-family="Orbitron">INTERNET</text>
+      <text x="650" y="345" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">10.0.0.2/30</text>
+      
+      <!-- Connections -->
+      <line x1="150" y1="335" x2="200" y2="330" stroke="#374060" stroke-width="2"/>
+      <line x1="320" y1="330" x2="400" y2="330" stroke="#00d4aa" stroke-width="2"/>
+      <line x1="540" y1="330" x2="570" y2="330" stroke="#38bdf8" stroke-width="2"/>
+      
+      <!-- Labels -->
+      <text x="175" y="325" fill="#4a5780" font-size="8" font-family="Share Tech Mono">VLAN 10</text>
+      <text x="360" y="325" fill="#00d4aa" font-size="8" font-family="Share Tech Mono">Trunk</text>
+      <text x="555" y="325" fill="#38bdf8" font-size="8" font-family="Share Tech Mono">WAN</text>
+    </svg>
+  </div>
+
+  <h3 class="sub-title">Objetivos del laboratorio</h3>
+  <ul>
+    <li>Configurar router R1 con hostname, interfaces, SSH y OSPF</li>
+    <li>Configurar switch SW-ACCESS con VLANs, trunk y port security</li>
+    <li>Establecer conectividad completa PC1 → Internet</li>
+    <li>Verificar con show commands y guardar configuración</li>
+  </ul>
+
+  <div class="lab-steps">
+    <div class="lab-step">
+      <div class="lab-step-num">Parte 1</div>
+      <div class="lab-step-title">Configuración inicial de Router R1</div>
+      <div class="code-block" style="margin-top:8px;">
+        <pre><code><span class="cmd-comment">! === CONFIGURACIÓN BÁSICA ===</span>
+Router> enable
+Router# configure terminal
+Router(config)# hostname R1-HQ
+
+<span class="cmd-comment">! Seguridad básica</span>
+R1-HQ(config)# enable secret CiscoLab2024!
+R1-HQ(config)# service password-encryption
+R1-HQ(config)# banner motd #
+ACCESO AUTORIZADO UNICAMENTE
+#
+
+<span class="cmd-comment">! === CONFIGURACIÓN DE INTERFACES ===</span>
+
+<span class="cmd-comment">! Interfaz LAN (hacia switch)</span>
+R1-HQ(config)# interface GigabitEthernet0/0
+R1-HQ(config-if)# description LAN-TO-SW-ACCESS
+R1-HQ(config-if)# ip address 192.168.10.1 255.255.255.0
+R1-HQ(config-if)# no shutdown
+R1-HQ(config-if)# exit
+
+<span class="cmd-comment">! Interfaz WAN (hacia ISP/Internet)</span>
+R1-HQ(config)# interface GigabitEthernet0/1
+R1-HQ(config-if)# description WAN-TO-ISP
+R1-HQ(config-if)# ip address 10.0.0.1 255.255.255.252
+R1-HQ(config-if)# no shutdown
+R1-HQ(config-if)# exit
+
+<span class="cmd-comment">! === CONFIGURACIÓN SSH ===</span>
+R1-HQ(config)# ip domain-name lab.local
+R1-HQ(config)# crypto key generate rsa modulus 2048
+R1-HQ(config)# username admin privilege 15 secret Admin1234!
+R1-HQ(config)# ip ssh version 2
+
+R1-HQ(config)# line vty 0 4
+R1-HQ(config-line)# login local
+R1-HQ(config-line)# transport input ssh
+R1-HQ(config-line)# exit
+
+<span class="cmd-comment">! === CONFIGURACIÓN DE ROUTING (OSPF) ===</span>
+R1-HQ(config)# router ospf 1
+R1-HQ(config-router)# router-id 1.1.1.1
+R1-HQ(config-router)# network 192.168.10.0 0.0.0.255 area 0
+R1-HQ(config-router)# network 10.0.0.0 0.0.0.3 area 0
+R1-HQ(config-router)# passive-interface GigabitEthernet0/0
+R1-HQ(config-router)# exit
+
+<span class="cmd-comment">! Ruta por defecto hacia Internet</span>
+R1-HQ(config)# ip route 0.0.0.0 0.0.0.0 10.0.0.2
+R1-HQ(config)# router ospf 1
+R1-HQ(config-router)# default-information originate
+R1-HQ(config-router)# end
+
+<span class="cmd-comment">! === VERIFICACIÓN Y GUARDADO ===</span>
+R1-HQ# show ip interface brief
+R1-HQ# show ip route
+R1-HQ# show ip ospf neighbor
+R1-HQ# copy running-config startup-config</code></pre>
+      </div>
+    </div>
+
+    <div class="lab-step">
+      <div class="lab-step-num">Parte 2</div>
+      <div class="lab-step-title">Configuración de Switch SW-ACCESS</div>
+      <div class="code-block" style="margin-top:8px;">
+        <pre><code><span class="cmd-comment">! === CONFIGURACIÓN BÁSICA ===</span>
+Switch> enable
+Switch# configure terminal
+Switch(config)# hostname SW-ACCESS
+
+SW-ACCESS(config)# enable secret CiscoLab2024!
+SW-ACCESS(config)# service password-encryption
+
+<span class="cmd-comment">! === VLANs Y SVI ===</span>
+SW-ACCESS(config)# vlan 10
+SW-ACCESS(config-vlan)# name USUARIOS-LAN
+SW-ACCESS(config-vlan)# exit
+
+SW-ACCESS(config)# vlan 99
+SW-ACCESS(config-vlan)# name MANAGEMENT
+SW-ACCESS(config-vlan)# exit
+
+<span class="cmd-comment">! Interfaz virtual para management</span>
+SW-ACCESS(config)# interface Vlan99
+SW-ACCESS(config-if)# ip address 192.168.10.2 255.255.255.0
+SW-ACCESS(config-if)# no shutdown
+SW-ACCESS(config-if)# exit
+
+<span class="cmd-comment">! Gateway por defecto (para que responda fuera de su subnet)</span>
+SW-ACCESS(config)# ip default-gateway 192.168.10.1
+
+<span class="cmd-comment">! === PUERTO DE ACCESO (PC1) ===</span>
+SW-ACCESS(config)# interface FastEthernet0/1
+SW-ACCESS(config-if)# description PC1-CONTABILIDAD
+SW-ACCESS(config-if)# switchport mode access
+SW-ACCESS(config-if)# switchport access vlan 10
+
+<span class="cmd-comment">! Port Security</span>
+SW-ACCESS(config-if)# switchport port-security
+SW-ACCESS(config-if)# switchport port-security mac-address sticky
+SW-ACCESS(config-if)# switchport port-security violation restrict
+SW-ACCESS(config-if)# spanning-tree portfast
+SW-ACCESS(config-if)# no shutdown
+SW-ACCESS(config-if)# exit
+
+<span class="cmd-comment">! === PUERTO TRUNK (hacia R1) ===</span>
+SW-ACCESS(config)# interface GigabitEthernet0/1
+SW-ACCESS(config-if)# description TRUNK-TO-R1-HQ
+SW-ACCESS(config-if)# switchport mode trunk
+SW-ACCESS(config-if)# switchport trunk native vlan 99
+SW-ACCESS(config-if)# switchport trunk allowed vlan 10,99
+SW-ACCESS(config-if)# no shutdown
+SW-ACCESS(config-if)# exit
+
+<span class="cmd-comment">! === SSH EN SWITCH ===</span>
+SW-ACCESS(config)# ip domain-name lab.local
+SW-ACCESS(config)# crypto key generate rsa modulus 2048
+SW-ACCESS(config)# username admin privilege 15 secret Admin1234!
+SW-ACCESS(config)# ip ssh version 2
+
+SW-ACCESS(config)# line vty 0 15
+SW-ACCESS(config-line)# login local
+SW-ACCESS(config-line)# transport input ssh
+SW-ACCESS(config-line)# exit
+
+<span class="cmd-comment">! === VERIFICACIÓN ===</span>
+SW-ACCESS# show vlan brief
+SW-ACCESS# show interfaces trunk
+SW-ACCESS# show port-security interface fa0/1
+SW-ACCESS# show ip interface brief
+SW-ACCESS# copy running-config startup-config</code></pre>
+      </div>
+    </div>
+
+    <div class="lab-step">
+      <div class="lab-step-num">Parte 3</div>
+      <div class="lab-step-title">Verificación de conectividad</div>
+      <div class="code-block" style="margin-top:8px;">
+        <pre><code><span class="cmd-comment">! === DESDE PC1 (simulado) ===</span>
+PC> ipconfig
+<span class="cmd-output">IP Address......................: 192.168.10.10
+Subnet Mask.....................: 255.255.255.0
+Default Gateway.................: 192.168.10.1</span>
+
+PC> ping 192.168.10.1           <span class="cmd-comment">! Gateway (R1)</span>
+PC> ping 192.168.10.2           <span class="cmd-comment">! Switch SVI</span>
+PC> ping 10.0.0.2                <span class="cmd-comment">! ISP (si está configurado)</span>
+
+<span class="cmd-comment">! === DESDE R1-HQ ===</span>
+R1-HQ# ping 192.168.10.10       <span class="cmd-comment">! PC1</span>
+R1-HQ# ping 192.168.10.2        <span class="cmd-comment">! Switch</span>
+R1-HQ# traceroute 8.8.8.8         <span class="cmd-comment">! Path hacia Internet</span>
+
+<span class="cmd-comment">! === VERIFICACIÓN SSH ===</span>
+<span class="cmd-comment">! Desde PC1, probar SSH al switch:</span>
+PC> ssh -l admin 192.168.10.2
+
+<span class="cmd-comment">! === COMANDOS FINALES DE VERIFICACIÓN ===</span>
+R1-HQ# show running-config | section include interface|ip address
+R1-HQ# show ip protocols
+R1-HQ# show ip ospf database
+R1-HQ# show cdp neighbors
+
+SW-ACCESS# show mac address-table
+SW-ACCESS# show spanning-tree vlan 10</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">✅ Checklist de éxito del laboratorio</div>
+    <ul>
+      <li>✓ PC1 puede hacer ping a su gateway (192.168.10.1)</li>
+      <li>✓ PC1 puede hacer ping al switch (192.168.10.2)</li>
+      <li>✓ SSH funciona desde PC1 al switch (ssh -l admin 192.168.10.2)</li>
+      <li>✓ R1 muestra adyacencia OSPF (show ip ospf neighbor)</li>
+      <li>✓ R1 tiene ruta por defecto (show ip route | include 0.0.0.0)</li>
+      <li>✓ Configuración guardada en startup-config en ambos dispositivos</li>
+    </ul>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 8 — TABLA DE REFERENCIA
+══════════════════════════════════════════════ -->
+<div id="tab-tabla" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Tabla de Referencia Rápida — Comandos CCNA</h2>
+  <div id="refTableCmd"></div>
+
+  <h2 class="section-title" style="margin-top:32px;">Comandos por tema de examen CCNA 200-301</h2>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead><tr><th>Tema del examen</th><th>Comandos clave</th><th>Frecuencia</th></tr></thead>
+      <tbody>
+        <tr><td><strong>1.4 Configuración inicial</strong></td><td>enable, configure terminal, hostname, no shutdown</td><td>⭐⭐⭐⭐⭐</td></tr>
+        <tr><td><strong>2.5 Verificación</strong></td><td>show ip interface brief, show running-config, show version</td><td>⭐⭐⭐⭐⭐</td></tr>
+        <tr><td><strong>3.1 IPv4/IPv6</strong></td><td>ip address, ipv6 address, show ip route</td><td>⭐⭐⭐⭐⭐</td></tr>
+        <tr><td><strong>3.2 Routing estático</strong></td><td>ip route, show ip route static</td><td>⭐⭐⭐⭐</td></tr>
+        <tr><td><strong>3.3 OSPFv2</strong></td><td>router ospf, network, show ip ospf neighbor</td><td>⭐⭐⭐⭐⭐</td></tr>
+        <tr><td><strong>4.1 Switching L2</strong></td><td>vlan, switchport mode, show vlan brief</td><td>⭐⭐⭐⭐⭐</td></tr>
+        <tr><td><strong>4.2 STP</strong></td><td>spanning-tree portfast, show spanning-tree</td><td>⭐⭐⭐⭐</td></tr>
+        <tr><td><strong>4.4 EtherChannel</strong></td><td>channel-group, show etherchannel summary</td><td>⭐⭐⭐</td></tr>
+        <tr><td><strong>5.1 DHCP</strong></td><td>ip dhcp pool, network, default-router</td><td>⭐⭐⭐⭐</td></tr>
+        <tr><td><strong>5.2 NAT</strong></td><td>ip nat inside/outside, ip nat pool, show ip nat translations</td><td>⭐⭐⭐⭐</td></tr>
+        <tr><td><strong>6.1 ACLs</strong></td><td>access-list, ip access-group, show access-lists</td><td>⭐⭐⭐⭐⭐</td></tr>
+        <tr><td><strong>6.2 Seguridad L2</strong></td><td>switchport port-security, show port-security</td><td>⭐⭐⭐⭐</td></tr>
+        <tr><td><strong>6.3 AAA/SSH</strong></td><td>username, crypto key generate rsa, ip ssh version 2</td><td>⭐⭐⭐⭐</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 9 — QUIZ
+══════════════════════════════════════════════ -->
+<div id="tab-quiz" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Quiz — Comandos de Configuración Básica</h2>
+  <div id="quizContainerCmd"></div>
+</div>
+</div>
+
+<footer class="footer">
+  <p> WDS-CCNA Portal · Comandos de Configuración Básica · M2.5</p>
+  <p style="margin-top:.3rem">Basado en <em>CCNA 200-301 Official Cert Guide</em> (Wendell Odom) · Cisco IOS 15.x/16.x</p>
+  <p style="margin-top:.4rem"><a href="../index.html">← Volver al índice</a></p>
+</footer>
+
+<style>
+.class-hero { background: linear-gradient(135deg, #06080f 0%, #0d1220 60%, #101830 100%); padding: 56px 24px 48px; border-bottom: 1px solid rgba(0,212,170,0.12); position: relative; overflow: hidden; }
+.class-hero::before { content:''; position:absolute; top:-60px; right:-80px; width:400px; height:400px; border-radius:50%; background:radial-gradient(circle, rgba(56,189,248,0.06) 0%, transparent 70%); }
+.class-hero-inner { max-width: 900px; margin: 0 auto; position: relative; z-index: 1; }
+.class-badge { font-family:'Share Tech Mono',monospace; font-size:0.65rem; color:#38bdf8; letter-spacing:3px; text-transform:uppercase; margin-bottom:14px; }
+.class-title { font-family:'Orbitron',sans-serif; font-size:clamp(1.8rem,4vw,2.8rem); font-weight:900; letter-spacing:3px; color:#c2d0e8; line-height:1.1; margin-bottom:12px; }
+.class-title-accent { background:linear-gradient(135deg,#38bdf8,#a78bfa); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; display:block; font-size:0.65em; margin-top:4px; letter-spacing:2px; }
+.class-subtitle { font-size:1rem; color:#6b7a9a; line-height:1.7; margin-bottom:20px; max-width:720px; }
+.class-meta { display:flex; gap:16px; flex-wrap:wrap; }
+.meta-item { font-family:'Share Tech Mono',monospace; font-size:0.72rem; color:#374060; padding:4px 10px; border:1px solid rgba(56,189,248,0.1); border-radius:4px; }
+.tabs-wrap { max-width: 1100px; margin: 0 auto; padding: 0 16px 40px; }
+.tabs-bar { display:flex; gap:4px; padding:20px 0 0; flex-wrap:wrap; border-bottom:1px solid rgba(0,212,170,0.1); }
+.tab-btn { padding:8px 14px; border-radius:8px 8px 0 0; font-family:'Share Tech Mono',monospace; font-size:0.72rem; color:#4a5780; background:none; border:1px solid transparent; cursor:pointer; transition:all 0.18s; white-space:nowrap; border-bottom:none; }
+.tab-btn:hover { color:#c2d0e8; background:rgba(0,212,170,0.05); }
+.tab-btn.active { color:#38bdf8; background:#0d1220; border-color:rgba(56,189,248,0.2); border-bottom:1px solid #0d1220; }
+.tab-content { display:none; background:#0d1220; border:1px solid rgba(0,212,170,0.1); border-top:none; border-radius:0 0 12px 12px; padding:32px; }
+.tab-content.active { display:block; }
+.content-block { max-width: 860px; }
+.section-title { font-family:'Orbitron',sans-serif; font-size:1rem; color:#38bdf8; letter-spacing:2px; margin:28px 0 14px; padding-bottom:8px; border-bottom:1px solid rgba(56,189,248,0.12); }
+.section-title:first-child { margin-top:0; }
+.sub-title { font-family:'Share Tech Mono',monospace; font-size:0.85rem; color:#00d4aa; margin:24px 0 10px; }
+p { color:#8294b8; line-height:1.75; margin-bottom:14px; font-size:0.9rem; }
+ul, ol { color:#8294b8; padding-left:1.4rem; margin-bottom:14px; font-size:0.9rem; }
+li { margin-bottom:5px; line-height:1.65; }
+strong { color:#c2d0e8; }
+code { font-family:'Share Tech Mono',monospace; font-size:0.82rem; background:rgba(56,189,248,0.08); color:#38bdf8; padding:1px 6px; border-radius:4px; border:1px solid rgba(56,189,248,0.15); }
+.info-box { border-radius:8px; padding:14px 18px; margin:18px 0; border-left:3px solid; }
+.info-box.tip { background:rgba(0,212,170,0.05); border-color:#00d4aa; }
+.info-box.warning { background:rgba(251,191,36,0.05); border-color:#fbbf24; }
+.info-box-title { font-family:'Share Tech Mono',monospace; font-size:0.75rem; color:#00d4aa; margin-bottom:8px; }
+.info-box.warning .info-box-title { color:#fbbf24; }
+.diagram-box { background:#050810; border:1px solid rgba(56,189,248,0.12); border-radius:10px; padding:20px; margin:18px 0; }
+.diagram-title { font-family:'Share Tech Mono',monospace; font-size:0.68rem; color:#4a5780; letter-spacing:2px; text-transform:uppercase; margin-bottom:14px; }
+.table-wrap { overflow-x:auto; margin:16px 0; }
+.ref-table { width:100%; border-collapse:collapse; font-size:0.82rem; }
+.ref-table th { background:#090d1a; color:#38bdf8; font-family:'Share Tech Mono',monospace; font-size:0.7rem; padding:10px 12px; text-align:left; border:1px solid rgba(56,189,248,0.1); letter-spacing:1px; }
+.ref-table td { padding:9px 12px; border:1px solid rgba(255,255,255,0.04); color:#8294b8; }
+.ref-table tr:hover td { background:rgba(56,189,248,0.03); }
+.code-block { background:#050810; border:1px solid rgba(56,189,248,0.12); border-left:3px solid #38bdf8; border-radius:8px; padding:0; margin:16px 0; overflow:hidden; }
+.code-label { background:rgba(56,189,248,0.06); padding:8px 16px; font-family:'Share Tech Mono',monospace; font-size:0.65rem; color:#4a5780; letter-spacing:2px; text-transform:uppercase; border-bottom:1px solid rgba(56,189,248,0.08); }
+.code-block pre { margin:0; padding:16px; overflow-x:auto; }
+.code-block code { background:none; border:none; padding:0; color:#a8b4c8; font-size:0.8rem; line-height:1.7; display:block; }
+.cmd-comment { color:#374060; font-style:italic; }
+.cmd-output  { color:#6b7a9a; }
+.concept-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:12px; margin:16px 0; }
+.concept-card { background:#090d1a; border:1px solid rgba(56,189,248,0.1); border-radius:10px; padding:16px; }
+.concept-card.highlight { border-color:rgba(0,212,170,0.3); background:linear-gradient(135deg,rgba(0,212,170,0.05),rgba(56,189,248,0.03)); }
+.concept-icon { font-size:1.8rem; margin-bottom:8px; }
+.concept-card h3 { font-family:'Share Tech Mono',monospace; font-size:0.78rem; color:#38bdf8; margin-bottom:8px; }
+.concept-card p { font-size:0.8rem; margin:0 0 8px; }
+.concept-card code { font-size:0.75rem; display:block; margin-top:8px; padding:8px; background:rgba(0,0,0,0.2); }
+.process-steps { display:flex; flex-direction:column; gap:12px; margin:16px 0; }
+.process-step { display:flex; gap:16px; align-items:flex-start; background:#090d1a; border:1px solid rgba(56,189,248,0.08); border-radius:10px; padding:16px; }
+.step-num { width:50px; height:36px; border-radius:8px; background:rgba(56,189,248,0.1); border:1px solid rgba(56,189,248,0.2); display:flex; align-items:center; justify-content:center; font-family:'Share Tech Mono',monospace; font-size:0.68rem; color:#38bdf8; font-weight:700; flex-shrink:0; }
+.step-content { flex:1; }
+.step-title { font-family:'Share Tech Mono',monospace; font-size:0.82rem; color:#c2d0e8; margin-bottom:6px; }
+.attack-diagram { background:#0a0810; border:1px solid rgba(248,113,113,0.15); border-radius:10px; padding:16px; margin:16px 0; }
+.attack-steps { display:flex; flex-direction:column; gap:8px; margin-top:10px; }
+.attack-step { display:flex; gap:12px; align-items:flex-start; }
+.attack-num { width:24px; height:24px; border-radius:50%; background:rgba(248,113,113,0.2); border:1px solid #f87171; display:flex; align-items:center; justify-content:center; font-family:'Share Tech Mono',monospace; font-size:0.7rem; color:#f87171; flex-shrink:0; }
+.lab-topology { background:#050810; border:1px solid rgba(56,189,248,0.1); border-radius:10px; padding:16px; margin:16px 0; }
+.lab-steps { display:flex; flex-direction:column; gap:16px; margin:16px 0; }
+.lab-step { background:#090d1a; border:1px solid rgba(56,189,248,0.08); border-radius:10px; padding:16px; }
+.lab-step-num { font-family:'Share Tech Mono',monospace; font-size:0.6rem; color:#38bdf8; letter-spacing:2px; text-transform:uppercase; margin-bottom:4px; }
+.lab-step-title { font-family:'Orbitron',sans-serif; font-size:0.8rem; color:#c2d0e8; margin-bottom:8px; }
+.quiz-question { background:#090d1a; border:1px solid rgba(56,189,248,0.1); border-radius:10px; padding:20px; margin-bottom:16px; }
+.quiz-q-num { font-family:'Share Tech Mono',monospace; font-size:0.62rem; color:#4a5780; margin-bottom:8px; }
+.quiz-q-text { font-size:0.9rem; color:#c2d0e8; margin-bottom:14px; line-height:1.6; }
+.quiz-opts { display:flex; flex-direction:column; gap:7px; }
+.quiz-opt { padding:9px 14px; border-radius:7px; border:1px solid rgba(56,189,248,0.1); background:#0d1220; color:#6b7a9a; cursor:pointer; font-size:0.85rem; text-align:left; transition:all 0.15s; }
+.quiz-opt:hover:not(:disabled) { border-color:rgba(56,189,248,0.3); color:#c2d0e8; }
+.quiz-opt.correct { border-color:#34d399; background:rgba(52,211,153,0.08); color:#34d399; }
+.quiz-opt.wrong   { border-color:#f87171; background:rgba(248,113,113,0.08); color:#f87171; }
+.quiz-explanation { margin-top:10px; padding:10px 14px; background:rgba(167,139,250,0.06); border-left:3px solid #a78bfa; border-radius:6px; font-size:0.82rem; color:#a0aec0; line-height:1.6; }
+.footer { border-top:1px solid rgba(0,212,170,0.1); background:#090d1a; padding:32px 24px; text-align:center; margin-top:40px; }
+.footer p { color:#374060; font-size:0.75rem; margin:0; }
+.footer a { color:#4a5780; text-decoration:none; }
+.footer a:hover { color:#00d4aa; }
+@media(max-width:680px) { .tab-btn{font-size:0.65rem;padding:6px 10px;} .tab-content{padding:20px 14px;} .concept-grid{grid-template-columns:1fr;} }
+</style>
+
+<script>
+/* -----------------------------------------------------------------
+   NAMESPACE CmdCisco - Protege el código contra sobreescritura por main.js
+----------------------------------------------------------------- */
+var CmdCisco = (function() {
+  
+  function showTabCmd(id, btn) {
+    document.querySelectorAll('.tab-content').forEach(function(t) { t.classList.remove('active'); });
+    document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+    var target = document.getElementById('tab-' + id);
+    if (target) target.classList.add('active');
+    if (btn) btn.classList.add('active');
+    
+    if (id === 'quiz') {
+      initQuiz();
+    }
+    if (id === 'tabla') {
+      buildRefTable();
+    }
+  }
+
+  function buildRefTable() {
+    const data = [
+      ['enable', 'User EXEC → Privileged EXEC', 'Eleva privilegios al modo #'],
+      ['disable', 'Privileged EXEC → User EXEC', 'Reduce privilegios al modo >'],
+      ['configure terminal', 'Privileged EXEC → Global Config', 'Entra a modo configuración (conf t)'],
+      ['exit', 'Cualquier submodo → Modo anterior', 'Sube un nivel en la jerarquía'],
+      ['end', 'Cualquier modo config → Privileged EXEC', 'Sale rápido al modo # (Ctrl+Z)'],
+      ['hostname [nombre]', 'Global Config', 'Establece nombre del dispositivo'],
+      ['interface [tipo]', 'Global Config → Interface Config', 'Accede a configuración de interfaz'],
+      ['ip address [ip] [mask]', 'Interface Config', 'Asigna dirección IP a interfaz'],
+      ['no shutdown', 'Interface Config', 'Activa interfaz (administratively up)'],
+      ['description [texto]', 'Interface Config', 'Agrega descripción a interfaz'],
+      ['copy run start', 'Privileged EXEC', 'Guarda configuración activa a NVRAM'],
+      ['write memory', 'Privileged EXEC', 'Alias de copy run start (wr)'],
+      ['erase startup-config', 'Privileged EXEC', 'Elimina configuración de inicio ⚠️'],
+      ['show running-config', 'Privileged EXEC', 'Muestra configuración activa en RAM'],
+      ['show startup-config', 'Privileged EXEC', 'Muestra configuración guardada en NVRAM'],
+      ['show ip interface brief', 'Privileged EXEC', 'Resumen de interfaces IP (sh ip int b)'],
+      ['show interfaces', 'Privileged EXEC', 'Estado detallado de todas las interfaces'],
+      ['show ip route', 'Privileged EXEC', 'Tabla de routing completa'],
+      ['show version', 'Privileged EXEC', 'Información del sistema IOS y hardware'],
+      ['show flash:', 'Privileged EXEC', 'Contenido de memoria flash'],
+      ['reload', 'Privileged EXEC', 'Reinicia el dispositivo'],
+      ['ip default-gateway [ip]', 'Global Config (switch)', 'Gateway para switch L2'],
+      ['enable secret [pass]', 'Global Config', 'Contraseña enable encriptada (segura)'],
+      ['enable password [pass]', 'Global Config', 'Contraseña enable texto plano (insegura)'],
+      ['service password-encryption', 'Global Config', 'Encripta passwords en texto plano'],
+      ['line console 0', 'Global Config → Line Config', 'Configura puerto de consola'],
+      ['line vty 0 4', 'Global Config → Line Config', 'Configura líneas virtuales (Telnet/SSH)'],
+      ['password [pass]', 'Line Config', 'Establece contraseña de línea'],
+      ['login', 'Line Config', 'Exige login con contraseña'],
+      ['transport input ssh', 'Line Config', 'Restringe acceso solo SSH'],
+      ['username [user] privilege 15 secret [pass]', 'Global Config', 'Crea usuario local con privilegio máximo'],
+      ['crypto key generate rsa', 'Global Config', 'Genera claves RSA para SSH'],
+      ['ip domain-name [name]', 'Global Config', 'Requerido para generar claves RSA'],
+      ['ip ssh version 2', 'Global Config', 'Fuerza SSH versión 2 (más segura)'],
+      ['banner motd #', 'Global Config', 'Mensaje antes del login'],
+      ['switchport mode access', 'Interface Config (switch)', 'Configura puerto de acceso'],
+      ['switchport access vlan [id]', 'Interface Config (switch)', 'Asigna VLAN al puerto'],
+      ['switchport mode trunk', 'Interface Config (switch)', 'Configura puerto trunk'],
+      ['switchport port-security', 'Interface Config (switch)', 'Habilita seguridad de puerto'],
+      ['vlan [id]', 'Global Config (switch)', 'Crea nueva VLAN'],
+      ['interface vlan [id]', 'Global Config → SVI', 'Crea interfaz virtual de VLAN'],
+    ];
+    const headers = ['Comando', 'Contexto/Modo', 'Descripción/Función'];
+    var html = '<div class="table-wrap"><table class="ref-table"><thead><tr>';
+    for (var i = 0; i < headers.length; i++) {
+      html += '<th>' + headers[i] + '</th>';
+    }
+    html += '</tr></thead><tbody>';
+    for (var i = 0; i < data.length; i++) {
+      html += '<tr>';
+      for (var j = 0; j < data[i].length; j++) {
+        html += '<td>' + data[i][j] + '</td>';
+      }
+      html += '</tr>';
+    }
+    html += '</tbody></table></div>';
+    var refDiv = document.getElementById('refTableCmd');
+    if (refDiv) refDiv.innerHTML = html;
+  }
+
+  function initQuiz() {
+    const questions = [
+      {
+        q: '¿Cuál es el prompt del modo User EXEC en Cisco IOS?',
+        opts: ['Router#','Router>','Router(config)#','Router(config-if)#'],
+        ans: 1,
+        exp: 'El modo User EXEC (nivel básico) se identifica por el prompt "Router>" con el símbolo mayor que (>). El símbolo numeral (#) indica modo Privileged EXEC. (config)# es modo configuración global y (config-if)# es configuración de interfaz.'
+      },
+      {
+        q: 'Un administrador ejecuta "configure terminal" y el prompt cambia a "Router(config)#". ¿En qué modo se encuentra ahora?',
+        opts: ['User EXEC','Privileged EXEC','Global Configuration','Interface Configuration'],
+        ans: 2,
+        exp: 'El prompt (config)# indica Global Configuration Mode (modo de configuración global). Aquí se realizan cambios que afectan todo el dispositivo. Para entrar a configuración de interfaz específica, usaría "interface" desde este modo.'
+      },
+      {
+        q: '¿Qué comando se requiere para activar una interfaz de router que está administratively down?',
+        opts: ['interface up','no shutdown','enable','activate'],
+        ans: 1,
+        exp: '"no shutdown" (abreviado "no shut") es el comando que activa una interfaz. Por defecto, las interfaces de router están administratively down. Las interfaces de switch están up por defecto al conectar cable. "no" invierte el comando (shutdown → no shutdown).'
+      },
+      {
+        q: 'Después de configurar un router, ¿qué comando guarda la configuración permanentemente?',
+        opts: ['save config','write memory','store permanent','commit'],
+        ans: 1,
+        exp: '"write memory" (abreviado "wr") o "copy running-config startup-config" (abreviado "copy run start") guardan la configuración activa (RAM) en la configuración de inicio (NVRAM). Si no se ejecuta, TODO se pierde al reiniciar.'
+      },
+      {
+        q: '¿Cuál es la diferencia crítica entre "enable password" y "enable secret"?',
+        opts: ['enable password es más largo','enable secret usa encriptación MD5 irreversible','enable secret solo funciona en modo SSH','No hay diferencia, son sinónimos'],
+        ans: 1,
+        exp: '"enable secret" almacena la contraseña con hash MD5 irreversible en la configuración. "enable password" se almacena en texto plano (o cifrado débil con service password-encryption). Si ambos existen, "enable secret" tiene prioridad. Nunca uses "enable password" en producción.'
+      },
+      {
+        q: 'Un switch muestra en "show ip interface brief" que VLAN 1 está "up/down". ¿Qué significa?',
+        opts: ['La VLAN 1 está eliminada','La SVI está administratively up pero no hay puertos activos en esa VLAN','El switch tiene un error de hardware','La VLAN 1 está bloqueada por seguridad'],
+        ans: 1,
+        exp: 'En una SVI (Switch Virtual Interface como interface Vlan1), "up/down" significa que la interfaz está administratively habilitada (no shutdown) pero no hay puertos físicos en esa VLAN en estado up/up. La SVI requiere al menos un puerto activo en la VLAN para que el protocolo (capa 2) esté up.'
+      },
+      {
+        q: '¿Qué tres elementos son obligatorios para habilitar SSH v2 en un router Cisco?',
+        opts: ['Hostname, domain-name, y claves RSA','Solo una contraseña enable','Solo un usuario local','NTP y DNS configurados'],
+        ans: 0,
+        exp: 'Para SSH se requiere: 1) Hostname diferente de "Router", 2) ip domain-name configurado (para generar el FQDN de la clave), y 3) crypto key generate rsa (para crear el par de claves). Sin domain-name, el comando RSA falla. Además se necesita usuario local y VTY configurados.'
+      },
+      {
+        q: '¿Qué comando muestra SOLO las líneas de configuración que contienen "ip address"?',
+        opts: ['show ip address','show running-config | include ip address','show running-config | begin ip address','show configuration filter ip address'],
+        ans: 1,
+        exp: 'El pipe (|) con "include" filtra la salida para mostrar solo líneas que contienen el texto especificado. "begin" muestra desde la primera coincidencia en adelante. "section" muestra toda la sección. Estos filtros son críticos para troubleshooting rápido en exámenes y producción.'
+      },
+      {
+        q: '¿Qué peligro representa ejecutar "copy startup-config running-config"?',
+        opts: ['Borra la startup-config','Fusiona configuraciones, potencialmente dejando comandos obsoletos','Reinicia el router inmediatamente','Elimina todas las interfaces'],
+        ans: 1,
+        exp: '"copy startup-config running-config" FUSIONA la startup con la running, NO reemplaza completamente. Esto puede dejar comandos obsoletos de sesiones anteriores que causen problemas. Para recuperar configuración, el método seguro es reload o configure replace. Este comando es una trampa común en exámenes.'
+      },
+      {
+        q: 'En un switch, ¿dónde se almacenan las VLANs creadas?',
+        opts: ['En running-config únicamente','En startup-config únicamente','En flash:vlan.dat separado de la configuración','En NVRAM mezclado con la configuración'],
+        ans: 2,
+        exp: 'Las VLANs en switches Cisco se guardan en el archivo flash:vlan.dat, SEPARADO de startup-config. Por eso "erase startup-config" NO elimina las VLANs. Para resetear VLANs se debe usar "delete flash:vlan.dat". Esto es una pregunta clásica del examen CCNA.'
+      },
+      {
+        q: '¿Qué comando verifica la tabla de routing mostrando todas las redes conocidas y su origen?',
+        opts: ['show interfaces','show ip route','show ip protocols','show running-config'],
+        ans: 1,
+        exp: '"show ip route" muestra la tabla de routing completa con códigos (C=connected, S=static, R=RIP, O=OSPF, etc.), next-hop, métricas e interfaces de salida. Es el comando fundamental para verificar conectividad de capa 3 y troubleshooting de routing.'
+      },
+      {
+        q: 'Un administrador ejecuta "erase startup-config" y luego "reload". ¿Qué sucede?',
+        opts: ['El router arranca normalmente','El router entra en modo setup o arranca vacío','El router carga la última configuración automáticamente','El router muestra un error y no arranca'],
+        ans: 1,
+        exp: 'Sin startup-config, el router arranca en modo setup (System Configuration Dialog) o con configuración de fábrica mínima. Esto es el método para "factory reset" un dispositivo Cisco. Útil para recuperación de contraseñas o preparar dispositivos para reubicación.'
+      }
+    ];
+
+    var container = document.getElementById('quizContainerCmd');
+    if (!container) return;
+    
+    if (container.innerHTML.trim() !== '') return;
+    
+    var html = '';
+    for (var i = 0; i < questions.length; i++) {
+      var q = questions[i];
+      var optsHtml = '';
+      for (var j = 0; j < q.opts.length; j++) {
+        optsHtml += '<button class="quiz-opt" data-qi="' + i + '" data-sel="' + j + '" data-ans="' + q.ans + '">' + q.opts[j] + '</button>';
+      }
+      html += '<div class="quiz-question" id="qqc' + i + '">' +
+        '<div class="quiz-q-num">PREGUNTA ' + (i+1) + ' DE ' + questions.length + '</div>' +
+        '<div class="quiz-q-text">' + q.q + '</div>' +
+        '<div class="quiz-opts">' + optsHtml + '</div>' +
+        '</div>';
+    }
+    container.innerHTML = html;
+
+    window._cmdExp = {};
+    for (var i = 0; i < questions.length; i++) { 
+      window._cmdExp[i] = questions[i].exp; 
+    }
+
+    var buttons = container.querySelectorAll('.quiz-opt');
+    for (var k = 0; k < buttons.length; k++) {
+      buttons[k].addEventListener('click', function() {
+        var qi  = parseInt(this.getAttribute('data-qi'), 10);
+        var sel = parseInt(this.getAttribute('data-sel'), 10);
+        var ans = parseInt(this.getAttribute('data-ans'), 10);
+        answerQC(qi, sel, ans, window._cmdExp[qi]);
+      });
+    }
+  }
+
+  function answerQC(qi, sel, correct, exp) {
+    var qDiv = document.getElementById('qqc' + qi);
+    var btns = qDiv.querySelectorAll('.quiz-opt');
+    for (var i = 0; i < btns.length; i++) { 
+      btns[i].disabled = true; 
+    }
+    btns[sel].classList.add(sel === correct ? 'correct' : 'wrong');
+    if (sel !== correct) btns[correct].classList.add('correct');
+    var expDiv = document.createElement('div');
+    expDiv.className = 'quiz-explanation';
+    expDiv.innerHTML = '<strong>' + (sel===correct?'✅ Correcto!':'❌ Incorrecto.') + '</strong> ' + exp;
+    qDiv.appendChild(expDiv);
+  }
+
+  function init() {
+    // No inicializamos tablas/quiz aquí, se hace al abrir pestaña
+  }
+
+  return {
+    showTabCmd: showTabCmd,
+    init: init
+  };
+  
+})();
+
+// Inicializar cuando la ventana esté completamente cargada
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+      CmdCisco.init();
+    }, 100);
+  });
+} else {
+  setTimeout(function() {
+    CmdCisco.init();
+  }, 100);
+}
+</script>
+</body>
+</html>
