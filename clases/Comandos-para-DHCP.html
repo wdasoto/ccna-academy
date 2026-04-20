@@ -1,0 +1,1816 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comandos para DHCP — M2.5 | CCNA Academy</title>
+  <meta name="description" content="Clase magistral completa de comandos DHCP Cisco IOS: servidor DHCP, cliente, relay, ip helper-address, pools, exclusiones, verificación y troubleshooting. Desde cero hasta experto CCNA 200-301.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+
+<div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
+<nav class="ccna-drawer" id="ccnaDrawer">
+  <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
+  <div class="drawer-section"><div class="drawer-section-title">General</div>
+    <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M1 · Fundamentos</div>
+    <a href="fundamentos.html"       class="drawer-link "><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
+    <a href="subnetting.html"        class="drawer-link "><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
+    <a href="ipv6.html"              class="drawer-link "><span class="dl-icon">6️⃣</span> IPv6</a>
+    <a href="arp.html"               class="drawer-link "><span class="dl-icon">📡</span> ARP</a>
+    <a href="rip.html"               class="drawer-link "><span class="dl-icon">🔄</span> RIP</a>
+    <a href="protocolos-internet.html" class="drawer-link "><span class="dl-icon">🌍</span> Protocolos Internet</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M2 · Dispositivos Cisco</div>
+    <a href="router.html"            class="drawer-link "><span class="dl-icon">📡</span> Routers Cisco</a>
+    <a href="switches-cisco.html"    class="drawer-link "><span class="dl-icon">🔀</span> Switches Cisco</a></div>
+    <div class="drawer-section"><div class="drawer-section-title">M2.5 · Comandos Cisco</div>
+    <a href="comandos-cisco.html"    class="drawer-link"><span class="dl-icon">⌨️</span> Comandos Configuración Básica</a>
+     <a href="comandos-para-vlan.html" class="drawer-link"><span class="dl-icon">🏷️</span> Comandos para VLAN</a>
+  <a href="comandos-routing.html" class="drawer-link"><span class="dl-icon">📘</span> Comandos de Routing</a>
+  <a href="comandos-solucion-problemas.html" class="drawer-link"><span class="dl-icon">🔧</span> Comandos para Solución de Problemas</a>
+  <a href="Comandos-para-DHCP.html" class="drawer-link active"><span class="dl-icon">📋</span> Comandos para DHCP</a>
+  <div class="drawer-section"><div class="drawer-section-title">M3 · Switching</div>
+    <a href="vlan.html"              class="drawer-link "><span class="dl-icon">🏷️</span> VLANs</a>
+    <a href="inter-vlan-routing.html" class="drawer-link "><span class="dl-icon">🔁</span> Inter-VLAN Routing</a>
+    <a href="stp.html"               class="drawer-link "><span class="dl-icon">🌳</span> STP</a>
+    <a href="etherchannel.html"      class="drawer-link "><span class="dl-icon">🔗</span> EtherChannel</a>
+    <a href="port-security.html"     class="drawer-link "><span class="dl-icon">🔒</span> Port Security</a>
+    <a href="cdp-lldp.html"          class="drawer-link "><span class="dl-icon">🔍</span> CDP / LLDP</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M4 · Routing</div>
+    <a href="routing.html"           class="drawer-link "><span class="dl-icon">🗺️</span> Routing Estático</a>
+    <a href="ospf.html"              class="drawer-link "><span class="dl-icon">⭕</span> OSPF</a>
+    <a href="eigrp.html"             class="drawer-link "><span class="dl-icon">⚡</span> EIGRP</a>
+    <a href="ospfv2-masterclass.html"            class="drawer-link "><span class="dl-icon">🎯</span> OSPFv2 Masterclass</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M5 · Servicios IP</div>
+    <a href="dhcp.html"              class="drawer-link "><span class="dl-icon">📋</span> DHCP</a>
+    <a href="nat.html"               class="drawer-link "><span class="dl-icon">🔄</span> NAT / PAT</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M6 · Seguridad</div>
+    <a href="acl.html"               class="drawer-link "><span class="dl-icon">🛡️</span> ACLs</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M7 · WAN &amp; QoS</div>
+    <a href="wan.html"               class="drawer-link "><span class="dl-icon">🌍</span> WAN</a>
+    <a href="qos.html"               class="drawer-link "><span class="dl-icon">📊</span> QoS</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M8 · Automatización</div>
+    <a href="m8-automatizacion.html"  class="drawer-link"><span class="dl-icon">🤖</span> M8 — Vista General</a>
+    <a href="python-redes.html"       class="drawer-link"><span class="dl-icon">🐍</span> Python para Redes</a>
+    <a href="json-datos.html"         class="drawer-link"><span class="dl-icon">📋</span> JSON y Datos</a>
+    <a href="rest-apis.html"          class="drawer-link"><span class="dl-icon">🌐</span> REST APIs</a>
+    <a href="ansible-redes.html"      class="drawer-link"><span class="dl-icon">⚙️</span> Ansible</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">⚡ Herramientas</div>
+    <a href="asistente.html"         class="drawer-link "><span class="dl-icon">🤖</span> Asistente IA</a>
+    <a href="netbot.html"            class="drawer-link "><span class="dl-icon">⚙️</span> NetBot Config</a>
+    <a href="calculadora.html"       class="drawer-link "><span class="dl-icon">🧮</span> Calculadora IP</a>
+    <a href="../laboratorios-pkt.html"   class="drawer-link "><span class="dl-icon">🧪</span> Labs Packet Tracer</a>
+    <a href="../banco-preguntas.html" class="drawer-link "><span class="dl-icon">📝</span> Banco de Preguntas</a></div>
+</nav>
+<header class="navbar">
+  <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
+  <a href="../index.html" class="navbar-brand">CISCO<span> ACADEMY</span></a>
+  <div class="navbar-spacer"></div>
+  <a href="../index.html" class="navbar-link">← Inicio</a>
+</header>
+<script src="../assets/main.js" defer></script>
+<div class="nav-spacer"></div>
+
+<!-- HERO -->
+<section class="class-hero">
+  <div class="class-hero-inner">
+    <div class="class-badge">M2.5 · COMANDOS DHCP · SERVICIOS IP</div>
+    <h1 class="class-title">Comandos para <span class="class-title-accent">DHCP</span></h1>
+    <p class="class-subtitle">Domina la configuración, administración y troubleshooting de DHCP en Cisco IOS. Desde la asignación dinámica de direcciones IP hasta el relay entre VLANs, pools, exclusiones, opciones avanzadas y seguridad. Esencial para el examen CCNA 200-301 y redes empresariales.</p>
+    <div class="class-meta">
+      <span class="meta-item">📋 IOS 15.x / IOS XE</span>
+      <span class="meta-item">🎯 CCNA 200-301 Exam Topic 5.2, 5.3</span>
+      <span class="meta-item">⏱ ~90 min lectura</span>
+      <span class="meta-item">🧪 Lab: 1 Router + 2 Switches + 4 PCs</span>
+    </div>
+  </div>
+</section>
+
+<!-- TABS -->
+<div class="tabs-wrap">
+  <div class="tabs-bar">
+    <button class="tab-btn active" onclick="CmdDhcp.showTabDhcp('conceptos',this)">📖 Conceptos</button>
+    <button class="tab-btn" onclick="CmdDhcp.showTabDhcp('servidor',this)">🖥️ Servidor DHCP</button>
+    <button class="tab-btn" onclick="CmdDhcp.showTabDhcp('cliente',this)">💻 Cliente DHCP</button>
+    <button class="tab-btn" onclick="CmdDhcp.showTabDhcp('relay',this)">🌐 DHCP Relay</button>
+    <button class="tab-btn" onclick="CmdDhcp.showTabDhcp('opciones',this)">⚙️ Opciones Avanzadas</button>
+    <button class="tab-btn" onclick="CmdDhcp.showTabDhcp('verificacion',this)">📡 Verificación</button>
+    <button class="tab-btn" onclick="CmdDhcp.showTabDhcp('troubleshooting',this)">🔧 Troubleshooting</button>
+    <button class="tab-btn" onclick="CmdDhcp.showTabDhcp('seguridad',this)">🛡️ Seguridad</button>
+    <button class="tab-btn" onclick="CmdDhcp.showTabDhcp('lab',this)">🧪 Laboratorio</button>
+    <button class="tab-btn" onclick="CmdDhcp.showTabDhcp('tabla',this)">📊 Referencia</button>
+    <button class="tab-btn" onclick="CmdDhcp.showTabDhcp('quiz',this)">🎯 Quiz</button>
+  </div>
+<!-- ══════════════════════════════════════════════
+     TAB 1 — CONCEPTOS DHCP
+══════════════════════════════════════════════ -->
+<div id="tab-conceptos" class="tab-content active">
+<div class="content-block">
+  <h2 class="section-title">Fundamentos de DHCP en Cisco IOS</h2>
+  <p>DHCP (Dynamic Host Configuration Protocol) es un protocolo de capa de aplicación (UDP 67/68) que automatiza la asignación de direcciones IP y parámetros de red a los dispositivos. En Cisco IOS, un router puede actuar como servidor DHCP, cliente DHCP, o agente de relay.</p>
+
+  <div class="diagram-box">
+    <div class="diagram-title">Proceso DORA — Descubrimiento, Oferta, Solicitud, Reconocimiento</div>
+    <svg viewBox="0 0 800 320" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:800px;">
+      <!-- Cliente -->
+      <rect x="30" y="80" width="140" height="160" rx="8" fill="#0d1220" stroke="#38bdf8" stroke-width="2"/>
+      <text x="100" y="110" text-anchor="middle" fill="#38bdf8" font-size="14" font-family="Orbitron" font-weight="700">CLIENTE</text>
+      <text x="100" y="130" text-anchor="middle" fill="#6b7a9a" font-size="10" font-family="Share Tech Mono">0.0.0.0:68</text>
+      <text x="100" y="150" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">UDP Src: 68</text>
+      <text x="100" y="165" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">UDP Dst: 67</text>
+      
+      <!-- Servidor -->
+      <rect x="630" y="80" width="140" height="160" rx="8" fill="#0d1220" stroke="#00d4aa" stroke-width="2"/>
+      <text x="700" y="110" text-anchor="middle" fill="#00d4aa" font-size="14" font-family="Orbitron" font-weight="700">SERVIDOR</text>
+      <text x="700" y="130" text-anchor="middle" fill="#6b7a9a" font-size="10" font-family="Share Tech Mono">192.168.1.1:67</text>
+      <text x="700" y="150" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">UDP Src: 67</text>
+      <text x="700" y="165" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">UDP Dst: 68</text>
+      
+      <!-- Flechas DORA -->
+      <line x1="180" y1="110" x2="620" y2="110" stroke="#fbbf24" stroke-width="2" marker-end="url(#arrowdhcp)"/>
+      <text x="400" y="100" text-anchor="middle" fill="#fbbf24" font-size="10" font-family="Share Tech Mono">1. DISCOVER (Broadcast)</text>
+      
+      <line x1="620" y1="140" x2="180" y2="140" stroke="#a78bfa" stroke-width="2" marker-end="url(#arrowdhcp)"/>
+      <text x="400" y="155" text-anchor="middle" fill="#a78bfa" font-size="10" font-family="Share Tech Mono">2. OFFER (Unicast/Broadcast)</text>
+      
+      <line x1="180" y1="170" x2="620" y2="170" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrowdhcp)"/>
+      <text x="400" y="185" text-anchor="middle" fill="#38bdf8" font-size="10" font-family="Share Tech Mono">3. REQUEST (Broadcast)</text>
+      
+      <line x1="620" y1="200" x2="180" y2="200" stroke="#00d4aa" stroke-width="2" marker-end="url(#arrowdhcp)"/>
+      <text x="400" y="215" text-anchor="middle" fill="#00d4aa" font-size="10" font-family="Share Tech Mono">4. ACK (Unicast)</text>
+      
+      <!-- Lease info -->
+      <rect x="280" y="240" width="240" height="50" rx="6" fill="#090d1a" stroke="#374060" stroke-width="1"/>
+      <text x="400" y="260" text-anchor="middle" fill="#8294b8" font-size="10" font-family="Share Tech Mono">LEASE TIME: 86400 seg (24h)</text>
+      <text x="400" y="278" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">T1=50% (Renew) | T2=87.5% (Rebind)</text>
+      
+      <defs>
+        <marker id="arrowdhcp" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#00d4aa"/>
+        </marker>
+      </defs>
+    </svg>
+  </div>
+
+  <h3 class="sub-title">Parámetros que proporciona un servidor DHCP</h3>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead><tr><th>Parámetro</th><th>Descripción</th><th>Opción DHCP</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Dirección IP</strong></td><td>Asignación dinámica desde un pool</td><td>—</td></tr>
+        <tr><td><strong>Máscara de subred</strong></td><td>Define el prefijo de red</td><td>1</td></tr>
+        <tr><td><strong>Gateway por defecto</strong></td><td>Router para salir de la red local</td><td>3</td></tr>
+        <tr><td><strong>Servidor(es) DNS</strong></td><td>Resolución de nombres de dominio</td><td>6</td></tr>
+        <tr><td><strong>Nombre de dominio</strong></td><td>Suffix DNS para resolución local</td><td>15</td></tr>
+        <tr><td><strong>Servidor(es) WINS</strong></td><td>Resolución NetBIOS (legacy)</td><td>44</td></tr>
+        <tr><td><strong>Tiempo de concesión (Lease)</strong></td><td>Duración de la validez de la IP</td><td>51</td></tr>
+        <tr><td><strong>TFTP Server</strong></td><td>Para VoIP/telefonía IP (Cisco)</td><td>66/150</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="sub-title">Roles DHCP en Cisco IOS</h3>
+  <div class="concept-grid">
+    <div class="concept-card highlight">
+      <div class="concept-icon">🖥️</div>
+      <h3>Servidor DHCP</h3>
+      <p>El router/switch Cisco mantiene pools de direcciones IP y responde solicitudes DHCP de clientes en redes locales conectadas directamente o vía relay.</p>
+      <code>ip dhcp pool NOMBRE</code>
+    </div>
+    <div class="concept-card highlight">
+      <div class="concept-icon">💻</div>
+      <h3>Cliente DHCP</h3>
+      <p>La interfaz del router/switch solicita una IP automáticamente desde otro servidor DHCP. Útil para interfaces WAN o conexiones a ISP.</p>
+      <code>ip address dhcp</code>
+    </div>
+    <div class="concept-card highlight">
+      <div class="concept-icon">🌐</div>
+      <h3>DHCP Relay Agent</h3>
+      <p>Reenvía solicitudes DHCP broadcast desde una subred hacia un servidor DHCP ubicado en otra subred usando unicast dirigido.</p>
+      <code>ip helper-address IP</code>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">📡</div>
+      <h3>DHCP Snooping</h3>
+      <p>Seguridad de capa 2 que filtra mensajes DHCP no confiables y construye una tabla de bindings IP-MAC-VLAN-Port.</p>
+      <code>ip dhcp snooping</code>
+    </div>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Concepto Clave: Lease Time y Renovación</div>
+    <p>El <strong>lease time</strong> es el tiempo que un cliente puede usar una IP. En Cisco, el valor por defecto es <strong>1 día (86400 segundos)</strong>. El cliente intenta renovar al <strong>50% (T1)</strong> del lease. Si no recibe respuesta, al <strong>87.5% (T2)</strong> intenta rebind (broadcast a cualquier servidor). Puedes configurarlo con <code>lease {días} [horas] [minutos]</code>.</p>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 2 — SERVIDOR DHCP
+══════════════════════════════════════════════ -->
+<div id="tab-servidor" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Configuración del Servidor DHCP en Cisco IOS</h2>
+  <p>Un router Cisco puede funcionar como servidor DHCP completo, gestionando múltiples pools para diferentes subredes. Es fundamental para redes pequeñas/medias y para el laboratorio CCNA.</p>
+
+  <h3 class="sub-title">Comandos Esenciales del Servidor DHCP</h3>
+  <div class="code-block">
+    <div class="code-label">Configuración completa de un pool DHCP</div>
+    <pre><code><span class="cmd-comment">! === PASO 1: EXCLUIR DIRECCIONES ESTÁTICAS ===</span>
+<span class="cmd-comment">! Siempre excluye primero las IPs que no deben asignarse</span>
+R1(config)# ip dhcp excluded-address 192.168.10.1
+<span class="cmd-comment">! Gateway de la red</span>
+
+R1(config)# ip dhcp excluded-address 192.168.10.2 192.168.10.10
+<span class="cmd-comment">! Rango completo: del .2 al .10 (servidores, impresoras, APs)</span>
+
+<span class="cmd-comment">! === PASO 2: CREAR EL POOL DHCP ===</span>
+R1(config)# ip dhcp pool VLAN10-VENTAS
+<span class="cmd-comment">! Entra al modo de configuración DHCP (config-dhcp)#</span>
+<span class="cmd-comment">! El nombre del pool es local al router, descriptivo</span>
+
+R1(dhcp-config)# network 192.168.10.0 255.255.255.0
+<span class="cmd-comment">! Define la red y máscara del pool</span>
+<span class="cmd-comment">! El router asignará IPs del .11 al .254 (por exclusiones)</span>
+
+R1(dhcp-config)# default-router 192.168.10.1
+<span class="cmd-comment">! Gateway por defecto (puedes especificar hasta 8)</span>
+<span class="cmd-comment">! default-router 192.168.10.1 192.168.10.2</span>
+
+R1(dhcp-config)# domain-name empresa.local
+<span class="cmd-comment">! Nombre de dominio DNS para los clientes</span>
+
+R1(dhcp-config)# dns-server 8.8.8.8 8.8.4.4
+<span class="cmd-comment">! Servidores DNS primario y secundario</span>
+
+R1(dhcp-config)# lease 2 12 30
+<span class="cmd-comment">! 2 días, 12 horas, 30 minutos</span>
+<span class="cmd-comment">! lease infinite = sin expiración (NO recomendado)</span>
+<span class="cmd-comment">! lease 0 8 0 = 8 horas</span>
+
+R1(dhcp-config)# netbios-name-server 192.168.10.5
+<span class="cmd-comment">! Servidor WINS (legacy, rara vez usado hoy)</span>
+
+R1(dhcp-config)# exit
+
+<span class="cmd-comment">! === CONFIGURAR SEGUNDO POOL (VLAN 20 - IT) ===</span>
+R1(config)# ip dhcp excluded-address 192.168.20.1 192.168.20.10
+R1(config)# ip dhcp pool VLAN20-IT
+R1(dhcp-config)# network 192.168.20.0 255.255.255.0
+R1(dhcp-config)# default-router 192.168.20.1
+R1(dhcp-config)# domain-name empresa.local
+R1(dhcp-config)# dns-server 8.8.8.8
+R1(dhcp-config)# lease 1 0 0
+R1(dhcp-config)# exit</code></pre>
+  </div>
+
+  <h3 class="sub-title">Exclusiones Avanzadas y Buenas Prácticas</h3>
+  <div class="code-block">
+    <div class="code-label">Gestión de direcciones reservadas</div>
+    <pre><code><span class="cmd-comment">! === EXCLUSIONES INDIVIDUALES Y POR RANGO ===</span>
+R1(config)# ip dhcp excluded-address 192.168.10.1
+R1(config)# ip dhcp excluded-address 192.168.10.254
+R1(config)# ip dhcp excluded-address 192.168.10.100 192.168.10.120
+<span class="cmd-comment">! Reserva un bloque para impresoras y servidores con IP fija</span>
+
+<span class="cmd-comment">! === VERIFICAR EXCLUSIONES ===</span>
+R1# show ip dhcp pool
+<span class="cmd-output">Pool VLAN10-VENTAS :
+ Utilization mark (high/low)    : 100 / 0
+ Subnet size (first/next)       : 0 / 0 
+ Total addresses                : 254
+ Leased addresses               : 3
+ Excluded addresses             : 11
+ Pending event                  : none
+
+1 subnet is currently in the pool :
+Current index        IP address range                    Leased/Excluded/Total
+192.168.10.12        192.168.10.1         192.168.10.254    3      11      254</span>
+
+<span class="cmd-comment">! === DESACTIVAR SERVIDOR DHCP ===</span>
+R1(config)# no service dhcp
+<span class="cmd-comment">! Desactiva completamente el servicio DHCP en el router</span>
+
+R1(config)# service dhcp
+<span class="cmd-comment">! Reactiva el servicio (está activo por defecto)</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Pool para múltiples subredes (Router-on-a-Stick)</h3>
+  <div class="code-block">
+    <div class="code-label">Servidor DHCP sirviendo múltiples VLANs</div>
+    <pre><code><span class="cmd-comment">! === TOPOLOGÍA: R1 con subinterfaces para VLAN 10 y 20 ===</span>
+
+R1(config)# interface GigabitEthernet0/0.10
+R1(config-subif)# encapsulation dot1Q 10
+R1(config-subif)# ip address 192.168.10.1 255.255.255.0
+R1(config-subif)# exit
+
+R1(config)# interface GigabitEthernet0/0.20
+R1(config-subif)# encapsulation dot1Q 20
+R1(config-subif)# ip address 192.168.20.1 255.255.255.0
+R1(config-subif)# exit
+
+<span class="cmd-comment">! === POOL PARA VLAN 10 ===</span>
+R1(config)# ip dhcp excluded-address 192.168.10.1
+R1(config)# ip dhcp pool POOL-VLAN10
+R1(dhcp-config)# network 192.168.10.0 255.255.255.0
+R1(dhcp-config)# default-router 192.168.10.1
+R1(dhcp-config)# domain-name ventas.empresa.local
+R1(dhcp-config)# dns-server 8.8.8.8
+R1(dhcp-config)# exit
+
+<span class="cmd-comment">! === POOL PARA VLAN 20 ===</span>
+R1(config)# ip dhcp excluded-address 192.168.20.1
+R1(config)# ip dhcp pool POOL-VLAN20
+R1(dhcp-config)# network 192.168.20.0 255.255.255.0
+R1(dhcp-config)# default-router 192.168.20.1
+R1(dhcp-config)# domain-name it.empresa.local
+R1(dhcp-config)# dns-server 8.8.8.8 1.1.1.1
+R1(dhcp-config)# lease 2
+R1(dhcp-config)# exit
+
+<span class="cmd-comment">! El router automáticamente sabe qué pool usar según la interfaz
+! que recibe la solicitud (basado en la red conectada)</span></code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚠️ Error Común en el Examen</div>
+    <p><strong>Situación:</strong> Configuras un pool DHCP pero los clientes no reciben IP.</p>
+    <p><strong>Causa probable:</strong> Olvidaste excluir la IP del gateway (<code>ip dhcp excluded-address</code>) y el servidor DHCP asignó la IP del router a un cliente, causando conflicto de IP.</p>
+    <p><strong>Solución:</strong> Siempre excluye la IP de la interfaz del router (gateway) y cualquier otra IP estática antes de crear el pool.</p>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 3 — CLIENTE DHCP
+══════════════════════════════════════════════ -->
+<div id="tab-cliente" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Configuración de Cliente DHCP en Cisco IOS</h2>
+  <p>Un router Cisco puede comportarse como cliente DHCP, solicitando una dirección IP dinámica para una de sus interfaces. Esto es común en conexiones WAN hacia un ISP o en escenarios de laboratorio donde un router obtiene IP de otro router.</p>
+
+  <h3 class="sub-title">Obtener IP automáticamente en una interfaz</h3>
+  <div class="code-block">
+    <div class="code-label">Interfaz como cliente DHCP</div>
+    <pre><code><span class="cmd-comment">! === INTERFAZ COMO CLIENTE DHCP ===</span>
+R2(config)# interface GigabitEthernet0/1
+R2(config-if)# description WAN-ISP-DHCP
+R2(config-if)# ip address dhcp
+<span class="cmd-comment">! La interfaz enviará DHCP Discover y obtendrá IP automáticamente</span>
+
+R2(config-if)# no shutdown
+R2(config-if)# exit
+
+<span class="cmd-comment">! === VERIFICAR IP OBTENIDA ===</span>
+R2# show ip interface brief
+<span class="cmd-output">Interface              IP-Address      OK? Method Status                Protocol
+GigabitEthernet0/1     203.0.113.45    YES DHCP   up                    up</span>
+<span class="cmd-comment">! Method = DHCP indica que la IP fue obtenida dinámicamente</span>
+
+<span class="cmd-comment">! === VER DETALLES DEL LEASE ===</span>
+R2# show dhcp lease
+<span class="cmd-output">Temp IP addr: 203.0.113.45  for peer on Interface: GigabitEthernet0/1
+Temp  sub net mask: 255.255.255.0
+ DHCP Lease server: 203.0.113.1, state: 5 Bound
+ DHCP transaction id: 1967
+ Lease: 86400 secs,  Renewal: 43200 secs,  Rebind: 75600 secs
+Temp default-gateway addr: 203.0.113.1
+Next timer fires after: 10:32:15
+Retry count: 0   Client-ID: cisco-0000.0c12.3456-Gi0/1
+Client-ID hex dump: 636973636F2D303030302E306331322E
+Hostname: R2</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Liberar y Renovar IP DHCP</h3>
+  <div class="code-block">
+    <div class="code-label">Comandos de control del cliente</div>
+    <pre><code><span class="cmd-comment">! === LIBERAR IP (RELEASE) ===</span>
+R2# release dhcp GigabitEthernet0/1
+<span class="cmd-comment">! Envía DHCP Release al servidor y libera la IP</span>
+
+<span class="cmd-comment">! === RENOVAR IP (RENEW) ===</span>
+R2# renew dhcp GigabitEthernet0/1
+<span class="cmd-comment">! Fuerza nuevo ciclo DORA para obtener IP (o renovar lease)</span>
+
+<span class="cmd-comment">! === VER TODOS LOS BINDINGS DHCP (desde cliente) ===</span>
+R2# show dhcp lease
+
+<span class="cmd-comment">! === VER SERVIDORES DHCP CONOCIDOS ===</span>
+R2# show dhcp server
+<span class="cmd-comment">! Muestra estadísticas de servidores DHCP contactados</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Cliente DHCP con hostname específico</h3>
+  <div class="code-block">
+    <div class="code-label">Opciones de identificación del cliente</div>
+    <pre><code><span class="cmd-comment">! === CONFIGURAR CLIENT-ID PERSONALIZADO ===</span>
+R2(config)# interface GigabitEthernet0/1
+R2(config-if)# ip address dhcp client-id GigabitEthernet0/1
+<span class="cmd-comment">! Usa la MAC de la interfaz como client identifier</span>
+
+<span class="cmd-comment">! === CONFIGURAR HOSTNAME QUE ENVÍA EL CLIENTE ===</span>
+R2(config)# hostname R2-BRANCH-01
+<span class="cmd-comment">! El hostname se envía en la opción 12 del DHCP</span>
+<span class="cmd-comment">! Algunos ISPs lo usan para identificar al cliente</span>
+
+<span class="cmd-comment">! === DESACTIVAR CLIENTE DHCP EN INTERFAZ ===</span>
+R2(config)# interface GigabitEthernet0/1
+R2(config-if)# no ip address
+R2(config-if)# ip address 192.168.1.1 255.255.255.0
+<span class="cmd-comment">! Al asignar IP estática, se pierde el lease DHCP</span></code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Dato de Examen: Método DHCP</div>
+    <p>En <code>show ip interface brief</code>, la columna <strong>Method</strong> indica cómo se obtuvo la IP:</p>
+    <ul>
+      <li><strong>DHCP</strong> → Obtenida dinámicamente vía DHCP</li>
+      <li><strong>manual</strong> → Configurada estáticamente con <code>ip address</code></li>
+      <li><strong>NVRAM</strong> → Cargada desde startup-config</li>
+      <li><strong>TFTP</strong> → Cargada desde servidor TFTP (configuración remota)</li>
+      <li><strong>unset</strong> → Sin IP configurada</li>
+    </ul>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 4 — DHCP RELAY (IP HELPER-ADDRESS)
+══════════════════════════════════════════════ -->
+<div id="tab-relay" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">DHCP Relay — ip helper-address</h2>
+  <p>Los mensajes DHCP Discover y Request se envían como <strong>broadcasts</strong> (255.255.255.255). Los routers NO reenvían broadcasts entre subredes por defecto. <code>ip helper-address</code> resuelve esto convirtiendo el broadcast en unicast dirigido al servidor DHCP.</p>
+
+  <div class="diagram-box">
+    <div class="diagram-title">Funcionamiento del DHCP Relay Agent</div>
+    <svg viewBox="0 0 800 280" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:800px;">
+      <!-- VLAN 10 -->
+      <rect x="30" y="60" width="160" height="160" rx="8" fill="#0d1220" stroke="#38bdf8" stroke-width="2"/>
+      <text x="110" y="85" text-anchor="middle" fill="#38bdf8" font-size="12" font-family="Orbitron">VLAN 10</text>
+      <text x="110" y="100" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">192.168.10.0/24</text>
+      <rect x="60" y="120" width="100" height="40" rx="4" fill="#090d1a" stroke="#374060" stroke-width="1"/>
+      <text x="110" y="140" text-anchor="middle" fill="#8294b8" font-size="9" font-family="Share Tech Mono">PC1 (Cliente)</text>
+      <text x="110" y="155" text-anchor="middle" fill="#fbbf24" font-size="8" font-family="Share Tech Mono">DHCP Discover ↗</text>
+      
+      <!-- Router -->
+      <rect x="330" y="80" width="140" height="120" rx="8" fill="#0d1220" stroke="#00d4aa" stroke-width="2"/>
+      <text x="400" y="110" text-anchor="middle" fill="#00d4aa" font-size="13" font-family="Orbitron" font-weight="700">R1</text>
+      <text x="400" y="130" text-anchor="middle" fill="#6b7a9a" font-size="9" font-family="Share Tech Mono">Gi0/0.10: 192.168.10.1</text>
+      <text x="400" y="145" text-anchor="middle" fill="#6b7a9a" font-size="9" font-family="Share Tech Mono">Gi0/0.99: 192.168.99.1</text>
+      <text x="400" y="170" text-anchor="middle" fill="#fbbf24" font-size="9" font-family="Share Tech Mono">ip helper-address</text>
+      <text x="400" y="185" text-anchor="middle" fill="#fbbf24" font-size="9" font-family="Share Tech Mono">192.168.99.5</text>
+      
+      <!-- VLAN 99 -->
+      <rect x="610" y="60" width="160" height="160" rx="8" fill="#0d1220" stroke="#a78bfa" stroke-width="2"/>
+      <text x="690" y="85" text-anchor="middle" fill="#a78bfa" font-size="12" font-family="Orbitron">VLAN 99</text>
+      <text x="690" y="100" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">192.168.99.0/24</text>
+      <rect x="640" y="120" width="100" height="40" rx="4" fill="#090d1a" stroke="#374060" stroke-width="1"/>
+      <text x="690" y="140" text-anchor="middle" fill="#8294b8" font-size="9" font-family="Share Tech Mono">Servidor DHCP</text>
+      <text x="690" y="155" text-anchor="middle" fill="#00d4aa" font-size="8" font-family="Share Tech Mono">192.168.99.5</text>
+      
+      <!-- Flechas -->
+      <line x1="190" y1="140" x2="330" y2="140" stroke="#fbbf24" stroke-width="2" stroke-dasharray="5,3"/>
+      <text x="260" y="130" fill="#fbbf24" font-size="8" font-family="Share Tech Mono">Broadcast</text>
+      
+      <line x1="470" y1="140" x2="640" y2="140" stroke="#00d4aa" stroke-width="2"/>
+      <text x="555" y="130" fill="#00d4aa" font-size="8" font-family="Share Tech Mono">Unicast</text>
+    </svg>
+  </div>
+
+  <h3 class="sub-title">Configuración de ip helper-address</h3>
+  <div class="code-block">
+    <div class="code-label">Reenvío de broadcasts DHCP hacia servidor remoto</div>
+    <pre><code><span class="cmd-comment">! === ESCENARIO ===</span>
+<span class="cmd-comment">! Servidor DHCP en VLAN 99 (192.168.99.5)</span>
+<span class="cmd-comment">! Clientes en VLAN 10 (192.168.10.0/24)</span>
+<span class="cmd-comment">! Router R1 hace inter-VLAN routing</span>
+
+<span class="cmd-comment">! === CONFIGURAR SUBINTERFAZ VLAN 10 ===</span>
+R1(config)# interface GigabitEthernet0/0.10
+R1(config-subif)# encapsulation dot1Q 10
+R1(config-subif)# ip address 192.168.10.1 255.255.255.0
+R1(config-subif)# ip helper-address 192.168.99.5
+<span class="cmd-comment">! ⬆️ COMANDO CLAVE: Reenvía broadcasts UDP hacia 192.168.99.5</span>
+<span class="cmd-comment">! Incluye DHCP, BOOTP, TFTP, DNS, NetBIOS, etc.</span>
+R1(config-subif)# no shutdown
+R1(config-subif)# exit
+
+<span class="cmd-comment">! === CONFIGURAR SUBINTERFAZ VLAN 20 (OTRA VLAN CON CLIENTES) ===</span>
+R1(config)# interface GigabitEthernet0/0.20
+R1(config-subif)# encapsulation dot1Q 20
+R1(config-subif)# ip address 192.168.20.1 255.255.255.0
+R1(config-subif)# ip helper-address 192.168.99.5
+R1(config-subif)# no shutdown
+
+<span class="cmd-comment">! === CONFIGURAR INTERFAZ HACIA SERVIDOR (VLAN 99) ===</span>
+R1(config)# interface GigabitEthernet0/0.99
+R1(config-subif)# encapsulation dot1Q 99
+R1(config-subif)# ip address 192.168.99.1 255.255.255.0
+R1(config-subif)# no shutdown
+
+<span class="cmd-comment">! === SERVIDOR DHCP (en 192.168.99.5 o router con pool) ===</span>
+<span class="cmd-comment">! El servidor debe tener pools para 192.168.10.0 y 192.168.20.0</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Puertos UDP reenviados por ip helper-address</h3>
+  <div class="code-block">
+    <div class="code-label">Servicios que se reenvían automáticamente</div>
+    <pre><code><span class="cmd-comment">! === PUERTOS UDP REENVIADOS POR DEFECTO ===</span>
+<span class="cmd-comment">! Cuando configuras ip helper-address, el router reenvía:</span>
+
+<span class="cmd-comment">! Puerto  Protocolo/Servicio</span>
+<span class="cmd-comment">! ------  ------------------</span>
+<span class="cmd-comment">!  37     Time</span>
+<span class="cmd-comment">!  49     TACACS</span>
+<span class="cmd-comment">!  53     DNS</span>
+<span class="cmd-comment">!  67     DHCP/BOOTP (Server)</span>
+<span class="cmd-comment">!  68     DHCP/BOOTP (Client)</span>
+<span class="cmd-comment">!  69     TFTP</span>
+<span class="cmd-comment">!  137    NetBIOS Name Service</span>
+<span class="cmd-comment">!  138    NetBIOS Datagram Service</span>
+<span class="cmd-comment">!  137    NetBIOS (otros)</span>
+
+<span class="cmd-comment">! === CONTROLAR QUÉ PUERTOS SE REENVÍAN ===</span>
+<span class="cmd-comment">! Si solo quieres reenviar DHCP (67 y 68), bloquea los demás:</span>
+
+R1(config)# no ip forward-protocol udp 37
+R1(config)# no ip forward-protocol udp 49
+R1(config)# no ip forward-protocol udp 53
+R1(config)# no ip forward-protocol udp 69
+R1(config)# no ip forward-protocol udp 137
+R1(config)# no ip forward-protocol udp 138
+
+<span class="cmd-comment">! Ahora solo se reenviarán DHCP (67/68) hacia el helper-address</span>
+<span class="cmd-comment">! Esto mejora la seguridad y reduce tráfico innecesario</span>
+
+<span class="cmd-comment">! === AGREGAR PUERTOS PERSONALIZADOS ===</span>
+R1(config)# ip forward-protocol udp 3000
+<span class="cmd-comment">! Reenvía broadcasts UDP del puerto 3000 también</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Múltiples helper-address ( redundancia )</h3>
+  <div class="code-block">
+    <div class="code-label">Alta disponibilidad DHCP</div>
+    <pre><code><span class="cmd-comment">! === DOS SERVIDORES DHCP PARA REDUNDANCIA ===</span>
+R1(config)# interface GigabitEthernet0/0.10
+R1(config-subif)# ip helper-address 192.168.99.5
+R1(config-subif)# ip helper-address 192.168.99.6
+<span class="cmd-comment">! El router reenvía el broadcast a AMBOS servidores</span>
+<span class="cmd-comment">! El cliente acepta la primera oferta que reciba</span>
+<span class="cmd-comment">! ⚠️ Asegúrate de que ambos pools NO se solapen</span></code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚠️ Error Crítico: Olvidar ip helper-address</div>
+    <p>En el examen CCNA, el escenario más común es: <em>"Los clientes en VLAN 10 obtienen IP pero los de VLAN 20 no"</em>. La causa casi siempre es que se olvidó configurar <code>ip helper-address</code> en la subinterfaz/VLAN 20 del router, o el servidor DHCP no tiene pool para la red 192.168.20.0.</p>
+    <p><strong>Regla mnemotécnica:</strong> Si el servidor DHCP NO está en la misma subred que los clientes, SIEMPRE se necesita <code>ip helper-address</code> en la interfaz gateway de los clientes.</p>
+  </div>
+</div>
+</div>
+<!-- ══════════════════════════════════════════════
+     TAB 5 — OPCIONES AVANZADAS
+══════════════════════════════════════════════ -->
+<div id="tab-opciones" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Opciones Avanzadas del Servidor DHCP</h2>
+  <p>Cisco IOS soporta múltiples opciones DHCP estándar (RFC 2132) y propietarias. Estas opciones permiten personalizar lo que el cliente recibe más allá de IP, máscara y gateway.</p>
+
+  <h3 class="sub-title">Opciones DHCP Comunes en Cisco IOS</h3>
+  <div class="code-block">
+    <div class="code-label">Configuración de opciones personalizadas</div>
+    <pre><code><span class="cmd-comment">! === OPCIÓN 6: SERVIDORES DNS ===</span>
+R1(dhcp-config)# dns-server 8.8.8.8 8.8.4.4 1.1.1.1
+<span class="cmd-comment">! Hasta 8 servidores DNS pueden especificarse</span>
+
+<span class="cmd-comment">! === OPCIÓN 15: NOMBRE DE DOMINIO ===</span>
+R1(dhcp-config)# domain-name ciscoacademy.local
+
+<span class="cmd-comment">! === OPCIÓN 3: GATEWAY (DEFAULT-ROUTER) ===</span>
+R1(dhcp-config)# default-router 192.168.10.1 192.168.10.2
+<span class="cmd-comment">! Hasta 8 gateways (el primario y backups)</span>
+
+<span class="cmd-comment">! === OPCIÓN 51: TIEMPO DE CONCESIÓN ===</span>
+R1(dhcp-config)# lease 3 12 30
+<span class="cmd-comment">! 3 días, 12 horas, 30 minutos</span>
+R1(dhcp-config)# lease infinite
+<span class="cmd-comment">! Nunca expira (NO recomendado en producción)</span>
+
+<span class="cmd-comment">! === OPCIÓN 66/150: SERVIDOR TFTP (VoIP) ===</span>
+<span class="cmd-comment">! Crítico para despliegue de teléfonos IP Cisco</span>
+R1(dhcp-config)# option 66 ascii http://192.168.99.10/phones/
+R1(dhcp-config)# option 150 ip 192.168.99.10
+<span class="cmd-comment">! Opción 150: Lista de servidores TFTP para Cisco IP Phones</span>
+<span class="cmd-comment">! Opción 66: URL del servidor de provisionamiento</span>
+
+<span class="cmd-comment">! === OPCIÓN 43: VENDOR SPECIFIC (APs WiFi) ===</span>
+R1(dhcp-config)# option 43 hex f108c0a80a0a
+<span class="cmd-comment">! Usado para APs Cisco LWAP para encontrar WLC</span>
+<span class="cmd-comment">! El valor hex codifica la IP del controlador</span>
+
+<span class="cmd-comment">! === OPCIÓN 44: SERVIDORES WINS ===</span>
+R1(dhcp-config)# netbios-name-server 192.168.10.5
+<span class="cmd-comment">! Legacy, usado en redes Windows antiguas</span>
+
+<span class="cmd-comment">! === OPCIÓN 46: TIPO DE NODO NETBIOS ===</span>
+R1(dhcp-config)# netbios-node-type h-node
+<span class="cmd-comment">! h-node = hybrid (WINS primero, broadcast después)</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Opciones personalizadas con código numérico</h3>
+  <div class="code-block">
+    <div class="code-label">option [código] [tipo] [valor]</div>
+    <pre><code><span class="cmd-comment">! === SINTAXIS GENÉRICA PARA CUALQUIER OPCIÓN ===</span>
+R1(dhcp-config)# option 33 ip 10.1.1.1 10.2.2.2
+<span class="cmd-comment">! Opción 33: Static Routes (rutas estáticas por DHCP)</span>
+
+R1(dhcp-config)# option 42 ip 192.168.99.2
+<span class="cmd-comment">! Opción 42: NTP Servers (servidores de tiempo)</span>
+
+R1(dhcp-config)# option 28 ip 192.168.10.255
+<span class="cmd-comment">! Opción 28: Broadcast Address (dirección de broadcast)</span>
+
+<span class="cmd-comment">! === VER TODAS LAS OPCIONES CONFIGURADAS ===</span>
+R1# show ip dhcp pool POOL-VLAN10
+<span class="cmd-output">Pool POOL-VLAN10 :
+ Utilization mark (high/low)    : 100 / 0
+ Subnet size (first/next)       : 0 / 0 
+ Total addresses                : 254
+ Leased addresses               : 5
+ Excluded addresses             : 3
+ Pending event                  : none
+
+1 subnet is currently in the pool :
+Current index        IP address range                    Leased/Excluded/Total
+192.168.10.15        192.168.10.1         192.168.10.254    5       3      254
+
+Domain name: ciscoacademy.local
+DNS servers: 8.8.8.8, 8.8.4.4
+NetBIOS name servers: 192.168.10.5
+NetBIOS node type: Hybrid
+Default gateway: 192.168.10.1
+TFTP server: 192.168.99.10</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Configuración de clase y asignación por cliente</h3>
+  <div class="code-block">
+    <div class="code-label">DHCP Class y Client-Identifier</div>
+    <pre><code><span class="cmd-comment">! === CLASES DHCP (Asignación condicional) ===</span>
+<span class="cmd-comment">! Permite asignar opciones diferentes según el cliente</span>
+
+R1(config)# ip dhcp class VOIP-PHONES
+R1(dhcp-class)# relay agent information
+R1(dhcp-class)# relay-information hex 0106000400010101
+R1(dhcp-class)# exit
+
+R1(config)# ip dhcp pool POOL-VOIP
+R1(dhcp-config)# network 192.168.110.0 255.255.255.0
+R1(dhcp-config)# class VOIP-PHONES
+R1(dhcp-pool-class)# address range 192.168.110.10 192.168.110.100
+R1(dhcp-pool-class)# exit
+
+<span class="cmd-comment">! === RESERVAR IP ESPECÍFICA POR MAC ===</span>
+<span class="cmd-comment">! Cisco IOS NO soporta reservas estáticas directas en el pool
+! como Windows Server, pero puedes usar exclusiones + IP estática
+! o usar la opción client-identifier:</span>
+
+R1(config)# ip dhcp pool RESERVA-GERENTE
+R1(dhcp-config)# host 192.168.10.50 255.255.255.0
+R1(dhcp-config)# client-identifier 0100.1234.5678.ab
+<span class="cmd-comment">! Reserva 192.168.10.50 para MAC específica</span>
+R1(dhcp-config)# default-router 192.168.10.1
+R1(dhcp-config)# exit</code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 6 — VERIFICACIÓN
+══════════════════════════════════════════════ -->
+<div id="tab-verificacion" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Comandos de Verificación DHCP</h2>
+  <p>La verificación es esencial para confirmar que el servidor está operativo, que las IPs se asignan correctamente y que no hay conflictos en la red.</p>
+
+  <div class="concept-grid">
+    <div class="concept-card highlight">
+      <div class="concept-icon">📊</div>
+      <h3>show ip dhcp pool</h3>
+      <p>Muestra estado de todos los pools: IPs totales, asignadas, excluidas, índice actual.</p>
+      <code>show ip dhcp pool</code>
+    </div>
+    <div class="concept-card highlight">
+      <div class="concept-icon">📋</div>
+      <h3>show ip dhcp binding</h3>
+      <p>Tabla de leases activos: IP asignada, MAC del cliente, lease expiration, tipo.</p>
+      <code>show ip dhcp binding</code>
+    </div>
+    <div class="concept-card highlight">
+      <div class="concept-icon">📈</div>
+      <h3>show ip dhcp server statistics</h3>
+      <p>Contadores de mensajes DHCP: discovers, offers, requests, acks, naks, declines.</p>
+      <code>show ip dhcp server statistics</code>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🔍</div>
+      <h3>show ip dhcp conflict</h3>
+      <p>Direcciones en conflicto detectadas por ping antes de ofrecerlas (si está habilitado).</p>
+      <code>show ip dhcp conflict</code>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">💻</div>
+      <h3>show dhcp lease</h3>
+      <p>Desde el cliente: muestra IP obtenida, gateway, lease time, servidor.</p>
+      <code>show dhcp lease</code>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🌐</div>
+      <h3>show ip interface brief</h3>
+      <p>Confirma método DHCP en interfaces y estado up/up.</p>
+      <code>show ip int brief</code>
+    </div>
+  </div>
+
+  <h3 class="sub-title">show ip dhcp binding — Análisis Detallado</h3>
+  <div class="code-block">
+    <div class="code-label">Interpretación de la tabla de leases</div>
+    <pre><code>R1# show ip dhcp binding
+<span class="cmd-output">Bindings from all pools not associated with VRF:
+IP address      Client-ID/              Lease expiration        Type
+                Hardware address/       (dd/mm/yyyy hh:mm)
+                User name
+192.168.10.11   0063.6973.636f.2d30.    Mar 15 2026 08:32 AM    Automatic
+                3030.302e.3063.3132.
+                2e33.3435.362d.4769.
+                302f.30
+192.168.10.12   0100.1a2b.3c4d.5e      Mar 15 2026 08:35 AM    Automatic
+192.168.10.50   0100.1234.5678.ab       Infinite                Manual</span>
+
+<span class="cmd-comment">! === INTERPRETACIÓN ===</span>
+<span class="cmd-comment">! IP address: Dirección asignada al cliente</span>
+<span class="cmd-comment">! Client-ID: Identificador único del cliente (MAC o personalizado)</span>
+<span class="cmd-comment">! Lease expiration: Fecha/hora de expiración del lease</span>
+<span class="cmd-comment">! Type: Automatic (asignada dinámicamente) o Manual (reservada)</span>
+
+<span class="cmd-comment">! === FILTRAR POR IP ESPECÍFICA ===</span>
+R1# show ip dhcp binding 192.168.10.11
+
+<span class="cmd-comment">! === FILTRAR POR POOL ===</span>
+R1# show ip dhcp binding pool POOL-VLAN10</code></pre>
+  </div>
+
+  <h3 class="sub-title">show ip dhcp server statistics — Diagnóstico Operacional</h3>
+  <div class="code-block">
+    <div class="code-label">Contadores de mensajes DHCP</div>
+    <pre><code>R1# show ip dhcp server statistics
+<span class="cmd-output">Memory usage         28534
+Address pools        3
+Database agents      0
+Automatic bindings   5
+Manual bindings      1
+Expired bindings     0
+Malformed messages   0
+Secure arp entries   0
+
+Message            Received
+BOOTREQUEST        0
+DHCPDISCOVER       12
+DHCPREQUEST        15
+DHCPDECLINE        0
+DHCPRELEASE        2
+DHCPINFORM         0
+
+Message            Sent
+BOOTREPLY          0
+DHCPOFFER          12
+DHCPACK            15
+DHCPNAK            0</span>
+
+<span class="cmd-comment">! === ANÁLISIS ===</span>
+<span class="cmd-comment">! DHCPDISCOVER recibidos = 12 (12 clientes solicitaron IP)</span>
+<span class="cmd-comment">! DHCPOFFER enviados = 12 (el servidor respondió a todos)</span>
+<span class="cmd-comment">! DHCPREQUEST recibidos = 15 (incluye renovaciones)</span>
+<span class="cmd-comment">! DHCPACK enviados = 15 (15 confirmaciones exitosas)</span>
+<span class="cmd-comment">! DHCPDECLINE = 0 (ningún cliente rechazó la IP por conflicto)</span>
+<span class="cmd-comment">! DHCPNAK = 0 (ninguna solicitud fue rechazada)</span>
+
+<span class="cmd-comment">! Si DHCPDISCOVER > DHCPOFFER: El servidor no responde (¿pool lleno?)</span>
+<span class="cmd-comment">! Si DHCPREQUEST > DHCPACK: Hay problemas de red o configuración</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">show ip dhcp conflict — Detección de Conflictos</h3>
+  <div class="code-block">
+    <div class="code-label">IPs en conflicto detectadas</div>
+    <pre><code><span class="cmd-comment">! === DETECCIÓN AUTOMÁTICA DE CONFLICTOS ===</span>
+<span class="cmd-comment">! Por defecto, Cisco hace ping a una IP antes de ofrecerla</span>
+<span class="cmd-comment">! Si hay respuesta, marca la IP como conflictiva</span>
+
+R1# show ip dhcp conflict
+<span class="cmd-output">IP address      Detection method       Detection time
+192.168.10.25   Ping                   Mar 14 2026 10:15 AM
+192.168.10.47   Gratuitous ARP         Mar 14 2026 11:22 AM</span>
+
+<span class="cmd-comment">! === MÉTODOS DE DETECCIÓN ===</span>
+<span class="cmd-comment">! Ping: El servidor envió ping y recibió respuesta</span>
+<span class="cmd-comment">! Gratuitous ARP: Un cliente envió ARP gratuito con esa IP</span>
+
+<span class="cmd-comment">! === LIMPIAR CONFLICTOS ===</span>
+R1# clear ip dhcp conflict *
+<span class="cmd-comment">! Elimina todas las entradas de conflictos</span>
+R1# clear ip dhcp conflict 192.168.10.25
+<span class="cmd-comment">! Elimina conflicto específico</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Debug DHCP en tiempo real</h3>
+  <div class="code-block">
+    <div class="code-label">Monitoreo de eventos DHCP</div>
+    <pre><code><span class="cmd-comment">! === DEBUG DE EVENTOS DHCP ===</span>
+R1# debug ip dhcp server events
+<span class="cmd-comment">! Muestra el ciclo DORA completo en tiempo real</span>
+
+<span class="cmd-comment">! === DEBUG DE PAQUETES DHCP ===</span>
+R1# debug ip dhcp server packets
+<span class="cmd-comment">! Muestra detalle de cada paquete (muy verboso)</span>
+
+<span class="cmd-comment">! === DESACTIVAR TODOS LOS DEBUGS ===</span>
+R1# undebug all
+<span class="cmd-comment">! o presiona Ctrl+Shift+6 + X para salir</span>
+
+<span class="cmd-comment">! === EJEMPLO DE SALIDA DEBUG ===</span>
+<span class="cmd-output">*Mar 14 10:32:15.234: DHCPD: DHCPDISCOVER received from client 
+  0063.6973.636f.2d30.3030.302e.3063.3132.2e33.3435.362d.4769.302f.30 
+  through relay 192.168.10.1.
+*Mar 14 10:32:15.235: DHCPD: Assigning address 192.168.10.11 from pool POOL-VLAN10
+*Mar 14 10:32:15.236: DHCPD: Sending DHCPOFFER to client 
+  0063.6973.636f.2d30... (192.168.10.11).
+*Mar 14 10:32:15.240: DHCPD: DHCPREQUEST received from client...
+*Mar 14 10:32:15.241: DHCPD: Sending DHCPACK to client 192.168.10.11</span></code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 7 — TROUBLESHOOTING
+══════════════════════════════════════════════ -->
+<div id="tab-troubleshooting" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Troubleshooting DHCP — Guía de Diagnóstico</h2>
+  <p>Los problemas de DHCP son frecuentes en redes conmutadas y enrutadas. Esta guía sistemática cubre los escenarios más comunes del examen CCNA y producción.</p>
+
+  <h3 class="sub-title">Problema 1: Cliente no obtiene IP (misma subred)</h3>
+  <div class="process-steps">
+    <div class="process-step">
+      <span class="step-num">1</span>
+      <div class="step-content">
+        <div class="step-title">Verificar servicio DHCP activo</div>
+        <code>R1# show ip dhcp pool</code>
+        <br>Confirmar que el pool existe, tiene IPs disponibles y no está agotado.
+      </div>
+    </div>
+    <div class="process-step">
+      <span class="step-num">2</span>
+      <div class="step-content">
+        <div class="step-title">Verificar exclusiones</div>
+        <code>R1# show run | section ip dhcp excluded-address</code>
+        <br>Asegurar que el gateway NO esté dentro del rango asignable.
+      </div>
+    </div>
+    <div class="process-step">
+      <span class="step-num">3</span>
+      <div class="step-content">
+        <div class="step-title">Verificar interfaz del router</div>
+        <code>R1# show ip interface brief</code>
+        <br>La interfaz conectada a los clientes debe estar <strong>up/up</strong> y tener IP en la misma red del pool.
+      </div>
+    </div>
+    <div class="process-step">
+      <span class="step-num">4</span>
+      <div class="step-content">
+        <div class="step-title">Verificar estadísticas</div>
+        <code>R1# show ip dhcp server statistics</code>
+        <br>¿Se reciben DHCPDISCOVER? Si no, el problema es físico/L2 o el cliente no envía solicitudes.
+      </div>
+    </div>
+  </div>
+
+  <h3 class="sub-title">Problema 2: Cliente en VLAN remota no obtiene IP</h3>
+  <div class="code-block">
+    <div class="code-label">Diagnóstico paso a paso</div>
+    <pre><code><span class="cmd-comment">! === SÍNTOMA: PCs en VLAN 20 no obtienen IP ===</span>
+<span class="cmd-comment">! Servidor DHCP en VLAN 10, clientes en VLAN 20</span>
+
+<span class="cmd-comment">! Paso 1: Verificar ip helper-address en gateway VLAN 20</span>
+R1# show running-config interface GigabitEthernet0/0.20
+<span class="cmd-comment">! ¿Aparece "ip helper-address [ip-servidor]"?</span>
+
+<span class="cmd-comment">! Paso 2: Si NO está, configurarlo:</span>
+R1(config)# interface GigabitEthernet0/0.20
+R1(config-subif)# ip helper-address 192.168.10.1
+<span class="cmd-comment">! IP del servidor DHCP (o del router con pool)</span>
+
+<span class="cmd-comment">! Paso 3: Verificar que el servidor tiene pool para VLAN 20</span>
+R1# show ip dhcp pool
+<span class="cmd-comment">! Debe existir un pool con "network 192.168.20.0 255.255.255.0"</span>
+
+<span class="cmd-comment">! Paso 4: Verificar conectividad entre VLANs</span>
+R1# ping 192.168.20.1 source 192.168.10.1
+<span class="cmd-comment">! El servidor debe poder alcanzar el gateway de VLAN 20</span>
+
+<span class="cmd-comment">! Paso 5: Verificar trunks entre switches</span>
+SW1# show interfaces trunk
+<span class="cmd-comment">! ¿VLAN 20 está permitida en el trunk hacia el router?</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Problema 3: IP asignada pero sin conectividad</h3>
+  <div class="code-block">
+    <div class="code-label">Diagnóstico de parámetros incorrectos</div>
+    <pre><code><span class="cmd-comment">! === SÍNTOMA: Cliente tiene IP pero no navega ===</span>
+
+<span class="cmd-comment">! Paso 1: Verificar gateway en el cliente</span>
+PC> ipconfig
+<span class="cmd-output">IP Address......................: 192.168.10.11
+Subnet Mask.....................: 255.255.255.0
+Default Gateway.................: 192.168.10.1</span>
+
+<span class="cmd-comment">! Paso 2: Verificar que default-router en pool sea correcto</span>
+R1# show ip dhcp pool POOL-VLAN10
+<span class="cmd-comment">! ¿El default-router coincide con la IP de la interfaz del router?</span>
+
+<span class="cmd-comment">! Paso 3: Verificar DNS</span>
+PC> ping 8.8.8.8
+PC> ping google.com
+<span class="cmd-comment">! ¿Funciona por IP pero no por nombre? → Problema de DNS</span>
+R1# show run | section dns-server
+<span class="cmd-comment">! Verificar que dns-server esté configurado en el pool</span>
+
+<span class="cmd-comment">! Paso 4: Verificar ACLs que bloqueen DHCP</span>
+R1# show ip interface GigabitEthernet0/0.10
+<span class="cmd-comment">! ¿Hay una ACL inbound que bloquee UDP 67/68?</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Problema 4: Pool agotado (Agotamiento de IPs)</h3>
+  <div class="code-block">
+    <div class="code-label">Cuando no hay más direcciones disponibles</div>
+    <pre><code><span class="cmd-comment">! === DIAGNÓSTICO ===</span>
+R1# show ip dhcp pool
+<span class="cmd-output">Pool POOL-VLAN10 :
+ Utilization mark (high/low)    : 100 / 0
+ Leased addresses               : 251
+ Excluded addresses             : 3
+ Total addresses                : 254</span>
+<span class="cmd-comment">! 251 + 3 = 254 → POOL AGOTADO</span>
+
+<span class="cmd-comment">! === SOLUCIONES ===</span>
+<span class="cmd-comment">! 1. Reducir lease time para liberar IPs más rápido:</span>
+R1(dhcp-config)# lease 0 8 0
+<span class="cmd-comment">! 8 horas en lugar de 1 día</span>
+
+<span class="cmd-comment">! 2. Ampliar la subred (cambiar máscara):</span>
+<span class="cmd-comment">! De /24 (254 hosts) a /23 (510 hosts)</span>
+<span class="cmd-comment">! ⚠️ Requiere cambiar máscara en TODOS los dispositivos</span>
+
+<span class="cmd-comment">! 3. Crear segundo pool (si hay subredes disponibles):</span>
+<span class="cmd-comment">! No aplicable si solo tienes una subred</span>
+
+<span class="cmd-comment">! 4. Liberar leases manualmente (emergencia):</span>
+R1# clear ip dhcp binding 192.168.10.50
+<span class="cmd-comment">! Libera una IP específica (el cliente la perderá)</span>
+R1# clear ip dhcp binding *
+<span class="cmd-comment">! ⚠️ LIBERA TODAS LAS IPs — MUY PELIGROSO EN PRODUCCIÓN</span></code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Checklist de Troubleshooting DHCP</div>
+    <ol>
+      <li>¿El <strong>servicio DHCP</strong> está activo? (<code>service dhcp</code>)</li>
+      <li>¿El <strong>pool</strong> existe y tiene IPs disponibles? (<code>show ip dhcp pool</code>)</li>
+      <li>¿La <strong>interfaz</strong> del router está up/up? (<code>show ip int brief</code>)</li>
+      <li>¿El <strong>gateway</strong> está excluido del pool? (<code>show run | section excluded</code>)</li>
+      <li>¿Hay <strong>ip helper-address</strong> si el servidor está en otra subred?</li>
+      <li>¿El servidor tiene <strong>pool para esa subred</strong> remota?</li>
+      <li>¿Los <strong>trunks</strong> permiten la VLAN del cliente? (<code>show int trunk</code>)</li>
+      <li>¿Hay <strong>ACLs</strong> bloqueando UDP 67/68?</li>
+      <li>¿El cliente tiene <strong>IP duplicada</strong>? (<code>show ip dhcp conflict</code>)</li>
+      <li>¿El <strong>lease</strong> expiró y no hay IPs disponibles?</li>
+    </ol>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 8 — SEGURIDAD DHCP
+══════════════════════════════════════════════ -->
+<div id="tab-seguridad" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Seguridad en Implementaciones DHCP</h2>
+  <p>DHCP es inherentemente inseguro si no se protege. Ataques como Rogue DHCP, DHCP Starvation y Man-in-the-Middle son comunes. Cisco proporciona mecanismos integrados para mitigar estos riesgos.</p>
+
+  <h3 class="sub-title">Ataques DHCP Comunes</h3>
+  <div class="attack-diagram" style="border-color:rgba(248,113,113,0.3);">
+    <div class="diagram-title" style="color:#f87171;">⚠️ ATAQUES CONTRA DHCP</div>
+    <div class="attack-steps">
+      <div class="attack-step">
+        <span class="attack-num" style="border-color:#f87171;color:#f87171;background:rgba(248,113,113,0.1);">1</span>
+        <span style="color:#8294b8;"><strong>Rogue DHCP Server:</strong> Atacante conecta un servidor DHCP falso que asigna IPs maliciosas (gateway falso, DNS envenenado). Los clientes redirigen tráfico hacia el atacante.</span>
+      </div>
+      <div class="attack-step">
+        <span class="attack-num" style="border-color:#f87171;color:#f87171;background:rgba(248,113,113,0.1);">2</span>
+        <span style="color:#8294b8;"><strong>DHCP Starvation:</strong> El atacante envía miles de DHCP Discover con MACs falsas (MAC flooding) agotando todas las IPs del pool. Denegación de servicio legítimo.</span>
+      </div>
+      <div class="attack-step">
+        <span class="attack-num" style="border-color:#f87171;color:#f87171;background:rgba(248,113,113,0.1);">3</span>
+        <span style="color:#8294b8;"><strong>DHCP Spoofing / MITM:</strong> Combinación de Rogue DHCP + ARP spoofing. El atacante se convierte en gateway man-in-the-middle interceptando todo el tráfico.</span>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="sub-title">DHCP Snooping en Switches Cisco</h3>
+  <div class="code-block">
+    <div class="code-label">Protección contra Rogue DHCP</div>
+    <pre><code><span class="cmd-comment">! === HABILITAR DHCP SNOOPING GLOBALMENTE ===</span>
+SW1(config)# ip dhcp snooping
+<span class="cmd-comment">! Activa la función en el switch</span>
+
+<span class="cmd-comment">! === APLICAR A VLANs ESPECÍFICAS ===</span>
+SW1(config)# ip dhcp snooping vlan 10,20,30
+<span class="cmd-comment">! Solo monitorea DHCP en estas VLANs</span>
+
+<span class="cmd-comment">! === CONFIGURAR PUERTO DE CONFIANZA (TRUSTED) ===</span>
+<span class="cmd-comment">! Puerto hacia el servidor DHCP legítimo o router:</span>
+SW1(config)# interface GigabitEthernet0/1
+SW1(config-if)# ip dhcp snooping trust
+<span class="cmd-comment">! Solo los puertos trusted pueden enviar DHCPOFFER y DHCPACK</span>
+<span class="cmd-comment">! Puertos untrusted (default) solo pueden enviar DISCOVER/REQUEST</span>
+
+<span class="cmd-comment">! === CONFIGURAR LÍMITE DE TASA (RATE LIMIT) ===</span>
+SW1(config)# interface range FastEthernet0/1 - 24
+SW1(config-if-range)# ip dhcp snooping limit rate 10
+<span class="cmd-comment">! Máximo 10 paquetes DHCP por segundo por puerto</span>
+<span class="cmd-comment">! Evita ataques de DHCP starvation</span>
+
+<span class="cmd-comment">! === VERIFICAR DHCP SNOOPING ===</span>
+SW1# show ip dhcp snooping
+<span class="cmd-output">Switch DHCP snooping is enabled
+DHCP snooping is configured on following VLANs:
+  10 20 30
+
+Interface        Trusted    Rate limit (pps)
+---------        -------    ----------------
+GigabitEthernet0/1   yes        unlimited
+FastEthernet0/1      no         10
+FastEthernet0/2      no         10
+...</span>
+
+<span class="cmd-comment">! === VER BINDINGS APRENDIDOS ===</span>
+SW1# show ip dhcp snooping binding
+<span class="cmd-output">MacAddress          IpAddress        Lease(sec)  Type           VLAN  Interface
+------------------  ---------------  ----------  -------------  ----  ----------------
+00:1A:2B:3C:4D:5E   192.168.10.11    85732       dhcp-snooping   10   FastEthernet0/5
+00:1A:2B:3C:4D:5F   192.168.10.12    85698       dhcp-snooping   10   FastEthernet0/6</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Dynamic ARP Inspection (DAI) + DHCP Snooping</h3>
+  <div class="code-block">
+    <div class="code-label">Prevenir ARP spoofing usando bindings DHCP</div>
+    <pre><code><span class="cmd-comment">! === HABILITAR DAI EN VLANs ===</span>
+SW1(config)# ip arp inspection vlan 10,20,30
+<span class="cmd-comment">! Valida paquetes ARP contra la tabla de DHCP snooping bindings</span>
+<span class="cmd-comment">! Si la IP/MAC no coincide con el binding, descarta el paquete</span>
+
+<span class="cmd-comment">! === CONFIGURAR PUERTO TRUSTED PARA DAI ===</span>
+SW1(config)# interface GigabitEthernet0/1
+SW1(config-if)# ip arp inspection trust
+<span class="cmd-comment">! Puertos hacia routers/servidores deben ser trusted</span>
+
+<span class="cmd-comment">! === VERIFICAR DAI ===</span>
+SW1# show ip arp inspection
+<span class="cmd-output">Source Mac Validation      : Disabled
+Destination Mac Validation : Disabled
+IP Address Validation      : Disabled
+
+ Vlan     Configuration    Operation   ACL Match          Static ACL
+ ----     -------------    ---------   ---------          ----------
+   10     Enabled          Active
+   20     Enabled          Active
+   30     Enabled          Active</span>
+
+<span class="cmd-comment">! === VER ESTADÍSTICAS DE PAQUETES ARP INVÁLIDOS ===</span>
+SW1# show ip arp inspection statistics</code></pre>
+  </div>
+
+  <h3 class="sub-title">IP Source Guard — Protección de Origen</h3>
+  <div class="code-block">
+    <div class="code-label">Filtrado basado en bindings DHCP</div>
+    <pre><code><span class="cmd-comment">! === HABILITAR IP SOURCE GUARD ===</span>
+<span class="cmd-comment">! Requiere DHCP Snooping previamente configurado</span>
+
+SW1(config)# interface range FastEthernet0/1 - 24
+SW1(config-if-range)# ip verify source port-security
+<span class="cmd-comment">! Filtra tráfico basado en IP+MAC aprendidas por DHCP</span>
+<span class="cmd-comment">! Solo permite tráfico con la IP asignada por DHCP</span>
+
+<span class="cmd-comment">! Alternativa solo por IP (menos estricta):</span>
+SW1(config-if-range)# ip verify source
+<span class="cmd-comment">! Verifica solo la dirección IP fuente</span>
+
+<span class="cmd-comment">! === VERIFICAR IP SOURCE GUARD ===</span>
+SW1# show ip verify source
+<span class="cmd-output">Interface        Filter-type   Filter-mode   IP-address       Mac-address        Vlan
+---------        -----------   -----------   ----------       -----------        ----
+Fa0/1            ip            active        192.168.10.11    00:1A:2B:3C:4D:5E   10
+Fa0/2            ip            active        192.168.10.12    00:1A:2B:3C:4D:5F   10</span></code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚠️ Orden de Implementación de Seguridad L2/L3</div>
+    <p>Para una protección completa contra ataques DHCP y ARP, implementa en este orden:</p>
+    <ol>
+      <li><strong>Port Security</strong> → Limita MACs por puerto</li>
+      <li><strong>DHCP Snooping</strong> → Valida mensajes DHCP y crea tabla de bindings</li>
+      <li><strong>Dynamic ARP Inspection</strong> → Valida ARP contra bindings de DHCP snooping</li>
+      <li><strong>IP Source Guard</strong> → Filtra tráfico IP basado en bindings</li>
+    </ol>
+    <p>Sin DHCP Snooping, DAI e IP Source Guard no tienen tabla de referencia para validar.</p>
+  </div>
+</div>
+</div>
+<!-- ══════════════════════════════════════════════
+     TAB 9 — LABORATORIO
+══════════════════════════════════════════════ -->
+<div id="tab-lab" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">🧪 Laboratorio Práctico: DHCP Completo con Relay</h2>
+  <p>Este laboratorio integra servidor DHCP, cliente DHCP, relay entre VLANs y seguridad en una topología empresarial realista con router central, switch core y switch access.</p>
+
+  <div class="lab-topology">
+    <div class="diagram-title">Topología del Laboratorio DHCP</div>
+    <svg viewBox="0 0 900 500" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:900px;">
+      <!-- Router HQ -->
+      <rect x="350" y="20" width="200" height="120" rx="8" fill="#0d1220" stroke="#38bdf8" stroke-width="2"/>
+      <text x="450" y="50" text-anchor="middle" fill="#38bdf8" font-size="14" font-family="Orbitron" font-weight="700">R1-HQ</text>
+      <text x="450" y="70" text-anchor="middle" fill="#6b7a9a" font-size="10" font-family="Share Tech Mono">Servidor DHCP + Inter-VLAN</text>
+      <text x="450" y="90" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">Gi0/0.10: 192.168.10.1</text>
+      <text x="450" y="105" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">Gi0/0.20: 192.168.20.1</text>
+      <text x="450" y="120" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">Gi0/0.99: 192.168.99.1</text>
+
+      <!-- Switch Core -->
+      <rect x="350" y="200" width="200" height="100" rx="8" fill="#0d1220" stroke="#00d4aa" stroke-width="2"/>
+      <text x="450" y="230" text-anchor="middle" fill="#00d4aa" font-size="14" font-family="Orbitron" font-weight="700">SW-CORE</text>
+      <text x="450" y="250" text-anchor="middle" fill="#6b7a9a" font-size="10" font-family="Share Tech Mono">Trunking + DHCP Snooping</text>
+      <text x="450" y="270" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">Gi0/1: Trunk to SW-ACCESS</text>
+      <text x="450" y="285" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">Gi0/2: Trunk to R1</text>
+
+      <!-- Switch Access -->
+      <rect x="100" y="340" width="200" height="140" rx="8" fill="#0d1220" stroke="#a78bfa" stroke-width="2"/>
+      <text x="200" y="370" text-anchor="middle" fill="#a78bfa" font-size="14" font-family="Orbitron" font-weight="700">SW-ACCESS</text>
+      <text x="200" y="390" text-anchor="middle" fill="#6b7a9a" font-size="10" font-family="Share Tech Mono">VTP Client / Access Ports</text>
+      <text x="200" y="410" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">Fa0/1-6: VLAN 10 (Ventas)</text>
+      <text x="200" y="425" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">Fa0/7-12: VLAN 20 (IT)</text>
+      <text x="200" y="440" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">Fa0/13-24: Parking VLAN 999</text>
+
+      <!-- PCs -->
+      <rect x="30" y="360" width="60" height="40" rx="4" fill="#090d1a" stroke="#38bdf8" stroke-width="1"/>
+      <text x="60" y="380" text-anchor="middle" fill="#38bdf8" font-size="8" font-family="Share Tech Mono">PC1</text>
+      <text x="60" y="392" text-anchor="middle" fill="#4a5780" font-size="7" font-family="Share Tech Mono">VLAN10</text>
+
+      <rect x="30" y="420" width="60" height="40" rx="4" fill="#090d1a" stroke="#a78bfa" stroke-width="1"/>
+      <text x="60" y="440" text-anchor="middle" fill="#a78bfa" font-size="8" font-family="Share Tech Mono">PC2</text>
+      <text x="60" y="452" text-anchor="middle" fill="#4a5780" font-size="7" font-family="Share Tech Mono">VLAN20</text>
+
+      <!-- Conexiones -->
+      <line x1="450" y1="140" x2="450" y2="200" stroke="#38bdf8" stroke-width="2"/>
+      <line x1="350" y1="250" x2="200" y2="340" stroke="#a78bfa" stroke-width="2"/>
+      <line x1="90" y1="380" x2="100" y2="380" stroke="#38bdf8" stroke-width="1"/>
+      <line x1="90" y1="440" x2="100" y2="400" stroke="#a78bfa" stroke-width="1"/>
+
+      <!-- Labels -->
+      <text x="470" y="175" fill="#38bdf8" font-size="8" font-family="Share Tech Mono">Trunk</text>
+      <text x="270" y="330" fill="#a78bfa" font-size="8" font-family="Share Tech Mono">Trunk</text>
+    </svg>
+  </div>
+
+  <h3 class="sub-title">Objetivos del Laboratorio</h3>
+  <ul>
+    <li>Configurar R1-HQ como servidor DHCP para VLAN 10 y VLAN 20</li>
+    <li>Configurar pools con gateway, DNS, dominio y lease time apropiados</li>
+    <li>Excluir direcciones estáticas (gateways, servidores)</li>
+    <li>Configurar switch con trunking, VLANs y seguridad básica</li>
+    <li>Implementar DHCP Snooping en SW-ACCESS para protección</li>
+    <li>Verificar asignación dinámica con <code>show ip dhcp binding</code></li>
+    <li>Probar conectividad end-to-end entre VLANs</li>
+  </ul>
+
+  <div class="lab-steps">
+    <div class="lab-step">
+      <div class="lab-step-num">Parte 1</div>
+      <div class="lab-step-title">Configuración R1-HQ (Router + Servidor DHCP)</div>
+      <div class="code-block" style="margin-top:8px;">
+        <pre><code><span class="cmd-comment">! === CONFIGURACIÓN INICIAL ===</span>
+Router> enable
+Router# configure terminal
+Router(config)# hostname R1-HQ
+
+<span class="cmd-comment">! === INTERFAZ FÍSICA ===</span>
+R1-HQ(config)# interface GigabitEthernet0/0
+R1-HQ(config-if)# description TRUNK-TO-SW-CORE
+R1-HQ(config-if)# no shutdown
+R1-HQ(config-if)# exit
+
+<span class="cmd-comment">! === SUBINTERFAZ VLAN 10 (VENTAS) ===</span>
+R1-HQ(config)# interface GigabitEthernet0/0.10
+R1-HQ(config-subif)# description GATEWAY-VLAN10
+R1-HQ(config-subif)# encapsulation dot1Q 10
+R1-HQ(config-subif)# ip address 192.168.10.1 255.255.255.0
+R1-HQ(config-subif)# no shutdown
+R1-HQ(config-subif)# exit
+
+<span class="cmd-comment">! === SUBINTERFAZ VLAN 20 (IT) ===</span>
+R1-HQ(config)# interface GigabitEthernet0/0.20
+R1-HQ(config-subif)# description GATEWAY-VLAN20
+R1-HQ(config-subif)# encapsulation dot1Q 20
+R1-HQ(config-subif)# ip address 192.168.20.1 255.255.255.0
+R1-HQ(config-subif)# no shutdown
+R1-HQ(config-subif)# exit
+
+<span class="cmd-comment">! === SUBINTERFAZ VLAN 99 (MANAGEMENT) ===</span>
+R1-HQ(config)# interface GigabitEthernet0/0.99
+R1-HQ(config-subif)# description GATEWAY-VLAN99
+R1-HQ(config-subif)# encapsulation dot1Q 99 native
+R1-HQ(config-subif)# ip address 192.168.99.1 255.255.255.0
+R1-HQ(config-subif)# no shutdown
+R1-HQ(config-subif)# exit
+
+<span class="cmd-comment">! === EXCLUSIONES DHCP ===</span>
+R1-HQ(config)# ip dhcp excluded-address 192.168.10.1
+R1-HQ(config)# ip dhcp excluded-address 192.168.10.2 192.168.10.10
+R1-HQ(config)# ip dhcp excluded-address 192.168.20.1
+R1-HQ(config)# ip dhcp excluded-address 192.168.20.2 192.168.20.10
+R1-HQ(config)# ip dhcp excluded-address 192.168.99.1
+
+<span class="cmd-comment">! === POOL DHCP VLAN 10 ===</span>
+R1-HQ(config)# ip dhcp pool POOL-VLAN10
+R1-HQ(dhcp-config)# network 192.168.10.0 255.255.255.0
+R1-HQ(dhcp-config)# default-router 192.168.10.1
+R1-HQ(dhcp-config)# domain-name ventas.empresa.local
+R1-HQ(dhcp-config)# dns-server 8.8.8.8 8.8.4.4
+R1-HQ(dhcp-config)# lease 1 12 0
+R1-HQ(dhcp-config)# exit
+
+<span class="cmd-comment">! === POOL DHCP VLAN 20 ===</span>
+R1-HQ(config)# ip dhcp pool POOL-VLAN20
+R1-HQ(dhcp-config)# network 192.168.20.0 255.255.255.0
+R1-HQ(dhcp-config)# default-router 192.168.20.1
+R1-HQ(dhcp-config)# domain-name it.empresa.local
+R1-HQ(dhcp-config)# dns-server 8.8.8.8 1.1.1.1
+R1-HQ(dhcp-config)# lease 2 0 0
+R1-HQ(dhcp-config)# exit
+
+<span class="cmd-comment">! === VERIFICACIÓN ===</span>
+R1-HQ# show ip dhcp pool
+R1-HQ# show ip dhcp binding
+R1-HQ# copy running-config startup-config</code></pre>
+      </div>
+    </div>
+
+    <div class="lab-step">
+      <div class="lab-step-num">Parte 2</div>
+      <div class="lab-step-title">Configuración SW-CORE (Trunking)</div>
+      <div class="code-block" style="margin-top:8px;">
+        <pre><code><span class="cmd-comment">! === CONFIGURACIÓN BÁSICA ===</span>
+Switch> enable
+Switch# configure terminal
+Switch(config)# hostname SW-CORE
+
+<span class="cmd-comment">! === VLANs ===</span>
+SW-CORE(config)# vlan 10
+SW-CORE(config-vlan)# name VENTAS
+SW-CORE(config-vlan)# exit
+SW-CORE(config)# vlan 20
+SW-CORE(config-vlan)# name IT
+SW-CORE(config-vlan)# exit
+SW-CORE(config)# vlan 99
+SW-CORE(config-vlan)# name MANAGEMENT
+SW-CORE(config-vlan)# exit
+
+<span class="cmd-comment">! === TRUNK HACIA R1-HQ ===</span>
+SW-CORE(config)# interface GigabitEthernet0/2
+SW-CORE(config-if)# description TRUNK-TO-R1
+SW-CORE(config-if)# switchport mode trunk
+SW-CORE(config-if)# switchport trunk allowed vlan 10,20,99
+SW-CORE(config-if)# switchport trunk native vlan 99
+SW-CORE(config-if)# switchport nonegotiate
+SW-CORE(config-if)# no shutdown
+
+<span class="cmd-comment">! === TRUNK HACIA SW-ACCESS ===</span>
+SW-CORE(config)# interface GigabitEthernet0/1
+SW-CORE(config-if)# description TRUNK-TO-SW-ACCESS
+SW-CORE(config-if)# switchport mode trunk
+SW-CORE(config-if)# switchport trunk allowed vlan 10,20,99
+SW-CORE(config-if)# switchport trunk native vlan 99
+SW-CORE(config-if)# switchport nonegotiate
+SW-CORE(config-if)# no shutdown
+
+<span class="cmd-comment">! === SVI MANAGEMENT ===</span>
+SW-CORE(config)# interface Vlan99
+SW-CORE(config-if)# ip address 192.168.99.2 255.255.255.0
+SW-CORE(config-if)# no shutdown
+
+SW-CORE# copy running-config startup-config</code></pre>
+      </div>
+    </div>
+
+    <div class="lab-step">
+      <div class="lab-step-num">Parte 3</div>
+      <div class="lab-step-title">Configuración SW-ACCESS (Access + DHCP Snooping)</div>
+      <div class="code-block" style="margin-top:8px;">
+        <pre><code><span class="cmd-comment">! === CONFIGURACIÓN BÁSICA ===</span>
+Switch> enable
+Switch# configure terminal
+Switch(config)# hostname SW-ACCESS
+
+<span class="cmd-comment">! === PUERTOS DE ACCESO VLAN 10 ===</span>
+SW-ACCESS(config)# interface range FastEthernet0/1 - 6
+SW-ACCESS(config-if-range)# description VLAN10-VENTAS
+SW-ACCESS(config-if-range)# switchport mode access
+SW-ACCESS(config-if-range)# switchport access vlan 10
+SW-ACCESS(config-if-range)# spanning-tree portfast
+SW-ACCESS(config-if-range)# no shutdown
+
+<span class="cmd-comment">! === PUERTOS DE ACCESO VLAN 20 ===</span>
+SW-ACCESS(config)# interface range FastEthernet0/7 - 12
+SW-ACCESS(config-if-range)# description VLAN20-IT
+SW-ACCESS(config-if-range)# switchport mode access
+SW-ACCESS(config-if-range)# switchport access vlan 20
+SW-ACCESS(config-if-range)# spanning-tree portfast
+SW-ACCESS(config-if-range)# no shutdown
+
+<span class="cmd-comment">! === PUERTOS NO UTILIZADOS ===</span>
+SW-ACCESS(config)# vlan 999
+SW-ACCESS(config-vlan)# name PARKING
+SW-ACCESS(config-vlan)# exit
+SW-ACCESS(config)# interface range FastEthernet0/13 - 24
+SW-ACCESS(config-if-range)# switchport access vlan 999
+SW-ACCESS(config-if-range)# shutdown
+
+<span class="cmd-comment">! === DHCP SNOOPING ===</span>
+SW-ACCESS(config)# ip dhcp snooping
+SW-ACCESS(config)# ip dhcp snooping vlan 10,20
+SW-ACCESS(config)# interface GigabitEthernet0/1
+SW-ACCESS(config-if)# ip dhcp snooping trust
+SW-ACCESS(config-if)# exit
+
+<span class="cmd-comment">! === RATE LIMIT EN PUERTOS DE ACCESO ===</span>
+SW-ACCESS(config)# interface range FastEthernet0/1 - 12
+SW-ACCESS(config-if-range)# ip dhcp snooping limit rate 10
+
+<span class="cmd-comment">! === VERIFICACIÓN ===</span>
+SW-ACCESS# show ip dhcp snooping
+SW-ACCESS# show ip dhcp snooping binding
+SW-ACCESS# copy running-config startup-config</code></pre>
+      </div>
+    </div>
+
+    <div class="lab-step">
+      <div class="lab-step-num">Parte 4</div>
+      <div class="lab-step-title">Verificación End-to-End</div>
+      <div class="code-block" style="margin-top:8px;">
+        <pre><code><span class="cmd-comment">! === DESDE PC1 (VLAN 10) ===</span>
+PC1> ipconfig /renew
+PC1> ipconfig
+<span class="cmd-output">IP Address......................: 192.168.10.11
+Subnet Mask.....................: 255.255.255.0
+Default Gateway.................: 192.168.10.1
+DNS Servers.....................: 8.8.8.8
+Domain Name.....................: ventas.empresa.local</span>
+
+PC1> ping 192.168.20.11       <span class="cmd-comment">! PC2 en VLAN 20</span>
+PC1> ping 192.168.99.2        <span class="cmd-comment">! SW-CORE management</span>
+
+<span class="cmd-comment">! === DESDE R1-HQ ===</span>
+R1-HQ# show ip dhcp binding
+R1-HQ# show ip dhcp server statistics
+R1-HQ# ping 192.168.10.11
+R1-HQ# ping 192.168.20.11
+
+<span class="cmd-comment">! === PROBAR SEGURIDAD ===</span>
+<span class="cmd-comment">! Conectar "servidor DHCP rogue" en Fa0/5 (VLAN 10)</span>
+<span class="cmd-comment">! SW-ACCESS debe bloquear DHCPOFFER en puerto untrusted</span>
+SW-ACCESS# show ip dhcp snooping</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">✅ Checklist de Éxito del Laboratorio</div>
+    <ul>
+      <li>✓ PC1 en VLAN 10 obtiene IP 192.168.10.x con gateway 192.168.10.1</li>
+      <li>✓ PC2 en VLAN 20 obtiene IP 192.168.20.x con gateway 192.168.20.1</li>
+      <li>✓ Inter-VLAN routing funciona (PC1 puede hacer ping a PC2)</li>
+      <li>✓ R1-HQ muestra bindings en <code>show ip dhcp binding</code></li>
+      <li>✓ DHCP Snooping está activo y el puerto Gi0/1 es trusted</li>
+      <li>✓ Un servidor DHCP rogue conectado a puerto access es bloqueado</li>
+      <li>✓ Configuración guardada en startup-config en todos los dispositivos</li>
+    </ul>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 10 — TABLA DE REFERENCIA
+══════════════════════════════════════════════ -->
+<div id="tab-tabla" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Tabla de Referencia Rápida — Comandos DHCP</h2>
+  <table class="ref-table">
+    <thead>
+      <tr>
+        <th>Comando</th>
+        <th>Contexto</th>
+        <th>Descripción</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><code>service dhcp</code></td><td>config</td><td>Activa el servicio DHCP (por defecto)</td></tr>
+      <tr><td><code>no service dhcp</code></td><td>config</td><td>Desactiva el servicio DHCP</td></tr>
+      <tr><td><code>ip dhcp pool NOMBRE</code></td><td>config</td><td>Crea/entra a configuración de pool</td></tr>
+      <tr><td><code>network IP MASK</code></td><td>dhcp-config</td><td>Define subred del pool</td></tr>
+      <tr><td><code>default-router IP1 [IP2...]</code></td><td>dhcp-config</td><td>Gateway(s) por defecto (hasta 8)</td></tr>
+      <tr><td><code>domain-name DOMINIO</code></td><td>dhcp-config</td><td>Nombre de dominio DNS</td></tr>
+      <tr><td><code>dns-server IP1 [IP2...]</code></td><td>dhcp-config</td><td>Servidores DNS (hasta 8)</td></tr>
+      <tr><td><code>lease D [H] [M]</code></td><td>dhcp-config</td><td>Tiempo de concesión (días/horas/min)</td></tr>
+      <tr><td><code>lease infinite</code></td><td>dhcp-config</td><td>Concesión permanente</td></tr>
+      <tr><td><code>netbios-name-server IP</code></td><td>dhcp-config</td><td>Servidor WINS (NetBIOS)</td></tr>
+      <tr><td><code>option NUM tipo valor</code></td><td>dhcp-config</td><td>Opción DHCP personalizada</td></tr>
+      <tr><td><code>ip dhcp excluded-address IP</code></td><td>config</td><td>Excluye IP del pool</td></tr>
+      <tr><td><code>ip dhcp excluded-address INI FIN</code></td><td>config</td><td>Excluye rango de IPs</td></tr>
+      <tr><td><code>ip address dhcp</code></td><td>config-if</td><td>Interfaz como cliente DHCP</td></tr>
+      <tr><td><code>ip helper-address IP</code></td><td>config-if</td><td>Reenvía broadcasts UDP al servidor</td></tr>
+      <tr><td><code>ip forward-protocol udp PORT</code></td><td>config</td><td>Agrega puerto UDP a reenviar</td></tr>
+      <tr><td><code>no ip forward-protocol udp PORT</code></td><td>config</td><td>Remueve puerto del reenvío</td></tr>
+      <tr><td><code>show ip dhcp pool</code></td><td>exec</td><td>Estado de pools DHCP</td></tr>
+      <tr><td><code>show ip dhcp binding</code></td><td>exec</td><td>Tabla de leases activos</td></tr>
+      <tr><td><code>show ip dhcp server statistics</code></td><td>exec</td><td>Contadores de mensajes DHCP</td></tr>
+      <tr><td><code>show ip dhcp conflict</code></td><td>exec</td><td>IPs en conflicto detectadas</td></tr>
+      <tr><td><code>show dhcp lease</code></td><td>exec</td><td>Lease actual (desde cliente)</td></tr>
+      <tr><td><code>debug ip dhcp server events</code></td><td>exec</td><td>Debug de eventos DHCP</td></tr>
+      <tr><td><code>clear ip dhcp binding *</code></td><td>exec</td><td>Liberar todos los leases</td></tr>
+      <tr><td><code>clear ip dhcp conflict *</code></td><td>exec</td><td>Limpiar conflictos</td></tr>
+      <tr><td><code>release dhcp IF</code></td><td>exec</td><td>Liberar IP en interfaz cliente</td></tr>
+      <tr><td><code>renew dhcp IF</code></td><td>exec</td><td>Renovar lease en interfaz</td></tr>
+      <tr><td><code>ip dhcp snooping</code></td><td>config</td><td>Activa DHCP snooping global</td></tr>
+      <tr><td><code>ip dhcp snooping vlan ID</code></td><td>config</td><td>Aplica a VLANs específicas</td></tr>
+      <tr><td><code>ip dhcp snooping trust</code></td><td>config-if</td><td>Marca puerto como confiable</td></tr>
+      <tr><td><code>ip dhcp snooping limit rate N</code></td><td>config-if</td><td>Límite de paquetes DHCP/seg</td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="section-title" style="margin-top:32px;">Comandos por Tema de Examen CCNA 200-301</h2>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead><tr><th>Tema del examen</th><th>Comandos clave</th><th>Frecuencia</th></tr></thead>
+      <tbody>
+        <tr><td><strong>5.2 DHCP Server</strong></td><td>ip dhcp pool, network, default-router, dns-server</td><td>⭐⭐⭐⭐⭐</td></tr>
+        <tr><td><strong>5.2 Exclusiones</strong></td><td>ip dhcp excluded-address</td><td>⭐⭐⭐⭐⭐</td></tr>
+        <tr><td><strong>5.3 DHCP Client</strong></td><td>ip address dhcp, show dhcp lease</td><td>⭐⭐⭐⭐</td></tr>
+        <tr><td><strong>5.3 DHCP Relay</strong></td><td>ip helper-address, ip forward-protocol</td><td>⭐⭐⭐⭐⭐</td></tr>
+        <tr><td><strong>5.2 Verificación</strong></td><td>show ip dhcp binding, show ip dhcp pool</td><td>⭐⭐⭐⭐⭐</td></tr>
+        <tr><td><strong>5.2 Troubleshooting</strong></td><td>debug ip dhcp server events, show ip dhcp conflict</td><td>⭐⭐⭐⭐</td></tr>
+        <tr><td><strong>6.2 DHCP Snooping</strong></td><td>ip dhcp snooping, ip dhcp snooping trust</td><td>⭐⭐⭐⭐⭐</td></tr>
+        <tr><td><strong>6.2 Rate Limit</strong></td><td>ip dhcp snooping limit rate</td><td>⭐⭐⭐</td></tr>
+        <tr><td><strong>6.2 DAI</strong></td><td>ip arp inspection vlan, ip arp inspection trust</td><td>⭐⭐⭐⭐</td></tr>
+        <tr><td><strong>6.2 IP Source Guard</strong></td><td>ip verify source port-security</td><td>⭐⭐⭐</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 11 — QUIZ
+══════════════════════════════════════════════ -->
+<div id="tab-quiz" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Quiz — Comandos para DHCP</h2>
+  <div id="quizContainerDhcp"></div>
+</div>
+</div>
+
+</div>
+<!-- Cierre de tabs-wrap -->
+
+<footer class="footer">
+  <p>© WDS-CCNA Portal · Comandos para DHCP · M2.5</p>
+  <p style="margin-top:.3rem">Basado en <em>CCNA 200-301 Official Cert Guide</em> (Wendell Odom) · Cisco IOS 15.x/16.x</p>
+  <p style="margin-top:.4rem"><a href="../index.html">← Volver al índice</a></p>
+</footer>
+
+<style>
+.class-hero { background: linear-gradient(135deg, #06080f 0%, #0d1220 60%, #101830 100%); padding: 56px 24px 48px; border-bottom: 1px solid rgba(0,212,170,0.12); position: relative; overflow: hidden; }
+.class-hero::before { content:''; position:absolute; top:-60px; right:-80px; width:400px; height:400px; border-radius:50%; background:radial-gradient(circle, rgba(56,189,248,0.06) 0%, transparent 70%); }
+.class-hero-inner { max-width: 900px; margin: 0 auto; position: relative; z-index: 1; }
+.class-badge { font-family:'Share Tech Mono',monospace; font-size:0.65rem; color:#38bdf8; letter-spacing:3px; text-transform:uppercase; margin-bottom:14px; }
+.class-title { font-family:'Orbitron',sans-serif; font-size:clamp(1.8rem,4vw,2.8rem); font-weight:900; letter-spacing:3px; color:#c2d0e8; line-height:1.1; margin-bottom:12px; }
+.class-title-accent { background:linear-gradient(135deg,#38bdf8,#a78bfa); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; display:block; font-size:0.65em; margin-top:4px; letter-spacing:2px; }
+.class-subtitle { font-size:1rem; color:#6b7a9a; line-height:1.7; margin-bottom:20px; max-width:720px; }
+.class-meta { display:flex; gap:16px; flex-wrap:wrap; }
+.meta-item { font-family:'Share Tech Mono',monospace; font-size:0.72rem; color:#374060; padding:4px 10px; border:1px solid rgba(56,189,248,0.1); border-radius:4px; }
+.tabs-wrap { max-width: 1100px; margin: 0 auto; padding: 0 16px 40px; }
+.tabs-bar { display:flex; gap:4px; padding:20px 0 0; flex-wrap:wrap; border-bottom:1px solid rgba(0,212,170,0.1); }
+.tab-btn { padding:8px 14px; border-radius:8px 8px 0 0; font-family:'Share Tech Mono',monospace; font-size:0.72rem; color:#4a5780; background:none; border:1px solid transparent; cursor:pointer; transition:all 0.18s; white-space:nowrap; border-bottom:none; }
+.tab-btn:hover { color:#c2d0e8; background:rgba(0,212,170,0.05); }
+.tab-btn.active { color:#38bdf8; background:#0d1220; border-color:rgba(56,189,248,0.2); border-bottom:1px solid #0d1220; }
+.tab-content { display:none; background:#0d1220; border:1px solid rgba(0,212,170,0.1); border-top:none; border-radius:0 0 12px 12px; padding:32px; }
+.tab-content.active { display:block; }
+.content-block { max-width: 860px; }
+.section-title { font-family:'Orbitron',sans-serif; font-size:1rem; color:#38bdf8; letter-spacing:2px; margin:28px 0 14px; padding-bottom:8px; border-bottom:1px solid rgba(56,189,248,0.12); }
+.section-title:first-child { margin-top:0; }
+.sub-title { font-family:'Share Tech Mono',monospace; font-size:0.85rem; color:#00d4aa; margin:24px 0 10px; }
+p { color:#8294b8; line-height:1.75; margin-bottom:14px; font-size:0.9rem; }
+ul, ol { color:#8294b8; padding-left:1.4rem; margin-bottom:14px; font-size:0.9rem; }
+li { margin-bottom:5px; line-height:1.65; }
+strong { color:#c2d0e8; }
+code { font-family:'Share Tech Mono',monospace; font-size:0.82rem; background:rgba(56,189,248,0.08); color:#38bdf8; padding:1px 6px; border-radius:4px; border:1px solid rgba(56,189,248,0.15); }
+.info-box { border-radius:8px; padding:14px 18px; margin:18px 0; border-left:3px solid; }
+.info-box.tip { background:rgba(0,212,170,0.05); border-color:#00d4aa; }
+.info-box.warning { background:rgba(251,191,36,0.05); border-color:#fbbf24; }
+.info-box-title { font-family:'Share Tech Mono',monospace; font-size:0.75rem; color:#00d4aa; margin-bottom:8px; }
+.info-box.warning .info-box-title { color:#fbbf24; }
+.diagram-box { background:#050810; border:1px solid rgba(56,189,248,0.12); border-radius:10px; padding:20px; margin:18px 0; }
+.diagram-title { font-family:'Share Tech Mono',monospace; font-size:0.68rem; color:#4a5780; letter-spacing:2px; text-transform:uppercase; margin-bottom:14px; }
+.table-wrap { overflow-x:auto; margin:16px 0; }
+.ref-table { width:100%; border-collapse:collapse; font-size:0.82rem; }
+.ref-table th { background:#090d1a; color:#38bdf8; font-family:'Share Tech Mono',monospace; font-size:0.7rem; padding:10px 12px; text-align:left; border:1px solid rgba(56,189,248,0.1); letter-spacing:1px; }
+.ref-table td { padding:9px 12px; border:1px solid rgba(255,255,255,0.04); color:#8294b8; }
+.ref-table tr:hover td { background:rgba(56,189,248,0.03); }
+.code-block { background:#050810; border:1px solid rgba(56,189,248,0.12); border-left:3px solid #38bdf8; border-radius:8px; padding:0; margin:16px 0; overflow:hidden; }
+.code-label { background:rgba(56,189,248,0.06); padding:8px 16px; font-family:'Share Tech Mono',monospace; font-size:0.65rem; color:#4a5780; letter-spacing:2px; text-transform:uppercase; border-bottom:1px solid rgba(56,189,248,0.08); }
+.code-block pre { margin:0; padding:16px; overflow-x:auto; }
+.code-block code { background:none; border:none; padding:0; color:#a8b4c8; font-size:0.8rem; line-height:1.7; display:block; }
+.cmd-comment { color:#374060; font-style:italic; }
+.cmd-output  { color:#6b7a9a; }
+.concept-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:12px; margin:16px 0; }
+.concept-card { background:#090d1a; border:1px solid rgba(56,189,248,0.1); border-radius:10px; padding:16px; }
+.concept-card.highlight { border-color:rgba(0,212,170,0.3); background:linear-gradient(135deg,rgba(0,212,170,0.05),rgba(56,189,248,0.03)); }
+.concept-icon { font-size:1.8rem; margin-bottom:8px; }
+.concept-card h3 { font-family:'Share Tech Mono',monospace; font-size:0.78rem; color:#38bdf8; margin-bottom:8px; }
+.concept-card p { font-size:0.8rem; margin:0 0 8px; }
+.concept-card code { font-size:0.75rem; display:block; margin-top:8px; padding:8px; background:rgba(0,0,0,0.2); }
+.process-steps { display:flex; flex-direction:column; gap:12px; margin:16px 0; }
+.process-step { display:flex; gap:16px; align-items:flex-start; background:#090d1a; border:1px solid rgba(56,189,248,0.08); border-radius:10px; padding:16px; }
+.step-num { width:50px; height:36px; border-radius:8px; background:rgba(56,189,248,0.1); border:1px solid rgba(56,189,248,0.2); display:flex; align-items:center; justify-content:center; font-family:'Share Tech Mono',monospace; font-size:0.68rem; color:#38bdf8; font-weight:700; flex-shrink:0; }
+.step-content { flex:1; }
+.step-title { font-family:'Share Tech Mono',monospace; font-size:0.82rem; color:#c2d0e8; margin-bottom:6px; }
+.attack-diagram { background:#0a0810; border:1px solid rgba(248,113,113,0.15); border-radius:10px; padding:16px; margin:16px 0; }
+.attack-steps { display:flex; flex-direction:column; gap:8px; margin-top:10px; }
+.attack-step { display:flex; gap:12px; align-items:flex-start; }
+.attack-num { width:24px; height:24px; border-radius:50%; background:rgba(248,113,113,0.2); border:1px solid #f87171; display:flex; align-items:center; justify-content:center; font-family:'Share Tech Mono',monospace; font-size:0.7rem; color:#f87171; flex-shrink:0; }
+.lab-topology { background:#050810; border:1px solid rgba(56,189,248,0.1); border-radius:10px; padding:16px; margin:16px 0; }
+.lab-steps { display:flex; flex-direction:column; gap:16px; margin:16px 0; }
+.lab-step { background:#090d1a; border:1px solid rgba(56,189,248,0.08); border-radius:10px; padding:16px; }
+.lab-step-num { font-family:'Share Tech Mono',monospace; font-size:0.6rem; color:#38bdf8; letter-spacing:2px; text-transform:uppercase; margin-bottom:4px; }
+.lab-step-title { font-family:'Orbitron',sans-serif; font-size:0.8rem; color:#c2d0e8; margin-bottom:8px; }
+.quiz-question { background:#090d1a; border:1px solid rgba(56,189,248,0.1); border-radius:10px; padding:20px; margin-bottom:16px; }
+.quiz-q-num { font-family:'Share Tech Mono',monospace; font-size:0.62rem; color:#4a5780; margin-bottom:8px; }
+.quiz-q-text { font-size:0.9rem; color:#c2d0e8; margin-bottom:14px; line-height:1.6; }
+.quiz-opts { display:flex; flex-direction:column; gap:7px; }
+.quiz-opt { padding:9px 14px; border-radius:7px; border:1px solid rgba(56,189,248,0.1); background:#0d1220; color:#6b7a9a; cursor:pointer; font-size:0.85rem; text-align:left; transition:all 0.15s; }
+.quiz-opt:hover:not(:disabled) { border-color:rgba(56,189,248,0.3); color:#c2d0e8; }
+.quiz-opt.correct { border-color:#34d399; background:rgba(52,211,153,0.08); color:#34d399; }
+.quiz-opt.wrong   { border-color:#f87171; background:rgba(248,113,113,0.08); color:#f87171; }
+.quiz-explanation { margin-top:10px; padding:10px 14px; background:rgba(167,139,250,0.06); border-left:3px solid #a78bfa; border-radius:6px; font-size:0.82rem; color:#a0aec0; line-height:1.6; }
+.footer { border-top:1px solid rgba(0,212,170,0.1); background:#090d1a; padding:32px 24px; text-align:center; margin-top:40px; }
+.footer p { color:#374060; font-size:0.75rem; margin:0; }
+.footer a { color:#4a5780; text-decoration:none; }
+.footer a:hover { color:#00d4aa; }
+@media(max-width:680px) { .tab-btn{font-size:0.65rem;padding:6px 10px;} .tab-content{padding:20px 14px;} .concept-grid{grid-template-columns:1fr;} }
+</style>
+
+<script>
+/* -----------------------------------------------------------------
+   NAMESPACE CmdDhcp - Protege el código contra sobreescritura
+----------------------------------------------------------------- */
+var CmdDhcp = (function() {
+  
+  function showTabDhcp(id, btn) {
+    document.querySelectorAll('.tab-content').forEach(function(t) { t.classList.remove('active'); });
+    document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+    var target = document.getElementById('tab-' + id);
+    if (target) target.classList.add('active');
+    if (btn) btn.classList.add('active');
+    
+    if (id === 'quiz') {
+      initQuiz();
+    }
+    if (id === 'tabla') {
+      buildRefTable();
+    }
+  }
+
+  function buildRefTable() {
+    const data = [
+      ['service dhcp', 'Global Config', 'Activa el servicio DHCP en el router'],
+      ['no service dhcp', 'Global Config', 'Desactiva completamente el servicio'],
+      ['ip dhcp pool NOMBRE', 'Global Config', 'Crea un pool de direcciones DHCP'],
+      ['network IP MÁSCARA', 'dhcp-config', 'Define la subred del pool'],
+      ['default-router IP', 'dhcp-config', 'Configura gateway por defecto'],
+      ['domain-name DOMINIO', 'dhcp-config', 'Nombre de dominio para clientes'],
+      ['dns-server IP1 [IP2]', 'dhcp-config', 'Servidores DNS (hasta 8)'],
+      ['lease D [H] [M]', 'dhcp-config', 'Tiempo de concesión'],
+      ['lease infinite', 'dhcp-config', 'Concesión permanente'],
+      ['netbios-name-server IP', 'dhcp-config', 'Servidor WINS'],
+      ['option NÚMERO tipo valor', 'dhcp-config', 'Opción DHCP personalizada'],
+      ['ip dhcp excluded-address IP', 'Global Config', 'Excluye una IP del pool'],
+      ['ip dhcp excluded-address INI FIN', 'Global Config', 'Excluye rango de IPs'],
+      ['ip address dhcp', 'Interface Config', 'Interfaz como cliente DHCP'],
+      ['ip helper-address IP', 'Interface Config', 'Reenvía broadcasts UDP al servidor'],
+      ['ip forward-protocol udp PORT', 'Global Config', 'Agrega puerto a reenvío de helper'],
+      ['no ip forward-protocol udp PORT', 'Global Config', 'Remueve puerto del reenvío'],
+      ['show ip dhcp pool', 'Privileged EXEC', 'Estado de pools y utilización'],
+      ['show ip dhcp binding', 'Privileged EXEC', 'Leases activos (IP, MAC, expiración)'],
+      ['show ip dhcp server statistics', 'Privileged EXEC', 'Contadores de mensajes DHCP'],
+      ['show ip dhcp conflict', 'Privileged EXEC', 'Direcciones en conflicto'],
+      ['show dhcp lease', 'Privileged EXEC', 'Lease actual desde vista de cliente'],
+      ['debug ip dhcp server events', 'Privileged EXEC', 'Debug de eventos del servidor'],
+      ['debug ip dhcp server packets', 'Privileged EXEC', 'Debug detallado de paquetes'],
+      ['clear ip dhcp binding *', 'Privileged EXEC', 'Libera todos los leases'],
+      ['clear ip dhcp conflict *', 'Privileged EXEC', 'Limpia tabla de conflictos'],
+      ['release dhcp INTERFAZ', 'Privileged EXEC', 'Libera IP en interfaz cliente'],
+      ['renew dhcp INTERFAZ', 'Privileged EXEC', 'Renueva lease en interfaz'],
+      ['ip dhcp snooping', 'Global Config', 'Activa DHCP snooping global'],
+      ['ip dhcp snooping vlan ID', 'Global Config', 'Aplica snooping a VLANs'],
+      ['ip dhcp snooping trust', 'Interface Config', 'Marca puerto como confiable'],
+      ['ip dhcp snooping limit rate N', 'Interface Config', 'Límite de paquetes DHCP/segundo'],
+    ];
+    const headers = ['Comando', 'Modo/Contexto', 'Descripción/Función'];
+    var html = '<div class="table-wrap"><table class="ref-table"><thead><tr>';
+    for (var i = 0; i < headers.length; i++) {
+      html += '<th>' + headers[i] + '</th>';
+    }
+    html += '</tr></thead><tbody>';
+    for (var i = 0; i < data.length; i++) {
+      html += '<tr>';
+      for (var j = 0; j < data[i].length; j++) {
+        html += '<td>' + data[i][j] + '</td>';
+      }
+      html += '</tr>';
+    }
+    html += '</tbody></table></div>';
+    var refDiv = document.getElementById('refTableDhcp');
+    if (refDiv) refDiv.innerHTML = html;
+  }
+
+  function initQuiz() {
+    const questions = [
+      {
+        q: '¿Qué comando crea un pool de direcciones DHCP llamado "VENTAS" en un router Cisco?',
+        opts: ['dhcp pool VENTAS','ip dhcp pool VENTAS','create dhcp VENTAS','service dhcp VENTAS'],
+        ans: 1,
+        exp: 'El comando correcto es "ip dhcp pool VENTAS". "dhcp pool" no existe. "service dhcp" activa el servicio globalmente pero no crea pools. "create dhcp" no es un comando válido en Cisco IOS.'
+      },
+      {
+        q: 'Un administrador configura un pool DHCP para la red 192.168.10.0/24. ¿Qué comando evita que el gateway (192.168.10.1) sea asignado a un cliente?',
+        opts: ['no dhcp 192.168.10.1','exclude 192.168.10.1','ip dhcp excluded-address 192.168.10.1','reserve 192.168.10.1'],
+        ans: 2,
+        exp: '"ip dhcp excluded-address 192.168.10.1" excluye la IP del pool. Es crítico excluir gateways, servidores e IPs estáticas. Se configura en modo global config, NO dentro del pool.'
+      },
+      {
+        q: '¿Cuál es el propósito del comando "ip helper-address 192.168.99.5" en una interfaz?',
+        opts: ['Configurar el router como servidor DHCP','Reenviar broadcasts UDP hacia un servidor remoto','Bloquear solicitudes DHCP','Asignar IP estática a la interfaz'],
+        ans: 1,
+        exp: '"ip helper-address" reenvía broadcasts UDP (incluyendo DHCP, TFTP, DNS, etc.) hacia una IP específica. Es esencial cuando el servidor DHCP está en una subred diferente a los clientes. Sin este comando, los broadcasts DHCP no cruzan routers.'
+      },
+      {
+        q: '¿Qué puertos UDP se reenvían por defecto al usar "ip helper-address"?',
+        opts: ['Solo 67 y 68','Solo 53 y 67','37, 49, 53, 67, 68, 69, 137, 138','Todos los puertos UDP'],
+        ans: 2,
+        exp: 'Por defecto, ip helper-address reenvía los puertos: 37 (Time), 49 (TACACS), 53 (DNS), 67/68 (DHCP), 69 (TFTP), 137/138 (NetBIOS). Puedes filtrar con "no ip forward-protocol udp" para dejar solo DHCP.'
+      },
+      {
+        q: 'Un cliente DHCP renovará su lease automáticamente cuando alcance el:',
+        opts: ['25% del tiempo','50% del tiempo (T1)','75% del tiempo','100% del tiempo'],
+        ans: 1,
+        exp: 'El cliente intenta renovar (unicast al servidor original) al 50% del lease time (T1). Si falla, al 87.5% (T2) envía broadcast a cualquier servidor (rebind). El valor por defecto de lease en Cisco es 1 día (86400 segundos).'
+      },
+      {
+        q: '¿Qué comando verifica las direcciones IP actualmente asignadas por el servidor DHCP?',
+        opts: ['show ip dhcp pool','show ip dhcp binding','show dhcp clients','show ip dhcp leases'],
+        ans: 1,
+        exp: '"show ip dhcp binding" muestra la tabla de leases: IP asignada, Client-ID/MAC, tiempo de expiración y tipo (Automatic/Manual). "show ip dhcp pool" muestra estadísticas del pool pero no los clientes individuales.'
+      },
+      {
+        q: 'En un switch Cisco, ¿qué comando marca un puerto como confiable para DHCP Snooping?',
+        opts: ['dhcp snooping trust','ip dhcp snooping trusted','ip dhcp snooping trust','switchport dhcp trust'],
+        ans: 2,
+        exp: '"ip dhcp snooping trust" en modo interface config marca el puerto como trusted. Solo puertos trusted pueden enviar DHCPOFFER y DHCPACK. Los puertos untrusted (default) que envíen estas tramas serán bloqueados.'
+      },
+      {
+        q: '¿Dónde se debe configurar "ip helper-address" cuando el servidor DHCP está en otra subred?',
+        opts: ['En la interfaz del servidor DHCP','En la interfaz gateway de los clientes','En cualquier interfaz del router','En el switch core únicamente'],
+        ans: 1,
+        exp: 'Se configura en la interfaz gateway de los clientes (la subinterfaz o interfaz SVI de la VLAN donde están los clientes). Es el router quien recibe el broadcast del cliente y debe reenviarlo al servidor.'
+      },
+      {
+        q: '¿Qué sucede si se borra "startup-config" pero NO "vlan.dat" en un switch?',
+        opts: ['Se pierden todas las configuraciones incluyendo VLANs','Las VLANs persisten porque están en vlan.dat','El switch vuelve a fábrica completamente','Solo persisten las VLANs extendidas'],
+        ans: 1,
+        exp: 'Las VLANs se almacenan en flash:vlan.dat, separado de startup-config. Por eso "erase startup-config" NO elimina las VLANs. Para borrarlas completamente se usa "delete flash:vlan.dat". Este concepto aplica a VTP y VLANs estándar.'
+      },
+      {
+        q: '¿Cuál es el tiempo de lease DHCP por defecto en Cisco IOS?',
+        opts: ['30 minutos','8 horas','1 día (86400 segundos)','7 días'],
+        ans: 2,
+        exp: 'El lease time por defecto en Cisco IOS es 1 día (86400 segundos). Puedes cambiarlo con el comando "lease" dentro del pool DHCP: "lease 2 12 30" = 2 días, 12 horas, 30 minutos. "lease infinite" nunca expira.'
+      },
+      {
+        q: 'Un puerto de switch muestra "err-disabled" por DHCP Snooping. ¿Cuál es la causa probable?',
+        opts: ['El puerto recibió demasiados paquetes DHCP','El cable está desconectado','La VLAN nativa no coincide','El trunk no permite la VLAN'],
+        ans: 0,
+        exp: 'Si se configura "ip dhcp snooping limit rate N" y el puerto excede esa tasa, el switch puede ponerlo en err-disabled. También ocurre si un puerto untrusted envía DHCPOFFER (servidor rogue). Se recupera con shutdown/no shutdown.'
+      },
+      {
+        q: '¿Qué comando configura una interfaz de router para obtener IP automáticamente vía DHCP?',
+        opts: ['dhcp client','ip address auto','ip address dhcp','dhcp address'],
+        ans: 2,
+        exp: '"ip address dhcp" configura la interfaz como cliente DHCP. El router enviará DHCP Discover y obtendrá IP, máscara y gateway del servidor. Es común en interfaces WAN hacia ISPs. Se verifica con "show ip interface brief" (Method = DHCP).'
+      }
+    ];
+
+    var container = document.getElementById('quizContainerDhcp');
+    if (!container) return;
+    
+    if (container.innerHTML.trim() !== '') return;
+    
+    var html = '';
+    for (var i = 0; i < questions.length; i++) {
+      var q = questions[i];
+      var optsHtml = '';
+      for (var j = 0; j < q.opts.length; j++) {
+        optsHtml += '<button class="quiz-opt" data-qi="' + i + '" data-sel="' + j + '" data-ans="' + q.ans + '">' + q.opts[j] + '</button>';
+      }
+      html += '<div class="quiz-question" id="qqd' + i + '">' +
+        '<div class="quiz-q-num">PREGUNTA ' + (i+1) + ' DE ' + questions.length + '</div>' +
+        '<div class="quiz-q-text">' + q.q + '</div>' +
+        '<div class="quiz-opts">' + optsHtml + '</div>' +
+        '</div>';
+    }
+    container.innerHTML = html;
+
+    window._dhcpExp = {};
+    for (var i = 0; i < questions.length; i++) { 
+      window._dhcpExp[i] = questions[i].exp; 
+    }
+
+    var buttons = container.querySelectorAll('.quiz-opt');
+    for (var k = 0; k < buttons.length; k++) {
+      buttons[k].addEventListener('click', function() {
+        var qi  = parseInt(this.getAttribute('data-qi'), 10);
+        var sel = parseInt(this.getAttribute('data-sel'), 10);
+        var ans = parseInt(this.getAttribute('data-ans'), 10);
+        answerQD(qi, sel, ans, window._dhcpExp[qi]);
+      });
+    }
+  }
+
+  function answerQD(qi, sel, correct, exp) {
+    var qDiv = document.getElementById('qqd' + qi);
+    var btns = qDiv.querySelectorAll('.quiz-opt');
+    for (var i = 0; i < btns.length; i++) { 
+      btns[i].disabled = true; 
+    }
+    btns[sel].classList.add(sel === correct ? 'correct' : 'wrong');
+    if (sel !== correct) btns[correct].classList.add('correct');
+    var expDiv = document.createElement('div');
+    expDiv.className = 'quiz-explanation';
+    expDiv.innerHTML = '<strong>' + (sel===correct?'✅ Correcto!':'❌ Incorrecto.') + '</strong> ' + exp;
+    qDiv.appendChild(expDiv);
+  }
+
+  function init() {
+    // No inicializamos tablas/quiz aquí, se hace al abrir pestaña
+  }
+
+  return {
+    showTabDhcp: showTabDhcp,
+    init: init
+  };
+  
+})();
+
+// Inicializar cuando la ventana esté completamente cargada
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+      CmdDhcp.init();
+    }, 100);
+  });
+} else {
+  setTimeout(function() {
+    CmdDhcp.init();
+  }, 100);
+}
+</script>
+</body>
+</html>
