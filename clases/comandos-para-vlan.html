@@ -1,0 +1,1788 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comandos para VLAN — M2.5 | CCNA Academy</title>
+  <meta name="description" content="Clase magistral completa de comandos VLAN Cisco IOS: creación, asignación, trunking 802.1Q, DTP, VTP, verificación, troubleshooting y laboratorio práctico. CCNA 200-301.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+
+<div class="ccna-overlay" id="ccnaOverlay" onclick="ccnaClose()"></div>
+<nav class="ccna-drawer" id="ccnaDrawer">
+  <div class="drawer-header"><h2>◈ NAVEGACIÓN</h2><button class="drawer-close" onclick="ccnaClose()">✕</button></div>
+  <div class="drawer-section"><div class="drawer-section-title">General</div>
+    <a href="../index.html" class="drawer-link"><span class="dl-icon">🏠</span> Inicio</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M1 · Fundamentos</div>
+    <a href="fundamentos.html"       class="drawer-link "><span class="dl-icon">🌐</span> Fundamentos de Redes</a>
+    <a href="subnetting.html"        class="drawer-link "><span class="dl-icon">🔢</span> Subnetting &amp; VLSM</a>
+    <a href="ipv6.html"              class="drawer-link "><span class="dl-icon">6️⃣</span> IPv6</a>
+    <a href="arp.html"               class="drawer-link "><span class="dl-icon">📡</span> ARP</a>
+    <a href="rip.html"               class="drawer-link "><span class="dl-icon">🔄</span> RIP</a>
+    <a href="protocolos-internet.html" class="drawer-link "><span class="dl-icon">🌍</span> Protocolos Internet</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M2 · Dispositivos Cisco</div>
+    <a href="router.html"            class="drawer-link "><span class="dl-icon">📡</span> Routers Cisco</a>
+    <a href="switches-cisco.html"    class="drawer-link "><span class="dl-icon">🔀</span> Switches Cisco</a></div>
+    <div class="drawer-section"><div class="drawer-section-title">M2.5 · Comandos Cisco</div>
+    <a href="comandos-cisco.html"    class="drawer-link"><span class="dl-icon">⌨️</span> Comandos Configuración Básica</a>
+    <a href="comandos-para-vlan.html" class="drawer-link"><span class="dl-icon">🏷️</span> Comandos para VLAN</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M3 · Switching</div>
+    <a href="vlan.html"              class="drawer-link "><span class="dl-icon">🏷️</span> VLANs</a>
+    <a href="inter-vlan-routing.html" class="drawer-link "><span class="dl-icon">🔁</span> Inter-VLAN Routing</a>
+    <a href="stp.html"               class="drawer-link "><span class="dl-icon">🌳</span> STP</a>
+    <a href="etherchannel.html"      class="drawer-link "><span class="dl-icon">🔗</span> EtherChannel</a>
+    <a href="port-security.html"     class="drawer-link "><span class="dl-icon">🔒</span> Port Security</a>
+    <a href="cdp-lldp.html"          class="drawer-link "><span class="dl-icon">🔍</span> CDP / LLDP</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M4 · Routing</div>
+    <a href="routing.html"           class="drawer-link "><span class="dl-icon">🗺️</span> Routing Estático</a>
+    <a href="ospf.html"              class="drawer-link "><span class="dl-icon">⭕</span> OSPF</a>
+    <a href="eigrp.html"             class="drawer-link "><span class="dl-icon">⚡</span> EIGRP</a>
+    <a href="ospfv2-masterclass.html"            class="drawer-link "><span class="dl-icon">🎯</span> OSPFv2 Masterclass</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M5 · Servicios IP</div>
+    <a href="dhcp.html"              class="drawer-link "><span class="dl-icon">📋</span> DHCP</a>
+    <a href="nat.html"               class="drawer-link "><span class="dl-icon">🔄</span> NAT / PAT</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M6 · Seguridad</div>
+    <a href="acl.html"               class="drawer-link "><span class="dl-icon">🛡️</span> ACLs</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M7 · WAN &amp; QoS</div>
+    <a href="wan.html"               class="drawer-link "><span class="dl-icon">🌍</span> WAN</a>
+    <a href="qos.html"               class="drawer-link "><span class="dl-icon">📊</span> QoS</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">M8 · Automatización</div>
+    <a href="m8-automatizacion.html"  class="drawer-link"><span class="dl-icon">🤖</span> M8 — Vista General</a>
+    <a href="python-redes.html"       class="drawer-link"><span class="dl-icon">🐍</span> Python para Redes</a>
+    <a href="json-datos.html"         class="drawer-link"><span class="dl-icon">📋</span> JSON y Datos</a>
+    <a href="rest-apis.html"          class="drawer-link"><span class="dl-icon">🌐</span> REST APIs</a>
+    <a href="ansible-redes.html"      class="drawer-link"><span class="dl-icon">⚙️</span> Ansible</a></div>
+  <div class="drawer-section"><div class="drawer-section-title">⚡ Herramientas</div>
+    <a href="asistente.html"         class="drawer-link "><span class="dl-icon">🤖</span> Asistente IA</a>
+    <a href="netbot.html"            class="drawer-link "><span class="dl-icon">⚙️</span> NetBot Config</a>
+    <a href="calculadora.html"       class="drawer-link "><span class="dl-icon">🧮</span> Calculadora IP</a>
+    <a href="../laboratorios-pkt.html"   class="drawer-link "><span class="dl-icon">🧪</span> Labs Packet Tracer</a>
+    <a href="../banco-preguntas.html" class="drawer-link "><span class="dl-icon">📝</span> Banco de Preguntas</a></div>
+</nav>
+<header class="navbar">
+  <button class="navbar-toggle" onclick="ccnaToggle()">☰ MENÚ</button>
+  <a href="../index.html" class="navbar-brand">CISCO<span> ACADEMY</span></a>
+  <div class="navbar-spacer"></div>
+  <a href="../index.html" class="navbar-link">← Inicio</a>
+</header>
+<script src="../assets/main.js" defer></script>
+<div class="nav-spacer"></div>
+
+<!-- HERO -->
+<section class="class-hero">
+  <div class="class-hero-inner">
+    <div class="class-badge">M2.5 · COMANDOS VLAN · SWITCHING L2 AVANZADO</div>
+    <h1 class="class-title">Comandos para <span class="class-title-accent">Virtual LAN (VLAN)</span></h1>
+    <p class="class-subtitle">Domina la segmentación lógica de redes con Cisco IOS. Creación de VLANs, asignación de puertos, trunking 802.1Q, DTP, VTP, verificación avanzada y troubleshooting. Desde cero hasta configuraciones enterprise-grade para el examen CCNA 200-301.</p>
+    <div class="class-meta">
+      <span class="meta-item">📋 IOS 15.x / IOS XE</span>
+      <span class="meta-item">🎯 CCNA 200-301 Exam Topic 4.1, 4.2</span>
+      <span class="meta-item">⏱ ~120 min lectura</span>
+      <span class="meta-item">🧪 Lab: 3 Switches + Router</span>
+    </div>
+  </div>
+</section>
+
+<!-- TABS -->
+<div class="tabs-wrap">
+  <div class="tabs-bar">
+    <button class="tab-btn active" onclick="CmdVlan.showTabVlan('fundamentos',this)">📖 Fundamentos</button>
+    <button class="tab-btn" onclick="CmdVlan.showTabVlan('creacion',this)">🏷️ Creación VLAN</button>
+    <button class="tab-btn" onclick="CmdVlan.showTabVlan('asignacion',this)">🔌 Asignación Puertos</button>
+    <button class="tab-btn" onclick="CmdVlan.showTabVlan('trunk',this)">🔄 Trunk 802.1Q</button>
+    <button class="tab-btn" onclick="CmdVlan.showTabVlan('dtp',this)">⚡ DTP & VTP</button>
+    <button class="tab-btn" onclick="CmdVlan.showTabVlan('verificacion',this)">📡 Verificación</button>
+    <button class="tab-btn" onclick="CmdVlan.showTabVlan('troubleshooting',this)">🛠️ Troubleshooting</button>
+    <button class="tab-btn" onclick="CmdVlan.showTabVlan('lab',this)">🧪 Laboratorio</button>
+    <button class="tab-btn" onclick="CmdVlan.showTabVlan('tabla',this)">📊 Referencia</button>
+    <button class="tab-btn" onclick="CmdVlan.showTabVlan('quiz',this)">🎯 Quiz</button>
+  </div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 1 — FUNDAMENTOS VLAN
+══════════════════════════════════════════════ -->
+<div id="tab-fundamentos" class="tab-content active">
+<div class="content-block">
+  <h2 class="section-title">Fundamentos de VLANs en Cisco IOS</h2>
+  <p>Las VLANs (Virtual Local Area Networks) son la tecnología fundamental de segmentación lógica en switches Cisco. Permiten dividir un switch físico en múltiples redes de broadcast independientes, mejorando seguridad, rendimiento y gestión.</p>
+
+  <div class="diagram-box">
+    <div class="diagram-title">Concepto VLAN: Un Switch, Múltiples Redes Lógicas</div>
+    <svg viewBox="0 0 800 420" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:800px;">
+      <!-- Switch -->
+      <rect x="300" y="160" width="200" height="100" rx="8" fill="#0d1220" stroke="#00d4aa" stroke-width="2"/>
+      <text x="400" y="190" text-anchor="middle" fill="#00d4aa" font-size="14" font-family="Orbitron" font-weight="700">SWITCH CISCO</text>
+      <text x="400" y="210" text-anchor="middle" fill="#6b7a9a" font-size="10" font-family="Share Tech Mono">Capa 2 · 24 Puertos</text>
+      <text x="400" y="230" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">VLAN 1 (default) · VLAN 10 · VLAN 20 · VLAN 30</text>
+      <text x="400" y="248" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">flash:vlan.dat</text>
+
+      <!-- VLAN 10 - Red Ventas -->
+      <rect x="50" y="20" width="160" height="120" rx="6" fill="#0d1220" stroke="#38bdf8" stroke-width="1.5"/>
+      <text x="130" y="45" text-anchor="middle" fill="#38bdf8" font-size="12" font-family="Orbitron" font-weight="700">VLAN 10</text>
+      <text x="130" y="65" text-anchor="middle" fill="#6b7a9a" font-size="10" font-family="Share Tech Mono">RED VENTAS</text>
+      <text x="130" y="85" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">192.168.10.0/24</text>
+      <text x="130" y="105" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">PC1 · PC2 · PC3</text>
+      <text x="130" y="125" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">Fa0/1-3</text>
+
+      <!-- VLAN 20 - Red IT -->
+      <rect x="320" y="20" width="160" height="120" rx="6" fill="#0d1220" stroke="#a78bfa" stroke-width="1.5"/>
+      <text x="400" y="45" text-anchor="middle" fill="#a78bfa" font-size="12" font-family="Orbitron" font-weight="700">VLAN 20</text>
+      <text x="400" y="65" text-anchor="middle" fill="#6b7a9a" font-size="10" font-family="Share Tech Mono">RED IT</text>
+      <text x="400" y="85" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">192.168.20.0/24</text>
+      <text x="400" y="105" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">PC4 · PC5 · PC6</text>
+      <text x="400" y="125" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">Fa0/4-6</text>
+
+      <!-- VLAN 30 - Red Management -->
+      <rect x="590" y="20" width="160" height="120" rx="6" fill="#0d1220" stroke="#fbbf24" stroke-width="1.5"/>
+      <text x="670" y="45" text-anchor="middle" fill="#fbbf24" font-size="12" font-family="Orbitron" font-weight="700">VLAN 30</text>
+      <text x="670" y="65" text-anchor="middle" fill="#6b7a9a" font-size="10" font-family="Share Tech Mono">MANAGEMENT</text>
+      <text x="670" y="85" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">192.168.30.0/24</text>
+      <text x="670" y="105" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">SVI · SSH · SNMP</text>
+      <text x="670" y="125" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">Fa0/7-8</text>
+
+      <!-- VLAN 99 - Native -->
+      <rect x="50" y="280" width="160" height="120" rx="6" fill="#0d1220" stroke="#f87171" stroke-width="1.5"/>
+      <text x="130" y="305" text-anchor="middle" fill="#f87171" font-size="12" font-family="Orbitron" font-weight="700">VLAN 99</text>
+      <text x="130" y="325" text-anchor="middle" fill="#6b7a9a" font-size="10" font-family="Share Tech Mono">NATIVE VLAN</text>
+      <text x="130" y="345" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">Seguridad: No asignar</text>
+      <text x="130" y="365" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">Trunk ports only</text>
+      <text x="130" y="385" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">Gi0/1 · Gi0/2</text>
+
+      <!-- Trunk -->
+      <rect x="590" y="280" width="160" height="120" rx="6" fill="#0d1220" stroke="#34d399" stroke-width="1.5"/>
+      <text x="670" y="305" text-anchor="middle" fill="#34d399" font-size="12" font-family="Orbitron" font-weight="700">TRUNK</text>
+      <text x="670" y="325" text-anchor="middle" fill="#6b7a9a" font-size="10" font-family="Share Tech Mono">802.1Q</text>
+      <text x="670" y="345" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">Múltiples VLANs</text>
+      <text x="670" y="365" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">Tagged frames</text>
+      <text x="670" y="385" text-anchor="middle" fill="#4a5780" font-size="9" font-family="Share Tech Mono">Gi0/1 · Gi0/2</text>
+
+      <!-- Connections to switch -->
+      <line x1="130" y1="140" x2="340" y2="180" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="4,2"/>
+      <line x1="400" y1="140" x2="400" y2="160" stroke="#a78bfa" stroke-width="1.5" stroke-dasharray="4,2"/>
+      <line x1="670" y1="140" x2="460" y2="180" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="4,2"/>
+      <line x1="130" y1="280" x2="340" y2="240" stroke="#f87171" stroke-width="1.5" stroke-dasharray="4,2"/>
+      <line x1="670" y1="280" x2="460" y2="240" stroke="#34d399" stroke-width="1.5" stroke-dasharray="4,2"/>
+
+      <!-- Broadcast domains -->
+      <text x="400" y="400" text-anchor="middle" fill="#374060" font-size="9" font-family="Share Tech Mono">Cada VLAN = Dominio de Broadcast Independiente · Sin comunicación L2 entre VLANs</text>
+    </svg>
+  </div>
+
+  <h3 class="sub-title">¿Qué es una VLAN y por qué usarla?</h3>
+  <div class="concept-grid">
+    <div class="concept-card highlight">
+      <div class="concept-icon">🔒</div>
+      <h3>Segmentación de Seguridad</h3>
+      <p>Los dispositivos en VLANs diferentes no se comunican directamente en Capa 2. Requieren un router o switch L3 (Inter-VLAN Routing) para comunicarse.</p>
+    </div>
+    <div class="concept-card highlight">
+      <div class="concept-icon">📡</div>
+      <h3>Control de Broadcast</h3>
+      <p>Cada VLAN es un dominio de broadcast independiente. El tráfico broadcast de una VLAN no inunda las demás, mejorando rendimiento.</p>
+    </div>
+    <div class="concept-card highlight">
+      <div class="concept-icon">🏢</div>
+      <h3>Flexibilidad Organizativa</h3>
+      <p>Un usuario puede estar en cualquier VLAN independientemente de su ubicación física. El departamento de Ventas en el piso 3 y el piso 7 comparten la misma VLAN.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">⚡</div>
+      <h3>Reducción de Costos</h3>
+      <p>Un solo switch físico puede reemplazar múltiples switches independientes, reduciendo hardware y administración.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🎯</div>
+      <h3>Calidad de Servicio (QoS)</h3>
+      <p>Políticas de QoS pueden aplicarse por VLAN, priorizando tráfico de voz (VLAN de voz) sobre datos.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🔧</div>
+      <h3>Gestión Simplificada</h3>
+      <p>Cambios de red lógica (mover usuarios entre VLANs) se hacen por software sin mover cables físicos.</p>
+    </div>
+  </div>
+
+  <h3 class="sub-title">Tipos de Puertos en VLANs</h3>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead><tr><th>Tipo de Puerto</th><th>Modo</th><th>VLANs Permitidas</th><th>Tramas</th><th>Uso</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Access Port</strong></td><td><code>switchport mode access</code></td><td>1 VLAN (configurada)</td><td>Untagged (sin etiqueta)</td><td>Conexión a hosts (PCs, servidores)</td></tr>
+        <tr><td><strong>Trunk Port</strong></td><td><code>switchport mode trunk</code></td><td>Múltiples VLANs (todas o lista)</td><td>Tagged (802.1Q) + Native untagged</td><td>Conexión switch-to-switch o router</td></tr>
+        <tr><td><strong>Dynamic Auto</strong></td><td><code>switchport mode dynamic auto</code></td><td>Negocia con vecino</td><td>Depende de negociación DTP</td><td>Default en algunos switches (no recomendado)</td></tr>
+        <tr><td><strong>Dynamic Desirable</strong></td><td><code>switchport mode dynamic desirable</code></td><td>Negocia activamente trunk</td><td>Depende de negociación DTP</td><td>Intenta formar trunk (no recomendado)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚠️ VLAN 1 — Consideraciones Críticas de Seguridad</div>
+    <p>La <strong>VLAN 1</strong> es la VLAN por defecto en todos los switches Cisco y tiene características especiales:</p>
+    <ul>
+      <li>No puede ser renombrada ni eliminada</li>
+      <li>Es la VLAN nativa por defecto en trunks (cambiar por seguridad)</li>
+      <li>El tráfico de control (CDP, VTP, DTP, PAgP) viaja por VLAN 1</li>
+      <li>Es el target principal de ataques VLAN Hopping</li>
+      <li><strong>Mejor práctica:</strong> No asignar usuarios a VLAN 1, usar VLAN 99 o similar como native</li>
+    </ul>
+  </div>
+
+  <h3 class="sub-title">Rango de VLANs en Cisco IOS</h3>
+  <div class="code-block">
+    <div class="code-label">Clasificación y uso de rangos</div>
+    <pre><code><span class="cmd-comment">! === RANGOS DE VLAN EN CISCO IOS ===</span>
+
+<span class="cmd-comment">! 1. VLANs Normales (Standard Range):</span>
+<span class="cmd-comment">!    1 - 1005</span>
+<span class="cmd-comment">!    Almacenadas en vlan.dat (flash)</span>
+<span class="cmd-comment">!    VLAN 1: Default, no se puede eliminar</span>
+<span class="cmd-comment">!    VLAN 1002-1005: Reservadas para FDDI/Token Ring (legacy)</span>
+
+<span class="cmd-comment">! 2. VLANs Extendidas (Extended Range):</span>
+<span class="cmd-comment">!    1006 - 4094</span>
+<span class="cmd-comment">!    Requieren VTP transparent mode o VTPv3</span>
+<span class="cmd-comment">!    Almacenadas en running-config únicamente</span>
+<span class="cmd-comment">!    Menos funciones disponibles (no VTP pruning)</span>
+
+<span class="cmd-comment">! 3. VLANs Reservadas:</span>
+<span class="cmd-comment">!    0, 4095: Reservadas del sistema, no usables</span>
+<span class="cmd-comment">!    1002-1005: FDDI-default, Token-Ring-default, etc.</span>
+
+SW1# show vlan brief
+<span class="cmd-output">VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active    Fa0/1, Fa0/2, Fa0/3, Fa0/4...
+10   VENTAS                           active    
+20   IT                               active    
+30   MANAGEMENT                       active    
+99   NATIVE                           active    
+1002 fddi-default                     act/unsup 
+1003 token-ring-default               act/unsup 
+1004 fddinet-default                  act/unsup 
+1005 trnet-default                    act/unsup </span></code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 2 — CREACIÓN DE VLANs
+══════════════════════════════════════════════ -->
+<div id="tab-creacion" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Creación y Eliminación de VLANs</h2>
+  <p>Existen dos métodos para crear VLANs en Cisco IOS: el <strong>modo de configuración global</strong> (más común) y el <strong>modo de base de datos VLAN</strong> (obsoleto, solo mencionado por compatibilidad).</p>
+
+  <h3 class="sub-title">Método 1: Configuración Global (Recomendado)</h3>
+  <div class="code-block">
+    <div class="code-label">Creación de VLANs paso a paso</div>
+    <pre><code><span class="cmd-comment">! === CREAR VLAN INDIVIDUAL ===</span>
+SW1# configure terminal
+SW1(config)# vlan 10
+SW1(config-vlan)# name VENTAS
+SW1(config-vlan)# state active              <span class="cmd-comment">! Opcional: active (default) o suspend</span>
+SW1(config-vlan)# exit
+
+<span class="cmd-comment">! === CREAR MÚLTIPLES VLANs ===</span>
+SW1(config)# vlan 20
+SW1(config-vlan)# name IT
+SW1(config-vlan)# exit
+SW1(config)# vlan 30
+SW1(config-vlan)# name MANAGEMENT
+SW1(config-vlan)# exit
+
+<span class="cmd-comment">! === CREAR RANGO DE VLANs (IOS moderno) ===</span>
+SW1(config)# vlan 40,50,60                  <span class="cmd-comment">! VLANs individuales</span>
+SW1(config)# vlan 70-80                    <span class="cmd-comment">! Rango consecutivo</span>
+SW1(config-vlan)# exit
+
+<span class="cmd-comment">! === VERIFICAR CREACIÓN ===</span>
+SW1# show vlan brief
+SW1# show vlan id 10
+SW1# show vlan name VENTAS
+
+<span class="cmd-comment">! === ELIMINAR VLAN ===</span>
+SW1(config)# no vlan 10                      <span class="cmd-comment">! Elimina VLAN 10</span>
+<span class="cmd-comment">! ⚠️ ADVERTENCIA: Los puertos asignados a VLAN eliminada</span>
+<span class="cmd-comment">!    vuelven a VLAN 1 (default). NO se pierden, pero quedan</span>
+<span class="cmd-comment">!    en VLAN 1 inesperadamente.</span>
+
+<span class="cmd-comment">! === ELIMINAR RANGO DE VLANs ===</span>
+SW1(config)# no vlan 70-80
+SW1(config)# no vlan 40,50,60</code></pre>
+  </div>
+
+  <h3 class="sub-title">Método 2: Base de Datos VLAN (Obsoleto)</h3>
+  <div class="code-block">
+    <div class="code-label">Comando antiguo — No usar en producción</div>
+    <pre><code><span class="cmd-comment">! === VLAN DATABASE MODE (OBSOLETO) ===</span>
+<span class="cmd-comment">! Solo para switches antiguos o referencia histórica</span>
+<span class="cmd-comment">! No disponible en IOS moderno (15.x, IOS-XE)</span>
+
+SW1# vlan database
+SW1(vlan)# vlan 10 name VENTAS
+SW1(vlan)# vlan 20 name IT
+SW1(vlan)# apply                            <span class="cmd-comment">! Aplicar cambios</span>
+SW1(vlan)# exit                             <span class="cmd-comment">! Guardar y salir</span>
+
+<span class="cmd-comment">! ⚠️ Este modo está DEPRECATED. Usar siempre configure terminal.</span></code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Tip del Examen CCNA</div>
+    <p>Al crear una VLAN, el switch automáticamente crea una <strong>SVI (Switch Virtual Interface)</strong> asociada si tienes configurado <code>ip routing</code> (switch L3). Sin embargo, la SVI no aparece hasta que configuras <code>interface vlan X</code> explícitamente.</p>
+  </div>
+
+  <h3 class="sub-title">Configuración de VLANs Extendidas (1006-4094)</h3>
+  <div class="code-block">
+    <div class="code-label">Requisitos especiales para VLANs extendidas</div>
+    <pre><code><span class="cmd-comment">! === VLANs EXTENDIDAS ===</span>
+<span class="cmd-comment">! Requieren VTP mode transparent o VTPv3</span>
+<span class="cmd-comment">! No se almacenan en vlan.dat, solo en running-config</span>
+
+SW1(config)# vtp mode transparent           <span class="cmd-comment">! Desactivar VTP</span>
+SW1(config)# vlan 2000
+SW1(config-vlan)# name DATACENTER-EXT
+SW1(config-vlan)# exit
+
+<span class="cmd-comment">! Verificación:</span>
+SW1# show vlan id 2000
+<span class="cmd-output">VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+2000 DATACENTER-EXT                   active    
+
+<span class="cmd-comment">! ⚠️ Si VTP está en server/client mode, VLANs extendidas</span>
+<span class="cmd-comment">!    no se pueden crear. Error: "VTP VLAN configuration not allowed"</span></code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 3 — ASIGNACIÓN DE PUERTOS
+══════════════════════════════════════════════ -->
+<div id="tab-asignacion" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Asignación de Puertos a VLANs</h2>
+  <p>Los puertos de acceso (access ports) conectan dispositivos finales (PCs, impresoras, servidores) a una VLAN específica. Cada puerto de acceso pertenece a una única VLAN.</p>
+
+  <h3 class="sub-title">Configuración de Puerto de Acceso</h3>
+  <div class="code-block">
+    <div class="code-label">Paso a paso: Asignar puerto a VLAN</div>
+    <pre><code><span class="cmd-comment">! === CONFIGURACIÓN BÁSICA DE PUERTO DE ACCESO ===</span>
+
+SW1(config)# interface FastEthernet0/1
+SW1(config-if)# description PC-VENTAS-01
+SW1(config-if)# switchport mode access       <span class="cmd-comment">! Fijar modo access</span>
+SW1(config-if)# switchport access vlan 10    <span class="cmd-comment">! Asignar a VLAN 10</span>
+SW1(config-if)# no shutdown                  <span class="cmd-comment">! Activar interfaz</span>
+
+<span class="cmd-comment">! === CONFIGURACIÓN MÚLTIPLE (RANGO DE PUERTOS) ===</span>
+SW1(config)# interface range FastEthernet0/1 - 12
+SW1(config-if-range)# switchport mode access
+SW1(config-if-range)# switchport access vlan 10
+SW1(config-if-range)# no shutdown
+
+<span class="cmd-comment">! === RANGO DISCONTINUO ===</span>
+SW1(config)# interface range FastEthernet0/1 - 6, FastEthernet0/13 - 18
+SW1(config-if-range)# switchport mode access
+SW1(config-if-range)# switchport access vlan 20
+
+<span class="cmd-comment">! === MACROS DE INTERFAZ (Interface Range Macro) ===</span>
+SW1(config)# define interface-range VENTAS Fa0/1-12
+SW1(config)# define interface-range IT Fa0/13-24
+
+SW1(config)# interface range macro VENTAS
+SW1(config-if-range)# switchport access vlan 10
+
+<span class="cmd-comment">! === VERIFICAR ASIGNACIÓN ===</span>
+SW1# show vlan brief
+SW1# show interfaces FastEthernet0/1 switchport
+SW1# show mac address-table interface FastEthernet0/1</code></pre>
+  </div>
+
+  <h3 class="sub-title">VLAN de Voz (Voice VLAN)</h3>
+  <div class="code-block">
+    <div class="code-label">Configuración para VoIP y Cisco IP Phones</div>
+    <pre><code><span class="cmd-comment">! === VOICE VLAN — Puerto con PC + IP Phone ===</span>
+<span class="cmd-comment">! Un puerto puede tener VLAN de datos y VLAN de voz simultáneamente</span>
+<span class="cmd-comment">! El IP Phone actúa como mini-switch de 2 puertos</span>
+
+SW1(config)# interface FastEthernet0/10
+SW1(config-if)# description IP-PHONE-PC
+SW1(config-if)# switchport mode access
+SW1(config-if)# switchport access vlan 10       <span class="cmd-comment">! VLAN de datos (PC)</span>
+SW1(config-if)# switchport voice vlan 100       <span class="cmd-comment">! VLAN de voz (VoIP)</span>
+SW1(config-if)# spanning-tree portfast           <span class="cmd-comment">! Para puertos de host</span>
+SW1(config-if)# no shutdown
+
+<span class="cmd-comment">! === VERIFICAR VOICE VLAN ===</span>
+SW1# show interfaces FastEthernet0/10 switchport
+<span class="cmd-output">Name: Fa0/10
+Switchport: Enabled
+Administrative Mode: static access
+Operational Mode: static access
+Administrative Trunking Encapsulation: dot1q
+Operational Trunking Encapsulation: native
+Negotiation of Trunking: Off
+Access Mode VLAN: 10 (VENTAS)
+Voice VLAN: 100
+...</span>
+
+<span class="cmd-comment">! === LLDP PARA DETECTAR PHONES ===</span>
+SW1(config)# lldp run                          <span class="cmd-comment">! Habilitar LLDP global</span>
+SW1(config)# interface FastEthernet0/10
+SW1(config-if)# lldp transmit
+SW1(config-if)# lldp receive</code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚠️ Error Común del Examen: VLAN Inexistente</div>
+    <p>Si intentas asignar un puerto a una VLAN que <strong>no existe</strong>, el switch la crea automáticamente en algunas versiones de IOS, pero en otras muestra error. <strong>Mejor práctica:</strong> Crear la VLAN explícitamente antes de asignar puertos.</p>
+    <code>SW1(config-if)# switchport access vlan 99<br>% Access VLAN does not exist. Creating vlan 99</code>
+  </div>
+
+  <h3 class="sub-title">Restablecer Puerto a Valores Default</h3>
+  <div class="code-block">
+    <div class="code-label">Comandos para resetear configuración de puerto</div>
+    <pre><code><span class="cmd-comment">! === RESETEAR PUERTO A DEFAULT ===</span>
+SW1(config)# interface FastEthernet0/1
+SW1(config-if)# no switchport access vlan       <span class="cmd-comment">! Quitar VLAN asignada</span>
+SW1(config-if)# no switchport mode             <span class="cmd-comment">! Volver a dynamic auto</span>
+SW1(config-if)# no description                 <span class="cmd-comment">! Quitar descripción</span>
+
+<span class="cmd-comment">! === O USAR DEFAULT INTERFACE (MÁS LIMPIO) ===</span>
+SW1(config)# default interface FastEthernet0/1
+<span class="cmd-output">Interface FastEthernet0/1 reset to default configuration</span>
+
+<span class="cmd-comment">! Verificar:</span>
+SW1# show interfaces FastEthernet0/1 switchport
+<span class="cmd-output">Access Mode VLAN: 1 (default)</span></code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 4 — TRUNKING 802.1Q
+══════════════════════════════════════════════ -->
+<div id="tab-trunk" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Trunking 802.1Q: Comandos y Configuración</h2>
+  <p>Los puertos trunk transportan tráfico de múltiples VLANs entre switches. Cisco utiliza el estándar IEEE 802.1Q para etiquetar (tag) las tramas Ethernet con el ID de VLAN.</p>
+
+  <div class="diagram-box">
+    <div class="diagram-title">Encapsulación 802.1Q en Trunk</div>
+    <svg viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:800px;">
+      <!-- Native VLAN -->
+      <rect x="50" y="30" width="200" height="80" rx="6" fill="#0d1220" stroke="#f87171" stroke-width="1.5"/>
+      <text x="150" y="55" text-anchor="middle" fill="#f87171" font-size="11" font-family="Orbitron" font-weight="700">NATIVE VLAN (99)</text>
+      <text x="150" y="75" text-anchor="middle" fill="#6b7a9a" font-size="9" font-family="Share Tech Mono">Trama Ethernet Original</text>
+      <text x="150" y="92" text-anchor="middle" fill="#4a5780" font-size="8" font-family="Share Tech Mono">Sin etiqueta · Untagged</text>
+
+      <!-- Tagged VLANs -->
+      <rect x="300" y="30" width="200" height="80" rx="6" fill="#0d1220" stroke="#38bdf8" stroke-width="1.5"/>
+      <text x="400" y="55" text-anchor="middle" fill="#38bdf8" font-size="11" font-family="Orbitron" font-weight="700">VLANs 10,20,30</text>
+      <text x="400" y="75" text-anchor="middle" fill="#6b7a9a" font-size="9" font-family="Share Tech Mono">Trama + Tag 802.1Q</text>
+      <text x="400" y="92" text-anchor="middle" fill="#4a5780" font-size="8" font-family="Share Tech Mono">4 bytes extra · Tagged</text>
+
+      <!-- 802.1Q Tag Detail -->
+      <rect x="550" y="30" width="220" height="120" rx="6" fill="#0d1220" stroke="#a78bfa" stroke-width="1.5"/>
+      <text x="660" y="55" text-anchor="middle" fill="#a78bfa" font-size="10" font-family="Orbitron" font-weight="700">TAG 802.1Q (4 bytes)</text>
+      <text x="660" y="75" text-anchor="middle" fill="#6b7a9a" font-size="8" font-family="Share Tech Mono">TPID: 0x8100 (2 bytes)</text>
+      <text x="660" y="92" text-anchor="middle" fill="#6b7a9a" font-size="8" font-family="Share Tech Mono">PCP: Prioridad (3 bits)</text>
+      <text x="660" y="109" text-anchor="middle" fill="#6b7a9a" font-size="8" font-family="Share Tech Mono">CFI: Format Indicator (1 bit)</text>
+      <text x="660" y="126" text-anchor="middle" fill="#00d4aa" font-size="9" font-family="Share Tech Mono" font-weight="700">VID: VLAN ID (12 bits) = 0-4095</text>
+      <text x="660" y="143" text-anchor="middle" fill="#4a5780" font-size="8" font-family="Share Tech Mono">4096 valores posibles</text>
+
+      <!-- Trunk Link -->
+      <rect x="200" y="200" width="400" height="60" rx="8" fill="#0d1220" stroke="#00d4aa" stroke-width="2"/>
+      <text x="400" y="225" text-anchor="middle" fill="#00d4aa" font-size="12" font-family="Orbitron" font-weight="700">ENLACE TRUNK 802.1Q</text>
+      <text x="400" y="245" text-anchor="middle" fill="#6b7a9a" font-size="9" font-family="Share Tech Mono">Switch A Gi0/1 ←————→ Gi0/1 Switch B</text>
+
+      <!-- Arrows -->
+      <line x1="150" y1="110" x2="300" y2="200" stroke="#f87171" stroke-width="1.5" marker-end="url(#arrowtrunk)"/>
+      <line x1="400" y1="110" x2="400" y2="200" stroke="#38bdf8" stroke-width="1.5" marker-end="url(#arrowtrunk)"/>
+      <line x1="660" y1="150" x2="500" y2="200" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#arrowtrunk)"/>
+
+      <defs>
+        <marker id="arrowtrunk" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#00d4aa"/>
+        </marker>
+      </defs>
+    </svg>
+  </div>
+
+  <h3 class="sub-title">Configuración de Puerto Trunk</h3>
+  <div class="code-block">
+    <div class="code-label">Comandos esenciales de trunking</div>
+    <pre><code><span class="cmd-comment">! === CONFIGURACIÓN BÁSICA DE TRUNK ===</span>
+
+SW1(config)# interface GigabitEthernet0/1
+SW1(config-if)# description TRUNK-TO-SW2
+SW1(config-if)# switchport mode trunk        <span class="cmd-comment">! Forzar modo trunk</span>
+SW1(config-if)# switchport trunk encapsulation dot1q   <span class="cmd-comment">! 802.1Q (estándar)</span>
+<span class="cmd-comment">! Nota: En switches nuevos, dot1q es el único método disponible</span>
+<span class="cmd-comment">! ISL (Inter-Switch Link) está obsoleto desde IOS 12.2(25)</span>
+
+<span class="cmd-comment">! === CONFIGURAR VLAN NATIVA (SEGURIDAD) ===</span>
+SW1(config-if)# switchport trunk native vlan 99
+<span class="cmd-comment">! ⚠️ La VLAN nativa debe coincidir EN AMBOS LADOS del trunk</span>
+<span class="cmd-comment">!    Mismatch de native VLAN = vulnerabilidad de seguridad</span>
+
+<span class="cmd-comment">! === LIMITAR VLANs EN EL TRUNK (SEGURIDAD) ===</span>
+SW1(config-if)# switchport trunk allowed vlan 10,20,30,99
+<span class="cmd-comment">! Solo estas VLANs pueden pasar por el trunk</span>
+<span class="cmd-comment">! VLANs no listadas están bloqueadas</span>
+
+<span class="cmd-comment">! === AGREGAR VLAN A TRUNK EXISTENTE ===</span>
+SW1(config-if)# switchport trunk allowed vlan add 40
+<span class="cmd-comment">! Usar "add" para no sobrescribir la lista existente</span>
+
+<span class="cmd-comment">! === REMOVER VLAN DE TRUNK ===</span>
+SW1(config-if)# switchport trunk allowed vlan remove 20
+
+<span class="cmd-comment">! === EXCEPTO (Método alternativo) ===</span>
+SW1(config-if)# switchport trunk allowed vlan except 1,1002-1005
+<span class="cmd-comment">! Permite todas EXCEPTO las listadas</span>
+
+<span class="cmd-comment">! === VERIFICAR CONFIGURACIÓN ===</span>
+SW1# show interfaces GigabitEthernet0/1 trunk
+SW1# show interfaces GigabitEthernet0/1 switchport
+SW1# show interfaces trunk</code></pre>
+  </div>
+
+  <h3 class="sub-title">Configuración de Trunk en Router (Router-on-a-Stick)</h3>
+  <div class="code-block">
+    <div class="code-label">Inter-VLAN Routing básico</div>
+    <pre><code><span class="cmd-comment">! === ROUTER-ON-A-STICK ===</span>
+<span class="cmd-comment">! Un solo interfaz física del router maneja múltiples VLANs</span>
+<span class="cmd-comment">! mediante subinterfaces lógicas</span>
+
+R1(config)# interface GigabitEthernet0/0
+R1(config-if)# no shutdown                   <span class="cmd-comment">! Activar interfaz física</span>
+
+<span class="cmd-comment">! Subinterfaz para VLAN 10:</span>
+R1(config)# interface GigabitEthernet0/0.10
+R1(config-subif)# description VLAN-10-VENTAS
+R1(config-subif)# encapsulation dot1Q 10      <span class="cmd-comment">! Tag 802.1Q VLAN 10</span>
+R1(config-subif)# ip address 192.168.10.1 255.255.255.0
+R1(config-subif)# exit
+
+<span class="cmd-comment">! Subinterfaz para VLAN 20:</span>
+R1(config)# interface GigabitEthernet0/0.20
+R1(config-subif)# description VLAN-20-IT
+R1(config-subif)# encapsulation dot1Q 20
+R1(config-subif)# ip address 192.168.20.1 255.255.255.0
+R1(config-subif)# exit
+
+<span class="cmd-comment">! Subinterfaz para VLAN 99 (Native):</span>
+R1(config)# interface GigabitEthernet0/0.99
+R1(config-subif)# description NATIVE-VLAN
+R1(config-subif)# encapsulation dot1Q 99 native  <span class="cmd-comment">! Keyword "native"</span>
+R1(config-subif)# ip address 192.168.99.1 255.255.255.0
+
+<span class="cmd-comment">! Verificación:</span>
+R1# show ip interface brief
+R1# show vlans</code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚠️ Trampa del Examen: Native VLAN Mismatch</div>
+    <p>Si un switch tiene <code>switchport trunk native vlan 99</code> y el otro lado tiene el default (VLAN 1) o un valor diferente:</p>
+    <ul>
+      <li>El trunk se forma (estado up/up)</li>
+      <li>Pero el tráfico untagged se "filtra" a la VLAN incorrecta</li>
+      <li>Esto crea una <strong>vulnerabilidad de VLAN hopping</strong></li>
+      <li>El switch genera mensajes de error: <code>%CDP-4-NATIVE_VLAN_MISMATCH</code></li>
+    </ul>
+    <p><strong>Solución:</strong> Configurar explícitamente la misma native VLAN en ambos lados, o deshabilitar CDP si no es necesario (no recomendado).</p>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 5 — DTP Y VTP
+══════════════════════════════════════════════ -->
+<div id="tab-dtp" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">DTP (Dynamic Trunking Protocol) y VTP (VLAN Trunking Protocol)</h2>
+  <p>DTP negocia automáticamente el estado trunk entre switches Cisco. VTP distribuye información de VLANs entre switches en un dominio. Ambos son propietarios de Cisco y requieren cuidado en configuración.</p>
+
+  <h3 class="sub-title">Modos DTP y Comportamiento de Negociación</h3>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead><tr><th>Modo Local</th><th>Modo Vecino Access</th><th>Modo Vecino Trunk</th><th>Modo Vecino Dynamic Auto</th><th>Modo Vecino Dynamic Desirable</th></tr></thead>
+      <tbody>
+        <tr><td><strong>access</strong></td><td>Access</td><td>Access</td><td>Access</td><td>Access</td></tr>
+        <tr><td><strong>trunk</strong> (nonegotiate)</td><td>Access</td><td>Trunk</td><td>Trunk</td><td>Trunk</td></tr>
+        <tr><td><strong>dynamic auto</strong></td><td>Access</td><td>Trunk</td><td>Access</td><td>Trunk</td></tr>
+        <tr><td><strong>dynamic desirable</strong></td><td>Access</td><td>Trunk</td><td>Trunk</td><td>Trunk</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">Configuración DTP y deshabilitación</div>
+    <pre><code><span class="cmd-comment">! === CONFIGURAR MODO DTP ===</span>
+
+<span class="cmd-comment">! Forzar trunk sin negociación (MÁS SEGURO):</span>
+SW1(config)# interface GigabitEthernet0/1
+SW1(config-if)# switchport mode trunk
+SW1(config-if)# switchport nonegotiate       <span class="cmd-comment">! Desactivar DTP</span>
+<span class="cmd-comment">! El puerto NO envía tramas DTP, no negocia</span>
+
+<span class="cmd-comment">! Modo dynamic auto (default en algunos switches):</span>
+SW1(config-if)# switchport mode dynamic auto
+<span class="cmd-comment">! Espera que el vecino inicie trunk. Si vecino es trunk/desirable → trunk</span>
+<span class="cmd-comment">! Si vecino es auto → access</span>
+
+<span class="cmd-comment">! Modo dynamic desirable:</span>
+SW1(config-if)# switchport mode dynamic desirable
+<span class="cmd-comment">! Activamente intenta formar trunk. Más proactivo que auto.</span>
+
+<span class="cmd-comment">! === VERIFICAR ESTADO DTP ===</span>
+SW1# show dtp interface GigabitEthernet0/1
+<span class="cmd-output">DTP information for GigabitEthernet0/1:
+    TOS/TAS/TNS:                  TRUNK/ACCESS/TRUNK
+    TOT/TAT/TNT:                  802.1Q/802.1Q/802.1Q
+    Neighbor address:             001122334455
+    Neighbor port:                  GigabitEthernet0/1
+    Hello timer expiration:         18
+    Access timer expiration:        never
+    Negotiation timer expiration:   never
+    Trunk timer expiration:         never</span>
+
+<span class="cmd-comment">! === DESHABILITAR DTP GLOBALMENTE ===</span>
+<span class="cmd-comment">! No existe comando global, se hace por interfaz:</span>
+SW1(config)# interface range GigabitEthernet0/1-2
+SW1(config-if-range)# switchport mode trunk
+SW1(config-if-range)# switchport nonegotiate</code></pre>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚠️ Advertencia de Seguridad: Deshabilitar DTP</div>
+    <p>Dejar DTP activado permite que un atacante conecte un switch falso y negocie trunk, obteniendo acceso a todas las VLANs. <strong>Mejor práctica de seguridad:</strong></p>
+    <ol>
+      <li>Configurar puertos de acceso explícitamente con <code>switchport mode access</code></li>
+      <li>Configurar puertos trunk explícitamente con <code>switchport mode trunk</code></li>
+      <li>Deshabilitar DTP con <code>switchport nonegotiate</code> en trunks</li>
+      <li>Configurar puertos no utilizados en modo access VLAN dummy y shutdown</li>
+         </ol>
+  </div>
+
+  <h3 class="sub-title">VTP (VLAN Trunking Protocol)</h3>
+  <div class="code-block">
+    <div class="code-label">Configuración VTP para gestión centralizada</div>
+    <pre><code><span class="cmd-comment">! === VTP MODES ===</span>
+<span class="cmd-comment">! Server:   Puede crear, modificar, eliminar VLANs. Anuncia a clientes.</span>
+<span class="cmd-comment">! Client:   No puede modificar VLANs. Sincroniza con server.</span>
+<span class="cmd-comment">! Transparent: No participa en VTP pero reenvía anuncios. Mantiene VLANs locales.</span>
+<span class="cmd-comment">! Off:      Desactivado completamente (IOS moderno).</span>
+
+<span class="cmd-comment">! === CONFIGURAR VTP SERVER ===</span>
+SW1(config)# vtp domain CCNA-LAB
+SW1(config)# vtp mode server
+SW1(config)# vtp version 2                    <span class="cmd-comment">! o version 3 para IPv6/Extended</span>
+SW1(config)# vtp password SecureVTP123       <span class="cmd-comment">! Opcional: autenticación MD5</span>
+
+<span class="cmd-comment">! === CONFIGURAR VTP CLIENT ===</span>
+SW2(config)# vtp domain CCNA-LAB
+SW2(config)# vtp mode client
+SW2(config)# vtp password SecureVTP123
+
+<span class="cmd-comment">! === CONFIGURAR VTP TRANSPARENT ===</span>
+SW3(config)# vtp domain CCNA-LAB
+SW3(config)# vtp mode transparent
+<span class="cmd-comment">! Transparent reenvía anuncios VTP pero no sincroniza su base de datos</span>
+
+<span class="cmd-comment">! === VERIFICAR VTP ===</span>
+SW1# show vtp status
+<span class="cmd-output">VTP Version capable             : 1 to 3
+VTP version running             : 2
+VTP Domain Name                 : CCNA-LAB
+VTP Pruning Mode                : Disabled
+VTP Traps Generation            : Disabled
+Device ID                       : a0b1.c2d3.e4f5
+
+Configuration last modified by 0.0.0.0 at 0-0-00 00:00:00
+Local updater ID is 192.168.1.1 on interface Vl1
+
+Feature VLAN:
+--------------
+VTP Operating Mode                : Server
+Maximum VLANs supported locally : 1005
+Number of existing VLANs        : 8
+Configuration Revision          : 12
+MD5 digest                      : 0xAB 0xCD 0xEF...</span>
+
+<span class="cmd-comment">! === VTP PRUNING (Optimización) ===</span>
+SW1(config)# vtp pruning                      <span class="cmd-comment">! Habilitar pruning global</span>
+<span class="cmd-comment">! Evita enviar tráfico broadcast por trunks donde no hay puertos</span>
+<span class="cmd-comment">! de esa VLAN. Reduce tráfico innecesario.</span>
+
+<span class="cmd-comment">! === VTPv3 (Moderno, más seguro) ===</span>
+SW1(config)# vtp version 3
+SW1(config)# vtp domain CCNA-LAB
+SW1(config)# vtp mode server
+<span class="cmd-comment">! VTPv3 soporta VLANs extendidas, private VLANs, y es más seguro</span></code></pre>
+  </div>
+
+  <div class="attack-diagram" style="border-color:rgba(248,113,113,0.3);">
+    <div class="diagram-title" style="color:#f87171;">⚠️ VTP VULNERABILIDAD: El "VTP Bomb"</div>
+    <div class="attack-steps">
+      <div class="attack-step">
+        <span class="attack-num" style="border-color:#f87171;color:#f87171;background:rgba(248,113,113,0.1);">1</span>
+        <span style="color:#8294b8;">Un atacante conecta un switch con VTP server y <strong>configuration revision más alto</strong> que el server legítimo.</span>
+      </div>
+      <div class="attack-step">
+        <span class="attack-num" style="border-color:#f87171;color:#f87171;background:rgba(248,113,113,0.1);">2</span>
+        <span style="color:#8294b8;">Los clientes y servers con menor revision <strong>sobrescriben su base de datos VLAN</strong> con la del atacante.</span>
+      </div>
+      <div class="attack-step">
+        <span class="attack-num" style="border-color:#f87171;color:#f87171;background:rgba(248,113,113,0.1);">3</span>
+        <span style="color:#8294b8;">Resultado: <strong>Todas las VLANs pueden ser eliminadas</strong> o reemplazadas, causando denegación de servicio total.</span>
+      </div>
+      <div class="attack-step">
+        <span class="attack-num" style="border-color:#f87171;color:#f87171;background:rgba(248,113,113,0.1);">4</span>
+        <span style="color:#8294b8;"><strong>Protección:</strong> Usar VTP password, VTP transparent en switches de acceso, o desactivar VTP completamente.</span>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 6 — VERIFICACIÓN
+══════════════════════════════════════════════ -->
+<div id="tab-verificacion" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Comandos de Verificación para VLANs</h2>
+  <p>El troubleshooting de VLANs requiere dominar los comandos de verificación. Aquí están todos los comandos esenciales con explicación detallada de su salida.</p>
+
+  <h3 class="sub-title">show vlan — El comando fundamental</h3>
+  <div class="code-block">
+    <div class="code-label">Variantes y filtros esenciales</div>
+    <pre><code><span class="cmd-comment">! === SHOW VLAN BRIEF ===</span>
+SW1# show vlan brief
+<span class="cmd-output">VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active    Fa0/1, Fa0/2, Fa0/3, Fa0/4
+                                                Fa0/5, Fa0/6, Fa0/7, Fa0/8
+                                                Fa0/9, Fa0/10, Fa0/11, Fa0/12
+                                                Fa0/13, Fa0/14, Fa0/15, Fa0/16
+                                                Fa0/17, Fa0/18, Fa0/19, Fa0/20
+                                                Fa0/21, Fa0/22, Fa0/23, Fa0/24
+                                                Gi0/1, Gi0/2
+10   VENTAS                           active    Fa0/1, Fa0/2, Fa0/3
+20   IT                               active    Fa0/13, Fa0/14, Fa0/15
+30   MANAGEMENT                       active    
+99   NATIVE                           active    Gi0/1, Gi0/2
+1002 fddi-default                     act/unsup 
+1003 token-ring-default               act/unsup 
+1004 fddinet-default                  act/unsup 
+1005 trnet-default                    act/unsup </span>
+
+<span class="cmd-comment">! === SHOW VLAN ID ===</span>
+SW1# show vlan id 10
+<span class="cmd-output">VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+10   VENTAS                           active    Fa0/1, Fa0/2, Fa0/3
+
+VLAN Type  SAID       MTU   Parent RingNo BridgeNo Stp  BrdgMode Trans1 Trans2
+---- ----- ---------- ----- ------ ------ -------- ---- -------- ------ ------
+10   enet  100010     1500  -      -      -        -    -        0      0</span>
+
+<span class="cmd-comment">! === SHOW VLAN NAME ===</span>
+SW1# show vlan name VENTAS
+
+<span class="cmd-comment">! === SHOW VLAN SUMMARY ===</span>
+SW1# show vlan summary
+<span class="cmd-output">Number of existing VLANs             : 9
+Number of existing VTP VLANs           : 5
+Number of existing extended VLANs      : 0</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">show interfaces switchport — Información detallada</h3>
+  <div class="code-block">
+    <div class="code-label">Análisis completo de configuración de puerto</div>
+    <pre><code>SW1# show interfaces FastEthernet0/1 switchport
+<span class="cmd-output">Name: Fa0/1
+Switchport: Enabled
+Administrative Mode: static access          <span class="cmd-comment">! Modo configurado</span>
+Operational Mode: static access             <span class="cmd-comment">! Modo actual</span>
+Administrative Trunking Encapsulation: dot1q
+Operational Trunking Encapsulation: native
+Negotiation of Trunking: Off
+Access Mode VLAN: 10 (VENTAS)              <span class="cmd-comment">! VLAN de acceso</span>
+Trunking Native Mode VLAN: 1 (default)
+Administrative Native VLAN tagging: enabled
+Voice VLAN: none
+Administrative private-vlan host-association: none
+Administrative private-vlan mapping: none
+Operational private-vlan: none
+Trunking VLANs Enabled: ALL
+Pruning VLANs Enabled: 2-1001
+
+Capture Mode Disabled
+Capture VLANs Allowed: ALL
+
+Protected: false
+Unknown unicast blocked: disabled
+Unknown multicast blocked: disabled
+Appliance trust: none</span>
+
+<span class="cmd-comment">! === MOSTRAR SOLO PUERTOS DE ACCESO ===</span>
+SW1# show interfaces switchport | include Access Mode
+  Access Mode VLAN: 10 (VENTAS)
+  Access Mode VLAN: 10 (VENTAS)
+  Access Mode VLAN: 20 (IT)
+  ...
+
+<span class="cmd-comment">! === MOSTRAR SOLO TRUNKS ===</span>
+SW1# show interfaces trunk
+<span class="cmd-output">Port        Mode             Encapsulation  Status        Native vlan
+Gi0/1       on               802.1q         trunking      99
+Gi0/2       on               802.1q         trunking      99
+
+Port        Vlans allowed on trunk
+Gi0/1       10,20,30,99
+Gi0/2       10,20,30,99
+
+Port        Vlans allowed and active in management domain
+Gi0/1       10,20,30,99
+Gi0/2       10,20,30,99
+
+Port        Vlans in spanning tree forwarding state and not pruned
+Gi0/1       10,20,30,99
+Gi0/2       10,20,30,99</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">show mac address-table — Verificar aprendizaje L2</h3>
+  <div class="code-block">
+    <div class="code-label">Tabla MAC y asociación VLAN</div>
+    <pre><code>SW1# show mac address-table
+<span class="cmd-output">          Mac Address Table
+-------------------------------------------
+Vlan    Mac Address       Type        Ports
+----    -----------       --------    -----
+   1    0000.0c11.1111    DYNAMIC     Gi0/1
+  10    0000.0c22.2222    DYNAMIC     Fa0/1
+  10    0000.0c33.3333    DYNAMIC     Fa0/2
+  20    0000.0c44.4444    DYNAMIC     Fa0/13
+  20    0000.0c55.5555    DYNAMIC     Fa0/14
+  99    a0b1.c2d3.e4f5    STATIC      Gi0/1   <span class="cmd-comment">! MAC del switch vecino</span></span>
+
+<span class="cmd-comment">! === FILTRAR POR VLAN ===</span>
+SW1# show mac address-table vlan 10
+
+<span class="cmd-comment">! === FILTRAR POR PUERTO ===</span>
+SW1# show mac address-table interface FastEthernet0/1
+
+<span class="cmd-comment">! === VER TIPO DE ENTRADA ===</span>
+<span class="cmd-comment">! STATIC  = Configurada manualmente o del sistema</span>
+<span class="cmd-comment">! DYNAMIC = Aprendida por tráfico entrante</span>
+<span class="cmd-comment">! SECURE  = Port Security (sticky o configurada)</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">Comandos de verificación de VTP</h3>
+  <div class="code-block">
+    <div class="code-label">Estado y sincronización VTP</div>
+    <pre><code>SW1# show vtp status
+<span class="cmd-output">VTP Version capable             : 1 to 3
+VTP version running             : 2
+VTP Domain Name                 : CCNA-LAB
+VTP Pruning Mode                : Disabled
+VTP Traps Generation            : Disabled
+Device ID                       : a0b1.c2d3.e4f5
+
+Feature VLAN:
+--------------
+VTP Operating Mode                : Server
+Maximum VLANs supported locally   : 1005
+Number of existing VLANs          : 8
+Configuration Revision            : 12
+MD5 digest                        : 0xAB 0xCD 0xEF 0x12 0x34 0x56 0x78 0x90
+                                    0xAB 0xCD 0xEF 0x12 0x34 0x56 0x78 0x90
+
+<span class="cmd-comment">! === VER VTP COUNTERS ===</span>
+SW1# show vtp counters
+<span class="cmd-output">VTP statistics:
+Summary advertisements received    : 45
+Subset advertisements received     : 3
+Request advertisements received    : 5
+Summary advertisements transmitted : 52
+Subset advertisements transmitted  : 8
+Request advertisements transmitted : 2
+Number of config revision errors   : 0
+Number of config digest errors     : 0
+Number of V1 summary errors        : 0</span>
+
+<span class="cmd-comment">! === VER VTP PASSWORD (encriptada) ===</span>
+SW1# show vtp password
+<span class="cmd-output">VTP Domain Password: SecureVTP123</span></code></pre>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 7 — TROUBLESHOOTING
+══════════════════════════════════════════════ -->
+<div id="tab-troubleshooting" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Troubleshooting de VLANs — Problemas Comunes y Soluciones</h2>
+  <p>El troubleshooting de VLANs requiere un enfoque metodológico: verificación física, configuración lógica, y análisis de protocolos. A continuación se presentan los problemas más frecuentes y sus soluciones paso a paso.</p>
+
+  <h3 class="sub-title">1. Native VLAN Mismatch — El Problema Más Crítico</h3>
+  <div class="info-box warning">
+    <div class="info-box-title">⚠️ SEVERIDAD: ALTA — Seguridad y Conectividad</div>
+    <p>Un <strong>Native VLAN Mismatch</strong> ocurre cuando los puertos trunk en ambos extremos de un enlace tienen configuraciones de VLAN nativa diferentes. Esto causa que el tráfico untagged sea interpretado en VLANs distintas, creando fugas de tráfico, problemas de STP y potencialmente habilitando ataques VLAN hopping.</p>
+  </div>
+
+  <h4>Síntomas del Problema</h4>
+  <ul>
+    <li>Mensaje de error en consola: <code>%CDP-4-NATIVE_VLAN_MISMATCH</code></li>
+    <li>Tráfico de VLAN nativa no llega al destino esperado</li>
+    <li>Problemas de conectividad intermitente entre switches</li>
+    <li>BPDUs de STP procesados incorrectamente</li>
+  </ul>
+
+  <h4>Comandos de Diagnóstico</h4>
+  <div class="code-block">
+    <div class="code-label">Identificar el mismatch</div>
+    <pre><code><span class="cmd-comment">! === Detectar Native VLAN Mismatch ===</span>
+SW1# show cdp neighbors detail
+SW1# show interfaces trunk
+SW1# show interfaces GigabitEthernet0/1 switchport | include Native
+
+<span class="cmd-comment">! === Salida típica del error ===</span>
+<span class="cmd-output">%CDP-4-NATIVE_VLAN_MISMATCH: Native VLAN mismatch discovered on Gi0/1 (99), with SW2 Gi0/1 (1)</span></code></pre>
+  </div>
+
+  <h4>Solución Paso a Paso</h4>
+  <div class="code-block">
+    <div class="code-label">Corregir Native VLAN Mismatch</div>
+    <pre><code><span class="cmd-comment">! === Verificar configuración actual en AMBOS switches ===</span>
+SW1# show interfaces GigabitEthernet0/1 switchport | include Native
+SW2# show interfaces GigabitEthernet0/1 switchport | include Native
+
+<span class="cmd-comment">! === Configurar la misma VLAN nativa en ambos lados ===</span>
+SW1(config)# interface GigabitEthernet0/1
+SW1(config-if)# switchport trunk native vlan 99
+SW2(config)# interface GigabitEthernet0/1
+SW2(config-if)# switchport trunk native vlan 99
+
+<span class="cmd-comment">! === Verificación post-cambio ===</span>
+SW1# show interfaces trunk
+<span class="cmd-output">Port        Mode             Encapsulation  Status        Native vlan
+Gi0/1       on               802.1q         trunking      99</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">2. VLAN Inexistente — Asignación Fallida</h3>
+  <p>Cuando se asigna un puerto a una VLAN que no existe en el switch, el comportamiento varía según la versión de IOS:</p>
+  <ul>
+    <li><strong>IOS moderno:</strong> El switch crea la VLAN automáticamente (pero sin SVI configurada)</li>
+    <li><strong>IOS antiguo:</strong> Genera error: <code>% Access VLAN does not exist</code></li>
+  </ul>
+
+  <h4>Comandos de Diagnóstico y Solución</h4>
+  <div class="code-block">
+    <div class="code-label">Verificar existencia de VLAN</div>
+    <pre><code>SW1# show vlan brief | include 50
+<span class="cmd-comment">! Si no aparece, la VLAN no existe</span>
+
+<span class="cmd-comment">! === Solución: Crear la VLAN explícitamente ===</span>
+SW1(config)# vlan 50
+SW1(config-vlan)# name SALES_TEMP
+SW1(config-vlan)# exit
+
+<span class="cmd-comment">! === O verificar VLAN correcta ===</span>
+SW1(config)# interface FastEthernet0/5
+SW1(config-if)# switchport access vlan 50</code></pre>
+  </div>
+
+  <h3 class="sub-title">3. Trunk No Forma — Problemas de Negociación</h3>
+  <p>Cuando un trunk no forma correctamente, los hosts en diferentes VLANs no pueden comunicarse:</p>
+  
+  <h4>Causas Comunes</h4>
+  <ul>
+    <li><strong>Modo Dynamic Auto en ambos lados:</strong> Ningún lado inicia negociación DTP</li>
+    <li><strong>Modo Access vs Trunk:</strong> Un lado en access, otro en trunk</li>
+    <li><strong>DTP Deshabilitado (nonegotiate) vs modo dynamic:</strong> Incompatibilidad de negociación</li>
+    <li><strong>Encapsulación ISL vs 802.1Q:</strong> Métodos incompatibles (ISL es obsoleto)</li>
+  </ul>
+
+  <div class="code-block">
+    <div class="code-label">Forzar Trunk Estático</div>
+    <pre><code><span class="cmd-comment">! === Configuración recomendada para evitar problemas ===</span>
+SW1(config)# interface GigabitEthernet0/1
+SW1(config-if)# switchport mode trunk
+SW1(config-if)# switchport nonegotiate      <span class="cmd-comment">! Deshabilitar DTP</span>
+SW2(config)# interface GigabitEthernet0/1
+SW2(config-if)# switchport mode trunk
+SW2(config-if)# switchport nonegotiate
+
+<span class="cmd-comment">! === Verificar formación del trunk ===</span>
+SW1# show interfaces trunk
+<span class="cmd-output">Port        Mode             Encapsulation  Status        Native vlan
+Gi0/1       on               802.1q         trunking      99</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">4. VTP Synchronization Issues</h3>
+  <p>Problemas de sincronización de VLANs entre switches cuando VTP está mal configurado:</p>
+
+  <h4>Síntomas</h4>
+  <ul>
+    <li>VLANs creadas en un switch no aparecen en otro</li>
+    <li>Mensaje: <code>Configuration revision mismatch</code></li>
+    <li>VLANs "desaparecen" repentinamente</li>
+  </ul>
+
+  <h4>Solución</h4>
+  <div class="code-block">
+    <div class="code-label">Verificar dominio VTP</div>
+    <pre><code>SW1# show vtp status
+<span class="cmd-comment">! Verificar: VTP Domain Name, Operating Mode, Configuration Revision</span>
+
+<span class="cmd-comment">! === Soluciones comunes ===</span>
+<span class="cmd-comment">! 1. Asegurar mismo VTP Domain en todos los switches:</span>
+SW1(config)# vtp domain CCNA-LAB
+SW2(config)# vtp domain CCNA-LAB
+
+<span class="cmd-comment">! 2. Verificar modo VTP compatible:</span>
+<span class="cmd-comment">!    - Server puede crear/modificar VLANs</span>
+<span class="cmd-comment">!    - Client sincroniza con Server</span>
+<span class="cmd-comment">!    - Transparent: No sincroniza, mantiene VLANs locales</span>
+
+<span class="cmd-comment">! 3. Si hay inconsistencia de revision:</span>
+SW1# show vtp counters
+<span class="cmd-comment">! Buscar "Configuration revision errors"</span></code></pre>
+  </div>
+
+  <h3 class="sub-title">5. Problemas de Asignación de Puertos</h3>
+  <h4>Port Security Violation</h4>
+  <p>Cuando port security está habilitado y se violan las restricciones (MAC address no permitida):</p>
+  <div class="code-block">
+    <pre><code>SW1# show port-security interface FastEthernet0/1
+<span class="cmd-output">Port Security : Enabled
+Violation Mode : Shutdown
+MAC Address    : 0000.0000.0000 (None)
+Security Violation Count : 1</span></code></pre>
+  
+  <h4>Solución</h4>
+  <ul>
+    <li>Verificar MAC address permitida: <code>switchport port-security mac-address XXXX.XXXX.XXXX</code></li>
+    <li>Cambiar modo de violación: <code>switchport port-security violation restrict</code> (en lugar de shutdown)</li>
+    <li>Clear de violación: <code>clear port-security sticky interface FastEthernet0/1</code></li>
+  </ul>
+
+  <h3 class="sub-title">6. Problemas de Inter-VLAN Routing</h3>
+  <p>Después de configurar VLANs y trunks, el routing entre VLANs puede fallar:</p>
+  
+  <table class="ref-table">
+    <thead>
+      <tr><th>Problema</th><th>Causa</th><th>Solución</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>No hay gateway</td>
+        <td>Falta SVI (Switch Virtual Interface)</td>
+        <td><code>interface vlan 10<br>ip address 192.168.10.1 255.255.255.0</code></td>
+      </tr>
+      <tr>
+        <td>SVI en estado down</td>
+        <td>No hay puertos activos en esa VLAN</td>
+        <td>Asignar puerto a la VLAN o crear loopback</td>
+      </tr>
+      <tr>
+        <td>Router-on-a-stick mal configurado</td>
+        <td>Verificar encapsulación dot1Q en subinterface</td>
+        <td><code>encapsulation dot1Q 10</code></td>
+      </tr>
+      <tr>
+        <td>ACLs bloqueando tráfico</td>
+        <td>Revisar ACLs en router/switch L3</td>
+        <td><code>show access-list</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub-title">Flujo de Troubleshooting Recomendado</h3>
+  <div class="diagram-box" style="background:rgba(13,18,32,0.8);">
+    <div class="diagram-title">Metodología de Troubleshooting VLAN</div>
+    <svg viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:800px;">
+      <rect x="50" y="50" width="700" height="300" rx="10" fill="#0d1220" stroke="#00d4aa" stroke-width="2"/>
+      <rect x="80" y="80" width="120" height="60" rx="5" fill="#1e293b"/>
+      <text x="140" y="115" fill="#00d4aa" font-size="14" font-family="Orbitron" font-weight="700">1. Físico</text>
+      <text x="140" y="135" fill="#94a3b8" font-size="10" font-family="Share Tech Mono">Cables, LEDs, velocidad/duplex</text>
+      <rect x="80" y="150" width="120" height="60" rx="5" fill="#1e293b"/>
+      <text x="140" y="185" fill="#00d4aa" font-size="14" font-family="Orbitron" font-weight="700">2. VLAN Existe</text>
+      <text x="140" y="205" fill="#94a3b8" font-size="10" font-family="Share Tech Mono">show vlan brief</text>
+      <rect x="80" y="220" width="120" height="60" rx="5" fill="#1e293b"/>
+      <text x="140" y="255" fill="#00d4aa" font-size="14" font-family="Orbitron" font-weight="700">3. Puerto Asignado</text>
+      <text x="140" y="275" fill="#94a3b8" font-size="10" font-family="Share Tech Mono">show interfaces switchport</text>
+      <rect x="300" y="80" width="120" height="60" rx="5" fill="#1e293b"/>
+      <text x="360" y="115" fill="#00d4aa" font-size="14" font-family="Orbitron" font-weight="700">4. Trunk Formado</text>
+      <text x="360" y="135" fill="#94a3b8" font-size="10" font-family="Share Tech Mono">show interfaces trunk</text>
+      <rect x="300" y="150" width="120" height="60" rx="5" fill="#1e293b"/>
+      <text x="360" y="185" fill="#00d4aa" font-size="14" font-family="Orbitron" font-weight="700">5. VTP Sync</text>
+      <text x="360" y="205" fill="#94a3b8" font-size="10" font-family="Share Tech Mono">show vtp status</text>
+      <rect x="300" y="220" width="120" height="60" rx="5" fill="#1e293b"/>
+      <text x="360" y="255" fill="#00d4aa" font-size="14" font-family="Orbitron" font-weight="700">6. Routing</text>
+      <text x="360" y="275" fill="#94a3b8" font-size="10" font-family="Share Tech Mono">show ip interface brief</text>
+      <line x1="200" y1="110" x2="280" y2="110" stroke="#00d4aa" stroke-width="2" marker-end="url(#arrowtrunk)"/>
+      <line x1="200" y1="180" x2="280" y2="180" stroke="#00d4aa" stroke-width="2" marker-end="url(#arrowtrunk)"/>
+      <line x1="200" y1="250" x2="280" y2="250" stroke="#00d4aa" stroke-width="2" marker-end="url(#arrowtrunk)"/>
+      <line x1="420" y1="110" x2="500" y2="110" stroke="#00d4aa" stroke-width="2" marker-end="url(#arrowtrunk)"/>
+      <line x1="420" y1="180" x2="500" y2="180" stroke="#00d4aa" stroke-width="2" marker-end="url(#arrowtrunk)"/>
+      <line x1="420" y1="250" x2="500" y2="250" stroke="#00d4aa" stroke-width="2" marker-end="url(#arrowtrunk)"/>
+      <defs>
+        <marker id="arrowtrunk" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#00d4aa"/>
+        </marker>
+      </defs>
+    </svg>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 8 — LABORATORIO
+══════════════════════════════════════════════ -->
+<div id="tab-lab" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Laboratorio Práctico: Configuración de VLANs</h2>
+  <p>Este laboratorio integra todos los conceptos aprendidos: creación de VLANs, asignación de puertos, trunking entre switches, y verificación de conectividad.</p>
+
+  <h3 class="sub-title">Topología del Laboratorio</h3>
+  <div class="diagram-box">
+    <div class="diagram-title">Lab: 3 Switches + 1 Router (Router-on-a-Stick)</div>
+    <svg viewBox="0 0 900 500" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:900px;">
+      <rect x="150" y="150" width="120" height="200" rx="8" fill="#0d1220" stroke="#00d4aa" stroke-width="2"/>
+      <text x="210" y="180" fill="#00d4aa" font-size="16" font-family="Orbitron" font-weight="700">S1</text>
+      <text x="210" y="205" fill="#6b7a9a" font-size="11" font-family="Share Tech Mono">VLANs: 10,20,30</text>
+      <rect x="400" y="150" width="120" height="200" rx="8" fill="#0d1220" stroke="#38bdf8" stroke-width="2"/>
+      <text x="460" y="180" fill="#38bdf8" font-size="16" font-family="Orbitron" font-weight="700">S2</text>
+      <text x="460" y="205" fill="#6b7a9a" font-size="11" font-family="Share Tech Mono">VLANs: 10,20,30</text>
+      <rect x="650" y="150" width="120" height="200" rx="8" fill="#0d1220" stroke="#fbbf24" stroke-width="2"/>
+      <text x="710" y="180" fill="#fbbf24" font-size="16" font-family="Orbitron" font-weight="700">S3</text>
+      <text x="710" y="205" fill="#6b7a9a" font-size="11" font-family="Share Tech Mono">VLANs: 10,20,30</text>
+      <rect x="400" y="50" width="100" height="80" rx="5" fill="#0d1220" stroke="#a78bfa" stroke-width="2"/>
+      <text x="450" y="85" fill="#a78bfa" font-size="12" font-family="Orbitron" font-weight="700">R1</text>
+      <text x="450" y="105" fill="#6b7a9a" font-size="9" font-family="Share Tech Mono">Router-on-a-Stick</text>
+      <line x1="270" y1="250" x2="400" y2="250" stroke="#00d4aa" stroke-width="3"/>
+      <line x1="520" y1="250" x2="650" y2="250" stroke="#38bdf8" stroke-width="3"/>
+      <line x1="460" y1="150" x2="450" y2="90" stroke="#a78bfa" stroke-width="2" stroke-dasharray="5,5"/>
+      <line x1="460" y1="250" x2="450" y2="410" stroke="#a78bfa" stroke-width="2" stroke-dasharray="5,5"/>
+    </svg>
+  </div>
+
+  <h3 class="sub-title">Configuración Base (Switches S1, S2, S3)</h3>
+  <div class="code-block">
+    <div class="code-label">Configuración inicial de VLANs en todos los switches</div>
+    <pre><code><span class="cmd-comment">! === S1, S2, S3: Crear VLANs ===</span>
+S1(config)# vlan 10
+S1(config-vlan)# name ESTUDIANTES
+S1(config-vlan)# vlan 20
+S1(config-vlan)# name PROFESORES
+S1(config-vlan)# vlan 30
+S1(config-vlan)# name ADMIN
+
+<span class="cmd-comment">! === S1: Asignar puertos de acceso ===</span>
+S1(config)# interface range fa0/1-8
+S1(config-if-range)# switchport mode access
+S1(config-if-range)# switchport access vlan 10
+
+S1(config)# interface range fa0/9-16
+S1(config-if-range)# switchport mode access
+S1(config-if-range)# switchport access vlan 20
+
+S1(config)# interface range fa0/17-24
+S1(config-if-range)# switchport mode access
+S1(config-if-range)# switchport access vlan 30</code></pre>
+  </div>
+
+  <h3 class="sub-title">Configuración de Trunks entre Switches</h3>
+  <div class="code-block">
+    <div class="code-label">S1-S2 y S2-S3 enlaces trunk</div>
+    <pre><code><span class="cmd-comment">! === S1 a S2 (Puerto Gi0/1 en ambos) ===</span>
+S1(config)# interface GigabitEthernet0/1
+S1(config-if)# switchport mode trunk
+S1(config-if)# switchport trunk native vlan 99
+S1(config-if)# switchport trunk allowed vlan 10,20,30,99
+S1(config-if)# switchport nonegotiate
+
+S2(config)# interface GigabitEthernet0/1
+S2(config-if)# switchport mode trunk
+S2(config-if)# switchport trunk native vlan 99
+S2(config-if)# switchport trunk allowed vlan 10,20,30,99
+S2(config-if)# switchport nonegotiate
+
+<span class="cmd-comment">! === S2 a S3 (Puerto Gi0/2 en ambos) ===</span>
+S2(config)# interface GigabitEthernet0/2
+S2(config-if)# switchport mode trunk
+S2(config-if)# switchport trunk native vlan 99
+S2(config-if)# switchport trunk allowed vlan 10,20,30,99</code></pre>
+  </div>
+
+  <h3 class="sub-title">Configuración Router-on-a-Stick (R1)</h3>
+  <div class="code-block">
+    <div class="code-label">Subinterfaces para cada VLAN</div>
+    <pre><code>R1(config)# interface GigabitEthernet0/0
+R1(config-if)# no shutdown
+
+<span class="cmd-comment">! === VLAN 10 (Estudiantes) ===</span>
+R1(config)# interface GigabitEthernet0/0.10
+R1(config-subif)# encapsulation dot1Q 10
+R1(config-subif)# ip address 192.168.10.1 255.255.255.0
+R1(config-subif)# description GW-ESTUDIANTES
+
+<span class="cmd-comment">! === VLAN 20 (Profesores) ===</span>
+R1(config)# interface GigabitEthernet0/0.20
+R1(config-subif)# encapsulation dot1Q 20
+R1(config-subif)# ip address 192.168.20.1 255.255.255.0
+R1(config-subif)# description GW-PROFESORES
+
+<span class="cmd-comment">! === VLAN 30 (Admin) ===</span>
+R1(config)# interface GigabitEthernet0/0.30
+R1(config-subif)# encapsulation dot1Q 30
+R1(config-subif)# ip address 192.168.30.1 255.255.255.0
+R1(config-subif)# description GW-ADMIN
+
+<span class="cmd-comment">! === VLAN 99 (Native) ===</span>
+R1(config)# interface GigabitEthernet0/0.99
+R1(config-subif)# encapsulation dot1Q 99 native
+R1(config-subif)# ip address 192.168.99.1 255.255.255.0</code></pre>
+  </div>
+
+  <h3 class="sub-title">Verificación Completa del Laboratorio</h3>
+  <div class="code-block">
+    <div class="code-label">Comandos de verificación paso a paso</div>
+    <pre><code><span class="cmd-comment">! === Verificar VLANs en switches ===</span>
+S1# show vlan brief
+S2# show vlan brief
+S3# show vlan brief
+
+<span class="cmd-comment">! === Verificar trunks ===</span>
+S1# show interfaces trunk
+S2# show interfaces trunk
+
+<span class="cmd-comment">! === Verificar tabla MAC ===</span>
+S1# show mac address-table
+
+<span class="cmd-comment">! === Verificar configuración router ===</span>
+R1# show ip interface brief
+R1# show vlans
+
+<span class="cmd-comment">! === Pruebas de conectividad ===</span>
+<span class="cmd-comment">! Desde PC en VLAN 10 (192.168.10.10):</span>
+C:\&gt; ping 192.168.20.1    <span class="cmd-comment">! Gateway VLAN 20</span>
+C:\&gt; ping 192.168.30.1    <span class="cmd-comment">! Gateway VLAN 30</span>
+C:\&gt; tracert 192.168.20.50  <span class="cmd-comment">! PC en VLAN 20</span></code></pre>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">💡 Tip de Troubleshooting en Lab</div>
+    <p>Si el ping falla entre VLANs:</p>
+    <ol>
+      <li>Verificar que las SVIs existan: <code>show ip interface brief</code></li>
+      <li>Verificar que las SVIs estén UP: <code>show interface vlan 10</code></li>
+      <li>Verificar trunk permite la VLAN: <code>show interfaces trunk</code></li>
+      <li>Verificar que el PC tenga gateway correcto: <code>ipconfig /all</code></li>
+      <li>Verificar ACLs si existen: <code>show access-list</code></li>
+    </ol>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 9 — REFERENCIA
+══════════════════════════════════════════════ -->
+<div id="tab-tabla" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Tabla de Referencia Rápida: Comandos VLAN</h2>
+  <p>Referencia completa de todos los comandos Cisco IOS para configuración y troubleshooting de VLANs.</p>
+
+  <h3 class="sub-title">Tabla de Comandos VLAN</h3>
+  <div class="table-wrap">
+    <table class="ref-table" style="font-size:0.9em;">
+      <thead>
+        <tr>
+          <th>Categoría</th>
+          <th>Comando</th>
+          <th>Descripción</th>
+          <th>Modo Config</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Creación VLAN</strong></td>
+          <td><code>vlan &lt;id&gt;</code></td>
+          <td>Crear VLAN y entrar a config-vlan</td>
+          <td>Global</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><code>name &lt;nombre&gt;</code></td>
+          <td>Asignar nombre a VLAN</td>
+          <td>config-vlan</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><code>no vlan &lt;id&gt;</code></td>
+          <td>Eliminar VLAN</td>
+          <td>Global</td>
+        </tr>
+        <tr>
+          <td><strong>Puerto Access</strong></td>
+          <td><code>switchport mode access</code></td>
+          <td>Configurar puerto como acceso</td>
+          <td>Interface</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><code>switchport access vlan &lt;id&gt;</code></td>
+          <td>Asignar VLAN al puerto</td>
+          <td>Interface</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><code>switchport voice vlan &lt;id&gt;</code></td>
+          <td>Configurar voice VLAN</td>
+          <td>Interface</td>
+        </tr>
+        <tr>
+          <td><strong>Puerto Trunk</strong></td>
+          <td><code>switchport mode trunk</code></td>
+          <td>Configurar puerto como trunk</td>
+          <td>Interface</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><code>switchport trunk native vlan &lt;id&gt;</code></td>
+          <td>Cambiar VLAN nativa</td>
+          <td>Interface</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><code>switchport trunk allowed vlan &lt;lista&gt;</code></td>
+          <td>Filtrar VLANs permitidas</td>
+          <td>Interface</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><code>switchport trunk allowed vlan add &lt;id&gt;</code></td>
+          <td>Agregar VLAN a trunk existente</td>
+          <td>Interface</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><code>switchport nonegotiate</code></td>
+          <td>Deshabilitar DTP</td>
+          <td>Interface</td>
+        </tr>
+        <tr>
+          <td><strong>VTP</strong></td>
+          <td><code>vtp domain &lt;nombre&gt;</code></td>
+          <td>Configurar dominio VTP</td>
+          <td>Global</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><code>vtp mode server|client|transparent</code></td>
+          <td>Cambiar modo VTP</td>
+          <td>Global</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><code>vtp password &lt;pass&gt;</code></td>
+          <td>Configurar contraseña VTP</td>
+          <td>Global</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><code>vtp pruning</code></td>
+          <td>Habilitar VTP pruning</td>
+          <td>Global</td>
+        </tr>
+        <tr>
+          <td><strong>Verificación</strong></td>
+          <td><code>show vlan brief</code></td>
+          <td>Ver todas las VLANs</td>
+          <td>EXEC</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><code>show vlan id &lt;id&gt;</code></td>
+          <td>Ver VLAN específica</td>
+          <td>EXEC</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><code>show interfaces switchport</code></td>
+          <td>Ver configuración de puerto</td>
+          <td>EXEC</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><code>show interfaces trunk</code></td>
+          <td>Ver trunks y VLANs permitidas</td>
+          <td>EXEC</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><code>show mac address-table</code></td>
+          <td>Ver tabla MAC y VLANs asociadas</td>
+          <td>EXEC</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><code>show vtp status</code></td>
+          <td>Ver estado VTP</td>
+          <td>EXEC</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><code>show cdp neighbors detail</code></td>
+          <td>Ver información de vecinos CDP</td>
+          <td>EXEC</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="sub-title">Rangos de VLANs en Cisco IOS</h3>
+  <div class="table-wrap">
+    <table class="ref-table">
+      <thead>
+        <tr><th>Rango</th><th>ID VLANs</th><th>Características</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Standard</td>
+          <td>1 - 1005</td>
+          <td>Almacenadas en vlan.dat, VTP soportado</td>
+        </tr>
+        <tr>
+          <td>Extended</td>
+          <td>1006 - 4094</td>
+          <td>Requieren VTP transparent/v3, solo running-config</td>
+        </tr>
+        <tr>
+          <td>Reservadas</td>
+          <td>0, 4095</td>
+          <td>No usables (sistema)</td>
+        </tr>
+        <tr>
+          <td>Legacy</td>
+          <td>1002-1005</td>
+          <td>FDDI/Token Ring (no usables)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="info-box warning">
+    <div class="info-box-title">⚠️ VLAN 1 — Consideraciones Especiales</div>
+    <ul>
+      <li>No puede ser renombrada ni eliminada</li>
+      <li>Es la VLAN nativa por defecto en trunks</li>
+      <li>El tráfico de control (CDP, VTP, DTP, PAgP) viaja por VLAN 1</li>
+      <li><strong>Mejor práctica:</strong> No usar VLAN 1 para datos de usuarios</li>
+    </ul>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 10 — QUIZ
+══════════════════════════════════════════════ -->
+<div id="tab-quiz" class="tab-content">
+<div class="content-block">
+  <h2 class="section-title">Quiz de Evaluación: VLANs</h2>
+  <p>15 preguntas para evaluar tu conocimiento sobre VLANs, trunking y VTP.</p>
+
+  <h3 class="sub-title">Preguntas de Evaluación</h3>
+  
+  <div class="quiz-item">
+    <div class="quiz-question">1. ¿Qué comando se usa para crear una VLAN 50 llamada VENTAS?</div>
+    <div class="quiz-options">
+      <div class="quiz-option" data-correct="true">A. <code>vlan 50</code> luego <code>name VENTAS</code></div>
+      <div class="quiz-option">B. <code>create vlan 50 VENTAS</code></div>
+      <div class="quiz-option">C. <code>vlan database</code> luego <code>vlan 50 name VENTAS</code></div>
+      <div class="quiz-option">D. <code>switchport vlan 50 VENTAS</code></div>
+    </div>
+    <div class="quiz-explanation" style="display:none;">
+      <strong>✓ Correcto:</strong> El modo global <code>vlan 50</code> entra al modo de configuración de VLAN donde se puede asignar el nombre con <code>name VENTAS</code>. La opción C usa el modo obsoleto de VLAN database. La D es incorrecta sintaxis.
+    </div>
+  </div>
+
+  <div class="quiz-item">
+    <div class="quiz-question">2. ¿Qué modo de VTP permite crear VLANs pero no sincroniza con otros switches?</div>
+    <div class="quiz-options">
+      <div class="quiz-option">A. Server</div>
+      <div class="quiz-option" data-correct="true">B. Transparent</div>
+      <div class="quiz-option">C. Client</div>
+      <div class="quiz-option">D. Off</div>
+    </div>
+    <div class="quiz-explanation" style="display:none;">
+      <strong>✓ Correcto:</strong> El modo <code>transparent</code> permite crear VLANs locales pero no participa en el dominio VTP ni sincroniza con otros switches (solo reenvía anuncios VTP).
+    </div>
+  </div>
+
+  <div class="quiz-item">
+    <div class="quiz-question">3. ¿Cuál es el rango de VLANs extendidas en Cisco IOS?</div>
+    <div class="quiz-options">
+      <div class="quiz-option">A. 1-1005</div>
+      <div class="quiz-option" data-correct="true">B. 1006-4094</div>
+      <div class="quiz-option">C. 1-4094</div>
+      <div class="quiz-option">D. 1002-1005</div>
+    </div>
+    <div class="quiz-explanation" style="display:none;">
+      <strong>✓ Correcto:</strong> Las VLANs extendidas son 1006-4094. Requieren VTP transparent o VTPv3.
+    </div>
+  </div>
+
+  <div class="quiz-item">
+    <div class="quiz-question">4. ¿Qué comando verifica si un puerto está configurado como trunk?</div>
+    <div class="quiz-options">
+      <div class="quiz-option">A. <code>show vlan brief</code></div>
+      <div class="quiz-option" data-correct="true">B. <code>show interfaces trunk</code></div>
+      <div class="quiz-option">C. <code>show trunk ports</code></div>
+      <div class="quiz-option">D. <code>show switchport trunk</code></div>
+    </div>
+    <div class="quiz-explanation" style="display:none;">
+      <strong>✓ Correcto:</strong> <code>show interfaces trunk</code> muestra todos los puertos trunk, sus VLANs permitidas y la VLAN nativa.
+    </div>
+  </div>
+
+  <div class="quiz-item">
+    <div class="quiz-question">5. ¿Cuál es la mejor práctica de seguridad para la VLAN nativa?</div>
+    <div class="quiz-options">
+      <div class="quiz-option" data-correct="true">A. Cambiarla a una VLAN no utilizada (ej: 999) y no usar VLAN 1</div>
+      <div class="quiz-option">B. Dejarla en VLAN 1 (default)</div>
+      <div class="quiz-option">C. Eliminar la VLAN nativa</div>
+      <div class="quiz-option">D. Usar VLAN 100 como nativa</div>
+    </div>
+    <div class="quiz-explanation" style="display:none;">
+      <strong>✓ Correcto:</strong> La mejor práctica es cambiar la VLAN nativa de 1 a un número no utilizado (ej: 999) y evitar usar VLAN 1 para datos de usuarios.
+    </div>
+  </div>
+
+  <div class="quiz-item">
+    <div class="quiz-question">6. ¿Qué significa el error <code>%CDP-4-NATIVE_VLAN_MISMATCH</code>?</div>
+    <div class="quiz-options">
+      <div class="quiz-option">A. Las VLANs no coinciden en ambos lados</div>
+      <div class="quiz-option" data-correct="true">B. La VLAN nativa no coincide en los puertos trunk conectados</div>
+      <div class="quiz-option">C. El trunk no está formado</div>
+      <div class="quiz-option">D. VTP no está sincronizando</div>
+    </div>
+    <div class="quiz-explanation" style="display:none;">
+      <strong>✓ Correcto:</strong> Este error específico indica que los puertos trunk conectados tienen configuraciones de VLAN nativa diferentes.
+    </div>
+  </div>
+
+  <div class="quiz-item">
+    <div class="quiz-question">7. ¿Qué comando configura un puerto para que negocie trunk activamente?</div>
+    <div class="quiz-options">
+      <div class="quiz-option">A. <code>switchport mode dynamic auto</code></div>
+      <div class="quiz-option" data-correct="true">B. <code>switchport mode dynamic desirable</code></div>
+      <div class="quiz-option">C. <code>switchport mode trunk</code></div>
+      <div class="quiz-option">D. <code>switchport negotiate trunk</code></div>
+    </div>
+    <div class="quiz-explanation" style="display:none;">
+      <strong>✓ Correcto:</strong> <code>dynamic desirable</code> activamente intenta formar un trunk enviando tramas DTP, a diferencia de <code>dynamic auto</code> que solo espera.
+    </div>
+  </div>
+
+  <div class="quiz-item">
+    <div class="quiz-question">8. ¿En qué modo VTP un switch puede crear y eliminar VLANs?</div>
+    <div class="quiz-options">
+      <div class="quiz-option" data-correct="true">A. Server</div>
+      <div class="quiz-option">B. Client</div>
+      <div class="quiz-option">C. Transparent</div>
+      <div class="quiz-option">D. Off</div>
+    </div>
+    <div class="quiz-explanation" style="display:none;">
+      <strong>✓ Correcto:</strong> Solo el modo <code>server</code> puede crear, modificar y eliminar VLANs en un dominio VTP.
+    </div>
+  </div>
+
+  <div class="quiz-item">
+    <div class="quiz-question">9. ¿Qué comando muestra la tabla MAC filtrada por una VLAN específica?</div>
+    <div class="quiz-options">
+      <div class="quiz-option">A. <code>show mac vlan 10</code></div>
+      <div class="quiz-option">B. <code>show mac-address vlan 10</code></div>
+      <div class="quiz-option" data-correct="true">C. <code>show mac address-table vlan 10</code></div>
+      <div class="quiz-option">D. <code>show vlan mac 10</code></div>
+    </div>
+    <div class="quiz-explanation" style="display:none;">
+      <strong>✓ Correcto:</strong> El comando correcto es <code>show mac address-table vlan 10</code>.
+    </div>
+  </div>
+
+  <div class="quiz-item">
+    <div class="quiz-question">10. ¿Cuál es el propósito principal del <code>switchport nonegotiate</code>?</div>
+    <div class="quiz-options">
+      <div class="quiz-option">A. Habilitar la negociación DTP</div>
+      <div class="quiz-option" data-correct="true">B. Deshabilitar DTP para seguridad</div>
+      <div class="quiz-option">C. Forzar el modo trunk</div>
+      <div class="quiz-option">D. Configurar VLAN nativa</div>
+    </div>
+    <div class="quiz-explanation" style="display:none;">
+      <strong>✓ Correcto:</strong> <code>switchport nonegotiate</code> deshabilita el protocolo DTP para prevenir que un atacante negocie un trunk falso.
+    </div>
+  </div>
+
+  <div class="quiz-item">
+    <div class="quiz-question">11. ¿Qué sucede cuando se elimina una VLAN que tiene puertos asignados?</div>
+    <div class="quiz-options">
+      <div class="quiz-option">A. Los puertos se apagan automáticamente</div>
+      <div class="quiz-option" data-correct="true">B. Los puertos vuelven a VLAN 1 (default)</div>
+      <div class="quiz-option">C. Los puertos mantienen la VLAN eliminada</div>
+      <div class="quiz-option">D. Los puertos se convierten en trunk</div>
+    </div>
+    <div class="quiz-explanation" style="display:none;">
+      <strong>✓ Correcto:</strong> Cuando se elimina una VLAN, los puertos asignados a ella vuelven automáticamente a VLAN 1 (default). Esto puede causar problemas de seguridad si VLAN 1 tiene acceso no autorizado.
+    </div>
+  </div>
+
+  <div class="quiz-item">
+    <div class="quiz-question">12. ¿Qué comando configura una VLAN de voz en un puerto de acceso?</div>
+    <div class="quiz-options">
+      <div class="quiz-option">A. <code>switchport voice 100</code></div>
+      <div class="quiz-option" data-correct="true">B. <code>switchport voice vlan 100</code></div>
+      <div class="quiz-option">C. <code>voice vlan 100</code></div>
+      <div class="quiz-option">D. <code>switchport vlan voice 100</code></div>
+    </div>
+    <div class="quiz-explanation" style="display:none;">
+      <strong>✓ Correcto:</strong> El comando correcto es <code>switchport voice vlan 100</code>. Esto permite que un puerto de acceso maneje tanto la VLAN de datos (PC) como la VLAN de voz (IP Phone) simultáneamente.
+    </div>
+  </div>
+
+  <div class="quiz-item">
+    <div class="quiz-question">13. ¿Dónde se almacenan las VLANs creadas en un switch Cisco?</div>
+    <div class="quiz-options">
+      <div class="quiz-option">A. En startup-config únicamente</div>
+      <div class="quiz-option" data-correct="true">B. En flash:vlan.dat separado de la configuración</div>
+      <div class="quiz-option">C. En NVRAM junto con startup-config</div>
+      <div class="quiz-option">D. En RAM únicamente</div>
+    </div>
+    <div class="quiz-explanation" style="display:none;">
+      <strong>✓ Correcto:</strong> Las VLANs se almacenan en el archivo <code>flash:vlan.dat</code>, separado de la configuración de inicio. Por eso <code>erase startup-config</code> NO elimina las VLANs. Para resetearlas se debe usar <code>delete flash:vlan.dat</code>.
+    </div>
+  </div>
+
+  <div class="quiz-item">
+    <div class="quiz-question">14. ¿Qué comando agrega una VLAN a un trunk existente sin sobrescribir las VLANs permitidas?</div>
+    <div class="quiz-options">
+      <div class="quiz-option">A. <code>switchport trunk allowed vlan 40</code></div>
+      <div class="quiz-option" data-correct="true">B. <code>switchport trunk allowed vlan add 40</code></div>
+      <div class="quiz-option">C. <code>switchport trunk add vlan 40</code></div>
+      <div class="quiz-option">D. <code>switchport trunk vlan add 40</code></div>
+    </div>
+    <div class="quiz-explanation" style="display:none;">
+      <strong>✓ Correcto:</strong> La palabra clave <code>add</code> agrega la VLAN a la lista existente sin sobrescribirla. Sin <code>add</code>, el comando reemplazaría toda la lista de VLANs permitidas.
+    </div>
+  </div>
+
+  <div class="quiz-item">
+    <div class="quiz-question">15. ¿Qué protocolo de trunking es el estándar IEEE y el único soportado en IOS moderno?</div>
+    <div class="quiz-options">
+      <div class="quiz-option">A. ISL (Inter-Switch Link)</div>
+      <div class="quiz-option" data-correct="true">B. 802.1Q (dot1q)</div>
+      <div class="quiz-option">C. DTP (Dynamic Trunking Protocol)</div>
+      <div class="quiz-option">D. VTP (VLAN Trunking Protocol)</div>
+    </div>
+    <div class="quiz-explanation" style="display:none;">
+      <strong>✓ Correcto:</strong> 802.1Q (dot1q) es el estándar IEEE para trunking. ISL era propietario de Cisco pero está obsoleto desde IOS 12.2(25). DTP es para negociación de trunk, no encapsulación. VTP es para distribución de información VLAN.
+    </div>
+  </div>
+
+  <div class="info-box tip">
+    <div class="info-box-title">📊 Resultados del Quiz</div>
+    <p>Revisa tus respuestas. Haz clic en cada pregunta para ver la explicación detallada.</p>
+  </div>
+</div>
+</div>
+
+</div><!-- /tabs-wrap -->
+
+<!-- Cierre del body y html del documento original -->
+<script>
+// Objeto para manejar las pestañas de VLAN
+var CmdVlan = {
+  showTabVlan: function(tabId, btnElement) {
+    // Ocultar todos los contenidos
+    var tabs = document.querySelectorAll('.tab-content');
+    tabs.forEach(function(tab) {
+      tab.classList.remove('active');
+    });
+    
+    // Desactivar todos los botones
+    var buttons = document.querySelectorAll('.tab-btn');
+    buttons.forEach(function(btn) {
+      btn.classList.remove('active');
+    });
+    
+    // Mostrar el tab seleccionado
+    document.getElementById('tab-' + tabId).classList.add('active');
+    
+    // Activar el botón clickeado
+    if(btnElement) {
+      btnElement.classList.add('active');
+    }
+  }
+};
+
+// Funciones del menú lateral (mantener compatibilidad)
+function ccnaToggle() {
+  document.getElementById('ccnaDrawer').classList.toggle('open');
+  document.getElementById('ccnaOverlay').classList.toggle('active');
+}
+
+function ccnaClose() {
+  document.getElementById('ccnaDrawer').classList.remove('open');
+  document.getElementById('ccnaOverlay').classList.remove('active');
+}
+
+// Inicializar quiz al cargar
+document.addEventListener('DOMContentLoaded', function() {
+  initQuiz();
+});
+
+function initQuiz() {
+  var quizItems = document.querySelectorAll('.quiz-item');
+  quizItems.forEach(function(item) {
+    var options = item.querySelectorAll('.quiz-option');
+    options.forEach(function(option) {
+      option.addEventListener('click', function() {
+        var isCorrect = this.getAttribute('data-correct') === 'true';
+        var explanation = item.querySelector('.quiz-explanation');
+        
+        // Deshabilitar todas las opciones
+        options.forEach(function(opt) {
+          opt.style.pointerEvents = 'none';
+          if(opt.getAttribute('data-correct') === 'true') {
+            opt.style.borderColor = '#34d399';
+            opt.style.background = 'rgba(52,211,153,0.08)';
+            opt.style.color = '#34d399';
+          } else if(opt === this && !isCorrect) {
+            opt.style.borderColor = '#f87171';
+            opt.style.background = 'rgba(248,113,113,0.08)';
+            opt.style.color = '#f87171';
+          }
+        }.bind(this));
+        
+        // Mostrar explicación
+        if(explanation) {
+          explanation.style.display = 'block';
+        }
+      });
+    });
+  });
+}
+</script>
+
+</body>
+</html>
